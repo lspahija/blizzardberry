@@ -11,6 +11,9 @@ importers:
       '@ai-sdk/openai':
         specifier: ^1.3.16
         version: 1.3.16(zod@3.24.3)
+      '@ai-sdk/openai-compatible':
+        specifier: ^0.2.11
+        version: 0.2.11(zod@3.24.3)
       '@ai-sdk/react':
         specifier: ^1.2.9
         version: 1.2.9(react@19.1.0)(zod@3.24.3)
@@ -59,6 +62,12 @@ importers:
         version: 5.8.3
 
 packages:
+
+  '@ai-sdk/openai-compatible@0.2.11':
+    resolution: {integrity: sha512-56U0uNCcFTygA4h6R/uREv8r5sKA3/pGkpIAnMOpRzs5wiARlTYakWW3LZgxg6D4Gpeswo4gwNJczB7nM0K1Qg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
 
   '@ai-sdk/openai@1.3.16':
     resolution: {integrity: sha512-pjtiBKt1GgaSKZryTbM3tqgoegJwgAUlp1+X5uN6T+VPnI4FLSymV65tyloWzDlyqZmi9HXnnSRPu76VoL5D5g==}
@@ -1809,6 +1818,12 @@ packages:
     resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
 
 snapshots:
+
+  '@ai-sdk/openai-compatible@0.2.11(zod@3.24.3)':
+    dependencies:
+      '@ai-sdk/provider': 1.1.3
+      '@ai-sdk/provider-utils': 2.2.7(zod@3.24.3)
+      zod: 3.24.3
 
   '@ai-sdk/openai@1.3.16(zod@3.24.3)':
     dependencies:
