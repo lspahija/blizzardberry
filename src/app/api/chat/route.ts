@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     const result = streamText({
-        model: lmstudio('gemma-3-4b-it-qat'),
+        model: lmstudio('gemma-3-12b-it-qat'),
         messages,
         tools: {
             weather: tool({
