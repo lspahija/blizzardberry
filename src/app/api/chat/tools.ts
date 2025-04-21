@@ -29,4 +29,26 @@ export const tools = {
             };
         },
     }),
+    sendHttpRequest: tool({
+        description: 'Send an HTTP GET request to a specified URL',
+        parameters: z.object({
+            url: z.string().url().describe('The URL to send the HTTP GET request to'),
+        }),
+        execute: async ({ url }) => {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return {
+                    status: response.status,
+                    data,
+                };
+            } catch (error: unknown) {
+                const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+                return {
+                    error: 'Failed to send HTTP request',
+                    details: errorMessage,
+                };
+            }
+        },
+    }),
 }

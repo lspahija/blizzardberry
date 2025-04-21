@@ -1,0 +1,12 @@
+### Test Parse cURL Endpoint - POST
+POST http://localhost:3000/api/action
+Content-Type: application/json
+
+{
+  "curlCommand": "curl -X POST -H \"Content-Type: application/json\" -d '{\"key\":\"value\"}' https://example.com"
+}
+
+###
+
+### Test Parse cURL Endpoint - GET
+GET http://localhost:3000/api/action
