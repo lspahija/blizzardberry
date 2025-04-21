@@ -1,25 +1,23 @@
 import { NextResponse } from 'next/server';
 import parse from '@bany/curl-to-json';
-
-// In-memory storage for parsed cURL commands
-let parsedCurlStorage: any[] = [];
+import { tool } from 'ai';
+import { z } from 'zod';
+import {tools} from "@/app/api/tools";
 
 export async function POST(req: Request) {
     try {
-        // Extract the cURL command from the request body
-        const { curlCommand } = await req.json();
+        const { curlCommand, toolName, description } = await req.json();
 
-        if (!curlCommand || typeof curlCommand !== 'string') {
+        if (!curlCommand || typeof curlCommand !== 'string' || !toolName || !description) {
             return NextResponse.json(
-                { error: 'Invalid or missing curlCommand in payload' },
+                { error: 'Missing curlCommand, toolName, or description in payload' },
                 { status: 400 }
             );
         }
 
-        // Parse the cURL command using @bany/curl-to-json
+        // Parse the cURL command
         const parsedCurl = parse(curlCommand);
 
-        // Validate parsed output
         if (!parsedCurl || typeof parsedCurl !== 'object') {
             return NextResponse.json(
                 { error: 'Failed to parse cURL command into valid JSON' },
@@ -27,14 +25,39 @@ export async function POST(req: Request) {
             );
         }
 
-        // Store the parsed result in memory
-        parsedCurlStorage.push(parsedCurl);
+        // Create a new tool from the parsed cURL
+        tools[toolName] = tool({
+            description,
+            parameters: z.object({
+                data: z.any().optional().describe('Optional data for the request body'),
+            }),
+            execute: async ({ data }) => {
+                // TODO: this should probably be moved to the frontend chatbot widget because it will have the required cookies etc.
+                try {
+                    const response = await fetch(parsedCurl.url, {
+                        method: parsedCurl.method || 'GET',
+                        headers: parsedCurl.header || {},
+                        body: data ? JSON.stringify(data) : parsedCurl.data || undefined,
+                    });
+                    const result = await response.json();
+                    return {
+                        status: response.status,
+                        data: result,
+                    };
+                } catch (error: unknown) {
+                    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+                    return {
+                        error: `Failed to execute ${toolName} request`,
+                        details: errorMessage,
+                    };
+                }
+            },
+        });
 
-        // Return the parsed JSON
         return NextResponse.json({
-            message: 'cURL command parsed and stored successfully',
+            message: 'cURL command parsed and saved as tool successfully',
+            toolName,
             parsedCurl,
-            storedCount: parsedCurlStorage.length,
         });
     } catch (error) {
         console.error('Error parsing cURL command:', error);
@@ -43,12 +66,4 @@ export async function POST(req: Request) {
             { status: 500 }
         );
     }
-}
-
-// Optional: GET endpoint to retrieve stored parsed commands (for testing)
-export async function GET() {
-    return NextResponse.json({
-        storedCurls: parsedCurlStorage,
-        storedCount: parsedCurlStorage.length,
-    });
 }

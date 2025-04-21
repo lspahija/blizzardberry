@@ -1,12 +1,8 @@
-### Test Parse cURL Endpoint - POST
 POST http://localhost:3000/api/action
 Content-Type: application/json
 
 {
-  "curlCommand": "curl -X POST -H \"Content-Type: application/json\" -d '{\"key\":\"value\"}' https://example.com"
+  "curlCommand": "curl https://reqbin.com/echo/get/json",
+  "toolName": "getJson",
+  "description": "Send a GET request to ReqBin to fetch JSON data."
 }
-
-###
-
-### Test Parse cURL Endpoint - GET
-GET http://localhost:3000/api/action
