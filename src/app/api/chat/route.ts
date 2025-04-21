@@ -1,6 +1,6 @@
-import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
-import { streamText, tool } from 'ai';
-import { z } from 'zod';
+import {createOpenAICompatible} from '@ai-sdk/openai-compatible';
+import {streamText} from 'ai';
+import {tools} from "@/app/api/chat/tools";
 
 const lmstudio = createOpenAICompatible({
     name: 'lmstudio',
@@ -13,35 +13,7 @@ export async function POST(req: Request) {
     const result = streamText({
         model: lmstudio('gemma-3-12b-it-qat'),
         messages,
-        tools: {
-            weather: tool({
-                description: 'Get the weather in a location (fahrenheit)',
-                parameters: z.object({
-                    location: z.string().describe('The location to get the weather for'),
-                }),
-                execute: async ({ location }) => {
-                    const temperature = Math.round(Math.random() * (90 - 32) + 32);
-                    return {
-                        location,
-                        temperature,
-                    };
-                },
-            }),
-            convertFahrenheitToCelsius: tool({
-                description: 'Convert a temperature in fahrenheit to celsius',
-                parameters: z.object({
-                    temperature: z
-                        .number()
-                        .describe('The temperature in fahrenheit to convert'),
-                }),
-                execute: async ({ temperature }) => {
-                    const celsius = Math.round((temperature - 32) * (5 / 9));
-                    return {
-                        celsius,
-                    };
-                },
-            }),
-        },
+        tools: tools,
     });
 
     return result.toDataStreamResponse();
