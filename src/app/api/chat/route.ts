@@ -1,6 +1,6 @@
 import {createOpenAICompatible} from '@ai-sdk/openai-compatible';
 import {streamText} from 'ai';
-import {tools} from "@/app/api/chat/tools";
+import {tools} from "@/app/api/tools";
 
 const lmstudio = createOpenAICompatible({
     name: 'lmstudio',
