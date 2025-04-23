@@ -11,7 +11,6 @@ export default function Chat() {
 
     // Function to execute fetch for a tool invocation
     const executeFetch = async (httpModel: any, messageId: string, partIndex: number) => {
-        console.log('Executing fetch:', httpModel);
         try {
             const response = await fetch(httpModel.url, {
                 method: httpModel.method,
