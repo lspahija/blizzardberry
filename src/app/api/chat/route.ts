@@ -13,6 +13,7 @@ export async function POST(req: Request) {
     const result = streamText({
         model: lmstudio('gemma-3-12b-it-qat'),
         messages,
+        system: "return only the tool invocation response",
         tools: tools,
     });
 

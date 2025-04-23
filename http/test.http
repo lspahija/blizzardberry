@@ -2,7 +2,16 @@ POST http://localhost:3000/api/action
 Content-Type: application/json
 
 {
-  "curlCommand": "curl https://reqbin.com/echo/get/json",
-  "toolName": "getJson",
-  "description": "Send a GET request to ReqBin to fetch JSON data."
+  "curlCommand": "curl http://localhost:3000/api/dummy",
+  "actionName": "getJson",
+  "description": "Send a GET request to dummy endpoint to fetch JSON data."
 }
+
+###
+GET http://localhost:3000/api/action/getJson
+Content-Type: application/json
+Accept: application/json
+
+
+###
+GET http://localhost:3000/api/dummy
