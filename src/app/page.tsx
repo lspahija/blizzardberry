@@ -10,12 +10,12 @@ export default function Chat() {
     const [fetchResults, setFetchResults] = useState<{ [key: string]: any }>({});
 
     // Function to execute fetch for a tool invocation
-    const executeFetch = async (curlConfig: any, messageId: string, partIndex: number) => {
+    const executeFetch = async (httpModel: any, messageId: string, partIndex: number) => {
         try {
-            const response = await fetch(curlConfig.url, {
-                method: curlConfig.method,
-                headers: curlConfig.headers,
-                body: curlConfig.body,
+            const response = await fetch(httpModel.url, {
+                method: httpModel.method,
+                headers: httpModel.header,
+                body: httpModel.data,
             });
             const result = await response.json();
             setFetchResults((prev) => ({

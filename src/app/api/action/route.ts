@@ -32,12 +32,7 @@ export async function POST(req: Request) {
                 data: z.any().optional().describe('Optional data for the request body'),
             }),
             execute: async ({ data } = {}) => ({
-                curlConfig: {
-                    url: parsedCurl.url,
-                    method: parsedCurl.method,
-                    headers: parsedCurl.header,
-                    body: parsedCurl.data
-                }
+                httpModel: parsedCurl
             })
         });
 
