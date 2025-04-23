@@ -31,16 +31,14 @@ export async function POST(req: Request) {
             parameters: z.object({
                 data: z.any().optional().describe('Optional data for the request body'),
             }),
-            execute: async ({ data }) => {
-                return {
-                    curlConfig: {
-                        url: parsedCurl.url,
-                        method: parsedCurl.method || 'GET',
-                        headers: parsedCurl.header || {},
-                        body: data ? JSON.stringify(data) : parsedCurl.data || undefined,
-                    },
-                };
-            },
+            execute: async ({ data } = {}) => ({
+                curlConfig: {
+                    url: parsedCurl.url,
+                    method: parsedCurl.method,
+                    headers: parsedCurl.header,
+                    body: parsedCurl.data
+                }
+            })
         });
 
         return NextResponse.json({

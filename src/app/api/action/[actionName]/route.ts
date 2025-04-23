@@ -23,6 +23,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ actionNa
 
         return NextResponse.json({
             actionName,
+            result: await tool.execute(),
         });
     } catch (error) {
         console.error("Error retrieving action:", error);
