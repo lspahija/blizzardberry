@@ -11,6 +11,7 @@ export default function Chat() {
 
     // Function to execute fetch for a tool invocation
     const executeFetch = async (httpModel: any, messageId: string, partIndex: number) => {
+        console.log('Executing fetch:', httpModel);
         try {
             const response = await fetch(httpModel.url, {
                 method: httpModel.method,
@@ -44,11 +45,11 @@ export default function Chat() {
                 if (
                     part.type === 'tool-invocation' &&
                     part.toolInvocation.state === 'result' &&
-                    part.toolInvocation.result?.curlConfig
+                    part.toolInvocation.result?.httpModel
                 ) {
                     const key = `${message.id}-${i}`;
                     if (!fetchResults[key]) {
-                        executeFetch(part.toolInvocation.result.curlConfig, message.id, i);
+                        executeFetch(part.toolInvocation.result.httpModel, message.id, i);
                     }
                 }
             });
