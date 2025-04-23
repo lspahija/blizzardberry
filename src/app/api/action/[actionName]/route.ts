@@ -1,13 +1,13 @@
-import {NextResponse} from "next/server";
-import {tools} from "@/app/api/tools";
+import { NextResponse } from "next/server";
+import { tools } from "@/app/api/tools";
 
-export async function GET(req: Request, { params }: { params: { actionName: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ actionName: string }> }) {
     try {
-        const { actionName } = params;
+        const { actionName } = await params; // Await the params Promise
 
         if (!actionName) {
             return NextResponse.json(
-                { error: 'Tool name is required' },
+                { error: "Tool name is required" },
                 { status: 400 }
             );
         }
@@ -23,12 +23,11 @@ export async function GET(req: Request, { params }: { params: { actionName: stri
 
         return NextResponse.json({
             actionName,
-            result: tool.execute(),
         });
     } catch (error) {
-        console.error('Error retrieving action:', error);
+        console.error("Error retrieving action:", error);
         return NextResponse.json(
-            { error: 'Failed to retrieve action information' },
+            { error: "Failed to retrieve action information" },
             { status: 500 }
         );
     }
