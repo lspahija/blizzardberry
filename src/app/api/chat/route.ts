@@ -1,7 +1,8 @@
 import {createOpenAICompatible} from '@ai-sdk/openai-compatible';
 import {streamText} from 'ai';
-import {inMemoryToolStore} from "@/app/api/lib/inMemoryToolStore";
+import {getActions} from "@/app/api/lib/ActionStore";
 
+// TODO: write ai sdk middleware to map any mention of tool to action
 const lmstudio = createOpenAICompatible({
     name: 'lmstudio',
     baseURL: process.env.LMSTUDIO_BASE_URL!,
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
         model: lmstudio('gemma-3-12b-it-qat'),
         messages,
         system: "return only the tool invocation response",
-        tools: inMemoryToolStore,
+        tools: getActions(),
         maxSteps: 1,
     });
 

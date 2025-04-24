@@ -41,11 +41,11 @@ export default function Chat() {
                 if (
                     part.type === 'tool-invocation' &&
                     part.toolInvocation.state === 'result' &&
-                    part.toolInvocation.result?.httpModel
+                    part.toolInvocation.result
                 ) {
                     const key = `${message.id}-${i}`;
                     if (!fetchResults[key]) {
-                        executeFetch(part.toolInvocation.result.httpModel, message.id, i);
+                        executeFetch(part.toolInvocation.result, message.id, i);
                     }
                 }
             });

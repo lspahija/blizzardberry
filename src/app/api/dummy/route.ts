@@ -1,10 +1,12 @@
 export async function GET(_: Request) {
     return new Response(JSON.stringify({
-        id: 1,
-        name: "John Doe",
+        account_id: 1,
+        username: "John Doe",
         email: "john@example.com",
-        status: "active",
-        created_at: "2025-04-23T10:00:00Z"
+        previous_plan: "basic",
+        new_plan: "premium",
+        upgrade_status: "success",
+        upgraded_at: "2025-04-23T10:00:00Z"
     }), {
         headers: { 'Content-Type': 'application/json' },
         status: 200
