@@ -11,8 +11,8 @@ export default function Chat() {
         try {
             const response = await fetch(httpModel.url, {
                 method: httpModel.method,
-                headers: httpModel.header,
-                body: httpModel.data,
+                headers: httpModel.headers,
+                body: httpModel.body,
             });
             const result = await response.json();
             setFetchResults((prev) => ({

@@ -1,13 +1,37 @@
+### Create action using curl
 POST http://localhost:3000/api/action
 Content-Type: application/json
 
 {
-  "curlCommand": "curl http://localhost:3000/api/dummy",
+  "type": "curl",
+  "content": "curl http://localhost:3000/api/dummy",
   "actionName": "accountUpgrade",
   "description": "upgrade the account"
 }
 
-###
+### Create action using OpenAPI spec (YAML)
+POST http://localhost:3000/api/action
+Content-Type: application/json
+
+{
+  "type": "openapi",
+  "content": "openapi: 3.0.3\ninfo:\n  title: Sample API\n  version: 1.0.0\npaths:\n  /example:\n    get:\n      summary: Example endpoint\n      responses:\n        '200':\n          description: Success",
+  "actionName": "sampleApiYaml",
+  "description": "Sample OpenAPI specification"
+}
+
+### Create action using OpenAPI spec (JSON)
+POST http://localhost:3000/api/action
+Content-Type: application/json
+
+{
+  "type": "openapi",
+  "content": "{\"openapi\": \"3.0.3\", \"info\": {\"title\": \"Sample API\", \"version\": \"1.0.0\"}, \"paths\": {\"/example\": {\"get\": {\"summary\": \"Example endpoint\", \"responses\": {\"200\": {\"description\": \"Success\"}}}}}}",
+  "actionName": "sampleApiJson",
+  "description": "Sample OpenAPI specification in JSON"
+}
+
+### Get action by name
 GET http://localhost:3000/api/action/accountUpgrade
 Content-Type: application/json
 Accept: application/json
