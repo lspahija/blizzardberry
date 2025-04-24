@@ -1,0 +1,28 @@
+openapi: 3.0.3
+info:
+  title: Dummy API
+  version: 1.0.0
+  description: A simple API for account upgrade operations
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+paths:
+  /api/dummy:
+    get:
+      operationId: accountUpgrade
+      summary: Upgrade the account
+      description: Initiates an account upgrade process
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Account upgraded successfully
