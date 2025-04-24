@@ -14,7 +14,7 @@ POST http://localhost:3000/api/actions/bulk
 Content-Type: application/json
 
 {
-  "type": "openapi",
+  "format": "openapi",
   "content": "openapi: 3.0.3\ninfo:\n  title: Dummy API\n  version: 1.0.0\n  description: A simple API for account upgrade operations\nservers:\n  - url: http://localhost:3000\n    description: Local development server\npaths:\n  /api/dummy:\n    get:\n      operationId: accountUpgrade\n      summary: Upgrade the account\n      description: Initiates an account upgrade process\n      responses:\n        '200':\n          description: Successful response\n          content:\n            application/json:\n              schema:\n                type: object\n                properties:\n                  status:\n                    type: string\n                    example: success\n                  message:\n                    type: string\n                    example: Account upgraded successfully"
 }
 
@@ -23,7 +23,7 @@ POST http://localhost:3000/api/actions/bulk
 Content-Type: application/json
 
 {
-  "type": "openapi",
+  "format": "openapi",
   "content": "{\"openapi\":\"3.0.3\",\"info\":{\"title\":\"Dummy API\",\"version\":\"1.0.0\",\"description\":\"A simple API for account upgrade operations\"},\"servers\":[{\"url\":\"http://localhost:3000\",\"description\":\"Local development server\"}],\"paths\":{\"/api/dummy\":{\"get\":{\"operationId\":\"accountUpgrade\",\"summary\":\"Upgrade the account\",\"description\":\"Initiates an account upgrade process\",\"responses\":{\"200\":{\"description\":\"Successful response\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"status\":{\"type\":\"string\",\"example\":\"success\"},\"message\":{\"type\":\"string\",\"example\":\"Account upgraded successfully\"}}}}}}}}}}}"
 }
 
