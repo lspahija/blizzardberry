@@ -4,12 +4,9 @@ import { useChat } from '@ai-sdk/react';
 import { useState, useEffect } from 'react';
 
 export default function Chat() {
-    const { messages, input, handleInputChange, handleSubmit } = useChat({
-        maxSteps: 5,
-    });
+    const { messages, input, handleInputChange, handleSubmit } = useChat();
     const [fetchResults, setFetchResults] = useState<{ [key: string]: any }>({});
 
-    // Function to execute fetch for a tool invocation
     const executeFetch = async (httpModel: any, messageId: string, partIndex: number) => {
         try {
             const response = await fetch(httpModel.url, {
