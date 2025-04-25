@@ -43,3 +43,23 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 - another llm instance without tools is then called to parse the response and return a user-friendly message
   (vercel's ai sdk supports multiple steps in a single llm invocation, so maybe possible in a single call to the same instance)
+
+## Install Chatbot
+
+Put this code at the bottom of your `<body>` tag in your `html` file:
+
+```html
+<meta httpEquiv="Content-Security-Policy"
+      content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; manifest-src 'self' *;"/>
+<div id="myWidget" />
+<Script id="widget-script" strategy="afterInteractive">
+  {
+    `(function() {
+    var s = document.createElement('script');
+    s.src = 'http://localhost:3000/api/widget-code';
+    s.async = true;
+    document.head.appendChild(s);
+  })();`
+  }
+</Script>
+```
