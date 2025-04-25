@@ -33,9 +33,7 @@ export default function AdminPage() {
                 })
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
+            if (response.status == 201) {
                 setSubmitResult({
                     success: true,
                     message: 'Chatbot created successfully!'
@@ -45,7 +43,7 @@ export default function AdminPage() {
             } else {
                 setSubmitResult({
                     success: false,
-                    message: data.message || 'Failed to create chatbot'
+                    message: 'Failed to create chatbot'
                 });
             }
         } catch (error) {
