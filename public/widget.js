@@ -24,16 +24,16 @@
         const style = document.createElement('style');
         style.textContent = `
         #chatWidget {
-  width: 320px;
-  height: 420px;
+  width: 350px;
+  height: 500px;
   border: none;
   position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 1000;
   background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -41,22 +41,26 @@
 }
 
 #chatWidgetHeader {
-  padding: 10px 16px;
+  padding: 16px;
   background-color: #0055cc;
   color: #ffffff;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 #chatWidgetBody {
   flex: 1;
   overflow-y: auto;
-  padding: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  background-color: #f8f9fa;
+  background-color: #f5f7fa;
+  gap: 16px;
 }
 
 #chatWidgetInput {
@@ -68,10 +72,10 @@
 
 #chatWidgetInputField {
   flex: 1;
-  padding: 8px 12px;
+  padding: 12px;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  margin-right: 8px;
+  border-radius: 20px;
+  margin-right: 10px;
   font-size: 14px;
   outline: none;
 }
@@ -85,103 +89,117 @@
   background-color: #0055cc;
   color: #ffffff;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 8px 16px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+  min-width: 64px;
 }
 
 #chatWidgetSendButton:hover {
   background-color: #003d99;
-}
-
-.message {
-  margin-bottom: 8px;
-  max-width: 80%;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 14px;
-  line-height: 1.3;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  display: inline-block;
-}
-
-.user-message {
-  align-self: flex-end;
-  background-color: #0055cc;
-  color: #ffffff;
-  margin-left: auto;
-  border-bottom-right-radius: 2px;
-}
-
-.assistant-message {
-  align-self: flex-start;
-  background-color: #ffffff;
-  color: #333;
-  margin-right: auto;
-  border-bottom-left-radius: 2px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
 }
 
 .message-container {
-  margin-bottom: 8px;
-}
-
-.tool-invocation {
-  background-color: #f1f3f5;
-  border-radius: 8px;
-  padding: 6px 8px;
-  margin-top: 6px;
-  font-size: 11px;
-  font-family: monospace;
-  white-space: pre-wrap;
-  overflow-x: auto;
-  max-width: 80%;
-}
-
-.tool-result {
-  background-color: #e6f0fa;
-  border-radius: 8px;
-  padding: 6px 8px;
-  margin-top: 4px;
-  font-size: 11px;
-  font-family: monospace;
-  white-space: pre-wrap;
-  overflow-x: auto;
-  max-width: 80%;
+  width: 100%;
+  margin-bottom: 4px;
+  display: flex;
+  flex-direction: column;
 }
 
 .role-label {
   font-weight: 500;
   margin-bottom: 4px;
-  font-size: 11px;
+  font-size: 12px;
   color: #6b7280;
+  padding: 0 4px;
+}
+
+.message {
+  border-radius: 18px;
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 80%;
+  word-wrap: break-word;
+  white-space: normal;
+  box-sizing: border-box;
+}
+
+.user-message {
+  background-color: #0055cc;
+  color: #ffffff;
+  align-self: flex-end;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.assistant-message {
+  background-color: #e6e9ef;
+  color: #333;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.tool-invocation {
+  background-color: #f1f3f5;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 8px;
+  font-size: 12px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tool-result {
+  background-color: #e6f0fa;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 6px;
+  font-size: 12px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Make code blocks with horizontal scrolling instead of text wrapping */
+.tool-invocation pre,
+.tool-result pre {
+  margin: 0;
+  overflow-x: auto;
+  white-space: pre;
 }
 
 #chatWidgetToggle {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
   background-color: #0055cc;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-size: 24px;
   z-index: 1001;
-  transition: transform 0.2s;
+  transition: all 0.3s;
 }
 
 #chatWidgetToggle:hover {
   transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
 .hidden {
