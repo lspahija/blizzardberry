@@ -9,7 +9,7 @@ export async function POST(req: Request) {
 
     handleOpenAPI(content);
 
-    return NextResponse.json({status: 201});
+    return new NextResponse(null, { status: 201 });
 
     // TODO: need to add validation in case actionName or description cannot be derived from spec
     function handleOpenAPI(content: any) {
