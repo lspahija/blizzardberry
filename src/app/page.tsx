@@ -1,13 +1,18 @@
 'use client';
 
-import { useChat } from '@ai-sdk/react';
 import { useState, useEffect, FormEvent } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-export default function Chat(){
-    const { messages, input, handleInputChange, handleSubmit } = useChat();
+export default function Chat() {
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [input, setInput] = useState('');
     const [fetchResults, setFetchResults] = useState<Record<string, FetchResult>>({});
 
-    const executeFetch = async (httpModel: ToolInvocationPart['toolInvocation']['result'], messageId: string, partIndex: number) => {
+    const executeFetch = async (
+        httpModel: { url: string; method: string; headers?: Record<string, string>; body?: string },
+        messageId: string,
+        partIndex: number
+    ) => {
         const key = `${messageId}-${partIndex}`;
         try {
             const response = await fetch(httpModel.url, {
@@ -34,7 +39,11 @@ export default function Chat(){
     useEffect(() => {
         messages.forEach((message) => {
             message.parts.forEach((part: MessagePart, index) => {
-                if (part.type === 'tool-invocation' && part.toolInvocation.state === 'result' && part.toolInvocation.result) {
+                if (
+                    part.type === 'tool-invocation' &&
+                    part.toolInvocation.state === 'result' &&
+                    part.toolInvocation.result
+                ) {
                     const key = `${message.id}-${index}`;
                     if (!fetchResults[key]) {
                         executeFetch(part.toolInvocation.result, message.id, index);
@@ -72,9 +81,70 @@ export default function Chat(){
         }
     };
 
-    const handleFormSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        handleSubmit(e);
+        if (!input.trim()) return;
+
+        // Add user message
+        const userMessage: Message = {
+            id: uuidv4(),
+            role: 'user',
+            parts: [{ type: 'text', text: input }],
+        };
+        setMessages((prev) => [...prev, userMessage]);
+        setInput('');
+
+        // Call backend API
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: [...messages, userMessage] }),
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch AI response');
+
+            const { text, toolCalls, toolResults } = await response.json();
+
+            // Construct AI message parts
+            const parts: MessagePart[] = [];
+
+            // Add text part if present
+            if (text) {
+                parts.push({ type: 'text', text });
+            }
+
+            // Add tool invocation parts
+            toolCalls.forEach((toolCall: any, index: number) => {
+                const toolResult = toolResults.find((tr: any) => tr.toolCallId === toolCall.toolCallId);
+                parts.push({
+                    type: 'tool-invocation',
+                    toolInvocation: {
+                        toolCallId: toolCall.toolCallId,
+                        toolName: toolCall.toolName,
+                        args: toolCall.args,
+                        state: toolResult ? 'result' : 'partial',
+                        result: toolResult ? toolResult.result : undefined,
+                    },
+                });
+            });
+
+            // Add AI message
+            const aiMessage: Message = {
+                id: uuidv4(),
+                role: 'assistant',
+                parts,
+            };
+            setMessages((prev) => [...prev, aiMessage]);
+        } catch (error) {
+            console.error('Error fetching AI response:', error);
+            const errorMessage: Message = {
+                id: uuidv4(),
+                role: 'assistant',
+                parts: [{ type: 'text', text: 'Error: Failed to get AI response' }],
+            };
+            setMessages((prev) => [...prev, errorMessage]);
+        }
     };
 
     return (
@@ -85,17 +155,17 @@ export default function Chat(){
                     {message.parts.map((part: MessagePart, index) => renderPart(part, message.id, index))}
                 </div>
             ))}
-            <form onSubmit={handleFormSubmit} className="fixed bottom-0 w-full max-w-md p-2 mb-8">
+            <form onSubmit={handleSubmit} className="fixed bottom-0 w-full max-w-md p-2 mb-8">
                 <input
                     className="w-full p-2 border border-zinc-300 dark:border-zinc-800 rounded shadow-xl dark:bg-zinc-900"
                     value={input}
                     placeholder="Say something..."
-                    onChange={handleInputChange}
+                    onChange={(e) => setInput(e.target.value)}
                 />
             </form>
         </div>
     );
-};
+}
 
 interface FetchResult {
     status?: number;
@@ -107,10 +177,13 @@ interface FetchResult {
 interface ToolInvocationPart {
     type: 'tool-invocation';
     toolInvocation: {
-        state: string;
+        toolCallId: string;
+        toolName: string;
+        args: any;
+        state: 'partial' | 'result';
         result?: {
-            url: string;
-            method: string;
+            url?: string;
+            method?: string;
             headers?: Record<string, string>;
             body?: string;
         };
@@ -123,3 +196,9 @@ interface TextPart {
 }
 
 type MessagePart = TextPart | ToolInvocationPart;
+
+interface Message {
+    id: string;
+    role: 'user' | 'assistant';
+    parts: MessagePart[];
+}

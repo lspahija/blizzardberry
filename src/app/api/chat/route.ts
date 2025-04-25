@@ -1,8 +1,7 @@
-import {createOpenAICompatible} from '@ai-sdk/openai-compatible';
-import {streamText} from 'ai';
-import {getActions} from "@/app/api/lib/ActionStore";
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
+import { streamText } from 'ai';
+import { getActions } from "@/app/api/lib/ActionStore";
 
-// TODO: write ai sdk middleware to map any mention of tool to action
 const lmstudio = createOpenAICompatible({
     name: 'lmstudio',
     baseURL: process.env.LMSTUDIO_BASE_URL!,
@@ -11,7 +10,6 @@ const lmstudio = createOpenAICompatible({
 export async function POST(req: Request) {
     const { messages } = await req.json();
 
-    // TODO: optimize using info from these docs: https://sdk.vercel.ai/docs/ai-sdk-core/tools-and-tool-calling
     const result = streamText({
         model: lmstudio('gemma-3-12b-it-qat'),
         messages,
@@ -20,5 +18,36 @@ export async function POST(req: Request) {
         maxSteps: 1,
     });
 
-    return result.toDataStreamResponse();
+    let text = '';
+    const toolCalls = [];
+    const toolResults = [];
+
+    for await (const part of result.fullStream) {
+        switch (part.type) {
+            case 'text-delta':
+                text += part.textDelta;
+                break;
+            case 'tool-call':
+                toolCalls.push({
+                    toolCallId: part.toolCallId,
+                    toolName: part.toolName,
+                    args: part.args,
+                });
+                break;
+            case 'tool-result':
+                toolResults.push({
+                    toolCallId: part.toolCallId,
+                    toolName: part.toolName,
+                    args: part.args,
+                    result: part.result,
+                });
+                break;
+        }
+    }
+
+    return Response.json({
+        text,
+        toolCalls,
+        toolResults,
+    });
 }
