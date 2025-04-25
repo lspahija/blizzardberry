@@ -56,7 +56,7 @@ Put this code at the bottom of your `<body>` tag in your `html` file:
   {
     `(function() {
     var s = document.createElement('script');
-    s.src = 'http://localhost:3000/api/widget-code';
+    s.src = 'http://localhost:3000/widget.js';
     s.async = true;
     document.head.appendChild(s);
   })();`
