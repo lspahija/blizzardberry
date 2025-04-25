@@ -63,3 +63,7 @@ Put this code at the bottom of your `<body>` tag in your `html` file:
   }
 </Script>
 ```
+
+## Example
+
+See an example SaaS app with integrated chatbot at [https://github.com/lucidity-labs/some-example-saas](https://github.com/lucidity-labs/some-example-saas)
