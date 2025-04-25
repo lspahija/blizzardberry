@@ -3,10 +3,10 @@
  * A vanilla JavaScript implementation of a chatbot widget that can be injected into any website
  */
 
-(function() {
+(function () {
     // Create unique IDs similar to UUID v4
     function generateId() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             const r = Math.random() * 16 | 0;
             const v = c === 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
@@ -23,140 +23,170 @@
     function injectStyles() {
         const style = document.createElement('style');
         style.textContent = `
-      #chatWidget {
-        width: 300px;
-        height: 400px;
-        border: 1px solid #ccc;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      }
-      
-      #chatWidgetHeader {
-        padding: 12px;
-        background-color: #0077FF;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-        user-select: none;
-      }
-      
-      #chatWidgetBody {
-        flex: 1;
-        overflow-y: auto;
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-      }
-      
-      #chatWidgetInput {
-        padding: 12px;
-        border-top: 1px solid #eee;
-        display: flex;
-      }
-      
-      #chatWidgetInputField {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        margin-right: 8px;
-      }
-      
-      #chatWidgetSendButton {
-        background-color: #0077FF;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 8px 12px;
-        cursor: pointer;
-      }
-      
-      .message {
-        margin-bottom: 10px;
-        max-width: 80%;
-        padding: 8px 12px;
-        border-radius: 12px;
-        word-wrap: break-word;
-        white-space: pre-wrap;
-      }
-      
-      .user-message {
-        align-self: flex-end;
-        background-color: #0077FF;
-        color: white;
-        margin-left: auto;
-      }
-      
-      .assistant-message {
-        align-self: flex-start;
-        background-color: #f0f0f0;
-        color: #333;
-        margin-right: auto;
-      }
-      
-      .message-container {
-        margin-bottom: 16px;
-      }
-      
-      .tool-invocation {
-        background-color: #f5f5f5;
-        border-radius: 4px;
-        padding: 8px;
-        margin-top: 8px;
-        font-size: 12px;
-        font-family: monospace;
-        white-space: pre-wrap;
-        overflow-x: auto;
-      }
-      
-      .tool-result {
-        background-color: #e9f7fe;
-        border-radius: 4px;
-        padding: 8px;
-        margin-top: 4px;
-        font-size: 12px;
-        font-family: monospace;
-        white-space: pre-wrap;
-        overflow-x: auto;
-      }
-      
-      .role-label {
-        font-weight: bold;
-        margin-bottom: 4px;
-        font-size: 12px;
-        color: #666;
-      }
-      
-      #chatWidgetToggle {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 60px;
-        height: 60px;
-        border-radius: 30px;
-        background-color: #0077FF;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        font-size: 24px;
-        z-index: 1001;
-      }
-      
-      .hidden {
-        display: none !important;
-      }
+        #chatWidget {
+  width: 320px;
+  height: 420px;
+  border: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+#chatWidgetHeader {
+  padding: 10px 16px;
+  background-color: #0055cc;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+
+#chatWidgetBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+}
+
+#chatWidgetInput {
+  padding: 12px 16px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  background-color: #ffffff;
+}
+
+#chatWidgetInputField {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-right: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+#chatWidgetInputField:focus {
+  border-color: #0055cc;
+  box-shadow: 0 0 0 2px rgba(0, 85, 204, 0.1);
+}
+
+#chatWidgetSendButton {
+  background-color: #0055cc;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+#chatWidgetSendButton:hover {
+  background-color: #003d99;
+}
+
+.message {
+  margin-bottom: 8px;
+  max-width: 80%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.3;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  display: inline-block;
+}
+
+.user-message {
+  align-self: flex-end;
+  background-color: #0055cc;
+  color: #ffffff;
+  margin-left: auto;
+  border-bottom-right-radius: 2px;
+}
+
+.assistant-message {
+  align-self: flex-start;
+  background-color: #ffffff;
+  color: #333;
+  margin-right: auto;
+  border-bottom-left-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.message-container {
+  margin-bottom: 8px;
+}
+
+.tool-invocation {
+  background-color: #f1f3f5;
+  border-radius: 8px;
+  padding: 6px 8px;
+  margin-top: 6px;
+  font-size: 11px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  max-width: 80%;
+}
+
+.tool-result {
+  background-color: #e6f0fa;
+  border-radius: 8px;
+  padding: 6px 8px;
+  margin-top: 4px;
+  font-size: 11px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  max-width: 80%;
+}
+
+.role-label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+#chatWidgetToggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #0055cc;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-size: 20px;
+  z-index: 1001;
+  transition: transform 0.2s;
+}
+
+#chatWidgetToggle:hover {
+  transform: scale(1.05);
+}
+
+.hidden {
+  display: none !important;
+}
     `;
         document.head.appendChild(style);
     }
@@ -206,7 +236,7 @@
         document.body.appendChild(widget);
 
         // Add event listener for Enter key
-        inputField.addEventListener('keypress', function(e) {
+        inputField.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 handleSubmit();
             }
@@ -267,7 +297,7 @@
         const userMessage = {
             id: generateId(),
             role: 'user',
-            parts: [{ type: 'text', text: userInput }],
+            parts: [{type: 'text', text: userInput}],
         };
 
         state.messages.push(userMessage);
@@ -280,20 +310,20 @@
         try {
             const response = await fetch('http://localhost:3000/api/chat', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: state.messages }),
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({messages: state.messages}),
             });
 
             if (!response.ok) throw new Error('Failed to fetch AI response');
 
-            const { text, toolCalls, toolResults } = await response.json();
+            const {text, toolCalls, toolResults} = await response.json();
 
             // Construct AI message parts
             const parts = [];
 
             // Add text part if present
             if (text) {
-                parts.push({ type: 'text', text });
+                parts.push({type: 'text', text});
             }
 
             // Add tool invocation parts
@@ -342,7 +372,7 @@
             const errorMessage = {
                 id: generateId(),
                 role: 'assistant',
-                parts: [{ type: 'text', text: 'Error: Failed to get AI response' }],
+                parts: [{type: 'text', text: 'Error: Failed to get AI response'}],
             };
 
             state.messages.push(errorMessage);
@@ -362,7 +392,7 @@
         } else if (part.type === 'tool-invocation') {
             let html = `
         <div class="tool-invocation">
-          <div style="font-weight: bold;">Tool Invocation:</div>
+          <div style="font-weight: bold;">Action to perform:</div>
           <pre>${JSON.stringify(part.toolInvocation, null, 2)}</pre>
         </div>
       `;
@@ -370,7 +400,7 @@
             if (fetchResult) {
                 html += `
           <div class="tool-result">
-            <div style="font-weight: bold;">Fetch Result:</div>
+            <div style="font-weight: bold;">Action result:</div>
             <pre>${JSON.stringify(fetchResult, null, 2)}</pre>
           </div>
         `;
