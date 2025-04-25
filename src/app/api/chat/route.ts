@@ -11,7 +11,7 @@ const lmstudio = createOpenAICompatible({
 export async function POST(req: Request) {
     const { messages } = await req.json();
 
-    // https://sdk.vercel.ai/docs/ai-sdk-core/tools-and-tool-calling
+    // TODO: optimize using info from these docs: https://sdk.vercel.ai/docs/ai-sdk-core/tools-and-tool-calling
     const result = streamText({
         model: lmstudio('gemma-3-12b-it-qat'),
         messages,
