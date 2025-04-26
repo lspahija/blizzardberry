@@ -2,18 +2,40 @@ import {HttpModel} from "@/app/api/lib/dataModel";
 import {Tool, tool} from "ai";
 import {z} from "zod";
 
-export const inMemoryActionStore: Record<string, Tool> = {};
-
-export const getActions = () => inMemoryActionStore
-
-export const getAction = (actionName: string): Tool => inMemoryActionStore[actionName];
-
-export function createAction(actionName: string, httpModel: HttpModel, description: string) {
-    inMemoryActionStore[actionName] = tool({
-        description,
-        parameters: z.object({
-            data: z.any().optional().describe('Optional data for the request body'),
-        }),
-        execute: async ({data} = {}) => ({...httpModel}),
-    });
+interface Action {
+    name: string;
+    description: string;
+    httpModel: HttpModel;
 }
+
+const inMemoryActionStore: Record<string, Action> = {};
+
+const createTool = (action: Action): Tool => tool({
+    description: action.description,
+    parameters: z.object({}),
+    execute: async () => action.httpModel,
+});
+
+export const getActions = (): Record<string, Tool> => {
+    const actions: Record<string, Tool> = {};
+    for (const [key, action] of Object.entries(inMemoryActionStore)) {
+        actions[key] = createTool(action);
+    }
+    return actions;
+};
+
+export const getAction = (actionName: string): Tool => {
+    const action = inMemoryActionStore[actionName];
+    if (!action) {
+        throw new Error(`Action ${actionName} not found`);
+    }
+    return createTool(action);
+};
+
+export const createAction = (actionName: string, httpModel: HttpModel, description: string) => {
+    inMemoryActionStore[actionName] = {
+        name: actionName,
+        description,
+        httpModel,
+    };
+};
