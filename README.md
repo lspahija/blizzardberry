@@ -34,8 +34,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Architecture and notes
 
-- admin portal where app/website owner enters an action curl and the curl is parsed into json and the json is saved as a tool
-(this should also support dropping in an openapi spec and automatically generating all the tools from that)
+- admin portal where app/website owner pastes in their OpenAPI spec, the spec is parsed into json and the json is saved as tools
+(also support dropping in curl commands)
 
 - when an end-user uses the app's chatbot, and wants to perform an action, the LLM retrieves the tool corresponding to that action
 
@@ -44,26 +44,12 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - another llm instance without tools is then called to parse the response and return a user-friendly message
   (vercel's ai sdk supports multiple steps in a single llm invocation, so maybe possible in a single call to the same instance)
 
-## Install Chatbot
-
-Put this code at the bottom of your `<body>` tag in your `html` file:
-
-```html
-<meta httpEquiv="Content-Security-Policy"
-      content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; manifest-src 'self' *;"/>
-<div id="myWidget" />
-<Script id="widget-script" strategy="afterInteractive">
-  {
-    `(function() {
-    var s = document.createElement('script');
-    s.src = 'http://localhost:3000/widget.js';
-    s.async = true;
-    document.head.appendChild(s);
-  })();`
-  }
-</Script>
-```
-
 ## Example
 
 See an example SaaS app with integrated chatbot at [https://github.com/lucidity-labs/some-example-saas](https://github.com/lucidity-labs/some-example-saas)
+
+## Next steps
+- landing page
+- RAG
+- multi-tenancy
+- Stripe
