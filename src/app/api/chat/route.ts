@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         model,
         messages,
         system: 'return only the tool invocation response',
-        tools: getActions(),
+        tools: await getActions(),
         maxSteps: 1,
     });
 

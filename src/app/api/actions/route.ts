@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
 export async function GET(_: Request) {
     const actions = await Promise.all(
-        Object.entries(getActions()).map(async ([key, action]) => ({
+        Object.entries(await getActions()).map(async ([key, action]) => ({
             key,
             result: await action.execute()
         }))

@@ -4,7 +4,7 @@ import {getAction} from "@/app/api/lib/ActionStore";
 export async function GET(_: Request, { params }: { params: Promise<{ actionName: string }> }) {
     const { actionName } = await params;
 
-    const action = getAction(actionName);
+    const action = await getAction(actionName);
 
     if (!action) {
         return NextResponse.json(
