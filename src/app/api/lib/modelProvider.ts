@@ -1,21 +1,31 @@
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 
-export function getModelProvider() {
-    const modelProvider = process.env.MODEL_PROVIDER || 'openrouter'; // Default to openrouter
+enum ModelProvider {
+    OpenRouter = 'openrouter',
+    LMStudio = 'lmstudio',
+}
 
-    if (modelProvider === 'openrouter') {
-        const openrouter = createOpenRouter({
-            apiKey: process.env.OPENROUTER_API_KEY!,
-        });
-        return openrouter.chat('google/gemini-2.0-flash-exp:free');
-    } else if (modelProvider === 'lmstudio') {
-        const lmstudio = createOpenAICompatible({
-            name: 'lmstudio',
-            baseURL: process.env.LMSTUDIO_BASE_URL!,
-        });
-        return lmstudio('gemma-3-12b-it-qat');
-    } else {
-        throw new Error(`Unsupported model provider: ${modelProvider}. Supported providers: openrouter, lmstudio`);
+export function getModelProvider() {
+    const modelProvider = (process.env.MODEL_PROVIDER as ModelProvider) || ModelProvider.OpenRouter;
+
+    switch (modelProvider) {
+        case ModelProvider.OpenRouter:
+            const openrouter = createOpenRouter({
+                apiKey: process.env.OPENROUTER_API_KEY!,
+            });
+            return openrouter.chat('google/gemini-2.0-flash-exp:free');
+
+        case ModelProvider.LMStudio:
+            const lmstudio = createOpenAICompatible({
+                name: 'lmstudio',
+                baseURL: process.env.LMSTUDIO_BASE_URL!,
+            });
+            return lmstudio('gemma-3-12b-it-qat');
+
+        default:
+            throw new Error(
+                `Unsupported model provider: ${modelProvider}. Supported providers: ${Object.values(ModelProvider).join(', ')}`
+            );
     }
 }
