@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -13,6 +13,7 @@
     "@ai-sdk/openai-compatible": "^0.2.11",
     "@ai-sdk/react": "^1.2.9",
     "@bany/curl-to-json": "^1.2.8",
+    "@openrouter/ai-sdk-provider": "^0.4.5",
     "ai": "^4.3.9",
     "js-yaml": "^4.1.0",
     "next": "15.3.1",

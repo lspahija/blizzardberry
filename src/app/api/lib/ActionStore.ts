@@ -1,4 +1,4 @@
-import {HttpModel} from "@/app/api/lib/model";
+import {HttpModel} from "@/app/api/lib/dataModel";
 import {Tool, tool} from "ai";
 import {z} from "zod";
 

@@ -1,19 +1,20 @@
-import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { streamText } from 'ai';
-import { getActions } from "@/app/api/lib/ActionStore";
+import { getActions } from '@/app/api/lib/ActionStore';
+import {getModelProvider} from "@/app/api/lib/modelProvider";
 
-const lmstudio = createOpenAICompatible({
-    name: 'lmstudio',
-    baseURL: process.env.LMSTUDIO_BASE_URL!,
-});
+// TODO: write ai sdk middleware to map any mention of tool to action
 
 export async function POST(req: Request) {
     const { messages } = await req.json();
 
+    // Get the model from the provider
+    const model = getModelProvider();
+
+    // https://sdk.vercel.ai/docs/ai-sdk-core/tools-and-tool-calling
     const result = streamText({
-        model: lmstudio('gemma-3-12b-it-qat'),
+        model,
         messages,
-        system: "return only the tool invocation response",
+        system: 'return only the tool invocation response',
         tools: getActions(),
         maxSteps: 1,
     });

@@ -1,17 +1,17 @@
-import {NextResponse} from 'next/server';
 import {createAction} from "@/app/api/lib/ActionStore";
 import yaml from 'js-yaml';
 import {OpenAPIObject, OperationObject} from "openapi3-ts/oas30";
-import {HttpModel, Method} from "@/app/api/lib/model";
+import {HttpModel, Method} from "@/app/api/lib/dataModel";
+import {NextResponse} from "next/server";
 
 export async function POST(req: Request) {
     const {content} = await req.json();
 
     handleOpenAPI(content);
 
-    return new NextResponse(null, { status: 201 });
+    return new NextResponse(null, {status: 201});
 
-    // TODO: need to add validation in case actionName or description cannot be derived from spec
+// TODO: need to add validation in case actionName or description cannot be derived from spec
     function handleOpenAPI(content: any) {
         const openAPIObject = yaml.load(content) as OpenAPIObject;
 
