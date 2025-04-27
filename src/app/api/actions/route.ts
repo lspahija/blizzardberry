@@ -16,7 +16,7 @@ export async function POST(req: Request) {
         body: resultJSON.data || undefined,
     };
 
-    createAction(actionName, httpModel, description);
+    await createAction(actionName, httpModel, description);
 
     return NextResponse.json(
         {actionName},
@@ -25,12 +25,5 @@ export async function POST(req: Request) {
 }
 
 export async function GET(_: Request) {
-    const actions = await Promise.all(
-        Object.entries(await getActions()).map(async ([key, action]) => ({
-            key,
-            result: await action.execute()
-        }))
-    );
-
-    return NextResponse.json({actions});
+    return NextResponse.json(await getActions());
 }

@@ -13,8 +13,5 @@ export async function GET(_: Request, { params }: { params: Promise<{ actionName
         );
     }
 
-    return NextResponse.json({
-        actionName,
-        result: await action.execute(),
-    });
+    return NextResponse.json(action);
 }

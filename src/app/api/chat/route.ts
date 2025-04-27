@@ -1,11 +1,13 @@
-import { streamText } from 'ai';
-import { getActions } from '@/app/api/lib/ActionStore';
+import {streamText, tool, Tool} from 'ai';
+import {getActions} from '@/app/api/lib/ActionStore';
 import {getModelProvider} from "@/app/api/lib/modelProvider";
+import {z} from "zod";
+import {CHATBOT_SYSTEM_MESSAGE} from "@/app/api/lib/constants";
 
 // TODO: write ai sdk middleware to map any mention of tool to action
 
 export async function POST(req: Request) {
-    const { messages } = await req.json();
+    const {messages} = await req.json();
 
     // Get the model from the provider
     const model = getModelProvider();
@@ -14,8 +16,8 @@ export async function POST(req: Request) {
     const result = streamText({
         model,
         messages,
-        system: 'return only the tool invocation response',
-        tools: await getActions(),
+        system: CHATBOT_SYSTEM_MESSAGE,
+        tools: await getToolsFromActions(),
         maxSteps: 1,
     });
 
@@ -51,4 +53,18 @@ export async function POST(req: Request) {
         toolCalls,
         toolResults,
     });
+}
+
+async function getToolsFromActions() {
+    const actions = await getActions()
+
+    const tools: Record<string, Tool> = {};
+    for (const action of actions) {
+        tools[action.name] = tool({
+            description: action.description,
+            parameters: z.object({}),
+            execute: async () => action.httpModel,
+        });
+    }
+    return tools;
 }

@@ -49,7 +49,6 @@ export async function POST(req: Request) {
                     ? operation.operationId
                     : `${method}_${path.replace(/[\W_]+/g, '_')}`;
 
-                // Create the tool
                 createAction(operationActionName, httpModel, operation.description!);
             });
         });
