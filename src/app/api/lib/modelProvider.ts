@@ -6,7 +6,7 @@ enum ModelProvider {
     LMStudio = 'lmstudio',
 }
 
-export function getModelProvider() {
+export function getLanguageModel() {
     const modelProvider = (process.env.MODEL_PROVIDER as ModelProvider) || ModelProvider.OpenRouter;
 
     switch (modelProvider) {

@@ -1,26 +1,25 @@
 import {streamText, tool, Tool} from 'ai';
 import {getActions} from '@/app/api/lib/ActionStore';
-import {getModelProvider} from "@/app/api/lib/modelProvider";
+import {getLanguageModel} from "@/app/api/lib/modelProvider";
 import {z} from "zod";
 import {CHATBOT_SYSTEM_MESSAGE} from "@/app/api/lib/constants";
 
 // TODO: write ai sdk middleware to map any mention of tool to action
 
 export async function POST(req: Request) {
-    const {messages} = await req.json();
-
-    // Get the model from the provider
-    const model = getModelProvider();
-
     // https://sdk.vercel.ai/docs/ai-sdk-core/tools-and-tool-calling
     const result = streamText({
-        model,
-        messages,
+        model: getLanguageModel(),
+        messages: (await req.json()).messages,
         system: CHATBOT_SYSTEM_MESSAGE,
         tools: await getToolsFromActions(),
         maxSteps: 1,
     });
 
+    return Response.json(await processStream(result));
+}
+
+async function processStream(result) {
     let text = '';
     const toolCalls = [];
     const toolResults = [];
@@ -48,11 +47,11 @@ export async function POST(req: Request) {
         }
     }
 
-    return Response.json({
+    return {
         text,
         toolCalls,
         toolResults,
-    });
+    };
 }
 
 async function getToolsFromActions() {
