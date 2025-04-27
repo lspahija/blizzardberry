@@ -2,7 +2,7 @@
  * ChatBot Widget
  * A vanilla JavaScript implementation of a chatbot widget that can be injected into any website
  */
-
+// TODO: this should probably be minified and obfuscated at build time
 (function () {
     // Create unique IDs similar to UUID v4
     function generateId() {
@@ -16,11 +16,11 @@
     // State management
     const state = {
         messages: [],
-        fetchResults: {}
+        fetchResults: {},
+        isProcessing: false
     };
 
     function injectStyles() {
-        // figure out the path to this script, swap .js → .css
         const script = document.currentScript;
         const cssHref = script.src.replace(/\.js$/, '.css');
 
@@ -47,7 +47,19 @@
         // Create header
         const header = document.createElement('div');
         header.id = 'chatWidgetHeader';
-        header.textContent = 'Chat';
+
+        // Create title element
+        const title = document.createElement('div');
+        title.textContent = 'Chat';
+        header.appendChild(title);
+
+        // Create close button
+        const closeButton = document.createElement('button');
+        closeButton.id = 'chatWidgetCloseButton';
+        closeButton.innerHTML = '×';
+        closeButton.addEventListener('click', toggleChatWidget);
+        header.appendChild(closeButton);
+
         widget.appendChild(header);
 
         // Create body for messages
@@ -62,7 +74,7 @@
         const inputField = document.createElement('input');
         inputField.id = 'chatWidgetInputField';
         inputField.type = 'text';
-        inputField.placeholder = 'Say something...';
+        inputField.placeholder = 'Type a message...';
         inputArea.appendChild(inputField);
 
         const sendButton = document.createElement('button');
@@ -90,6 +102,10 @@
         if (widget.classList.contains('hidden')) {
             widget.classList.remove('hidden');
             toggle.classList.add('hidden');
+            // Focus input field when opening
+            setTimeout(() => {
+                document.getElementById('chatWidgetInputField').focus();
+            }, 100);
         } else {
             widget.classList.add('hidden');
             toggle.classList.remove('hidden');
@@ -130,7 +146,7 @@
         const inputField = document.getElementById('chatWidgetInputField');
         const userInput = inputField.value.trim();
 
-        if (!userInput) return;
+        if (!userInput || state.isProcessing) return;
 
         // Add user message
         const userMessage = {
@@ -145,6 +161,9 @@
         // Update UI
         updateChatUI();
 
+        // Set processing state
+        state.isProcessing = true;
+
         // Call backend API
         try {
             const response = await fetch('http://localhost:3000/api/chat', {
@@ -156,6 +175,9 @@
             if (!response.ok) throw new Error('Failed to fetch AI response');
 
             const {text, toolCalls, toolResults} = await response.json();
+
+            // Reset processing state
+            state.isProcessing = false;
 
             // Construct AI message parts
             const parts = [];
@@ -208,10 +230,13 @@
         } catch (error) {
             console.error('Error fetching AI response:', error);
 
+            // Reset processing state
+            state.isProcessing = false;
+
             const errorMessage = {
                 id: generateId(),
                 role: 'assistant',
-                parts: [{type: 'text', text: 'Error: Failed to get AI response'}],
+                parts: [{type: 'text', text: 'Error: Failed to get response'}],
             };
 
             state.messages.push(errorMessage);
@@ -231,7 +256,7 @@
         } else if (part.type === 'tool-invocation') {
             let html = `
         <div class="tool-invocation">
-          <div style="font-weight: bold;">Action to perform:</div>
+          <div class="tool-header">${part.toolInvocation.toolName || 'Tool Action'}</div>
           <pre>${JSON.stringify(part.toolInvocation, null, 2)}</pre>
         </div>
       `;
@@ -239,12 +264,12 @@
             if (fetchResult) {
                 html += `
           <div class="tool-result">
-            <div style="font-weight: bold;">Action result:</div>
-            <pre>${JSON.stringify(fetchResult, null, 2)}</pre>
+            <div class="tool-result-header">Response (${fetchResult.status})</div>
+            <pre>${JSON.stringify(fetchResult.data || fetchResult.error, null, 2)}</pre>
           </div>
         `;
             } else {
-                html += `<div style="color: gray; margin-top: 4px;">Executing request...</div>`;
+                html += `<div class="tool-pending">Processing request...</div>`;
             }
 
             return html;
@@ -261,8 +286,7 @@
         state.messages.forEach(message => {
             const isUser = message.role === 'user';
             html += `
-        <div class="message-container">
-          <div class="role-label">${isUser ? 'User' : 'Assistant'}</div>
+        <div class="message-container ${isUser ? 'user-container' : 'assistant-container'}">
           <div class="message ${isUser ? 'user-message' : 'assistant-message'}">
       `;
 
@@ -275,6 +299,17 @@
         </div>
       `;
         });
+
+        // Add typing indicator if processing
+        if (state.isProcessing) {
+            html += `
+        <div class="message-container assistant-container">
+          <div class="message assistant-message typing-indicator">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      `;
+        }
 
         chatBody.innerHTML = html;
         chatBody.scrollTop = chatBody.scrollHeight;
