@@ -51,5 +51,8 @@ See an example SaaS app with integrated chatbot at [https://github.com/lucidity-
 ## Next steps
 - landing page
 - RAG
-- multi-tenancy
+- multi-tenancy (easiest way to handle auth?)
 - Stripe
+- add google analytics
+- how to allow purely frontend actions? Window-Level API Object (not quite global scope but close)
+- maybe use some software or lib to autodiscover website endpoints/capabilities to make onboarding super simple
