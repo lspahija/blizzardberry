@@ -56,7 +56,7 @@
         // Create close button
         const closeButton = document.createElement('button');
         closeButton.id = 'chatWidgetCloseButton';
-        closeButton.innerHTML = '×';
+        closeButton.innerHTML = '⌄';
         closeButton.addEventListener('click', toggleChatWidget);
         header.appendChild(closeButton);
 
