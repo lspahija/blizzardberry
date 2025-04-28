@@ -1,8 +1,8 @@
 import {streamText, tool, Tool} from 'ai';
-import {getActions} from '@/app/api/lib/ActionStore';
-import {getLanguageModel} from "@/app/api/lib/modelProvider";
 import {z} from "zod";
-import {CHATBOT_SYSTEM_MESSAGE} from "@/app/api/lib/constants";
+import { CHATBOT_SYSTEM_MESSAGE } from '../lib/constants';
+import { getLanguageModel } from '../lib/modelProvider';
+import {getActions} from "@/app/api/(main)/lib/ActionStore";
 
 // TODO: write ai sdk middleware to map any mention of tool to action
 

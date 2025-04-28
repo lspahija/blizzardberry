@@ -1,5 +1,5 @@
 import {NextResponse} from "next/server";
-import {getAction} from "@/app/api/lib/ActionStore";
+import {getAction} from "@/app/api/(main)/lib/ActionStore";
 
 export async function GET(_: Request, { params }: { params: Promise<{ actionName: string }> }) {
     const { actionName } = await params;
