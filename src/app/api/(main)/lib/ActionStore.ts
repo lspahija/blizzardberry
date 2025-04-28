@@ -24,25 +24,28 @@ export const getActions = async (): Promise<Action[]> => {
         name: d.name,
         description: d.description,
         httpModel: d.http_model as HttpModel,
-    }))
+    }));
 };
 
-export const getAction = async (actionName: string): Promise<Action> => {
+export const getAction = async (actionName: string): Promise<Action | null> => {
     const {data, error} = await supabase
         .from('actions')
         .select('name, description, http_model')
         .eq('name', actionName)
         .single();
 
-    if (error || !data) {
-        throw new Error(`Action ${actionName} not found`);
+    if (error && error.code !== 'PGRST116') {
+        // Throw for errors other than "no rows returned" (PGRST116 is Supabase's code for no results)
+        throw new Error(`Failed to fetch action: ${error.message}`);
     }
+
+    if (!data) return null;
 
     return {
         name: data.name,
         description: data.description,
         httpModel: data.http_model as HttpModel,
-    }
+    };
 };
 
 export const createAction = async (actionName: string, httpModel: HttpModel, description: string): Promise<void> => {
