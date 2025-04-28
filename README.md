@@ -29,15 +29,14 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Deploy
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## Architecture and notes
+## Architecture
 
-- admin portal where app/website owner pastes in their OpenAPI spec, the spec is parsed into json and the json is saved as tools
+- admin portal where app/website owner pastes in their OpenAPI spec. the spec is parsed with each endpoint becoming an action. 
 (also support dropping in curl commands)
 
-- when an end-user uses the app's chatbot, and wants to perform an action, the LLM retrieves the tool corresponding to that action
+- when an end-user uses the app's chatbot and wants to perform an action, the LLM retrieves the tool corresponding to that action
 
 - the chatbot frontend widget populates a fetch request with the tool's url, http method, headers, and body and executes the request
 
@@ -46,13 +45,23 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Example
 
-See an example SaaS app with integrated chatbot at [http://localhost:3000/example-saas](http://localhost:3000/example-saas)
+See an example SaaS app with integrated chatbot at http://localhost:3000/example-saas
 
 ## Next steps
-- landing page
-- RAG
-- multi-tenancy (easiest way to handle auth?)
-- Stripe
+- Clean up chatbot experience. It needs to communicate that the action was successfully done. Allow debug mode where it also prints (or just console.logs) the response from the action endpoint
+- landing page needs to sell the product
+- implement RAG
+- multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
+- Stripe to sell the product $$
 - add google analytics
+- deploy to vercel
+- rename and get domain!
+
+## Down the road
 - how to allow purely frontend actions? Window-Level API Object (not quite global scope but close)
 - maybe use some software or lib to autodiscover website endpoints/capabilities to make onboarding super simple
+- Create admin UI form allowing user to manually create actions like chatbase allows
+
+## Competition
+- https://www.chatbase.co/
+  - [custom actions](https://www.chatbase.co/docs/user-guides/chatbot/actions/custom-action)
