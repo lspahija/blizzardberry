@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { MessageCircle, Users, BarChart, Settings } from "lucide-react";
+import { Briefcase, Users, BarChart, Clock } from "lucide-react";
 import { notFound } from "next/navigation";
 
 export default function ExampleSaaSLandingPage() {
@@ -37,8 +37,8 @@ export default function ExampleSaaSLandingPage() {
             {/* Navbar */}
             <nav className="flex justify-between items-center p-6 max-w-6xl mx-auto">
                 <div className="flex items-center space-x-2">
-                    <MessageCircle className="w-6 h-6 text-primary" />
-                    <span className="text-xl font-bold text-foreground">Example SaaS</span>
+                    <Briefcase className="w-6 h-6 text-primary" />
+                    <span className="text-xl font-bold text-foreground">TaskFlow</span>
                 </div>
                 <div className="flex space-x-3">
                     <Button variant="outline" asChild>
@@ -61,17 +61,17 @@ export default function ExampleSaaSLandingPage() {
                     className="text-4xl md:text-6xl font-extrabold text-foreground leading-tight mb-6"
                     variants={itemVariants}
                 >
-                    Discover Our <span className="text-primary">Chatbot-Powered</span> SaaS
+                    Streamline Your <span className="text-primary">Projects</span> with TaskFlow
                 </motion.h1>
                 <motion.p
                     className="text-lg text-muted-foreground mb-8 max-w-2xl"
                     variants={itemVariants}
                 >
-                    This is an example SaaS app showcasing our powerful chatbot widget. Try it out to see how it enhances user interaction!
+                    TaskFlow is an all-in-one project management platform designed to help teams collaborate, track progress, and deliver results efficiently.
                 </motion.p>
                 <motion.div className="flex space-x-4" variants={itemVariants}>
-                    <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
-                        <Link href="/example/get-started">Try the Chatbot</Link>
+                    <Button size="lg" className="bg-primary hover成立了:bg-primary/90 text-primary-foreground" asChild>
+                        <Link href="/example/get-started">Try TaskFlow</Link>
                     </Button>
                     <Button size="lg" variant="outline" asChild>
                         <Link href="/example/docs">View Docs</Link>
@@ -79,45 +79,22 @@ export default function ExampleSaaSLandingPage() {
                 </motion.div>
             </motion.div>
 
-            {/* Chatbot Widget Placeholder */}
-            <div className="py-16 bg-card">
-                <div className="max-w-6xl mx-auto px-6">
-                    <h2 className="text-3xl font-bold text-center text-foreground mb-10">
-                        Experience Our Chatbot Widget
-                    </h2>
-                    <div className="flex justify-center">
-                        <div className="w-full max-w-md p-6 bg-muted rounded-lg shadow-md">
-                            <div className="flex items-center space-x-2 mb-4">
-                                <MessageCircle className="w-6 h-6 text-primary" />
-                                <h3 className="text-xl font-semibold text-foreground">Chatbot Demo</h3>
-                            </div>
-                            <p className="text-muted-foreground mb-4">
-                                This is a placeholder for the chatbot widget. In a real implementation, it would interact with users via the /api/special endpoint.
-                            </p>
-                            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                                Start Chatting
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {/* Features Section */}
             <div className="py-20">
                 <div className="max-w-6xl mx-auto px-6">
                     <h2 className="text-3xl font-bold text-center text-foreground mb-12">
-                        Why Our SaaS Stands Out
+                        Why TaskFlow Stands Out
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
                             <Card className="border-border shadow-md hover:shadow-lg transition">
                                 <CardHeader>
                                     <Users className="w-7 h-7 text-primary mb-2" />
-                                    <CardTitle className="text-lg font-semibold">User Engagement</CardTitle>
+                                    <CardTitle className="text-lg font-semibold">Team Collaboration</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-muted-foreground">
-                                        Chatbots boost interaction with personalized responses.
+                                        Centralize communication and tasks for seamless teamwork.
                                     </p>
                                 </CardContent>
                             </Card>
@@ -126,11 +103,11 @@ export default function ExampleSaaSLandingPage() {
                             <Card className="border-border shadow-md hover:shadow-lg transition">
                                 <CardHeader>
                                     <BarChart className="w-7 h-7 text-primary mb-2" />
-                                    <CardTitle className="text-lg font-semibold">Analytics</CardTitle>
+                                    <CardTitle className="text-lg font-semibold">Progress Tracking</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-muted-foreground">
-                                        Gain insights from chatbot interactions.
+                                        Monitor project milestones and deadlines in real time.
                                     </p>
                                 </CardContent>
                             </Card>
@@ -138,12 +115,12 @@ export default function ExampleSaaSLandingPage() {
                         <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
                             <Card className="border-border shadow-md hover:shadow-lg transition">
                                 <CardHeader>
-                                    <Settings className="w-7 h-7 text-primary mb-2" />
-                                    <CardTitle className="text-lg font-semibold">Customizable</CardTitle>
+                                    <Clock className="w-7 h-7 text-primary mb-2" />
+                                    <CardTitle className="text-lg font-semibold">Time Management</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-muted-foreground">
-                                        Tailor the chatbot to your brand’s needs.
+                                        Optimize schedules with built-in time tracking tools.
                                     </p>
                                 </CardContent>
                             </Card>
@@ -151,12 +128,12 @@ export default function ExampleSaaSLandingPage() {
                         <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
                             <Card className="border-border shadow-md hover:shadow-lg transition">
                                 <CardHeader>
-                                    <MessageCircle className="w-7 h-7 text-primary mb-2" />
-                                    <CardTitle className="text-lg font-semibold">24/7 Support</CardTitle>
+                                    <Briefcase className="w-7 h-7 text-primary mb-2" />
+                                    <CardTitle className="text-lg font-semibold">Resource Allocation</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-muted-foreground">
-                                        Always-on chatbot for instant user support.
+                                        Assign tasks and resources efficiently to meet goals.
                                     </p>
                                 </CardContent>
                             </Card>
@@ -167,11 +144,11 @@ export default function ExampleSaaSLandingPage() {
 
             {/* CTA Section */}
             <div className="py-16 text-center bg-primary">
-                <h2 className="text-3xl font-bold text-primary-foreground mb-6">
-                    Ready to Try Our Chatbot?
+                <h2 className="text-wärts:3xl font-bold text-primary-foreground mb-6">
+                    Ready to Transform Your Workflow?
                 </h2>
                 <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto">
-                    Explore how our chatbot widget can transform your SaaS application.
+                    Discover how TaskFlow can boost your team’s productivity and project success.
                 </p>
                 <Button size="lg" variant="secondary" asChild>
                     <Link href="/example/get-started">Get Started</Link>
