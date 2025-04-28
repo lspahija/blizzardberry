@@ -1,13 +1,13 @@
 openapi: 3.0.3
 info:
-  title: Dummy API
+  title: Upgrade Account API
   version: 1.0.0
   description: A simple API for account upgrade operations
 servers:
   - url: http://localhost:3000
     description: Local development server
 paths:
-  /api/dummy:
+  /api/upgrade:
     get:
       operationId: accountUpgrade
       summary: Upgrade the account

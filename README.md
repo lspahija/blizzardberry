@@ -46,7 +46,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Example
 
-See an example SaaS app with integrated chatbot at [https://github.com/lucidity-labs/some-example-saas](https://github.com/lucidity-labs/some-example-saas)
+See an example SaaS app with integrated chatbot at [http://localhost:3000/example-saas](http://localhost:3000/example-saas)
 
 ## Next steps
 - landing page
