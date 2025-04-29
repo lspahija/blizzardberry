@@ -1,9 +1,5 @@
-import {createClient} from '@supabase/supabase-js';
 import {HttpModel} from "@/app/api/(main)/lib/dataModel";
-
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+import {supabaseClient} from "@/app/api/(main)/lib/Supabase";
 
 interface Action {
     name: string;
@@ -12,7 +8,7 @@ interface Action {
 }
 
 export const getActions = async (): Promise<Action[]> => {
-    const {data, error} = await supabase
+    const {data, error} = await supabaseClient
         .from('actions')
         .select('name, description, http_model');
 
@@ -28,7 +24,7 @@ export const getActions = async (): Promise<Action[]> => {
 };
 
 export const getAction = async (actionName: string): Promise<Action | null> => {
-    const {data, error} = await supabase
+    const {data, error} = await supabaseClient
         .from('actions')
         .select('name, description, http_model')
         .eq('name', actionName)
@@ -49,7 +45,7 @@ export const getAction = async (actionName: string): Promise<Action | null> => {
 };
 
 export const createAction = async (actionName: string, httpModel: HttpModel, description: string): Promise<void> => {
-    const {error} = await supabase
+    const {error} = await supabaseClient
         .from('actions')
         .insert({
             name: actionName,
