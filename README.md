@@ -52,6 +52,7 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 - landing page needs to sell the product
 - implement RAG - automatically pull docs from website during onboarding? - https://claude.ai/chat/23435dbc-4393-4648-9285-5a39e4bee785
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
+- tools should be able to take parameters
 - Stripe to sell the product $$
 - add google analytics
 - deploy to vercel
