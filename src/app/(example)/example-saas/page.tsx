@@ -8,7 +8,6 @@ import { Briefcase, Users, BarChart, Clock } from "lucide-react";
 import { notFound } from "next/navigation";
 
 export default function ExampleSaaSLandingPage() {
-    // Block page in production
     if (process.env.NODE_ENV === "production") {
         notFound();
     }
