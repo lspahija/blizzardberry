@@ -1,72 +1,36 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Document, TextNode } from 'llamaindex'; // Import TextNode for type safety
-import { SupabaseVectorStore } from '@llamaindex/supabase';
-import { SentenceSplitter } from '@llamaindex/core/node-parser';
-import { createPartFromText, GoogleGenAI } from '@google/genai';
-import { supabaseClient } from "@/app/api/(main)/lib/Supabase";
+import {NextResponse} from "next/server";
+import {GEMINI_EMBEDDING_MODEL, googleGenAI} from "@/app/api/(main)/lib/EmbedShared";
+import {supabaseClient} from "@/app/api/(main)/lib/Supabase";
 
-// Define request body interface
-interface EmbedRequest {
-    text: string;
-    metadata?: Record<string, any>;
-}
+export async function POST(request: Request) {
+    const {text, metadata} = await request.json();
 
-// Initialize Google GenAI client
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
-
-// Custom embedding function for Gemini
-async function getGeminiEmbedding(text: string): Promise<number[]> {
-    const response = await ai.models.embedContent({
-        model: 'gemini-embedding-exp-03-07',
-        contents: createPartFromText(text),
+    // Generate embedding
+    const response = await googleGenAI.models.embedContent({
+        model: GEMINI_EMBEDDING_MODEL,
+        contents: text,
     });
-    return response.embeddings?.[0]?.values || []; // Handle Gemini API response
-}
 
-const vectorStore = new SupabaseVectorStore({
-    client: supabaseClient,
-    table: 'documents',
-});
+    // Extract the flat array of values from the embedding
+    const embedding = response.embeddings[0].values;
 
-// POST /api/embed
-export async function POST(req: NextRequest) {
-    try {
-        const body: EmbedRequest = await req.json();
-        if (!body.text) {
-            return NextResponse.json({ error: 'Text is required' }, { status: 400 });
-        }
+    // Store in Supabase
+    const {data, error} = await supabaseClient
+        .from("documents")
+        .insert({
+            content: text,
+            metadata,
+            embedding,
+        })
+        .select();
 
-        // Create LlamaIndex document
-        const document = new Document({
-            text: body.text,
-            metadata: body.metadata || {},
-        });
-
-        // Split the document using SentenceSplitter
-        const splitter = new SentenceSplitter({
-            chunkSize: 512,
-            chunkOverlap: 20,
-            separator: ' ',
-            paragraphSeparator: '\n\n',
-            secondaryChunkingRegex: '[.!?]',
-        });
-        const nodes = splitter.getNodesFromDocuments([document]) as TextNode[];
-
-        // Generate embeddings and store in Supabase
-        for (const node of nodes) {
-            const embedding = await getGeminiEmbedding(node.text!);
-            if (!embedding.length) {
-                throw new Error('Failed to generate embedding for node');
-            }
-
-            // Attach embedding to the node and pass the original node
-            node.embedding = embedding; // Add embedding to the TextNode
-            await vectorStore.add([node]); // Pass the original TextNode
-        }
-
-        return NextResponse.json({ message: 'Text embedded and stored successfully' }, { status: 200 });
-    } catch (error) {
-        console.error('Embedding error:', error);
-        return NextResponse.json({ error: 'Failed to process text' }, { status: 500 });
+    if (error) {
+        console.error("Supabase insert error:", error);
+        return NextResponse.json(
+            {error: "Failed to store document"},
+            {status: 500}
+        );
     }
+
+    return NextResponse.json({document: data[0]}, {status: 201});
 }

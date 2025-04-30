@@ -7,10 +7,10 @@ POST http://localhost:3000/api/embed
 Content-Type: application/json
 
 {
-  "text": "The quick brown fox jumps over the lazy dog. This is a sample sentence for embedding.",
+  "text": "Chess is a game of skill.",
   "metadata": {
     "source": "test",
-    "category": "sample"
+    "category": "boardgames"
   }
 }
 
@@ -21,10 +21,10 @@ POST http://localhost:3000/api/embed
 Content-Type: application/json
 
 {
-  "text": "Artificial intelligence is transforming the world. Machine learning models are becoming more powerful.",
+  "text": "The beach is wonderful today.",
   "metadata": {
     "source": "test",
-    "category": "ai"
+    "category": "vacation"
   }
 }
 
@@ -35,7 +35,7 @@ POST http://localhost:3000/api/search
 Content-Type: application/json
 
 {
-  "query": "brown fox",
+  "query": "the waves are great",
   "topK": 3
 }
 
