@@ -1,0 +1,61 @@
+# Sample HTTP requests for /api/embed and /api/search endpoints
+# Ensure the Next.js app is running on http://localhost:3000
+# Set GEMINI_API_KEY in your .env file and configure Supabase
+
+### Embed text into the vector store
+POST http://localhost:3000/api/embed
+Content-Type: application/json
+
+{
+  "text": "The quick brown fox jumps over the lazy dog. This is a sample sentence for embedding.",
+  "metadata": {
+    "source": "test",
+    "category": "sample"
+  }
+}
+
+###
+
+### Embed another text for variety
+POST http://localhost:3000/api/embed
+Content-Type: application/json
+
+{
+  "text": "Artificial intelligence is transforming the world. Machine learning models are becoming more powerful.",
+  "metadata": {
+    "source": "test",
+    "category": "ai"
+  }
+}
+
+###
+
+### Search for similar texts
+POST http://localhost:3000/api/search
+Content-Type: application/json
+
+{
+  "query": "brown fox",
+  "topK": 3
+}
+
+###
+
+### Search for AI-related texts
+POST http://localhost:3000/api/search
+Content-Type: application/json
+
+{
+  "query": "artificial intelligence",
+  "topK": 2
+}
+
+###
+
+### Search with default topK
+POST http://localhost:3000/api/search
+Content-Type: application/json
+
+{
+  "query": "machine learning"
+}
