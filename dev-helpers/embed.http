@@ -1,0 +1,44 @@
+POST http://localhost:3000/api/embed
+Content-Type: application/json
+
+{
+  "text": "Chess is a game of skill.",
+  "metadata": {
+    "source": "test",
+    "category": "boardgames"
+  }
+}
+
+###
+
+POST http://localhost:3000/api/embed
+Content-Type: application/json
+
+{
+  "text": "The beach is wonderful today.",
+  "metadata": {
+    "source": "test",
+    "category": "vacation"
+  }
+}
+
+###
+
+POST http://localhost:3000/api/search
+Content-Type: application/json
+
+{
+  "query": "the waves are great",
+  "topK": 3
+}
+
+###
+
+
+POST http://localhost:3000/api/search
+Content-Type: application/json
+
+{
+  "query": "checkmate!",
+  "topK": 2
+}
