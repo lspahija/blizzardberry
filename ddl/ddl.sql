@@ -14,7 +14,7 @@ CREATE TABLE documents (
                            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                            content TEXT NOT NULL,
                            metadata JSONB,
-                           embedding HALFVEC(3072) -- Use halfvec instead of vector
+                           embedding HALFVEC(3072)
 );
 
 
