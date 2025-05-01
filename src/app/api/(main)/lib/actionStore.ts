@@ -1,5 +1,5 @@
 import {HttpModel} from "@/app/api/(main)/lib/dataModel";
-import {supabaseClient} from "@/app/api/(main)/lib/Supabase";
+import {supabaseClient} from "@/app/api/(main)/lib/supabase";
 
 interface Action {
     name: string;

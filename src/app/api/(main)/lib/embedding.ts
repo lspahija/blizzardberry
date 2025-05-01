@@ -1,6 +1,6 @@
 import {GoogleGenerativeAIEmbeddings} from "@langchain/google-genai";
 import {SupabaseVectorStore} from "@langchain/community/vectorstores/supabase";
-import {supabaseClient} from "@/app/api/(main)/lib/Supabase";
+import {supabaseClient} from "@/app/api/(main)/lib/supabase";
 
 
 //TODO: further optimizations: https://supabase.com/docs/guides/ai/langchain
