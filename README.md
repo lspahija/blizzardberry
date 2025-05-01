@@ -50,11 +50,11 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 ## Next steps
 - Clean up chatbot experience. It needs to communicate that the action was successfully done. Allow debug mode where it also prints (or just console.logs) the response from the action endpoint
 - tools should be able to take parameters - https://grok.com/chat/59a1ee92-57df-4aef-b8f5-a26b6b9f34d0 - check how openAPI spec is currently being parsed. I think the chatbot needs to be able to go back and forth with the user to get all the parameters. See how chatbase does this.
-- landing page needs to sell the product
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
 - admin page where user can add new documents to their chatbot's knowledge base
 - Stripe to sell the product $$
 - add google analytics
+- landing page needs to sell the product
 - deploy to vercel
 - rename and get domain!
 
