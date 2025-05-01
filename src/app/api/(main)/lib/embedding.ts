@@ -4,15 +4,38 @@ import {supabaseClient} from "@/app/api/(main)/lib/Supabase";
 
 
 //TODO: further optimizations: https://supabase.com/docs/guides/ai/langchain
-// or maybe switch to llamaindex instead of langchain: https://supabase.com/docs/guides/ai/integrations/llamaindex
+export const vectorStore = new SupabaseVectorStore(
+        new GoogleGenerativeAIEmbeddings({
+            apiKey: process.env.GEMINI_API_KEY,
+            model: "gemini-embedding-exp-03-07",
+        }),
+        {
+            client: supabaseClient,
+            tableName: "documents",
+            queryName: "search_documents",
+        }
+    )
+;
 
-export const embeddings = new GoogleGenerativeAIEmbeddings({
-    apiKey: process.env.GEMINI_API_KEY,
-    model: "gemini-embedding-exp-03-07",
-});
+export async function similaritySearch(query: string, k: number) {
+    // Perform similarity search with score
+    const resultsWithScore = await vectorStore.similaritySearchWithScore(query, k);
 
-export const vectorStore = new SupabaseVectorStore(embeddings, {
-    client: supabaseClient,
-    tableName: "documents",
-    queryName: "search_documents",
-});
+    // Group results by parent_document_id
+    const groupedResults = resultsWithScore.reduce((acc: Record<string, any[]>, [doc, score]) => {
+        const parentId = doc.metadata.parent_document_id || "no_parent";
+        if (!acc[parentId]) {
+            acc[parentId] = [];
+        }
+        acc[parentId].push({
+            id: doc.metadata.id || doc.metadata.document_id || "unknown", // Fallback ID
+            parent_document_id: doc.metadata.parent_document_id,
+            content: doc.pageContent,
+            metadata: doc.metadata,
+            similarity: score, // Use score from similaritySearchWithScore
+        });
+        return acc;
+    }, {});
+
+    return groupedResults;
+}

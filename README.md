@@ -50,9 +50,9 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 ## Next steps
 - Clean up chatbot experience. It needs to communicate that the action was successfully done. Allow debug mode where it also prints (or just console.logs) the response from the action endpoint
 - landing page needs to sell the product
-- implement RAG - automatically pull docs from website during onboarding? - https://claude.ai/chat/23435dbc-4393-4648-9285-5a39e4bee785
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
 - tools should be able to take parameters
+- admin page where user can add new documents to their chatbot's knowledge base
 - Stripe to sell the product $$
 - add google analytics
 - deploy to vercel
@@ -62,6 +62,8 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 - how to allow purely frontend actions? Window-Level API Object (not quite global scope but close)
 - maybe use some software or lib to autodiscover website endpoints/capabilities to make onboarding super simple
 - Create admin UI form allowing user to manually create actions like chatbase allows
+- automatically pull docs from website during onboarding for RAG?
+- optimize RAG pipeline
 
 ## Competition
 - https://www.chatbase.co/
