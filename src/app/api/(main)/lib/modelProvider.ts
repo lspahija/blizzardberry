@@ -21,7 +21,7 @@ export function getLanguageModel() {
                 name: 'lmstudio',
                 baseURL: process.env.LMSTUDIO_BASE_URL!,
             });
-            return lmstudio('gemma-3-12b-it-qat');
+            return lmstudio('qwen3-8b');
 
         default:
             throw new Error(
