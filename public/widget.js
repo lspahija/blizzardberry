@@ -254,25 +254,22 @@
         if (part.type === 'text') {
             return `<div>${part.text}</div>`;
         } else if (part.type === 'tool-invocation') {
-            let html = `
-        <div class="tool-invocation">
-          <div class="tool-header">${part.toolInvocation.toolName || 'Tool Action'}</div>
-          <pre>${JSON.stringify(part.toolInvocation, null, 2)}</pre>
-        </div>
-      `;
+            // Log tool invocation details to console for debugging
+            console.log('Tool Invocation:', {
+                toolInvocation: part.toolInvocation
+            });
 
+            // Render only the fetch result (if available)
             if (fetchResult) {
-                html += `
-          <div class="tool-result">
-            <div class="tool-result-header">Response (${fetchResult.status})</div>
-            <pre>${JSON.stringify(fetchResult.data || fetchResult.error, null, 2)}</pre>
-          </div>
-        `;
+                return `
+                    <div class="tool-result">
+                        <div class="tool-result-header">Response (${fetchResult.status})</div>
+                        <pre>${JSON.stringify(fetchResult.data || fetchResult.error, null, 2)}</pre>
+                    </div>
+                `;
             } else {
-                html += `<div class="tool-pending">Processing request...</div>`;
+                return `<div class="tool-pending">Processing request...</div>`;
             }
-
-            return html;
         }
 
         return '';
@@ -286,51 +283,33 @@
         state.messages.forEach(message => {
             const isUser = message.role === 'user';
             html += `
-        <div class="message-container ${isUser ? 'user-container' : 'assistant-container'}">
-          <div class="message ${isUser ? 'user-message' : 'assistant-message'}">
-      `;
+                <div class="message-container ${isUser ? 'user-container' : 'assistant-container'}">
+                    <div class="message ${isUser ? 'user-message' : 'assistant-message'}">
+            `;
 
             message.parts.forEach((part, index) => {
                 html += renderMessagePart(part, message.id, index);
             });
 
             html += `
-          </div>
-        </div>
-      `;
+                    </div>
+                </div>
+            `;
         });
 
         // Add typing indicator if processing
         if (state.isProcessing) {
             html += `
-        <div class="message-container assistant-container">
-          <div class="message assistant-message typing-indicator">
-            <span></span><span></span><span></span>
-          </div>
-        </div>
-      `;
+                <div class="message-container assistant-container">
+                    <div class="message assistant-message typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
         }
 
         chatBody.innerHTML = html;
         chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    // Check for tool invocations that need execution
-    function checkToolInvocations() {
-        state.messages.forEach(message => {
-            message.parts.forEach((part, index) => {
-                if (
-                    part.type === 'tool-invocation' &&
-                    part.toolInvocation.state === 'result' &&
-                    part.toolInvocation.result
-                ) {
-                    const key = `${message.id}-${index}`;
-                    if (!state.fetchResults[key]) {
-                        executeFetch(part.toolInvocation.result, message.id, index);
-                    }
-                }
-            });
-        });
     }
 
     // Initialize the widget
