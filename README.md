@@ -60,6 +60,7 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 
 ## Down the road
 - minify and obfuscate widget js
+- get vanilla js version of useChat working?
 - how to allow purely frontend actions? Window-Level API Object (not quite global scope but close)
 - maybe use some software or lib to autodiscover website endpoints/capabilities to make onboarding super simple
 - Create admin UI form allowing user to manually create actions like chatbase allows

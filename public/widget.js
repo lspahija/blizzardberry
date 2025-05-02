@@ -7,11 +7,11 @@
         });
     }
 
-    // State management
     const state = {
         messages: [],
         fetchResults: {},
-        isProcessing: false
+        isProcessing: false,
+        loggedThinkMessages: new Set() // Track messages with logged think content
     };
 
     // Inject CSS
@@ -111,7 +111,7 @@
             state.isProcessing = true;
             updateChatUI();
 
-            const chatResponse = await fetch('http://localhost:3000/api/chat', {
+            const chatResponse = await fetch('http://localhost:3000/api/test-chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ messages: state.messages })
@@ -153,7 +153,7 @@
         state.isProcessing = true;
 
         try {
-            const response = await fetch('http://localhost:3000/api/chat', {
+            const response = await fetch('http://localhost:3000/api/test-chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ messages: state.messages })
@@ -207,9 +207,19 @@
         }
     }
 
-    // Render message part
     function renderMessagePart(part, messageId, index) {
         if (part.type === 'text') {
+            // Extract <think> content for logging and get display text
+            const thinkMatch = part.text.match(/<think>([\s\S]*?)<\/think>\n\n([\s\S]*)/);
+            if (thinkMatch && !state.loggedThinkMessages.has(messageId)) {
+                // Log the think content for debugging only if not already logged
+                console.log('Think Content:', thinkMatch[1].trim());
+                // Mark this message as logged
+                state.loggedThinkMessages.add(messageId);
+                // Return only the text after </think> for rendering
+                return `<div class="text-part">${thinkMatch[2].trim()}</div>`;
+            }
+            // If no <think> tag or already logged, render the text as is
             return `<div class="text-part">${part.text}</div>`;
         }
         if (part.type === 'tool-invocation') {

@@ -17,7 +17,42 @@ export async function POST(req: Request) {
         maxSteps: 5,
     });
 
-    return result.toDataStreamResponse()
+    return Response.json(await processStream(result));
+}
+
+async function processStream(result) {
+    let text = '';
+    const toolCalls = [];
+    const toolResults = [];
+
+    for await (const part of result.fullStream) {
+        switch (part.type) {
+            case 'text-delta':
+                text += part.textDelta;
+                break;
+            case 'tool-call':
+                toolCalls.push({
+                    toolCallId: part.toolCallId,
+                    toolName: part.toolName,
+                    args: part.args,
+                });
+                break;
+            case 'tool-result':
+                toolResults.push({
+                    toolCallId: part.toolCallId,
+                    toolName: part.toolName,
+                    args: part.args,
+                    result: part.result,
+                });
+                break;
+        }
+    }
+
+    return {
+        text,
+        toolCalls,
+        toolResults,
+    };
 }
 
 function createPersonalizedRecommendationTool(): Tool {
