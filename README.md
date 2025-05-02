@@ -64,8 +64,29 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 - maybe use some software or lib to autodiscover website endpoints/capabilities to make onboarding super simple
 - Create admin UI form allowing user to manually create actions like chatbase allows
 - automatically pull docs from website during onboarding for RAG?
-- optimize RAG pipeline
+- [optimize RAG pipeline](#frankies-tips-to-optimize-rag)
 
 ## Competition
 - https://www.chatbase.co/
   - [custom actions](https://www.chatbase.co/docs/user-guides/chatbot/actions/custom-action)
+
+
+
+
+## Notes
+
+### Frankie's tips to optimize RAG:
+
+Not sure if you already done that in some other part of code maybe, but if you haven't:
+Try to include some metadata about the document when ingesting it. For example, the document’s name, which could just be the filename if no explicit title is available.
+
+If you're dealing with raw text, you might extract the first few words or lines as a fallback title.
+
+It would be ideal, to use an LLM to preprocess the document and extract key metadata into a JSON structure (e.g. title, type, summary, source). This becomes really useful later when you want to filter or rank results during search.
+
+Everything else looks good.
+
+I see that you have a metadata key obviously, just didn’t go through the other files to see what’s in it, I just saw that in your similarity_search there is no filter parameter.
+Which could be useful when you have a lot of chunks and a variety of content.
+
+But maybe it isn’t necessary, you could test it out to see if it works well (if you get relevant chunks to the given query) without any filtering.
