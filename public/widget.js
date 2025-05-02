@@ -126,7 +126,7 @@
                 parts: [{ type: 'text', text: text || 'Here is the result of your request.' }]
             });
         } catch (error) {
-            state.fetchResultsinoa[key] = {
+            state.fetchResults[key] = {
                 error: 'Failed to execute request',
                 details: error.message || 'Unknown error'
             };
@@ -177,6 +177,12 @@
                             result: toolResult ? toolResult.result : undefined
                         }
                     });
+                    // Log tool invocation when it's created
+                    console.log('Tool Invoked:', {
+                        toolCallId: toolCall.toolCallId,
+                        toolName: toolCall.toolName,
+                        args: toolCall.args
+                    });
                 });
             }
 
@@ -207,7 +213,6 @@
             return `<div class="text-part">${part.text}</div>`;
         }
         if (part.type === 'tool-invocation') {
-            console.log('Tool Invocation:', { toolInvocation: part.toolInvocation });
             return ''; // Don't render tool-invocation in UI
         }
         return '';
