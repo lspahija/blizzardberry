@@ -111,7 +111,7 @@
             state.isProcessing = true;
             updateChatUI();
 
-            const chatResponse = await fetch('http://localhost:3000/api/test-chat', {
+            const chatResponse = await fetch('http://localhost:3000/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ messages: state.messages })
@@ -158,7 +158,7 @@
         }, 300); // 300ms delay for typing indicator
 
         try {
-            const response = await fetch('http://localhost:3000/api/test-chat', {
+            const response = await fetch('http://localhost:3000/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ messages: state.messages })

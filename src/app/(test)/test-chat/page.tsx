@@ -4,7 +4,7 @@ import { useChat } from '@ai-sdk/react';
 import { useState, useEffect, FormEvent } from 'react';
 
 export default function Chat() {
-    const { messages, input, handleInputChange, handleSubmit } = useChat({api: '/api/test-chat'});
+    const { messages, input, handleInputChange, handleSubmit } = useChat({api: '/api/chat'});
     const [fetchResults, setFetchResults] = useState<Record<string, FetchResult>>({});
 
     const executeFetch = async (httpModel: ToolInvocationPart['toolInvocation']['result'], messageId: string, partIndex: number) => {
