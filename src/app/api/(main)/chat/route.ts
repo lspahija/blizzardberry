@@ -2,7 +2,7 @@ import {streamText, tool, Tool} from 'ai';
 import {z} from "zod";
 import {CHATBOT_SYSTEM_MESSAGE} from '../lib/constants';
 import {getLanguageModel} from '../lib/modelProvider';
-import {getActions} from "@/app/api/(main)/lib/ActionStore";
+import {getActions} from "@/app/api/(main)/lib/actionStore";
 import {similaritySearch} from "@/app/api/(main)/lib/embedding";
 
 export async function POST(req: Request) {

@@ -2,7 +2,7 @@ import yaml from 'js-yaml';
 import {OpenAPIObject, OperationObject} from "openapi3-ts/oas30";
 import {NextResponse} from "next/server";
 import {HttpModel, Method} from "@/app/api/(main)/lib/dataModel";
-import {createAction} from "@/app/api/(main)/lib/ActionStore";
+import {createAction} from "@/app/api/(main)/lib/actionStore";
 
 export async function POST(req: Request) {
     const {content} = await req.json();

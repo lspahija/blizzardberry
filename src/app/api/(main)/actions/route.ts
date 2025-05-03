@@ -1,7 +1,7 @@
 import {NextResponse} from 'next/server';
 import parse from "@bany/curl-to-json";
-import {createAction, getActions} from "@/app/api/(main)/lib/ActionStore";
 import {Method} from "@/app/api/(main)/lib/dataModel";
+import {createAction, getActions} from '../lib/actionStore';
 
 export async function POST(req: Request) {
     const {content, actionName, description} = await req.json();
