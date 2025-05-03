@@ -149,8 +149,13 @@
             parts: [{ type: 'text', text }]
         });
         input.value = '';
-        updateChatUI();
-        state.isProcessing = true;
+        updateChatUI(); // Show user message immediately
+
+        // Delay typing indicator appearance
+        setTimeout(() => {
+            state.isProcessing = true;
+            updateChatUI(); // Show typing indicator
+        }, 300); // 300ms delay for typing indicator
 
         try {
             const response = await fetch('http://localhost:3000/api/test-chat', {
@@ -240,6 +245,7 @@
             </div>
         `).join('');
 
+        // Add typing indicator if processing
         if (state.isProcessing) {
             html += `
                 <div class="message-container assistant-container">
