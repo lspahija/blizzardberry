@@ -49,7 +49,6 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 
 ## Next steps
 - tools should be able to take parameters - https://grok.com/chat/59a1ee92-57df-4aef-b8f5-a26b6b9f34d0 - check how openAPI spec is currently being parsed. I think the chatbot needs to be able to go back and forth with the user to get all the parameters. See how chatbase does this.
-- if llm calls knowledge base tool, widget breaks because it tries to act on that tool invocation result
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
 - admin page where user can add new documents to their chatbot's knowledge base
 - Stripe to sell the product $$
