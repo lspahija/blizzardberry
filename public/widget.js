@@ -211,15 +211,16 @@
         if (part.type === 'text') {
             // Extract <think> content for logging and get display text
             const thinkMatch = part.text.match(/<think>([\s\S]*?)<\/think>\n\n([\s\S]*)/);
-            if (thinkMatch && !state.loggedThinkMessages.has(messageId)) {
-                // Log the think content for debugging only if not already logged
-                console.log('Think Content:', thinkMatch[1].trim());
-                // Mark this message as logged
-                state.loggedThinkMessages.add(messageId);
-                // Return only the text after </think> for rendering
+            if (thinkMatch) {
+                // Log think content only if not already logged
+                if (!state.loggedThinkMessages.has(messageId)) {
+                    console.log('Think Content:', thinkMatch[1].trim());
+                    state.loggedThinkMessages.add(messageId);
+                }
+                // Always return only the text after </think> for rendering
                 return `<div class="text-part">${thinkMatch[2].trim()}</div>`;
             }
-            // If no <think> tag or already logged, render the text as is
+            // If no <think> tag, render the text as is
             return `<div class="text-part">${part.text}</div>`;
         }
         if (part.type === 'tool-invocation') {
