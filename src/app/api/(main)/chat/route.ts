@@ -93,7 +93,7 @@ async function getToolsFromActions() {
 
     const tools: Record<string, Tool> = {};
     for (const action of actions) {
-        tools[action.name] = tool({
+        tools[`ACTION: ${action.name}`] = tool({
             description: action.description,
             parameters: z.object({}),
             execute: async () => action.httpModel,

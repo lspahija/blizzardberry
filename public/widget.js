@@ -198,9 +198,14 @@
             };
             state.messages.push(aiMessage);
 
-            // Execute tool invocations
+            // Execute tool invocations only for toolNames starting with "ACTION:"
             aiMessage.parts.forEach((part, index) => {
-                if (part.type === 'tool-invocation' && part.toolInvocation.state === 'result' && part.toolInvocation.result) {
+                if (
+                    part.type === 'tool-invocation' &&
+                    part.toolInvocation.state === 'result' &&
+                    part.toolInvocation.result &&
+                    part.toolInvocation.toolName.startsWith('ACTION:')
+                ) {
                     executeFetch(part.toolInvocation.result, aiMessage.id, index);
                 }
             });
