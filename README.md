@@ -52,7 +52,7 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
 - admin page where user can add new documents to their chatbot's knowledge base
 - Stripe to sell the product $$
-- add google analytics
+- add google analytics / posthog
 - landing page needs to sell the product
 - deploy to vercel
 - rename and get domain!
