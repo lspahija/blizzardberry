@@ -52,7 +52,7 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
 - admin page where user can add new documents to their chatbot's knowledge base
 - Stripe to sell the product $$
-- add google analytics / posthog
+- add [google analytics](https://analytics.google.com/) or [posthog](https://posthog.com/)
 - landing page needs to sell the product
 - deploy to vercel
 - rename and get domain!
@@ -90,3 +90,39 @@ I see that you have a metadata key obviously, just didn’t go through the other
 Which could be useful when you have a lot of chunks and a variety of content.
 
 But maybe it isn’t necessary, you could test it out to see if it works well (if you get relevant chunks to the given query) without any filtering.
+
+
+
+
+
+
+
+
+chatbase offers an sdk that can be embedded in frontend and provide user metadata
+and then the chatbot can access that to populate fields in request
+
+You can add metadata in two ways:
+
+Using the embed code:
+window.chatbaseUserConfig = {
+user_id: "123",
+user_hash: "hash",
+user_metadata: {
+"name": "John Doe",
+"email": "john@example.com",
+"company": "Acme Inc"
+}
+}
+Using the SDK identify method:
+window.chatbase("identify", {
+user_id: "123",
+user_hash: "hash",
+user_metadata: {
+"name": "John Doe",
+"email": "john@example.com",
+"company": "Acme Inc"
+}
+});
+
+
+
