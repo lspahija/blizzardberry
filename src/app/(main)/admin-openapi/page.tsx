@@ -43,7 +43,7 @@ export default function AdminPage() {
         setSubmitResult(null);
 
         try {
-            const response = await fetch('/api/actions/bulk', {
+            const response = await fetch('/api/tool-test', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
