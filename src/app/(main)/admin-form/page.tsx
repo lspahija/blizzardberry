@@ -465,7 +465,7 @@ export default function AdminFormPage() {
                                         <>
                                             <div>
                                                 <Label className="text-gray-900">API Request</Label>
-                                                <p className="text-sm text-gray-600 mt-1">The API endpoint that should be called by the AI Agent to retrieve data or to send updates. You can include data inputs (variables) collected from the user in the URL or the request body.</p>
+                                                <p className="text-sm text-gray-600 mt-1">The API endpoint that should be called by the AI Agent to retrieve data or to send updates. You can include data inputs (variables) collected from the user in the URL, headers, and request body.</p>
                                                 <div className="grid grid-cols-1 md:grid-cols-[150px_1fr_150px] gap-4 mt-4">
                                                     <div>
                                                         <Label htmlFor="apiMethod">Method</Label>
