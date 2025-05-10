@@ -12,8 +12,6 @@ import { useState, useEffect } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 
 enum ParameterType {
     String = 'string',
@@ -126,8 +124,6 @@ export default function AdminFormPage() {
     const [apiBody, setApiBody] = useState("");
     const [functionName, setFunctionName] = useState("");
     const [activeTab, setActiveTab] = useState("query");
-    const [openAutocomplete, setOpenAutocomplete] = useState<{ [key: string]: boolean }>({});
-    const [autocompleteValue, setAutocompleteValue] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
         const stepParam = searchParams.get("step");
@@ -196,18 +192,6 @@ export default function AdminFormPage() {
         if (step < 3) {
             updateUrl(step + 1);
         }
-    };
-
-    const handleAutocompleteSelect = (index: number, field: keyof Parameter | keyof Header | 'body', value: string, type: 'param' | 'header' | 'body') => {
-        if (type === 'param') {
-            updateParameter(index, field as keyof Parameter, `{{${value}}}`);
-        } else if (type === 'header') {
-            updateHeader(index, field as keyof Header, `{{${value}}}`);
-        } else {
-            setApiBody(apiBody + `{{${value}}}`);
-        }
-        setOpenAutocomplete({ ...openAutocomplete, [`${type}-${index}-${field}`]: false });
-        setAutocompleteValue({ ...autocompleteValue, [`${type}-${index}-${field}`]: '' });
     };
 
     const handleCreateAction = async () => {
@@ -298,7 +282,7 @@ export default function AdminFormPage() {
                 ...baseAction,
                 location: ExecutionContext.CLIENT,
                 frontendModel,
-            };
+        };
         }
 
         try {
@@ -324,10 +308,10 @@ export default function AdminFormPage() {
         <div className="min-h-screen bg-[#FFFDF8]">
             <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-gray-900 sticky top-0 bg-[#FFFDF8] z-50">
                 <div className="flex items-center space-x-2">
-                    <span className="text-xl font-bold text-gray-900">
-                        <span className="text-gray-900">Omni</span>
-                        <span className="text-[#FE4A60]">Interface</span>
-                    </span>
+          <span className="text-xl font-bold text-gray-900">
+            <span className="text-gray-900">Omni</span>
+            <span className="text-[#FE4A60]">Interface</span>
+          </span>
                 </div>
             </nav>
 
@@ -360,7 +344,7 @@ export default function AdminFormPage() {
                                             id="actionName"
                                             value={actionName}
                                             onChange={(e) => setActionName(e.target.value)}
-                                            placeholder="e.g., Update_Subscription"
+                                            placeholder="Update_Subscription"
                                             className="mt-2 border-[2px] border-gray-900"
                                         />
                                     </div>
@@ -435,7 +419,10 @@ export default function AdminFormPage() {
                                             List any information the AI Agent needs to perform the action. The agent can find the data in the chat history, request it from the user, or retrieve it from the user's metadata if available.
                                         </p>
                                         {dataInputs.map((input, index) => (
-                                            <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr_50px_50px] gap-4 mt-4 items-end">
+                                            <div
+                                                key={index}
+                                                className="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr_50px_50px] gap-2 mt-4 items-end"
+                                            >
                                                 <div>
                                                     <Label htmlFor={`inputName${index}`}>Name</Label>
                                                     <Input
@@ -468,7 +455,7 @@ export default function AdminFormPage() {
                                                         id={`inputDesc${index}`}
                                                         value={input.description}
                                                         onChange={(e) => updateDataInput(index, "description", e.target.value)}
-                                                        placeholder="The city to get weather for e.g. Los Angeles"
+                                                        placeholder="The city to get weather for, e.g. Los Angeles"
                                                         className="mt-2 border-[2px] border-gray-900"
                                                     />
                                                 </div>
@@ -539,8 +526,10 @@ export default function AdminFormPage() {
                                         <>
                                             <div>
                                                 <Label className="text-gray-900">API Request</Label>
-                                                <p className="text-sm text-gray-600 mt-1">The API endpoint that should be called by the AI Agent to retrieve data or to send updates. You can include data inputs (variables) collected from the user in the URL, headers, and request body.</p>
-                                                <div className="grid grid-cols-1 md:grid-cols-[150px_1fr_150px] gap-4 mt-4">
+                                                <p className="text-sm text-gray-600 mt-1">
+                                                    The API endpoint that should be called by the AI Agent to retrieve data or to send updates. You can include data inputs (variables) collected from the user in the URL, headers, and request body.
+                                                </p>
+                                                <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-4 mt-4">
                                                     <div>
                                                         <Label htmlFor="apiMethod">Method</Label>
                                                         <Select value={apiMethod} onValueChange={setApiMethod}>
@@ -568,93 +557,53 @@ export default function AdminFormPage() {
                                                 </div>
                                             </div>
                                             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                                                <TabsList className="grid w-full grid-cols-3">
-                                                    <TabsTrigger value="query">Query Parameters</TabsTrigger>
-                                                    <TabsTrigger value="headers">Headers</TabsTrigger>
-                                                    <TabsTrigger value="body">Body</TabsTrigger>
+                                                <TabsList className="grid w-full grid-cols-3 bg-[#FFFDF8] border-[2px] border-gray-900 rounded-lg p-1">
+                                                    <TabsTrigger
+                                                        value="query"
+                                                        className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA]"
+                                                    >
+                                                        Query Parameters
+                                                    </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="headers"
+                                                        className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA]"
+                                                    >
+                                                        Headers
+                                                    </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="body"
+                                                        className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA]"
+                                                    >
+                                                        Body
+                                                    </TabsTrigger>
                                                 </TabsList>
-                                                <TabsContent value="query">
-                                                    <div className="mt-4">
+                                                <TabsContent value="query" className="mt-4">
+                                                    <div>
                                                         <Label className="text-gray-900">Query Parameters</Label>
                                                         {parameters.map((param, index) => (
-                                                            <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_50px] gap-4 mt-4 items-end">
+                                                            <div
+                                                                key={index}
+                                                                className="grid grid-cols-1 md:grid-cols-[1fr_1fr_50px] gap-4 mt-4 items-end"
+                                                            >
                                                                 <div>
                                                                     <Label htmlFor={`paramKey${index}`}>Key</Label>
-                                                                    <Popover
-                                                                        open={openAutocomplete[`param-${index}-key`]}
-                                                                        onOpenChange={(open) => setOpenAutocomplete({ ...openAutocomplete, [`param-${index}-key`]: open })}
-                                                                    >
-                                                                        <PopoverTrigger asChild>
-                                                                            <Input
-                                                                                id={`paramKey${index}`}
-                                                                                value={param.key}
-                                                                                onChange={(e) => {
-                                                                                    updateParameter(index, "key", e.target.value);
-                                                                                    setAutocompleteValue({ ...autocompleteValue, [`param-${index}-key`]: e.target.value });
-                                                                                }}
-                                                                                placeholder="format"
-                                                                                className="mt-2 border-[2px] border-gray-900"
-                                                                            />
-                                                                        </PopoverTrigger>
-                                                                        <PopoverContent className="w-[200px] p-0">
-                                                                            <Command>
-                                                                                <CommandInput placeholder="Search inputs..." />
-                                                                                <CommandEmpty>No inputs found.</CommandEmpty>
-                                                                                <CommandGroup>
-                                                                                    {dataInputs
-                                                                                        .filter(input => input.name)
-                                                                                        .map((input) => (
-                                                                                            <CommandItem
-                                                                                                key={input.name}
-                                                                                                value={input.name}
-                                                                                                onSelect={() => handleAutocompleteSelect(index, "key", input.name, "param")}
-                                                                                            >
-                                                                                                {input.name}
-                                                                                            </CommandItem>
-                                                                                        ))}
-                                                                                </CommandGroup>
-                                                                            </Command>
-                                                                        </PopoverContent>
-                                                                    </Popover>
+                                                                    <Input
+                                                                        id={`paramKey${index}`}
+                                                                        value={param.key}
+                                                                        onChange={(e) => updateParameter(index, "key", e.target.value)}
+                                                                        placeholder="format"
+                                                                        className="mt-2 border-[2px] border-gray-900"
+                                                                    />
                                                                 </div>
                                                                 <div>
                                                                     <Label htmlFor={`paramValue${index}`}>Value</Label>
-                                                                    <Popover
-                                                                        open={openAutocomplete[`param-${index}-value`]}
-                                                                        onOpenChange={(open) => setOpenAutocomplete({ ...openAutocomplete, [`param-${index}-value`]: open })}
-                                                                    >
-                                                                        <PopoverTrigger asChild>
-                                                                            <Input
-                                                                                id={`paramValue${index}`}
-                                                                                value={param.value}
-                                                                                onChange={(e) => {
-                                                                                    updateParameter(index, "value", e.target.value);
-                                                                                    setAutocompleteValue({ ...autocompleteValue, [`param-${index}-value`]: e.target.value });
-                                                                                }}
-                                                                                placeholder="j1"
-                                                                                className="mt-2 border-[2px] border-gray-900"
-                                                                            />
-                                                                        </PopoverTrigger>
-                                                                        <PopoverContent className="w-[200px] p-0">
-                                                                            <Command>
-                                                                                <CommandInput placeholder="Search inputs..." />
-                                                                                <CommandEmpty>No inputs found.</CommandEmpty>
-                                                                                <CommandGroup>
-                                                                                    {dataInputs
-                                                                                        .filter(input => input.name)
-                                                                                        .map((input) => (
-                                                                                            <CommandItem
-                                                                                                key={input.name}
-                                                                                                value={input.name}
-                                                                                                onSelect={() => handleAutocompleteSelect(index, "value", input.name, "param")}
-                                                                                            >
-                                                                                                {input.name}
-                                                                                            </CommandItem>
-                                                                                        ))}
-                                                                                </CommandGroup>
-                                                                            </Command>
-                                                                        </PopoverContent>
-                                                                    </Popover>
+                                                                    <Input
+                                                                        id={`paramValue${index}`}
+                                                                        value={param.value}
+                                                                        onChange={(e) => updateParameter(index, "value", e.target.value)}
+                                                                        placeholder="j1"
+                                                                        className="mt-2 border-[2px] border-gray-900"
+                                                                    />
                                                                 </div>
                                                                 <div>
                                                                     <Button
@@ -676,88 +625,33 @@ export default function AdminFormPage() {
                                                         </Button>
                                                     </div>
                                                 </TabsContent>
-                                                <TabsContent value="headers">
-                                                    <div className="mt-4">
+                                                <TabsContent value="headers" className="mt-4">
+                                                    <div>
                                                         <Label className="text-gray-900">Headers</Label>
                                                         {headers.map((header, index) => (
-                                                            <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_50px] gap-4 mt-4 items-end">
+                                                            <div
+                                                                key={index}
+                                                                className="grid grid-cols-1 md:grid-cols-[1fr_1fr_50px] gap-4 mt-4 items-end"
+                                                            >
                                                                 <div>
                                                                     <Label htmlFor={`headerKey${index}`}>Key</Label>
-                                                                    <Popover
-                                                                        open={openAutocomplete[`header-${index}-key`]}
-                                                                        onOpenChange={(open) => setOpenAutocomplete({ ...openAutocomplete, [`header-${index}-key`]: open })}
-                                                                    >
-                                                                        <PopoverTrigger asChild>
-                                                                            <Input
-                                                                                id={`headerKey${index}`}
-                                                                                value={header.key}
-                                                                                onChange={(e) => {
-                                                                                    updateHeader(index, "key", e.target.value);
-                                                                                    setAutocompleteValue({ ...autocompleteValue, [`header-${index}-key`]: e.target.value });
-                                                                                }}
-                                                                                placeholder="Authorization"
-                                                                                className="mt-2 border-[2px] border-gray-900"
-                                                                            />
-                                                                        </PopoverTrigger>
-                                                                        <PopoverContent className="w-[200px] p-0">
-                                                                            <Command>
-                                                                                <CommandInput placeholder="Search inputs..." />
-                                                                                <CommandEmpty>No inputs found.</CommandEmpty>
-                                                                                <CommandGroup>
-                                                                                    {dataInputs
-                                                                                        .filter(input => input.name)
-                                                                                        .map((input) => (
-                                                                                            <CommandItem
-                                                                                                key={input.name}
-                                                                                                value={input.name}
-                                                                                                onSelect={() => handleAutocompleteSelect(index, "key", input.name, "header")}
-                                                                                            >
-                                                                                                {input.name}
-                                                                                            </CommandItem>
-                                                                                        ))}
-                                                                                </CommandGroup>
-                                                                            </Command>
-                                                                        </PopoverContent>
-                                                                    </Popover>
+                                                                    <Input
+                                                                        id={`headerKey${index}`}
+                                                                        value={header.key}
+                                                                        onChange={(e) => updateHeader(index, "key", e.target.value)}
+                                                                        placeholder="Authorization"
+                                                                        className="mt-2 border-[2px] border-gray-900"
+                                                                    />
                                                                 </div>
                                                                 <div>
                                                                     <Label htmlFor={`headerValue${index}`}>Value</Label>
-                                                                    <Popover
-                                                                        open={openAutocomplete[`header-${index}-value`]}
-                                                                        onOpenChange={(open) => setOpenAutocomplete({ ...openAutocomplete, [`header-${index}-value`]: open })}
-                                                                    >
-                                                                        <PopoverTrigger asChild>
-                                                                            <Input
-                                                                                id={`headerValue${index}`}
-                                                                                value={header.value}
-                                                                                onChange={(e) => {
-                                                                                    updateHeader(index, "value", e.target.value);
-                                                                                    setAutocompleteValue({ ...autocompleteValue, [`header-${index}-value`]: e.target.value });
-                                                                                }}
-                                                                                placeholder="Bearer token"
-                                                                                className="mt-2 border-[2px] border-gray-900"
-                                                                            />
-                                                                        </PopoverTrigger>
-                                                                        <PopoverContent className="w-[200px] p-0">
-                                                                            <Command>
-                                                                                <CommandInput placeholder="Search inputs..." />
-                                                                                <CommandEmpty>No inputs found.</CommandEmpty>
-                                                                                <CommandGroup>
-                                                                                    {dataInputs
-                                                                                        .filter(input => input.name)
-                                                                                        .map((input) => (
-                                                                                            <CommandItem
-                                                                                                key={input.name}
-                                                                                                value={input.name}
-                                                                                                onSelect={() => handleAutocompleteSelect(index, "value", input.name, "header")}
-                                                                                            >
-                                                                                                {input.name}
-                                                                                            </CommandItem>
-                                                                                        ))}
-                                                                                </CommandGroup>
-                                                                            </Command>
-                                                                        </PopoverContent>
-                                                                    </Popover>
+                                                                    <Input
+                                                                        id={`headerValue${index}`}
+                                                                        value={header.value}
+                                                                        onChange={(e) => updateHeader(index, "value", e.target.value)}
+                                                                        placeholder="Bearer {{token}}"
+                                                                        className="mt-2 border-[2px] border-gray-900"
+                                                                    />
                                                                 </div>
                                                                 <div>
                                                                     <Button
@@ -779,46 +673,17 @@ export default function AdminFormPage() {
                                                         </Button>
                                                     </div>
                                                 </TabsContent>
-                                                <TabsContent value="body">
-                                                    <div className="mt-4">
+                                                <TabsContent value="body" className="mt-4">
+                                                    <div>
                                                         <Label htmlFor="apiBody" className="text-gray-900">Body</Label>
-                                                        <Popover
-                                                            open={openAutocomplete[`body-0-body`]}
-                                                            onOpenChange={(open) => setOpenAutocomplete({ ...openAutocomplete, [`body-0-body`]: open })}
-                                                        >
-                                                            <PopoverTrigger asChild>
-                                                                <Textarea
-                                                                    id="apiBody"
-                                                                    value={apiBody}
-                                                                    onChange={(e) => {
-                                                                        setApiBody(e.target.value);
-                                                                        setAutocompleteValue({ ...autocompleteValue, [`body-0-body`]: e.target.value });
-                                                                    }}
-                                                                    placeholder='{"key": "value"}'
-                                                                    className="mt-2 border-[2px] border-gray-900"
-                                                                    rows={5}
-                                                                />
-                                                            </PopoverTrigger>
-                                                            <PopoverContent className="w-[200px] p-0">
-                                                                <Command>
-                                                                    <CommandInput placeholder="Search inputs..." />
-                                                                    <CommandEmpty>No inputs found.</CommandEmpty>
-                                                                    <CommandGroup>
-                                                                        {dataInputs
-                                                                            .filter(input => input.name)
-                                                                            .map((input) => (
-                                                                                <CommandItem
-                                                                                    key={input.name}
-                                                                                    value={input.name}
-                                                                                    onSelect={() => handleAutocompleteSelect(0, "body", input.name, "body")}
-                                                                                >
-                                                                                    {input.name}
-                                                                                </CommandItem>
-                                                                            ))}
-                                                                    </CommandGroup>
-                                                                </Command>
-                                                            </PopoverContent>
-                                                        </Popover>
+                                                        <Textarea
+                                                            id="apiBody"
+                                                            value={apiBody}
+                                                            onChange={(e) => setApiBody(e.target.value)}
+                                                            placeholder='{"key": "{{value}}"}'
+                                                            className="mt-2 border-[2px] border-gray-900"
+                                                            rows={5}
+                                                        />
                                                     </div>
                                                 </TabsContent>
                                             </Tabs>
@@ -831,7 +696,7 @@ export default function AdminFormPage() {
                                                 id="functionName"
                                                 value={functionName}
                                                 onChange={(e) => setFunctionName(e.target.value)}
-                                                placeholder="e.g., updateUserProfile"
+                                                placeholder="updateUserProfile"
                                                 className="mt-2 border-[2px] border-gray-900"
                                             />
                                         </div>
