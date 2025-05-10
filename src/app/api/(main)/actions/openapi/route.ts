@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
     return new NextResponse(null, {status: 201});
 
-// TODO: need to add validation in case actionName or description cannot be derived from spec
+    // TODO: need to add validation in case actionName or description cannot be derived from spec
     function handleOpenAPI(content: any) {
         const openAPIObject = yaml.load(content) as OpenAPIObject;
 

@@ -112,7 +112,6 @@ export default function AdminFormPage() {
                     </div>
                 </motion.div>
 
-                {/* API Section */}
                 <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
                     <div className="relative mb-12">
                         <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
@@ -227,75 +226,6 @@ export default function AdminFormPage() {
                                         rows={5}
                                     />
                                 </div>
-                                <Button className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform">
-                                    <Save className="w-4 h-4 mr-2" />
-                                    Save and Continue
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </motion.div>
-
-                {/* Test Response Section */}
-                <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-                    <div className="relative mb-12">
-                        <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
-                        <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-none">
-                            <CardHeader>
-                                <CardTitle className="text-2xl font-semibold text-gray-900">Test Response</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                <div>
-                                    <Label htmlFor="liveResponse" className="text-gray-900">Live Response</Label>
-                                    <Textarea
-                                        id="liveResponse"
-                                        placeholder="Test with live data from the API..."
-                                        className="mt-2 border-[2px] border-gray-900"
-                                        rows={5}
-                                    />
-                                </div>
-                                <div>
-                                    <Label htmlFor="exampleResponse" className="text-gray-900">Example Response (JSON)</Label>
-                                    <Textarea
-                                        id="exampleResponse"
-                                        placeholder='e.g., {"data": "example"}'
-                                        className="mt-2 border-[2px] border-gray-900"
-                                        rows={5}
-                                    />
-                                </div>
-                                <Button className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform">
-                                    <Save className="w-4 h-4 mr-2" />
-                                    Save and Continue
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </motion.div>
-
-                {/* Data Access Section */}
-                <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-                    <div className="relative mb-12">
-                        <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
-                        <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-none">
-                            <CardHeader>
-                                <CardTitle className="text-2xl font-semibold text-gray-900">Data Access</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                <div>
-                                    <Label className="text-gray-900">Access Type</Label>
-                                    <Select onValueChange={setAccessType} defaultValue={accessType}>
-                                        <SelectTrigger className="mt-2 border-[2px] border-gray-900">
-                                            <SelectValue placeholder="Select access type" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="full">Full Data Access</SelectItem>
-                                            <SelectItem value="limited">Limited Data Access</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <p className="text-sm text-gray-600">
-                                    Note: The maximum response size is 20KB. Anything exceeding that will return an error.
-                                </p>
                                 <Button className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform">
                                     <Save className="w-4 h-4 mr-2" />
                                     Save and Continue

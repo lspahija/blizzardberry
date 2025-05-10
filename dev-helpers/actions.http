@@ -1,5 +1,5 @@
 ### Create action using curl
-POST http://localhost:3000/api/actions
+POST http://localhost:3000/api/actions/curl
 Content-Type: application/json
 
 {
@@ -10,7 +10,7 @@ Content-Type: application/json
 }
 
 ### Create action using OpenAPI spec (YAML)
-POST http://localhost:3000/api/actions/bulk
+POST http://localhost:3000/api/actions/openapi
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 ### Create action using OpenAPI spec (JSON)
-POST http://localhost:3000/api/actions/bulk
+POST http://localhost:3000/api/actions/openapi
 Content-Type: application/json
 
 {
