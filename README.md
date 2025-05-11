@@ -65,6 +65,9 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 - Create admin UI form allowing user to manually create actions like chatbase allows
 - automatically pull docs from website during onboarding for RAG?
 - [optimize RAG pipeline](#frankies-tips-to-optimize-rag)
+- clients for non-js frontends i.e. desktop and mobile apps
+- allow user to use voice, the ideal is that they just talk to computer
+
 
 ## Competition
 - https://www.chatbase.co/
@@ -92,6 +95,8 @@ Which could be useful when you have a lot of chunks and a variety of content.
 But maybe it isn’t necessary, you could test it out to see if it works well (if you get relevant chunks to the given query) without any filtering.
 
 
+
+- tool fetching can maybe be made more accurate by inserting a RAG step. how does the lib fetch under the hood?
 
 
 
