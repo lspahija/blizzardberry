@@ -12,66 +12,12 @@ import { useState, useEffect } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter, useSearchParams } from "next/navigation";
-
-enum ParameterType {
-    String = 'string',
-    Number = 'number',
-    Boolean = 'boolean',
-}
-
-enum ExecutionContext {
-    CLIENT = 'CLIENT',
-    SERVER = 'SERVER',
-}
-
-interface BaseParameter {
-    id: string;
-    description: string;
-    type: ParameterType;
-}
-
-interface BodyParameter extends BaseParameter {
-    isArray?: boolean;
-}
-
-interface RequestParameters {
-    path?: BaseParameter[];
-    query?: BaseParameter[];
-    header?: BaseParameter[];
-    body?: BodyParameter[];
-}
-
-interface RequestHeaders {
-    [key: string]: string;
-}
-
-interface RequestBody {
-    [key: string]: string | number | boolean | (string | number | boolean)[];
-}
-
-interface RequestModel {
-    url: string;
-    method: string;
-    headers?: RequestHeaders;
-    body?: RequestBody;
-}
-
-interface HttpModel {
-    request: RequestModel;
-    parameters: RequestParameters;
-}
-
-interface FrontendArgument {
-    name: string;
-    description: string;
-    type: ParameterType;
-    isArray?: boolean;
-}
-
-interface FrontendModel {
-    functionName: string;
-    arguments: FrontendArgument[];
-}
+import {
+    ExecutionContext, FrontendArgument, FrontendModel, HttpModel, ParameterType,
+    RequestBody,
+    RequestHeaders, RequestModel,
+    RequestParameters
+} from "@/app/api/(main)/actions/form/newDataModel";
 
 interface DataInput {
     name: string;
@@ -198,7 +144,7 @@ export default function AdminFormPage() {
         const baseAction = {
             name: actionName,
             description,
-            location: actionType,
+            executionContext: actionType,
         };
 
         let action: any;
@@ -260,7 +206,7 @@ export default function AdminFormPage() {
 
             action = {
                 ...baseAction,
-                location: ExecutionContext.SERVER,
+                executionContext: ExecutionContext.SERVER,
                 httpModel,
             };
         } else {
@@ -280,13 +226,13 @@ export default function AdminFormPage() {
 
             action = {
                 ...baseAction,
-                location: ExecutionContext.CLIENT,
+                executionContext: ExecutionContext.CLIENT,
                 frontendModel,
         };
         }
 
         try {
-            const response = await fetch("/api/create-action", {
+            const response = await fetch("/api/actions/form", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

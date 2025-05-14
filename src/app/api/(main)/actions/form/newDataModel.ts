@@ -1,77 +1,60 @@
-enum ExecutionContext {
-    CLIENT,
-    SERVER
+export enum ExecutionContext {
+    CLIENT = "CLIENT",
+    SERVER = "SERVER",
 }
 
-enum ParameterType {
-    String = 'string',
-    Number = 'number',
-    Boolean = 'boolean',
+export enum ParameterType {
+    String = "string",
+    Number = "number",
+    Boolean = "boolean",
 }
 
-interface BaseParameter {
-    id: string;
+export interface Parameter {
+    name: string;
     description: string;
     type: ParameterType;
+    isArray: boolean;
 }
 
-interface BodyParameter extends BaseParameter {
-    isArray?: boolean;
-}
-
-interface RequestParameters {
-    path?: BaseParameter[];
-    query?: BaseParameter[];
-    header?: BaseParameter[];
-    body?: BodyParameter[];
-}
-
-interface RequestHeaders {
+export interface RequestHeaders {
     [key: string]: string;
 }
 
-interface RequestBody {
+export interface RequestBody {
     [key: string]: string | number | boolean | (string | number | boolean)[];
 }
 
-interface RequestModel {
+export interface RequestModel {
     url: string;
     method: string;
     headers?: RequestHeaders;
     body?: RequestBody;
 }
 
-interface HttpModel {
+export interface HttpModel {
     request: RequestModel;
-    parameters: RequestParameters;
+    parameters: Parameter[];
 }
 
-interface FrontendArgument {
-    name: string;
-    description: string;
-    type: ParameterType;
-    isArray?: boolean;
-}
-
-interface FrontendModel {
+export interface FrontendModel {
     functionName: string;
-    arguments: FrontendArgument[];
+    parameters: Parameter[];
 }
 
-interface BaseAction {
+export interface BaseAction {
     name: string;
     description: string;
-    location: ExecutionContext;
+    executionContext: ExecutionContext;
 }
 
-interface BackendAction extends BaseAction {
-    location: ExecutionContext.SERVER;
+export interface BackendAction extends BaseAction {
+    executionContext: ExecutionContext.SERVER;
     httpModel: HttpModel;
 }
 
-interface FrontendAction extends BaseAction {
-    location: ExecutionContext.CLIENT;
+export interface FrontendAction extends BaseAction {
+    executionContext: ExecutionContext.CLIENT;
     frontendModel: FrontendModel;
 }
 
-type Action = BackendAction | FrontendAction;
+export type Action = BackendAction | FrontendAction;
