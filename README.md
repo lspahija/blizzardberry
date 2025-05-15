@@ -48,7 +48,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 See an example SaaS app with integrated chatbot at http://localhost:3000/example-saas
 
 ## Immediate TODO
-- consolidate frontend and backend models
 - get tools with parameters working
 
 ## Next steps
