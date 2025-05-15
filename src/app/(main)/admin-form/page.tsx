@@ -25,7 +25,7 @@ import {
     FrontendModel,
     Action,
     BaseAction, Method
-} from "@/app/api/(main)/actions/form/newDataModel";
+} from "@/app/api/(main)/lib/dataModel";
 
 // UI-specific interfaces
 interface DataInput {

@@ -7,7 +7,7 @@ import {
     ParameterType,
     RequestBody,
     RequestModel
-} from '@/app/api/(main)/actions/form/newDataModel';
+} from '@/app/api/(main)/lib/dataModel';
 
 // Helper function to create a zod schema from parameters
 function createParameterSchema(parameters: Parameter[]): z.ZodObject<any> {
