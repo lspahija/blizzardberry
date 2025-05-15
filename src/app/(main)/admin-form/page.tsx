@@ -24,7 +24,7 @@ import {
     HttpModel,
     FrontendModel,
     Action,
-    BaseAction
+    BaseAction, Method
 } from "@/app/api/(main)/actions/form/newDataModel";
 
 // UI-specific interfaces
@@ -168,7 +168,7 @@ export default function AdminFormPage() {
 
             const requestModel: RequestModel = {
                 url: apiUrl,
-                method: apiMethod,
+                method: apiMethod as Method,
                 headers: Object.keys(requestHeaders).length > 0 ? requestHeaders : undefined,
                 body: requestBody,
             };

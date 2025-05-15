@@ -24,9 +24,21 @@ export interface RequestBody {
     [key: string]: string | number | boolean | (string | number | boolean)[];
 }
 
+export type Method =
+    | 'get' | 'GET'
+    | 'delete' | 'DELETE'
+    | 'head' | 'HEAD'
+    | 'options' | 'OPTIONS'
+    | 'post' | 'POST'
+    | 'put' | 'PUT'
+    | 'patch' | 'PATCH'
+    | 'purge' | 'PURGE'
+    | 'link' | 'LINK'
+    | 'unlink' | 'UNLINK';
+
 export interface RequestModel {
     url: string;
-    method: string;
+    method: Method;
     headers?: RequestHeaders;
     body?: RequestBody;
 }
