@@ -42,15 +42,15 @@ Content-Type: application/json
       "method": "GET",
       "headers": {
         "SomeHeader": "SomeHeaderValue",
-        "SomeOtherHeader": "SomeOtherHeaderValue"
+        "SomeOtherHeader": "{{bar}}"
       },
       "body": {
-        "key": "bar"
+        "key": "{{baz}}"
       }
     },
     "parameters": [
       {
-        "name": "Some Input Foo",
+        "name": "foo",
         "description": "a description for data input foo",
         "type": "text",
         "isArray": false
