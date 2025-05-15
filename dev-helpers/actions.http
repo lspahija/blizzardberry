@@ -27,6 +27,44 @@ Content-Type: application/json
   "content": "{\"openapi\":\"3.0.3\",\"info\":{\"title\":\"Upgrade API\",\"version\":\"1.0.0\",\"description\":\"A simple API for account upgrade operations\"},\"servers\":[{\"url\":\"http://localhost:3000\",\"description\":\"Local development server\"}],\"paths\":{\"/api/upgrade\":{\"get\":{\"operationId\":\"accountUpgrade\",\"summary\":\"Upgrade the account\",\"description\":\"Initiates an account upgrade process\",\"responses\":{\"200\":{\"description\":\"Successful response\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"status\":{\"type\":\"string\",\"example\":\"success\"},\"message\":{\"type\":\"string\",\"example\":\"Account upgraded successfully\"}}}}}}}}}}}"
 }
 
+
+### Create action using form
+POST http://localhost:3000/api/actions/form
+Content-Type: application/json
+
+{
+  "name": "Some Action Name",
+  "description": "Some Action Description",
+  "executionContext": "SERVER",
+  "httpModel": {
+    "request": {
+      "url": "https://api.sampleapis.com/coffee/{{foo}}",
+      "method": "GET",
+      "headers": {
+        "SomeHeader": "SomeHeaderValue",
+        "SomeOtherHeader": "SomeOtherHeaderValue"
+      },
+      "body": {
+        "key": "bar"
+      }
+    },
+    "parameters": [
+      {
+        "name": "Some Input Foo",
+        "description": "a description for data input foo",
+        "type": "text",
+        "isArray": false
+      },
+      {
+        "name": "Some Input Bar",
+        "description": "a description for data input bar",
+        "type": "text",
+        "isArray": false
+      }
+    ]
+  }
+}
+
 ### Get action by name
 GET http://localhost:3000/api/actions/accountUpgrade
 Content-Type: application/json
