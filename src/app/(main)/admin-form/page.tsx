@@ -12,23 +12,27 @@ import { useState, useEffect } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter, useSearchParams } from "next/navigation";
+
+// Import unified models
 import {
-    ExecutionContext, FrontendArgument, FrontendModel, HttpModel, ParameterType,
+    ExecutionContext,
+    ParameterType,
+    Parameter,
+    RequestHeaders,
     RequestBody,
-    RequestHeaders, RequestModel,
-    RequestParameters
+    RequestModel,
+    HttpModel,
+    FrontendModel,
+    Action,
+    BaseAction
 } from "@/app/api/(main)/actions/form/newDataModel";
 
+// UI-specific interfaces
 interface DataInput {
     name: string;
     type: string;
     description: string;
     isArray: boolean;
-}
-
-interface Parameter {
-    key: string;
-    value: string;
 }
 
 interface Header {
@@ -65,11 +69,10 @@ export default function AdminFormPage() {
     const [dataInputs, setDataInputs] = useState<DataInput[]>([{ name: "", type: "Text", description: "", isArray: false }]);
     const [apiUrl, setApiUrl] = useState("");
     const [apiMethod, setApiMethod] = useState("GET");
-    const [parameters, setParameters] = useState<Parameter[]>([{ key: "", value: "" }]);
     const [headers, setHeaders] = useState<Header[]>([{ key: "", value: "" }]);
     const [apiBody, setApiBody] = useState("");
     const [functionName, setFunctionName] = useState("");
-    const [activeTab, setActiveTab] = useState("query");
+    const [activeTab, setActiveTab] = useState("headers");
 
     useEffect(() => {
         const stepParam = searchParams.get("step");
@@ -106,20 +109,6 @@ export default function AdminFormPage() {
         setDataInputs(updatedInputs);
     };
 
-    const addParameter = () => {
-        setParameters([...parameters, { key: "", value: "" }]);
-    };
-
-    const removeParameter = (index: number) => {
-        setParameters(parameters.filter((_, i) => i !== index));
-    };
-
-    const updateParameter = (index: number, field: keyof Parameter, value: string) => {
-        const updatedParameters = [...parameters];
-        updatedParameters[index] = { ...updatedParameters[index], [field]: value };
-        setParameters(updatedParameters);
-    };
-
     const addHeader = () => {
         setHeaders([...headers, { key: "", value: "" }]);
     };
@@ -141,13 +130,13 @@ export default function AdminFormPage() {
     };
 
     const handleCreateAction = async () => {
-        const baseAction = {
+        const baseAction: BaseAction = {
             name: actionName,
             description,
             executionContext: actionType,
         };
 
-        let action: any;
+        let action: Action;
 
         if (actionType === ExecutionContext.SERVER) {
             const requestHeaders: RequestHeaders = {};
@@ -167,30 +156,15 @@ export default function AdminFormPage() {
                 return;
             }
 
-            const requestParameters: RequestParameters = {
-                query: parameters
-                    .filter(param => param.key && param.value)
-                    .map(param => ({
-                        id: param.key,
-                        description: "",
-                        type: ParameterType.String,
-                    })),
-                header: headers
-                    .filter(header => header.key && header.value)
-                    .map(header => ({
-                        id: header.key,
-                        description: "",
-                        type: ParameterType.String,
-                    })),
-                body: dataInputs
-                    .filter(input => input.name)
-                    .map(input => ({
-                        id: input.name,
-                        description: input.description,
-                        type: input.type.toLowerCase() as ParameterType,
-                        isArray: input.isArray,
-                    })),
-            };
+            // Only include data inputs in parameters
+            const parameters: Parameter[] = dataInputs
+                .filter(input => input.name)
+                .map(input => ({
+                    name: input.name,
+                    description: input.description,
+                    type: input.type.toLowerCase() as ParameterType,
+                    isArray: input.isArray,
+                }));
 
             const requestModel: RequestModel = {
                 url: apiUrl,
@@ -201,7 +175,7 @@ export default function AdminFormPage() {
 
             const httpModel: HttpModel = {
                 request: requestModel,
-                parameters: requestParameters,
+                parameters,
             };
 
             action = {
@@ -210,7 +184,7 @@ export default function AdminFormPage() {
                 httpModel,
             };
         } else {
-            const frontendArguments: FrontendArgument[] = dataInputs
+            const frontendParameters: Parameter[] = dataInputs
                 .filter(input => input.name)
                 .map(input => ({
                     name: input.name,
@@ -221,14 +195,14 @@ export default function AdminFormPage() {
 
             const frontendModel: FrontendModel = {
                 functionName,
-                arguments: frontendArguments,
+                parameters: frontendParameters,
             };
 
             action = {
                 ...baseAction,
                 executionContext: ExecutionContext.CLIENT,
                 frontendModel,
-        };
+            };
         }
 
         try {
@@ -503,13 +477,7 @@ export default function AdminFormPage() {
                                                 </div>
                                             </div>
                                             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                                                <TabsList className="grid w-full grid-cols-3 bg-[#FFFDF8] border-[2px] border-gray-900 rounded-lg p-1">
-                                                    <TabsTrigger
-                                                        value="query"
-                                                        className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA]"
-                                                    >
-                                                        Query Parameters
-                                                    </TabsTrigger>
+                                                <TabsList className="grid w-full grid-cols-2 bg-[#FFFDF8] border-[2px] border-gray-900 rounded-lg p-1">
                                                     <TabsTrigger
                                                         value="headers"
                                                         className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA]"
@@ -523,54 +491,6 @@ export default function AdminFormPage() {
                                                         Body
                                                     </TabsTrigger>
                                                 </TabsList>
-                                                <TabsContent value="query" className="mt-4">
-                                                    <div>
-                                                        <Label className="text-gray-900">Query Parameters</Label>
-                                                        {parameters.map((param, index) => (
-                                                            <div
-                                                                key={index}
-                                                                className="grid grid-cols-1 md:grid-cols-[1fr_1fr_50px] gap-4 mt-4 items-end"
-                                                            >
-                                                                <div>
-                                                                    <Label htmlFor={`paramKey${index}`}>Key</Label>
-                                                                    <Input
-                                                                        id={`paramKey${index}`}
-                                                                        value={param.key}
-                                                                        onChange={(e) => updateParameter(index, "key", e.target.value)}
-                                                                        placeholder="format"
-                                                                        className="mt-2 border-[2px] border-gray-900"
-                                                                    />
-                                                                </div>
-                                                                <div>
-                                                                    <Label htmlFor={`paramValue${index}`}>Value</Label>
-                                                                    <Input
-                                                                        id={`paramValue${index}`}
-                                                                        value={param.value}
-                                                                        onChange={(e) => updateParameter(index, "value", e.target.value)}
-                                                                        placeholder="j1"
-                                                                        className="mt-2 border-[2px] border-gray-900"
-                                                                    />
-                                                                </div>
-                                                                <div>
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
-                                                                        onClick={() => removeParameter(index)}
-                                                                    >
-                                                                        <Trash2 className="w-4 h-4" />
-                                                                    </Button>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                        <Button
-                                                            variant="outline"
-                                                            className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
-                                                            onClick={addParameter}
-                                                        >
-                                                            Add Query Parameter
-                                                        </Button>
-                                                    </div>
-                                                </TabsContent>
                                                 <TabsContent value="headers" className="mt-4">
                                                     <div>
                                                         <Label className="text-gray-900">Headers</Label>
