@@ -109,7 +109,7 @@ export async function POST(req: Request) {
         console.log('Received action:', JSON.stringify(action, null, 2));
 
         // Create dynamic zod schema from httpModel.parameters
-        const parameterSchema = createParameterSchema(action.httpModel.parameters);
+        const parameterSchema = createParameterSchema(action.executionModel.parameters);
 
         // Define the tool with parameterized schema and execute
         const actionName = `ACTION_${action.name}`;
@@ -119,7 +119,7 @@ export async function POST(req: Request) {
                 parameters: parameterSchema,
                 execute: async (params: Record<string, any>) => {
                     // Return the httpModel.request with placeholders substituted
-                    return substituteRequestModel(action.httpModel.request, params);
+                    return substituteRequestModel(action.executionModel.request, params);
                 },
             }),
         };

@@ -1,16 +1,10 @@
 import {supabaseClient} from "@/app/api/(main)/lib/supabase";
-import {HttpModel} from "@/app/api/(main)/actions/form/newDataModel";
-
-interface Action {
-    name: string;
-    description: string;
-    httpModel: HttpModel;
-}
+import {Action, ExecutionContext, ExecutionModel, HttpModel} from "@/app/api/(main)/actions/form/newDataModel";
 
 export const getActions = async (): Promise<Action[]> => {
     const {data, error} = await supabaseClient
         .from('actions')
-        .select('name, description, http_model');
+        .select('name, description, execution_context, execution_model');
 
     if (error) {
         throw new Error(`Failed to fetch actions: ${error.message}`);
@@ -19,14 +13,15 @@ export const getActions = async (): Promise<Action[]> => {
     return data.map(d => ({
         name: d.name,
         description: d.description,
-        httpModel: d.http_model as HttpModel,
+        executionContext: d.execution_context,
+        executionModel: d.execution_model,
     }));
 };
 
 export const getAction = async (actionName: string): Promise<Action | null> => {
     const {data, error} = await supabaseClient
         .from('actions')
-        .select('name, description, http_model')
+        .select('name, description, execution_context, execution_model')
         .eq('name', actionName)
         .single();
 
@@ -40,20 +35,24 @@ export const getAction = async (actionName: string): Promise<Action | null> => {
     return {
         name: data.name,
         description: data.description,
-        httpModel: data.http_model as HttpModel,
+        executionContext: data.execution_context,
+        executionModel: data.execution_model,
     };
 };
 
-export const createAction = async (actionName: string, httpModel: HttpModel, description: string): Promise<void> => {
-    const {error} = await supabaseClient
-        .from('actions')
-        .insert({
-            name: actionName,
-            description,
-            http_model: httpModel,
-        });
+export const createAction =
+    async (actionName: string, description: string,
+           executionContext: ExecutionContext, executionModel: ExecutionModel): Promise<void> => {
+        const {error} = await supabaseClient
+            .from('actions')
+            .insert({
+                name: actionName,
+                description,
+                execution_context: executionContext,
+                execution_model: executionModel,
+            });
 
-    if (error) {
-        throw new Error(`Failed to create action: ${error.message}`);
-    }
-};
+        if (error) {
+            throw new Error(`Failed to create action: ${error.message}`);
+        }
+    };

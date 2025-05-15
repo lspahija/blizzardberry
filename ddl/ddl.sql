@@ -1,11 +1,16 @@
+CREATE TYPE execution_context AS ENUM ('CLIENT', 'SERVER');
+
 create table actions
 (
     id          uuid                     default uuid_generate_v4() primary key,
     name        text  not null unique,
     description text  not null,
-    http_model  jsonb not null,
+    execution_context execution_context not null,
+    execution_model  jsonb not null,
     created_at  timestamp with time zone default now()
 );
+
+
 
 
 CREATE TABLE documents

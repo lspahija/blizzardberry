@@ -181,7 +181,7 @@ export default function AdminFormPage() {
             action = {
                 ...baseAction,
                 executionContext: ExecutionContext.SERVER,
-                httpModel,
+                executionModel: httpModel,
             };
         } else {
             const frontendParameters: Parameter[] = dataInputs
@@ -201,7 +201,7 @@ export default function AdminFormPage() {
             action = {
                 ...baseAction,
                 executionContext: ExecutionContext.CLIENT,
-                frontendModel,
+                executionModel: frontendModel,
             };
         }
 

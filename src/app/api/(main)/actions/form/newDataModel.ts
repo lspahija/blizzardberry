@@ -61,12 +61,14 @@ export interface BaseAction {
 
 export interface BackendAction extends BaseAction {
     executionContext: ExecutionContext.SERVER;
-    httpModel: HttpModel;
+    executionModel: HttpModel;
 }
 
 export interface FrontendAction extends BaseAction {
     executionContext: ExecutionContext.CLIENT;
-    frontendModel: FrontendModel;
+    executionModel: FrontendModel;
 }
+
+export type ExecutionModel = HttpModel | FrontendModel;
 
 export type Action = BackendAction | FrontendAction;
