@@ -100,26 +100,28 @@
             // Log raw fetch result for debugging
             console.log('Fetch Result:', state.fetchResults[key]);
 
-            // Update message with fetch result
-            const message = state.messages.find(msg => msg.id === messageId);
-            if (message && message.parts[partIndex]) {
-                message.parts[partIndex].toolInvocation.result = state.fetchResults[key];
-                message.parts[partIndex].toolInvocation.state = 'result';
-            }
+            // Create a temporary message to hold the fetch result as context
+            const fetchResultMessage = {
+                role: 'user', // Use 'user' to match expected roles
+                content: `Tool execution result: ${JSON.stringify(state.fetchResults[key])}`
+            };
 
-            // Send to chat endpoint for friendly response
+            // Send to chat endpoint with fetch result as context
             state.isProcessing = true;
             updateChatUI();
 
             const chatResponse = await fetch('http://localhost:3000/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: state.messages })
+                body: JSON.stringify({
+                    messages: [...state.messages, fetchResultMessage]
+                })
             });
 
             if (!chatResponse.ok) throw new Error('Failed to fetch AI response');
             const { text } = await chatResponse.json();
 
+            // Add the LLM response to messages
             state.messages.push({
                 id: generateId(),
                 role: 'assistant',
@@ -168,9 +170,13 @@
             const { text, toolCalls, toolResults } = await response.json();
             const parts = [];
 
-            if (text) parts.push({ type: 'text', text });
+            // Only add text part if there are no toolResults
+            if (text && (!toolResults || toolResults.length === 0)) {
+                parts.push({ type: 'text', text });
+            }
+
             if (toolCalls?.length) {
-                toolCalls.forEach((toolCall, index) => {
+                toolCalls.forEach((toolCall, _) => {
                     const toolResult = toolResults?.find(tr => tr.toolCallId === toolCall.toolCallId);
                     parts.push({
                         type: 'tool-invocation',
@@ -191,34 +197,45 @@
                 });
             }
 
+            // Only create and push aiMessage if it has non-tool parts
+            let hasToolExecution = false;
             const aiMessage = {
                 id: generateId(),
                 role: 'assistant',
                 parts
             };
-            state.messages.push(aiMessage);
 
-            // Execute tool invocations only for toolNames starting with "ACTION:"
-            aiMessage.parts.forEach((part, index) => {
-                if (
-                    part.type === 'tool-invocation' &&
-                    part.toolInvocation.state === 'result' &&
-                    part.toolInvocation.result &&
-                    part.toolInvocation.toolName.startsWith('ACTION:')
-                ) {
+            // Check if there are any tool executions to perform
+            const toolInvocations = parts.filter(part =>
+                part.type === 'tool-invocation' &&
+                part.toolInvocation.state === 'result' &&
+                part.toolInvocation.result &&
+                part.toolInvocation.toolName.startsWith('ACTION:')
+            );
+
+            if (toolInvocations.length > 0) {
+                hasToolExecution = true;
+                // Execute tool invocations without adding aiMessage to state.messages
+                toolInvocations.forEach((part, index) => {
                     executeFetch(part.toolInvocation.result, aiMessage.id, index);
-                }
-            });
+                });
+            } else if (parts.length > 0) {
+                // Only push aiMessage if it has non-tool parts
+                state.messages.push(aiMessage);
+            }
 
-            state.isProcessing = false;
-            updateChatUI();
+            // If no tool executions, update UI immediately
+            if (!hasToolExecution) {
+                state.isProcessing = false;
+                updateChatUI();
+            }
         } catch (error) {
             handleError(error, 'Error: Failed to get response');
         }
     }
 
-    // TODO it still shows thinking text sometimes
-    function renderMessagePart(part, messageId, index) {
+    // Render message part
+    function renderMessagePart(part, messageId) {
         if (part.type === 'text') {
             // Extract <think> content for logging and get display text
             const thinkMatch = part.text.match(/<think>([\s\S]*?)<\/think>\n\n([\s\S]*)/);
@@ -246,7 +263,7 @@
         let html = state.messages.map(message => `
             <div class="message-container ${message.role === 'user' ? 'user-container' : 'assistant-container'}">
                 <div class="message ${message.role === 'user' ? 'user-message' : 'assistant-message'}">
-                    ${message.parts.map((part, index) => renderMessagePart(part, message.id, index)).join('')}
+                    ${message.parts.map((part, _) => renderMessagePart(part, message.id)).join('')}
                 </div>
             </div>
         `).join('');
