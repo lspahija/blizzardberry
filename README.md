@@ -18,12 +18,36 @@ e.g. it must be easy to:
 
 ## Run the project locally
 
-Install git-crypt: (macOS instructions, for other platforms google it)
+This project uses [git-crypt](https://github.com/AGWA/git-crypt) to encrypt sensitive files. (like .env*)
+
+After you clone the repo, you need to execute the following:
+
+```bash
+gpg --armor --export <your-email> > your-name-public-key.asc
+```
+
+Then send the public key and your email to someone that already has access to the repo, and they will import your public key with the following commands:
+
+```bash
+gpg --import their-public-key.asc
+```
+
+```bash
+git-crypt add-gpg-user <their-email>
+```
+
+Now install git-crypt: (macOS instructions, for other platforms google it)
 ```bash
 brew install git-crypt
 ```
 
-<fill in the rest of the git-crypt setup instructions>
+Then unlock the repo:
+
+```bash
+git-crypt unlock
+```
+
+Now you can freely pull and push to the repo without worrying about the sensitive files (.env*). If you create other sensitive files, make sure to add them to `.gitattributes` so that they are encrypted.
 
 Install pnpm:
 
