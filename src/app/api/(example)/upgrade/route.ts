@@ -1,4 +1,4 @@
-export async function GET(_: Request) {
+export async function POST(req: Request) {
     return new Response(JSON.stringify({
         account_id: 1,
         username: "John Doe",

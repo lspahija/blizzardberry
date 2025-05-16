@@ -33,32 +33,31 @@ POST http://localhost:3000/api/actions/form
 Content-Type: application/json
 
 {
-  "name": "Some Action Name",
+  "name": "Upgrade account",
   "description": "Some Action Description",
   "executionContext": "SERVER",
   "executionModel": {
     "request": {
-      "url": "https://api.sampleapis.com/coffee/{{foo}}",
-      "method": "GET",
+      "url": "http://localhost:3000/api/upgrade",
+      "method": "POST",
       "headers": {
-        "SomeHeader": "SomeHeaderValue",
-        "SomeOtherHeader": "{{bar}}"
+        "AccountNumber": "{{AccountNumber}}"
       },
       "body": {
-        "key": "{{baz}}"
+        "accountType": "{{accountType}}"
       }
     },
     "parameters": [
       {
-        "name": "foo",
-        "description": "a description for data input foo",
-        "type": "text",
+        "name": "AccountNumber",
+        "description": "user's account number",
+        "type": "string",
         "isArray": false
       },
       {
-        "name": "Some Input Bar",
-        "description": "a description for data input bar",
-        "type": "text",
+        "name": "accountType",
+        "description": "account type user wants to upgrade to",
+        "type": "string",
         "isArray": false
       }
     ]

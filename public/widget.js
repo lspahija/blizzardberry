@@ -92,7 +92,7 @@
             const response = await fetch(httpModel.url, {
                 method: httpModel.method,
                 headers: httpModel.headers,
-                body: httpModel.body
+                body: JSON.stringify(httpModel.body)
             });
             const data = await response.json();
             state.fetchResults[key] = { status: response.status, data };
@@ -217,6 +217,7 @@
         }
     }
 
+    // TODO it still shows thinking text sometimes
     function renderMessagePart(part, messageId, index) {
         if (part.type === 'text') {
             // Extract <think> content for logging and get display text
