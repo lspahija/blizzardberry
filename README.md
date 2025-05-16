@@ -92,7 +92,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - allow chatbot to perform frontend actions [like chatbase allows](https://www.chatbase.co/docs/developer-guides/client-side-custom-actions) (chatbot can call a function that performs an action on the frontend)
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
-- add [google analytics](https://analytics.google.com/) or [posthog](https://posthog.com/)
+- [finish onboarding](#posthog) PostHog for analytics
 - landing page needs to sell the product well!
 - rename and get domain!
 - deploy to vercel
@@ -105,6 +105,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - automatically pull docs from website during onboarding for RAG?
 - [optimize RAG pipeline](#frankies-tips-to-optimize-rag)
 - create SDKs for non-js frontends i.e. desktop and mobile apps (analogues to widget.js)
+- use AI to make onboarding super simple - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
 - allow user to use voice, the ideal is that they just talk to computer
 
 
@@ -116,6 +117,25 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 
 ## Notes
+
+### PostHog
+
+Successfully installed PostHog!
+
+Changes made:
+- Installed posthog-js & posthog-node packages
+- Initialized PostHog and added pageview tracking
+- Created a PostHogClient to use PostHog server-side
+- Setup a reverse proxy to avoid ad blockers blocking analytics requests
+- Added your Project API key to your .env.local file
+
+Next steps:
+- Call posthog.identify() when a user signs into your app
+- Call posthog.capture() to capture custom events in your app
+- Upload your Project API key to your hosting provider
+- Create a PR for your changes
+
+Learn more about PostHog + Next.js: https://posthog.com/docs/libraries/next-js
 
 ### Frankie's tips to optimize RAG:
 
