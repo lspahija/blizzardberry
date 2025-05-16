@@ -24,48 +24,45 @@ Run the development server:
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Access the landing page at [http://localhost:3000](http://localhost:3000) 
+
+## Example
+
+See an example SaaS app with integrated chatbot at http://localhost:3000/example-saas
+
+## Connect to Supabase Database with Your Favorite Postgres Client
+
+- URL: `jdbc:postgresql://aws-0-us-east-2.pooler.supabase.com:5432/postgres`
+- user: `postgres.pwlbhcjwuwsvszkvqexy`
+- password: [use Supabase password]
 
 ## Deploy
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## Architecture
-
-- admin portal where app/website owner pastes in their OpenAPI spec. the spec is parsed with each endpoint becoming an action. 
-(also support dropping in curl commands)
-
-- when an end-user uses the app's chatbot and wants to perform an action, the LLM retrieves the tool corresponding to that action
-
-- the chatbot frontend widget populates a fetch request with the tool's url, http method, headers, and body and executes the request
-
-- another llm instance without tools is then called to parse the response and return a user-friendly message
-  (vercel's ai sdk supports multiple steps in a single llm invocation, so maybe possible in a single call to the same instance)
-
-## Example
-
-See an example SaaS app with integrated chatbot at http://localhost:3000/example-saas
+# Things to do
 
 ## Immediate TODO
+- make sure chatbot consistently works and doesn't render thinking tokens
 
 ## Next steps
+- allow chatbot to perform frontend actions [like chatbase allows](https://www.chatbase.co/docs/developer-guides/client-side-custom-actions) (chatbot can call a function that performs an action on the frontend)
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
 - Stripe to sell the product $$
 - add [google analytics](https://analytics.google.com/) or [posthog](https://posthog.com/)
-- landing page needs to sell the product
-- deploy to vercel
+- landing page needs to sell the product well!
 - rename and get domain!
+- deploy to vercel
 
-## Down the road
+## Later on
 - minify and obfuscate widget js
-- get vanilla js version of useChat working?
-- how to allow purely frontend actions? Window-Level API Object (not quite global scope but close)
+- stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?)
+- let user just pass in their OpenAPI spec and the app will automatically generate a chatbot for them
 - maybe use some software or lib to autodiscover website endpoints/capabilities to make onboarding super simple
-- Create admin UI form allowing user to manually create actions like chatbase allows
 - automatically pull docs from website during onboarding for RAG?
 - [optimize RAG pipeline](#frankies-tips-to-optimize-rag)
-- clients for non-js frontends i.e. desktop and mobile apps
+- create SDKs for non-js frontends i.e. desktop and mobile apps (analogues to widget.js)
 - allow user to use voice, the ideal is that they just talk to computer
 
 
