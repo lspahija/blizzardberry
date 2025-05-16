@@ -100,6 +100,17 @@
             // Log raw fetch result for debugging
             console.log('Fetch Result:', state.fetchResults[key]);
 
+            // Add success message with green checkmark
+            state.messages.push({
+                id: generateId(),
+                role: 'assistant',
+                parts: [{
+                    type: 'text',
+                    text: `✅ ${httpModel.toolName || 'Action'} successfully executed`
+                }]
+            });
+            updateChatUI();
+
             // Create a temporary message to hold the fetch result as context
             const fetchResultMessage = {
                 role: 'user', // Use 'user' to match expected roles
@@ -217,7 +228,8 @@
                 hasToolExecution = true;
                 // Execute tool invocations without adding aiMessage to state.messages
                 toolInvocations.forEach((part, index) => {
-                    executeFetch(part.toolInvocation.result, aiMessage.id, index);
+                    // Pass toolName to executeFetch
+                    executeFetch({ ...part.toolInvocation.result, toolName: part.toolInvocation.toolName }, aiMessage.id, index);
                 });
             } else if (parts.length > 0) {
                 // Only push aiMessage if it has non-tool parts

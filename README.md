@@ -44,7 +44,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # Things to do
 
 ## Immediate TODO
-- make sure chatbot consistently works and doesn't render thinking tokens
 
 ## Next steps
 - allow chatbot to perform frontend actions [like chatbase allows](https://www.chatbase.co/docs/developer-guides/client-side-custom-actions) (chatbot can call a function that performs an action on the frontend)
