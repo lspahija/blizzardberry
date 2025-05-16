@@ -4,9 +4,28 @@
 The end-user of the app should be able to perform actions on the app just by communicating their intentions via the interface.
 The interface should be powered by easily pluggable AI models so that new models can be supported as soon as they're released.**
 
+There is a lot of useful software out there, but the vast majority does not have a natural language interface. 
+The goal of this project is to enable all software to have a natural language interface. 
+Make onboarding so easy that it becomes a no-brainer for app owners to add a natural language interface to their app.
+
+Code quality and architecture of this project are imperative! 
+They are considered a competitive advantage and must allow for rapid iteration and extensibility. 
+
+e.g. it must be easy to:
+- add new AI models (as AI models improve, the usefulness of this product should automatically improve in parallel)
+- create new SDKs for different languages so a chatbot can be added to any app
+- enable new ways for app owners to onboard their website (parse OpenAPI spec, parse cURL, autodiscovery, etc.)
+
 ## Run the project locally
 
-Install pnpm if you haven't already:
+Install git-crypt: (macOS instructions, for other platforms google it)
+```bash
+brew install git-crypt
+```
+
+<fill in the rest of the git-crypt setup instructions>
+
+Install pnpm:
 
 ```bash
 npm install -g pnpm
@@ -26,7 +45,7 @@ pnpm dev
 
 Access the landing page at [http://localhost:3000](http://localhost:3000) 
 
-## Example
+## Use Chatbot
 
 See an example SaaS app with integrated chatbot at http://localhost:3000/example-saas
 
@@ -34,7 +53,7 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 
 - URL: `jdbc:postgresql://aws-0-us-east-2.pooler.supabase.com:5432/postgres`
 - user: `postgres.pwlbhcjwuwsvszkvqexy`
-- password: [use Supabase password]
+- password: [your Supabase password]
 
 ## Deploy
 
@@ -48,7 +67,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## Next steps
 - allow chatbot to perform frontend actions [like chatbase allows](https://www.chatbase.co/docs/developer-guides/client-side-custom-actions) (chatbot can call a function that performs an action on the frontend)
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
-- Stripe to sell the product $$
+- Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
 - add [google analytics](https://analytics.google.com/) or [posthog](https://posthog.com/)
 - landing page needs to sell the product well!
 - rename and get domain!
