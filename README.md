@@ -16,84 +16,107 @@ e.g. it must be easy to:
 - create new SDKs for different languages so a chatbot can be added to any app
 - enable new ways for app owners to onboard their website (parse OpenAPI spec, parse cURL, autodiscovery, etc.)
 
-## Run the project locally
 
-This project uses [git-crypt](https://github.com/AGWA/git-crypt) to encrypt sensitive files. (like .env*)
+# Running the Project Locally
 
-After you clone the repo, you need to execute the following:
+This guide outlines the steps to set up and run the project locally. The project uses [git-crypt](https://github.com/AGWA/git-crypt) to encrypt sensitive files (e.g., `.env*`).
 
-```bash
-gpg --armor --export <your-email> > your-name-public-key.asc
-```
+## Setup Instructions
 
-Then send the public key and your email to someone that already has access to the repo, and they will import your public key with the following commands:
+### 1. Clone the Repository
+Clone the project repository to your local machine.
 
-```bash
-gpg --import their-public-key.asc
-```
+### 2. Configure git-crypt
+To access encrypted files, follow these steps:
 
-```bash
-git-crypt add-gpg-user <their-email>
-```
+1. **Export Your Public Key**  
+   Run the following command, replacing `<your-email>` with your email address:
+   ```bash
+   gpg --armor --export <your-email> > your-name-public-key.asc
+   ```
 
-Now install git-crypt: (macOS instructions, for other platforms google it)
+2. **Share Your Public Key**  
+   Send the generated `your-name-public-key.asc` file and your email to a team member with repository access.
+
+3. **Import Their Public Key**  
+   The team member will import your public key into their GPG keyring:
+   ```bash
+   gpg --import their-public-key.asc
+   ```
+
+4. **Add Your GPG User**  
+   The team member will add you to git-crypt with:
+   ```bash
+   git-crypt add-gpg-user <their-email>
+   ```
+
+### 3. Install git-crypt
+For macOS, install git-crypt using Homebrew:
 ```bash
 brew install git-crypt
 ```
+For other platforms, refer to the [git-crypt documentation](https://github.com/AGWA/git-crypt).
 
-Then unlock the repo:
-
+### 4. Unlock the Repository
+Unlock the encrypted files:
 ```bash
 git-crypt unlock
 ```
+Now you can pull and push to the repository without issues. If you add new sensitive files, ensure they are listed in `.gitattributes` for encryption.
 
-Now you can freely pull and push to the repo without worrying about the sensitive files (.env*). If you create other sensitive files, make sure to add them to `.gitattributes` so that they are encrypted.
+### 5. Set Up LM Studio
+1. Install [LM Studio](https://lmstudio.ai/).
+2. Download the `qwen3-8b` model in LM Studio.
+3. Enable **Developer Mode** in LM Studio.
+4. Start the LM Studio server to serve the model at `http://localhost:1234/v1`.
 
-Install pnpm:
-
+### 6. Install pnpm
+Install pnpm globally:
 ```bash
 npm install -g pnpm
 ```
 
-Install dependencies:
-
+### 7. Install Dependencies
+Navigate to the project directory and install dependencies:
 ```bash
 pnpm install
 ```
 
-Run the development server:
-
+### 8. Run the Development Server
+Start the development server:
 ```bash
 pnpm dev
 ```
 
-Access the landing page at [http://localhost:3000](http://localhost:3000) 
+### 9. Access the Application
+Open your browser and visit:
+[http://localhost:3000](http://localhost:3000) to see the landing page.
 
-## Use Chatbot
+
+# Use Chatbot
 
 See an example SaaS app with integrated chatbot at http://localhost:3000/example-saas
 
-## Connect to Supabase Database with Your Favorite Postgres Client
+# Connect to Supabase Database with Your Favorite Postgres Client
 
 - URL: `jdbc:postgresql://aws-0-us-east-2.pooler.supabase.com:5432/postgres`
 - user: `postgres.pwlbhcjwuwsvszkvqexy`
 - password: [your Supabase password]
 
-## Deploy
+# Deploy
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-# Things to do
-
-## Immediate TODO
+# Things to be done
 
 ## Next steps
-- allow chatbot to perform frontend actions [like chatbase allows](https://www.chatbase.co/docs/developer-guides/client-side-custom-actions) (chatbot can call a function that performs an action on the frontend)
+- allow chatbot to perform frontend actions [like chatbase allows](https://www.chatbase.co/docs/developer-guides/client-side-custom-actions) (chatbot can call a function that performs an action on the frontend). This requires an SDK
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
 - [finish onboarding](#posthog) PostHog for analytics
 - landing page needs to sell the product well!
+- add functionality to js SDK to allow the app owner to [add metadata](#sdk-that-allows-app-owners-to-add-metadata)
 - rename and get domain!
 - deploy to vercel
 
@@ -109,15 +132,48 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - allow user to use voice, the ideal is that they just talk to computer
 
 
-## Competition
+# Competition
 - https://www.chatbase.co/
   - [custom actions](https://www.chatbase.co/docs/user-guides/chatbot/actions/custom-action)
 
-## Design
-The design is based on this: https://gitingest.com/
+# Design
+The website design is based on this: https://gitingest.com/
 
 
-## Notes
+# Notes
+
+### SDK that allows app owners to add metadata
+
+chatbase offers an sdk that can be embedded in frontend and provide user metadata
+and then the chatbot can access that to populate fields in request
+
+You can add metadata in two ways:
+
+Using the embed code:
+```javascript
+window.chatbaseUserConfig = {
+user_id: "123",
+user_hash: "hash",
+user_metadata: {
+"name": "John Doe",
+"email": "john@example.com",
+"company": "Acme Inc"
+}
+}
+```
+
+Using the SDK identify method:
+```javascript
+window.chatbase("identify", {
+user_id: "123",
+user_hash: "hash",
+user_metadata: {
+"name": "John Doe",
+"email": "john@example.com",
+"company": "Acme Inc"
+}
+});
+```
 
 ### PostHog
 
@@ -155,39 +211,5 @@ Which could be useful when you have a lot of chunks and a variety of content.
 But maybe it isn’t necessary, you could test it out to see if it works well (if you get relevant chunks to the given query) without any filtering.
 
 
-
+### Ideas
 - tool fetching can maybe be made more accurate by inserting a RAG step. how does the lib fetch under the hood?
-
-
-
-
-
-
-chatbase offers an sdk that can be embedded in frontend and provide user metadata
-and then the chatbot can access that to populate fields in request
-
-You can add metadata in two ways:
-
-Using the embed code:
-window.chatbaseUserConfig = {
-user_id: "123",
-user_hash: "hash",
-user_metadata: {
-"name": "John Doe",
-"email": "john@example.com",
-"company": "Acme Inc"
-}
-}
-Using the SDK identify method:
-window.chatbase("identify", {
-user_id: "123",
-user_hash: "hash",
-user_metadata: {
-"name": "John Doe",
-"email": "john@example.com",
-"company": "Acme Inc"
-}
-});
-
-
-
