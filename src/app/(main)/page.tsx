@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Zap, Shield, Rocket, Code } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 export default function LandingPage() {
     const containerVariants = {
@@ -24,6 +25,10 @@ export default function LandingPage() {
     const cardVariants = {
         hidden: { opacity: 0, scale: 0.95 },
         visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+    };
+
+    const handleSignIn = async () => {
+        await signIn("github");
     };
 
     return (
@@ -56,8 +61,12 @@ export default function LandingPage() {
                 <div className="flex space-x-3">
                     <div className="relative">
                         <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
-                        <Button variant="outline" className="relative bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform" asChild>
-                            <Link href="/signin">Sign In</Link>
+                        <Button
+                            variant="outline"
+                            className="relative bg-[#FFFDF8] text-gray-900 borderriority to-[#FFFDF8] border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                            onClick={handleSignIn}
+                        >
+                            Sign In
                         </Button>
                     </div>
                     <div className="relative">
@@ -195,7 +204,7 @@ export default function LandingPage() {
                 <h2 className="text-4xl font-bold text-gray-900 mb-4">
                     Ready to Transform Your Webapp?
                 </h2>
-                <p className="text-lg text-gray-900 mb-6 max-w-2xl mx-auto">
+                <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
                     Join thousands of developers using Omni Interface to power their apps with AI chatbots.
                 </p>
                 <div className="relative inline-block">
