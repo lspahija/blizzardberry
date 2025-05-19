@@ -76,16 +76,39 @@ export default function AdminFormPage() {
 
     useEffect(() => {
         const stepParam = searchParams.get("step");
+        let currentStep = 1;
+        
         if (stepParam) {
             const stepNum = parseInt(stepParam);
             if (stepNum >= 1 && stepNum <= 3) {
-                setStep(stepNum);
+                currentStep = stepNum;
             }
         }
-    }, [searchParams]);
+        setStep(currentStep);
+        
+        const typeParam = searchParams.get("type");
+        let currentActionType = actionType; // Default from state
+        
+        if (typeParam) {
+            if (typeParam === 'server') {
+                currentActionType = ExecutionContext.SERVER;
+            } else if (typeParam === 'client') {
+                currentActionType = ExecutionContext.CLIENT;
+            }
+            setActionType(currentActionType);
+        } else if (stepParam) {
+            const actionTypeParam = currentActionType === ExecutionContext.SERVER ? 'server' : 'client';
+            router.replace(`?type=${actionTypeParam}&step=${currentStep}`);
+        }
+    }, [searchParams, router, actionType]);
 
     const updateUrl = (newStep: number) => {
-        router.push(`?step=${newStep}`);
+        if (newStep > 1) {
+            const actionTypeParam = actionType === ExecutionContext.SERVER ? 'server' : 'client';
+            router.push(`?type=${actionTypeParam}&step=${newStep}`);
+        } else {
+            router.push(`?step=${newStep}`);
+        }
         setStep(newStep);
     };
 
@@ -309,8 +332,13 @@ export default function AdminFormPage() {
                                     <div>
                                         <Label className="text-gray-900">Action Type</Label>
                                         <RadioGroup
-                                            defaultValue={ExecutionContext.SERVER}
-                                            onValueChange={(value: ExecutionContext) => setActionType(value)}
+                                            value={actionType}
+                                            onValueChange={(value: ExecutionContext) => {
+                                                setActionType(value);
+                                                // Update URL immediately to reflect selected action type, even in step 1
+                                                const actionTypeParam = value === ExecutionContext.SERVER ? 'server' : 'client';
+                                                router.replace(`?type=${actionTypeParam}&step=1`);
+                                            }}
                                             className="flex space-x-4 mt-2"
                                         >
                                             <div className="flex items-center space-x-2">
