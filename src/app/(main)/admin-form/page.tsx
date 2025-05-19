@@ -224,6 +224,32 @@ export default function AdminFormPage() {
         }
     };
 
+    function getRegisterToolsExample(functionName: string, dataInputs: DataInput[]) {
+        const argList = dataInputs.filter(i => i.name).map(i => i.name).join(', args.') || '...';
+        return `window.widget.registerTools({
+        ${functionName || 'your_action'}: async (args, user) => {
+          // args.${argList}
+          // user: authenticated user info (if available)
+          // Your logic here
+          return { data: ..., status: "success" };
+        }
+      });`;
+    }
+
+    function ArgsList({ dataInputs }: { dataInputs: DataInput[] }) {
+        return (
+            <ul className="list-disc pl-6">
+                {dataInputs.filter(input => input.name).map((input, idx) => (
+                    <li key={idx}>
+                        <span className="font-mono font-semibold">{input.name}</span>
+                        <span className="ml-2 text-gray-700">({input.type}{input.isArray ? '[]' : ''})</span>
+                        <span className="ml-2 text-gray-500">{input.description}</span>
+                    </li>
+                ))}
+            </ul>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-[#FFFDF8]">
             <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-gray-900 sticky top-0 bg-[#FFFDF8] z-50">
@@ -555,16 +581,38 @@ export default function AdminFormPage() {
                                             </Tabs>
                                         </>
                                     ) : (
-                                        <div>
-                                            <Label htmlFor="functionName" className="text-gray-900">Function Name</Label>
-                                            <p className="text-sm text-gray-600 mt-1">The name of the client-side function to be executed.</p>
-                                            <Input
-                                                id="functionName"
-                                                value={functionName}
-                                                onChange={(e) => setFunctionName(e.target.value)}
-                                                placeholder="updateUserProfile"
-                                                className="mt-2 border-[2px] border-gray-900"
-                                            />
+                                        <div className="space-y-6">
+                                            <div>
+                                                <Label htmlFor="functionName" className="text-gray-900">Function Name</Label>
+                                                <p className="text-sm text-gray-600 mt-1">
+                                                    The name of the client-side function to be executed. You will implement this in your app using the SDK.
+                                                </p>
+                                                <Input
+                                                    id="functionName"
+                                                    value={functionName}
+                                                    onChange={(e) => setFunctionName(e.target.value)}
+                                                    placeholder="get_weather"
+                                                    className="mt-2 border-[2px] border-gray-900"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <Label className="text-gray-900">Arguments (Data Inputs)</Label>
+                                                <p className="text-sm text-gray-600 mt-1">
+                                                    The chatbot will collect these from the user and pass them as <code>args</code> to your function.
+                                                </p>
+                                                <ArgsList dataInputs={dataInputs} />
+                                            </div>
+
+                                            <div>
+                                                <Label className="text-gray-900">How to Implement</Label>
+                                                <p className="text-sm text-gray-600 mt-1">
+                                                    In your app, register this action using the SDK. Example:
+                                                </p>
+                                                <pre className="bg-[#FFF4DA] border-2 border-gray-900 rounded p-4 text-sm overflow-x-auto mt-8">
+                                                    {getRegisterToolsExample(functionName, dataInputs)}
+                                                </pre>
+                                            </div>
                                         </div>
                                     )}
                                     <Button
