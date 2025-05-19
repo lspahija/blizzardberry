@@ -67,6 +67,38 @@ export default function ExampleLayout({
   })();`
             }
         </Script>
+        <Script id="client-actions" strategy="afterInteractive">
+            {`
+window.widget = window.widget || {};
+window.widget.registerTools = window.widget.registerTools || function(tools) {
+  console.log('Registering client-side tools:', Object.keys(tools));
+  window.widget.tools = tools;
+};
+
+window.widget.registerTools({
+  get_weather: async (args, user) => {
+    // args contains parameters defined in your custom action
+    // user contains authenticated user data if identity verification is set up
+    try {
+      const response = await fetch(
+        \`https://api.weatherapi.com/v1/current.json?q=\${args.location}\`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch weather data.");
+      }
+
+      const data = await response.json();
+
+      return { data, status: "success" };
+    } catch (error) {
+      // Return only the error message without any data
+      return { status: "error", error: error.message };
+    }
+  }
+});
+            `}
+        </Script>
         </body>
         </html>
     );

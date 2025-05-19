@@ -56,3 +56,14 @@ export const createAction =
             throw new Error(`Failed to create action: ${error.message}`);
         }
     };
+
+export const deleteAction = async (actionName: string): Promise<void> => {
+    const { error } = await supabaseClient
+        .from('actions')
+        .delete()
+        .eq('name', actionName);
+    
+    if (error) {
+        throw new Error(`Failed to delete action: ${error.message}`);
+    }
+};
