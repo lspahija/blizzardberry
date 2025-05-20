@@ -120,6 +120,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - landing page needs to sell the product well!
 - rename and get domain!
 - deploy to vercel
+- add automated end-to-end test suite so we can introduce new features without breaking existing functionality. Use Playwright for this. [Grok thread](https://grok.com/share/bGVnYWN5_82a58179-e019-4507-a75b-59c398539835)
 
 ## Later on
 - minify and obfuscate widget js

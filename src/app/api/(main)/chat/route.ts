@@ -1,9 +1,9 @@
-import {streamText, tool, Tool} from 'ai';
-import {z} from "zod";
-import {CHATBOT_SYSTEM_MESSAGE} from '../lib/constants';
-import {getLanguageModel} from '../lib/modelProvider';
-import {getActions} from "@/app/api/(main)/lib/actionStore";
-import {similaritySearch} from "@/app/api/(main)/lib/embedding";
+import { streamText, tool, Tool } from 'ai';
+import { z } from 'zod';
+import { CHATBOT_SYSTEM_MESSAGE } from '../lib/constants';
+import { getLanguageModel } from '../lib/modelProvider';
+import { getActions } from '@/app/api/(main)/lib/actionStore';
+import { similaritySearch } from '@/app/api/(main)/lib/embedding';
 import {
     BackendAction,
     Parameter,
@@ -13,7 +13,7 @@ import {
 } from '@/app/api/(main)/lib/dataModel';
 
 export async function POST(req: Request) {
-    const {messages} = await req.json();
+    const { messages } = await req.json();
 
     const allTools = {
         ...await getToolsFromActions(),
@@ -26,17 +26,23 @@ export async function POST(req: Request) {
         system: CHATBOT_SYSTEM_MESSAGE,
         tools: allTools,
         maxSteps: 5,
+        onError: async (event) => {
+            console.error('StreamText Error:', JSON.stringify({ error: event.error }, null, 2));
+        },
+        onFinish: async (event) => {
+            console.log('Stream completed:', JSON.stringify(event, null, 2));
+        },
     });
 
     const data = await processStream(result);
-    console.log('Processed stream:', JSON.stringify(data));
+    console.log('Processed stream:', JSON.stringify(data, null, 2));
     return Response.json(data);
 }
 
-async function processStream(result) {
+async function processStream(result: any) {
     let text = '';
-    const toolCalls = [];
-    const toolResults = [];
+    const toolCalls: any[] = [];
+    const toolResults: any[] = [];
 
     for await (const part of result.fullStream) {
         switch (part.type) {
@@ -70,16 +76,16 @@ async function processStream(result) {
 
 function createSearchKnowledgeBaseTool(): Tool {
     return tool({
-        description: "Search the knowledge base for information to answer user questions about the application",
+        description: 'Search the knowledge base for information to answer user questions about the application',
         parameters: z.object({
-            query: z.string().describe("The search query to find relevant information")
+            query: z.string().describe('The search query to find relevant information')
         }),
-        execute: async ({query}) => {
+        execute: async ({ query }) => {
             try {
-                const groupedResults = await similaritySearch(query, 5)
+                const groupedResults = await similaritySearch(query, 5);
 
                 if (Object.keys(groupedResults).length === 0) {
-                    return {message: "No relevant information found in the knowledge base."};
+                    return { message: 'No relevant information found in the knowledge base.' };
                 }
 
                 return {
@@ -87,10 +93,10 @@ function createSearchKnowledgeBaseTool(): Tool {
                     message: `Found ${Object.keys(groupedResults).length} relevant document groups that may help answer the query.`
                 };
             } catch (error) {
-                console.error("Error searching knowledge base:", error);
+                console.error('Error searching knowledge base:', JSON.stringify({ error }, null, 2));
                 return {
-                    error: "Failed to search knowledge base",
-                    message: "There was an error retrieving information from the knowledge base."
+                    error: 'Failed to search knowledge base',
+                    message: 'There was an error retrieving information from the knowledge base.'
                 };
             }
         }
@@ -99,30 +105,27 @@ function createSearchKnowledgeBaseTool(): Tool {
 
 async function getToolsFromActions() {
     const actions = await getActions();
-
     const tools: Record<string, Tool> = {};
+
     for (const action of actions) {
-        // Create dynamic zod schema from httpModel.parameters
         const parameterSchema = createParameterSchema(action.executionModel.parameters);
 
-        tools[`ACTION: ${action.name}`] = tool({
+        tools[`ACTION_${action.name}`] = tool({
             description: action.description,
             parameters: parameterSchema,
             execute: async (params: Record<string, any>) =>
-                substituteRequestModel((action as BackendAction).executionModel.request, params), // TODO: support frontend actions
-        })
+                substituteRequestModel((action as BackendAction).executionModel.request, params),
+        });
     }
     return tools;
 }
 
-// Helper function to create a zod schema from parameters
 function createParameterSchema(parameters: Parameter[]): z.ZodObject<any> {
     const schemaFields: Record<string, z.ZodTypeAny> = {};
 
     for (const param of parameters) {
         let baseSchema: z.ZodTypeAny;
 
-        // Map ParameterType to zod schema
         switch (param.type) {
             case ParameterType.String:
                 baseSchema = z.string();
@@ -134,19 +137,16 @@ function createParameterSchema(parameters: Parameter[]): z.ZodObject<any> {
                 baseSchema = z.boolean();
                 break;
             default:
-                baseSchema = z.any(); // Fallback for unrecognized types
+                baseSchema = z.any();
         }
 
-        // Handle arrays if isArray is true
         const finalSchema = param.isArray ? z.array(baseSchema) : baseSchema;
-
-        schemaFields[param.name] = finalSchema.optional(); // Parameters are optional
+        schemaFields[param.name] = finalSchema.optional();
     }
 
     return z.object(schemaFields);
 }
 
-// Helper function to substitute placeholders in a string
 function substitutePlaceholders(
     input: string,
     params: Record<string, any>
@@ -160,17 +160,14 @@ function substitutePlaceholders(
     return result;
 }
 
-// Helper function to substitute placeholders in RequestModel
 function substituteRequestModel(
     request: RequestModel,
     params: Record<string, any>
 ): RequestModel {
     const { url, method, headers, body } = request;
 
-    // Substitute placeholders in URL
     const substitutedUrl = substitutePlaceholders(url, params);
 
-    // Substitute placeholders in headers
     const substitutedHeaders = headers
         ? Object.fromEntries(
             Object.entries(headers).map(([key, value]) => [
@@ -180,7 +177,6 @@ function substituteRequestModel(
         )
         : undefined;
 
-    // Substitute placeholders in body
     let substitutedBody: RequestBody | undefined;
     if (body) {
         substitutedBody = {};
@@ -194,7 +190,7 @@ function substituteRequestModel(
                         : item
                 );
             } else {
-                substitutedBody[key] = value; // Numbers or booleans are copied as-is
+                substitutedBody[key] = value;
             }
         }
     }
