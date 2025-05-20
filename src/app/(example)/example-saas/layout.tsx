@@ -69,10 +69,8 @@ export default function ExampleLayout({
         </Script>
         <Script id="client-actions" strategy="afterInteractive">
             {`
-window.widget.registerTools({
+window.omni_interface.registerActions({
   get_weather: async (args, user) => {
-    // args contains parameters defined in your custom action
-    // user contains authenticated user data if identity verification is set up
     try {
       const response = await fetch(
         \`https://api.weatherapi.com/v1/current.json?q=\${args.location}\`
