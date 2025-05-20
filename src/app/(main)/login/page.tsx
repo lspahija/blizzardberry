@@ -4,7 +4,7 @@ import {Button} from "@/components/ui/button";
 import {motion} from "framer-motion";
 import {signIn} from "next-auth/react";
 
-export default function AuthPage() {
+export default function LoginPage() {
     const containerVariants = {
         hidden: {opacity: 0, y: 20},
         visible: {
