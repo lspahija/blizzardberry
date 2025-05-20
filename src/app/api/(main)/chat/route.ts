@@ -29,12 +29,6 @@ export async function POST(req: Request) {
         onError: async (event) => {
             console.error('StreamText Error:', JSON.stringify({ error: event.error }, null, 2));
         },
-        onChunk: async (event) => {
-            console.log('Chunk received:', JSON.stringify(event.chunk, null, 2));
-        },
-        onStepFinish: async (event) => {
-            console.log('Step finished:', JSON.stringify(event, null, 2));
-        },
         onFinish: async (event) => {
             console.log('Stream completed:', JSON.stringify(event, null, 2));
         },
