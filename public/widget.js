@@ -221,7 +221,7 @@
                 part.type === 'tool-invocation' &&
                 part.toolInvocation.state === 'result' &&
                 part.toolInvocation.result &&
-                part.toolInvocation.toolName.startsWith('ACTION:')
+                part.toolInvocation.toolName.startsWith('ACTION_')
             );
 
             if (toolInvocations.length > 0) {
