@@ -69,12 +69,6 @@ export default function ExampleLayout({
         </Script>
         <Script id="client-actions" strategy="afterInteractive">
             {`
-window.widget = window.widget || {};
-window.widget.registerTools = window.widget.registerTools || function(tools) {
-  console.log('Registering client-side tools:', Object.keys(tools));
-  window.widget.tools = tools;
-};
-
 window.widget.registerTools({
   get_weather: async (args, user) => {
     // args contains parameters defined in your custom action
