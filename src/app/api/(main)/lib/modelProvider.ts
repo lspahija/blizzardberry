@@ -14,7 +14,7 @@ export function getLanguageModel() {
             const openrouter = createOpenRouter({
                 apiKey: process.env.OPENROUTER_API_KEY!,
             });
-            return openrouter.chat('google/gemini-2.0-flash-exp:free');
+            return openrouter.chat('google/gemini-2.0-flash-001');
 
         case ModelProvider.LMStudio:
             const lmstudio = createOpenAICompatible({
