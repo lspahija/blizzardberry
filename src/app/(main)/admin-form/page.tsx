@@ -248,15 +248,26 @@ export default function AdminFormPage() {
     };
 
     function getRegisterToolsExample(functionName: string, dataInputs: DataInput[]) {
-        const argList = dataInputs.filter(i => i.name).map(i => i.name).join(', args.') || '...';
-        return `window.omni_interface.registerActions({
-        ${functionName || 'your_action'}: async (args, user) => {
-          // args.${argList}
-          // user: authenticated user info (if available)
-          // Your logic here
-          return { data: ..., status: "success" };
+        const argList = dataInputs.filter(i => i.name).map(i => i.name).join(', ') || '...';
+        return `window.ChatbotActions = {
+        ${functionName || 'your_action'}: async (args) => {
+            try {
+                // args.${argList}
+                // Your logic here
+                return { 
+                    status: 'success',
+                    data: {
+                        // Your response data here
+                    }
+                };
+            } catch (error) {
+                return { 
+                    status: 'error', 
+                    error: error.message || 'Failed to execute action' 
+                };
+            }
         }
-      });`;
+    };`;
     }
 
     function ArgsList({ dataInputs }: { dataInputs: DataInput[] }) {
