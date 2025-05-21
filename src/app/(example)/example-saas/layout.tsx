@@ -55,42 +55,57 @@ export default function ExampleLayout({
         <body className={`${inter.variable} antialiased`}>
         {children}
         <meta httpEquiv="Content-Security-Policy"
-              content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; manifest-src 'self' *;"/>
+              content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; img-src 'self' data: *; manifest-src 'self' *;"/>
         <div id="myWidget"/>
-        <Script id="widget-script" strategy="afterInteractive">
-            {
-                `(function() {
-    var s = document.createElement('script');
-    s.src = 'http://localhost:3000/widget.js';
-    s.async = true;
-    document.head.appendChild(s);
-  })();`
-            }
-        </Script>
-        <Script id="client-actions" strategy="afterInteractive">
-            {`
-window.omni_interface.registerActions({
-  get_weather: async (args, user) => {
-    try {
-      const response = await fetch(
-        \`https://api.weatherapi.com/v1/current.json?q=\${args.location}\`
-      );
+            <Script id="widget-script" src="http://localhost:3000/widget.js" strategy="afterInteractive" />
+            <Script id="register-actions" strategy="afterInteractive">
+                {`
+                    (function checkAndRegister() {
+                        if (window.omni_interface) {
+                            window.omni_interface.registerActions({
+                                get_weather: async (params) => {
+                                    try {
+                                        const geoResponse = await fetch(
+                                            \`https://geocoding-api.open-meteo.com/v1/search?name=\${encodeURIComponent(params.location)}&count=1\`
+                                        );
+                                        const geoData = await geoResponse.json();
+                                        
+                                        if (!geoData.results?.[0]) {
+                                            return { status: 'error', error: \`Location "\${params.location}" not found\` };
+                                        }
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch weather data.");
-      }
+                                        const { latitude, longitude, name, country } = geoData.results[0];
+                                        
+                                        const weatherResponse = await fetch(
+                                            \`https://api.open-meteo.com/v1/forecast?latitude=\${latitude}&longitude=\${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code\`
+                                        );
+                                        const weatherData = await weatherResponse.json();
+                                        
+                                        if (!weatherData.current) {
+                                            return { status: 'error', error: 'Could not fetch weather data' };
+                                        }
 
-      const data = await response.json();
-
-      return { data, status: "success" };
-    } catch (error) {
-      // Return only the error message without any data
-      return { status: "error", error: error.message };
-    }
-  }
-});
-            `}
-        </Script>
+                                        return {
+                                            status: 'success',
+                                            data: {
+                                                location: \`\${name}, \${country}\`,
+                                                temperature: \`\${weatherData.current.temperature_2m}°C\`,
+                                                humidity: \`\${weatherData.current.relative_humidity_2m}%\`,
+                                                windSpeed: \`\${weatherData.current.wind_speed_10m} km/h\`,
+                                            }
+                                        };
+                                    } catch (error) {
+                                        return { status: 'error', error: error.message || 'Failed to fetch weather data' };
+                                    }
+                                }
+                            });
+                        } else {
+                            // If omni_interface is not available yet, retry after a short delay
+                            setTimeout(checkAndRegister, 100);
+                        }
+                    })();
+                `}
+            </Script>
         </body>
         </html>
     );

@@ -1,4 +1,13 @@
 (function () {
+    window.omni_interface = {
+        actions: {},
+        registerActions: function(actionMap) {
+            console.log('Registering actions:', Object.keys(actionMap));
+            Object.assign(this.actions, actionMap);
+            console.log('Available actions after registration:', Object.keys(this.actions));
+        }
+    };
+
     // Generate UUID-like IDs
     function generateId() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -89,13 +98,30 @@
     async function executeFetch(httpModel, messageId, partIndex) {
         const key = `${messageId}-${partIndex}`;
         try {
-            const response = await fetch(httpModel.url, {
-                method: httpModel.method,
-                headers: httpModel.headers,
-                body: JSON.stringify(httpModel.body)
-            });
-            const data = await response.json();
-            state.fetchResults[key] = { status: response.status, data };
+            let result;
+
+            if (httpModel.name?.startsWith('ACTION_CLIENT_')) {
+                const functionName = httpModel.name.replace('ACTION_CLIENT_', '');
+                const action = window.omni_interface.actions[functionName];
+                result = await action(httpModel.params);
+                if (result.status === 'error') {
+                    throw new Error(result.error);
+                }
+            } else {
+                // Handle server-side actions
+                const response = await fetch(httpModel.url, {
+                    method: httpModel.method,
+                    headers: httpModel.headers,
+                    body: JSON.stringify(httpModel.body)
+                });
+                result = await response.json();
+            }
+
+            // Store result in state
+            state.fetchResults[key] = {
+                status: result.status || 200,
+                data: result.data || result
+            };
 
             // Log raw fetch result for debugging
             console.log('Fetch Result:', state.fetchResults[key]);
@@ -106,7 +132,7 @@
                 role: 'assistant',
                 parts: [{
                     type: 'text',
-                    text: `✅ ${httpModel.toolName || 'Action'} successfully executed`
+                    text: `✅ ${(httpModel.toolName?.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || httpModel.action || 'Action')} successfully executed`
                 }]
             });
             updateChatUI();
