@@ -1,25 +1,21 @@
 import {NextResponse} from 'next/server';
-import {Action, BackendAction, ExecutionContext, FrontendAction} from '@/app/api/(main)/lib/dataModel';
+import {Action} from '@/app/api/(main)/lib/dataModel';
 import {createAction} from "@/app/api/(main)/lib/actionStore";
 
 export async function POST(req: Request) {
     try {
-        const action = await req.json();
-        
-        const typedAction: Action = action.executionContext === ExecutionContext.SERVER
-            ? (action as BackendAction)
-            : (action as FrontendAction);
+        const action: Action = await req.json();
 
-        console.log('Received action:', JSON.stringify(typedAction, null, 2));
+        console.log('Received action:', JSON.stringify(action, null, 2));
 
         await createAction(
-            typedAction.name, 
-            typedAction.description, 
-            typedAction.executionContext, 
-            typedAction.executionModel
+            action.name,
+            action.description,
+            action.executionContext,
+            action.executionModel
         );
 
-        return NextResponse.json({ actionName: typedAction.name }, { status: 201 });
+        return NextResponse.json({ actionName: action.name }, { status: 201 });
     } catch (error) {
         console.error('Error processing request:', error);
         return NextResponse.json(
