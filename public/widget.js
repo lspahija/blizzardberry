@@ -98,23 +98,9 @@
     async function executeAction(actionModel, messageId, partIndex) {
         const key = `${messageId}-${partIndex}`;
         try {
-            let result;
-
-            if (actionModel.name?.startsWith('ACTION_CLIENT_')) {
-                const functionName = actionModel.name.replace('ACTION_CLIENT_', '');
-                const action = window.omni_interface.actions[functionName];
-                result = await action(actionModel.params);
-                if (result.status === 'error') {
-                    throw new Error(result.error);
-                }
-            } else {
-                const response = await fetch(actionModel.url, {
-                    method: actionModel.method,
-                    headers: actionModel.headers,
-                    body: JSON.stringify(actionModel.body)
-                });
-                result = await response.json();
-            }
+            const result = actionModel.name?.startsWith('ACTION_CLIENT_')
+                ? await executeClientAction(actionModel)
+                : await executeServerAction(actionModel);
 
             state.fetchResults[key] = {
                 status: result.status,
@@ -172,6 +158,23 @@
         }
         state.isProcessing = false;
         updateChatUI();
+    }
+
+    async function executeClientAction(actionModel) {
+        const functionName = actionModel.name.replace('ACTION_CLIENT_', '');
+        const action = window.omni_interface.actions[functionName];
+        const result = await action(actionModel.params);
+        if (result.status === 'error') throw new Error(result.error);
+        return result;
+    }
+
+    async function executeServerAction(actionModel) {
+        const response = await fetch(actionModel.url, {
+            method: actionModel.method,
+            headers: actionModel.headers,
+            body: JSON.stringify(actionModel.body)
+        });
+        return await response.json();
     }
 
     // Handle user input submission
