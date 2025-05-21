@@ -219,4 +219,9 @@ But maybe it isn’t necessary, you could test it out to see if it works well (i
 
 
 ### Ideas
-- tool fetching can maybe be made more accurate by inserting a RAG step. how does the lib fetch under the hood?
+- tool fetching can maybe be made more accurate by inserting a RAG step (e.g. embed the tool information). how does the lib currently fetch under the hood? maybe it already does this?
+
+### Development Notes
+- update `pnpm` with `pnpm self-update`
+- update all packages to latest versions with `pnpm update --latest`
+- update all packages while respecting defined version ranges with `pnpm update`
