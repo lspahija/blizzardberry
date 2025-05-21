@@ -2,11 +2,11 @@
     window.omni_interface = {
         actions: {}
     };
-    if (window.MyWidgetActions && typeof window.MyWidgetActions === 'object') {
-        console.log('Registering actions:', Object.keys(window.MyWidgetActions));
-        Object.assign(window.omni_interface.actions, window.MyWidgetActions);
+    if (window.ChatbotActions && typeof window.ChatbotActions === 'object') {
+        console.log('Registering actions:', Object.keys(window.ChatbotActions));
+        Object.assign(window.omni_interface.actions, window.ChatbotActions);
         console.log('Available actions:', Object.keys(window.omni_interface.actions));
-        delete window.MyWidgetActions;
+        delete window.ChatbotActions;
     }
     // Generate UUID-like IDs
     function generateId() {

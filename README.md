@@ -134,7 +134,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - maybe use some software or lib to autodiscover website endpoints/capabilities to make onboarding super simple
 - automatically pull docs from website during onboarding for RAG?
 - [optimize RAG pipeline](#frankies-tips-to-optimize-rag)
-- create SDKs for non-js frontends i.e. desktop and mobile apps (analogues to widget.js)
+- create SDKs for non-js frontends i.e. desktop and mobile apps (analogues to chatbot.js)
 - use AI to make onboarding super simple - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
 - allow user to use voice, the ideal is that they just talk to computer
 

@@ -56,11 +56,11 @@ export default function ExampleLayout({
         {children}
         <meta httpEquiv="Content-Security-Policy"
               content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; img-src 'self' data: *; manifest-src 'self' *;"/>
-        <div id="myWidget"/>
-            <Script id="widget-script" src="http://localhost:3000/widget.js" strategy="afterInteractive" />
+        <div id="chatbot"/>
+            <Script id="widget-script" src="http://localhost:3000/chatbot.js" strategy="afterInteractive" />
             <Script id="widget-actions" strategy="afterInteractive">
                 {`
-                    window.MyWidgetActions = {
+                    window.ChatbotActions = {
                         get_weather: async (params) => {
                             try {
                                 const geoResponse = await fetch(
