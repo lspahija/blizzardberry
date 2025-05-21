@@ -98,7 +98,7 @@
     async function executeAction(actionModel, messageId, partIndex) {
         const key = `${messageId}-${partIndex}`;
         try {
-            const result = actionModel.name?.startsWith('ACTION_CLIENT_')
+            const result = actionModel.functionName?.startsWith('ACTION_CLIENT_')
                 ? await executeClientAction(actionModel)
                 : await executeServerAction(actionModel);
 
@@ -161,7 +161,7 @@
     }
 
     async function executeClientAction(actionModel) {
-        const functionName = actionModel.name.replace('ACTION_CLIENT_', '');
+        const functionName = actionModel.functionName.replace('ACTION_CLIENT_', '');
         const action = window.omni_interface.actions[functionName];
         const result = await action(actionModel.params);
         if (result.status === 'error') throw new Error(result.error);

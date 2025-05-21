@@ -111,20 +111,20 @@ async function getToolsFromActions() {
     for (const action of actions) {
         const parameterSchema = createParameterSchema(action.executionModel.parameters);
         const prefix = action.executionContext === ExecutionContext.SERVER ? 'ACTION_SERVER_' : 'ACTION_CLIENT_';
-        const functionName = `${prefix}${action.name}`;
+        const actionName = `${prefix}${action.name}`;
 
         if (action.executionContext === ExecutionContext.SERVER) {
-            tools[functionName] = tool({
+            tools[actionName] = tool({
                 description: action.description,
                 parameters: parameterSchema,
                 execute: async (params: Record<string, any>) => substituteRequestModel((action as BackendAction).executionModel.request, params)
             });
         } else {
-            tools[functionName] = tool({
+            tools[actionName] = tool({
                 description: action.description,
                 parameters: parameterSchema,
                 execute: async (params) => ({
-                    name: functionName,
+                    functionName: actionName,
                     params
                 })
             });
