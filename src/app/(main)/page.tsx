@@ -62,7 +62,7 @@ export default function LandingPage() {
                             className="relative bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
                             asChild
                         >
-                            <Link href="/auth">Sign In</Link>
+                            <Link href="/login">Sign In</Link>
                         </Button>
                     </div>
                     <div className="relative">
@@ -70,7 +70,7 @@ export default function LandingPage() {
                         <Button
                             className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
                             asChild>
-                            <Link href="/auth">Try For Free</Link>
+                            <Link href="/login">Try For Free</Link>
                         </Button>
                     </div>
                 </div>
@@ -123,7 +123,7 @@ export default function LandingPage() {
                         <Button size="lg"
                                 className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
                                 asChild>
-                            <Link href="/auth">Get Started Now</Link>
+                            <Link href="/login">Get Started Now</Link>
                         </Button>
                     </div>
                     <div className="relative">
@@ -238,7 +238,7 @@ export default function LandingPage() {
                     <Button size="lg"
                             className="relative bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
                             asChild>
-                        <Link href="/auth">Get Started for Free</Link>
+                        <Link href="/login">Get Started for Free</Link>
                     </Button>
                 </div>
             </div>
