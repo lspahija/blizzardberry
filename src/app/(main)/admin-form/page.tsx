@@ -76,16 +76,39 @@ export default function AdminFormPage() {
 
     useEffect(() => {
         const stepParam = searchParams.get("step");
+        let currentStep = 1;
+        
         if (stepParam) {
             const stepNum = parseInt(stepParam);
             if (stepNum >= 1 && stepNum <= 3) {
-                setStep(stepNum);
+                currentStep = stepNum;
             }
         }
-    }, [searchParams]);
+        setStep(currentStep);
+        
+        const typeParam = searchParams.get("type");
+        let currentActionType = actionType; // Default from state
+        
+        if (typeParam) {
+            if (typeParam === 'server') {
+                currentActionType = ExecutionContext.SERVER;
+            } else if (typeParam === 'client') {
+                currentActionType = ExecutionContext.CLIENT;
+            }
+            setActionType(currentActionType);
+        } else if (stepParam) {
+            const actionTypeParam = currentActionType === ExecutionContext.SERVER ? 'server' : 'client';
+            router.replace(`?type=${actionTypeParam}&step=${currentStep}`);
+        }
+    }, [searchParams, router, actionType]);
 
     const updateUrl = (newStep: number) => {
-        router.push(`?step=${newStep}`);
+        if (newStep > 1) {
+            const actionTypeParam = actionType === ExecutionContext.SERVER ? 'server' : 'client';
+            router.push(`?type=${actionTypeParam}&step=${newStep}`);
+        } else {
+            router.push(`?step=${newStep}`);
+        }
         setStep(newStep);
     };
 
@@ -224,6 +247,43 @@ export default function AdminFormPage() {
         }
     };
 
+    function getRegisterToolsExample(functionName: string, dataInputs: DataInput[]) {
+        const argList = dataInputs.filter(i => i.name).map(i => i.name).join(', ') || '...';
+        return `window.ChatbotActions = {
+        ${functionName || 'your_action'}: async (args) => {
+            try {
+                // args.${argList}
+                // Your logic here
+                return { 
+                    status: 'success',
+                    data: {
+                        // Your response data here
+                    }
+                };
+            } catch (error) {
+                return { 
+                    status: 'error', 
+                    error: error.message || 'Failed to execute action' 
+                };
+            }
+        }
+    };`;
+    }
+
+    function ArgsList({ dataInputs }: { dataInputs: DataInput[] }) {
+        return (
+            <ul className="list-disc pl-6">
+                {dataInputs.filter(input => input.name).map((input, idx) => (
+                    <li key={idx}>
+                        <span className="font-mono font-semibold">{input.name}</span>
+                        <span className="ml-2 text-gray-700">({input.type}{input.isArray ? '[]' : ''})</span>
+                        <span className="ml-2 text-gray-500">{input.description}</span>
+                    </li>
+                ))}
+            </ul>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-[#FFFDF8]">
             <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-gray-900 sticky top-0 bg-[#FFFDF8] z-50">
@@ -283,8 +343,13 @@ export default function AdminFormPage() {
                                     <div>
                                         <Label className="text-gray-900">Action Type</Label>
                                         <RadioGroup
-                                            defaultValue={ExecutionContext.SERVER}
-                                            onValueChange={(value: ExecutionContext) => setActionType(value)}
+                                            value={actionType}
+                                            onValueChange={(value: ExecutionContext) => {
+                                                setActionType(value);
+                                                // Update URL immediately to reflect selected action type, even in step 1
+                                                const actionTypeParam = value === ExecutionContext.SERVER ? 'server' : 'client';
+                                                router.replace(`?type=${actionTypeParam}&step=1`);
+                                            }}
                                             className="flex space-x-4 mt-2"
                                         >
                                             <div className="flex items-center space-x-2">
@@ -555,16 +620,38 @@ export default function AdminFormPage() {
                                             </Tabs>
                                         </>
                                     ) : (
-                                        <div>
-                                            <Label htmlFor="functionName" className="text-gray-900">Function Name</Label>
-                                            <p className="text-sm text-gray-600 mt-1">The name of the client-side function to be executed.</p>
-                                            <Input
-                                                id="functionName"
-                                                value={functionName}
-                                                onChange={(e) => setFunctionName(e.target.value)}
-                                                placeholder="updateUserProfile"
-                                                className="mt-2 border-[2px] border-gray-900"
-                                            />
+                                        <div className="space-y-6">
+                                            <div>
+                                                <Label htmlFor="functionName" className="text-gray-900">Function Name</Label>
+                                                <p className="text-sm text-gray-600 mt-1">
+                                                    The name of the client-side function to be executed. You will implement this in your app using the SDK.
+                                                </p>
+                                                <Input
+                                                    id="functionName"
+                                                    value={functionName}
+                                                    onChange={(e) => setFunctionName(e.target.value)}
+                                                    placeholder="get_weather"
+                                                    className="mt-2 border-[2px] border-gray-900"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <Label className="text-gray-900">Arguments (Data Inputs)</Label>
+                                                <p className="text-sm text-gray-600 mt-1">
+                                                    The chatbot will collect these from the user and pass them as <code>args</code> to your function.
+                                                </p>
+                                                <ArgsList dataInputs={dataInputs} />
+                                            </div>
+
+                                            <div>
+                                                <Label className="text-gray-900">How to Implement</Label>
+                                                <p className="text-sm text-gray-600 mt-1">
+                                                    In your app, register this action using the SDK. Example:
+                                                </p>
+                                                <pre className="bg-[#FFF4DA] border-2 border-gray-900 rounded p-4 text-sm overflow-x-auto mt-8">
+                                                    {getRegisterToolsExample(functionName, dataInputs)}
+                                                </pre>
+                                            </div>
                                         </div>
                                     )}
                                     <Button

@@ -79,12 +79,12 @@ export default function AdminPage() {
     const copyToClipboard = () => {
         const codeSnippet = `<meta httpEquiv="Content-Security-Policy"
       content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; manifest-src 'self' *;"/>
-<div id="myWidget" />
+<div id="chatbot" />
 <Script id="widget-script" strategy="afterInteractive">
   {
     \`(function() {
     var s = document.createElement('script');
-    s.src = 'http://localhost:3000/widget.js';
+    s.src = 'http://localhost:3000/chatbot.js';
     s.async = true;
     document.head.appendChild(s);
   })();\`
@@ -185,12 +185,12 @@ export default function AdminPage() {
                       <pre className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto text-sm font-mono">
                         {`<meta httpEquiv="Content-Security-Policy"
       content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; manifest-src 'self' *;"/>
-<div id="myWidget" />
+<div id="chatbot" />
 <Script id="widget-script" strategy="afterInteractive">
   {
     \`(function() {
     var s = document.createElement('script');
-    s.src = 'http://localhost:3000/widget.js';
+    s.src = 'http://localhost:3000/chatbot.js';
     s.async = true;
     document.head.appendChild(s);
   })();\`

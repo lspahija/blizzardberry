@@ -1,4 +1,13 @@
 (function () {
+    const actions = {};
+
+    if (window.ChatbotActions && typeof window.ChatbotActions === 'object') {
+        console.log('Registering actions:', Object.keys(window.ChatbotActions));
+        Object.assign(actions, window.ChatbotActions);
+        console.log('Available actions:', Object.keys(actions));
+        delete window.ChatbotActions;
+    }
+
     // Generate UUID-like IDs
     function generateId() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -85,17 +94,18 @@
         updateChatUI();
     }
 
-    // Execute fetch for tool invocations
-    async function executeFetch(httpModel, messageId, partIndex) {
+    // Execute fetch for action invocations
+    async function executeAction(actionModel, messageId, partIndex) {
         const key = `${messageId}-${partIndex}`;
         try {
-            const response = await fetch(httpModel.url, {
-                method: httpModel.method,
-                headers: httpModel.headers,
-                body: JSON.stringify(httpModel.body)
-            });
-            const data = await response.json();
-            state.fetchResults[key] = { status: response.status, data };
+            const result = actionModel.functionName?.startsWith('ACTION_CLIENT_')
+                ? await executeClientAction(actionModel)
+                : await executeServerAction(actionModel);
+
+            state.fetchResults[key] = {
+                status: result.status,
+                data: result.data
+            };
 
             // Log raw fetch result for debugging
             console.log('Fetch Result:', state.fetchResults[key]);
@@ -106,7 +116,7 @@
                 role: 'assistant',
                 parts: [{
                     type: 'text',
-                    text: `✅ ${httpModel.toolName || 'Action'} successfully executed`
+                    text: `✅ ${(actionModel.toolName?.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action')} successfully executed`
                 }]
             });
             updateChatUI();
@@ -148,6 +158,23 @@
         }
         state.isProcessing = false;
         updateChatUI();
+    }
+
+    async function executeClientAction(actionModel) {
+        const functionName = actionModel.functionName.replace('ACTION_CLIENT_', '');
+        const action = actions[functionName];
+        const result = await action(actionModel.params);
+        if (result.status === 'error') throw new Error(result.error);
+        return result;
+    }
+
+    async function executeServerAction(actionModel) {
+        const response = await fetch(actionModel.url, {
+            method: actionModel.method,
+            headers: actionModel.headers,
+            body: JSON.stringify(actionModel.body)
+        });
+        return await response.json();
     }
 
     // Handle user input submission
@@ -228,8 +255,7 @@
                 hasToolExecution = true;
                 // Execute tool invocations without adding aiMessage to state.messages
                 toolInvocations.forEach((part, index) => {
-                    // Pass toolName to executeFetch
-                    executeFetch({ ...part.toolInvocation.result, toolName: part.toolInvocation.toolName }, aiMessage.id, index);
+                    executeAction({ ...part.toolInvocation.result, toolName: part.toolInvocation.toolName }, aiMessage.id, index);
                 });
             } else if (parts.length > 0) {
                 // Only push aiMessage if it has non-tool parts

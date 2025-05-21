@@ -9,7 +9,8 @@ import {
     Parameter,
     ParameterType,
     RequestBody,
-    RequestModel
+    RequestModel,
+    ExecutionContext
 } from '@/app/api/(main)/lib/dataModel';
 
 export async function POST(req: Request) {
@@ -87,7 +88,7 @@ function createSearchKnowledgeBaseTool(): Tool {
                 if (Object.keys(groupedResults).length === 0) {
                     return { message: 'No relevant information found in the knowledge base.' };
                 }
-
+                
                 return {
                     results: groupedResults,
                     message: `Found ${Object.keys(groupedResults).length} relevant document groups that may help answer the query.`
@@ -109,14 +110,27 @@ async function getToolsFromActions() {
 
     for (const action of actions) {
         const parameterSchema = createParameterSchema(action.executionModel.parameters);
+        const prefix = action.executionContext === ExecutionContext.SERVER ? 'ACTION_SERVER_' : 'ACTION_CLIENT_';
+        const actionName = `${prefix}${action.name}`;
 
-        tools[`ACTION_${action.name}`] = tool({
-            description: action.description,
-            parameters: parameterSchema,
-            execute: async (params: Record<string, any>) =>
-                substituteRequestModel((action as BackendAction).executionModel.request, params),
-        });
+        if (action.executionContext === ExecutionContext.SERVER) {
+            tools[actionName] = tool({
+                description: action.description,
+                parameters: parameterSchema,
+                execute: async (params: Record<string, any>) => substituteRequestModel((action as BackendAction).executionModel.request, params)
+            });
+        } else {
+            tools[actionName] = tool({
+                description: action.description,
+                parameters: parameterSchema,
+                execute: async (params) => ({
+                    functionName: actionName,
+                    params
+                })
+            });
+        }
     }
+
     return tools;
 }
 
@@ -125,7 +139,6 @@ function createParameterSchema(parameters: Parameter[]): z.ZodObject<any> {
 
     for (const param of parameters) {
         let baseSchema: z.ZodTypeAny;
-
         switch (param.type) {
             case ParameterType.String:
                 baseSchema = z.string();
@@ -167,7 +180,6 @@ function substituteRequestModel(
     const { url, method, headers, body } = request;
 
     const substitutedUrl = substitutePlaceholders(url, params);
-
     const substitutedHeaders = headers
         ? Object.fromEntries(
             Object.entries(headers).map(([key, value]) => [

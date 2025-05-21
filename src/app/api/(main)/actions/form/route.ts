@@ -1,15 +1,19 @@
 import {NextResponse} from 'next/server';
-import {BackendAction} from '@/app/api/(main)/lib/dataModel';
+import {Action} from '@/app/api/(main)/lib/dataModel';
 import {createAction} from "@/app/api/(main)/lib/actionStore";
 
 export async function POST(req: Request) {
     try {
-        const action: BackendAction = await req.json(); // TODO support frontend actions too
+        const action: Action = await req.json();
 
-        // Log the received action
         console.log('Received action:', JSON.stringify(action, null, 2));
 
-        await createAction(action.name, action.description, action.executionContext, action.executionModel);
+        await createAction(
+            action.name,
+            action.description,
+            action.executionContext,
+            action.executionModel
+        );
 
         return NextResponse.json({ actionName: action.name }, { status: 201 });
     } catch (error) {
