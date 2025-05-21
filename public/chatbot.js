@@ -255,7 +255,6 @@
                 hasToolExecution = true;
                 // Execute tool invocations without adding aiMessage to state.messages
                 toolInvocations.forEach((part, index) => {
-                    // Pass toolName to executeAction
                     executeAction({ ...part.toolInvocation.result, toolName: part.toolInvocation.toolName }, aiMessage.id, index);
                 });
             } else if (parts.length > 0) {
