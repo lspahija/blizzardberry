@@ -108,7 +108,6 @@
                     throw new Error(result.error);
                 }
             } else {
-                // Handle server-side actions
                 const response = await fetch(httpModel.url, {
                     method: httpModel.method,
                     headers: httpModel.headers,
@@ -117,7 +116,6 @@
                 result = await response.json();
             }
 
-            // Store result in state
             state.fetchResults[key] = {
                 status: result.status,
                 data: result.data
