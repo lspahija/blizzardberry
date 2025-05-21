@@ -1,13 +1,13 @@
 (function () {
-    window.omni_interface = {
-        actions: {}
-    };
+    const actions = {};
+
     if (window.ChatbotActions && typeof window.ChatbotActions === 'object') {
         console.log('Registering actions:', Object.keys(window.ChatbotActions));
-        Object.assign(window.omni_interface.actions, window.ChatbotActions);
-        console.log('Available actions:', Object.keys(window.omni_interface.actions));
+        Object.assign(actions, window.ChatbotActions);
+        console.log('Available actions:', Object.keys(actions));
         delete window.ChatbotActions;
     }
+
     // Generate UUID-like IDs
     function generateId() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -162,7 +162,7 @@
 
     async function executeClientAction(actionModel) {
         const functionName = actionModel.functionName.replace('ACTION_CLIENT_', '');
-        const action = window.omni_interface.actions[functionName];
+        const action = actions[functionName];
         const result = await action(actionModel.params);
         if (result.status === 'error') throw new Error(result.error);
         return result;
