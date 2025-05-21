@@ -58,52 +58,45 @@ export default function ExampleLayout({
               content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; img-src 'self' data: *; manifest-src 'self' *;"/>
         <div id="myWidget"/>
             <Script id="widget-script" src="http://localhost:3000/widget.js" strategy="afterInteractive" />
-            <Script id="register-actions" strategy="afterInteractive">
+            <Script id="widget-actions" strategy="afterInteractive">
                 {`
-                    (function checkAndRegister() {
-                        if (window.omni_interface) {
-                            window.omni_interface.registerActions({
-                                get_weather: async (params) => {
-                                    try {
-                                        const geoResponse = await fetch(
-                                            \`https://geocoding-api.open-meteo.com/v1/search?name=\${encodeURIComponent(params.location)}&count=1\`
-                                        );
-                                        const geoData = await geoResponse.json();
-                                        
-                                        if (!geoData.results?.[0]) {
-                                            return { status: 'error', error: \`Location "\${params.location}" not found\` };
-                                        }
-
-                                        const { latitude, longitude, name, country } = geoData.results[0];
-                                        
-                                        const weatherResponse = await fetch(
-                                            \`https://api.open-meteo.com/v1/forecast?latitude=\${latitude}&longitude=\${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code\`
-                                        );
-                                        const weatherData = await weatherResponse.json();
-                                        
-                                        if (!weatherData.current) {
-                                            return { status: 'error', error: 'Could not fetch weather data' };
-                                        }
-
-                                        return {
-                                            status: 'success',
-                                            data: {
-                                                location: \`\${name}, \${country}\`,
-                                                temperature: \`\${weatherData.current.temperature_2m}°C\`,
-                                                humidity: \`\${weatherData.current.relative_humidity_2m}%\`,
-                                                windSpeed: \`\${weatherData.current.wind_speed_10m} km/h\`,
-                                            }
-                                        };
-                                    } catch (error) {
-                                        return { status: 'error', error: error.message || 'Failed to fetch weather data' };
-                                    }
+                    window.MyWidgetActions = {
+                        get_weather: async (params) => {
+                            try {
+                                const geoResponse = await fetch(
+                                    \`https://geocoding-api.open-meteo.com/v1/search?name=\${encodeURIComponent(params.location)}&count=1\`
+                                );
+                                const geoData = await geoResponse.json();
+                                
+                                if (!geoData.results?.[0]) {
+                                    return { status: 'error', error: \`Location "\${params.location}" not found\` };
                                 }
-                            });
-                        } else {
-                            // If omni_interface is not available yet, retry after a short delay
-                            setTimeout(checkAndRegister, 100);
+
+                                const { latitude, longitude, name, country } = geoData.results[0];
+                                
+                                const weatherResponse = await fetch(
+                                    \`https://api.open-meteo.com/v1/forecast?latitude=\${latitude}&longitude=\${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code\`
+                                );
+                                const weatherData = await weatherResponse.json();
+                                
+                                if (!weatherData.current) {
+                                    return { status: 'error', error: 'Could not fetch weather data' };
+                                }
+
+                                return {
+                                    status: 'success',
+                                    data: {
+                                        location: \`\${name}, \${country}\`,
+                                        temperature: \`\${weatherData.current.temperature_2m}°C\`,
+                                        humidity: \`\${weatherData.current.relative_humidity_2m}%\`,
+                                        windSpeed: \`\${weatherData.current.wind_speed_10m} km/h\`,
+                                    }
+                                };
+                            } catch (error) {
+                                return { status: 'error', error: error.message || 'Failed to fetch weather data' };
+                            }
                         }
-                    })();
+                    };
                 `}
             </Script>
         </body>

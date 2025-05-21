@@ -6,12 +6,9 @@ export async function POST(req: Request) {
     try {
         const action = await req.json();
         
-        let typedAction: Action;
-        if (action.executionContext === ExecutionContext.SERVER) {
-            typedAction = action as BackendAction;
-        } else {
-            typedAction = action as FrontendAction;
-        }
+        const typedAction: Action = action.executionContext === ExecutionContext.SERVER
+            ? (action as BackendAction)
+            : (action as FrontendAction);
 
         console.log('Received action:', JSON.stringify(typedAction, null, 2));
 

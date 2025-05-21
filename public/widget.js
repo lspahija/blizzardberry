@@ -1,13 +1,13 @@
 (function () {
     window.omni_interface = {
-        actions: {},
-        registerActions: function(actionMap) {
-            console.log('Registering actions:', Object.keys(actionMap));
-            Object.assign(this.actions, actionMap);
-            console.log('Available actions after registration:', Object.keys(this.actions));
-        }
+        actions: {}
     };
-
+    if (window.MyWidgetActions && typeof window.MyWidgetActions === 'object') {
+        console.log('Registering actions:', Object.keys(window.MyWidgetActions));
+        Object.assign(window.omni_interface.actions, window.MyWidgetActions);
+        console.log('Available actions:', Object.keys(window.omni_interface.actions));
+        delete window.MyWidgetActions;
+    }
     // Generate UUID-like IDs
     function generateId() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
