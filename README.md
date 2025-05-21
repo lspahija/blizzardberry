@@ -111,7 +111,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # Things to be done
 
 ## Next steps
-- allow chatbot to perform frontend actions [like chatbase allows](https://www.chatbase.co/docs/developer-guides/client-side-custom-actions) (chatbot can call a function that performs an action on the frontend). This requires an SDK
 - add functionality to js SDK to allow the app owner to [add metadata](#sdk-that-allows-app-owners-to-add-metadata)
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
   - Google OAuth
