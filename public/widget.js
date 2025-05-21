@@ -119,8 +119,8 @@
 
             // Store result in state
             state.fetchResults[key] = {
-                status: result.status || 200,
-                data: result.data || result
+                status: result.status,
+                data: result.data
             };
 
             // Log raw fetch result for debugging

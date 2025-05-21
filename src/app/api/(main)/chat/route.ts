@@ -84,9 +84,11 @@ function createSearchKnowledgeBaseTool(): Tool {
         execute: async ({ query }) => {
             try {
                 const groupedResults = await similaritySearch(query, 5);
+
                 if (Object.keys(groupedResults).length === 0) {
                     return { message: 'No relevant information found in the knowledge base.' };
                 }
+                
                 return {
                     results: groupedResults,
                     message: `Found ${Object.keys(groupedResults).length} relevant document groups that may help answer the query.`
@@ -115,7 +117,7 @@ async function getToolsFromActions() {
             tools[actionName] = tool({
                 description: action.description,
                 parameters: parameterSchema,
-                execute: async (params) => substituteRequestModel((action as BackendAction).executionModel.request, params)
+                execute: async (params: Record<string, any>) => substituteRequestModel((action as BackendAction).executionModel.request, params)
             });
         } else {
             tools[actionName] = tool({
