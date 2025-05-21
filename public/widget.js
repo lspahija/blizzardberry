@@ -94,24 +94,24 @@
         updateChatUI();
     }
 
-    // Execute fetch for tool invocations
-    async function executeFetch(httpModel, messageId, partIndex) {
+    // Execute fetch for action invocations
+    async function executeAction(actionModel, messageId, partIndex) {
         const key = `${messageId}-${partIndex}`;
         try {
             let result;
 
-            if (httpModel.name?.startsWith('ACTION_CLIENT_')) {
-                const functionName = httpModel.name.replace('ACTION_CLIENT_', '');
+            if (actionModel.name?.startsWith('ACTION_CLIENT_')) {
+                const functionName = actionModel.name.replace('ACTION_CLIENT_', '');
                 const action = window.omni_interface.actions[functionName];
-                result = await action(httpModel.params);
+                result = await action(actionModel.params);
                 if (result.status === 'error') {
                     throw new Error(result.error);
                 }
             } else {
-                const response = await fetch(httpModel.url, {
-                    method: httpModel.method,
-                    headers: httpModel.headers,
-                    body: JSON.stringify(httpModel.body)
+                const response = await fetch(actionModel.url, {
+                    method: actionModel.method,
+                    headers: actionModel.headers,
+                    body: JSON.stringify(actionModel.body)
                 });
                 result = await response.json();
             }
@@ -130,7 +130,7 @@
                 role: 'assistant',
                 parts: [{
                     type: 'text',
-                    text: `✅ ${(httpModel.toolName?.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || httpModel.action || 'Action')} successfully executed`
+                    text: `✅ ${(actionModel.toolName?.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action')} successfully executed`
                 }]
             });
             updateChatUI();
@@ -252,8 +252,8 @@
                 hasToolExecution = true;
                 // Execute tool invocations without adding aiMessage to state.messages
                 toolInvocations.forEach((part, index) => {
-                    // Pass toolName to executeFetch
-                    executeFetch({ ...part.toolInvocation.result, toolName: part.toolInvocation.toolName }, aiMessage.id, index);
+                    // Pass toolName to executeAction
+                    executeAction({ ...part.toolInvocation.result, toolName: part.toolInvocation.toolName }, aiMessage.id, index);
                 });
             } else if (parts.length > 0) {
                 // Only push aiMessage if it has non-tool parts
