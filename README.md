@@ -113,6 +113,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## Next steps
 - add functionality to js SDK to allow the app owner to [add metadata](#sdk-that-allows-app-owners-to-add-metadata)
 - add frontend to RAG pipeline so the app owner can upload documentation
+- test RAG pipeline with big documents and ensure everything works
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
   - Google OAuth
     - [publish app](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7rg&project=ufcalarm-b270d)
