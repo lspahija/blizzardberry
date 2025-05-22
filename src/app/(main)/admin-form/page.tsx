@@ -277,7 +277,7 @@ export default function AdminFormPage() {
         ${functionName || 'your_action'}: async (args, metadata) => {
             try {
                 // args.${argList}
-                // metadata?.user_metadata - access user data if available
+                // Example: metadata?.user_id or metadata?.user_metadata?.name
                 return { 
                     status: 'success',
                     data: {

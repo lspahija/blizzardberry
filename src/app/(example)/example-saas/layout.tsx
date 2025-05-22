@@ -110,7 +110,6 @@ export default function ExampleLayout({
                                         temperature: \`\${weatherData.current.temperature_2m}°C\`,
                                         humidity: \`\${weatherData.current.relative_humidity_2m}%\`,
                                         windSpeed: \`\${weatherData.current.wind_speed_10m} km/h\`,
-                                        requestedBy: metadata?.user_metadata?.name || 'Anonymous'
                                     }
                                 };
                             } catch (error) {
