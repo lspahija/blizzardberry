@@ -96,16 +96,12 @@
 
     // Execute fetch for action invocations
     async function executeAction(actionModel, messageId, partIndex) {
+        console.log('Executing action with model:', JSON.stringify(actionModel, null, 2)); // Debug log
         const key = `${messageId}-${partIndex}`;
         try {
-            const result = actionModel.functionName?.startsWith('ACTION_CLIENT_')
+            state.fetchResults[key] = actionModel.functionName?.startsWith('ACTION_CLIENT_')
                 ? await executeClientAction(actionModel)
                 : await executeServerAction(actionModel);
-
-            state.fetchResults[key] = {
-                status: result.status,
-                data: result.data
-            };
 
             // Log raw fetch result for debugging
             console.log('Fetch Result:', state.fetchResults[key]);
@@ -150,10 +146,10 @@
             });
         } catch (error) {
             state.fetchResults[key] = {
-                error: 'Failed to execute request',
+                error: 'Failed to execute action',
                 details: error.message || 'Unknown error'
             };
-            handleError(error, 'Error: Failed to process tool request');
+            handleError(error, 'Error: Failed to execute action');
             return;
         }
         state.isProcessing = false;
@@ -163,9 +159,7 @@
     async function executeClientAction(actionModel) {
         const functionName = actionModel.functionName.replace('ACTION_CLIENT_', '');
         const action = actions[functionName];
-        const result = await action(actionModel.params);
-        if (result.status === 'error') throw new Error(result.error);
-        return result;
+        return await action(actionModel.params);
     }
 
     async function executeServerAction(actionModel) {
