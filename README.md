@@ -121,6 +121,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   - GitHub OAuth
     - [create prod OAuth app](https://github.com/settings/developers)
 - polish the user onboarding experience. All the forms needs to work flawlessly and be easy to use.
+- add "Powered By omni-interface" to the bottom of the chatbot
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
 - [finish onboarding](#posthog) PostHog for analytics
 - landing page needs to sell the product well!
