@@ -112,6 +112,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Next steps
 - add functionality to js SDK to allow the app owner to [add metadata](#sdk-that-allows-app-owners-to-add-metadata)
+- add frontend to RAG pipeline so the app owner can upload documentation
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
   - Google OAuth
     - [publish app](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7rg&project=ufcalarm-b270d)
@@ -126,6 +127,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - deploy to vercel
 
 ## Later on
+- make chatbot design super customizable so app owners can make it look like their app
 - add automated end-to-end test suite so we can introduce new features without breaking existing functionality. Use Playwright for this. [Grok thread](https://grok.com/share/bGVnYWN5_82a58179-e019-4507-a75b-59c398539835)
 - minify and obfuscate chatbot.js code
 - stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?) (ai-sdk currently only support react, vue, svelte and solid)
