@@ -127,15 +127,19 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Later on
 - add automated end-to-end test suite so we can introduce new features without breaking existing functionality. Use Playwright for this. [Grok thread](https://grok.com/share/bGVnYWN5_82a58179-e019-4507-a75b-59c398539835)
-- minify and obfuscate widget js
-- stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?)
-- let user just pass in their OpenAPI spec and the app will automatically generate a chatbot for them
-- maybe use some software or lib to autodiscover website endpoints/capabilities to make onboarding super simple
-- automatically pull docs from website during onboarding for RAG?
+- minify and obfuscate chatbot.js code
+- stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?) (ai-sdk currently only support react, vue, svelte and solid)
+- automatically pull docs from website during RAG onboarding?
 - [optimize RAG pipeline](#frankies-tips-to-optimize-rag)
-- create SDKs for non-js frontends i.e. desktop and mobile apps (analogues to chatbot.js)
-- use AI to make onboarding super simple - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
+- create SDKs (analogues to chatbot.js) for non-js frontends i.e. desktop and mobile apps written in go, java, etc.
 - allow user to use voice, the ideal is that they just talk to computer
+- make the actions MCP-compatible? i.e. turn the actions into an MCP server so that any MCP client can call them.
+- make onboarding a new app as simple as possible
+  - maybe let user just pass in their OpenAPI spec and the app will automatically generate a chatbot for them
+  - maybe use AI to scan the app's codebase - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
+  - Google has a [Chrome extension](https://chromewebstore.google.com/detail/project-mariner-companion/kadmollpgjhjcclemeliidekkajnjaih) where you can teach the AI how to perform tasks. Maybe you can create an extension that records HTTP requests and functions called on each click and turns them into actions.
+  - maybe use some tool to autodiscover website endpoints/capabilities
+  - brainstorm what the ideal frictionless onboarding would look like. Ideally the webapp owner doesn't have to do anything. We offer them a chatbot that just works.
 
 
 # Competition
