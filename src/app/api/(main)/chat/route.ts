@@ -14,17 +14,21 @@ import {
 } from '@/app/api/(main)/lib/dataModel';
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, metadata } = await req.json();
 
   const allTools = {
     ...(await getToolsFromActions()),
     search_knowledge_base: createSearchKnowledgeBaseTool(),
   };
 
+  const systemMessage = metadata
+    ? `${CHATBOT_SYSTEM_MESSAGE}\n\nThis is the user's metadata. Use this information to pre-fill data in actions when appropriate:\n${JSON.stringify(metadata, null, 2)}`
+    : CHATBOT_SYSTEM_MESSAGE;
+
   const result = streamText({
     model: getLanguageModel(),
     messages: messages,
-    system: CHATBOT_SYSTEM_MESSAGE,
+    system: systemMessage,
     tools: allTools,
     maxSteps: 5,
     onError: async (event) => {

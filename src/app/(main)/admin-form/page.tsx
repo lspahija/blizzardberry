@@ -274,10 +274,10 @@ export default function AdminFormPage() {
         .map((i) => i.name)
         .join(', ') || '...';
     return `window.ChatbotActions = {
-        ${functionName || 'your_action'}: async (args) => {
+        ${functionName || 'your_action'}: async (args, metadata) => {
             try {
                 // args.${argList}
-                // Your logic here
+                // metadata?.user_metadata - access user data if available
                 return { 
                     status: 'success',
                     data: {

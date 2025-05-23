@@ -1,5 +1,15 @@
 (function () {
   const actions = {};
+  let userMetadata = null;
+
+  if (
+    window.chatbotUserConfig &&
+    typeof window.chatbotUserConfig === 'object'
+  ) {
+    userMetadata = window.chatbotUserConfig;
+    console.log('Initialized user metadata from config:', userMetadata);
+    delete window.chatbotUserConfig;
+  }
 
   if (window.ChatbotActions && typeof window.ChatbotActions === 'object') {
     console.log('Registering actions:', Object.keys(window.ChatbotActions));
@@ -215,7 +225,10 @@
       const response = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: state.messages }),
+        body: JSON.stringify({
+          messages: state.messages,
+          metadata: userMetadata,
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to fetch AI response');
