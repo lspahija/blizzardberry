@@ -111,8 +111,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # Things to be done
 
 ## Next steps
-- add functionality to js SDK to allow the app owner to [add metadata](#sdk-that-allows-app-owners-to-add-metadata)
-- add frontend to RAG pipeline so the app owner can upload documentation
+- add a frontend to the RAG pipeline so the app owner can upload documentation
 - test RAG pipeline with big documents and ensure everything works
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
   - Google OAuth
@@ -121,6 +120,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   - GitHub OAuth
     - [create prod OAuth app](https://github.com/settings/developers)
 - polish the user onboarding experience. All the forms needs to work flawlessly and be easy to use.
+- currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
 - add "Powered By omni-interface" to the bottom of the chatbot
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
 - [finish onboarding](#posthog) PostHog for analytics
