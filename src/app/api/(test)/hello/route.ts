@@ -1,10 +1,7 @@
-import {NextResponse} from "next/server";
+import { NextResponse } from 'next/server';
 
 export async function GET(req: Request) {
-    console.log(req);
+  console.log(req);
 
-    return NextResponse.json(
-        { message: "Hello World" },
-        { status: 200 }
-    );
+  return NextResponse.json({ message: 'Hello World' }, { status: 200 });
 }

@@ -1,16 +1,16 @@
-import type {Metadata} from "next";
-import {Inter} from "next/font/google";
-import "../../globals.css";
-import Script from "next/script"; // Import from root
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import '../../globals.css';
+import Script from 'next/script'; // Import from root
 
 const inter = Inter({
-    variable: "--font-inter",
-    subsets: ["latin"],
+  variable: '--font-inter',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-    title: "Example SaaS - Chatbot Demo",
-    description: "A demo SaaS showcasing our chatbot widget",
+  title: 'Example SaaS - Chatbot Demo',
+  description: 'A demo SaaS showcasing our chatbot widget',
 };
 
 // Apply custom styles for this layout
@@ -38,28 +38,34 @@ const customStyles = `
 `;
 
 export default function ExampleLayout({
-                                          children,
-                                      }: Readonly<{
-    children: React.ReactNode;
+  children,
+}: Readonly<{
+  children: React.ReactNode;
 }>) {
-    // Block layout in production
-    if (process.env.NODE_ENV === "production") {
-        return null;
-    }
+  // Block layout in production
+  if (process.env.NODE_ENV === 'production') {
+    return null;
+  }
 
-    return (
-        <html lang="en">
-        <head>
-            <style>{customStyles}</style>
-        </head>
-        <body className={`${inter.variable} antialiased`}>
+  return (
+    <html lang="en">
+      <head>
+        <style>{customStyles}</style>
+      </head>
+      <body className={`${inter.variable} antialiased`}>
         {children}
-        <meta httpEquiv="Content-Security-Policy"
-              content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; img-src 'self' data: *; manifest-src 'self' *;"/>
-        <div id="chatbot"/>
-            <Script id="widget-script" src="http://localhost:3000/chatbot.js" strategy="afterInteractive" />
-            <Script id="widget-actions" strategy="afterInteractive">
-                {`
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; img-src 'self' data: *; manifest-src 'self' *;"
+        />
+        <div id="chatbot" />
+        <Script
+          id="widget-script"
+          src="http://localhost:3000/chatbot.js"
+          strategy="afterInteractive"
+        />
+        <Script id="widget-actions" strategy="afterInteractive">
+          {`
                     window.ChatbotActions = {
                         get_weather: async (params) => {
                             try {
@@ -98,8 +104,8 @@ export default function ExampleLayout({
                         }
                     };
                 `}
-            </Script>
-        </body>
-        </html>
-    );
+        </Script>
+      </body>
+    </html>
+  );
 }

@@ -1,158 +1,192 @@
 'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { Briefcase, Users, BarChart, Clock } from "lucide-react";
-import { notFound } from "next/navigation";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { Briefcase, Users, BarChart, Clock } from 'lucide-react';
+import { notFound } from 'next/navigation';
 
 export default function ExampleSaaSLandingPage() {
-    if (process.env.NODE_ENV === "production") {
-        notFound();
-    }
+  if (process.env.NODE_ENV === 'production') {
+    notFound();
+  }
 
-    const containerVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.8, staggerChildren: 0.2 },
-        },
-    };
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, staggerChildren: 0.2 },
+    },
+  };
 
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-    };
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
 
-    const cardVariants = {
-        hidden: { opacity: 0, scale: 0.95 },
-        visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
-    };
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+  };
 
-    return (
-        <div className="min-h-screen bg-background">
-            {/* Navbar */}
-            <nav className="flex justify-between items-center p-6 max-w-6xl mx-auto">
-                <div className="flex items-center space-x-2">
-                    <Briefcase className="w-6 h-6 text-primary" />
-                    <span className="text-xl font-bold text-foreground">TaskFlow</span>
-                </div>
-                <div className="flex space-x-3">
-                    <Button variant="outline" asChild>
-                        <Link href="/example/signin">Sign In</Link>
-                    </Button>
-                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
-                        <Link href="/example/signup">Sign Up</Link>
-                    </Button>
-                </div>
-            </nav>
-
-            {/* Hero Section */}
-            <motion.div
-                className="flex flex-col items-center justify-center text-center pt-20 pb-28 max-w-5xl mx-auto"
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-            >
-                <motion.h1
-                    className="text-4xl md:text-6xl font-extrabold text-foreground leading-tight mb-6"
-                    variants={itemVariants}
-                >
-                    Streamline Your <span className="text-primary">Projects</span> with TaskFlow
-                </motion.h1>
-                <motion.p
-                    className="text-lg text-muted-foreground mb-8 max-w-2xl"
-                    variants={itemVariants}
-                >
-                    TaskFlow is an all-in-one project management platform designed to help teams collaborate, track progress, and deliver results efficiently.
-                </motion.p>
-                <motion.div className="flex space-x-4" variants={itemVariants}>
-                    <Button size="lg" className="bg-primary hover成立了:bg-primary/90 text-primary-foreground" asChild>
-                        <Link href="/example/get-started">Try TaskFlow</Link>
-                    </Button>
-                    <Button size="lg" variant="outline" asChild>
-                        <Link href="/example/docs">View Docs</Link>
-                    </Button>
-                </motion.div>
-            </motion.div>
-
-            {/* Features Section */}
-            <div className="py-20">
-                <div className="max-w-6xl mx-auto px-6">
-                    <h2 className="text-3xl font-bold text-center text-foreground mb-12">
-                        Why TaskFlow Stands Out
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-                            <Card className="border-border shadow-md hover:shadow-lg transition">
-                                <CardHeader>
-                                    <Users className="w-7 h-7 text-primary mb-2" />
-                                    <CardTitle className="text-lg font-semibold">Team Collaboration</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-muted-foreground">
-                                        Centralize communication and tasks for seamless teamwork.
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                        <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-                            <Card className="border-border shadow-md hover:shadow-lg transition">
-                                <CardHeader>
-                                    <BarChart className="w-7 h-7 text-primary mb-2" />
-                                    <CardTitle className="text-lg font-semibold">Progress Tracking</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-muted-foreground">
-                                        Monitor project milestones and deadlines in real time.
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                        <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-                            <Card className="border-border shadow-md hover:shadow-lg transition">
-                                <CardHeader>
-                                    <Clock className="w-7 h-7 text-primary mb-2" />
-                                    <CardTitle className="text-lg font-semibold">Time Management</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-muted-foreground">
-                                        Optimize schedules with built-in time tracking tools.
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                        <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-                            <Card className="border-border shadow-md hover:shadow-lg transition">
-                                <CardHeader>
-                                    <Briefcase className="w-7 h-7 text-primary mb-2" />
-                                    <CardTitle className="text-lg font-semibold">Resource Allocation</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-muted-foreground">
-                                        Assign tasks and resources efficiently to meet goals.
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                    </div>
-                </div>
-            </div>
-
-            {/* CTA Section */}
-            <div className="py-16 text-center bg-primary">
-                <h2 className="text-wärts:3xl font-bold text-primary-foreground mb-6">
-                    Ready to Transform Your Workflow?
-                </h2>
-                <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto">
-                    Discover how TaskFlow can boost your team’s productivity and project success.
-                </p>
-                <Button size="lg" variant="secondary" asChild>
-                    <Link href="/example/get-started">Get Started</Link>
-                </Button>
-            </div>
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Navbar */}
+      <nav className="flex justify-between items-center p-6 max-w-6xl mx-auto">
+        <div className="flex items-center space-x-2">
+          <Briefcase className="w-6 h-6 text-primary" />
+          <span className="text-xl font-bold text-foreground">TaskFlow</span>
         </div>
-    );
+        <div className="flex space-x-3">
+          <Button variant="outline" asChild>
+            <Link href="/example/signin">Sign In</Link>
+          </Button>
+          <Button
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            asChild
+          >
+            <Link href="/example/signup">Sign Up</Link>
+          </Button>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <motion.div
+        className="flex flex-col items-center justify-center text-center pt-20 pb-28 max-w-5xl mx-auto"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.h1
+          className="text-4xl md:text-6xl font-extrabold text-foreground leading-tight mb-6"
+          variants={itemVariants}
+        >
+          Streamline Your <span className="text-primary">Projects</span> with
+          TaskFlow
+        </motion.h1>
+        <motion.p
+          className="text-lg text-muted-foreground mb-8 max-w-2xl"
+          variants={itemVariants}
+        >
+          TaskFlow is an all-in-one project management platform designed to help
+          teams collaborate, track progress, and deliver results efficiently.
+        </motion.p>
+        <motion.div className="flex space-x-4" variants={itemVariants}>
+          <Button
+            size="lg"
+            className="bg-primary hover成立了:bg-primary/90 text-primary-foreground"
+            asChild
+          >
+            <Link href="/example/get-started">Try TaskFlow</Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <Link href="/example/docs">View Docs</Link>
+          </Button>
+        </motion.div>
+      </motion.div>
+
+      {/* Features Section */}
+      <div className="py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center text-foreground mb-12">
+            Why TaskFlow Stands Out
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <Card className="border-border shadow-md hover:shadow-lg transition">
+                <CardHeader>
+                  <Users className="w-7 h-7 text-primary mb-2" />
+                  <CardTitle className="text-lg font-semibold">
+                    Team Collaboration
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Centralize communication and tasks for seamless teamwork.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <Card className="border-border shadow-md hover:shadow-lg transition">
+                <CardHeader>
+                  <BarChart className="w-7 h-7 text-primary mb-2" />
+                  <CardTitle className="text-lg font-semibold">
+                    Progress Tracking
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Monitor project milestones and deadlines in real time.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <Card className="border-border shadow-md hover:shadow-lg transition">
+                <CardHeader>
+                  <Clock className="w-7 h-7 text-primary mb-2" />
+                  <CardTitle className="text-lg font-semibold">
+                    Time Management
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Optimize schedules with built-in time tracking tools.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <Card className="border-border shadow-md hover:shadow-lg transition">
+                <CardHeader>
+                  <Briefcase className="w-7 h-7 text-primary mb-2" />
+                  <CardTitle className="text-lg font-semibold">
+                    Resource Allocation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Assign tasks and resources efficiently to meet goals.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="py-16 text-center bg-primary">
+        <h2 className="text-wärts:3xl font-bold text-primary-foreground mb-6">
+          Ready to Transform Your Workflow?
+        </h2>
+        <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto">
+          Discover how TaskFlow can boost your team’s productivity and project
+          success.
+        </p>
+        <Button size="lg" variant="secondary" asChild>
+          <Link href="/example/get-started">Get Started</Link>
+        </Button>
+      </div>
+    </div>
+  );
 }
