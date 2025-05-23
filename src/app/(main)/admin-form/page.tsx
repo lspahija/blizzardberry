@@ -264,9 +264,16 @@ export default function AdminFormPage() {
     }
   };
 
-    function getRegisterToolsExample(functionName: string, dataInputs: DataInput[]) {
-        const argList = dataInputs.filter(i => i.name).map(i => i.name).join(', ') || '...';
-        return `window.ChatbotActions = {
+  function getRegisterToolsExample(
+    functionName: string,
+    dataInputs: DataInput[]
+  ) {
+    const argList =
+      dataInputs
+        .filter((i) => i.name)
+        .map((i) => i.name)
+        .join(', ') || '...';
+    return `window.ChatbotActions = {
         ${functionName || 'your_action'}: async (args, userConfig) => {
             try {
                 // args.${argList}
