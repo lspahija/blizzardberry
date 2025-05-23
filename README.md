@@ -110,7 +110,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 # Things to be done
 
-## Next steps
+## Before Launch
 - add a frontend to the RAG pipeline so the app owner can upload documentation
 - test RAG pipeline with big documents and ensure everything works
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
@@ -121,14 +121,18 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
     - [create prod OAuth app](https://github.com/settings/developers)
 - polish the user onboarding experience. All the forms needs to work flawlessly and be easy to use.
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
-- add "Powered By omni-interface" to the bottom of the chatbot
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
 - [finish onboarding](#posthog) PostHog for analytics
 - landing page needs to sell the product well!
 - rename and get domain!
 - deploy to vercel
 
-## Later on
+## Launch and Sell! 
+#### [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v)
+
+## After Launch (while also selling) 
+#### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
+- add "Powered By omni-interface" to the bottom of the chatbot
 - make chatbot design super customizable so app owners can make it look like their app
 - add automated end-to-end test suite so we can introduce new features without breaking existing functionality. Use Playwright for this. [Grok thread](https://grok.com/share/bGVnYWN5_82a58179-e019-4507-a75b-59c398539835)
 - minify and obfuscate chatbot.js code
