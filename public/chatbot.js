@@ -227,7 +227,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: state.messages,
-          userConfig: userConfig,
+          userConfig,
         }),
       });
 

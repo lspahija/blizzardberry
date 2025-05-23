@@ -277,7 +277,7 @@ export default function AdminFormPage() {
         ${functionName || 'your_action'}: async (args, userConfig) => {
             try {
                 // args.${argList}
-                // userConfig - exposes the user configuration if you specified one
+                // userConfig - exposes the user config if you specified one
                 return { 
                     status: 'success',
                     data: {
