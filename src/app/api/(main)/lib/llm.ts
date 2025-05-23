@@ -3,11 +3,11 @@ import {getLanguageModel} from "@/app/api/(main)/lib/modelProvider";
 import {CHATBOT_SYSTEM_MESSAGE} from "@/app/api/(main)/lib/constants";
 import {createSearchKnowledgeBaseTool, getToolsFromActions} from "@/app/api/(main)/lib/toolProvider";
 
-export async function callAIModel(messages: any, metadata: any) {
+export async function callAIModel(messages: any, userConfig: any) {
     const stream = streamText({
         model: getLanguageModel(),
         messages: messages,
-        system: buildSystemMessage(metadata),
+        system: buildSystemMessage(userConfig),
         tools: {
             ...await getToolsFromActions(),
             search_knowledge_base: createSearchKnowledgeBaseTool()
@@ -26,10 +26,10 @@ export async function callAIModel(messages: any, metadata: any) {
     return data;
 }
 
-function buildSystemMessage (metadata: any) {
+function buildSystemMessage (userConfig: any) {
     let message = CHATBOT_SYSTEM_MESSAGE;
 
-    if (metadata) message += `\n\nThis is the user's metadata. Use this information to pre-fill data in actions when appropriate:\n${JSON.stringify(metadata, null, 2)}`;
+    if (userConfig) message += `\n\nThis is the user's metadata. Use this information to pre-fill data in actions when appropriate:\n${JSON.stringify(userConfig, null, 2)}`;
 
     return message;
 }

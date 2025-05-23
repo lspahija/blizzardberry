@@ -264,20 +264,13 @@ export default function AdminFormPage() {
     }
   };
 
-  function getRegisterToolsExample(
-    functionName: string,
-    dataInputs: DataInput[]
-  ) {
-    const argList =
-      dataInputs
-        .filter((i) => i.name)
-        .map((i) => i.name)
-        .join(', ') || '...';
-    return `window.ChatbotActions = {
-        ${functionName || 'your_action'}: async (args, metadata) => {
+    function getRegisterToolsExample(functionName: string, dataInputs: DataInput[]) {
+        const argList = dataInputs.filter(i => i.name).map(i => i.name).join(', ') || '...';
+        return `window.ChatbotActions = {
+        ${functionName || 'your_action'}: async (args, userConfig) => {
             try {
                 // args.${argList}
-                // Example: metadata?.user_id or metadata?.user_metadata?.name
+                // userConfig?. - use userConfig to get user data if needed
                 return { 
                     status: 'success',
                     data: {

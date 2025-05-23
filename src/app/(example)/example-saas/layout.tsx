@@ -81,7 +81,7 @@ export default function ExampleLayout({
         <Script id="widget-actions" strategy="afterInteractive">
           {`
                     window.ChatbotActions = {
-                        get_weather: async (params, metadata) => {
+                        get_weather: async (params, userConfig) => {
                             try {
                                 const geoResponse = await fetch(
                                     \`https://geocoding-api.open-meteo.com/v1/search?name=\${encodeURIComponent(params.location)}&count=1\`
