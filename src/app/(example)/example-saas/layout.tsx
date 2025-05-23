@@ -59,6 +59,20 @@ export default function ExampleLayout({
           content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; img-src 'self' data: *; manifest-src 'self' *;"
         />
         <div id="chatbot" />
+        <Script id="chatbot-config" strategy="beforeInteractive">
+          {`
+                    window.chatbotUserConfig = {
+                        user_id: "example_user_123",
+                        user_hash: "example_hash_456",
+                        account_number: "1234567890",
+                        user_metadata: {
+                            name: "John Doe",
+                            email: "john@example.com",
+                            company: "Example Corp"
+                        }
+                    };
+                `}
+        </Script>
         <Script
           id="widget-script"
           src="http://localhost:3000/chatbot.js"
@@ -67,7 +81,7 @@ export default function ExampleLayout({
         <Script id="widget-actions" strategy="afterInteractive">
           {`
                     window.ChatbotActions = {
-                        get_weather: async (params) => {
+                        get_weather: async (params, userConfig) => {
                             try {
                                 const geoResponse = await fetch(
                                     \`https://geocoding-api.open-meteo.com/v1/search?name=\${encodeURIComponent(params.location)}&count=1\`

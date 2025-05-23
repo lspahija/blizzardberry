@@ -274,14 +274,14 @@ export default function AdminFormPage() {
         .map((i) => i.name)
         .join(', ') || '...';
     return `window.ChatbotActions = {
-        ${functionName || 'your_action'}: async (args) => {
+        ${functionName || 'your_action'}: async (args, userConfig) => {
             try {
                 // args.${argList}
-                // Your logic here
+                // userConfig - exposes the user config if you specified one
                 return { 
                     status: 'success',
                     data: {
-                        // Your response data here
+                        // any object you want to return
                     }
                 };
             } catch (error) {
@@ -474,8 +474,8 @@ export default function AdminFormPage() {
                     <p className="text-sm text-gray-600 mt-1">
                       List any information the AI Agent needs to perform the
                       action. The agent can find the data in the chat history,
-                      request it from the user, or retrieve it from the user's
-                      metadata if available.
+                      request it from the user, or retrieve it from the
+                      specified user config if available.
                     </p>
                     {dataInputs.map((input, index) => (
                       <div

@@ -3,7 +3,6 @@ import {
   Action,
   ExecutionContext,
   ExecutionModel,
-  HttpModel,
 } from '@/app/api/(main)/lib/dataModel';
 
 export const getActions = async (): Promise<Action[]> => {
