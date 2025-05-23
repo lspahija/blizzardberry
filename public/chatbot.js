@@ -7,7 +7,7 @@
     typeof window.chatbotUserConfig === 'object'
   ) {
     userConfig = window.chatbotUserConfig;
-    console.log('Initialized user metadata from config:', userConfig);
+    console.log('Initialized user config:', userConfig);
     delete window.chatbotUserConfig;
   }
 
