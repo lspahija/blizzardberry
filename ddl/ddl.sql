@@ -1,6 +1,6 @@
--- chatbot
+-- chatbots
 
-create table chatbot
+create table chatbots
 (
     id             uuid                     default uuid_generate_v4() primary key,
     name           text not null,
@@ -16,11 +16,11 @@ CREATE TYPE execution_context AS ENUM ('CLIENT', 'SERVER');
 create table actions
 (
     id                uuid                     default uuid_generate_v4() primary key,
-    name              text              not null unique,
+    name              text              not null,
     description       text              not null,
     execution_context execution_context not null,
     execution_model   jsonb             not null,
-    chatbot_id        uuid              not null references chatbot (id) on delete cascade,
+    chatbot_id        uuid              not null references chatbots (id) on delete cascade,
     created_at        timestamp with time zone default now()
 );
 
@@ -34,7 +34,7 @@ CREATE TABLE documents
     content            TEXT NOT NULL,
     metadata           JSONB,
     embedding          HALFVEC(3072),
-    chatbot_id         uuid not null references chatbot (id) on delete cascade
+    chatbot_id         uuid not null references chatbots (id) on delete cascade
 );
 
 CREATE INDEX documents_embedding_idx ON documents USING hnsw (embedding halfvec_cosine_ops);

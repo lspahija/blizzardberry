@@ -17,12 +17,11 @@ import { Save, Trash2, ArrowLeft } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useRouter, useSearchParams } from 'next/navigation';
-import {Action, BaseAction, ExecutionContext, Parameter, ParameterType} from "@/app/api/lib/model/action/baseAction";
-import {BackendModel, HttpMethod, HttpRequest, Headers, Body} from "@/app/api/lib/model/action/backendAction";
-import {FrontendModel} from "@/app/api/lib/model/action/frontendAction";
+import { useRouter, useSearchParams, useParams } from 'next/navigation';
+import { Action, BaseAction, ExecutionContext, Parameter, ParameterType } from "@/app/api/lib/model/action/baseAction";
+import { BackendModel, HttpMethod, HttpRequest, Headers, Body } from "@/app/api/lib/model/action/backendAction";
+import { FrontendModel } from "@/app/api/lib/model/action/frontendAction";
 
-// UI-specific interfaces
 interface DataInput {
   name: string;
   type: string;
@@ -38,6 +37,7 @@ interface Header {
 export default function AdminFormPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { chatbotId } = useParams();
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -58,11 +58,13 @@ export default function AdminFormPage() {
   };
 
   const [step, setStep] = useState(1);
-  const [actionName, setActionName] = useState('');
-  const [description, setDescription] = useState('');
-  const [actionType, setActionType] = useState<ExecutionContext>(
-      ExecutionContext.SERVER
-  );
+  // Initialize BaseAction with chatbotId from useParams
+  const [baseAction, setBaseAction] = useState<BaseAction>({
+    name: '',
+    description: '',
+    executionContext: ExecutionContext.SERVER,
+    chatbotId: chatbotId as string,
+  });
   const [dataInputs, setDataInputs] = useState<DataInput[]>([
     { name: '', type: 'Text', description: '', isArray: false },
   ]);
@@ -86,29 +88,23 @@ export default function AdminFormPage() {
     setStep(currentStep);
 
     const typeParam = searchParams.get('type');
-    let currentActionType = actionType; // Default from state
-
     if (typeParam) {
-      if (typeParam === 'server') {
-        currentActionType = ExecutionContext.SERVER;
-      } else if (typeParam === 'client') {
-        currentActionType = ExecutionContext.CLIENT;
-      }
-      setActionType(currentActionType);
+      const newExecutionContext = typeParam === 'server' ? ExecutionContext.SERVER : ExecutionContext.CLIENT;
+      setBaseAction((prev) => ({ ...prev, executionContext: newExecutionContext }));
+      const actionTypeParam = newExecutionContext === ExecutionContext.SERVER ? 'server' : 'client';
+      router.replace(`/chatbots/${chatbotId}/actions/new?type=${actionTypeParam}&step=${currentStep}`);
     } else if (stepParam) {
-      const actionTypeParam =
-          currentActionType === ExecutionContext.SERVER ? 'server' : 'client';
-      router.replace(`?type=${actionTypeParam}&step=${currentStep}`);
+      const actionTypeParam = baseAction.executionContext === ExecutionContext.SERVER ? 'server' : 'client';
+      router.replace(`/chatbots/${chatbotId}/actions/new?type=${actionTypeParam}&step=${currentStep}`);
     }
-  }, [searchParams, router, actionType]);
+  }, [searchParams, router, chatbotId, baseAction.executionContext]);
 
   const updateUrl = (newStep: number) => {
     if (newStep > 1) {
-      const actionTypeParam =
-          actionType === ExecutionContext.SERVER ? 'server' : 'client';
-      router.push(`?type=${actionTypeParam}&step=${newStep}`);
+      const actionTypeParam = baseAction.executionContext === ExecutionContext.SERVER ? 'server' : 'client';
+      router.push(`/chatbots/${chatbotId}/actions/new?type=${actionTypeParam}&step=${newStep}`);
     } else {
-      router.push(`?step=${newStep}`);
+      router.push(`/chatbots/${chatbotId}/actions/new?step=${newStep}`);
     }
     setStep(newStep);
   };
@@ -116,6 +112,8 @@ export default function AdminFormPage() {
   const handleBack = () => {
     if (step > 1) {
       updateUrl(step - 1);
+    } else {
+      router.push(`/chatbots/${chatbotId}`);
     }
   };
 
@@ -157,15 +155,9 @@ export default function AdminFormPage() {
   };
 
   const handleCreateAction = async () => {
-    const baseAction: BaseAction = {
-      name: actionName,
-      description,
-      executionContext: actionType,
-    };
-
     let action: Action;
 
-    if (actionType === ExecutionContext.SERVER) {
+    if (baseAction.executionContext === ExecutionContext.SERVER) {
       const requestHeaders: Headers = {};
       headers.forEach((header) => {
         if (header.key && header.value) {
@@ -183,7 +175,6 @@ export default function AdminFormPage() {
         return;
       }
 
-      // Only include data inputs in parameters
       const parameters: Parameter[] = dataInputs
           .filter((input) => input.name)
           .map((input) => ({
@@ -196,8 +187,7 @@ export default function AdminFormPage() {
       const requestModel: HttpRequest = {
         url: apiUrl,
         method: apiMethod as HttpMethod,
-        headers:
-            Object.keys(requestHeaders).length > 0 ? requestHeaders : undefined,
+        headers: Object.keys(requestHeaders).length > 0 ? requestHeaders : undefined,
         body: requestBody,
       };
 
@@ -234,7 +224,7 @@ export default function AdminFormPage() {
     }
 
     try {
-      const response = await fetch('/api/actions/form', {
+      const response = await fetch(`/api/chatbots/${chatbotId}/actions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -244,6 +234,7 @@ export default function AdminFormPage() {
 
       if (response.ok) {
         console.log('Action created successfully');
+        router.push(`/chatbots/${chatbotId}`);
       } else {
         console.error('Failed to create action:', response.statusText);
       }
@@ -252,33 +243,30 @@ export default function AdminFormPage() {
     }
   };
 
-  function getRegisterToolsExample(
-      functionName: string,
-      dataInputs: DataInput[]
-  ) {
+  function getRegisterToolsExample(functionName: string, dataInputs: DataInput[]) {
     const argList =
         dataInputs
             .filter((i) => i.name)
             .map((i) => i.name)
             .join(', ') || '...';
     return `window.ChatbotActions = {
-        ${functionName || 'your_action'}: async (args, userConfig) => {
-            try {
-                // args.${argList}
-                // userConfig - exposes the user config if you specified one
-                return { 
-                    status: 'success',
-                    data: {
-                        // any object you want to return
-                    }
-                };
-            } catch (error) {
-                return { 
-                    status: 'error', 
-                    error: error.message || 'Failed to execute action' 
-                };
+      ${functionName || 'your_action'}: async (args, userConfig) => {
+        try {
+          // args.${argList}
+          // userConfig - exposes the user config if you specified one
+          return { 
+            status: 'success',
+            data: {
+              // any object you want to return
             }
+          };
+        } catch (error) {
+          return { 
+            status: 'error', 
+            error: error.message || 'Failed to execute action' 
+          };
         }
+      }
     };`;
   }
 
@@ -326,11 +314,7 @@ export default function AdminFormPage() {
           </motion.h1>
 
           {step === 1 && (
-              <motion.div
-                  variants={cardVariants}
-                  initial="hidden"
-                  whileInView="visible"
-              >
+              <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
                 <div className="relative mb-12">
                   <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
                   <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-none">
@@ -350,8 +334,10 @@ export default function AdminFormPage() {
                         </p>
                         <Input
                             id="actionName"
-                            value={actionName}
-                            onChange={(e) => setActionName(e.target.value)}
+                            value={baseAction.name}
+                            onChange={(e) =>
+                                setBaseAction((prev) => ({ ...prev, name: e.target.value }))
+                            }
                             placeholder="Update_Subscription"
                             className="mt-2 border-[2px] border-gray-900"
                         />
@@ -368,8 +354,10 @@ export default function AdminFormPage() {
                         </p>
                         <Textarea
                             id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            value={baseAction.description}
+                            onChange={(e) =>
+                                setBaseAction((prev) => ({ ...prev, description: e.target.value }))
+                            }
                             placeholder="Describe when the AI agent should use this action..."
                             className="mt-2 border-[2px] border-gray-900"
                             rows={5}
@@ -378,15 +366,12 @@ export default function AdminFormPage() {
                       <div>
                         <Label className="text-gray-900">Action Type</Label>
                         <RadioGroup
-                            value={actionType}
+                            value={baseAction.executionContext}
                             onValueChange={(value: ExecutionContext) => {
-                              setActionType(value);
-                              // Update URL immediately to reflect selected action type, even in step 1
+                              setBaseAction((prev) => ({ ...prev, executionContext: value }));
                               const actionTypeParam =
-                                  value === ExecutionContext.SERVER
-                                      ? 'server'
-                                      : 'client';
-                              router.replace(`?type=${actionTypeParam}&step=1`);
+                                  value === ExecutionContext.SERVER ? 'server' : 'client';
+                              router.replace(`/chatbots/${chatbotId}/actions/new?type=${actionTypeParam}&step=1`);
                             }}
                             className="flex space-x-4 mt-2"
                         >
@@ -433,11 +418,7 @@ export default function AdminFormPage() {
           )}
 
           {step === 2 && (
-              <motion.div
-                  variants={cardVariants}
-                  initial="hidden"
-                  whileInView="visible"
-              >
+              <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
                 <div className="relative mb-12">
                   <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
                   <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-none">
@@ -569,17 +550,13 @@ export default function AdminFormPage() {
           )}
 
           {step === 3 && (
-              <motion.div
-                  variants={cardVariants}
-                  initial="hidden"
-                  whileInView="visible"
-              >
+              <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
                 <div className="relative mb-12">
                   <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
                   <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-none">
                     <CardHeader className="flex flex-row items-center justify-between">
                       <CardTitle className="text-2xl font-semibold text-gray-900">
-                        {actionType === ExecutionContext.SERVER
+                        {baseAction.executionContext === ExecutionContext.SERVER
                             ? 'API Request'
                             : 'Client Action Configuration'}
                       </CardTitle>
@@ -593,7 +570,7 @@ export default function AdminFormPage() {
                       </Button>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      {actionType === ExecutionContext.SERVER ? (
+                      {baseAction.executionContext === ExecutionContext.SERVER ? (
                           <>
                             <div>
                               <Label className="text-gray-900">API Request</Label>

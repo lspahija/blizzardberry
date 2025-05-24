@@ -19,5 +19,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 export { auth as middleware };
 
 export const config = {
-  matcher: ['/dashboard', '/chatbots/new', ''],
+  matcher: ['/dashboard'], // TODO: Update this to match protected routes
 };
