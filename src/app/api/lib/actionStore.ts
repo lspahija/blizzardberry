@@ -1,10 +1,16 @@
 import { supabaseClient } from '@/app/api/lib/supabase';
-import {Action, ExecutionContext, ExecutionModel} from "@/app/api/lib/model/action/baseAction";
+import {
+  Action,
+  ExecutionContext,
+  ExecutionModel,
+} from '@/app/api/lib/model/action/baseAction';
 
 export const getActions = async (): Promise<Action[]> => {
   const { data, error } = await supabaseClient
     .from('actions')
-    .select('name, description, execution_context, execution_model, chatbot_id');
+    .select(
+      'name, description, execution_context, execution_model, chatbot_id'
+    );
 
   if (error) {
     throw new Error(`Failed to fetch actions: ${error.message}`);
@@ -15,7 +21,7 @@ export const getActions = async (): Promise<Action[]> => {
     description: d.description,
     executionContext: d.execution_context,
     executionModel: d.execution_model,
-    chatbotId: d.chatbot_id
+    chatbotId: d.chatbot_id,
   }));
 };
 

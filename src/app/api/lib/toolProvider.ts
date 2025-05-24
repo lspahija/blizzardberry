@@ -2,8 +2,16 @@ import { tool, Tool } from 'ai';
 import { z } from 'zod';
 import { similaritySearch } from '@/app/api/lib/embedding';
 import { getActions } from '@/app/api/lib/actionStore';
-import {ExecutionContext, Parameter, ParameterType} from "@/app/api/lib/model/action/baseAction";
-import {BackendAction, HttpRequest, Body} from "@/app/api/lib/model/action/backendAction";
+import {
+  ExecutionContext,
+  Parameter,
+  ParameterType,
+} from '@/app/api/lib/model/action/baseAction';
+import {
+  BackendAction,
+  HttpRequest,
+  Body,
+} from '@/app/api/lib/model/action/backendAction';
 
 export function createSearchKnowledgeBaseTool(): Tool {
   return tool({

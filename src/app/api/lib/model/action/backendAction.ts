@@ -1,48 +1,52 @@
-import {BaseAction, ExecutionContext, Parameter} from "@/app/api/lib/model/action/baseAction";
+import {
+  BaseAction,
+  ExecutionContext,
+  Parameter,
+} from '@/app/api/lib/model/action/baseAction';
 
 export interface BackendAction extends BaseAction {
-    executionContext: ExecutionContext.SERVER;
-    executionModel: BackendModel;
+  executionContext: ExecutionContext.SERVER;
+  executionModel: BackendModel;
 }
 
 export interface BackendModel {
-    request: HttpRequest;
-    parameters: Parameter[];
+  request: HttpRequest;
+  parameters: Parameter[];
 }
 
 export interface HttpRequest {
-    url: string;
-    method: HttpMethod;
-    headers?: Headers;
-    body?: Body;
+  url: string;
+  method: HttpMethod;
+  headers?: Headers;
+  body?: Body;
 }
 
 export type HttpMethod =
-    | 'get'
-    | 'GET'
-    | 'delete'
-    | 'DELETE'
-    | 'head'
-    | 'HEAD'
-    | 'options'
-    | 'OPTIONS'
-    | 'post'
-    | 'POST'
-    | 'put'
-    | 'PUT'
-    | 'patch'
-    | 'PATCH'
-    | 'purge'
-    | 'PURGE'
-    | 'link'
-    | 'LINK'
-    | 'unlink'
-    | 'UNLINK';
+  | 'get'
+  | 'GET'
+  | 'delete'
+  | 'DELETE'
+  | 'head'
+  | 'HEAD'
+  | 'options'
+  | 'OPTIONS'
+  | 'post'
+  | 'POST'
+  | 'put'
+  | 'PUT'
+  | 'patch'
+  | 'PATCH'
+  | 'purge'
+  | 'PURGE'
+  | 'link'
+  | 'LINK'
+  | 'unlink'
+  | 'UNLINK';
 
 export interface Headers {
-    [key: string]: string;
+  [key: string]: string;
 }
 
 export interface Body {
-    [key: string]: string | number | boolean | (string | number | boolean)[];
+  [key: string]: string | number | boolean | (string | number | boolean)[];
 }

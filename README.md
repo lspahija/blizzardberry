@@ -103,6 +103,11 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 - user: `postgres.pwlbhcjwuwsvszkvqexy`
 - password: `[your Supabase password]`
 
+# Format code with Prettier
+```bash
+pnpm format
+```
+
 # Deploy
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

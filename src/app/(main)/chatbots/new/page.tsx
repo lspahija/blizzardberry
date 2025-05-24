@@ -43,7 +43,7 @@ export default function ChatbotFormPage() {
         },
         body: JSON.stringify({
           name,
-          websiteDomain
+          websiteDomain,
         }),
       });
 
@@ -59,85 +59,86 @@ export default function ChatbotFormPage() {
   };
 
   return (
-      <div className="min-h-screen bg-[#FFFDF8]">
-        <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-gray-900 sticky top-0 bg-[#FFFDF8] z-50">
-          <div className="flex items-center space-x-2">
+    <div className="min-h-screen bg-[#FFFDF8]">
+      <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-gray-900 sticky top-0 bg-[#FFFDF8] z-50">
+        <div className="flex items-center space-x-2">
           <span className="text-xl font-bold text-gray-900">
             <span className="text-gray-900">Omni</span>
             <span className="text-[#FE4A60]">Interface</span>
           </span>
-          </div>
-        </nav>
+        </div>
+      </nav>
+
+      <motion.div
+        className="max-w-4xl mx-auto px-4 py-16"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.h1
+          className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900 mb-12 text-center"
+          variants={itemVariants}
+        >
+          Create New Chatbot
+        </motion.h1>
 
         <motion.div
-            className="max-w-4xl mx-auto px-4 py-16"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+          variants={cardVariants}
+          initial="hidden"
+          whileInView="visible"
         >
-          <motion.h1
-              className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900 mb-12 text-center"
-              variants={itemVariants}
-          >
-            Create New Chatbot
-          </motion.h1>
-
-          <motion.div
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-          >
-            <div className="relative mb-12">
-              <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
-              <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-none">
-                <CardHeader>
-                  <CardTitle className="text-2xl font-semibold text-gray-900">
-                    Chatbot Details
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div>
-                    <Label htmlFor="name" className="text-gray-900">
-                      Chatbot Name
-                    </Label>
-                    <p className="text-sm text-gray-600 mt-1">
-                      A unique name for your chatbot
-                    </p>
-                    <Input
-                        id="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="My Customer Service Bot"
-                        className="mt-2 border-[2px] border-gray-900"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="websiteDomain" className="text-gray-900">
-                      Website Domain
-                    </Label>
-                    <p className="text-sm text-gray-600 mt-1">
-                      The domain of the website where this chatbot will be installed
-                    </p>
-                    <Input
-                        id="websiteDomain"
-                        value={websiteDomain}
-                        onChange={(e) => setWebsiteDomain(e.target.value)}
-                        placeholder="example.com"
-                        className="mt-2 border-[2px] border-gray-900"
-                    />
-                  </div>
-                  <Button
-                      className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
-                      onClick={handleCreateChatbot}
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    Create Chatbot
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </motion.div>
+          <div className="relative mb-12">
+            <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
+            <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-none">
+              <CardHeader>
+                <CardTitle className="text-2xl font-semibold text-gray-900">
+                  Chatbot Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <Label htmlFor="name" className="text-gray-900">
+                    Chatbot Name
+                  </Label>
+                  <p className="text-sm text-gray-600 mt-1">
+                    A unique name for your chatbot
+                  </p>
+                  <Input
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="My Customer Service Bot"
+                    className="mt-2 border-[2px] border-gray-900"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="websiteDomain" className="text-gray-900">
+                    Website Domain
+                  </Label>
+                  <p className="text-sm text-gray-600 mt-1">
+                    The domain of the website where this chatbot will be
+                    installed
+                  </p>
+                  <Input
+                    id="websiteDomain"
+                    value={websiteDomain}
+                    onChange={(e) => setWebsiteDomain(e.target.value)}
+                    placeholder="example.com"
+                    className="mt-2 border-[2px] border-gray-900"
+                  />
+                </div>
+                <Button
+                  className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                  onClick={handleCreateChatbot}
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Create Chatbot
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </motion.div>
-      </div>
+      </motion.div>
+    </div>
   );
 }
