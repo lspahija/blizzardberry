@@ -1,15 +1,9 @@
 import { tool, Tool } from 'ai';
-import {
-  BackendAction,
-  ExecutionContext,
-  Parameter,
-  ParameterType,
-  RequestBody,
-  RequestModel,
-} from '@/app/api/lib/dataModel';
 import { z } from 'zod';
 import { similaritySearch } from '@/app/api/lib/embedding';
 import { getActions } from '@/app/api/lib/actionStore';
+import {ExecutionContext, Parameter, ParameterType} from "@/app/api/lib/model/action/baseAction";
+import {BackendAction, HttpRequest, Body} from "@/app/api/lib/model/action/backendAction";
 
 export function createSearchKnowledgeBaseTool(): Tool {
   return tool({
@@ -130,9 +124,9 @@ function substitutePlaceholders(
 }
 
 function substituteRequestModel(
-  request: RequestModel,
+  request: HttpRequest,
   params: Record<string, any>
-): RequestModel {
+): HttpRequest {
   const { url, method, headers, body } = request;
 
   const substitutedUrl = substitutePlaceholders(url, params);
@@ -145,7 +139,7 @@ function substituteRequestModel(
       )
     : undefined;
 
-  let substitutedBody: RequestBody | undefined;
+  let substitutedBody: Body | undefined;
   if (body) {
     substitutedBody = {};
     for (const [key, value] of Object.entries(body)) {

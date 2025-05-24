@@ -3,6 +3,7 @@
 create table chatbot
 (
     id             uuid default uuid_generate_v4() primary key,
+    name           text not null,
     website_domain text not null,
     created_by     uuid not null references next_auth.users (id) on delete cascade
 );
