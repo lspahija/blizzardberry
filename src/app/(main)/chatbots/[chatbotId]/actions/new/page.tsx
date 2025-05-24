@@ -32,7 +32,7 @@ import {
   Action,
   BaseAction,
   Method,
-} from '@/app/api/(main)/lib/dataModel';
+} from '@/app/api/lib/dataModel';
 
 // UI-specific interfaces
 interface DataInput {

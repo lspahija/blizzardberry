@@ -19,5 +19,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 export { auth as middleware };
 
 export const config = {
-  matcher: ['/dashboard'],
+  matcher: ['/dashboard', '/chatbots/new', ''],
 };

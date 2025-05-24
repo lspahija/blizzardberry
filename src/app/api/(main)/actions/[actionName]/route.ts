@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAction, deleteAction } from '@/app/api/(main)/lib/actionStore';
+import { getAction, deleteAction } from '@/app/api/lib/actionStore';
 
 export async function GET(
   _: Request,

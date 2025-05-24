@@ -1,4 +1,4 @@
-import { callAIModel } from '@/app/api/(main)/lib/llm';
+import { callAIModel } from '@/app/api/lib/llm';
 
 export async function POST(req: Request) {
   const { messages, userConfig } = await req.json();

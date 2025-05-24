@@ -6,10 +6,10 @@ import {
   ParameterType,
   RequestBody,
   RequestModel,
-} from '@/app/api/(main)/lib/dataModel';
+} from '@/app/api/lib/dataModel';
 import { z } from 'zod';
-import { similaritySearch } from '@/app/api/(main)/lib/embedding';
-import { getActions } from '@/app/api/(main)/lib/actionStore';
+import { similaritySearch } from '@/app/api/lib/embedding';
+import { getActions } from '@/app/api/lib/actionStore';
 
 export function createSearchKnowledgeBaseTool(): Tool {
   return tool({

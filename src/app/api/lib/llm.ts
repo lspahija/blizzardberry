@@ -1,10 +1,10 @@
 import { streamText } from 'ai';
-import { getLanguageModel } from '@/app/api/(main)/lib/modelProvider';
-import { CHATBOT_SYSTEM_MESSAGE } from '@/app/api/(main)/lib/constants';
+import { getLanguageModel } from '@/app/api/lib/modelProvider';
+import { CHATBOT_SYSTEM_MESSAGE } from '@/app/api/lib/constants';
 import {
   createSearchKnowledgeBaseTool,
   getToolsFromActions,
-} from '@/app/api/(main)/lib/toolProvider';
+} from '@/app/api/lib/toolProvider';
 
 export async function callAIModel(messages: any, userConfig: any) {
   const stream = streamText({

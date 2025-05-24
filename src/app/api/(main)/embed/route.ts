@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Document } from '@langchain/core/documents';
 import { v4 as uuidv4 } from 'uuid';
-import { vectorStore } from '@/app/api/(main)/lib/embedding';
+import { vectorStore } from '@/app/api/lib/embedding';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 
 export async function POST(request: Request) {

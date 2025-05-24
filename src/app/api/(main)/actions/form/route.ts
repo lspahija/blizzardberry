@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { Action } from '@/app/api/(main)/lib/dataModel';
-import { createAction } from '@/app/api/(main)/lib/actionStore';
+import { Action } from '@/app/api/lib/dataModel';
+import { createAction } from '@/app/api/lib/actionStore';
 
 export async function POST(req: Request) {
   try {

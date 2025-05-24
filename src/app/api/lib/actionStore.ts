@@ -1,9 +1,9 @@
-import { supabaseClient } from '@/app/api/(main)/lib/supabase';
+import { supabaseClient } from '@/app/api/lib/supabase';
 import {
   Action,
   ExecutionContext,
   ExecutionModel,
-} from '@/app/api/(main)/lib/dataModel';
+} from '@/app/api/lib/dataModel';
 
 export const getActions = async (): Promise<Action[]> => {
   const { data, error } = await supabaseClient

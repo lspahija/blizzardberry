@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { similaritySearch } from '@/app/api/(main)/lib/embedding';
+import { similaritySearch } from '@/app/api/lib/embedding';
 
 export async function POST(request: Request) {
   try {
