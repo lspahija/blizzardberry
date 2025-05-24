@@ -138,22 +138,24 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
 - add "Powered By omni-interface" to the bottom of the chatbot
+- minify and obfuscate chatbot.js code
 - make chatbot design super customizable so app owners can make it look like their app
 - add automated end-to-end test suite so we can introduce new features without breaking existing functionality. Use Playwright for this. [Grok thread](https://grok.com/share/bGVnYWN5_82a58179-e019-4507-a75b-59c398539835)
-- minify and obfuscate chatbot.js code
-- stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?) (ai-sdk currently only support react, vue, svelte and solid)
-- automatically pull docs from website during RAG onboarding?
 - [optimize RAG pipeline](#frankies-tips-to-optimize-rag)
+- stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?) (ai-sdk currently only support react, vue, svelte and solid)
 - create SDKs (analogues to chatbot.js) for non-js frontends i.e. desktop and mobile apps written in go, java, etc.
+
+## Longer Term Goals (buy maybe pull them in earlier)
+- make the system prompt auto-improve for each app or even each end user. As the user tells the chatbot what they want, the system prompt is updated to include that information. This way, the chatbot can learn and adapt to the user's needs over time. https://youtu.be/WJoZK9sMwvw?si=CTOwYwskX38WDzOO
 - allow user to use voice, the ideal is that they just talk to computer
 - make the actions MCP-compatible? i.e. turn the actions into an MCP server so that any MCP client can call them.
 - make onboarding a new app as simple as possible
-  - maybe let user just pass in their OpenAPI spec and the app will automatically generate a chatbot for them
-  - maybe use AI to scan the app's codebase - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
-  - Google has a [Chrome extension](https://chromewebstore.google.com/detail/project-mariner-companion/kadmollpgjhjcclemeliidekkajnjaih) where you can teach the AI how to perform tasks. Maybe you can create an extension that records HTTP requests and functions called on each click and turns them into actions.
-  - maybe use some tool to autodiscover website endpoints/capabilities
-  - brainstorm what the ideal frictionless onboarding would look like. Ideally the webapp owner doesn't have to do anything. We offer them a chatbot that just works.
-
+    - automatically pull docs from website during RAG onboarding?
+    - maybe let user just pass in their OpenAPI spec and the app will automatically generate a chatbot for them
+    - maybe use AI to scan the app's codebase - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
+    - Google has a [Chrome extension](https://chromewebstore.google.com/detail/project-mariner-companion/kadmollpgjhjcclemeliidekkajnjaih) where you can teach the AI how to perform tasks. Maybe you can create an extension that records HTTP requests and functions called on each click and turns them into actions.
+    - maybe use some tool to autodiscover website endpoints/capabilities
+    - brainstorm what the ideal frictionless onboarding would look like. Ideally the webapp owner doesn't have to do anything. We offer them a chatbot that just works.
 
 # Competition
 - https://www.chatbase.co/
@@ -164,39 +166,6 @@ The website design is based on this: https://gitingest.com/
 
 
 # Notes
-
-### SDK that allows app owners to add metadata
-
-chatbase offers an sdk that can be embedded in frontend and provide user metadata
-and then the chatbot can access that to populate fields in request
-
-You can add metadata in two ways:
-
-Using the embed code:
-```javascript
-window.chatbaseUserConfig = {
-user_id: "123",
-user_hash: "hash",
-user_metadata: {
-"name": "John Doe",
-"email": "john@example.com",
-"company": "Acme Inc"
-}
-}
-```
-
-Using the SDK identify method:
-```javascript
-window.chatbase("identify", {
-user_id: "123",
-user_hash: "hash",
-user_metadata: {
-"name": "John Doe",
-"email": "john@example.com",
-"company": "Acme Inc"
-}
-});
-```
 
 ### PostHog
 
