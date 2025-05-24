@@ -4,7 +4,7 @@ import {Action, ExecutionContext, ExecutionModel} from "@/app/api/lib/model/acti
 export const getActions = async (): Promise<Action[]> => {
   const { data, error } = await supabaseClient
     .from('actions')
-    .select('name, description, execution_context, execution_model');
+    .select('name, description, execution_context, execution_model, chatbot_id');
 
   if (error) {
     throw new Error(`Failed to fetch actions: ${error.message}`);
@@ -15,13 +15,14 @@ export const getActions = async (): Promise<Action[]> => {
     description: d.description,
     executionContext: d.execution_context,
     executionModel: d.execution_model,
+    chatbotId: d.chatbot_id
   }));
 };
 
 export const getAction = async (actionName: string): Promise<Action | null> => {
   const { data, error } = await supabaseClient
     .from('actions')
-    .select('name, description, execution_context, execution_model')
+    .select('name, description, execution_context, execution_model, chatbot_id')
     .eq('name', actionName)
     .single();
 
@@ -37,6 +38,7 @@ export const getAction = async (actionName: string): Promise<Action | null> => {
     description: data.description,
     executionContext: data.execution_context,
     executionModel: data.execution_model,
+    chatbotId: data.chatbot_id,
   };
 };
 
