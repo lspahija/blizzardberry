@@ -56,16 +56,10 @@ export default function LandingPage() {
             Blog
           </Link>
           <Link
-            href="/community"
+            href="/pricing"
             className="text-gray-900 hover:-translate-y-0.5 transition-transform"
           >
-            Community
-          </Link>
-          <Link
-            href="/company"
-            className="text-gray-900 hover:-translate-y-0.5 transition-transform"
-          >
-            Company
+            Pricing
           </Link>
         </div>
         <div className="flex space-x-3">
