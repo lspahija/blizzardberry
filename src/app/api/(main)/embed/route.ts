@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { vectorStore } from '@/app/api/lib/embedding';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 
+// TODO: add types and make this support multi-tenancy: https://grok.com/share/bGVnYWN5_49e01b12-4260-4461-85c7-94e8ffe06c9e
 export async function POST(request: Request) {
   try {
     const { text, metadata } = await request.json();

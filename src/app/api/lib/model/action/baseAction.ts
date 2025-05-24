@@ -7,7 +7,7 @@ export interface BaseAction {
     name: string;
     description: string;
     executionContext: ExecutionContext;
-    // chatbotId: string;
+    chatbotId: string;
 }
 
 export enum ExecutionContext {
