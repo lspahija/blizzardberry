@@ -2,7 +2,7 @@
 
 create table chatbots
 (
-    id             uuid                     default uuid_generate_v4() primary key,
+    id             uuid                     default gen_random_uuid() primary key,
     name           text not null,
     website_domain text not null,
     created_by     uuid not null references next_auth.users (id) on delete cascade,
@@ -15,7 +15,7 @@ CREATE TYPE execution_context AS ENUM ('CLIENT', 'SERVER');
 
 create table actions
 (
-    id                uuid                     default uuid_generate_v4() primary key,
+    id                uuid                     default gen_random_uuid() primary key,
     name              text              not null,
     description       text              not null,
     execution_context execution_context not null,
@@ -33,8 +33,8 @@ CREATE TABLE documents
     parent_document_id UUID, -- Links chunks to parent document
     content            TEXT NOT NULL,
     metadata           JSONB,
-    embedding          HALFVEC(3072),
-    chatbot_id         uuid not null references chatbots (id) on delete cascade
+    embedding          HALFVEC(3072)
+    -- chatbot_id         uuid not null references chatbots (id) on delete cascade TODO: add something like this for multitenancy
 );
 
 CREATE INDEX documents_embedding_idx ON documents USING hnsw (embedding halfvec_cosine_ops);

@@ -23,23 +23,18 @@ export async function similaritySearch(query: string, k: number) {
   );
 
   // Group results by parent_document_id
-  const groupedResults = resultsWithScore.reduce(
-    (acc: Record<string, any[]>, [doc, score]) => {
-      const parentId = doc.metadata.parent_document_id || 'no_parent';
-      if (!acc[parentId]) {
-        acc[parentId] = [];
-      }
-      acc[parentId].push({
-        id: doc.metadata.id || doc.metadata.document_id || 'unknown', // Fallback ID
-        parent_document_id: doc.metadata.parent_document_id,
-        content: doc.pageContent,
-        metadata: doc.metadata,
-        similarity: score, // Use score from similaritySearchWithScore
-      });
-      return acc;
-    },
-    {}
-  );
-
-  return groupedResults;
+  return resultsWithScore.reduce((acc: Record<string, any[]>, [doc, score]) => {
+    const parentId = doc.metadata.parent_document_id || 'no_parent';
+    if (!acc[parentId]) {
+      acc[parentId] = [];
+    }
+    acc[parentId].push({
+      id: doc.metadata.id || doc.metadata.document_id || 'unknown', // Fallback ID
+      parent_document_id: doc.metadata.parent_document_id,
+      content: doc.pageContent,
+      metadata: doc.metadata,
+      similarity: score, // Use score from similaritySearchWithScore
+    });
+    return acc;
+  }, {});
 }

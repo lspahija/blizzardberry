@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { similaritySearch } from '@/app/api/lib/embedding';
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const { query, topK = 3 } = await request.json();
+    const { query, topK = 3 } = await req.json();
 
     const groupedResults = await similaritySearch(query, topK);
 

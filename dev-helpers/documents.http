@@ -1,4 +1,4 @@
-POST http://localhost:3000/api/embed
+POST http://localhost:3000/api/documents
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3000/api/embed
+POST http://localhost:3000/api/documents
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3000/api/search
+POST http://localhost:3000/api/documents/search
 Content-Type: application/json
 
 {
@@ -34,8 +34,7 @@ Content-Type: application/json
 
 ###
 
-
-POST http://localhost:3000/api/search
+POST http://localhost:3000/api/documents/search
 Content-Type: application/json
 
 {
