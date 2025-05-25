@@ -133,7 +133,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - deploy to vercel
 
 ## Launch and Sell! 
-#### [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v)
+- [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
+- sell companies on the idea that they replace their customer support team. We save them money: https://youtu.be/K4s6Cgicw_A?si=MT1kzLH3p4m7CVyS&t=809
+- use latest AI video models (Google's Veo 3) to create great marketing videos. Use good taste to make excellent stuff. 
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
@@ -156,6 +158,13 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
     - Google has a [Chrome extension](https://chromewebstore.google.com/detail/project-mariner-companion/kadmollpgjhjcclemeliidekkajnjaih) where you can teach the AI how to perform tasks. Maybe you can create an extension that records HTTP requests and functions called on each click and turns them into actions.
     - maybe use some tool to autodiscover website endpoints/capabilities
     - brainstorm what the ideal frictionless onboarding would look like. Ideally the webapp owner doesn't have to do anything. We offer them a chatbot that just works.
+
+## Strategy
+- start off selling but think about what it takes to win big
+- freemium model. generous free tier to win big market share and then make money on small portion of power users: https://youtu.be/K4s6Cgicw_A?si=eChQZbm-Vz8pIqt1&t=667 (this might require getting inference costs low. finding the cheapest models)
+- what does open sourcing the codebase entirely or partially do? (look into case studies for when this has worked and when it hasn't. i think it only makes sense in certain cases)
+- get advice from silicon valley investors and founders. they have a lot of experience with this
+- raise money from the best silicon valley VCs so they have skin in the game and help us with their experience and network and drive
 
 # Competition
 - https://www.chatbase.co/
