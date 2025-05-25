@@ -9,7 +9,7 @@ export const getActions = async (): Promise<Action[]> => {
   const { data, error } = await supabaseClient
     .from('actions')
     .select(
-      'name, description, execution_context, execution_model, chatbot_id'
+      'id, name, description, execution_context, execution_model, chatbot_id'
     );
 
   if (error) {
@@ -17,6 +17,7 @@ export const getActions = async (): Promise<Action[]> => {
   }
 
   return data.map((d) => ({
+    id: d.id,
     name: d.name,
     description: d.description,
     executionContext: d.execution_context,
@@ -28,7 +29,9 @@ export const getActions = async (): Promise<Action[]> => {
 export const getAction = async (actionName: string): Promise<Action | null> => {
   const { data, error } = await supabaseClient
     .from('actions')
-    .select('name, description, execution_context, execution_model, chatbot_id')
+    .select(
+      'id, name, description, execution_context, execution_model, chatbot_id'
+    )
     .eq('name', actionName)
     .single();
 
@@ -40,6 +43,7 @@ export const getAction = async (actionName: string): Promise<Action | null> => {
   if (!data) return null;
 
   return {
+    id: data.id,
     name: data.name,
     description: data.description,
     executionContext: data.execution_context,

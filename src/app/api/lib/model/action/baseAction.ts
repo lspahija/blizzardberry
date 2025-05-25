@@ -7,6 +7,7 @@ import {
 export type Action = BackendAction | FrontendAction;
 
 export interface BaseAction {
+  id: string | null;
   name: string;
   description: string;
   executionContext: ExecutionContext;

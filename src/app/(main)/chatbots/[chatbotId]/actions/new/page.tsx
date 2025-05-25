@@ -72,6 +72,7 @@ export default function AdminFormPage() {
   const [step, setStep] = useState(1);
   // Initialize BaseAction with chatbotId from useParams
   const [baseAction, setBaseAction] = useState<BaseAction>({
+    id: null,
     name: '',
     description: '',
     executionContext: ExecutionContext.SERVER,
