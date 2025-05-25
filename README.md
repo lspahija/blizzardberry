@@ -148,6 +148,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?) (ai-sdk currently only support react, vue, svelte and solid)
 - create SDKs (analogues to chatbot.js) for non-js frontends i.e. desktop and mobile apps written in go, java, etc.
 - add logging, tracing, monitoring so if anything goes wrong anywhere, we can see it
+- look through Chatbase's features and add relevant ones. e.g. they have a UI letting their users test the chatbots they created and see if the actions they onboarded work correctly. https://www.chatbase.co/docs/user-guides/chatbot/playground
 
 ## Longer Term Goals (buy maybe pull them in earlier)
 - make the system prompt auto-improve for each app or even each end user. As the user tells the chatbot what they want, the system prompt is updated to include that information. This way, the chatbot can learn and adapt to the user's needs over time. https://youtu.be/WJoZK9sMwvw?si=CTOwYwskX38WDzOO
