@@ -131,6 +131,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - landing page needs to sell the product well!
 - rename and get domain!
 - deploy to vercel
+- dogfood the product. Our app needs to have a chatbot integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 
 ## Launch and Sell! 
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
