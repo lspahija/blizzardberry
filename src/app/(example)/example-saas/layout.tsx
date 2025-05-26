@@ -77,7 +77,7 @@ export default function ExampleLayout({
           id="omni-interface-chatbot"
           src="http://localhost:3000/chatbot.js"
           strategy="afterInteractive"
-          data-chatbot-id="3b60a444-78c5-4d16-8516-b1bcaa7228e8"
+          data-chatbot-id="ae262222-4bea-48fe-a949-345493dfb465"
         />
         <Script id="omni-interface-actions" strategy="afterInteractive">
           {`

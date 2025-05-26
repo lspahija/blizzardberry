@@ -2,6 +2,7 @@
   const actions = {};
   let userConfig = null;
   let chatbotId = null;
+  let counter = 0;
 
   function initializeChatbotId() {
     const script = document.currentScript;
@@ -26,13 +27,7 @@
     delete window.ChatbotActions;
   }
 
-  // Generate UUID-like IDs
-  function generateId() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = (Math.random() * 16) | 0;
-      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-    });
-  }
+  const generateId = () => `${chatbotId}-${Date.now()}-${counter++}`;
 
   const state = {
     messages: [],

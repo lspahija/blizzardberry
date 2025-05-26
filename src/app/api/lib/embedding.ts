@@ -2,7 +2,6 @@ import { GoogleGenerativeAIEmbeddings } from '@langchain/google-genai';
 import { SupabaseVectorStore } from '@langchain/community/vectorstores/supabase';
 import { supabaseClient } from '@/app/api/lib/supabase';
 
-//further optimizations: https://supabase.com/docs/guides/ai/langchain
 export const vectorStore = new SupabaseVectorStore(
   new GoogleGenerativeAIEmbeddings({
     apiKey: process.env.GEMINI_API_KEY,
