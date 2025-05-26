@@ -13,12 +13,15 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Save, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Save, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Editor from '@monaco-editor/react';
+import { Combobox } from '@/components/ui/combobox';
+
+// Import unified models
 import {
   Action,
   BaseAction,
@@ -98,6 +101,21 @@ export default function NewActionPage() {
   );
   const [functionName, setFunctionName] = useState('');
   const [activeTab, setActiveTab] = useState('headers');
+
+  const getInputNames = (withBraces = false) => {
+    const names = dataInputs
+      .map(input => input.name)
+      .filter(name => name !== '');
+    
+    return withBraces ? names.map(name => `{{${name}}}`) : names;
+  };
+
+  const commonHeaderKeys = [
+    'Authorization',
+    'Content-Type',
+    'Accept',
+    'X-API-Key',
+  ];
 
   useEffect(() => {
     const stepParam = searchParams.get('step');
@@ -357,15 +375,13 @@ export default function NewActionPage() {
         };
 
         return {
-          suggestions: dataInputs
-            .filter((input) => input.name)
-            .map((input) => ({
-              label: `{{${input.name}}}`,
-              kind: monaco.languages.CompletionItemKind.Variable,
-              documentation: `${input.type}${input.isArray ? '[]' : ''}`,
-              insertText: `"{{${input.name}}}"`,
-              range,
-            })),
+          suggestions: getInputNames(true).map(name => ({
+            label: name,
+            kind: monaco.languages.CompletionItemKind.Variable,
+            documentation: `Variable`,
+            insertText: `"${name}"`,
+            range
+          }))
         };
       },
     });
@@ -548,14 +564,15 @@ export default function NewActionPage() {
                       >
                         <div>
                           <Label htmlFor={`inputName${index}`}>Name</Label>
-                          <Input
+                          <Combobox
                             id={`inputName${index}`}
                             value={input.name}
-                            onChange={(e) =>
-                              updateDataInput(index, 'name', e.target.value)
-                            }
+                            onChange={(e) => updateDataInput(index, 'name', e.target.value)}
+                            onSelect={(value) => updateDataInput(index, 'name', value)}
+                            suggestions={getInputNames()}
                             placeholder="city"
-                            className="mt-2 border-[2px] border-gray-900"
+                            className="mt-2"
+                            inputClassName="border-[2px] border-gray-900"
                           />
                         </div>
                         <div>
@@ -717,12 +734,21 @@ export default function NewActionPage() {
                           </div>
                           <div>
                             <Label htmlFor="apiUrl">HTTPS URL</Label>
-                            <Input
+                            <Combobox
                               id="apiUrl"
                               value={apiUrl}
                               onChange={(e) => setApiUrl(e.target.value)}
+                              onSelect={(value) => {
+                                const input = document.getElementById('apiUrl') as HTMLInputElement;
+                                const cursorPos = input?.selectionStart || apiUrl.length;
+                                const textBefore = apiUrl.substring(0, cursorPos);
+                                const textAfter = apiUrl.substring(cursorPos);
+                                setApiUrl(`${textBefore}${value}${textAfter}`);
+                              }}
+                              suggestions={getInputNames(true)}
                               placeholder="https://wttr.in/{{city}}?format=j1"
-                              className="mt-2 border-[2px] border-gray-900"
+                              className="mt-2"
+                              inputClassName="border-[2px] border-gray-900"
                             />
                           </div>
                         </div>
@@ -758,32 +784,36 @@ export default function NewActionPage() {
                                   <Label htmlFor={`headerKey${index}`}>
                                     Key
                                   </Label>
-                                  <Input
+                                  <Combobox
                                     id={`headerKey${index}`}
                                     value={header.key}
-                                    onChange={(e) =>
-                                      updateHeader(index, 'key', e.target.value)
-                                    }
+                                    onChange={(e) => updateHeader(index, 'key', e.target.value)}
+                                    onSelect={(value) => updateHeader(index, 'key', value)}
+                                    suggestions={commonHeaderKeys}
                                     placeholder="Authorization"
-                                    className="mt-2 border-[2px] border-gray-900"
+                                    className="mt-2"
+                                    inputClassName="border-[2px] border-gray-900"
                                   />
                                 </div>
                                 <div>
                                   <Label htmlFor={`headerValue${index}`}>
                                     Value
                                   </Label>
-                                  <Input
+                                  <Combobox
                                     id={`headerValue${index}`}
                                     value={header.value}
-                                    onChange={(e) =>
-                                      updateHeader(
-                                        index,
-                                        'value',
-                                        e.target.value
-                                      )
-                                    }
+                                    onChange={(e) => updateHeader(index, 'value', e.target.value)}
+                                    onSelect={(value) => {
+                                      const input = document.getElementById(`headerValue${index}`) as HTMLInputElement;
+                                      const cursorPos = input?.selectionStart || header.value.length;
+                                      const textBefore = header.value.substring(0, cursorPos);
+                                      const textAfter = header.value.substring(cursorPos);
+                                      updateHeader(index, 'value', `${textBefore}${value}${textAfter}`);
+                                    }}
+                                    suggestions={getInputNames(true)}
                                     placeholder="Bearer {{token}}"
-                                    className="mt-2 border-[2px] border-gray-900"
+                                    className="mt-2"
+                                    inputClassName="border-[2px] border-gray-900"
                                   />
                                 </div>
                                 <div>
