@@ -16,6 +16,12 @@ e.g. it must be easy to:
 - create new SDKs for different languages so a chatbot can be added to any app
 - enable new ways for app owners to onboard their website (parse OpenAPI spec, parse cURL, autodiscovery, etc.)
 
+## Why not just General Agents?
+- AGI isn't here yet. General agents can't figure out how to achieve everything the user wants on a website.
+- Even when AGI gets here, the agent won't have instant knowledge of the app's capabilities (actions). 
+- This project needs to provide the agent instant access to all of the app's capabilities.
+- This means a lot of our competitive advantage will be in reducing onboarding friction to a minimum.
+- Minimizing onboarding friction will likely be done with AI/agents.
 
 # Running the Project Locally
 
