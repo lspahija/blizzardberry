@@ -27,9 +27,27 @@ export function Combobox({
   const [open, setOpen] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const filteredSuggestions = suggestions.filter((suggestion) =>
-    suggestion.toLowerCase().includes((value || '').toLowerCase())
-  );
+  const filteredSuggestions = React.useMemo(() => {
+    const searchTerm = (value || '').toLowerCase();
+    return suggestions
+      .filter((suggestion) => suggestion.toLowerCase().includes(searchTerm))
+      .sort((a, b) => {
+        const aStarts = a.toLowerCase().startsWith(searchTerm);
+        const bStarts = b.toLowerCase().startsWith(searchTerm);
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+        return 0;
+      });
+  }, [suggestions, value]);
+
+  const handleSelect = (selectedValue: string) => {
+    if (onSelect) {
+      onSelect(selectedValue);
+    } else if (onChange) {
+      onChange({ target: { value: selectedValue } } as React.ChangeEvent<HTMLInputElement>);
+    }
+    setOpen(false);
+  };
 
   return (
     <div className="relative">
@@ -51,7 +69,6 @@ export function Combobox({
             )}
             onFocus={() => setOpen(true)}
             onBlur={() => {
-              // Delay closing to allow click events on suggestions
               setTimeout(() => setOpen(false), 200);
             }}
             {...props}
@@ -65,11 +82,8 @@ export function Combobox({
               key={index}
               className="cursor-pointer px-3 py-1.5 text-sm hover:bg-gray-100"
               onMouseDown={(e) => {
-                e.preventDefault(); // Prevent input blur
-                if (onSelect) {
-                  onSelect(suggestion);
-                }
-                setOpen(false);
+                e.preventDefault();
+                handleSelect(suggestion);
               }}
             >
               {suggestion}

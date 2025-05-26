@@ -768,13 +768,6 @@ export default function NewActionPage() {
                               id="apiUrl"
                               value={apiUrl}
                               onChange={(e) => setApiUrl(e.target.value)}
-                              onSelect={(value) => {
-                                const input = document.getElementById('apiUrl') as HTMLInputElement;
-                                const cursorPos = input?.selectionStart || apiUrl.length;
-                                const textBefore = apiUrl.substring(0, cursorPos);
-                                const textAfter = apiUrl.substring(cursorPos);
-                                setApiUrl(`${textBefore}${value}${textAfter}`);
-                              }}
                               suggestions={getInputNames(true)}
                               placeholder="https://wttr.in/{{city}}?format=j1"
                               className="mt-2"
@@ -818,7 +811,6 @@ export default function NewActionPage() {
                                     id={`headerKey${index}`}
                                     value={header.key}
                                     onChange={(e) => updateHeader(index, 'key', e.target.value)}
-                                    onSelect={(value) => updateHeader(index, 'key', value)}
                                     suggestions={commonHeaderKeys}
                                     placeholder="Authorization"
                                     className="mt-2"
@@ -833,13 +825,6 @@ export default function NewActionPage() {
                                     id={`headerValue${index}`}
                                     value={header.value}
                                     onChange={(e) => updateHeader(index, 'value', e.target.value)}
-                                    onSelect={(value) => {
-                                      const input = document.getElementById(`headerValue${index}`) as HTMLInputElement;
-                                      const cursorPos = input?.selectionStart || header.value.length;
-                                      const textBefore = header.value.substring(0, cursorPos);
-                                      const textAfter = header.value.substring(cursorPos);
-                                      updateHeader(index, 'value', `${textBefore}${value}${textAfter}`);
-                                    }}
                                     suggestions={getInputNames(true)}
                                     placeholder="Bearer {{token}}"
                                     className="mt-2"
