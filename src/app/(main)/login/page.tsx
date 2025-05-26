@@ -20,11 +20,11 @@ export default function LoginPage() {
   };
 
   const handleGitHubSignIn = async () => {
-    await signIn('github');
+    await signIn('github', { redirectTo: '/dashboard' });
   };
 
   const handleGoogleSignIn = async () => {
-    await signIn('google');
+    await signIn('google', { redirectTo: '/dashboard' });
   };
 
   return (

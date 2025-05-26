@@ -16,6 +16,12 @@ e.g. it must be easy to:
 - create new SDKs for different languages so a chatbot can be added to any app
 - enable new ways for app owners to onboard their website (parse OpenAPI spec, parse cURL, autodiscovery, etc.)
 
+## Why not just General Agents?
+- AGI isn't here yet. General agents can't figure out how to achieve everything the user wants on a website.
+- Even when AGI gets here, the agent won't have instant knowledge of the app's capabilities (actions). 
+- This project needs to provide the agent instant access to all of the app's capabilities.
+- This means a lot of our competitive advantage will be in reducing onboarding friction to a minimum.
+- Minimizing onboarding friction will likely be done with AI/agents.
 
 # Running the Project Locally
 
@@ -103,6 +109,11 @@ See an example SaaS app with integrated chatbot at http://localhost:3000/example
 - user: `postgres.pwlbhcjwuwsvszkvqexy`
 - password: `[your Supabase password]`
 
+# Format code with Prettier
+```bash
+pnpm format
+```
+
 # Deploy
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
@@ -119,36 +130,55 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
     - [create new client](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7tQ&project=ufcalarm-b270d)
   - GitHub OAuth
     - [create prod OAuth app](https://github.com/settings/developers)
+- In frontend example, show that an existing function reference can just be passed in. The user doesn't need to define a new lambda.
 - polish the user onboarding experience. All the forms needs to work flawlessly and be easy to use.
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
 - [finish onboarding](#posthog) PostHog for analytics
 - landing page needs to sell the product well!
-- rename and get domain!
+- rename and get domain! - LOTR word like palantir or anduril? - https://grok.com/chat/03fc9ac4-d47b-4012-8b6c-63f2d1affb87
 - deploy to vercel
+- dogfood the product. Our app needs to have a chatbot integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 
 ## Launch and Sell! 
-#### [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v)
+- [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
+- sell companies on the idea that they replace their customer support team. We save them money: https://youtu.be/K4s6Cgicw_A?si=MT1kzLH3p4m7CVyS&t=809
+- use latest AI video models (Google's Veo 3) to create great marketing videos. Use good taste to make excellent stuff. 
+- [post on HN](https://x.com/marc_louvion/status/1924846419967672829?s=46)
+- [affiliate program](https://x.com/marc_louvion/status/1922271980260331772?s=46)
+- work with [Pieter Levels](https://x.com/levelsio) or other big guys on X and have them push this as their own
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
 - add "Powered By omni-interface" to the bottom of the chatbot
+- minify and obfuscate chatbot.js code
+- let the end user see all actions that the chatbot can perform. Make the actions searchable. Expose the thinking tokens if the user chooses to see them.
 - make chatbot design super customizable so app owners can make it look like their app
 - add automated end-to-end test suite so we can introduce new features without breaking existing functionality. Use Playwright for this. [Grok thread](https://grok.com/share/bGVnYWN5_82a58179-e019-4507-a75b-59c398539835)
-- minify and obfuscate chatbot.js code
-- stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?) (ai-sdk currently only support react, vue, svelte and solid)
-- automatically pull docs from website during RAG onboarding?
 - [optimize RAG pipeline](#frankies-tips-to-optimize-rag)
+- stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?) (ai-sdk currently only support react, vue, svelte and solid)
 - create SDKs (analogues to chatbot.js) for non-js frontends i.e. desktop and mobile apps written in go, java, etc.
+- add logging, tracing, monitoring so if anything goes wrong anywhere, we can see it
+- look through Chatbase's features and add relevant ones. e.g. they have a UI letting their users test the chatbots they created and see if the actions they onboarded work correctly. https://www.chatbase.co/docs/user-guides/chatbot/playground
+
+## Longer Term Goals (buy maybe pull them in earlier)
+- make the system prompt auto-improve for each app or even each end user. As the user tells the chatbot what they want, the system prompt is updated to include that information. This way, the chatbot can learn and adapt to the user's needs over time. https://youtu.be/WJoZK9sMwvw?si=CTOwYwskX38WDzOO
 - allow user to use voice, the ideal is that they just talk to computer
 - make the actions MCP-compatible? i.e. turn the actions into an MCP server so that any MCP client can call them.
 - make onboarding a new app as simple as possible
-  - maybe let user just pass in their OpenAPI spec and the app will automatically generate a chatbot for them
-  - maybe use AI to scan the app's codebase - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
-  - Google has a [Chrome extension](https://chromewebstore.google.com/detail/project-mariner-companion/kadmollpgjhjcclemeliidekkajnjaih) where you can teach the AI how to perform tasks. Maybe you can create an extension that records HTTP requests and functions called on each click and turns them into actions.
-  - maybe use some tool to autodiscover website endpoints/capabilities
-  - brainstorm what the ideal frictionless onboarding would look like. Ideally the webapp owner doesn't have to do anything. We offer them a chatbot that just works.
+    - automatically pull docs from website during RAG onboarding?
+    - maybe let user just pass in their OpenAPI spec and the app will automatically generate a chatbot for them
+    - maybe use AI to scan the app's codebase - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
+    - Google has a [Chrome extension](https://chromewebstore.google.com/detail/project-mariner-companion/kadmollpgjhjcclemeliidekkajnjaih) where you can teach the AI how to perform tasks. Maybe you can create an extension that records HTTP requests and functions called on each click and turns them into actions.
+    - maybe use some tool to autodiscover website endpoints/capabilities
+    - brainstorm what the ideal frictionless onboarding would look like. Ideally the webapp owner doesn't have to do anything. We offer them a chatbot that just works.
 
+## Strategy
+- start off selling but think about what it takes to win big
+- freemium model. generous free tier to win big market share and then make money on small portion of power users: https://youtu.be/K4s6Cgicw_A?si=eChQZbm-Vz8pIqt1&t=667 (this might require getting inference costs low. finding the cheapest models)
+- what does open sourcing the codebase entirely or partially do? (look into case studies for when this has worked and when it hasn't. i think it only makes sense in certain cases)
+- get advice from silicon valley investors and founders. they have a lot of experience with this
+- raise money from the best silicon valley VCs so they have skin in the game and help us with their experience and network and drive
 
 # Competition
 - https://www.chatbase.co/
@@ -159,39 +189,6 @@ The website design is based on this: https://gitingest.com/
 
 
 # Notes
-
-### SDK that allows app owners to add metadata
-
-chatbase offers an sdk that can be embedded in frontend and provide user metadata
-and then the chatbot can access that to populate fields in request
-
-You can add metadata in two ways:
-
-Using the embed code:
-```javascript
-window.chatbaseUserConfig = {
-user_id: "123",
-user_hash: "hash",
-user_metadata: {
-"name": "John Doe",
-"email": "john@example.com",
-"company": "Acme Inc"
-}
-}
-```
-
-Using the SDK identify method:
-```javascript
-window.chatbase("identify", {
-user_id: "123",
-user_hash: "hash",
-user_metadata: {
-"name": "John Doe",
-"email": "john@example.com",
-"company": "Acme Inc"
-}
-});
-```
 
 ### PostHog
 
