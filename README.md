@@ -124,12 +124,13 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
     - [create new client](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7tQ&project=ufcalarm-b270d)
   - GitHub OAuth
     - [create prod OAuth app](https://github.com/settings/developers)
+- In frontend example, show that an existing function reference can just be passed in. The user doesn't need to define a new lambda.
 - polish the user onboarding experience. All the forms needs to work flawlessly and be easy to use.
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
 - [finish onboarding](#posthog) PostHog for analytics
 - landing page needs to sell the product well!
-- rename and get domain!
+- rename and get domain! - LOTR word like palantir or anduril? - https://grok.com/chat/03fc9ac4-d47b-4012-8b6c-63f2d1affb87
 - deploy to vercel
 - dogfood the product. Our app needs to have a chatbot integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 
@@ -137,11 +138,15 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
 - sell companies on the idea that they replace their customer support team. We save them money: https://youtu.be/K4s6Cgicw_A?si=MT1kzLH3p4m7CVyS&t=809
 - use latest AI video models (Google's Veo 3) to create great marketing videos. Use good taste to make excellent stuff. 
+- [post on HN](https://x.com/marc_louvion/status/1924846419967672829?s=46)
+- [affiliate program](https://x.com/marc_louvion/status/1922271980260331772?s=46)
+- work with [Pieter Levels](https://x.com/levelsio) or other big guys on X and have them push this as their own
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
 - add "Powered By omni-interface" to the bottom of the chatbot
 - minify and obfuscate chatbot.js code
+- let the end user see all actions that the chatbot can perform. Make the actions searchable. Expose the thinking tokens if the user chooses to see them.
 - make chatbot design super customizable so app owners can make it look like their app
 - add automated end-to-end test suite so we can introduce new features without breaking existing functionality. Use Playwright for this. [Grok thread](https://grok.com/share/bGVnYWN5_82a58179-e019-4507-a75b-59c398539835)
 - [optimize RAG pipeline](#frankies-tips-to-optimize-rag)
