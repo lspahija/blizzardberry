@@ -46,7 +46,7 @@ interface Header {
   value: string;
 }
 
-export default function AdminFormPage() {
+export default function NewActionPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { chatbotId } = useParams();
