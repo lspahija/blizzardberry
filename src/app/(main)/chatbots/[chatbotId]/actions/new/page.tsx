@@ -85,7 +85,17 @@ export default function NewActionPage() {
   const [apiUrl, setApiUrl] = useState('');
   const [apiMethod, setApiMethod] = useState('GET');
   const [headers, setHeaders] = useState<Header[]>([{ key: '', value: '' }]);
-  const [apiBody, setApiBody] = useState('');
+  const [apiBody, setApiBody] = useState(
+    JSON.stringify(
+      {
+        example: '{{value}}',
+        array: ['{{item1}}', '{{item2}}'],
+        nested: { key: '{{value}}' },
+      },
+      null,
+      2
+    )
+  );
   const [functionName, setFunctionName] = useState('');
   const [activeTab, setActiveTab] = useState('headers');
 
@@ -810,56 +820,48 @@ export default function NewActionPage() {
                               Body
                             </Label>
                             <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden">
-                              <div className="relative">
-                                <div className="absolute z-10 pointer-events-none text-gray-500 italic p-3">
-                                  {!apiBody &&
-                                    `{ "example": "{{value}}", "array": ["{{item1}}", "{{item2}}"], "nested": {"key": "{{value}}"} }`}
-                                </div>
-                                <Editor
-                                  height="200px"
-                                  defaultLanguage="json"
-                                  value={apiBody}
-                                  onChange={(value) => setApiBody(value || '')}
-                                  beforeMount={handleEditorWillMount}
-                                  onMount={(editor) => {
-                                    editor.updateOptions({
-                                      lineNumbers: () => '',
-                                      glyphMargin: false,
-                                      lineDecorationsWidth: 0,
-                                      lineNumbersMinChars: 0,
-                                      suggest: {
-                                        showWords: false,
-                                        preview: true,
-                                        showProperties: false,
-                                      },
-                                    });
-                                    requestAnimationFrame(() =>
-                                      editor.layout()
-                                    );
-                                  }}
-                                  theme="customTheme"
-                                  options={{
-                                    fontSize: 14,
-                                    minimap: { enabled: false },
-                                    scrollBeyondLastLine: false,
-                                    wordWrap: 'on',
-                                    renderLineHighlight: 'none',
-                                    scrollbar: {
-                                      verticalScrollbarSize: 8,
-                                      horizontalScrollbarSize: 8,
+                              <Editor
+                                height="200px"
+                                defaultLanguage="json"
+                                value={apiBody}
+                                onChange={(value) => setApiBody(value || '')}
+                                beforeMount={handleEditorWillMount}
+                                onMount={(editor) => {
+                                  editor.updateOptions({
+                                    lineNumbers: () => '',
+                                    glyphMargin: false,
+                                    lineDecorationsWidth: 0,
+                                    lineNumbersMinChars: 0,
+                                    suggest: {
+                                      showWords: false,
+                                      preview: true,
+                                      showProperties: false,
                                     },
-                                    padding: {
-                                      top: 12,
-                                      bottom: 12,
-                                      left: 12,
-                                    } as any,
-                                    folding: false,
-                                    hideCursorInOverviewRuler: true,
-                                    guides: { indentation: false },
-                                  }}
-                                  className="bg-[#FFF4DA]"
-                                />
-                              </div>
+                                  });
+                                  requestAnimationFrame(() => editor.layout());
+                                }}
+                                theme="customTheme"
+                                options={{
+                                  fontSize: 14,
+                                  minimap: { enabled: false },
+                                  scrollBeyondLastLine: false,
+                                  wordWrap: 'on',
+                                  renderLineHighlight: 'none',
+                                  scrollbar: {
+                                    verticalScrollbarSize: 8,
+                                    horizontalScrollbarSize: 8,
+                                  },
+                                  padding: {
+                                    top: 12,
+                                    bottom: 12,
+                                    left: 12,
+                                  } as any,
+                                  folding: false,
+                                  hideCursorInOverviewRuler: true,
+                                  guides: { indentation: false },
+                                }}
+                                className="bg-[#FFF4DA]"
+                              />
                             </div>
                           </div>
                         </TabsContent>
