@@ -320,15 +320,10 @@ export default function AdminFormPage() {
       inherit: true,
       rules: [],
       colors: {
-        'editor.background': '#FFF4DA',
-        'editor.lineHighlightBackground': '#FFF4DA',
-        'editor.lineHighlightBorder': '#FFF4DA',
-        'editorGutter.background': '#FFF4DA',
-        'editorCursor.foreground': '#000000',
+        'editor.background': '#FFF4DA'
       }
     });
 
-    // Register JSON completion provider
     monaco.languages.registerCompletionItemProvider('json', {
       provideCompletionItems: (model, position) => {
         const word = model.getWordUntilPosition(position);
@@ -339,18 +334,17 @@ export default function AdminFormPage() {
           endColumn: word.endColumn
         };
 
-        // Create completion items for each data input
-        const suggestions = dataInputs
-          .filter(input => input.name)
-          .map(input => ({
-            label: `{{${input.name}}}`,
-            kind: monaco.languages.CompletionItemKind.Variable,
-            documentation: `${input.type}${input.isArray ? '[]' : ''} - ${input.description || 'No description'}`,
-            insertText: `"{{${input.name}}}"`,
-            range: range
-          }));
-
-        return { suggestions };
+        return {
+          suggestions: dataInputs
+            .filter(input => input.name)
+            .map(input => ({
+              label: `{{${input.name}}}`,
+              kind: monaco.languages.CompletionItemKind.Variable,
+              documentation: `${input.type}${input.isArray ? '[]' : ''}`,
+              insertText: `"{{${input.name}}}"`,
+              range
+            }))
+        };
       }
     });
   }
@@ -818,17 +812,8 @@ export default function AdminFormPage() {
                                     minimap: { enabled: false },
                                     scrollBeyondLastLine: false,
                                     wordWrap: 'on',
-                                    formatOnPaste: true,
-                                    formatOnType: true,
                                     renderLineHighlight: 'none',
-                                    overviewRulerBorder: false,
-                                    quickSuggestions: {
-                                      other: true,
-                                      strings: true
-                                    },
                                     scrollbar: {
-                                      vertical: 'visible',
-                                      horizontal: 'visible',
                                       verticalScrollbarSize: 8,
                                       horizontalScrollbarSize: 8,
                                     },
