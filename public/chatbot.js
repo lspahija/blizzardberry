@@ -1,7 +1,15 @@
 (function () {
   const actions = {};
   let userConfig = null;
+  let chatbotId = null;
 
+  function initializeChatbotId() {
+    const script = document.currentScript;
+    chatbotId = script?.dataset?.chatbotId;
+    console.log('Initialized chatbot ID:', chatbotId);
+  }
+
+  // Initialize user config
   if (
     window.chatbotUserConfig &&
     typeof window.chatbotUserConfig === 'object'
@@ -28,9 +36,9 @@
 
   const state = {
     messages: [],
-    fetchResults: {},
+    actionResults: {},
     isProcessing: false,
-    loggedThinkMessages: new Set(), // Track messages with logged think content
+    loggedThinkMessages: new Set(),
   };
 
   // Inject CSS
@@ -44,19 +52,16 @@
 
   // Create widget DOM
   function createWidgetDOM() {
-    // Toggle button
     const toggle = document.createElement('div');
     toggle.id = 'chatWidgetToggle';
     toggle.innerHTML = '💬';
     toggle.addEventListener('click', toggleChatWidget);
     document.body.appendChild(toggle);
 
-    // Main widget
     const widget = document.createElement('div');
     widget.id = 'chatWidget';
     widget.classList.add('hidden');
 
-    // Header
     const header = document.createElement('div');
     header.id = 'chatWidgetHeader';
     header.innerHTML =
@@ -66,18 +71,16 @@
       .addEventListener('click', toggleChatWidget);
     widget.appendChild(header);
 
-    // Body
     const body = document.createElement('div');
     body.id = 'chatWidgetBody';
     widget.appendChild(body);
 
-    // Input area
     const inputArea = document.createElement('div');
     inputArea.id = 'chatWidgetInput';
     inputArea.innerHTML = `
-            <input id="chatWidgetInputField" type="text" placeholder="Type a message...">
-            <button id="chatWidgetSendButton">Send</button>
-        `;
+      <input id="chatWidgetInputField" type="text" placeholder="Type a message...">
+      <button id="chatWidgetSendButton">Send</button>
+    `;
     inputArea
       .querySelector('#chatWidgetSendButton')
       .addEventListener('click', handleSubmit);
@@ -103,9 +106,9 @@
       );
   }
 
-  // Handle errors consistently
+  // Handle errors
   function handleError(error, messageText) {
-    console.error(error);
+    console.error(`Chatbot ${chatbotId}:`, error);
     state.isProcessing = false;
     state.messages.push({
       id: generateId(),
@@ -115,24 +118,24 @@
     updateChatUI();
   }
 
-  // Execute fetch for action invocations
   async function executeAction(actionModel, messageId, partIndex) {
     console.log(
-      'Executing action with model:',
+      `Chatbot ${chatbotId}: Executing action:`,
       JSON.stringify(actionModel, null, 2)
-    ); // Debug log
+    );
     const key = `${messageId}-${partIndex}`;
     try {
-      state.fetchResults[key] = actionModel.functionName?.startsWith(
+      state.actionResults[key] = actionModel.functionName?.startsWith(
         'ACTION_CLIENT_'
       )
         ? await executeClientAction(actionModel)
         : await executeServerAction(actionModel);
 
-      // Log raw fetch result for debugging
-      console.log('Fetch Result:', state.fetchResults[key]);
+      console.log(
+        `Chatbot ${chatbotId}: Action Result:`,
+        state.actionResults[key]
+      );
 
-      // Add success message with green checkmark
       state.messages.push({
         id: generateId(),
         role: 'assistant',
@@ -145,37 +148,24 @@
       });
       updateChatUI();
 
-      // Create a temporary message to hold the fetch result as context
-      const fetchResultMessage = {
-        role: 'user', // Use 'user' to match expected roles
-        content: `Tool execution result: ${JSON.stringify(state.fetchResults[key])}`,
+      const actionResultMessage = {
+        role: 'user',
+        content: `Tool execution result: ${JSON.stringify(state.actionResults[key])}`,
       };
 
-      // Send to chat endpoint with fetch result as context
       state.isProcessing = true;
       updateChatUI();
 
-      const chatResponse = await fetch('http://localhost:3000/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...state.messages, fetchResultMessage],
-        }),
-      });
+      const interpretation = await interpretActionResult(actionResultMessage);
 
-      if (!chatResponse.ok) throw new Error('Failed to fetch AI response');
-      const { text } = await chatResponse.json();
-
-      // Add the LLM response to messages
+      // TODO: we need to somehow include the action result itself in the chat context so the AI can reference it for future messages
       state.messages.push({
         id: generateId(),
         role: 'assistant',
-        parts: [
-          { type: 'text', text: text || 'Here is the result of your request.' },
-        ],
+        parts: [{ type: 'text', text: interpretation }],
       });
     } catch (error) {
-      state.fetchResults[key] = {
+      state.actionResults[key] = {
         error: 'Failed to execute action',
         details: error.message || 'Unknown error',
       };
@@ -184,6 +174,21 @@
     }
     state.isProcessing = false;
     updateChatUI();
+  }
+
+  async function interpretActionResult(actionResultMessage) {
+    const chatResponse = await fetch('http://localhost:3000/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [...state.messages, actionResultMessage],
+        chatbotId,
+      }),
+    });
+
+    if (!chatResponse.ok) throw new Error('Failed to fetch AI response');
+    const { text } = await chatResponse.json();
+    return text;
   }
 
   async function executeClientAction(actionModel) {
@@ -213,13 +218,12 @@
       parts: [{ type: 'text', text }],
     });
     input.value = '';
-    updateChatUI(); // Show user message immediately
+    updateChatUI();
 
-    // Delay typing indicator appearance
     setTimeout(() => {
       state.isProcessing = true;
-      updateChatUI(); // Show typing indicator
-    }, 300); // 300ms delay for typing indicator
+      updateChatUI();
+    }, 300);
 
     try {
       const response = await fetch('http://localhost:3000/api/chat', {
@@ -228,6 +232,7 @@
         body: JSON.stringify({
           messages: state.messages,
           userConfig,
+          chatbotId,
         }),
       });
 
@@ -235,13 +240,12 @@
       const { text, toolCalls, toolResults } = await response.json();
       const parts = [];
 
-      // Only add text part if there are no toolResults
       if (text && (!toolResults || toolResults.length === 0)) {
         parts.push({ type: 'text', text });
       }
 
       if (toolCalls?.length) {
-        toolCalls.forEach((toolCall, _) => {
+        toolCalls.forEach((toolCall) => {
           const toolResult = toolResults?.find(
             (tr) => tr.toolCallId === toolCall.toolCallId
           );
@@ -255,8 +259,7 @@
               result: toolResult ? toolResult.result : undefined,
             },
           });
-          // Log tool invocation when it's created
-          console.log('Tool Invoked:', {
+          console.log(`Chatbot ${chatbotId}: Tool Invoked:`, {
             toolCallId: toolCall.toolCallId,
             toolName: toolCall.toolName,
             args: toolCall.args,
@@ -264,7 +267,6 @@
         });
       }
 
-      // Only create and push aiMessage if it has non-tool parts
       let hasToolExecution = false;
       const aiMessage = {
         id: generateId(),
@@ -272,7 +274,6 @@
         parts,
       };
 
-      // Check if there are any tool executions to perform
       const toolInvocations = parts.filter(
         (part) =>
           part.type === 'tool-invocation' &&
@@ -283,7 +284,6 @@
 
       if (toolInvocations.length > 0) {
         hasToolExecution = true;
-        // Execute tool invocations without adding aiMessage to state.messages
         toolInvocations.forEach((part, index) => {
           executeAction(
             {
@@ -295,11 +295,9 @@
           );
         });
       } else if (parts.length > 0) {
-        // Only push aiMessage if it has non-tool parts
         state.messages.push(aiMessage);
       }
 
-      // If no tool executions, update UI immediately
       if (!hasToolExecution) {
         state.isProcessing = false;
         updateChatUI();
@@ -312,24 +310,23 @@
   // Render message part
   function renderMessagePart(part, messageId) {
     if (part.type === 'text') {
-      // Extract <think> content for logging and get display text
       const thinkMatch = part.text.match(
         /<think>([\s\S]*?)<\/think>\n\n([\s\S]*)/
       );
       if (thinkMatch) {
-        // Log think content only if not already logged
         if (!state.loggedThinkMessages.has(messageId)) {
-          console.log('Think Content:', thinkMatch[1].trim());
+          console.log(
+            `Chatbot ${chatbotId}: Think Content:`,
+            thinkMatch[1].trim()
+          );
           state.loggedThinkMessages.add(messageId);
         }
-        // Always return only the text after </think> for rendering
         return `<div class="text-part">${thinkMatch[2].trim()}</div>`;
       }
-      // If no <think> tag, render the text as is
       return `<div class="text-part">${part.text}</div>`;
     }
     if (part.type === 'tool-invocation') {
-      return ''; // Don't render tool-invocation in UI
+      return '';
     }
     return '';
   }
@@ -340,24 +337,23 @@
     let html = state.messages
       .map(
         (message) => `
-            <div class="message-container ${message.role === 'user' ? 'user-container' : 'assistant-container'}">
-                <div class="message ${message.role === 'user' ? 'user-message' : 'assistant-message'}">
-                    ${message.parts.map((part, _) => renderMessagePart(part, message.id)).join('')}
-                </div>
-            </div>
-        `
+      <div class="message-container ${message.role === 'user' ? 'user-container' : 'assistant-container'}">
+        <div class="message ${message.role === 'user' ? 'user-message' : 'assistant-message'}">
+          ${message.parts.map((part) => renderMessagePart(part, message.id)).join('')}
+        </div>
+      </div>
+    `
       )
       .join('');
 
-    // Add typing indicator if processing
     if (state.isProcessing) {
       html += `
-                <div class="message-container assistant-container">
-                    <div class="message assistant-message typing-indicator">
-                        <span></span><span></span><span></span>
-                    </div>
-                </div>
-            `;
+      <div class="message-container assistant-container">
+        <div class="message assistant-message typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    `;
     }
 
     chatBody.innerHTML = html;
@@ -367,10 +363,12 @@
   // Initialize
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
+      initializeChatbotId(); // Initialize chatbot ID
       injectStyles();
       createWidgetDOM();
     });
   } else {
+    initializeChatbotId(); // Initialize chatbot ID
     injectStyles();
     createWidgetDOM();
   }

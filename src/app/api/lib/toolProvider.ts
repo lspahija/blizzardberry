@@ -51,9 +51,8 @@ export function createSearchKnowledgeBaseTool(): Tool {
   });
 }
 
-// TODO: this needs to only get the tools for the current chatbot (multitenancy)
-export async function getToolsFromActions() {
-  const actions = await getActions();
+export async function getToolsFromActions(chatbotId: string) {
+  const actions = await getActions(chatbotId);
   const tools: Record<string, Tool> = {};
 
   for (const action of actions) {

@@ -59,7 +59,7 @@ export default function ExampleLayout({
           content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; img-src 'self' data: *; manifest-src 'self' *;"
         />
         <div id="chatbot" />
-        <Script id="chatbot-config" strategy="beforeInteractive">
+        <Script id="omni-interface-config" strategy="beforeInteractive">
           {`
                     window.chatbotUserConfig = {
                         user_id: "example_user_123",
@@ -74,11 +74,12 @@ export default function ExampleLayout({
                 `}
         </Script>
         <Script
-          id="widget-script"
+          id="omni-interface-chatbot"
           src="http://localhost:3000/chatbot.js"
           strategy="afterInteractive"
+          data-chatbot-id="3b60a444-78c5-4d16-8516-b1bcaa7228e8"
         />
-        <Script id="widget-actions" strategy="afterInteractive">
+        <Script id="omni-interface-actions" strategy="afterInteractive">
           {`
                     window.ChatbotActions = {
                         get_weather: async (params, userConfig) => {

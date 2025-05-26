@@ -6,7 +6,7 @@ export async function POST(req: Request) {
 
   const resultJSON = parse(content);
 
-  // TODO: add the rest of this (check git history for previous code)
+  // add the rest of this (check git history for previous code)
 
   return NextResponse.json({ actionName }, { status: 201 });
 }

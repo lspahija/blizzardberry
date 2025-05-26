@@ -9,10 +9,10 @@ export async function POST(req: Request) {
 
   return new NextResponse(null, { status: 201 });
 
-  // TODO: need to add validation in case actionName or description cannot be derived from spec
+  // need to add validation in case actionName or description cannot be derived from spec
   function handleOpenAPI(content: any) {
     const openAPIObject = yaml.load(content) as OpenAPIObject;
 
-    // TODO: add the rest of this (check git history for previous code)
+    // add the rest of this (check git history for previous code)
   }
 }

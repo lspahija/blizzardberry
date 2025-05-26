@@ -6,13 +6,17 @@ import {
   getToolsFromActions,
 } from '@/app/api/lib/toolProvider';
 
-export async function callAIModel(messages: any, userConfig: any) {
+export async function callAIModel(
+  messages: any,
+  userConfig: any,
+  chatbotId: string
+) {
   const stream = streamText({
     model: getLanguageModel(),
     messages: messages,
     system: buildSystemMessage(userConfig),
     tools: {
-      ...(await getToolsFromActions()),
+      ...(await getToolsFromActions(chatbotId)),
       search_knowledge_base: createSearchKnowledgeBaseTool(),
     },
     maxSteps: 5,

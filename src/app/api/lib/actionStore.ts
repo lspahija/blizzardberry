@@ -5,12 +5,13 @@ import {
   ExecutionModel,
 } from '@/app/api/lib/model/action/baseAction';
 
-export const getActions = async (): Promise<Action[]> => {
+export const getActions = async (chatbotId: string): Promise<Action[]> => {
   const { data, error } = await supabaseClient
     .from('actions')
     .select(
       'id, name, description, execution_context, execution_model, chatbot_id'
-    );
+    )
+    .eq('chatbot_id', chatbotId);
 
   if (error) {
     throw new Error(`Failed to fetch actions: ${error.message}`);
