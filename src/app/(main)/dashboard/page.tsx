@@ -7,20 +7,12 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Loader2, PlusCircle } from 'lucide-react';
-import {
-  Action,
-  ExecutionContext,
-} from '@/app/api/lib/model/action/baseAction';
 import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const [chatbots, setChatbots] = useState<Chatbot[]>([]);
-  const [actions, setActions] = useState<{ [key: string]: Action[] }>({});
   const [loadingChatbots, setLoadingChatbots] = useState(true);
-  const [loadingActions, setLoadingActions] = useState<{
-    [key: string]: boolean;
-  }>({});
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -52,23 +44,6 @@ export default function Dashboard() {
       fetchChatbots();
     }
   }, [status]);
-
-  // Fetch actions for a specific chatbot
-  const fetchActions = async (chatbotId: string) => {
-    setLoadingActions((prev) => ({ ...prev, [chatbotId]: true }));
-    try {
-      const response = await fetch(`/api/chatbots/${chatbotId}/actions`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch actions');
-      }
-      const data = await response.json();
-      setActions((prev) => ({ ...prev, [chatbotId]: data.actions || [] }));
-    } catch (error) {
-      console.error(`Error fetching actions for chatbot ${chatbotId}:`, error);
-    } finally {
-      setLoadingActions((prev) => ({ ...prev, [chatbotId]: false }));
-    }
-  };
 
   if (status === 'loading') {
     return (
@@ -144,7 +119,12 @@ export default function Dashboard() {
               >
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-900">
-                    {chatbot.name}
+                    <Link
+                      href={`/chatbots/${chatbot.id}`}
+                      className="hover:underline"
+                    >
+                      {chatbot.name}
+                    </Link>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -155,55 +135,11 @@ export default function Dashboard() {
                     Created: {new Date(chatbot.createdAt).toLocaleDateString()}
                   </p>
                   <Button
-                    onClick={() => fetchActions(chatbot.id)}
+                    asChild
                     className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
                   >
-                    {loadingActions[chatbot.id] ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                    ) : (
-                      'View Actions'
-                    )}
+                    <Link href={`/chatbots/${chatbot.id}`}>View Details</Link>
                   </Button>
-                  {actions[chatbot.id] && (
-                    <div className="mt-4">
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        Actions:
-                      </h3>
-                      {actions[chatbot.id].length === 0 ? (
-                        <p className="text-gray-600">
-                          No actions found for this chatbot.
-                        </p>
-                      ) : (
-                        <ul className="mt-2 space-y-2">
-                          {actions[chatbot.id].map((action) => (
-                            <li key={action.id} className="border-t pt-2">
-                              <p className="font-medium text-gray-900">
-                                {action.name}
-                              </p>
-                              <p className="text-gray-600">
-                                {action.description}
-                              </p>
-                              <p className="text-sm text-gray-500">
-                                Context: {action.executionContext}
-                              </p>
-                              <p className="text-sm text-gray-500">
-                                Model:{' '}
-                                {action.executionContext ===
-                                ExecutionContext.SERVER ? (
-                                  <>
-                                    {action.executionModel.request.method.toUpperCase()}{' '}
-                                    {action.executionModel.request.url}
-                                  </>
-                                ) : (
-                                  action.executionModel.functionName
-                                )}
-                              </p>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             ))}

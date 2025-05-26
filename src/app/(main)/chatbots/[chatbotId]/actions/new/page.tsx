@@ -483,14 +483,6 @@ export default function NewActionPage() {
                   <CardTitle className="text-2xl font-semibold text-gray-900">
                     Data Inputs
                   </CardTitle>
-                  <Button
-                    variant="outline"
-                    className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
-                    onClick={handleBack}
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back
-                  </Button>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
@@ -621,14 +613,6 @@ export default function NewActionPage() {
                       ? 'API Request'
                       : 'Client Action Configuration'}
                   </CardTitle>
-                  <Button
-                    variant="outline"
-                    className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
-                    onClick={handleBack}
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back
-                  </Button>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {baseAction.executionContext === ExecutionContext.SERVER ? (
