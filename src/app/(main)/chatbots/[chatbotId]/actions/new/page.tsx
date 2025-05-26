@@ -20,6 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Editor from '@monaco-editor/react';
 import { Combobox } from '@/components/ui/combobox';
+import { cn } from '@/lib/utils';
 
 // Import unified models
 import {
@@ -116,6 +117,34 @@ export default function NewActionPage() {
     'Accept',
     'X-API-Key',
   ];
+
+  const getUsedVariables = () => {
+    const usedVars = new Set<string>();
+    
+    dataInputs.forEach(input => {
+      if (input.name && apiUrl.includes(`{{${input.name}}}`)) {
+        usedVars.add(input.name);
+      }
+    });
+
+    headers.forEach(header => {
+      dataInputs.forEach(input => {
+        if (input.name && header.value.includes(`{{${input.name}}}`)) {
+          usedVars.add(input.name);
+        }
+      });
+    });
+
+    if (apiBody) {
+      dataInputs.forEach(input => {
+        if (input.name && apiBody.includes(`{{${input.name}}}`)) {
+          usedVars.add(input.name);
+        }
+      });
+    }
+
+    return usedVars;
+  };
 
   useEffect(() => {
     const stepParam = searchParams.get('step');
@@ -696,20 +725,21 @@ export default function NewActionPage() {
                             </Label>
                             <div className="mt-1.5 max-h-[100px] overflow-y-auto">
                               <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-1">
-                                {dataInputs
-                                  .filter((input) => input.name)
-                                  .map((input, index) => (
-                                    <div
-                                      key={index}
-                                      className="bg-[#FFFDF8] px-2 py-1 border border-gray-200 rounded whitespace-nowrap"
+                                {dataInputs.filter(input => input.name).map((input, index) => {
+                                  const isUsed = getUsedVariables().has(input.name);
+                                  return (
+                                    <div 
+                                      key={index} 
+                                      className={cn(
+                                        "bg-[#FFFDF8] px-2 py-1 border border-gray-200 rounded whitespace-nowrap",
+                                        isUsed && "opacity-50"
+                                      )}
                                     >
                                       <div className="font-mono text-xs text-gray-900">{`{{${input.name}}}`}</div>
-                                      <div className="text-[10px] text-gray-500 font-medium">
-                                        {input.type}
-                                        {input.isArray ? '[]' : ''}
-                                      </div>
+                                      <div className="text-[10px] text-gray-500 font-medium">{input.type}{input.isArray ? '[]' : ''}</div>
                                     </div>
-                                  ))}
+                                  );
+                                })}
                               </div>
                             </div>
                           </div>
