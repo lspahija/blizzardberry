@@ -18,6 +18,7 @@ import { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Editor from '@monaco-editor/react';
 
 // Import unified models
 import {
@@ -313,6 +314,42 @@ export default function AdminFormPage() {
     );
   }
 
+  function handleEditorWillMount(monaco) {
+    monaco.editor.defineTheme('customTheme', {
+      base: 'vs',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#FFF4DA'
+      }
+    });
+
+    monaco.languages.registerCompletionItemProvider('json', {
+      provideCompletionItems: (model, position) => {
+        const word = model.getWordUntilPosition(position);
+        const range = {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: word.startColumn,
+          endColumn: word.endColumn
+        };
+
+        return {
+          suggestions: dataInputs
+            .filter(input => input.name)
+            .map(input => ({
+              label: `{{${input.name}}}`,
+              kind: monaco.languages.CompletionItemKind.Variable,
+              documentation: `${input.type}${input.isArray ? '[]' : ''}`,
+              insertText: `"{{${input.name}}}"`,
+              range
+            }))
+        };
+      }
+    });
+  }
+
+
   return (
     <div className="min-h-screen bg-[#FFFDF8]">
       <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-gray-900 sticky top-0 bg-[#FFFDF8] z-50">
@@ -432,7 +469,7 @@ export default function AdminFormPage() {
                     </RadioGroup>
                   </div>
                   <Button
-                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                     onClick={handleNextStep}
                   >
                     <Save className="w-4 h-4 mr-2" />
@@ -551,7 +588,7 @@ export default function AdminFormPage() {
                         <div>
                           <Button
                             variant="outline"
-                            className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                            className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                             onClick={() => removeDataInput(index)}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -561,14 +598,14 @@ export default function AdminFormPage() {
                     ))}
                     <Button
                       variant="outline"
-                      className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                      className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                       onClick={addDataInput}
                     >
                       Add Data Input
                     </Button>
                   </div>
                   <Button
-                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                     onClick={handleNextStep}
                   >
                     <Save className="w-4 h-4 mr-2" />
@@ -597,7 +634,7 @@ export default function AdminFormPage() {
                   </CardTitle>
                   <Button
                     variant="outline"
-                    className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                     onClick={handleBack}
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
@@ -615,6 +652,21 @@ export default function AdminFormPage() {
                           data inputs (variables) collected from the user in the
                           URL, headers, and request body.
                         </p>
+                        {dataInputs.filter(input => input.name).length > 0 && (
+                          <div className="mt-4">
+                            <Label className="text-gray-900 text-sm">Available Variables</Label>
+                            <div className="mt-1.5 max-h-[100px] overflow-y-auto">
+                              <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-1">
+                                {dataInputs.filter(input => input.name).map((input, index) => (
+                                  <div key={index} className="bg-[#FFFDF8] px-2 py-1 border border-gray-200 rounded whitespace-nowrap">
+                                    <div className="font-mono text-xs text-gray-900">{`{{${input.name}}}`}</div>
+                                    <div className="text-[10px] text-gray-500 font-medium">{input.type}{input.isArray ? '[]' : ''}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
                         <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-4 mt-4">
                           <div>
                             <Label htmlFor="apiMethod">Method</Label>
@@ -650,16 +702,16 @@ export default function AdminFormPage() {
                         onValueChange={setActiveTab}
                         className="w-full"
                       >
-                        <TabsList className="grid w-full grid-cols-2 bg-[#FFFDF8] border-[2px] border-gray-900 rounded-lg p-1">
+                        <TabsList className="grid w-full grid-cols-2 bg-[#FFFDF8] border-[2px] border-gray-900 rounded-lg h-10 px-1 py-[2px]">
                           <TabsTrigger
                             value="headers"
-                            className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA]"
+                            className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer"
                           >
                             Headers
                           </TabsTrigger>
                           <TabsTrigger
                             value="body"
-                            className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA]"
+                            className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer"
                           >
                             Body
                           </TabsTrigger>
@@ -707,7 +759,7 @@ export default function AdminFormPage() {
                                 <div>
                                   <Button
                                     variant="outline"
-                                    className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                                    className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                                     onClick={() => removeHeader(index)}
                                   >
                                     <Trash2 className="w-4 h-4" />
@@ -717,7 +769,7 @@ export default function AdminFormPage() {
                             ))}
                             <Button
                               variant="outline"
-                              className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                              className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                               onClick={addHeader}
                             >
                               Add Header
@@ -729,14 +781,55 @@ export default function AdminFormPage() {
                             <Label htmlFor="apiBody" className="text-gray-900">
                               Body
                             </Label>
-                            <Textarea
-                              id="apiBody"
-                              value={apiBody}
-                              onChange={(e) => setApiBody(e.target.value)}
-                              placeholder='{"key": "{{value}}"}'
-                              className="mt-2 border-[2px] border-gray-900"
-                              rows={5}
-                            />
+                            <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden">
+                              <div className="relative">
+                                <div className="absolute z-10 pointer-events-none text-gray-500 italic p-3">
+                                  {!apiBody && `{ "example": "{{value}}", "array": ["{{item1}}", "{{item2}}"], "nested": {"key": "{{value}}"} }`} 
+                                </div>
+                                <Editor
+                                  height="200px"
+                                  defaultLanguage="json"
+                                  value={apiBody}
+                                  onChange={(value) => setApiBody(value || '')}
+                                  beforeMount={handleEditorWillMount}
+                                  onMount={(editor) => {
+                                    editor.updateOptions({
+                                      lineNumbers: () => '',
+                                      glyphMargin: false,
+                                      lineDecorationsWidth: 0,
+                                      lineNumbersMinChars: 0,
+                                      suggest: {
+                                        showWords: false,
+                                        preview: true,
+                                        showProperties: false,
+                                      }
+                                    });
+                                    requestAnimationFrame(() => editor.layout());
+                                  }}
+                                  theme="customTheme"
+                                  options={{
+                                    fontSize: 14,
+                                    minimap: { enabled: false },
+                                    scrollBeyondLastLine: false,
+                                    wordWrap: 'on',
+                                    renderLineHighlight: 'none',
+                                    scrollbar: {
+                                      verticalScrollbarSize: 8,
+                                      horizontalScrollbarSize: 8,
+                                    },
+                                    padding: {
+                                      top: 12,
+                                      bottom: 12,
+                                      left: 12,
+                                    } as any,
+                                    folding: false,
+                                    hideCursorInOverviewRuler: true,
+                                    guides: { indentation: false },
+                                  }}
+                                  className="bg-[#FFF4DA]"
+                                />
+                              </div>
+                            </div>
                           </div>
                         </TabsContent>
                       </Tabs>
@@ -786,7 +879,7 @@ export default function AdminFormPage() {
                     </div>
                   )}
                   <Button
-                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                     onClick={handleCreateAction}
                   >
                     Create Action
