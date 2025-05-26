@@ -179,6 +179,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - what does open sourcing the codebase entirely or partially do? (look into case studies for when this has worked and when it hasn't. i think it only makes sense in certain cases)
 - get advice from silicon valley investors and founders. they have a lot of experience with this
 - raise money from the best silicon valley VCs so they have skin in the game and help us with their experience and network and drive
+- the goal is to get someone on our team that’s super successful in what we’re doing. somebody that’s already done similar things and scaled to unicorn valuation
 
 # Competition
 - https://www.chatbase.co/
