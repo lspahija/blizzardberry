@@ -631,6 +631,21 @@ export default function AdminFormPage() {
                           data inputs (variables) collected from the user in the
                           URL, headers, and request body.
                         </p>
+                        {dataInputs.filter(input => input.name).length > 0 && (
+                          <div className="mt-4">
+                            <Label className="text-gray-900 text-sm">Available Variables</Label>
+                            <div className="mt-1.5 max-h-[100px] overflow-y-auto">
+                              <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-1">
+                                {dataInputs.filter(input => input.name).map((input, index) => (
+                                  <div key={index} className="bg-[#FFFDF8] px-2 py-1 border border-gray-200 rounded whitespace-nowrap">
+                                    <div className="font-mono text-xs text-gray-900">{`{{${input.name}}}`}</div>
+                                    <div className="text-[10px] text-gray-500 font-medium">{input.type}{input.isArray ? '[]' : ''}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
                         <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-4 mt-4">
                           <div>
                             <Label htmlFor="apiMethod">Method</Label>
