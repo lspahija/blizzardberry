@@ -87,19 +87,45 @@ export default function AdminFormPage() {
   const [activeTab, setActiveTab] = useState('headers');
 
   function handleEditorWillMount(monaco) {
-  monaco.editor.defineTheme('customTheme', {
-    base: 'vs',
-    inherit: true,
-    rules: [],
-    colors: {
-      'editor.background': '#FFF4DA',
-      'editor.lineHighlightBackground': '#FFF4DA',
-      'editor.lineHighlightBorder': '#FFF4DA',
-      'editorGutter.background': '#FFF4DA',
-      'editorCursor.foreground': '#000000',
-    }
-  });
-}
+    monaco.editor.defineTheme('customTheme', {
+      base: 'vs',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#FFF4DA',
+        'editor.lineHighlightBackground': '#FFF4DA',
+        'editor.lineHighlightBorder': '#FFF4DA',
+        'editorGutter.background': '#FFF4DA',
+        'editorCursor.foreground': '#000000',
+      }
+    });
+
+    // Register JSON completion provider
+    monaco.languages.registerCompletionItemProvider('json', {
+      provideCompletionItems: (model, position) => {
+        const word = model.getWordUntilPosition(position);
+        const range = {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: word.startColumn,
+          endColumn: word.endColumn
+        };
+
+        // Create completion items for each data input
+        const suggestions = dataInputs
+          .filter(input => input.name)
+          .map(input => ({
+            label: `{{${input.name}}}`,
+            kind: monaco.languages.CompletionItemKind.Variable,
+            documentation: `${input.type}${input.isArray ? '[]' : ''} - ${input.description || 'No description'}`,
+            insertText: `"{{${input.name}}}"`,
+            range: range
+          }));
+
+        return { suggestions };
+      }
+    });
+  }
 
   useEffect(() => {
     const stepParam = searchParams.get('step');
@@ -777,6 +803,11 @@ export default function AdminFormPage() {
                                       glyphMargin: false,
                                       lineDecorationsWidth: 0,
                                       lineNumbersMinChars: 0,
+                                      suggest: {
+                                        showWords: false,
+                                        preview: true,
+                                        showProperties: false,
+                                      }
                                     });
                                     requestAnimationFrame(() => editor.layout());
                                   }}
@@ -790,6 +821,10 @@ export default function AdminFormPage() {
                                     formatOnType: true,
                                     renderLineHighlight: 'none',
                                     overviewRulerBorder: false,
+                                    quickSuggestions: {
+                                      other: true,
+                                      strings: true
+                                    },
                                     scrollbar: {
                                       vertical: 'visible',
                                       horizontal: 'visible',
