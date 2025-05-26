@@ -448,7 +448,7 @@ export default function AdminFormPage() {
                     </RadioGroup>
                   </div>
                   <Button
-                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                     onClick={handleNextStep}
                   >
                     <Save className="w-4 h-4 mr-2" />
@@ -567,7 +567,7 @@ export default function AdminFormPage() {
                         <div>
                           <Button
                             variant="outline"
-                            className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                            className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                             onClick={() => removeDataInput(index)}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -577,14 +577,14 @@ export default function AdminFormPage() {
                     ))}
                     <Button
                       variant="outline"
-                      className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                      className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                       onClick={addDataInput}
                     >
                       Add Data Input
                     </Button>
                   </div>
                   <Button
-                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                     onClick={handleNextStep}
                   >
                     <Save className="w-4 h-4 mr-2" />
@@ -613,7 +613,7 @@ export default function AdminFormPage() {
                   </CardTitle>
                   <Button
                     variant="outline"
-                    className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                     onClick={handleBack}
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
@@ -669,13 +669,13 @@ export default function AdminFormPage() {
                         <TabsList className="grid w-full grid-cols-2 bg-[#FFFDF8] border-[2px] border-gray-900 rounded-lg h-10 px-1 py-[2px]">
                           <TabsTrigger
                             value="headers"
-                            className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full"
+                            className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer"
                           >
                             Headers
                           </TabsTrigger>
                           <TabsTrigger
                             value="body"
-                            className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full"
+                            className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer"
                           >
                             Body
                           </TabsTrigger>
@@ -723,7 +723,7 @@ export default function AdminFormPage() {
                                 <div>
                                   <Button
                                     variant="outline"
-                                    className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                                    className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                                     onClick={() => removeHeader(index)}
                                   >
                                     <Trash2 className="w-4 h-4" />
@@ -733,7 +733,7 @@ export default function AdminFormPage() {
                             ))}
                             <Button
                               variant="outline"
-                              className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                              className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                               onClick={addHeader}
                             >
                               Add Header
@@ -838,7 +838,7 @@ export default function AdminFormPage() {
                     </div>
                   )}
                   <Button
-                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
                     onClick={handleCreateAction}
                   >
                     Create Action
