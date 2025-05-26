@@ -225,11 +225,10 @@ But maybe it isn’t necessary, you could test it out to see if it works well (i
 # Development Notes
 
 ## Connect to Supabase Database with Your Favorite Postgres Client
-
 - URL: `jdbc:postgresql://aws-0-us-east-2.pooler.supabase.com:5432/postgres`
 - user: `postgres.pwlbhcjwuwsvszkvqexy`
 - password: `[your Supabase password]`
-- 
+
 ## Autoupdate Dependencies
 - update `pnpm` with `pnpm self-update`
 - update all packages to latest versions with `pnpm update --latest`
@@ -239,3 +238,6 @@ But maybe it isn’t necessary, you could test it out to see if it works well (i
 ```bash
 pnpm format
 ```
+
+## UI Components
+This project uses [shadcn/ui](https://ui.shadcn.com/) components
