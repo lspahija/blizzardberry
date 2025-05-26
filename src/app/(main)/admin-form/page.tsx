@@ -748,13 +748,7 @@ export default function AdminFormPage() {
                             <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden">
                               <div className="relative">
                                 <div className="absolute z-10 pointer-events-none text-gray-500 italic p-3">
-                                  {!apiBody && `{
-                                    "example": "{{value}}",
-                                    "array": ["{{item1}}", "{{item2}}"],
-                                    "nested": {
-                                      "key": "{{value}}"
-                                    }
-                                  }`}
+                                  {!apiBody && `{ "example": "{{value}}", "array": ["{{item1}}", "{{item2}}"], "nested": {"key": "{{value}}"} }`} 
                                 </div>
                                 <Editor
                                   height="200px"
