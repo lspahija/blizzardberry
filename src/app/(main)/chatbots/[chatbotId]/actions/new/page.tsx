@@ -772,6 +772,7 @@ export default function NewActionPage() {
                               placeholder="https://wttr.in/{{city}}?format=j1"
                               className="mt-2"
                               inputClassName="border-[2px] border-gray-900"
+                              matchMode="full"
                             />
                           </div>
                         </div>
@@ -815,6 +816,7 @@ export default function NewActionPage() {
                                     placeholder="Authorization"
                                     className="mt-2"
                                     inputClassName="border-[2px] border-gray-900"
+                                    matchMode="word"
                                   />
                                 </div>
                                 <div>
@@ -829,6 +831,7 @@ export default function NewActionPage() {
                                     placeholder="Bearer {{token}}"
                                     className="mt-2"
                                     inputClassName="border-[2px] border-gray-900"
+                                    matchMode="word"
                                   />
                                 </div>
                                 <div>

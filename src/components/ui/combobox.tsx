@@ -13,6 +13,7 @@ export interface ComboboxProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   id?: string;
+  matchMode?: 'word' | 'full';
 }
 
 export function Combobox({
@@ -22,29 +23,71 @@ export function Combobox({
   className,
   inputClassName,
   onChange,
+  matchMode = 'word',
   ...props
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
+  const getLastWord = (text: string) => {
+    const words = text.split(' ');
+    return words[words.length - 1];
+  };
+
   const filteredSuggestions = React.useMemo(() => {
-    const searchTerm = (value || '').toLowerCase();
-    return suggestions
-      .filter((suggestion) => suggestion.toLowerCase().includes(searchTerm))
-      .sort((a, b) => {
-        const aStarts = a.toLowerCase().startsWith(searchTerm);
-        const bStarts = b.toLowerCase().startsWith(searchTerm);
-        if (aStarts && !bStarts) return -1;
-        if (!aStarts && bStarts) return 1;
-        return 0;
-      });
-  }, [suggestions, value]);
+    if (matchMode === 'word') {
+      // For headers, keep the last word behavior
+      const searchTerm = getLastWord((value || '').toLowerCase());
+      if (!searchTerm) return [];
+
+      return suggestions
+        .filter((suggestion) => suggestion.toLowerCase().includes(searchTerm))
+        .sort((a, b) => {
+          const aStarts = a.toLowerCase().startsWith(searchTerm);
+          const bStarts = b.toLowerCase().startsWith(searchTerm);
+          if (aStarts && !bStarts) return -1;
+          if (!aStarts && bStarts) return 1;
+          return 0;
+        });
+    } else {
+      // For URLs, split by common separators and match against the last part
+      const parts = (value || '').split(/[/?&=]/);
+      const lastPart = parts[parts.length - 1].toLowerCase();
+      if (!lastPart) return [];
+
+      return suggestions
+        .filter((suggestion) => suggestion.toLowerCase().includes(lastPart))
+        .sort((a, b) => {
+          const aStarts = a.toLowerCase().startsWith(lastPart);
+          const bStarts = b.toLowerCase().startsWith(lastPart);
+          if (aStarts && !bStarts) return -1;
+          if (!aStarts && bStarts) return 1;
+          return 0;
+        });
+    }
+  }, [suggestions, value, matchMode]);
 
   const handleSelect = (selectedValue: string) => {
-    if (onSelect) {
-      onSelect(selectedValue);
-    } else if (onChange) {
-      onChange({ target: { value: selectedValue } } as React.ChangeEvent<HTMLInputElement>);
+    if (!value) return;
+
+    if (matchMode === 'word') {
+      // For headers, replace only the last word
+      const newValue = value.split(' ').slice(0, -1).concat(selectedValue).join(' ');
+      if (onSelect) {
+        onSelect(newValue);
+      } else if (onChange) {
+        onChange({ target: { value: newValue } } as React.ChangeEvent<HTMLInputElement>);
+      }
+    } else {
+      // For URLs, replace the last part after a separator
+      const parts = value.split(/([/?&=])/);
+      parts[parts.length - 1] = selectedValue;
+      const newValue = parts.join('');
+      if (onSelect) {
+        onSelect(newValue);
+      } else if (onChange) {
+        onChange({ target: { value: newValue } } as React.ChangeEvent<HTMLInputElement>);
+      }
     }
     setOpen(false);
   };
