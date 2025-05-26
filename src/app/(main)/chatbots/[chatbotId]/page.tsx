@@ -116,6 +116,14 @@ export default function ChatbotDetails({
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
             {chatbot.name}
           </h1>
+          <Button
+            asChild
+            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+          >
+            <Link href="/dashboard" className="flex items-center">
+              Back to Dashboard
+            </Link>
+          </Button>
         </div>
 
         <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-6">
@@ -128,11 +136,8 @@ export default function ChatbotDetails({
             <p className="text-gray-600 mb-2">
               Domain: {chatbot.websiteDomain}
             </p>
-            <p className="text-gray-600 mb-2">
-              Created By: {chatbot.createdBy}
-            </p>
             <p className="text-gray-600 mb-4">
-              Created: {new Date(chatbot.createdAt).toLocaleDateString()}
+              Created: {new Date(chatbot.createdAt).toLocaleString()}
             </p>
           </CardContent>
         </Card>
