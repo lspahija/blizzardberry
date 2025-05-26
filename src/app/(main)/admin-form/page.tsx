@@ -18,6 +18,7 @@ import { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Editor from '@monaco-editor/react';
 
 // Import unified models
 import {
@@ -84,6 +85,21 @@ export default function AdminFormPage() {
   const [apiBody, setApiBody] = useState('');
   const [functionName, setFunctionName] = useState('');
   const [activeTab, setActiveTab] = useState('headers');
+
+  function handleEditorWillMount(monaco) {
+  monaco.editor.defineTheme('customTheme', {
+    base: 'vs',
+    inherit: true,
+    rules: [],
+    colors: {
+      'editor.background': '#FFF4DA',
+      'editor.lineHighlightBackground': '#FFF4DA',
+      'editor.lineHighlightBorder': '#FFF4DA',
+      'editorGutter.background': '#FFF4DA',
+      'editorCursor.foreground': '#000000',
+    }
+  });
+}
 
   useEffect(() => {
     const stepParam = searchParams.get('step');
@@ -729,14 +745,50 @@ export default function AdminFormPage() {
                             <Label htmlFor="apiBody" className="text-gray-900">
                               Body
                             </Label>
-                            <Textarea
-                              id="apiBody"
+                            <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden">
+                            <Editor
+                              height="200px"
+                              defaultLanguage="json"
                               value={apiBody}
-                              onChange={(e) => setApiBody(e.target.value)}
-                              placeholder='{"key": "{{value}}"}'
-                              className="mt-2 border-[2px] border-gray-900"
-                              rows={5}
+                              onChange={(value) => setApiBody(value || '')}
+                              beforeMount={handleEditorWillMount}
+                              onMount={(editor) => {
+                                editor.updateOptions({
+                                  lineNumbers: () => '',
+                                  glyphMargin: false,
+                                  lineDecorationsWidth: 0,
+                                  lineNumbersMinChars: 0,
+                                });
+                                requestAnimationFrame(() => editor.layout());
+                              }}
+                              theme="customTheme"
+                              options={{
+                                fontSize: 14,
+                                minimap: { enabled: false },
+                                scrollBeyondLastLine: false,
+                                wordWrap: 'on',
+                                formatOnPaste: true,
+                                formatOnType: true,
+                                renderLineHighlight: 'none',
+                                overviewRulerBorder: false,
+                                scrollbar: {
+                                  vertical: 'visible',
+                                  horizontal: 'visible',
+                                  verticalScrollbarSize: 8,
+                                  horizontalScrollbarSize: 8,
+                                },
+                                padding: {
+                                  top: 12,
+                                  bottom: 12,
+                                  left: 12,
+                                } as any,
+                                folding: false,
+                                hideCursorInOverviewRuler: true,
+                                guides: { indentation: false },
+                              }}
+                              className="bg-[#FFF4DA]"
                             />
+                          </div>
                           </div>
                         </TabsContent>
                       </Tabs>
