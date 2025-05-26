@@ -136,13 +136,14 @@
         state.actionResults[key]
       );
 
+      // Add the action result to the messages array as part of the text content
       state.messages.push({
         id: generateId(),
         role: 'assistant',
         parts: [
           {
             type: 'text',
-            text: `✅ ${actionModel.toolName?.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action'} successfully executed`,
+            text: `✅ ${actionModel.toolName?.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action'} successfully executed. Result: ${JSON.stringify(state.actionResults[key])}`,
           },
         ],
       });
@@ -158,7 +159,7 @@
 
       const interpretation = await interpretActionResult(actionResultMessage);
 
-      // TODO: we need to somehow include the action result itself in the chat context so the AI can reference it for future messages
+      // Append the AI's interpretation of the action result
       state.messages.push({
         id: generateId(),
         role: 'assistant',
