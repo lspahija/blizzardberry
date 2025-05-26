@@ -86,7 +86,6 @@ export default function AdminFormPage() {
   const [functionName, setFunctionName] = useState('');
   const [activeTab, setActiveTab] = useState('headers');
 
-
   useEffect(() => {
     const stepParam = searchParams.get('step');
     let currentStep = 1;
