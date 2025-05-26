@@ -16,13 +16,6 @@ e.g. it must be easy to:
 - create new SDKs for different languages so a chatbot can be added to any app
 - enable new ways for app owners to onboard their website (parse OpenAPI spec, parse cURL, autodiscovery, etc.)
 
-## Why not just General Agents?
-- AGI isn't here yet. General agents can't figure out how to achieve everything the user wants on a website.
-- Even when AGI gets here, the agent won't have instant knowledge of the app's capabilities (actions). 
-- This project needs to provide the agent instant access to all of the app's capabilities.
-- This means a lot of our competitive advantage will be in reducing onboarding friction to a minimum.
-- Minimizing onboarding friction will likely be done with AI/agents.
-
 # Running the Project Locally
 
 This guide outlines the steps to set up and run the project locally. The project uses [git-crypt](https://github.com/AGWA/git-crypt) to encrypt sensitive files (e.g., `.env*`).
@@ -98,21 +91,11 @@ pnpm dev
 Open your browser and visit:
 [http://localhost:3000](http://localhost:3000) to see the landing page.
 
+### [See Development Notes](#Development-Notes)
 
 # Use Chatbot
 
 See an example SaaS app with integrated chatbot at http://localhost:3000/example-saas
-
-# Connect to Supabase Database with Your Favorite Postgres Client
-
-- URL: `jdbc:postgresql://aws-0-us-east-2.pooler.supabase.com:5432/postgres`
-- user: `postgres.pwlbhcjwuwsvszkvqexy`
-- password: `[your Supabase password]`
-
-# Format code with Prettier
-```bash
-pnpm format
-```
 
 # Deploy
 
@@ -174,13 +157,21 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
     - maybe use some tool to autodiscover website endpoints/capabilities
     - brainstorm what the ideal frictionless onboarding would look like. Ideally the webapp owner doesn't have to do anything. We offer them a chatbot that just works.
 
-## Strategy
+# Strategy
 - start off selling but think about what it takes to win big
 - freemium model. generous free tier to win big market share and then make money on small portion of power users: https://youtu.be/K4s6Cgicw_A?si=eChQZbm-Vz8pIqt1&t=667 (this might require getting inference costs low. finding the cheapest models)
 - what does open sourcing the codebase entirely or partially do? (look into case studies for when this has worked and when it hasn't. i think it only makes sense in certain cases)
 - get advice from silicon valley investors and founders. they have a lot of experience with this
 - raise money from the best silicon valley VCs so they have skin in the game and help us with their experience and network and drive
 - the goal is to get someone on our team that’s super successful in what we’re doing. somebody that’s already done similar things and scaled to unicorn valuation
+
+### Why not just General Agents?
+- AGI isn't here yet. General agents can't figure out how to achieve everything the user wants on a website.
+- Even when AGI gets here, the agent won't have instant knowledge of the app's capabilities (actions).
+- This project needs to provide the agent instant access to all of the app's capabilities.
+- This means a lot of our competitive advantage will be in reducing onboarding friction to a minimum.
+- Minimizing onboarding friction will likely be done with AI/agents.
+
 
 # Competition
 - https://www.chatbase.co/
@@ -228,10 +219,23 @@ Which could be useful when you have a lot of chunks and a variety of content.
 But maybe it isn’t necessary, you could test it out to see if it works well (if you get relevant chunks to the given query) without any filtering.
 
 
-### Ideas
+# Ideas
 - tool fetching can maybe be made more accurate by inserting a RAG step (e.g. embed the tool information). how does the lib currently fetch under the hood? maybe it already does this?
 
-### Development Notes
+# Development Notes
+
+## Connect to Supabase Database with Your Favorite Postgres Client
+
+- URL: `jdbc:postgresql://aws-0-us-east-2.pooler.supabase.com:5432/postgres`
+- user: `postgres.pwlbhcjwuwsvszkvqexy`
+- password: `[your Supabase password]`
+- 
+## Autoupdate Dependencies
 - update `pnpm` with `pnpm self-update`
 - update all packages to latest versions with `pnpm update --latest`
 - update all packages while respecting defined version ranges with `pnpm update`
+
+## Format code with Prettier
+```bash
+pnpm format
+```
