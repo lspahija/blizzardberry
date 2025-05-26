@@ -746,49 +746,60 @@ export default function AdminFormPage() {
                               Body
                             </Label>
                             <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden">
-                            <Editor
-                              height="200px"
-                              defaultLanguage="json"
-                              value={apiBody}
-                              onChange={(value) => setApiBody(value || '')}
-                              beforeMount={handleEditorWillMount}
-                              onMount={(editor) => {
-                                editor.updateOptions({
-                                  lineNumbers: () => '',
-                                  glyphMargin: false,
-                                  lineDecorationsWidth: 0,
-                                  lineNumbersMinChars: 0,
-                                });
-                                requestAnimationFrame(() => editor.layout());
-                              }}
-                              theme="customTheme"
-                              options={{
-                                fontSize: 14,
-                                minimap: { enabled: false },
-                                scrollBeyondLastLine: false,
-                                wordWrap: 'on',
-                                formatOnPaste: true,
-                                formatOnType: true,
-                                renderLineHighlight: 'none',
-                                overviewRulerBorder: false,
-                                scrollbar: {
-                                  vertical: 'visible',
-                                  horizontal: 'visible',
-                                  verticalScrollbarSize: 8,
-                                  horizontalScrollbarSize: 8,
-                                },
-                                padding: {
-                                  top: 12,
-                                  bottom: 12,
-                                  left: 12,
-                                } as any,
-                                folding: false,
-                                hideCursorInOverviewRuler: true,
-                                guides: { indentation: false },
-                              }}
-                              className="bg-[#FFF4DA]"
-                            />
-                          </div>
+                              <div className="relative">
+                                <div className="absolute z-10 pointer-events-none text-gray-500 italic p-3">
+                                  {!apiBody && `{
+                                    "example": "{{value}}",
+                                    "array": ["{{item1}}", "{{item2}}"],
+                                    "nested": {
+                                      "key": "{{value}}"
+                                    }
+                                  }`}
+                                </div>
+                                <Editor
+                                  height="200px"
+                                  defaultLanguage="json"
+                                  value={apiBody}
+                                  onChange={(value) => setApiBody(value || '')}
+                                  beforeMount={handleEditorWillMount}
+                                  onMount={(editor) => {
+                                    editor.updateOptions({
+                                      lineNumbers: () => '',
+                                      glyphMargin: false,
+                                      lineDecorationsWidth: 0,
+                                      lineNumbersMinChars: 0,
+                                    });
+                                    requestAnimationFrame(() => editor.layout());
+                                  }}
+                                  theme="customTheme"
+                                  options={{
+                                    fontSize: 14,
+                                    minimap: { enabled: false },
+                                    scrollBeyondLastLine: false,
+                                    wordWrap: 'on',
+                                    formatOnPaste: true,
+                                    formatOnType: true,
+                                    renderLineHighlight: 'none',
+                                    overviewRulerBorder: false,
+                                    scrollbar: {
+                                      vertical: 'visible',
+                                      horizontal: 'visible',
+                                      verticalScrollbarSize: 8,
+                                      horizontalScrollbarSize: 8,
+                                    },
+                                    padding: {
+                                      top: 12,
+                                      bottom: 12,
+                                      left: 12,
+                                    } as any,
+                                    folding: false,
+                                    hideCursorInOverviewRuler: true,
+                                    guides: { indentation: false },
+                                  }}
+                                  className="bg-[#FFF4DA]"
+                                />
+                              </div>
+                            </div>
                           </div>
                         </TabsContent>
                       </Tabs>
