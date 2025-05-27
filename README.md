@@ -14,7 +14,7 @@ They are considered a competitive advantage and must allow for rapid iteration a
 e.g. it must be easy to:
 - add new AI models (as AI models improve, the usefulness of this product should automatically improve in parallel)
 - create new SDKs for different languages so a chatbot can be added to any app
-- enable new ways for app owners to onboard their website (parse OpenAPI spec, parse cURL, autodiscovery, etc.)
+- onboard new apps with minimal friction
 
 # Running the Project Locally
 
@@ -63,31 +63,25 @@ git-crypt unlock
 ```
 Now you can pull and push to the repository without issues. If you add new sensitive files, ensure they are listed in `.gitattributes` for encryption.
 
-### 5. Set Up LM Studio
-1. Install [LM Studio](https://lmstudio.ai/).
-2. Download the `qwen3-8b` model in LM Studio.
-3. Enable **Developer Mode** in LM Studio.
-4. Start the LM Studio server to serve the model at `http://localhost:1234/v1`.
-
-### 6. Install pnpm
+### 5. Install pnpm
 Install pnpm globally:
 ```bash
 npm install -g pnpm
 ```
 
-### 7. Install Dependencies
+### 6. Install Dependencies
 Navigate to the project directory and install dependencies:
 ```bash
 pnpm install
 ```
 
-### 8. Run the Development Server
+### 7. Run the Development Server
 Start the development server:
 ```bash
 pnpm dev
 ```
 
-### 9. Access the Application
+### 8. Access the Application
 Open your browser and visit:
 [http://localhost:3000](http://localhost:3000) to see the landing page.
 
@@ -112,7 +106,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
     - [create new client](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7tQ&project=ufcalarm-b270d)
   - GitHub OAuth
     - [create prod OAuth app](https://github.com/settings/developers)
-  - enable magic links for sign in because this is B2B and employees might not be able to sign in with github account or google account
+  - enable magic links for sign in because this is B2B and employees might not be able to sign in with github account or google account. try resend first. https://authjs.dev/getting-started/authentication/email Postmark seems best but not free tier
 - polish the user onboarding experience. All the forms needs to work flawlessly and be easy to use.
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
@@ -240,3 +234,10 @@ pnpm format
 
 ## UI Components
 This project uses [shadcn/ui](https://ui.shadcn.com/) components
+
+## If You Want to Use a Local LLM Model From LM Studio
+1. Install [LM Studio](https://lmstudio.ai/).
+2. Download the `qwen3-8b` model in LM Studio.
+3. Enable **Developer Mode** in LM Studio.
+4. Start the LM Studio server to serve the model at `http://localhost:1234/v1`.
+5. Set the `MODEL_PROVIDER` environment variable to `lmstudio`.
