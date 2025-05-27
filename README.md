@@ -112,7 +112,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
     - [create new client](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7tQ&project=ufcalarm-b270d)
   - GitHub OAuth
     - [create prod OAuth app](https://github.com/settings/developers)
-  - prevent access to certain pages if user is not logged in
+  - enable magic links for sign in because this is B2B and employees might not be able to sign in with github account or google account
 - In frontend example, show that an existing function reference can just be passed in. The user doesn't need to define a new lambda.
 - polish the user onboarding experience. All the forms needs to work flawlessly and be easy to use.
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.

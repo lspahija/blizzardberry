@@ -53,20 +53,6 @@ export default function Dashboard() {
     );
   }
 
-  if (!session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
-        <p className="text-gray-900 text-lg">
-          You are not signed in.{' '}
-          <Link href="/" className="text-[#FE4A60] hover:underline">
-            Go to homepage
-          </Link>
-          .
-        </p>
-      </div>
-    );
-  }
-
   return (
     <motion.div
       className="min-h-screen flex flex-col bg-[#FFFDF8] p-4"
