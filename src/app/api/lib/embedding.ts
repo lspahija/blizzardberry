@@ -2,6 +2,7 @@ import { GoogleGenerativeAIEmbeddings } from '@langchain/google-genai';
 import { SupabaseVectorStore } from '@langchain/community/vectorstores/supabase';
 import { supabaseClient } from '@/app/api/lib/supabase';
 
+//consider migrating this stuff to Python to take advantage of the Python ecosystem and libs for RAG
 export const vectorStore = new SupabaseVectorStore(
   new GoogleGenerativeAIEmbeddings({
     apiKey: process.env.GEMINI_API_KEY,
@@ -14,11 +15,19 @@ export const vectorStore = new SupabaseVectorStore(
   }
 );
 
-export async function similaritySearch(query: string, k: number) {
-  // Perform similarity search with score
+export async function similaritySearch(
+  query: string,
+  k: number,
+  chatbotId: string
+) {
+  // Define the filter to match metadata.chatbotId with the provided chatbotId
+  const filter = { chatbotId };
+
+  // Perform similarity search with score and filter
   const resultsWithScore = await vectorStore.similaritySearchWithScore(
     query,
-    k
+    k,
+    filter // Pass the filter to restrict results
   );
 
   // Group results by parent_document_id

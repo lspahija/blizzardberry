@@ -31,7 +31,8 @@ Content-Type: application/json
 
 {
   "query": "the waves are great",
-  "topK": 3
+  "topK": 3,
+  "chatbotId": "ae262222-4bea-48fe-a949-345493dfb465"
 }
 
 ###
@@ -41,5 +42,6 @@ Content-Type: application/json
 
 {
   "query": "checkmate!",
-  "topK": 2
+  "topK": 2,
+  "chatbotId": "ae262222-4bea-48fe-a949-345493dfb465"
 }

@@ -3,20 +3,31 @@ import { Document } from '@langchain/core/documents';
 import { v4 as uuidv4 } from 'uuid';
 import { vectorStore } from '@/app/api/lib/embedding';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
+import { auth } from '@/lib/auth';
+import { authChatbot } from '@/app/api/lib/chatbotAuth';
 
-// TODO: add types and make this support multi-tenancy: https://grok.com/share/bGVnYWN5_49e01b12-4260-4461-85c7-94e8ffe06c9e
 export async function POST(request: Request) {
   try {
-    const { text, metadata } = await request.json();
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    // Clean text
+    const { text, metadata, chatbotId } = await request.json();
+
+    const authResponse = await authChatbot(session.user.id, chatbotId);
+    if (authResponse) return authResponse;
+
     const cleanedText = cleanText(text);
 
-    // Create a LangChain Document
     const parentId = uuidv4();
     const doc = new Document({
       pageContent: cleanedText,
-      metadata: { ...metadata, parent_document_id: parentId },
+      metadata: {
+        ...metadata,
+        parent_document_id: parentId,
+        chatbot_id: chatbotId,
+      },
     });
 
     // Split into chunks
@@ -29,6 +40,7 @@ export async function POST(request: Request) {
         ...chunk.metadata,
         chunk_index: index,
         parent_document_id: parentId,
+        chatbot_id: chatbotId,
       },
     }));
 
@@ -59,9 +71,8 @@ const textSplitter = new RecursiveCharacterTextSplitter({
   separators: ['\n\n', '\n', '.', '!', '?', ',', ' ', ''], // Natural boundaries
 });
 
-function cleanText(text: string): string {
-  return text
+const cleanText = (text: string): string =>
+  text
     .replace(/\s+/g, ' ') // Normalize whitespace
     .replace(/[^\x20-\x7E\n]/g, '') // Remove non-printable characters
     .trim();
-}

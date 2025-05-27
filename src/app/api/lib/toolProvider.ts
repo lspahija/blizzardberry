@@ -13,7 +13,7 @@ import {
   Body,
 } from '@/app/api/lib/model/action/backendAction';
 
-export function createSearchKnowledgeBaseTool(): Tool {
+export function createSearchKnowledgeBaseTool(chatbotId: string): Tool {
   return tool({
     description:
       'Search the knowledge base for information to answer user questions about the application',
@@ -24,7 +24,7 @@ export function createSearchKnowledgeBaseTool(): Tool {
     }),
     execute: async ({ query }) => {
       try {
-        const groupedResults = await similaritySearch(query, 5);
+        const groupedResults = await similaritySearch(query, 5, chatbotId);
 
         if (Object.keys(groupedResults).length === 0) {
           return {

@@ -57,25 +57,19 @@ export const createAction = async (
   actionName: string,
   description: string,
   executionContext: ExecutionContext,
-  executionModel: ExecutionModel
-): Promise<void> => {
-  const { error } = await supabaseClient.from('actions').insert({
+  executionModel: ExecutionModel,
+  chatbotId: string
+) =>
+  supabaseClient.from('actions').insert({
     name: actionName,
     description,
     execution_context: executionContext,
     execution_model: executionModel,
+    chatbot_id: chatbotId,
   });
 
-  if (error) {
-    throw new Error(`Failed to create action: ${error.message}`);
-  }
-};
-
-export const deleteAction = async (actionName: string): Promise<void> => {
-  const { error } = await supabaseClient
-    .from('actions')
-    .delete()
-    .eq('name', actionName);
+export const deleteAction = async (id: string): Promise<void> => {
+  const { error } = await supabaseClient.from('actions').delete().eq('id', id);
 
   if (error) {
     throw new Error(`Failed to delete action: ${error.message}`);

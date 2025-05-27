@@ -17,7 +17,7 @@ export async function callAIModel(
     system: buildSystemMessage(userConfig),
     tools: {
       ...(await getToolsFromActions(chatbotId)),
-      search_knowledge_base: createSearchKnowledgeBaseTool(),
+      search_knowledge_base: createSearchKnowledgeBaseTool(chatbotId),
     },
     maxSteps: 5,
     onError: async (event) => {

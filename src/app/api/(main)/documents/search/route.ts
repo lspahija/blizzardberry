@@ -1,11 +1,21 @@
 import { NextResponse } from 'next/server';
 import { similaritySearch } from '@/app/api/lib/embedding';
+import { authChatbot } from '@/app/api/lib/chatbotAuth';
+import { auth } from '@/lib/auth';
 
 export async function POST(req: Request) {
   try {
-    const { query, topK = 3 } = await req.json();
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    const groupedResults = await similaritySearch(query, topK);
+    const { query, topK = 3, chatbotId } = await req.json();
+
+    const authResponse = await authChatbot(session.user.id, chatbotId);
+    if (authResponse) return authResponse;
+
+    const groupedResults = await similaritySearch(query, topK, chatbotId);
 
     return NextResponse.json({ results: groupedResults }, { status: 200 });
   } catch (error) {
