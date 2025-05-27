@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { similaritySearch } from '@/app/api/lib/embedding';
-import { authChatbot } from '@/app/api/lib/chatbotAuth';
+import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
 import { auth } from '@/lib/auth';
 
 export async function POST(req: Request) {
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
     const { query, topK = 3, chatbotId } = await req.json();
 
-    const authResponse = await authChatbot(session.user.id, chatbotId);
+    const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 
     const groupedResults = await similaritySearch(query, topK, chatbotId);

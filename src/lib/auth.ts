@@ -10,9 +10,3 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     secret: process.env.SUPABASE_SERVICE_ROLE_KEY,
   }),
 });
-
-export { auth as middleware };
-
-export const config = {
-  matcher: ['/dashboard'], // TODO: Update this to match protected routes
-};

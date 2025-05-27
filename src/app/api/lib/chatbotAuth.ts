@@ -1,7 +1,7 @@
 import { supabaseClient } from '@/app/api/lib/supabase';
 import { NextResponse } from 'next/server';
 
-export async function authChatbot(userId: string, chatbotId: string) {
+export async function chatbotAuth(userId: string, chatbotId: string) {
   const { data: chatbot, error: chatbotError } = await supabaseClient
     .from('chatbots')
     .select('id, created_by')

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Action } from '@/app/api/lib/model/action/baseAction';
 import { auth } from '@/lib/auth';
-import { authChatbot } from '@/app/api/lib/chatbotAuth';
+import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
 import { createAction, getActions } from '@/app/api/lib/actionStore';
 
 export async function GET(
@@ -16,7 +16,7 @@ export async function GET(
 
     const { chatbotId } = await params;
 
-    const authResponse = await authChatbot(session.user.id, chatbotId);
+    const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 
     const actions = await getActions(chatbotId);
@@ -43,7 +43,7 @@ export async function POST(
 
     const { chatbotId } = await params;
 
-    const authResponse = await authChatbot(session.user.id, chatbotId);
+    const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 
     const action: Action = await req.json();

@@ -15,6 +15,7 @@ import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
 import { use } from 'react';
 import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
+import { Document } from '@/app/api/lib/model/document/document';
 
 export default function ChatbotDetails({
   params: paramsPromise,
@@ -24,9 +25,10 @@ export default function ChatbotDetails({
   const params = use(paramsPromise);
   const [chatbot, setChatbot] = useState<Chatbot | null>(null);
   const [actions, setActions] = useState<Action[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [loadingChatbot, setLoadingChatbot] = useState(true);
   const [loadingActions, setLoadingActions] = useState(true);
-  const router = useRouter();
+  const [loadingDocuments, setLoadingDocuments] = useState(true);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -68,7 +70,7 @@ export default function ChatbotDetails({
           throw new Error('Failed to fetch actions');
         }
         const data = await response.json();
-        setActions(data.actions || []); // Expecting { actions: Action[] }
+        setActions(data.actions || []);
       } catch (error) {
         console.error(
           `Error fetching actions for chatbot ${params.chatbotId}:`,
@@ -80,6 +82,35 @@ export default function ChatbotDetails({
     }
 
     fetchActions();
+  }, [params.chatbotId]);
+
+  // Fetch documents for the chatbot
+  useEffect(() => {
+    async function fetchDocuments() {
+      try {
+        const response = await fetch(`/api/documents/list`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ chatbotId: params.chatbotId }),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch documents');
+        }
+        const data = await response.json();
+        setDocuments(data.documents || []);
+      } catch (error) {
+        console.error(
+          `Error fetching documents for chatbot ${params.chatbotId}:`,
+          error
+        );
+      } finally {
+        setLoadingDocuments(false);
+      }
+    }
+
+    fetchDocuments();
   }, [params.chatbotId]);
 
   if (loadingChatbot) {
@@ -178,7 +209,7 @@ export default function ChatbotDetails({
             No actions found. Create one to get started!
           </p>
         ) : (
-          <Card className="border-[3px] border-gray-900 bg-[#FFFDF8]">
+          <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-6">
             <CardHeader>
               <CardTitle className="text-xl font-bold text-gray-900">
                 Actions
@@ -216,6 +247,50 @@ export default function ChatbotDetails({
                             )
                             .join(', ')
                         : 'None'}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
+
+        {loadingDocuments ? (
+          <div className="flex justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+          </div>
+        ) : documents.length === 0 ? (
+          <p className="text-gray-600 text-lg">
+            No documents found. Add one to get started!
+          </p>
+        ) : (
+          <Card className="border-[3px] border-gray-900 bg-[#FFFDF8]">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold text-gray-900">
+                Documents
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-4">
+                {documents.map((doc) => (
+                  <li key={doc.id} className="border-t pt-2">
+                    <p className="font-medium text-gray-900">
+                      Document ID: {doc.parent_document_id || doc.id}
+                    </p>
+                    <p className="text-gray-600">
+                      Content:{' '}
+                      {doc.content.length > 100
+                        ? `${doc.content.substring(0, 100)}...`
+                        : doc.content}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Chunk IDs: {doc.chunk_ids.join(', ')}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Metadata:{' '}
+                      {Object.entries(doc.metadata)
+                        .map(([key, value]) => `${key}: ${value}`)
+                        .join(', ')}
                     </p>
                   </li>
                 ))}

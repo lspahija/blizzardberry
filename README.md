@@ -105,7 +105,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # Things to be done
 
 ## Before Launch
-- add a frontend to the RAG pipeline so the app owner can upload documentation
 - test RAG pipeline with big documents and ensure everything works
 - multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
   - Google OAuth

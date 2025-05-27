@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { vectorStore } from '@/app/api/lib/embedding';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { auth } from '@/lib/auth';
-import { authChatbot } from '@/app/api/lib/chatbotAuth';
+import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
 
 export async function POST(request: Request) {
   try {
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
     const { text, metadata, chatbotId } = await request.json();
 
-    const authResponse = await authChatbot(session.user.id, chatbotId);
+    const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 
     const cleanedText = cleanText(text);
