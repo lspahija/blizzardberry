@@ -124,6 +124,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - [post on HN](https://x.com/marc_louvion/status/1924846419967672829?s=46)
 - [affiliate program](https://x.com/marc_louvion/status/1922271980260331772?s=46)
 - work with [Pieter Levels](https://x.com/levelsio) or other big guys on X and have them push this as their own
+- scour X for the best strategies and threads [like this](https://x.com/johnrushx/status/1927026143196020750)
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
