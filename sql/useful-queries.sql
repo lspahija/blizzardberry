@@ -2,6 +2,9 @@ select * from chatbots;
 select * from actions;
 select * from documents;
 
+select * from next_auth.accounts;
+select * from next_auth.users;
+
 
 delete FROM chatbots;
 delete from actions;

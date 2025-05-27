@@ -37,6 +37,13 @@ export default function NewChatbotPage() {
     visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
   };
 
+  const scriptSnippet = `<Script
+  id="omni-interface-chatbot"
+  src="https://omni-interface.com/chatbot.js"
+  strategy="afterInteractive"
+  data-chatbot-id="${chatbotId}"
+/>`;
+
   const handleCreateChatbot = async () => {
     try {
       const response = await fetch('/api/chatbots', {
@@ -62,14 +69,7 @@ export default function NewChatbotPage() {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(
-      `<script
-        id="omni-interface-chatbot"
-        src="https://omni-interface.com/chatbot.js"
-        strategy="afterInteractive"
-        data-chatbot-id="${chatbotId}"
-      ></script>`
-    );
+    navigator.clipboard.writeText(scriptSnippet);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -140,12 +140,7 @@ export default function NewChatbotPage() {
                             backgroundColor: '#1a1a1a',
                           }}
                         >
-                          {`<script
-  id="omni-interface-chatbot"
-  src="https://omni-interface.com/chatbot.js"
-  strategy="afterInteractive"
-  data-chatbot-id="${chatbotId}"
-></script>`}
+                          {scriptSnippet}
                         </SyntaxHighlighter>
                         <Button
                           onClick={handleCopy}
