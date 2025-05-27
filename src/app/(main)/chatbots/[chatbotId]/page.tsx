@@ -142,7 +142,7 @@ export default function ChatbotDetails({
           </CardContent>
         </Card>
 
-        <div className="mb-6">
+        <div className="mb-6 flex space-x-4">
           <Button
             asChild
             className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
@@ -153,6 +153,18 @@ export default function ChatbotDetails({
             >
               <PlusCircle className="mr-2 h-5 w-5" />
               Create New Action
+            </Link>
+          </Button>
+          <Button
+            asChild
+            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+          >
+            <Link
+              href={`/chatbots/${params.chatbotId}/documents/new`}
+              className="flex items-center"
+            >
+              <PlusCircle className="mr-2 h-5 w-5" />
+              Add New Document
             </Link>
           </Button>
         </div>

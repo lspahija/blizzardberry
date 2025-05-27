@@ -32,21 +32,18 @@ create table actions
 CREATE TABLE documents
 (
     id                 UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    parent_document_id UUID, -- Links chunks to parent document
     content            TEXT NOT NULL,
     metadata           JSONB,
     embedding          HALFVEC(3072)
 );
 
 CREATE INDEX documents_embedding_idx ON documents USING hnsw (embedding halfvec_cosine_ops);
-CREATE INDEX documents_parent_id_idx ON documents (parent_document_id);
 CREATE INDEX documents_metadata_author_idx ON documents ((metadata ->> 'chatbotId'));
 
 CREATE OR REPLACE FUNCTION search_documents(filter JSONB, match_count INTEGER, query_embedding HALFVEC(3072))
     RETURNS TABLE
             (
                 id                 UUID,
-                parent_document_id UUID,
                 content            TEXT,
                 metadata           JSONB,
                 similarity         FLOAT
@@ -56,7 +53,6 @@ $$
 BEGIN
     RETURN QUERY
         SELECT d.id,
-               d.parent_document_id,
                d.content,
                d.metadata,
                (1 - (d.embedding <-> query_embedding)) AS similarity
