@@ -113,7 +113,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   - GitHub OAuth
     - [create prod OAuth app](https://github.com/settings/developers)
   - enable magic links for sign in because this is B2B and employees might not be able to sign in with github account or google account
-- In frontend example, show that an existing function reference can just be passed in. The user doesn't need to define a new lambda.
 - polish the user onboarding experience. All the forms needs to work flawlessly and be easy to use.
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
