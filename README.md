@@ -106,13 +106,13 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
     - [create new client](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7tQ&project=ufcalarm-b270d)
   - GitHub OAuth
     - [create prod OAuth app](https://github.com/settings/developers)
-  - enable magic links for sign in because this is B2B and employees might not be able to sign in with github account or google account. try resend first. https://authjs.dev/getting-started/authentication/email Postmark seems best but not free tier
+  - enable [magic links](https://authjs.dev/getting-started/authentication/email) for sign in because this is B2B and employees might not be able to sign in with github account or google account. try resend first. [Dealing with issues](https://www.reddit.com/r/Supabase/comments/1d8lz8d/emails_with_resend_still_going_to_spam/) Postmark seems best but not free tier
 - polish the user onboarding experience. All the forms needs to work flawlessly and be easy to use.
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
 - [finish onboarding](#posthog) PostHog for analytics
 - landing page needs to sell the product well!
-- rename and get domain! - LOTR word like palantir or anduril? - https://grok.com/chat/03fc9ac4-d47b-4012-8b6c-63f2d1affb87
+- rename and get domain! - LOTR word like palantir or anduril? - https://grok.com/share/bGVnYWN5_eede228a-6894-4a8f-9025-dff5bc7ed106 - a couple good free ones so far are anduvion, numendil, silmarind
 - deploy to vercel
 - dogfood the product. Our app needs to have a chatbot integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 
