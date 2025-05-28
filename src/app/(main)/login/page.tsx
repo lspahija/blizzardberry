@@ -9,6 +9,9 @@ import { Loader2 } from 'lucide-react';
 export default function LoginPage() {
   const [isGitHubLoading, setIsGitHubLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isResendLoading, setIsResendLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -24,21 +27,50 @@ export default function LoginPage() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
+  const errorVariants = {
+    hidden: { opacity: 0, height: 0 },
+    visible: { opacity: 1, height: 'auto', transition: { duration: 0.3 } },
+  };
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleGitHubSignIn = async () => {
     setIsGitHubLoading(true);
+    setError('');
     try {
       await signIn('github', { redirectTo: '/dashboard' });
     } catch (error) {
       setIsGitHubLoading(false);
+      setError('Failed to sign in with GitHub. Please try again.');
     }
   };
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
+    setError('');
     try {
       await signIn('google', { redirectTo: '/dashboard' });
     } catch (error) {
       setIsGoogleLoading(false);
+      setError('Failed to sign in with Google. Please try again.');
+    }
+  };
+
+  const handleResendSignIn = async () => {
+    setError('');
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    setIsResendLoading(true);
+    try {
+      await signIn('resend', { email, redirectTo: '/dashboard' });
+    } catch (error) {
+      setIsResendLoading(false);
+      setError('Failed to send sign-in email. Please try again.');
     }
   };
 
@@ -63,13 +95,23 @@ export default function LoginPage() {
           Choose your preferred method to sign in and get started.
         </motion.p>
         <motion.div className="flex flex-col space-y-4" variants={itemVariants}>
+          {error && (
+            <motion.div
+              className="text-red-600 text-sm"
+              variants={errorVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {error}
+            </motion.div>
+          )}
           <div className="relative">
             <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
             <Button
               size="lg"
               className="relative w-full bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
               onClick={handleGitHubSignIn}
-              disabled={isGitHubLoading || isGoogleLoading}
+              disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
             >
               <div className="flex items-center">
                 {isGitHubLoading ? (
@@ -97,7 +139,7 @@ export default function LoginPage() {
               size="lg"
               className="relative w-full bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
               onClick={handleGoogleSignIn}
-              disabled={isGitHubLoading || isGoogleLoading}
+              disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
             >
               <div className="flex items-center">
                 {isGoogleLoading ? (
@@ -118,6 +160,54 @@ export default function LoginPage() {
                 </span>
               </div>
             </Button>
+          </div>
+          <div className="relative">
+            <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
+            <div className="relative w-full bg-[#FFFDF8] border-[3px] border-gray-900 rounded p-4 flex flex-col space-y-4">
+              <input
+                type="email"
+                id="email-resend"
+                name="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setError('');
+                }}
+                placeholder="Enter your email"
+                className="w-full px-3 py-2 text-gray-900 bg-[#FFFDF8] border-[2px] border-gray-900 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
+                disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
+              />
+              <Button
+                size="lg"
+                className="w-full bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
+                onClick={handleResendSignIn}
+                disabled={
+                  isGitHubLoading ||
+                  isGoogleLoading ||
+                  isResendLoading ||
+                  !email
+                }
+              >
+                <div className="flex items-center">
+                  {isResendLoading ? (
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  ) : (
+                    <svg
+                      role="img"
+                      className="w-5 h-5 mr-2"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" />
+                    </svg>
+                  )}
+                  <span>
+                    {isResendLoading ? 'Sending...' : 'Sign in with Email'}
+                  </span>
+                </div>
+              </Button>
+            </div>
           </div>
         </motion.div>
       </motion.div>

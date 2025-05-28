@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth';
 import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
 import { supabaseClient } from '@/app/api/lib/supabase';
 

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Action } from '@/app/api/lib/model/action/baseAction';
-import { auth } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth';
 import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
 import { createAction, getActions } from '@/app/api/lib/actionStore';
 

@@ -3,7 +3,7 @@ import { Document } from '@langchain/core/documents';
 import { v4 as uuidv4 } from 'uuid';
 import { vectorStore } from '@/app/api/lib/embedding';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
-import { auth } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth';
 import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
 
 export async function POST(request: Request) {

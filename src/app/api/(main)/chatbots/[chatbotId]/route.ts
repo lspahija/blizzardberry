@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseClient } from '@/app/api/lib/supabase';
-import { auth } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth';
 import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
 
 export async function GET(
