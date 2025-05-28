@@ -87,26 +87,39 @@ export default function NewActionPage() {
   const [apiUrl, setApiUrl] = useState('');
   const [apiMethod, setApiMethod] = useState('GET');
   const [headers, setHeaders] = useState<Header[]>([{ key: '', value: '' }]);
-  const [apiBody, setApiBody] = useState(
-    JSON.stringify(
-      {
-        example: '{{value}}',
-        array: ['{{item1}}', '{{item2}}'],
-        nested: { key: '{{value}}' },
-      },
-      null,
-      2
-    )
+  const [isEditorInteracted, setIsEditorInteracted] = useState(false);
+
+  const placeholderJSON = JSON.stringify(
+    {
+      example: '{{value}}',
+      array: ['{{item1}}', '{{item2}}'],
+      nested: { key: '{{value}}' },
+    },
+    null,
+    2
   );
+
+  const [apiBody, setApiBody] = useState(placeholderJSON);
   const [functionName, setFunctionName] = useState('');
   const [activeTab, setActiveTab] = useState('headers');
 
+  const handleEditorChange = (value: string | undefined) => {
+    if (!isEditorInteracted && value !== placeholderJSON) {
+      // Clear placeholder on first interaction
+      setIsEditorInteracted(true);
+      setApiBody(value || '');
+    } else {
+      // Update with user input
+      setApiBody(value || '');
+    }
+  };
+
   const getInputNames = (withBraces = false) => {
     const names = dataInputs
-      .map(input => input.name)
-      .filter(name => name !== '');
-    
-    return withBraces ? names.map(name => `{{${name}}}`) : names;
+      .map((input) => input.name)
+      .filter((name) => name !== '');
+
+    return withBraces ? names.map((name) => `{{${name}}}`) : names;
   };
 
   const commonHeaderKeys = [
@@ -115,34 +128,6 @@ export default function NewActionPage() {
     'Accept',
     'X-API-Key',
   ];
-
-  const getUsedVariables = () => {
-    const usedVars = new Set<string>();
-    
-    dataInputs.forEach(input => {
-      if (input.name && apiUrl.includes(`{{${input.name}}}`)) {
-        usedVars.add(input.name);
-      }
-    });
-
-    headers.forEach(header => {
-      dataInputs.forEach(input => {
-        if (input.name && header.value.includes(`{{${input.name}}}`)) {
-          usedVars.add(input.name);
-        }
-      });
-    });
-
-    if (apiBody) {
-      dataInputs.forEach(input => {
-        if (input.name && apiBody.includes(`{{${input.name}}}`)) {
-          usedVars.add(input.name);
-        }
-      });
-    }
-
-    return usedVars;
-  };
 
   useEffect(() => {
     const stepParam = searchParams.get('step');
@@ -402,13 +387,13 @@ export default function NewActionPage() {
         };
 
         return {
-          suggestions: getInputNames(true).map(name => ({
+          suggestions: getInputNames(true).map((name) => ({
             label: name,
             kind: monaco.languages.CompletionItemKind.Variable,
             documentation: `Variable`,
             insertText: `"${name}"`,
-            range
-          }))
+            range,
+          })),
         };
       },
     });
@@ -722,21 +707,24 @@ export default function NewActionPage() {
                             </Label>
                             <div className="mt-1.5 max-h-[100px] overflow-y-auto">
                               <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-1">
-                                {dataInputs.filter(input => input.name).map((input, index) => {
-                                  const isUsed = getUsedVariables().has(input.name);
-                                  return (
-                                    <div 
-                                      key={index} 
-                                      className={cn(
-                                        "bg-[#FFFDF8] px-2 py-1 border border-gray-200 rounded whitespace-nowrap",
-                                        isUsed && "opacity-50"
-                                      )}
-                                    >
-                                      <div className="font-mono text-xs text-gray-900">{`{{${input.name}}}`}</div>
-                                      <div className="text-[10px] text-gray-500 font-medium">{input.type}{input.isArray ? '[]' : ''}</div>
-                                    </div>
-                                  );
-                                })}
+                                {dataInputs
+                                  .filter((input) => input.name)
+                                  .map((input, index) => {
+                                    return (
+                                      <div
+                                        key={index}
+                                        className={cn(
+                                          'bg-[#FFFDF8] px-2 py-1 border border-gray-200 rounded whitespace-nowrap'
+                                        )}
+                                      >
+                                        <div className="font-mono text-xs text-gray-900">{`{{${input.name}}}`}</div>
+                                        <div className="text-[10px] text-gray-500 font-medium">
+                                          {input.type}
+                                          {input.isArray ? '[]' : ''}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
                               </div>
                             </div>
                           </div>
@@ -807,8 +795,12 @@ export default function NewActionPage() {
                                   <SuggestInput
                                     id={`headerKey${index}`}
                                     value={header.key}
-                                    onChange={(e) => updateHeader(index, 'key', e.target.value)}
-                                    onSelect={(val) => updateHeader(index, 'key', val)} // Optional: apply when selected
+                                    onChange={(e) =>
+                                      updateHeader(index, 'key', e.target.value)
+                                    }
+                                    onSelect={(val) =>
+                                      updateHeader(index, 'key', val)
+                                    } // Optional: apply when selected
                                     suggestions={commonHeaderKeys}
                                     placeholder="Authorization"
                                     inputClassName="border-[2px] border-gray-900"
@@ -822,7 +814,13 @@ export default function NewActionPage() {
                                   <SuggestInput
                                     id={`headerValue${index}`}
                                     value={header.value}
-                                    onChange={(e) => updateHeader(index, 'value', e.target.value)}
+                                    onChange={(e) =>
+                                      updateHeader(
+                                        index,
+                                        'value',
+                                        e.target.value
+                                      )
+                                    }
                                     suggestions={getInputNames(true)}
                                     placeholder="Bearer {{token}}"
                                     inputClassName="border-[2px] border-gray-900"
@@ -859,7 +857,7 @@ export default function NewActionPage() {
                                 height="200px"
                                 defaultLanguage="json"
                                 value={apiBody}
-                                onChange={(value) => setApiBody(value || '')}
+                                onChange={handleEditorChange} // Use the new handler
                                 beforeMount={handleEditorWillMount}
                                 onMount={(editor) => {
                                   editor.updateOptions({
@@ -872,6 +870,16 @@ export default function NewActionPage() {
                                       preview: true,
                                       showProperties: false,
                                     },
+                                  });
+                                  // Clear placeholder on focus
+                                  editor.onDidFocusEditorText(() => {
+                                    if (
+                                      !isEditorInteracted &&
+                                      apiBody === placeholderJSON
+                                    ) {
+                                      setIsEditorInteracted(true);
+                                      setApiBody('');
+                                    }
                                   });
                                   requestAnimationFrame(() => editor.layout());
                                 }}
