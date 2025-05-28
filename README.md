@@ -100,13 +100,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Before Launch
 - test RAG pipeline with big documents and ensure everything works
-- multi-tenancy - [next.js auth with supabase adapter](https://authjs.dev/getting-started/adapters/supabase) with OAuth and row-level tenancy. keep it simple
-  - Google OAuth
-    - [publish app](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7rg&project=ufcalarm-b270d)
-    - [create new client](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7tQ&project=ufcalarm-b270d)
-  - GitHub OAuth
-    - [create prod OAuth app](https://github.com/settings/developers)
-  - enable [magic links](https://authjs.dev/getting-started/authentication/email) for sign in because this is B2B and employees might not be able to sign in with github account or google account. try resend first. [Dealing with issues](https://www.reddit.com/r/Supabase/comments/1d8lz8d/emails_with_resend_still_going_to_spam/) Postmark seems best but not free tier
 - polish the user onboarding experience. All the forms needs to work flawlessly and be easy to use.
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
@@ -115,6 +108,12 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - add easy to use feedback form so users can report bugs and request features. make it easy for users to talk to us.
 - rename and get domain! - LOTR word like palantir or anduril? - https://grok.com/share/bGVnYWN5_eede228a-6894-4a8f-9025-dff5bc7ed106 - a couple good free ones so far are anduvion, numendil, silmarind, celendil, eryndil
 - deploy to vercel
+- finish multi-tenancy config
+  - Google OAuth
+      - [publish app](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7rg&project=ufcalarm-b270d)
+      - [create new client](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7tQ&project=ufcalarm-b270d)
+  - GitHub OAuth
+      - [create prod OAuth app](https://github.com/settings/developers)
 - dogfood the product. Our app needs to have a chatbot integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 
 ## Launch and Sell! 
@@ -177,6 +176,9 @@ The website design is based on this: https://gitingest.com/
 
 
 # Notes
+
+### auth magic link email
+[Dealing with resend issues](https://www.reddit.com/r/Supabase/comments/1d8lz8d/emails_with_resend_still_going_to_spam/) Postmark seems best but no free tier
 
 ### PostHog
 
