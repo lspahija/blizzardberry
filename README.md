@@ -112,6 +112,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
 - [finish onboarding](#posthog) PostHog for analytics
 - landing page needs to sell the product well!
+- add easy to use feedback form so users can report bugs and request features. make it easy for users to talk to us.
 - rename and get domain! - LOTR word like palantir or anduril? - https://grok.com/share/bGVnYWN5_eede228a-6894-4a8f-9025-dff5bc7ed106 - a couple good free ones so far are anduvion, numendil, silmarind, celendil, eryndil
 - deploy to vercel
 - dogfood the product. Our app needs to have a chatbot integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
