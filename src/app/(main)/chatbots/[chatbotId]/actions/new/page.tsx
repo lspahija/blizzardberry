@@ -13,12 +13,14 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Save, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Save, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Editor from '@monaco-editor/react';
+import { SuggestInput } from '@/components/ui/suggest-input';
+import { cn } from '@/lib/utils';
 import {
   Action,
   BaseAction,
@@ -85,19 +87,47 @@ export default function NewActionPage() {
   const [apiUrl, setApiUrl] = useState('');
   const [apiMethod, setApiMethod] = useState('GET');
   const [headers, setHeaders] = useState<Header[]>([{ key: '', value: '' }]);
-  const [apiBody, setApiBody] = useState(
-    JSON.stringify(
-      {
-        example: '{{value}}',
-        array: ['{{item1}}', '{{item2}}'],
-        nested: { key: '{{value}}' },
-      },
-      null,
-      2
-    )
+  const [isEditorInteracted, setIsEditorInteracted] = useState(false);
+
+  const placeholderJSON = JSON.stringify(
+    {
+      example: '{{value}}',
+      array: ['{{item1}}', '{{item2}}'],
+      nested: { key: '{{value}}' },
+    },
+    null,
+    2
   );
+
+  const [apiBody, setApiBody] = useState(placeholderJSON);
   const [functionName, setFunctionName] = useState('');
   const [activeTab, setActiveTab] = useState('headers');
+
+  const handleEditorChange = (value: string | undefined) => {
+    if (!isEditorInteracted && value !== placeholderJSON) {
+      // Clear placeholder on first interaction
+      setIsEditorInteracted(true);
+      setApiBody(value || '');
+    } else {
+      // Update with user input
+      setApiBody(value || '');
+    }
+  };
+
+  const getInputNames = (withBraces = false) => {
+    const names = dataInputs
+      .map((input) => input.name)
+      .filter((name) => name !== '');
+
+    return withBraces ? names.map((name) => `{{${name}}}`) : names;
+  };
+
+  const commonHeaderKeys = [
+    'Authorization',
+    'Content-Type',
+    'Accept',
+    'X-API-Key',
+  ];
 
   useEffect(() => {
     const stepParam = searchParams.get('step');
@@ -357,15 +387,13 @@ export default function NewActionPage() {
         };
 
         return {
-          suggestions: dataInputs
-            .filter((input) => input.name)
-            .map((input) => ({
-              label: `{{${input.name}}}`,
-              kind: monaco.languages.CompletionItemKind.Variable,
-              documentation: `${input.type}${input.isArray ? '[]' : ''}`,
-              insertText: `"{{${input.name}}}"`,
-              range,
-            })),
+          suggestions: getInputNames(true).map((name) => ({
+            label: name,
+            kind: monaco.languages.CompletionItemKind.Variable,
+            documentation: `Variable`,
+            insertText: `"${name}"`,
+            range,
+          })),
         };
       },
     });
@@ -659,14 +687,6 @@ export default function NewActionPage() {
                       ? 'API Request'
                       : 'Client Action Configuration'}
                   </CardTitle>
-                  <Button
-                    variant="outline"
-                    className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
-                    onClick={handleBack}
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back
-                  </Button>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {baseAction.executionContext === ExecutionContext.SERVER ? (
@@ -689,18 +709,22 @@ export default function NewActionPage() {
                               <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-1">
                                 {dataInputs
                                   .filter((input) => input.name)
-                                  .map((input, index) => (
-                                    <div
-                                      key={index}
-                                      className="bg-[#FFFDF8] px-2 py-1 border border-gray-200 rounded whitespace-nowrap"
-                                    >
-                                      <div className="font-mono text-xs text-gray-900">{`{{${input.name}}}`}</div>
-                                      <div className="text-[10px] text-gray-500 font-medium">
-                                        {input.type}
-                                        {input.isArray ? '[]' : ''}
+                                  .map((input, index) => {
+                                    return (
+                                      <div
+                                        key={index}
+                                        className={cn(
+                                          'bg-[#FFFDF8] px-2 py-1 border border-gray-200 rounded whitespace-nowrap'
+                                        )}
+                                      >
+                                        <div className="font-mono text-xs text-gray-900">{`{{${input.name}}}`}</div>
+                                        <div className="text-[10px] text-gray-500 font-medium">
+                                          {input.type}
+                                          {input.isArray ? '[]' : ''}
+                                        </div>
                                       </div>
-                                    </div>
-                                  ))}
+                                    );
+                                  })}
                               </div>
                             </div>
                           </div>
@@ -725,12 +749,14 @@ export default function NewActionPage() {
                           </div>
                           <div>
                             <Label htmlFor="apiUrl">HTTPS URL</Label>
-                            <Input
+                            <SuggestInput
                               id="apiUrl"
                               value={apiUrl}
                               onChange={(e) => setApiUrl(e.target.value)}
+                              suggestions={getInputNames(true)}
                               placeholder="https://wttr.in/{{city}}?format=j1"
-                              className="mt-2 border-[2px] border-gray-900"
+                              inputClassName="border-[2px] border-gray-900"
+                              matchMode="full"
                             />
                           </div>
                         </div>
@@ -766,21 +792,26 @@ export default function NewActionPage() {
                                   <Label htmlFor={`headerKey${index}`}>
                                     Key
                                   </Label>
-                                  <Input
+                                  <SuggestInput
                                     id={`headerKey${index}`}
                                     value={header.key}
                                     onChange={(e) =>
                                       updateHeader(index, 'key', e.target.value)
                                     }
+                                    onSelect={(val) =>
+                                      updateHeader(index, 'key', val)
+                                    } // Optional: apply when selected
+                                    suggestions={commonHeaderKeys}
                                     placeholder="Authorization"
-                                    className="mt-2 border-[2px] border-gray-900"
+                                    inputClassName="border-[2px] border-gray-900"
+                                    matchMode="word"
                                   />
                                 </div>
                                 <div>
                                   <Label htmlFor={`headerValue${index}`}>
                                     Value
                                   </Label>
-                                  <Input
+                                  <SuggestInput
                                     id={`headerValue${index}`}
                                     value={header.value}
                                     onChange={(e) =>
@@ -790,8 +821,10 @@ export default function NewActionPage() {
                                         e.target.value
                                       )
                                     }
+                                    suggestions={getInputNames(true)}
                                     placeholder="Bearer {{token}}"
-                                    className="mt-2 border-[2px] border-gray-900"
+                                    inputClassName="border-[2px] border-gray-900"
+                                    matchMode="word"
                                   />
                                 </div>
                                 <div>
@@ -824,7 +857,7 @@ export default function NewActionPage() {
                                 height="200px"
                                 defaultLanguage="json"
                                 value={apiBody}
-                                onChange={(value) => setApiBody(value || '')}
+                                onChange={handleEditorChange} // Use the new handler
                                 beforeMount={handleEditorWillMount}
                                 onMount={(editor) => {
                                   editor.updateOptions({
@@ -837,6 +870,16 @@ export default function NewActionPage() {
                                       preview: true,
                                       showProperties: false,
                                     },
+                                  });
+                                  // Clear placeholder on focus
+                                  editor.onDidFocusEditorText(() => {
+                                    if (
+                                      !isEditorInteracted &&
+                                      apiBody === placeholderJSON
+                                    ) {
+                                      setIsEditorInteracted(true);
+                                      setApiBody('');
+                                    }
                                   });
                                   requestAnimationFrame(() => editor.layout());
                                 }}
