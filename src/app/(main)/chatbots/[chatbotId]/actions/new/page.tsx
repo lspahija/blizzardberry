@@ -19,7 +19,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Editor from '@monaco-editor/react';
-import { Combobox } from '@/components/ui/combobox';
+import { SuggestInput } from '@/components/ui/suggest-input';
 import { cn } from '@/lib/utils';
 import {
   Action,
@@ -761,7 +761,7 @@ export default function NewActionPage() {
                           </div>
                           <div>
                             <Label htmlFor="apiUrl">HTTPS URL</Label>
-                            <Combobox
+                            <SuggestInput
                               id="apiUrl"
                               value={apiUrl}
                               onChange={(e) => setApiUrl(e.target.value)}
@@ -825,7 +825,7 @@ export default function NewActionPage() {
                                   <Label htmlFor={`headerValue${index}`}>
                                     Value
                                   </Label>
-                                  <Combobox
+                                  <SuggestInput
                                     id={`headerValue${index}`}
                                     value={header.value}
                                     onChange={(e) => updateHeader(index, 'value', e.target.value)}
