@@ -804,21 +804,16 @@ export default function NewActionPage() {
                                   <Label htmlFor={`headerKey${index}`}>
                                     Key
                                   </Label>
-                                  <Select
+                                  <SuggestInput
+                                    id={`headerKey${index}`}
                                     value={header.key}
-                                    onValueChange={(value) => updateHeader(index, 'key', value)}
-                                  >
-                                    <SelectTrigger className="mt-2 border-[2px] border-gray-900 w-full">
-                                      <SelectValue placeholder="Select header" />
-                                    </SelectTrigger>
-                                    <SelectContent className="w-[--radix-select-trigger-width] min-w-[240px]">
-                                      {commonHeaderKeys.map((key) => (
-                                        <SelectItem key={key} value={key}>
-                                          {key}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
+                                    onChange={(e) => updateHeader(index, 'key', e.target.value)}
+                                    onSelect={(val) => updateHeader(index, 'key', val)} // Optional: apply when selected
+                                    suggestions={commonHeaderKeys}
+                                    placeholder="Authorization"
+                                    inputClassName="border-[2px] border-gray-900"
+                                    matchMode="word"
+                                  />
                                 </div>
                                 <div>
                                   <Label htmlFor={`headerValue${index}`}>
