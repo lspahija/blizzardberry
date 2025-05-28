@@ -69,29 +69,27 @@ export function SuggestInput({
 
   const handleSelect = (selectedValue: string) => {
     if (!value) return;
-
+  
+    let newValue = value;
+  
     if (matchMode === 'word') {
-      // For headers, replace only the last word
-      const newValue = value.split(' ').slice(0, -1).concat(selectedValue).join(' ');
-      if (onSelect) {
-        onSelect(newValue);
-      } else if (onChange) {
-        onChange({ target: { value: newValue } } as React.ChangeEvent<HTMLInputElement>);
-      }
+      newValue = value.split(' ').slice(0, -1).concat(selectedValue).join(' ');
     } else {
-      // For URLs, replace the last part after a separator
       const parts = value.split(/([/?&=])/);
       parts[parts.length - 1] = selectedValue;
-      const newValue = parts.join('');
-      if (onSelect) {
-        onSelect(newValue);
-      } else if (onChange) {
-        onChange({ target: { value: newValue } } as React.ChangeEvent<HTMLInputElement>);
-      }
+      newValue = parts.join('');
     }
+  
+    if (onSelect) {
+      onSelect(newValue);
+    } else if (onChange) {
+      onChange({ target: { value: newValue } } as React.ChangeEvent<HTMLInputElement>);
+    }
+  
     setOpen(false);
+    inputRef.current?.focus();
   };
-
+  
   return (
     <div className={cn('relative', className)}>
       <Command className="w-full" shouldFilter={false}>
