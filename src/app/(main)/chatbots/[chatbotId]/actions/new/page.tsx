@@ -767,7 +767,6 @@ export default function NewActionPage() {
                               onChange={(e) => setApiUrl(e.target.value)}
                               suggestions={getInputNames(true)}
                               placeholder="https://wttr.in/{{city}}?format=j1"
-                              className="mt-2"
                               inputClassName="border-[2px] border-gray-900"
                               matchMode="full"
                             />
@@ -831,7 +830,6 @@ export default function NewActionPage() {
                                     onChange={(e) => updateHeader(index, 'value', e.target.value)}
                                     suggestions={getInputNames(true)}
                                     placeholder="Bearer {{token}}"
-                                    className="mt-2"
                                     inputClassName="border-[2px] border-gray-900"
                                     matchMode="word"
                                   />

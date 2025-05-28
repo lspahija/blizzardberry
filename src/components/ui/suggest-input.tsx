@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Command as CommandPrimitive } from 'cmdk';
+import { Command, CommandInput, CommandItem, CommandList } from 'cmdk';
 import { cn } from '@/lib/utils';
 
 export interface SuggestInputProps {
@@ -93,48 +93,43 @@ export function SuggestInput({
   };
 
   return (
-    <div className="relative">
-      <div className={cn('relative', className)}>
-        <CommandPrimitive className="relative">
-          <CommandPrimitive.Input
-            ref={inputRef}
-            value={value}
-            onValueChange={(value) => {
-              if (onChange) {
-                onChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>);
-              }
-              setOpen(true);
-            }}
-            className={cn(
-              'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-              'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
-              'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
-              inputClassName
-            )}
-            onFocus={() => setOpen(true)}
-            onBlur={() => {
-              setTimeout(() => setOpen(false), 200);
-            }}
-            {...props}
-          />
-        </CommandPrimitive>
-      </div>
-      {open && filteredSuggestions.length > 0 && (
-        <div className="absolute z-50 mt-1 max-h-40 w-full overflow-auto rounded-md border bg-white py-1 shadow-lg">
-          {filteredSuggestions.map((suggestion, index) => (
-            <div
+    <div className={cn('relative', className)}>
+      <Command className="w-full" shouldFilter={false}>
+        <CommandInput
+          ref={inputRef}
+          value={value}
+          placeholder="Bearer {{token}}"
+          onValueChange={(val) => {
+            if (onChange) {
+              onChange({ target: { value: val } } as React.ChangeEvent<HTMLInputElement>);
+            }
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setTimeout(() => setOpen(false), 200)}
+          className={cn(
+            'mt-2 h-9 w-full rounded-md border-2 border-gray-900 bg-[#fdf1dc] px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+            inputClassName
+          )}
+          {...props}
+        />
+        {open && filteredSuggestions.length > 0 && (
+          <CommandList
+            className="absolute z-50 mt-1 w-full max-h-60 overflow-auto rounded-md border border-gray-900 bg-white shadow-md text-sm p-1"
+          >
+            {filteredSuggestions.map((suggestion, index) => (
+              <CommandItem
               key={index}
-              className="cursor-pointer px-3 py-1.5 text-sm hover:bg-gray-100"
-              onMouseDown={(e) => {
-                e.preventDefault();
-                handleSelect(suggestion);
-              }}
-            >
+              onSelect={() => handleSelect(suggestion)}
+              className="cursor-default select-none px-3 py-1.5 text-sm text-black rounded-sm transition-colors data-[selected=true]:bg-[#fdf1dc] data-[selected=true]:text-black"
+              >
               {suggestion}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-} 
+              </CommandItem>
+            ))}
+          </CommandList>
+        )}
+
+    </Command>
+  </div>
+  )
+}
