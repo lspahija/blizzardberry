@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Command as CommandPrimitive } from 'cmdk';
 import { cn } from '@/lib/utils';
 
-export interface ComboboxProps {
+export interface SuggestInputProps {
   suggestions: string[];
   onSelect?: (value: string) => void;
   value?: string;
@@ -16,7 +16,7 @@ export interface ComboboxProps {
   matchMode?: 'word' | 'full';
 }
 
-export function Combobox({
+export function SuggestInput({
   suggestions,
   onSelect,
   value,
@@ -25,7 +25,7 @@ export function Combobox({
   onChange,
   matchMode = 'word',
   ...props
-}: ComboboxProps) {
+}: SuggestInputProps) {
   const [open, setOpen] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
