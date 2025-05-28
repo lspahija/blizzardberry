@@ -128,7 +128,6 @@ export function SuggestInput({
             ))}
           </CommandList>
         )}
-
     </Command>
   </div>
   )
