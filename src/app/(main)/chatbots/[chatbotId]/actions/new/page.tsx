@@ -591,15 +591,14 @@ export default function NewActionPage() {
                       >
                         <div>
                           <Label htmlFor={`inputName${index}`}>Name</Label>
-                          <Combobox
+                          <Input
                             id={`inputName${index}`}
                             value={input.name}
-                            onChange={(e) => updateDataInput(index, 'name', e.target.value)}
-                            onSelect={(value) => updateDataInput(index, 'name', value)}
-                            suggestions={getInputNames()}
+                            onChange={(e) =>
+                              updateDataInput(index, 'name', e.target.value)
+                            }
                             placeholder="city"
-                            className="mt-2"
-                            inputClassName="border-[2px] border-gray-900"
+                            className="mt-2 border-[2px] border-gray-900"
                           />
                         </div>
                         <div>
@@ -806,16 +805,21 @@ export default function NewActionPage() {
                                   <Label htmlFor={`headerKey${index}`}>
                                     Key
                                   </Label>
-                                  <Combobox
-                                    id={`headerKey${index}`}
+                                  <Select
                                     value={header.key}
-                                    onChange={(e) => updateHeader(index, 'key', e.target.value)}
-                                    suggestions={commonHeaderKeys}
-                                    placeholder="Authorization"
-                                    className="mt-2"
-                                    inputClassName="border-[2px] border-gray-900"
-                                    matchMode="word"
-                                  />
+                                    onValueChange={(value) => updateHeader(index, 'key', value)}
+                                  >
+                                    <SelectTrigger className="mt-2 border-[2px] border-gray-900 w-full">
+                                      <SelectValue placeholder="Select header" />
+                                    </SelectTrigger>
+                                    <SelectContent className="w-[--radix-select-trigger-width] min-w-[240px]">
+                                      {commonHeaderKeys.map((key) => (
+                                        <SelectItem key={key} value={key}>
+                                          {key}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
                                 </div>
                                 <div>
                                   <Label htmlFor={`headerValue${index}`}>
