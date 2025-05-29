@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Command, CommandInput, CommandItem, CommandList } from 'cmdk';
-import { cn } from '@/app/(frontend)/lib/utils';
+import { cn } from '@/app/(frontend)/lib/cssClassNames';
 
 export interface SuggestInputProps {
   suggestions: string[];

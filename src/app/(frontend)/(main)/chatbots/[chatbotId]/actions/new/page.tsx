@@ -33,7 +33,7 @@ import {
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Editor from '@monaco-editor/react';
 import { SuggestInput } from '@/app/(frontend)/components/ui/suggest-input';
-import { cn } from '@/app/(frontend)/lib/utils';
+import { cn } from '@/app/(frontend)/lib/cssClassNames';
 import {
   Action,
   BaseAction,
