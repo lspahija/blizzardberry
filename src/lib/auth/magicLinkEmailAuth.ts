@@ -6,11 +6,6 @@ export async function sendVerificationRequest(
   const { identifier: to, provider, url, theme } = params;
   const { host } = new URL(url);
 
-  // Ensure provider has apiKey and from, as they are required for Resend
-  if (!provider.apiKey || !provider.from) {
-    throw new Error('Resend provider configuration missing apiKey or from');
-  }
-
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {

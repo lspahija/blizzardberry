@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Command, CommandInput, CommandItem, CommandList } from 'cmdk';
-import { cn } from '@/lib/utils';
+import { cn } from '@/app/(frontend)/lib/utils';
 
 export interface SuggestInputProps {
   suggestions: string[];
@@ -69,9 +69,9 @@ export function SuggestInput({
 
   const handleSelect = (selectedValue: string) => {
     if (!value) return;
-  
+
     let newValue = value;
-  
+
     if (matchMode === 'word') {
       newValue = value.split(' ').slice(0, -1).concat(selectedValue).join(' ');
     } else {
@@ -79,17 +79,19 @@ export function SuggestInput({
       parts[parts.length - 1] = selectedValue;
       newValue = parts.join('');
     }
-  
+
     if (onSelect) {
       onSelect(newValue);
     } else if (onChange) {
-      onChange({ target: { value: newValue } } as React.ChangeEvent<HTMLInputElement>);
+      onChange({
+        target: { value: newValue },
+      } as React.ChangeEvent<HTMLInputElement>);
     }
-  
+
     setOpen(false);
     inputRef.current?.focus();
   };
-  
+
   return (
     <div className={cn('relative', className)}>
       <Command className="w-full" shouldFilter={false}>
@@ -99,7 +101,9 @@ export function SuggestInput({
           placeholder="Bearer {{token}}"
           onValueChange={(val) => {
             if (onChange) {
-              onChange({ target: { value: val } } as React.ChangeEvent<HTMLInputElement>);
+              onChange({
+                target: { value: val },
+              } as React.ChangeEvent<HTMLInputElement>);
             }
             setOpen(true);
           }}
@@ -112,21 +116,19 @@ export function SuggestInput({
           {...props}
         />
         {open && filteredSuggestions.length > 0 && (
-          <CommandList
-            className="absolute z-50 mt-1 w-full max-h-60 overflow-auto rounded-md border border-gray-900 bg-white shadow-md text-sm p-1"
-          >
+          <CommandList className="absolute z-50 mt-1 w-full max-h-60 overflow-auto rounded-md border border-gray-900 bg-white shadow-md text-sm p-1">
             {filteredSuggestions.map((suggestion, index) => (
               <CommandItem
-              key={index}
-              onSelect={() => handleSelect(suggestion)}
-              className="cursor-default select-none px-3 py-1.5 text-sm text-black rounded-sm transition-colors data-[selected=true]:bg-[#fdf1dc] data-[selected=true]:text-black"
+                key={index}
+                onSelect={() => handleSelect(suggestion)}
+                className="cursor-default select-none px-3 py-1.5 text-sm text-black rounded-sm transition-colors data-[selected=true]:bg-[#fdf1dc] data-[selected=true]:text-black"
               >
-              {suggestion}
+                {suggestion}
               </CommandItem>
             ))}
           </CommandList>
         )}
-    </Command>
-  </div>
-  )
+      </Command>
+    </div>
+  );
 }
