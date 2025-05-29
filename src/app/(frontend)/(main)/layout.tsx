@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '../globals.css';
-import { PostHogProvider } from '@/app/(frontend)/components/PostHogProvider';
+import { PostHogProvider } from '@/app/(frontend)/components/posthog/PostHogProvider';
 import { SessionProvider } from 'next-auth/react';
 
 const geistSans = Geist({
