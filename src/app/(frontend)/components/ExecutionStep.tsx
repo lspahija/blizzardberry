@@ -358,7 +358,6 @@ export default function ExecutionStep({
                           />
                         </div>
                       </div>
-
                     </div>
                   </TabsContent>
                 </Tabs>
