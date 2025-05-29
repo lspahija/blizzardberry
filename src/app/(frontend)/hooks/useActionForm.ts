@@ -47,17 +47,7 @@ export const useActionForm = () => {
   const [apiUrl, setApiUrl] = useState('');
   const [apiMethod, setApiMethod] = useState('GET');
   const [headers, setHeaders] = useState<Header[]>([{ key: '', value: '' }]);
-  const [apiBody, setApiBody] = useState(
-    JSON.stringify(
-      {
-        example: '{{value}}',
-        array: ['{{item1}}', '{{item2}}'],
-        nested: { key: '{{value}}' },
-      },
-      null,
-      2
-    )
-  );
+  const [apiBody, setApiBody] = useState('');
   const [functionName, setFunctionName] = useState('');
   const [isEditorInteracted, setIsEditorInteracted] = useState(false);
   const [activeTab, setActiveTab] = useState('headers');

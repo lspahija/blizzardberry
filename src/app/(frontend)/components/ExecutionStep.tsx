@@ -79,6 +79,12 @@ const commonHeaderKeys = [
   'X-API-Key',
 ];
 
+const placeholderJSON = `{
+  "example": "{{value}}",
+  "array": ["{{item1}}", "{{item2}}"],
+  "nested": { "key": "{{value}}" }
+}`;
+
 export default function ExecutionStep({
   baseAction,
   dataInputs,
@@ -104,22 +110,13 @@ export default function ExecutionStep({
   };
 
   const handleEditorChange = (value: string | undefined) => {
-    const placeholderJSON = JSON.stringify(
-      {
-        example: '{{value}}',
-        array: ['{{item1}}', '{{item2}}'],
-        nested: { key: '{{value}}' },
-      },
-      null,
-      2
-    );
-    if (!isEditorInteracted && value !== placeholderJSON) {
+    const cleanedValue = value?.trim() || '';
+    if (!isEditorInteracted && cleanedValue !== '') {
       setIsEditorInteracted(true);
-      setApiBody(value || '');
-    } else {
-      setApiBody(value || '');
     }
+    setApiBody(cleanedValue);
   };
+  
 
   const handleEditorWillMount = (monaco) => {
     monaco.editor.defineTheme('customTheme', {
@@ -288,16 +285,11 @@ export default function ExecutionStep({
                       </Label>
                       <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden bg-[#FFF4DA]">
                         <div className="relative">
-                          {!apiBody && (
-                            <div className="absolute z-10 pointer-events-none text-gray-500 italic p-3 whitespace-pre-wrap">
-                              {`{
-  "example": "{{value}}",
-  "array": ["{{item1}}", "{{item2}}"],
-  "nested": { "key": "{{value}}" }
-}`}
-                            </div>
+                          {!apiBody?.trim() && (
+                          <div className="absolute z-10 pointer-events-none text-gray-500 italic p-3 whitespace-pre-wrap">
+                              {placeholderJSON}
+                          </div>
                           )}
-
                           <Editor
                             height="200px"
                             defaultLanguage="json"
@@ -316,26 +308,6 @@ export default function ExecutionStep({
                                   showProperties: false,
                                 },
                               });
-
-                              editor.onDidFocusEditorText(() => {
-                                if (
-                                  !isEditorInteracted &&
-                                  apiBody ===
-                                    JSON.stringify(
-                                      {
-                                        example: '{{value}}',
-                                        array: ['{{item1}}', '{{item2}}'],
-                                        nested: { key: '{{value}}' },
-                                      },
-                                      null,
-                                      2
-                                    )
-                                ) {
-                                  setIsEditorInteracted(true);
-                                  setApiBody('');
-                                }
-                              });
-
                               requestAnimationFrame(() => editor.layout());
                             }}
                             theme="customTheme"
