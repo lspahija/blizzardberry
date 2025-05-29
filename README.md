@@ -99,10 +99,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # Things to be done
 
 ## Before Launch
-- test RAG pipeline with big documents and ensure everything works
-- polish the user onboarding experience. All the forms needs to work flawlessly and be easy to use.
+- test RAG pipeline with big documents and ensure everything works - how does chatbase allow users to add new documents?
+- polish the user onboarding experience. All the forms needs to work well and be easy to use.
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
-- Stripe to sell the product $$ - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
+- onboard Stripe - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
 - [finish onboarding](#posthog) PostHog for analytics
 - landing page needs to sell the product well!
 - add easy to use feedback form so users can report bugs and request features. make it easy for users to talk to us.
@@ -136,12 +136,12 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - [optimize RAG pipeline](#frankies-tips-to-optimize-rag)
 - stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?) (ai-sdk currently only support react, vue, svelte and solid)
 - create SDKs (analogues to chatbot.js) for non-js frontends i.e. desktop and mobile apps written in go, java, etc.
-- add logging, tracing, monitoring so if anything goes wrong anywhere, we can see it
+- add logging, tracing, monitoring so if anything goes wrong anywhere, we can see it - make sure all exceptions users experience are sent to us somehow and reproducing the exception is as easy as possible
 - look through Chatbase's features and add relevant ones. e.g. they have a UI letting their users test the chatbots they created and see if the actions they onboarded work correctly. https://www.chatbase.co/docs/user-guides/chatbot/playground
 
 ## Longer Term Goals (buy maybe pull them in earlier)
 - make the system prompt auto-improve for each app or even each end user. As the user tells the chatbot what they want, the system prompt is updated to include that information. This way, the chatbot can learn and adapt to the user's needs over time. https://youtu.be/WJoZK9sMwvw?si=CTOwYwskX38WDzOO
-- allow user to use voice, the ideal is that they just talk to computer
+- allow user to use voice, the ideal is that they just talk to computer - https://x.com/LinusEkenstam/status/1926890672188952774
 - make the actions MCP-compatible? i.e. turn the actions into an MCP server so that any MCP client can call them.
 - make onboarding a new app as simple as possible
     - automatically pull docs from website during RAG onboarding?
@@ -158,6 +158,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - get advice from silicon valley investors and founders. they have a lot of experience with this
 - raise money from the best silicon valley VCs so they have skin in the game and help us with their experience and network and drive
 - the goal is to get someone on our team that’s super successful in what we’re doing. somebody that’s already done similar things and scaled to unicorn valuation
+- maybe consider selling to IOT smart home companies and users, they are early adopters and already think in the terms of actions
 
 ### Why not just General Agents?
 - AGI isn't here yet. General agents can't figure out how to achieve everything the user wants on a website.
