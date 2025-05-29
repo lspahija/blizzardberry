@@ -1,7 +1,12 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/app/(frontend)/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/app/(frontend)/components/ui/card';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Briefcase, Users, BarChart, Clock } from 'lucide-react';

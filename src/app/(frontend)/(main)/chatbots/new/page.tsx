@@ -1,9 +1,14 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/app/(frontend)/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/app/(frontend)/components/ui/card';
+import { Input } from '@/app/(frontend)/components/ui/input';
+import { Label } from '@/app/(frontend)/components/ui/label';
 import { CheckCircle2, Copy, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';

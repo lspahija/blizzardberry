@@ -1,25 +1,38 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/app/(frontend)/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/app/(frontend)/components/ui/card';
+import { Input } from '@/app/(frontend)/components/ui/input';
+import { Label } from '@/app/(frontend)/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+} from '@/app/(frontend)/components/ui/select';
+import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { motion } from 'framer-motion';
 import { Save, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '@/app/(frontend)/components/ui/radio-group';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/app/(frontend)/components/ui/tabs';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Editor from '@monaco-editor/react';
-import { SuggestInput } from '@/components/ui/suggest-input';
+import { SuggestInput } from '@/app/(frontend)/components/ui/suggest-input';
 import { cn } from '@/lib/utils';
 import {
   Action,

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/app/(frontend)/components/ui/button';
 import { motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';

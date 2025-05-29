@@ -1,10 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/app/(frontend)/components/ui/button';
+import { Card, CardContent } from '@/app/(frontend)/components/ui/card';
+import { Textarea } from '@/app/(frontend)/components/ui/textarea';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '@/app/(frontend)/components/ui/alert';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Copy } from 'lucide-react';
 

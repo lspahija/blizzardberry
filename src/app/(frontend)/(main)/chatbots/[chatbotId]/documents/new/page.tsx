@@ -2,14 +2,19 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/app/(frontend)/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@/app/(frontend)/components/ui/card';
 import { Loader2, ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/app/(frontend)/components/ui/input';
+import { Label } from '@/app/(frontend)/components/ui/label';
+import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { use } from 'react';
 
 interface MetadataField {
