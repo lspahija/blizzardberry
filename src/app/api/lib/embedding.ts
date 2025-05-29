@@ -1,47 +1,66 @@
-import { GoogleGenerativeAIEmbeddings } from '@langchain/google-genai';
-import { SupabaseVectorStore } from '@langchain/community/vectorstores/supabase';
 import { supabaseClient } from '@/app/api/lib/supabase';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-//consider migrating this stuff to Python to take advantage of the Python ecosystem and libs for RAG
-export const vectorStore = new SupabaseVectorStore(
-  new GoogleGenerativeAIEmbeddings({
-    apiKey: process.env.GEMINI_API_KEY,
-    model: 'gemini-embedding-exp-03-07',
-  }),
-  {
-    client: supabaseClient,
-    tableName: 'documents',
-    queryName: 'search_documents',
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const model = genAI.getGenerativeModel({ model: 'gemini-embedding-exp-03-07' });
+
+export async function embedText(text: string): Promise<number[]> {
+  const result = await model.embedContent({
+    content: {
+      role: "user",
+      parts: [{ text }],
+    },
+  });
+
+  const vector = result.embedding?.values;
+
+  if (!vector || vector.length !== 3072) {
+    throw new Error('Invalid Gemini embedding');
   }
-);
+
+  return vector;
+}
+
+export async function embedTextBatch(texts: string[]): Promise<number[][]> {
+  const requests = texts.map(text => ({
+    content: {
+      role: 'user',
+      parts: [{ text }],
+    },
+  }));
+
+  const result = await model.batchEmbedContents({ requests });
+
+  return result.embeddings.map(e => e.values);
+}
 
 export async function similaritySearch(
   query: string,
   k: number,
   chatbotId: string
 ) {
-  // Define the filter to match metadata.chatbotId with the provided chatbotId
-  const filter = { chatbotId };
+  const embedding = await embedText(query);
 
-  // Perform similarity search with score and filter
-  const resultsWithScore = await vectorStore.similaritySearchWithScore(
-    query,
-    k,
-    filter // Pass the filter to restrict results
-  );
+  const { data, error } = await supabaseClient.rpc('search_documents', {
+    query_embedding: embedding,
+    match_count: k,
+    filter: { chatbotId },
+  });
 
-  // Group results by parent_document_id
-  return resultsWithScore.reduce((acc: Record<string, any[]>, [doc, score]) => {
-    const parentId = doc.metadata.parent_document_id || 'no_parent';
-    if (!acc[parentId]) {
-      acc[parentId] = [];
-    }
+  if (error) {
+    console.error('Similarity search error:', error);
+    throw new Error(error.message);
+  }
+
+  return data.reduce((acc: Record<string, any[]>, row: any) => {
+    const parentId = row.metadata?.parent_document_id || 'no_parent';
+    if (!acc[parentId]) acc[parentId] = [];
     acc[parentId].push({
-      id: doc.metadata.id || doc.metadata.document_id || 'unknown', // Fallback ID
-      parent_document_id: doc.metadata.parent_document_id,
-      content: doc.pageContent,
-      metadata: doc.metadata,
-      similarity: score, // Use score from similaritySearchWithScore
+      id: row.id,
+      content: row.content,
+      metadata: row.metadata,
+      similarity: row.similarity,
+      parent_document_id: parentId,
     });
     return acc;
   }, {});

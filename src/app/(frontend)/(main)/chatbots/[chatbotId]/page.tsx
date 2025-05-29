@@ -277,26 +277,34 @@ export default function ChatbotDetails({
             </CardHeader>
             <CardContent>
               <ul className="space-y-4">
-                {documents.map((doc) => (
+                {documents.map((doc, idx) => (
                   <li key={doc.id} className="border-t pt-2">
                     <p className="font-medium text-gray-900">
-                      Document ID: {doc.parent_document_id || doc.id}
+                      Document {idx + 1}
                     </p>
                     <p className="text-gray-600">
-                      Content:{' '}
+                      <span className="font-semibold">Content:</span>{' '}
                       {doc.content.length > 100
                         ? `${doc.content.substring(0, 100)}...`
                         : doc.content}
                     </p>
-                    <p className="text-sm text-gray-500">
-                      Chunk IDs: {doc.chunk_ids.join(', ')}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Metadata:{' '}
-                      {Object.entries(doc.metadata)
-                        .map(([key, value]) => `${key}: ${value}`)
-                        .join(', ')}
-                    </p>
+                    <div className="text-sm text-gray-500">
+                      <span className="font-semibold">Metadata:</span>
+                      <ul>
+                        {Object.entries(doc.metadata)
+                          .filter(([key]) =>
+                            !['loc', 'chatbot_id', 'chunk_index', 'parent_document_id'].includes(key)
+                          )
+                          .map(([key, value]) => (
+                            <li key={key}>
+                              <span className="font-semibold">{key}:</span>{' '}
+                              {typeof value === 'object' && value !== null
+                                ? <pre className="inline">{JSON.stringify(value, null, 2)}</pre>
+                                : String(value)}
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
                   </li>
                 ))}
               </ul>
