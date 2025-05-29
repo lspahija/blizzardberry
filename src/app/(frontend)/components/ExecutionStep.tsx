@@ -286,64 +286,79 @@ export default function ExecutionStep({
                       <Label htmlFor="apiBody" className="text-gray-900">
                         Body
                       </Label>
-                      <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden">
-                        <Editor
-                          height="200px"
-                          defaultLanguage="json"
-                          value={apiBody}
-                          onChange={handleEditorChange}
-                          beforeMount={handleEditorWillMount}
-                          onMount={(editor) => {
-                            editor.updateOptions({
-                              lineNumbers: () => '',
-                              glyphMargin: false,
-                              lineDecorationsWidth: 0,
-                              lineNumbersMinChars: 0,
-                              suggest: {
-                                showWords: false,
-                                preview: true,
-                                showProperties: false,
+                      <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden bg-[#FFF4DA]">
+                        <div className="relative">
+                          {!apiBody && (
+                            <div className="absolute z-10 pointer-events-none text-gray-500 italic p-3 whitespace-pre-wrap">
+                              {`{
+  "example": "{{value}}",
+  "array": ["{{item1}}", "{{item2}}"],
+  "nested": { "key": "{{value}}" }
+}`}
+                            </div>
+                          )}
+
+                          <Editor
+                            height="200px"
+                            defaultLanguage="json"
+                            value={apiBody}
+                            onChange={handleEditorChange}
+                            beforeMount={handleEditorWillMount}
+                            onMount={(editor) => {
+                              editor.updateOptions({
+                                lineNumbers: () => '',
+                                glyphMargin: false,
+                                lineDecorationsWidth: 0,
+                                lineNumbersMinChars: 0,
+                                suggest: {
+                                  showWords: false,
+                                  preview: true,
+                                  showProperties: false,
+                                },
+                              });
+
+                              editor.onDidFocusEditorText(() => {
+                                if (
+                                  !isEditorInteracted &&
+                                  apiBody ===
+                                    JSON.stringify(
+                                      {
+                                        example: '{{value}}',
+                                        array: ['{{item1}}', '{{item2}}'],
+                                        nested: { key: '{{value}}' },
+                                      },
+                                      null,
+                                      2
+                                    )
+                                ) {
+                                  setIsEditorInteracted(true);
+                                  setApiBody('');
+                                }
+                              });
+
+                              requestAnimationFrame(() => editor.layout());
+                            }}
+                            theme="customTheme"
+                            options={{
+                              fontSize: 14,
+                              minimap: { enabled: false },
+                              scrollBeyondLastLine: false,
+                              wordWrap: 'on',
+                              renderLineHighlight: 'none',
+                              scrollbar: {
+                                verticalScrollbarSize: 8,
+                                horizontalScrollbarSize: 8,
                               },
-                            });
-                            editor.onDidFocusEditorText(() => {
-                              if (
-                                !isEditorInteracted &&
-                                apiBody ===
-                                  JSON.stringify(
-                                    {
-                                      example: '{{value}}',
-                                      array: ['{{item1}}', '{{item2}}'],
-                                      nested: { key: '{{value}}' },
-                                    },
-                                    null,
-                                    2
-                                  )
-                              ) {
-                                setIsEditorInteracted(true);
-                                setApiBody('');
-                              }
-                            });
-                            requestAnimationFrame(() => editor.layout());
-                          }}
-                          theme="customTheme"
-                          options={{
-                            fontSize: 14,
-                            minimap: { enabled: false },
-                            scrollBeyondLastLine: false,
-                            wordWrap: 'on',
-                            renderLineHighlight: 'none',
-                            scrollbar: {
-                              verticalScrollbarSize: 8,
-                              horizontalScrollbarSize: 8,
-                            },
-                            padding: { top: 12, bottom: 12, left: 12 } as any,
-                            folding: false,
-                            hideCursorInOverviewRuler: true,
-                            guides: { indentation: false },
-                          }}
-                          className="bg-[#FFF4DA]"
-                        />
+                              padding: { top: 12, bottom: 12, left: 12 } as any,
+                              folding: false,
+                              hideCursorInOverviewRuler: true,
+                              guides: { indentation: false },
+                            }}
+                            className="bg-[#FFF4DA]"
+                          />
+                        </div>
                       </div>
+
                     </div>
                   </TabsContent>
                 </Tabs>
