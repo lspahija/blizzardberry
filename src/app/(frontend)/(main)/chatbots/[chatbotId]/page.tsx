@@ -283,7 +283,7 @@ export default function ChatbotDetails({
                       Document {idx + 1}
                     </p>
                     <p className="text-gray-600">
-                      Content:{' '}
+                      <span className="font-semibold">Content:</span>{' '}
                       {doc.content.length > 100
                         ? `${doc.content.substring(0, 100)}...`
                         : doc.content}
