@@ -80,9 +80,10 @@ const commonHeaderKeys = [
 ];
 
 const placeholderJSON = `{
-  "example": "{{value}}",
-  "array": ["{{item1}}", "{{item2}}"],
-  "nested": { "key": "{{value}}" }
+  "foo": "someStaticValue",
+  "bar": "{{variableValue}}",
+  "baz": ["{{variable1}}", "{{variable2}}"],
+  "qux": { "thud": "{{variable3}}" }
 }`;
 
 export default function ExecutionStep({
@@ -116,7 +117,6 @@ export default function ExecutionStep({
     }
     setApiBody(cleanedValue);
   };
-  
 
   const handleEditorWillMount = (monaco) => {
     monaco.editor.defineTheme('customTheme', {
@@ -286,9 +286,9 @@ export default function ExecutionStep({
                       <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden bg-[#FFF4DA]">
                         <div className="relative">
                           {!apiBody?.trim() && (
-                          <div className="absolute z-10 pointer-events-none text-gray-500 italic p-3 whitespace-pre-wrap">
+                            <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
                               {placeholderJSON}
-                          </div>
+                            </div>
                           )}
                           <Editor
                             height="200px"
