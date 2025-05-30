@@ -483,7 +483,7 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
         </CardContent>
       </Card>
       {uploadedFileName && (
-        <div className="mt-2 text-sm text-green-700 text-center">
+        <div className="mt-2 text-sm text-gray-600 text-center">
           Uploaded: <span className="font-medium">{uploadedFileName}</span>
         </div>
       )}
