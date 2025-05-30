@@ -133,7 +133,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - let the end user see all actions that the chatbot can perform. Make the actions searchable. Expose the thinking tokens if the user chooses to see them.
 - make chatbot design super customizable so app owners can make it look like their app
 - add automated end-to-end test suite so we can introduce new features without breaking existing functionality. Use Playwright for this. [Grok thread](https://grok.com/share/bGVnYWN5_82a58179-e019-4507-a75b-59c398539835)
-- [optimize RAG pipeline](#frankies-tips-to-optimize-rag)
+- [optimize RAG pipeline](#frankies-tips-to-optimize-rag) - I think current best is knowledge graph RAG with [late chunking](https://jina.ai/news/late-chunking-in-long-context-embedding-models/)
 - stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?) (ai-sdk currently only support react, vue, svelte and solid)
 - create SDKs (analogues to chatbot.js) for non-js frontends i.e. desktop and mobile apps written in go, java, etc.
 - add logging, tracing, monitoring so if anything goes wrong anywhere, we can see it - make sure all exceptions users experience are sent to us somehow and reproducing the exception is as easy as possible
