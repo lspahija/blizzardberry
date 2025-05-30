@@ -8,6 +8,8 @@ import {
 import mammoth from 'mammoth';
 import { createWorker } from 'tesseract.js';
 import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
+import type { PDFDocumentProxy } from 'pdfjs-dist';
 
 // Define types
 type TesseractWorker = Awaited<ReturnType<typeof createWorker>>;
@@ -17,6 +19,7 @@ const MAX_FILE_SIZE_MB = 10;
 const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
 const INITIAL_PROCESSING_STATE = { progress: 0, currentPage: 0, totalPages: 0 };
 
+// File type definitions
 const FILE_TYPES = {
   pdf: 'application/pdf',
   docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -84,55 +87,6 @@ function useTesseractWorker() {
   return { workerRef, isInitializing, error, initialize, terminate };
 }
 
-function usePdfJs() {
-  const [pdfjsLib, setPdfjsLib] = React.useState<any>(null);
-  const [error, setError] = React.useState<string | null>(null);
-  const [isInitializing, setIsInitializing] = React.useState(true);
-
-  React.useEffect(() => {
-    const loadPdfjs = async () => {
-      try {
-        if (typeof window === 'undefined') {
-          throw new Error('This component must be used in a browser environment');
-        }
-
-        if ((window as any).pdfjsLib) {
-          setPdfjsLib((window as any).pdfjsLib);
-          return;
-        }
-
-        const timeout = 10000; // 10 seconds timeout
-        const pdfjs = await Promise.race([
-          new Promise((resolve) => {
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-            script.onload = () => {
-              const lib = (window as any).pdfjsLib;
-              lib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-              resolve(lib);
-            };
-            document.head.appendChild(script);
-          }),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('PDF.js initialization timed out')), timeout)
-          )
-        ]);
-        setPdfjsLib(pdfjs);
-      } catch (error) {
-        console.error('Failed to initialize PDF.js:', error);
-        setError(error instanceof Error ? error.message : 'Failed to initialize PDF processing');
-        throw error;
-      } finally {
-        setIsInitializing(false);
-      }
-    };
-
-    loadPdfjs();
-  }, []);
-
-  return { pdfjsLib, isInitializing, error };
-}
-
 // Helper functions
 function validateFile(file: File): string | null {
   const valid = Object.entries(FILE_TYPES).some(
@@ -145,7 +99,7 @@ function validateFile(file: File): string | null {
 }
 
 async function ocrPdfPages(
-  pdf: any,
+  pdf: PDFDocumentProxy,
   worker: TesseractWorker,
   setProgress: (state: typeof INITIAL_PROCESSING_STATE | ((prev: typeof INITIAL_PROCESSING_STATE) => typeof INITIAL_PROCESSING_STATE)) => void
 ): Promise<string> {
@@ -192,7 +146,7 @@ interface DropzoneProps {
   className?: string;
 }
 
-export function Dropzone({ onFileDrop, className }: DropzoneProps) {
+function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
   const [isDragging, setIsDragging] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [isProcessing, setIsProcessing] = React.useState(false);
@@ -201,11 +155,22 @@ export function Dropzone({ onFileDrop, className }: DropzoneProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const lastFileRef = React.useRef<string | null>(null);
   const [processingState, setProcessingState] = React.useState(INITIAL_PROCESSING_STATE);
+  const [pdfjs, setPdfjs] = React.useState<any>(null);
 
   const { workerRef, isInitializing: isTesseractInitializing, error: tesseractError } = useTesseractWorker();
-  const { pdfjsLib, isInitializing: isPdfInitializing, error: pdfError } = usePdfJs();
 
-  const isInitializing = isTesseractInitializing || isPdfInitializing;
+  const isInitializing = isTesseractInitializing;
+
+  // Initialize PDF.js on client side
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      import('pdfjs-dist').then((module) => {
+        const { getDocument, GlobalWorkerOptions, version } = module;
+        GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
+        setPdfjs({ getDocument });
+      });
+    }
+  }, []);
 
   // Auto-dismiss messages after 5 seconds
   React.useEffect(() => {
@@ -221,8 +186,7 @@ export function Dropzone({ onFileDrop, className }: DropzoneProps) {
   // Handle initialization errors
   React.useEffect(() => {
     if (tesseractError) setError(tesseractError);
-    if (pdfError) setError(pdfError);
-  }, [tesseractError, pdfError]);
+  }, [tesseractError]);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -235,16 +199,17 @@ export function Dropzone({ onFileDrop, className }: DropzoneProps) {
   };
 
   const processPdf = async (file: File): Promise<string> => {
-    if (!pdfjsLib) {
-      throw new Error('PDF processing is not available in this environment');
-    }
     if (!workerRef.current) {
       throw new Error('OCR is not initialized. Please refresh the page.');
     }
 
+    if (!pdfjs) {
+      throw new Error('PDF processing is not initialized. Please refresh the page.');
+    }
+
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
       let fullText = '';
       let hasText = false;
 
@@ -493,3 +458,8 @@ export function Dropzone({ onFileDrop, className }: DropzoneProps) {
     </>
   );
 }
+
+// Export a client-side only version of the component
+export const Dropzone = dynamic(() => Promise.resolve(DropzoneComponent), {
+  ssr: false
+});

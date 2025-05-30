@@ -41,6 +41,7 @@
     "next": "15.3.2",
     "next-auth": "5.0.0-beta.28",
     "openapi3-ts": "^4.4.0",
+    "pdfjs-dist": "^5.2.133",
     "posthog-js": "^1.246.0",
     "posthog-node": "^4.17.2",
     "react": "^19.1.0",
