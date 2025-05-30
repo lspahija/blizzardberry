@@ -7,16 +7,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true, // Ignore TypeScript errors
   },
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /pdf\.worker\.min\.mjs$/,
-      type: 'asset/resource',
-      generator: {
-        filename: 'static/chunks/[name].[hash][ext]',
-      },
-    });
-    return config;
-  },
   async headers() {
     return [
       {
