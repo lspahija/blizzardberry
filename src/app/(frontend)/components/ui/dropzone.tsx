@@ -1,16 +1,20 @@
 import * as React from 'react';
-import { cn } from '@/app/(frontend)/lib/cssClassNames';
+import { cn } from '@/app/(frontend)/lib/cssClassNames';            
 import { Upload, X, Loader2 } from 'lucide-react';
 import {
   Card,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
+import { Progress } from '@/app/(frontend)/components/ui/progress';
+import { Button } from '@/app/(frontend)/components/ui/button';
+import { Alert, AlertDescription } from '@/app/(frontend)/components/ui/alert';
+import { Badge } from '@/app/(frontend)/components/ui/badge';
 import mammoth from 'mammoth';
 import { createWorker } from 'tesseract.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
-
+ 
 // Define types
 type TesseractWorker = Awaited<ReturnType<typeof createWorker>>;
 type PDFJS = {
@@ -166,9 +170,9 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
   const lastFileRef = React.useRef<string | null>(null);
   const [processingState, setProcessingState] = React.useState(INITIAL_PROCESSING_STATE);
   const [pdfjs, setPdfjs] = React.useState<PDFJS | null>(null);
+  const [uploadedFileName, setUploadedFileName] = React.useState<string | null>(null);
 
   const { workerRef, isInitializing: isTesseractInitializing, error: tesseractError } = useTesseractWorker();
-
   const isInitializing = isTesseractInitializing;
 
   // Initialize PDF.js on client side
@@ -326,9 +330,9 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
       const text = await processFile(file);
       onFileDrop(text);
       setSuccessMessage('File processed successfully');
+      setUploadedFileName(file.name);
     } catch (err: any) {
       setError(err.message || 'Error processing file');
-      // Clear the last file reference on error to allow retry
       lastFileRef.current = null;
     } finally {
       setIsProcessing(false);
@@ -403,25 +407,29 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
             ) : (
               <Upload className={cn("h-8 w-8 text-gray-900", isProcessing && "animate-pulse")} />
             )}
-            <div className="text-sm text-gray-900">
+
+            {/* Main text directly under the icon */}
+            <div className="text-sm text-gray-900 text-center">
               <p className="font-medium">
                 {isInitializing ? 'Initializing document processing...' :
-                 isProcessing ? 'Processing file...' : 
-                 'Drag and drop your file here'}
+                  isProcessing ? 'Processing file...' :
+                  'Drag and drop your file here'}
               </p>
               <p className="text-gray-600">or click to browse</p>
-              <p className="text-xs text-gray-500 mt-1">
-                Supported formats: .pdf, .docx, .txt (max {MAX_FILE_SIZE_MB}MB)
-              </p>
             </div>
+
+            <div className="flex flex-col items-center gap-1 mt-1">
+              <span className="text-xs text-gray-500">
+                Supported formats: .pdf, .docx, .txt
+              </span>
+              <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-500 border-none px-2 py-0.5 font-normal">
+                max {MAX_FILE_SIZE_MB}MB
+              </Badge>
+            </div>
+
             {isProcessing && (
               <div className="w-full max-w-xs mt-2">
-                <div className="h-2 bg-gray-200 rounded-full">
-                  <div 
-                    className="h-2 bg-[#FE4A60] rounded-full transition-all duration-300"
-                    style={{ width: `${processingState.progress}%` }}
-                  />
-                </div>
+                <Progress value={processingState.progress} className="h-2" />
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-xs text-gray-600">
                     {processingState.currentPage > 0 && processingState.totalPages > 0 
@@ -429,47 +437,56 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
                       : 'Processing...'}
                   </p>
                   {canCancel && (
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCancel();
                       }}
-                      className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1 relative z-10"
+                      className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1 relative z-10 h-auto p-0"
                     >
                       <X className="h-3 w-3" />
                       Cancel
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
             )}
             <AnimatePresence>
               {error && (
-                <motion.p
+                <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="text-sm text-red-600 mt-2"
                 >
-                  {error}
-                </motion.p>
+                  <Alert variant="destructive" className="mt-2">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                </motion.div>
               )}
               {successMessage && (
-                <motion.p
+                <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="text-sm text-green-600 mt-2"
                 >
-                  {successMessage}
-                </motion.p>
+                  <Alert className="mt-2">
+                    <AlertDescription>{successMessage}</AlertDescription>
+                  </Alert>
+                </motion.div>
               )}
             </AnimatePresence>
           </div>
         </CardContent>
       </Card>
+      {uploadedFileName && (
+        <div className="mt-2 text-sm text-green-700 text-center">
+          Uploaded: <span className="font-medium">{uploadedFileName}</span>
+        </div>
+      )}
     </>
   );
 }
