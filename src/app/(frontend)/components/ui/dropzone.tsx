@@ -13,11 +13,16 @@ import type { PDFDocumentProxy } from 'pdfjs-dist';
 
 // Define types
 type TesseractWorker = Awaited<ReturnType<typeof createWorker>>;
+type PDFJS = {
+  getDocument: (options: { data: ArrayBuffer }) => { promise: Promise<PDFDocumentProxy> };
+};
 
 // Constants
 const MAX_FILE_SIZE_MB = 10;
 const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
 const INITIAL_PROCESSING_STATE = { progress: 0, currentPage: 0, totalPages: 0 };
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000;
 
 // File type definitions
 const FILE_TYPES = {
@@ -27,14 +32,14 @@ const FILE_TYPES = {
 } as const;
 
 // Retry helper function
-async function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
+async function withRetry<T>(fn: () => Promise<T>, retries = MAX_RETRIES): Promise<T> {
   for (let i = 0; i < retries; i++) {
     try {
       return await fn();
-    } catch {
-      if (i === retries - 1) throw new Error('Failed after retries');
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise((r) => setTimeout(r, RETRY_DELAY));
     }
-    await new Promise((r) => setTimeout(r, 1000));
   }
   throw new Error('Unreachable');
 }
@@ -89,11 +94,10 @@ function useTesseractWorker() {
 
 // Helper functions
 function validateFile(file: File): string | null {
-  const valid = Object.entries(FILE_TYPES).some(
-    ([ext, mime]) =>
-      file.name.toLowerCase().endsWith(`.${ext}`) && file.type === mime
+  const isValidType = Object.entries(FILE_TYPES).some(
+    ([ext, mime]) => file.name.toLowerCase().endsWith(`.${ext}`) || file.type === mime
   );
-  if (!valid) return 'Unsupported file type. Please upload a .pdf, .docx, or .txt file';
+  if (!isValidType) return 'Unsupported file type. Please upload a .pdf, .docx, or .txt file.';
   if (file.size > MAX_FILE_SIZE) return `File size must be less than ${MAX_FILE_SIZE_MB}MB`;
   return null;
 }
@@ -111,31 +115,37 @@ async function ocrPdfPages(
     throw new Error('Failed to create canvas context');
   }
 
-  for (let i = 1; i <= pdf.numPages; i++) {
-    try {
-      setProgress({ ...INITIAL_PROCESSING_STATE, currentPage: i, totalPages: pdf.numPages });
-      const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: 2.0 });
+  try {
+    for (let i = 1; i <= pdf.numPages; i++) {
+      try {
+        setProgress({ ...INITIAL_PROCESSING_STATE, currentPage: i, totalPages: pdf.numPages });
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 2.0 });
 
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
 
-      await page.render({
-        canvasContext: context,
-        viewport: viewport
-      }).promise;
+        await page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise;
 
-      const result = await worker.recognize(canvas.toDataURL('image/png'));
-      fullText += result.data.text + '\n';
-      setProgress(prev => ({ 
-        ...prev, 
-        progress: (i / pdf.numPages) * 100 
-      }));
-    } catch (error) {
-      console.warn(`Failed to process page ${i}:`, error);
-      if (!worker) break; // Break if worker was terminated
-      continue;
+        const result = await worker.recognize(canvas.toDataURL('image/png'));
+        fullText += result.data.text + '\n';
+        setProgress(prev => ({ 
+          ...prev, 
+          progress: (i / pdf.numPages) * 100 
+        }));
+      } catch (error) {
+        console.warn(`Failed to process page ${i}:`, error);
+        if (!worker) break;
+        continue;
+      }
     }
+  } finally {
+    // Clean up canvas
+    canvas.width = 0;
+    canvas.height = 0;
   }
 
   return fullText;
@@ -155,7 +165,7 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const lastFileRef = React.useRef<string | null>(null);
   const [processingState, setProcessingState] = React.useState(INITIAL_PROCESSING_STATE);
-  const [pdfjs, setPdfjs] = React.useState<any>(null);
+  const [pdfjs, setPdfjs] = React.useState<PDFJS | null>(null);
 
   const { workerRef, isInitializing: isTesseractInitializing, error: tesseractError } = useTesseractWorker();
 
@@ -166,8 +176,7 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
     if (typeof window !== 'undefined') {
       import('pdfjs-dist').then((module) => {
         const { getDocument, GlobalWorkerOptions } = module;
-        // Use the worker directly from the package
-        GlobalWorkerOptions.workerSrc = require('pdfjs-dist/build/pdf.worker.min.mjs');
+        GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
         setPdfjs({ getDocument });
       });
     }
@@ -210,7 +219,7 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+      const pdf = await withRetry(() => pdfjs.getDocument({ data: arrayBuffer }).promise);
       let fullText = '';
       let hasText = false;
 
@@ -219,7 +228,12 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
         const page = await pdf.getPage(i);
         const textContent = await page.getTextContent();
         const pageText = textContent.items
-          .map((item: any) => item.str ?? '')
+          .map((item) => {
+            if (typeof item === 'object' && item !== null && 'str' in item) {
+              return item.str ?? '';
+            }
+            return '';
+          })
           .join(' ');
         
         if (pageText.trim()) {
