@@ -29,7 +29,9 @@
     "@radix-ui/react-tabs": "^1.1.12",
     "@supabase/supabase-js": "2.49.7",
     "@tailwindcss/typography": "^0.5.16",
+    "@types/pdfjs-dist": "^2.10.378",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/tesseract.js": "^2.0.0",
     "ai": "^4.3.16",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -37,15 +39,19 @@
     "framer-motion": "^12.12.2",
     "js-yaml": "^4.1.0",
     "lucide-react": "^0.511.0",
+    "mammoth": "^1.9.1",
     "next": "15.3.2",
     "next-auth": "5.0.0-beta.28",
     "openapi3-ts": "^4.4.0",
+    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "3.11.174",
     "posthog-js": "^1.246.0",
     "posthog-node": "^4.17.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-syntax-highlighter": "^15.6.1",
     "tailwind-merge": "^3.3.0",
+    "tesseract.js": "^6.0.1",
     "uuid": "^11.1.0",
     "zod": "^3.25.28"
   },
@@ -64,6 +70,7 @@
     "prettier": "^3.5.3",
     "tailwindcss": "^4.1.7",
     "tw-animate-css": "^1.3.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "worker-loader": "^3.0.8"
   }
 }
