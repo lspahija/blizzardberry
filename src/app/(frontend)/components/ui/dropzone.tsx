@@ -165,8 +165,9 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       import('pdfjs-dist').then((module) => {
-        const { getDocument, GlobalWorkerOptions, version } = module;
-        GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
+        const { getDocument, GlobalWorkerOptions } = module;
+        // Use the worker directly from the package
+        GlobalWorkerOptions.workerSrc = require('pdfjs-dist/build/pdf.worker.min.mjs');
         setPdfjs({ getDocument });
       });
     }
