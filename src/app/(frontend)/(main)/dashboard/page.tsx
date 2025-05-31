@@ -11,13 +11,14 @@ import {
   CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, PlusCircle } from 'lucide-react';
+import { Loader2, PlusCircle, Trash2 } from 'lucide-react';
 import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const [chatbots, setChatbots] = useState<Chatbot[]>([]);
   const [loadingChatbots, setLoadingChatbots] = useState(true);
+  const [deletingChatbotId, setDeletingChatbotId] = useState<string | null>(null);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -26,6 +27,30 @@ export default function Dashboard() {
       y: 0,
       transition: { duration: 0.8 },
     },
+  };
+
+  const handleDeleteChatbot = async (chatbotId: string) => {
+    if (!confirm('Are you sure you want to delete this chatbot? This action cannot be undone.')) {
+      return;
+    }
+
+    setDeletingChatbotId(chatbotId);
+    try {
+      const response = await fetch(`/api/chatbots/${chatbotId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete chatbot');
+      }
+
+      setChatbots(chatbots.filter(chatbot => chatbot.id !== chatbotId));
+    } catch (error) {
+      console.error('Error deleting chatbot:', error);
+      alert('Failed to delete chatbot. Please try again.');
+    } finally {
+      setDeletingChatbotId(null);
+    }
   };
 
   // Fetch chatbots
@@ -120,17 +145,32 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600 mb-2">
-                    Domain: {chatbot.websiteDomain}
+                    <strong>Domain:</strong> {chatbot.websiteDomain}
                   </p>
                   <p className="text-gray-600 mb-4">
-                    Created: {new Date(chatbot.createdAt).toLocaleDateString()}
+                    <strong>Created:</strong> {new Date(chatbot.createdAt).toLocaleDateString()}
                   </p>
-                  <Button
-                    asChild
-                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
-                  >
-                    <Link href={`/chatbots/${chatbot.id}`}>View Details</Link>
-                  </Button>
+                  <div className="flex space-x-2">
+                    <Button
+                      asChild
+                      className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    >
+                      <Link href={`/chatbots/${chatbot.id}`}>View Details</Link>
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => chatbot.id && handleDeleteChatbot(chatbot.id)}
+                      disabled={deletingChatbotId === chatbot.id}
+                      className="border-[3px] border-gray-900"
+                    >
+                      {deletingChatbotId === chatbot.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
