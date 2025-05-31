@@ -103,9 +103,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - polish the user onboarding experience. All the forms needs to work well and be easy to use.
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
 - onboard Stripe - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
-  - have credits with each credit being 1 cent? Different models cost different amounts of credits per token. For each model, we take the actual cost of inference and multiply it by our margin (e.g. 5x) to get the cost per token in credits.
-  - have a base subscription fee that gives the user a certain amount of credits per month
-  - allow the user to buy more credits if they run out
+  - have credits? Different models cost different amounts of credits per token. For each model, we take the actual cost of inference and multiply it by our margin (e.g. 5x) to get the cost per token in credits.
+  - have three tiers of subscriptions with each giving the user a certain amount of credits per month (we want this so we make money even if nobody uses the user's app). these credits don't roll over to the next month i.e. they expire 30 days after purchase.
+  - allow the user to buy more credits if they run out (but these are at a higher price per token than the subscription credits, and they don't expire i.e. they roll over)
 - [finish onboarding](#posthog) PostHog for analytics
 - landing page needs to sell the product well!
 - add easy to use feedback form so users can report bugs and request features. make it easy for users to talk to us.
