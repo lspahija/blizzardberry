@@ -11,7 +11,7 @@ import {
   CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, PlusCircle } from 'lucide-react';
+import { Loader2, PlusCircle, Trash2 } from 'lucide-react';
 import {
   Action,
   ExecutionContext,
@@ -21,6 +21,7 @@ import { use } from 'react';
 import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 import { Document } from '@/app/api/lib/model/document/document';
+import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 
 export default function ChatbotDetails({
   params: paramsPromise,
@@ -34,6 +35,9 @@ export default function ChatbotDetails({
   const [loadingChatbot, setLoadingChatbot] = useState(true);
   const [loadingActions, setLoadingActions] = useState(true);
   const [loadingDocuments, setLoadingDocuments] = useState(true);
+  const [deletingActionId, setDeletingActionId] = useState<string | null>(null);
+
+  const { handleDeleteAction } = useActionForm();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -117,6 +121,16 @@ export default function ChatbotDetails({
 
     fetchDocuments();
   }, [params.chatbotId]);
+
+  const handleDeleteActionWithLoading = async (actionId: string) => {
+    setDeletingActionId(actionId);
+    try {
+      await handleDeleteAction(actionId);
+      setActions(actions.filter(action => action.id !== actionId));
+    } finally {
+      setDeletingActionId(null);
+    }
+  };
 
   if (loadingChatbot) {
     return (
@@ -210,7 +224,7 @@ export default function ChatbotDetails({
             <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
           </div>
         ) : actions.length === 0 ? (
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-lg mb-8">
             No actions found. Create one to get started!
           </p>
         ) : (
@@ -224,35 +238,52 @@ export default function ChatbotDetails({
               <ul className="space-y-4">
                 {actions.map((action) => (
                   <li key={action.id || action.name} className="border-t pt-2">
-                    <p className="font-medium text-gray-900">{action.name}</p>
-                    <p className="text-gray-600">{action.description}</p>
-                    <p className="text-sm text-gray-500">
-                      Context: {action.executionContext}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Model:{' '}
-                      {action.executionContext === ExecutionContext.SERVER ? (
-                        <>
-                          {(
-                            action as BackendAction
-                          ).executionModel.request.method.toUpperCase()}{' '}
-                          {(action as BackendAction).executionModel.request.url}
-                        </>
-                      ) : (
-                        (action as FrontendAction).executionModel.functionName
-                      )}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Parameters:{' '}
-                      {action.executionModel.parameters.length > 0
-                        ? action.executionModel.parameters
-                            .map(
-                              (param) =>
-                                `${param.name} (${param.type}${param.isArray ? '[]' : ''})`
-                            )
-                            .join(', ')
-                        : 'None'}
-                    </p>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-medium text-gray-900">{action.name}</p>
+                        <p className="text-gray-600">{action.description}</p>
+                        <p className="text-sm text-gray-500">
+                          Context: {action.executionContext}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Model:{' '}
+                          {action.executionContext === ExecutionContext.SERVER ? (
+                            <>
+                              {(
+                                action as BackendAction
+                              ).executionModel.request.method.toUpperCase()}{' '}
+                              {(action as BackendAction).executionModel.request.url}
+                            </>
+                          ) : (
+                            (action as FrontendAction).executionModel.functionName
+                          )}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Parameters:{' '}
+                          {action.executionModel.parameters.length > 0
+                            ? action.executionModel.parameters
+                                .map(
+                                  (param) =>
+                                    `${param.name} (${param.type}${param.isArray ? '[]' : ''})`
+                                )
+                                .join(', ')
+                            : 'None'}
+                        </p>
+                      </div>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="ml-4"
+                        onClick={() => action.id && handleDeleteActionWithLoading(action.id)}
+                        disabled={deletingActionId === action.id}
+                      >
+                        {deletingActionId === action.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -265,7 +296,7 @@ export default function ChatbotDetails({
             <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
           </div>
         ) : documents.length === 0 ? (
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-lg mb-8">
             No documents found. Add one to get started!
           </p>
         ) : (

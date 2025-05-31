@@ -209,6 +209,28 @@ export const useActionForm = () => {
     }
   };
 
+  const handleDeleteAction = async (actionId: string) => {
+    if (!confirm('Are you sure you want to delete this action?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/chatbots/${chatbotId}/actions/${actionId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete action');
+      }
+
+      // Refresh the page to show updated actions list
+      router.refresh();
+    } catch (error) {
+      console.error('Error deleting action:', error);
+      alert('Failed to delete action. Please try again.');
+    }
+  };
+
   return {
     step,
     baseAction,
@@ -232,5 +254,6 @@ export const useActionForm = () => {
     handleNextStep,
     handleBack,
     handleCreateAction,
+    handleDeleteAction,
   };
 };
