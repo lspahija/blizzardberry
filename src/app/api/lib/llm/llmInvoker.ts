@@ -1,12 +1,11 @@
 import { streamText } from 'ai';
-import { getLanguageModel } from '@/app/api/lib/modelProvider';
-import { CHATBOT_SYSTEM_MESSAGE } from '@/app/api/lib/constants';
+import { getLanguageModel } from '@/app/api/lib/llm/modelProvider';
 import {
   createSearchKnowledgeBaseTool,
   getToolsFromActions,
 } from '@/app/api/lib/toolProvider';
 
-export async function callAIModel(
+export async function callLLM(
   messages: any,
   userConfig: any,
   chatbotId: string
@@ -34,15 +33,6 @@ export async function callAIModel(
   const data = await processStream(stream);
   console.log('LLM response:', JSON.stringify(data, null, 2));
   return data;
-}
-
-function buildSystemMessage(userConfig: any) {
-  let message = CHATBOT_SYSTEM_MESSAGE;
-
-  if (userConfig)
-    message += `\n\nThis is the user's metadata. Use this information to pre-fill data in actions when appropriate:\n${JSON.stringify(userConfig, null, 2)}`;
-
-  return message;
 }
 
 async function processStream(result: any) {

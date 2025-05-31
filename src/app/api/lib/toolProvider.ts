@@ -1,7 +1,6 @@
 import { tool, Tool } from 'ai';
 import { z } from 'zod';
-import { similaritySearch } from '@/app/api/lib/embedding';
-import { getActions } from '@/app/api/lib/actionStore';
+import { getActions } from '@/app/api/lib/store/actionStore';
 import {
   ExecutionContext,
   Parameter,
@@ -12,6 +11,7 @@ import {
   HttpRequest,
   Body,
 } from '@/app/api/lib/model/action/backendAction';
+import { similaritySearch } from './store/documentStore';
 
 export function createSearchKnowledgeBaseTool(chatbotId: string): Tool {
   return tool({

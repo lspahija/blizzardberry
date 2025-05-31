@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { supabaseClient } from '@/app/api/lib/supabase';
+import { supabaseClient } from '@/app/api/lib/store/supabase';
 import { auth } from '@/lib/auth/auth';
 import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
-import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
+import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
 
 export async function GET(
   _: Request,
@@ -69,10 +69,7 @@ export async function DELETE(
       .single();
 
     if (fetchError) {
-      return NextResponse.json(
-        { error: 'Chatbot not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Chatbot not found' }, { status: 404 });
     }
 
     const authResponse = await chatbotAuth(session.user.id, chatbotId);

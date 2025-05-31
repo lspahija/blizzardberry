@@ -1,5 +1,5 @@
-import { supabaseClient } from '@/app/api/lib/supabase';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const model = genAI.getGenerativeModel({ model: 'gemini-embedding-exp-03-07' });
@@ -34,34 +34,19 @@ export async function embedTextBatch(texts: string[]): Promise<number[][]> {
   return result.embeddings.map((e) => e.values);
 }
 
-export async function similaritySearch(
-  query: string,
-  k: number,
-  chatbotId: string
-) {
-  const embedding = await embedText(query);
-
-  const { data, error } = await supabaseClient.rpc('search_documents', {
-    query_embedding: embedding,
-    match_count: k,
-    filter: { chatbotId },
-  });
-
-  if (error) {
-    console.error('Similarity search error:', error);
-    throw new Error(error.message);
-  }
-
-  return data.reduce((acc: Record<string, any[]>, row: any) => {
-    const parentId = row.metadata?.parent_document_id || 'no_parent';
-    if (!acc[parentId]) acc[parentId] = [];
-    acc[parentId].push({
-      id: row.id,
-      content: row.content,
-      metadata: row.metadata,
-      similarity: row.similarity,
-      parent_document_id: parentId,
-    });
-    return acc;
-  }, {});
+export async function cleanAndChunk(text: string) {
+  const cleanedText = cleanText(text);
+  return await textSplitter.splitText(cleanedText);
 }
+
+const textSplitter = new RecursiveCharacterTextSplitter({
+  chunkSize: 500,
+  chunkOverlap: 50,
+  separators: ['\n\n', '\n', '.', '!', '?', ',', ' ', ''],
+});
+
+const cleanText = (text: string): string =>
+  text
+    .replace(/\s+/g, ' ')
+    .replace(/[^\x20-\x7E\n]/g, '')
+    .trim();
