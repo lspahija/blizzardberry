@@ -155,7 +155,8 @@ export default function AddDocument({
                   Document Content
                 </Label>
                 <p className="text-sm text-gray-600 mt-1">
-                  Upload a file or enter the text content of the document which will be given to your agent.
+                  Upload a file or enter the text content of the document which
+                  will be given to your agent.
                 </p>
                 <div className="mt-4 space-y-4">
                   <Dropzone onFileDrop={handleFileDrop} className="w-full" />
@@ -164,7 +165,9 @@ export default function AddDocument({
                       <div className="w-full border-t border-gray-900"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                      <span className="bg-[#FFFDF8] px-2 text-gray-900">or</span>
+                      <span className="bg-[#FFFDF8] px-2 text-gray-900">
+                        or
+                      </span>
                     </div>
                   </div>
                   <Textarea

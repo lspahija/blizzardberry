@@ -292,15 +292,25 @@ export default function ChatbotDetails({
                       <span className="font-semibold">Metadata:</span>
                       <ul>
                         {Object.entries(doc.metadata)
-                          .filter(([key]) =>
-                            !['loc', 'chatbot_id', 'chunk_index', 'parent_document_id'].includes(key)
+                          .filter(
+                            ([key]) =>
+                              ![
+                                'loc',
+                                'chatbot_id',
+                                'chunk_index',
+                                'parent_document_id',
+                              ].includes(key)
                           )
                           .map(([key, value]) => (
                             <li key={key}>
                               <span className="font-semibold">{key}:</span>{' '}
-                              {typeof value === 'object' && value !== null
-                                ? <pre className="inline">{JSON.stringify(value, null, 2)}</pre>
-                                : String(value)}
+                              {typeof value === 'object' && value !== null ? (
+                                <pre className="inline">
+                                  {JSON.stringify(value, null, 2)}
+                                </pre>
+                              ) : (
+                                String(value)
+                              )}
                             </li>
                           ))}
                       </ul>

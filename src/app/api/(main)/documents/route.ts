@@ -41,7 +41,9 @@ export async function POST(request: Request) {
       },
     }));
 
-    const { error } = await supabaseClient.from('documents').insert(documentsToInsert);
+    const { error } = await supabaseClient
+      .from('documents')
+      .insert(documentsToInsert);
 
     if (error) {
       console.error('Insert error:', error);
@@ -51,15 +53,17 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({
-      documents: documentsToInsert.map(doc => ({
-        id: doc.id,
-        parent_document_id: doc.metadata.parent_document_id,
-        content: doc.content,
-        metadata: doc.metadata,
-      })),
-    }, { status: 201 });
-
+    return NextResponse.json(
+      {
+        documents: documentsToInsert.map((doc) => ({
+          id: doc.id,
+          parent_document_id: doc.metadata.parent_document_id,
+          content: doc.content,
+          metadata: doc.metadata,
+        })),
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Storage error:', error);
     return NextResponse.json(

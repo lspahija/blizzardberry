@@ -1,10 +1,7 @@
 import * as React from 'react';
-import { cn } from '@/app/(frontend)/lib/cssClassNames';            
+import { cn } from '@/app/(frontend)/lib/cssClassNames';
 import { Upload, X, Loader2 } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-} from '@/app/(frontend)/components/ui/card';
+import { Card, CardContent } from '@/app/(frontend)/components/ui/card';
 import { Progress } from '@/app/(frontend)/components/ui/progress';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import { Alert, AlertDescription } from '@/app/(frontend)/components/ui/alert';
@@ -14,11 +11,13 @@ import { createWorker } from 'tesseract.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
- 
+
 // Define types
 type TesseractWorker = Awaited<ReturnType<typeof createWorker>>;
 type PDFJS = {
-  getDocument: (options: { data: ArrayBuffer }) => { promise: Promise<PDFDocumentProxy> };
+  getDocument: (options: { data: ArrayBuffer }) => {
+    promise: Promise<PDFDocumentProxy>;
+  };
 };
 
 // Constants
@@ -32,11 +31,14 @@ const RETRY_DELAY = 1000;
 const FILE_TYPES = {
   pdf: 'application/pdf',
   docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  txt: 'text/plain'
+  txt: 'text/plain',
 } as const;
 
 // Retry helper function
-async function withRetry<T>(fn: () => Promise<T>, retries = MAX_RETRIES): Promise<T> {
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  retries = MAX_RETRIES
+): Promise<T> {
   for (let i = 0; i < retries; i++) {
     try {
       return await fn();
@@ -67,7 +69,9 @@ function useTesseractWorker() {
       return workerRef.current;
     } catch (error) {
       console.error('Failed to initialize Tesseract worker:', error);
-      setError(error instanceof Error ? error.message : 'Failed to initialize OCR');
+      setError(
+        error instanceof Error ? error.message : 'Failed to initialize OCR'
+      );
       throw error;
     } finally {
       setIsInitializing(false);
@@ -99,22 +103,31 @@ function useTesseractWorker() {
 // Helper functions
 function validateFile(file: File): string | null {
   const isValidType = Object.entries(FILE_TYPES).some(
-    ([ext, mime]) => file.name.toLowerCase().endsWith(`.${ext}`) || file.type === mime
+    ([ext, mime]) =>
+      file.name.toLowerCase().endsWith(`.${ext}`) || file.type === mime
   );
-  if (!isValidType) return 'Unsupported file type. Please upload a .pdf, .docx, or .txt file.';
-  if (file.size > MAX_FILE_SIZE) return `File size must be less than ${MAX_FILE_SIZE_MB}MB`;
+  if (!isValidType)
+    return 'Unsupported file type. Please upload a .pdf, .docx, or .txt file.';
+  if (file.size > MAX_FILE_SIZE)
+    return `File size must be less than ${MAX_FILE_SIZE_MB}MB`;
   return null;
 }
 
 async function ocrPdfPages(
   pdf: PDFDocumentProxy,
   worker: TesseractWorker,
-  setProgress: (state: typeof INITIAL_PROCESSING_STATE | ((prev: typeof INITIAL_PROCESSING_STATE) => typeof INITIAL_PROCESSING_STATE)) => void
+  setProgress: (
+    state:
+      | typeof INITIAL_PROCESSING_STATE
+      | ((
+          prev: typeof INITIAL_PROCESSING_STATE
+        ) => typeof INITIAL_PROCESSING_STATE)
+  ) => void
 ): Promise<string> {
   let fullText = '';
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
-  
+
   if (!context) {
     throw new Error('Failed to create canvas context');
   }
@@ -122,7 +135,11 @@ async function ocrPdfPages(
   try {
     for (let i = 1; i <= pdf.numPages; i++) {
       try {
-        setProgress({ ...INITIAL_PROCESSING_STATE, currentPage: i, totalPages: pdf.numPages });
+        setProgress({
+          ...INITIAL_PROCESSING_STATE,
+          currentPage: i,
+          totalPages: pdf.numPages,
+        });
         const page = await pdf.getPage(i);
         const viewport = page.getViewport({ scale: 2.0 });
 
@@ -131,14 +148,14 @@ async function ocrPdfPages(
 
         await page.render({
           canvasContext: context,
-          viewport: viewport
+          viewport: viewport,
         }).promise;
 
         const result = await worker.recognize(canvas.toDataURL('image/png'));
         fullText += result.data.text + '\n';
-        setProgress(prev => ({ 
-          ...prev, 
-          progress: (i / pdf.numPages) * 100 
+        setProgress((prev) => ({
+          ...prev,
+          progress: (i / pdf.numPages) * 100,
         }));
       } catch (error) {
         console.warn(`Failed to process page ${i}:`, error);
@@ -165,14 +182,24 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
   const [error, setError] = React.useState<string | null>(null);
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [canCancel, setCanCancel] = React.useState(false);
-  const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = React.useState<string | null>(
+    null
+  );
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const lastFileRef = React.useRef<string | null>(null);
-  const [processingState, setProcessingState] = React.useState(INITIAL_PROCESSING_STATE);
+  const [processingState, setProcessingState] = React.useState(
+    INITIAL_PROCESSING_STATE
+  );
   const [pdfjs, setPdfjs] = React.useState<PDFJS | null>(null);
-  const [uploadedFileName, setUploadedFileName] = React.useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = React.useState<string | null>(
+    null
+  );
 
-  const { workerRef, isInitializing: isTesseractInitializing, error: tesseractError } = useTesseractWorker();
+  const {
+    workerRef,
+    isInitializing: isTesseractInitializing,
+    error: tesseractError,
+  } = useTesseractWorker();
   const isInitializing = isTesseractInitializing;
 
   // Initialize PDF.js on client side
@@ -218,12 +245,16 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
     }
 
     if (!pdfjs) {
-      throw new Error('PDF processing is not initialized. Please refresh the page.');
+      throw new Error(
+        'PDF processing is not initialized. Please refresh the page.'
+      );
     }
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await withRetry(() => pdfjs.getDocument({ data: arrayBuffer }).promise);
+      const pdf = await withRetry(
+        () => pdfjs.getDocument({ data: arrayBuffer }).promise
+      );
       let fullText = '';
       let hasText = false;
 
@@ -239,7 +270,7 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
             return '';
           })
           .join(' ');
-        
+
         if (pageText.trim()) {
           hasText = true;
           fullText += pageText + '\n';
@@ -248,18 +279,29 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
 
       // If no text was found, use OCR
       if (!hasText) {
-        setProcessingState({ ...INITIAL_PROCESSING_STATE, totalPages: pdf.numPages });
+        setProcessingState({
+          ...INITIAL_PROCESSING_STATE,
+          totalPages: pdf.numPages,
+        });
         setCanCancel(true);
-        fullText = await ocrPdfPages(pdf, workerRef.current, setProcessingState);
+        fullText = await ocrPdfPages(
+          pdf,
+          workerRef.current,
+          setProcessingState
+        );
       }
 
       return fullText;
     } catch (error) {
       console.error('PDF processing error:', error);
       if (error instanceof Error && error.message.includes('Invalid PDF')) {
-        throw new Error(`Invalid PDF file "${file.name}". Please make sure the file is not corrupted.`);
+        throw new Error(
+          `Invalid PDF file "${file.name}". Please make sure the file is not corrupted.`
+        );
       }
-      throw new Error(`Error processing PDF file "${file.name}". Please try again.`);
+      throw new Error(
+        `Error processing PDF file "${file.name}". Please try again.`
+      );
     } finally {
       setCanCancel(false);
       setProcessingState(INITIAL_PROCESSING_STATE);
@@ -303,7 +345,9 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
       }
     } catch (error) {
       console.error('File processing error:', error);
-      throw error instanceof Error ? error : new Error('Unknown error occurred');
+      throw error instanceof Error
+        ? error
+        : new Error('Unknown error occurred');
     }
   };
 
@@ -405,15 +449,22 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
             {isInitializing ? (
               <Loader2 className="h-8 w-8 text-gray-900 animate-spin" />
             ) : (
-              <Upload className={cn("h-8 w-8 text-gray-900", isProcessing && "animate-pulse")} />
+              <Upload
+                className={cn(
+                  'h-8 w-8 text-gray-900',
+                  isProcessing && 'animate-pulse'
+                )}
+              />
             )}
 
             {/* Main text directly under the icon */}
             <div className="text-sm text-gray-900 text-center">
               <p className="font-medium">
-                {isInitializing ? 'Initializing document processing...' :
-                  isProcessing ? 'Processing file...' :
-                  'Drag and drop your file here'}
+                {isInitializing
+                  ? 'Initializing document processing...'
+                  : isProcessing
+                    ? 'Processing file...'
+                    : 'Drag and drop your file here'}
               </p>
               <p className="text-gray-600">or click to browse</p>
             </div>
@@ -422,7 +473,10 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
               <span className="text-xs text-gray-500">
                 Supported formats: .pdf, .docx, .txt
               </span>
-              <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-500 border-none px-2 py-0.5 font-normal">
+              <Badge
+                variant="secondary"
+                className="text-xs bg-gray-100 text-gray-500 border-none px-2 py-0.5 font-normal"
+              >
                 max {MAX_FILE_SIZE_MB}MB
               </Badge>
             </div>
@@ -432,7 +486,8 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
                 <Progress value={processingState.progress} className="h-2" />
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-xs text-gray-600">
-                    {processingState.currentPage > 0 && processingState.totalPages > 0 
+                    {processingState.currentPage > 0 &&
+                    processingState.totalPages > 0
                       ? `Processing page ${processingState.currentPage} of ${processingState.totalPages}`
                       : 'Processing...'}
                   </p>
@@ -493,5 +548,5 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
 
 // Export a client-side only version of the component
 export const Dropzone = dynamic(() => Promise.resolve(DropzoneComponent), {
-  ssr: false
+  ssr: false,
 });
