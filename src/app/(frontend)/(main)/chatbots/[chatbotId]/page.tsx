@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -20,7 +19,6 @@ import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
 import { use } from 'react';
 import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
-import { Document } from '@/app/api/lib/model/document/document';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
 

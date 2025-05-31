@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { use } from 'react';
+import { useState, use } from 'react';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import { motion } from 'framer-motion';
 import {
@@ -16,6 +15,7 @@ import { Label } from '@/app/(frontend)/components/ui/label';
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { Dropzone } from '@/app/(frontend)/components/ui/dropzone';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
+import Link from 'next/link';
 
 interface MetadataField {
   key: string;
@@ -91,10 +91,12 @@ export default function AddDocument({
             asChild
             className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
           >
-            <a href={`/chatbots/${params.chatbotId}`} className="flex items-center">
+            <Link href={`/chatbots/${params.chatbotId}`}
+             className="flex items-center"
+            >
               <ArrowLeft className="mr-2 h-5 w-5" />
               Back to Chatbot
-            </a>
+            </Link>
           </Button>
         </div>
 
