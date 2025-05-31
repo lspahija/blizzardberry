@@ -7,7 +7,7 @@ const model = genAI.getGenerativeModel({ model: 'gemini-embedding-exp-03-07' });
 export async function embedText(text: string): Promise<number[]> {
   const result = await model.embedContent({
     content: {
-      role: "user",
+      role: 'user',
       parts: [{ text }],
     },
   });
@@ -22,7 +22,7 @@ export async function embedText(text: string): Promise<number[]> {
 }
 
 export async function embedTextBatch(texts: string[]): Promise<number[][]> {
-  const requests = texts.map(text => ({
+  const requests = texts.map((text) => ({
     content: {
       role: 'user',
       parts: [{ text }],
@@ -31,7 +31,7 @@ export async function embedTextBatch(texts: string[]): Promise<number[][]> {
 
   const result = await model.batchEmbedContents({ requests });
 
-  return result.embeddings.map(e => e.values);
+  return result.embeddings.map((e) => e.values);
 }
 
 export async function similaritySearch(

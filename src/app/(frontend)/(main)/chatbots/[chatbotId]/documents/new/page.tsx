@@ -16,6 +16,7 @@ import { Input } from '@/app/(frontend)/components/ui/input';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { use } from 'react';
+import { Dropzone } from '@/app/(frontend)/components/ui/dropzone';
 
 interface MetadataField {
   key: string;
@@ -108,6 +109,10 @@ export default function AddDocument({
     }
   };
 
+  const handleFileDrop = (fileText: string) => {
+    setText(fileText);
+  };
+
   return (
     <motion.div
       className="min-h-screen flex flex-col bg-[#FFFDF8] p-4"
@@ -150,17 +155,31 @@ export default function AddDocument({
                   Document Content
                 </Label>
                 <p className="text-sm text-gray-600 mt-1">
-                  Enter the text content of the document to be used for RAG.
+                  Upload a file or enter the text content of the document which
+                  will be given to your agent.
                 </p>
-                <Textarea
-                  id="text"
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  required
-                  className="mt-2 block w-full rounded-md border-gray-900 border-[2px] shadow-sm focus:border-[#FE4A60] focus:ring-[#FE4A60] sm:text-sm p-2"
-                  rows={10}
-                  placeholder="Enter the document text here..."
-                />
+                <div className="mt-4 space-y-4">
+                  <Dropzone onFileDrop={handleFileDrop} className="w-full" />
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-900"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="bg-[#FFFDF8] px-2 text-gray-900">
+                        or
+                      </span>
+                    </div>
+                  </div>
+                  <Textarea
+                    id="text"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    required
+                    className="mt-2 block w-full rounded-md border-gray-900 border-[2px] shadow-sm focus:border-[#FE4A60] focus:ring-[#FE4A60] sm:text-sm p-2"
+                    rows={10}
+                    placeholder="Enter the document text here..."
+                  />
+                </div>
               </div>
               <div>
                 <Label className="block text-sm font-medium text-gray-900">
