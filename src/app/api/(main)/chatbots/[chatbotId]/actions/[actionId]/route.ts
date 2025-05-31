@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
-import { deleteAction } from '@/app/api/lib/actionStore';
+import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
+import { deleteAction } from '@/app/api/lib/store/actionStore';
 
 export async function DELETE(
   req: Request,
@@ -10,10 +10,7 @@ export async function DELETE(
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { chatbotId, actionId } = await params;
@@ -23,15 +20,12 @@ export async function DELETE(
 
     await deleteAction(actionId);
 
-    return NextResponse.json(
-      { success: true },
-      { status: 200 }
-    );
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error("Error deleting action:", error);
+    console.error('Error deleting action:', error);
     return NextResponse.json(
-      { error: "Failed to delete action" },
+      { error: 'Failed to delete action' },
       { status: 500 }
     );
   }
-} 
+}

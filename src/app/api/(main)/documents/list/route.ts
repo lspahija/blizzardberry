@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
-import { supabaseClient } from '@/app/api/lib/supabase';
+import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
+import { supabaseClient } from '@/app/api/lib/store/supabase';
 
 export async function POST(req: Request) {
   try {
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const { data, error } = await supabaseClient
       .from('documents')
       .select('id, content, metadata')
-      .eq('metadata->>chatbot_id', chatbotId);
+      .eq('chatbot_id', chatbotId);
 
     if (error) {
       console.error('Error fetching documents:', error);

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { similaritySearch } from '@/app/api/lib/embedding';
-import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
+import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
 import { auth } from '@/lib/auth/auth';
+import { similaritySearch } from '@/app/api/lib/store/documentStore';
 
 export async function POST(req: Request) {
   try {

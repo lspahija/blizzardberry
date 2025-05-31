@@ -1,4 +1,4 @@
-import { supabaseClient } from '@/app/api/lib/supabase';
+import { supabaseClient } from '@/app/api/lib/store/supabase';
 import {
   Action,
   ExecutionContext,

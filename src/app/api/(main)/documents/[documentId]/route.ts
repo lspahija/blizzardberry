@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
-import { supabaseClient } from '@/app/api/lib/supabase';
+import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
+import { supabaseClient } from '@/app/api/lib/store/supabase';
 
 export async function DELETE(
   req: Request,
@@ -45,7 +45,9 @@ export async function DELETE(
       .eq('metadata->>parent_document_id', documentId);
 
     if (deleteError) {
-      throw new Error(`Failed to delete document chunks: ${deleteError.message}`);
+      throw new Error(
+        `Failed to delete document chunks: ${deleteError.message}`
+      );
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
@@ -55,4 +57,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-} 
+}
