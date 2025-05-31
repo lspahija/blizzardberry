@@ -155,10 +155,10 @@ export default function ChatbotDetails({
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 mb-2">
-              Domain: {chatbot.websiteDomain}
+              <strong>Domain:</strong> {chatbot.websiteDomain}
             </p>
             <p className="text-gray-600 mb-4">
-              Created: {new Date(chatbot.createdAt).toLocaleString()}
+              <strong>Created:</strong> {new Date(chatbot.createdAt).toLocaleString()}
             </p>
           </CardContent>
         </Card>
