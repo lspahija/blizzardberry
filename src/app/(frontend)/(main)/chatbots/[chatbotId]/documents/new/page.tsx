@@ -1,9 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, use } from 'react';
 import { Button } from '@/app/(frontend)/components/ui/button';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   Card,
@@ -15,8 +13,9 @@ import { Loader2, ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
 import { Input } from '@/app/(frontend)/components/ui/input';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
-import { use } from 'react';
 import { Dropzone } from '@/app/(frontend)/components/ui/dropzone';
+import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
+import Link from 'next/link';
 
 interface MetadataField {
   key: string;
@@ -33,10 +32,12 @@ export default function AddDocument({
   const [metadataFields, setMetadataFields] = useState<MetadataField[]>([
     { key: '', value: '' },
   ]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const router = useRouter();
+  const {
+    handleCreateDocument,
+    isSubmitting,
+    error,
+    success,
+  } = useDocuments();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -67,46 +68,7 @@ export default function AddDocument({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-    setSuccess(false);
-
-    // Construct metadata object, including chatbotId
-    const metadata = metadataFields.reduce(
-      (acc, field) => {
-        if (field.key && field.value) {
-          acc[field.key] = field.value;
-        }
-        return acc;
-      },
-      { chatbot_id: params.chatbotId } as Record<string, string>
-    );
-
-    try {
-      const response = await fetch('/api/documents', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text,
-          metadata,
-          chatbotId: params.chatbotId,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to add document');
-      }
-
-      setSuccess(true);
-      setText('');
-      setMetadataFields([{ key: '', value: '' }]);
-      setTimeout(() => router.push(`/chatbots/${params.chatbotId}`), 2000);
-    } catch (err: any) {
-      setError(err.message || 'An error occurred while adding the document');
-    } finally {
-      setIsSubmitting(false);
-    }
+    await handleCreateDocument(text, metadataFields);
   };
 
   const handleFileDrop = (fileText: string) => {
@@ -129,9 +91,8 @@ export default function AddDocument({
             asChild
             className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
           >
-            <Link
-              href={`/chatbots/${params.chatbotId}`}
-              className="flex items-center"
+            <Link href={`/chatbots/${params.chatbotId}`}
+             className="flex items-center"
             >
               <ArrowLeft className="mr-2 h-5 w-5" />
               Back to Chatbot

@@ -38,7 +38,7 @@ CREATE TABLE documents
 );
 
 CREATE INDEX documents_embedding_idx ON documents USING hnsw (embedding halfvec_cosine_ops);
-CREATE INDEX documents_metadata_author_idx ON documents ((metadata ->> 'chatbotId'));
+CREATE INDEX documents_metadata_author_idx ON documents ((metadata ->> 'chatbot_id'));
 
 CREATE OR REPLACE FUNCTION search_documents(filter JSONB, match_count INTEGER, query_embedding HALFVEC(3072))
     RETURNS TABLE

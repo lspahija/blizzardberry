@@ -4,20 +4,25 @@ import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, PlusCircle } from 'lucide-react';
-import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
+import { Loader2, PlusCircle, Trash2 } from 'lucide-react';
+import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
-  const [chatbots, setChatbots] = useState<Chatbot[]>([]);
-  const [loadingChatbots, setLoadingChatbots] = useState(true);
+  const { 
+    chatbots, 
+    loadingChatbots, 
+    deletingChatbotId, 
+    fetchChatbots, 
+    handleDeleteChatbot 
+  } = useChatbots();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -30,25 +35,10 @@ export default function Dashboard() {
 
   // Fetch chatbots
   useEffect(() => {
-    async function fetchChatbots() {
-      try {
-        const response = await fetch('/api/chatbots');
-        if (!response.ok) {
-          throw new Error('Failed to fetch chatbots');
-        }
-        const data = await response.json();
-        setChatbots(data.chatbots || []);
-      } catch (error) {
-        console.error('Error fetching chatbots:', error);
-      } finally {
-        setLoadingChatbots(false);
-      }
-    }
-
     if (status === 'authenticated') {
       fetchChatbots();
     }
-  }, [status]);
+  }, [status, fetchChatbots]);
 
   if (status === 'loading') {
     return (
@@ -104,10 +94,7 @@ export default function Dashboard() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {chatbots.map((chatbot) => (
-              <Card
-                key={chatbot.id}
-                className="border-[3px] border-gray-900 bg-[#FFFDF8]"
-              >
+              <Card key={chatbot.id} className="border-[3px] border-gray-900 bg-[#FFFDF8] flex flex-col h-full">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-900">
                     <Link
@@ -118,19 +105,36 @@ export default function Dashboard() {
                     </Link>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-2">
-                    Domain: {chatbot.websiteDomain}
-                  </p>
-                  <p className="text-gray-600 mb-4">
-                    Created: {new Date(chatbot.createdAt).toLocaleDateString()}
-                  </p>
-                  <Button
-                    asChild
-                    className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
-                  >
-                    <Link href={`/chatbots/${chatbot.id}`}>View Details</Link>
-                  </Button>
+                <CardContent className="flex flex-col flex-1 justify-between">
+                  <div>
+                    <p className="text-gray-600 mb-2">
+                      <strong>Domain:</strong> {chatbot.websiteDomain}
+                    </p>
+                    <p className="text-gray-600 mb-4">
+                      <strong>Created:</strong> {new Date(chatbot.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-end mt-4">
+                    <Button
+                      asChild
+                      className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    >
+                      <Link href={`/chatbots/${chatbot.id}`}>View Details</Link>
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => chatbot.id && handleDeleteChatbot(chatbot.id)}
+                      disabled={deletingChatbotId === chatbot.id}
+                      className="border-[3px] border-gray-900 ml-4"
+                    >
+                      {deletingChatbotId === chatbot.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}

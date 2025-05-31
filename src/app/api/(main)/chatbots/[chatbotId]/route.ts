@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabaseClient } from '@/app/api/lib/supabase';
 import { auth } from '@/lib/auth/auth';
 import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
+import { chatbotAuth } from '@/app/api/lib/chatbotAuth';
 
 export async function GET(
   _: Request,
@@ -43,6 +44,54 @@ export async function GET(
     console.error('Error processing request:', error);
     return NextResponse.json(
       { error: 'Failed to process request' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ chatbotId: string }> }
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { chatbotId } = await params;
+
+    // Check if the chatbot exists and user has access
+    const { data: chatbot, error: fetchError } = await supabaseClient
+      .from('chatbots')
+      .select('*')
+      .eq('id', chatbotId)
+      .single();
+
+    if (fetchError) {
+      return NextResponse.json(
+        { error: 'Chatbot not found' },
+        { status: 404 }
+      );
+    }
+
+    const authResponse = await chatbotAuth(session.user.id, chatbotId);
+    if (authResponse) return authResponse;
+
+    // Delete the chatbot
+    const { error: deleteError } = await supabaseClient
+      .from('chatbots')
+      .delete()
+      .eq('id', chatbotId);
+
+    if (deleteError) {
+      throw new Error(`Failed to delete chatbot: ${deleteError.message}`);
+    }
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to delete chatbot' },
       { status: 500 }
     );
   }
