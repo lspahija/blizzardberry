@@ -10,7 +10,10 @@ export async function DELETE(
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
     const { chatbotId, actionId } = await params;
@@ -20,11 +23,14 @@ export async function DELETE(
 
     await deleteAction(actionId);
 
-    return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error) {
-    console.error('Error deleting action:', error);
     return NextResponse.json(
-      { error: 'Failed to delete action' },
+      { success: true },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting action:", error);
+    return NextResponse.json(
+      { error: "Failed to delete action" },
       { status: 500 }
     );
   }
