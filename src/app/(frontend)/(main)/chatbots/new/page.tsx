@@ -9,12 +9,13 @@ import {
 } from '@/app/(frontend)/components/ui/card';
 import { Input } from '@/app/(frontend)/components/ui/input';
 import { Label } from '@/app/(frontend)/components/ui/label';
-import { CheckCircle2, Copy, ExternalLink } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { CheckCircle2, Copy, ExternalLink } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
 
 export default function NewChatbotPage() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function NewChatbotPage() {
   const [websiteDomain, setWebsiteDomain] = useState('');
   const [chatbotId, setChatbotId] = useState(null);
   const [copied, setCopied] = useState(false);
+  const { handleCreateChatbot } = useChatbots();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -49,30 +51,6 @@ export default function NewChatbotPage() {
   data-chatbot-id="${chatbotId}"
 />`;
 
-  const handleCreateChatbot = async () => {
-    try {
-      const response = await fetch('/api/chatbots', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          websiteDomain,
-        }),
-      });
-
-      if (response.ok) {
-        const { chatbotId } = await response.json();
-        setChatbotId(chatbotId);
-      } else {
-        console.error('Failed to create chatbot:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error creating chatbot:', error);
-    }
-  };
-
   const handleCopy = () => {
     navigator.clipboard.writeText(scriptSnippet);
     setCopied(true);
@@ -81,6 +59,15 @@ export default function NewChatbotPage() {
 
   const handleContinue = () => {
     router.push('/dashboard');
+  };
+
+  const onCreateChatbot = async () => {
+    try {
+      const { chatbotId: newChatbotId } = await handleCreateChatbot({ name, websiteDomain });
+      setChatbotId(newChatbotId);
+    } catch (error) {
+      console.error('Error creating chatbot:', error);
+    }
   };
 
   return (
@@ -258,7 +245,7 @@ export default function NewChatbotPage() {
                     </div>
                     <Button
                       className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
-                      onClick={handleCreateChatbot}
+                      onClick={onCreateChatbot}
                     >
                       <CheckCircle2 className="w-4 h-4 mr-2" />
                       Create Chatbot
