@@ -189,7 +189,6 @@ The website design is based on this: https://gitingest.com/
 Successfully installed PostHog!
 
 Changes made:
-- Installed posthog-js & posthog-node packages
 - Initialized PostHog and added pageview tracking
 - Created a PostHogClient to use PostHog server-side
 - Setup a reverse proxy to avoid ad blockers blocking analytics requests
@@ -198,8 +197,6 @@ Changes made:
 Next steps:
 - Call posthog.identify() when a user signs into your app
 - Call posthog.capture() to capture custom events in your app
-- Upload your Project API key to your hosting provider
-- Create a PR for your changes
 
 Learn more about PostHog + Next.js: https://posthog.com/docs/libraries/next-js
 
