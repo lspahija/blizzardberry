@@ -50,7 +50,7 @@ export async function GET(
 }
 
 export async function DELETE(
-  req: Request,
+  _: Request,
   { params }: { params: Promise<{ chatbotId: string }> }
 ) {
   try {

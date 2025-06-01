@@ -68,8 +68,15 @@ export const createAction = async (
     chatbot_id: chatbotId,
   });
 
-export const deleteAction = async (id: string): Promise<void> => {
-  const { error } = await supabaseClient.from('actions').delete().eq('id', id);
+export const deleteAction = async (
+  id: string,
+  chatbotId: string
+): Promise<void> => {
+  const { error } = await supabaseClient
+    .from('actions')
+    .delete()
+    .eq('id', id)
+    .eq('chatbot_id', chatbotId);
 
   if (error) {
     throw new Error(`Failed to delete action: ${error.message}`);

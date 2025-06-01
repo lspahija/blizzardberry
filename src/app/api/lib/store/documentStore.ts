@@ -30,9 +30,8 @@ export async function createDocuments(
     metadata: {
       ...metadata,
       chunk_index: index,
-      parent_document_id: parentId,
-      chatbot_id: chatbotId,
     },
+    parent_document_id: parentId,
     chatbot_id: chatbotId,
   }));
 
@@ -62,7 +61,7 @@ export async function similaritySearch(
   }
 
   return data.reduce((acc: Record<string, any[]>, row: any) => {
-    const parentId = row.metadata?.parent_document_id || 'no_parent';
+    const parentId = row.parent_document_id;
     if (!acc[parentId]) acc[parentId] = [];
     acc[parentId].push({
       id: row.id,

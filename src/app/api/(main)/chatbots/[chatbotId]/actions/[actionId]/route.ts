@@ -4,7 +4,7 @@ import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
 import { deleteAction } from '@/app/api/lib/store/actionStore';
 
 export async function DELETE(
-  req: Request,
+  _: Request,
   { params }: { params: Promise<{ chatbotId: string; actionId: string }> }
 ) {
   try {
@@ -18,7 +18,7 @@ export async function DELETE(
     const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 
-    await deleteAction(actionId);
+    await deleteAction(actionId, chatbotId);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

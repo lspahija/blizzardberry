@@ -36,11 +36,14 @@ CREATE TABLE documents
     content   TEXT NOT NULL,
     metadata  JSONB,
     embedding HALFVEC(3072),
+    parent_document_id UUID NOT NULL,
     chatbot_id UUID NOT NULL REFERENCES chatbots (id) ON DELETE CASCADE
 );
 
+-- todo: compound indexes
 CREATE INDEX documents_embedding_idx ON documents USING hnsw (embedding halfvec_cosine_ops);
 CREATE INDEX documents_chatbot_id_idx ON documents (chatbot_id);
+CREATE INDEX documents_parent_document_id_idx ON documents (parent_document_id);
 
 CREATE OR REPLACE FUNCTION search_documents(p_chatbot_id UUID, match_count INTEGER, query_embedding HALFVEC(3072), filter JSONB DEFAULT NULL)
     RETURNS TABLE

@@ -3,17 +3,22 @@ import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
 import { auth } from '@/lib/auth/auth';
 import { similaritySearch } from '@/app/api/lib/store/documentStore';
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ chatbotId: string }> }
+) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { query, topK = 3, chatbotId } = await req.json();
+    const { chatbotId } = await params;
 
     const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
+
+    const { query, topK = 3 } = await req.json();
 
     const groupedResults = await similaritySearch(query, topK, chatbotId);
 

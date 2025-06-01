@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseClient } from '@/app/api/lib/store/supabase';
 import { auth } from '@/lib/auth/auth';
-import { Action } from '@/app/api/lib/model/action/baseAction';
 import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
 
 export async function POST(req: Request) {
