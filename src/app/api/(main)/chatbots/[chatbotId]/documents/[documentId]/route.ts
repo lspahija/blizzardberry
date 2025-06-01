@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
-import { supabaseClient } from '@/app/api/lib/store/supabase';
+import { deleteAllChunks } from '@/app/api/lib/store/documentStore';
 
 export async function DELETE(
   _: Request,
@@ -18,12 +18,7 @@ export async function DELETE(
     const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 
-    // Delete all chunks with this parent_document_id
-    const { error: deleteError } = await supabaseClient
-      .from('documents')
-      .delete()
-      .eq('parent_document_id', documentId)
-      .eq('chatbot_id', chatbotId);
+    const deleteError = await deleteAllChunks(documentId, chatbotId);
 
     if (deleteError) {
       throw new Error(

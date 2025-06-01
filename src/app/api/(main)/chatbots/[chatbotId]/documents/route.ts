@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
-import { createDocuments } from '@/app/api/lib/store/documentStore';
-import { supabaseClient } from '@/app/api/lib/store/supabase';
+import {
+  createDocuments,
+  getDocuments,
+} from '@/app/api/lib/store/documentStore';
 
 export async function GET(
   _: Request,
@@ -19,11 +21,7 @@ export async function GET(
     const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 
-    // Fetch all documents for the given chatbot_id
-    const { data, error } = await supabaseClient
-      .from('documents')
-      .select('id, content, metadata, parent_document_id')
-      .eq('chatbot_id', chatbotId);
+    const { data, error } = await getDocuments(chatbotId);
 
     if (error) {
       console.error('Error fetching documents:', error);

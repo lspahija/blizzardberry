@@ -42,6 +42,26 @@ export async function createDocuments(
   return { error, documents: documentsToInsert };
 }
 
+export function getDocuments(chatbotId: string) {
+  return supabaseClient
+    .from('documents')
+    .select('id, content, metadata, parent_document_id')
+    .eq('chatbot_id', chatbotId);
+}
+export async function deleteAllChunks(
+  parentDocumentId: string,
+  chatbotId: string
+) {
+  // Delete all chunks with this parent_document_id
+  const { error: deleteError } = await supabaseClient
+    .from('documents')
+    .delete()
+    .eq('parent_document_id', parentDocumentId)
+    .eq('chatbot_id', chatbotId);
+
+  return deleteError;
+}
+
 export async function similaritySearch(
   query: string,
   k: number,
