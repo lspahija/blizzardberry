@@ -3,7 +3,7 @@ import { getLanguageModel } from '@/app/api/lib/llm/modelProvider';
 import {
   createSearchKnowledgeBaseTool,
   getToolsFromActions,
-} from '@/app/api/lib/toolProvider';
+} from '@/app/api/lib/tools/toolProvider';
 
 export async function callLLM(
   messages: any,

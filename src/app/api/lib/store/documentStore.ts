@@ -4,7 +4,7 @@ import {
   cleanAndChunk,
   embedText,
   embedTextBatch,
-} from '@/app/api/lib/embedding';
+} from '@/app/api/lib/embedding/embedding';
 
 export async function createDocuments(
   text: string,

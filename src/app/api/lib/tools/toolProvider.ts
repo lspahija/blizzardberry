@@ -11,7 +11,7 @@ import {
   HttpRequest,
   Body,
 } from '@/app/api/lib/model/action/backendAction';
-import { similaritySearch } from './store/documentStore';
+import { similaritySearch } from '../store/documentStore';
 
 export function createSearchKnowledgeBaseTool(chatbotId: string): Tool {
   return tool({
