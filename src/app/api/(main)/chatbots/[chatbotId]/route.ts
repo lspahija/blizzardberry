@@ -61,17 +61,6 @@ export async function DELETE(
 
     const { chatbotId } = await params;
 
-    // Check if the chatbot exists and user has access
-    const { data: chatbot, error: fetchError } = await supabaseClient
-      .from('chatbots')
-      .select('*')
-      .eq('id', chatbotId)
-      .single();
-
-    if (fetchError) {
-      return NextResponse.json({ error: 'Chatbot not found' }, { status: 404 });
-    }
-
     const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 

@@ -27,13 +27,17 @@ export const getActions = async (chatbotId: string): Promise<Action[]> => {
   }));
 };
 
-export const getAction = async (actionName: string): Promise<Action | null> => {
+export const getAction = async (
+  id: string,
+  chatbotId: string
+): Promise<Action | null> => {
   const { data, error } = await supabaseClient
     .from('actions')
     .select(
       'id, name, description, execution_context, execution_model, chatbot_id'
     )
-    .eq('name', actionName)
+    .eq('id', id)
+    .eq('chatbot_id', chatbotId)
     .single();
 
   if (error && error.code !== 'PGRST116') {
