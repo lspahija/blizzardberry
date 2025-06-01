@@ -64,7 +64,6 @@ export const useDocuments = () => {
         throw new Error('Failed to delete document');
       }
 
-      // Update the documents list in state
       setDocuments(documents.filter((doc) => doc.id !== documentId));
     } catch (error) {
       console.error('Error deleting document:', error);
@@ -82,16 +81,16 @@ export const useDocuments = () => {
     setError(null);
     setSuccess(false);
 
-    // Construct metadata object, including chatbotId
-    const metadata = metadataFields.reduce(
-      (acc, field) => {
-        if (field.key && field.value) {
-          acc[field.key] = field.value;
-        }
-        return acc;
-      },
-      { chatbot_id: chatbotId } as Record<string, string>
+    // Filter out invalid metadata fields (empty key or value)
+    const validMetadataFields = metadataFields.filter(
+      (field) => field.key.trim() !== '' && field.value.trim() !== ''
     );
+
+    // Construct metadata object, including chatbotId
+    const metadata = validMetadataFields.reduce((acc, field) => {
+      acc[field.key.trim()] = field.value.trim();
+      return acc;
+    }, {});
 
     try {
       const response = await fetch(`/api/chatbots/${chatbotId}/documents`, {
@@ -109,9 +108,7 @@ export const useDocuments = () => {
       }
 
       setSuccess(true);
-      // Refresh the documents list
       await fetchDocuments();
-      // Navigate back to the chatbot page after a short delay
       setTimeout(() => router.push(`/chatbots/${chatbotId}`), 2000);
     } catch (err: any) {
       setError(err.message || 'An error occurred while adding the document');

@@ -29,15 +29,8 @@ export default function AddDocument({
 }) {
   const params = use(paramsPromise);
   const [text, setText] = useState('');
-  const [metadataFields, setMetadataFields] = useState<MetadataField[]>([
-    { key: '', value: '' },
-  ]);
-  const {
-    handleCreateDocument,
-    isSubmitting,
-    error,
-    success,
-  } = useDocuments();
+  const [metadataFields, setMetadataFields] = useState<MetadataField[]>([]);
+  const { handleCreateDocument, isSubmitting, error, success } = useDocuments();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -91,8 +84,9 @@ export default function AddDocument({
             asChild
             className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
           >
-            <Link href={`/chatbots/${params.chatbotId}`}
-             className="flex items-center"
+            <Link
+              href={`/chatbots/${params.chatbotId}`}
+              className="flex items-center"
             >
               <ArrowLeft className="mr-2 h-5 w-5" />
               Back to Chatbot
