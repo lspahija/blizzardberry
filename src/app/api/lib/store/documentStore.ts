@@ -48,6 +48,7 @@ export function getDocuments(chatbotId: string) {
     .select('id, content, metadata, parent_document_id')
     .eq('chatbot_id', chatbotId);
 }
+
 export async function deleteAllChunks(
   parentDocumentId: string,
   chatbotId: string

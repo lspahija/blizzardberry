@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { supabaseClient } from '@/app/api/lib/store/supabase';
 import { auth } from '@/lib/auth/auth';
 import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
+import { createChatbot, getChatbots } from '@/app/api/lib/store/chatbotStore';
 
 export async function POST(req: Request) {
   try {
@@ -12,15 +12,11 @@ export async function POST(req: Request) {
 
     const { name, websiteDomain } = await req.json();
 
-    const { data, error } = await supabaseClient
-      .from('chatbots')
-      .insert({
-        name,
-        website_domain: websiteDomain,
-        created_by: session.user.id,
-      })
-      .select('id')
-      .single();
+    const { data, error } = await createChatbot(
+      name,
+      websiteDomain,
+      session.user.id
+    );
 
     if (error) {
       console.error('Error creating chatbot:', error);
@@ -47,10 +43,7 @@ export async function GET(_: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data, error } = await supabaseClient
-      .from('chatbots')
-      .select('id, name, website_domain, created_by, created_at')
-      .eq('created_by', session.user.id);
+    const { data, error } = await getChatbots(session.user.id);
 
     if (error) {
       console.error('Error fetching chatbots:', error);

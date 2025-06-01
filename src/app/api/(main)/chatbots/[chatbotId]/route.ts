@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
-import { supabaseClient } from '@/app/api/lib/store/supabase';
 import { auth } from '@/lib/auth/auth';
 import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
 import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
+import {
+  deleteChatbot,
+  getChatbotByUserId,
+} from '@/app/api/lib/store/chatbotStore';
 
 export async function GET(
   _: Request,
@@ -16,12 +19,10 @@ export async function GET(
 
     const { chatbotId } = await params;
 
-    const { data, error } = await supabaseClient
-      .from('chatbots')
-      .select('id, name, website_domain, created_by, created_at')
-      .eq('id', chatbotId)
-      .eq('created_by', session.user.id)
-      .single();
+    const { data, error } = await getChatbotByUserId(
+      chatbotId,
+      session.user.id
+    );
 
     if (error || !data) {
       console.error('Error fetching chatbot:', error);
@@ -65,10 +66,7 @@ export async function DELETE(
     if (authResponse) return authResponse;
 
     // Delete the chatbot
-    const { error: deleteError } = await supabaseClient
-      .from('chatbots')
-      .delete()
-      .eq('id', chatbotId);
+    const { error: deleteError } = await deleteChatbot(chatbotId);
 
     if (deleteError) {
       throw new Error(`Failed to delete chatbot: ${deleteError.message}`);
