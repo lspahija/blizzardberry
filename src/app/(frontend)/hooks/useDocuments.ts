@@ -12,19 +12,20 @@ export const useDocuments = () => {
   const { chatbotId } = useParams();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loadingDocuments, setLoadingDocuments] = useState(true);
-  const [deletingDocumentId, setDeletingDocumentId] = useState<string | null>(null);
+  const [deletingDocumentId, setDeletingDocumentId] = useState<string | null>(
+    null
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch(`/api/documents/list`, {
-        method: 'POST',
+      const response = await fetch(`/api/chatbots/${chatbotId}/documents`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ chatbotId }),
       });
       if (!response.ok) {
         throw new Error('Failed to fetch documents');
@@ -52,16 +53,18 @@ export const useDocuments = () => {
 
     setDeletingDocumentId(documentId);
     try {
-      const response = await fetch(`/api/documents/${documentId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `/api/chatbots/${chatbotId}/documents/${documentId}`,
+        {
+          method: 'DELETE',
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Failed to delete document');
       }
 
-      // Update the documents list in state
-      setDocuments(documents.filter(doc => doc.id !== documentId));
+      setDocuments(documents.filter((doc) => doc.id !== documentId));
     } catch (error) {
       console.error('Error deleting document:', error);
       alert('Failed to delete document. Please try again.');
@@ -78,25 +81,24 @@ export const useDocuments = () => {
     setError(null);
     setSuccess(false);
 
-    // Construct metadata object, including chatbotId
-    const metadata = metadataFields.reduce(
-      (acc, field) => {
-        if (field.key && field.value) {
-          acc[field.key] = field.value;
-        }
-        return acc;
-      },
-      { chatbot_id: chatbotId } as Record<string, string>
+    // Filter out invalid metadata fields (empty key or value)
+    const validMetadataFields = metadataFields.filter(
+      (field) => field.key.trim() !== '' && field.value.trim() !== ''
     );
 
+    // Construct metadata object, including chatbotId
+    const metadata = validMetadataFields.reduce((acc, field) => {
+      acc[field.key.trim()] = field.value.trim();
+      return acc;
+    }, {});
+
     try {
-      const response = await fetch('/api/documents', {
+      const response = await fetch(`/api/chatbots/${chatbotId}/documents`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text,
           metadata,
-          chatbotId,
         }),
       });
 
@@ -106,9 +108,7 @@ export const useDocuments = () => {
       }
 
       setSuccess(true);
-      // Refresh the documents list
       await fetchDocuments();
-      // Navigate back to the chatbot page after a short delay
       setTimeout(() => router.push(`/chatbots/${chatbotId}`), 2000);
     } catch (err: any) {
       setError(err.message || 'An error occurred while adding the document');
@@ -127,4 +127,4 @@ export const useDocuments = () => {
     error,
     success,
   };
-}; 
+};

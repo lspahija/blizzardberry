@@ -30,9 +30,8 @@ export async function createDocuments(
     metadata: {
       ...metadata,
       chunk_index: index,
-      parent_document_id: parentId,
-      chatbot_id: chatbotId,
     },
+    parent_document_id: parentId,
     chatbot_id: chatbotId,
   }));
 
@@ -41,6 +40,27 @@ export async function createDocuments(
     .insert(documentsToInsert);
 
   return { error, documents: documentsToInsert };
+}
+
+export function getDocuments(chatbotId: string) {
+  return supabaseClient
+    .from('documents')
+    .select('id, content, metadata, parent_document_id')
+    .eq('chatbot_id', chatbotId);
+}
+
+export async function deleteAllChunks(
+  parentDocumentId: string,
+  chatbotId: string
+) {
+  // Delete all chunks with this parent_document_id
+  const { error: deleteError } = await supabaseClient
+    .from('documents')
+    .delete()
+    .eq('parent_document_id', parentDocumentId)
+    .eq('chatbot_id', chatbotId);
+
+  return deleteError;
 }
 
 export async function similaritySearch(
@@ -62,7 +82,7 @@ export async function similaritySearch(
   }
 
   return data.reduce((acc: Record<string, any[]>, row: any) => {
-    const parentId = row.metadata?.parent_document_id || 'no_parent';
+    const parentId = row.parent_document_id;
     if (!acc[parentId]) acc[parentId] = [];
     acc[parentId].push({
       id: row.id,

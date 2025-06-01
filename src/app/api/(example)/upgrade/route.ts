@@ -1,4 +1,4 @@
-export async function POST(req: Request) {
+export async function POST(_: Request) {
   return new Response(
     JSON.stringify({
       account_id: 1,

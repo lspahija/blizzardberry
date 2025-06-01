@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
-import { supabaseClient } from '@/app/api/lib/store/supabase';
 import { auth } from '@/lib/auth/auth';
 import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
 import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
+import {
+  deleteChatbot,
+  getChatbotByUserId,
+} from '@/app/api/lib/store/chatbotStore';
 
 export async function GET(
   _: Request,
@@ -16,12 +19,10 @@ export async function GET(
 
     const { chatbotId } = await params;
 
-    const { data, error } = await supabaseClient
-      .from('chatbots')
-      .select('id, name, website_domain, created_by, created_at')
-      .eq('id', chatbotId)
-      .eq('created_by', session.user.id)
-      .single();
+    const { data, error } = await getChatbotByUserId(
+      chatbotId,
+      session.user.id
+    );
 
     if (error || !data) {
       console.error('Error fetching chatbot:', error);
@@ -50,7 +51,7 @@ export async function GET(
 }
 
 export async function DELETE(
-  req: Request,
+  _: Request,
   { params }: { params: Promise<{ chatbotId: string }> }
 ) {
   try {
@@ -61,25 +62,11 @@ export async function DELETE(
 
     const { chatbotId } = await params;
 
-    // Check if the chatbot exists and user has access
-    const { data: chatbot, error: fetchError } = await supabaseClient
-      .from('chatbots')
-      .select('*')
-      .eq('id', chatbotId)
-      .single();
-
-    if (fetchError) {
-      return NextResponse.json({ error: 'Chatbot not found' }, { status: 404 });
-    }
-
     const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 
     // Delete the chatbot
-    const { error: deleteError } = await supabaseClient
-      .from('chatbots')
-      .delete()
-      .eq('id', chatbotId);
+    const { error: deleteError } = await deleteChatbot(chatbotId);
 
     if (deleteError) {
       throw new Error(`Failed to delete chatbot: ${deleteError.message}`);
