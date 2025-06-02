@@ -73,5 +73,5 @@ export const getRegisterMultipleToolsExample = (
   }`;
     })
     .join(',\n');
-  return `window.ChatbotActions = {\n${functionsCode}\n};`;
+  return `<Script id="omni-interface-actions" strategy="afterInteractive">\n  ${`window.ChatbotActions = {\n  ${functionsCode}\n};`}\n</Script>`;
 };
