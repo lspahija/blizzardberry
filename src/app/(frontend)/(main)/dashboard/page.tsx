@@ -71,7 +71,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 flex gap-4">
           <Button
             asChild
             className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
@@ -79,6 +79,14 @@ export default function Dashboard() {
             <Link href="/chatbots/new" className="flex items-center">
               <PlusCircle className="mr-2 h-5 w-5" />
               Create New Chatbot
+            </Link>
+          </Button>
+          <Button
+            asChild
+            className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+          >
+            <Link href="/user-config" className="flex items-center">
+              User Configuration
             </Link>
           </Button>
         </div>
