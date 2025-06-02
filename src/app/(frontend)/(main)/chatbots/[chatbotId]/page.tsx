@@ -10,7 +10,7 @@ import {
   CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, PlusCircle, Trash2, X } from 'lucide-react';
+import { Loader2, PlusCircle, Trash2, X, Copy } from 'lucide-react';
 import {
   Action,
   ExecutionContext,
@@ -37,6 +37,7 @@ export default function ChatbotDetails({
   const [loadingActions, setLoadingActions] = useState(true);
   const [deletingActionId, setDeletingActionId] = useState<string | null>(null);
   const [showClientActions, setShowClientActions] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const { handleDeleteAction } = useActionForm();
   const { documents, loadingDocuments, deletingDocumentId, handleDeleteDocument } = useDocuments();
@@ -115,6 +116,23 @@ export default function ChatbotDetails({
       isArray: param.isArray
     }))
   })));
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(clientActionsCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  useEffect(() => {
+    if (showClientActions) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showClientActions]);
 
   if (loadingChatbot) {
     return (
@@ -215,8 +233,21 @@ export default function ChatbotDetails({
         )}
 
         {showClientActions && (
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="bg-[#FFFDF8] p-6 rounded-lg shadow-lg max-w-2xl w-full relative max-h-[80vh] overflow-auto">
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{
+              background: 'rgba(0,0,0,0.01)', // nearly transparent, but blocks pointer events
+              pointerEvents: 'auto',
+              overscrollBehavior: 'contain',
+              touchAction: 'none',
+            }}
+            onWheel={e => e.stopPropagation()}
+            onTouchMove={e => e.stopPropagation()}
+          >
+            <div
+              className="bg-[#FFFDF8] p-6 rounded-lg shadow-lg max-w-4xl w-full relative"
+              onClick={e => e.stopPropagation()}
+            >
               <button
                 className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
                 onClick={() => setShowClientActions(false)}
@@ -224,18 +255,28 @@ export default function ChatbotDetails({
                 <X className="h-6 w-6" />
               </button>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Client Actions Code</h2>
-              <SyntaxHighlighter
-                language="javascript"
-                style={vscDarkPlus}
-                customStyle={{
-                  borderRadius: '8px',
-                  padding: '16px',
-                  border: '2px solid #1a1a1a',
-                  backgroundColor: '#1a1a1a',
-                }}
-              >
-                {clientActionsCode}
-              </SyntaxHighlighter>
+              <div className="relative mb-2 max-h-[60vh] overflow-auto">
+                <SyntaxHighlighter
+                  language="javascript"
+                  style={vscDarkPlus}
+                  customStyle={{
+                    borderRadius: '8px',
+                    padding: '16px',
+                    border: '2px solid #1a1a1a',
+                    backgroundColor: '#1a1a1a',
+                    margin: 0,
+                  }}
+                >
+                  {clientActionsCode}
+                </SyntaxHighlighter>
+                <Button
+                  onClick={handleCopy}
+                  className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                >
+                  <Copy className="w-4 h-4 mr-2" />
+                  {copied ? 'Copied!' : 'Copy Code'}
+                </Button>
+              </div>
             </div>
           </div>
         )}
