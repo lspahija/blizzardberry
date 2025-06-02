@@ -15,22 +15,6 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy, ExternalLink} from 'lucide-react';
 import { useState } from 'react';
 
-// Extend Window interface to include our custom property
-declare global {
-  interface Window {
-    chatbotUserConfig: {
-      user_id: string;
-      user_hash: string;
-      account_number: string;
-      user_metadata: {
-        name: string;
-        email: string;
-        company: string;
-      };
-    };
-  }
-}
-
 export default function UserConfig() {
   const { data: session, status } = useSession();
   const [copied, setCopied] = useState(false);
@@ -51,8 +35,7 @@ export default function UserConfig() {
 
   const configExample = `<Script id="omni-interface-config" strategy="beforeInteractive">
   window.chatbotUserConfig = {
-    user_id: "${session?.user?.id || 'user_123'}",
-    user_hash: "unique_hash_456",
+    user_id: "user_123",
     account_number: "ACC123456",
     user_metadata: {
       name: "John Doe",
@@ -135,27 +118,6 @@ export default function UserConfig() {
                     <strong>Note:</strong> The keys shown above are just examples. You can add or remove keys as needed to fit your application's requirements.
                   </p>
                 </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Configuration Details
-                  </h3>
-                  <ul className="list-disc list-inside text-gray-600 space-y-2">
-                    <li>
-                      <strong>user_id:</strong> A unique identifier for the user
-                    </li>
-                    <li>
-                      <strong>user_hash:</strong> A secure hash for user verification
-                    </li>
-                    <li>
-                      <strong>account_number:</strong> The user's account identifier
-                    </li>
-                    <li>
-                      <strong>user_metadata:</strong> Additional user information that can be used by chatbots
-                    </li>
-                  </ul>
-                </div>
-
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-gray-900">
                     Implementation Steps
