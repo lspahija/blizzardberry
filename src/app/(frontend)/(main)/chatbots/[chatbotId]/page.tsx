@@ -10,7 +10,7 @@ import {
   CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, PlusCircle, Trash2 } from 'lucide-react';
+import { Loader2, PlusCircle, Trash2, X } from 'lucide-react';
 import {
   Action,
   ExecutionContext,
@@ -21,6 +21,9 @@ import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
+import { getRegisterMultipleToolsExample } from '@/app/(frontend)/lib/actionUtils';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 export default function ChatbotDetails({
   params: paramsPromise,
@@ -33,6 +36,7 @@ export default function ChatbotDetails({
   const [loadingChatbot, setLoadingChatbot] = useState(true);
   const [loadingActions, setLoadingActions] = useState(true);
   const [deletingActionId, setDeletingActionId] = useState<string | null>(null);
+  const [showClientActions, setShowClientActions] = useState(false);
 
   const { handleDeleteAction } = useActionForm();
   const { documents, loadingDocuments, deletingDocumentId, handleDeleteDocument } = useDocuments();
@@ -100,6 +104,17 @@ export default function ChatbotDetails({
       setDeletingActionId(null);
     }
   };
+
+  const clientActions = actions.filter(action => action.executionContext === ExecutionContext.CLIENT);
+  const clientActionsCode = getRegisterMultipleToolsExample(clientActions.map(action => ({
+    functionName: action.name,
+    dataInputs: action.executionModel.parameters.map(param => ({
+      name: param.name,
+      type: param.type,
+      description: param.description || '',
+      isArray: param.isArray
+    }))
+  })));
 
   if (loadingChatbot) {
     return (
@@ -187,6 +202,43 @@ export default function ChatbotDetails({
             </Link>
           </Button>
         </div>
+
+        {clientActions.length > 0 && (
+          <div className="mb-6">
+            <Button
+              className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+              onClick={() => setShowClientActions(true)}
+            >
+              Client Actions Code
+            </Button>
+          </div>
+        )}
+
+        {showClientActions && (
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-[#FFFDF8] p-6 rounded-lg shadow-lg max-w-2xl w-full relative max-h-[80vh] overflow-auto">
+              <button
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                onClick={() => setShowClientActions(false)}
+              >
+                <X className="h-6 w-6" />
+              </button>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Client Actions Code</h2>
+              <SyntaxHighlighter
+                language="javascript"
+                style={vscDarkPlus}
+                customStyle={{
+                  borderRadius: '8px',
+                  padding: '16px',
+                  border: '2px solid #1a1a1a',
+                  backgroundColor: '#1a1a1a',
+                }}
+              >
+                {clientActionsCode}
+              </SyntaxHighlighter>
+            </div>
+          </div>
+        )}
 
         {loadingActions ? (
           <div className="flex justify-center">

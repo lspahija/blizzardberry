@@ -41,3 +41,37 @@ export const getRegisterToolsExample = (
   }
 };`;
 };
+
+export const getRegisterMultipleToolsExample = (
+  actions: { functionName: string; dataInputs: DataInput[] }[]
+) => {
+  const functionsCode = actions
+    .map(({ functionName, dataInputs }) => {
+      const argList =
+        dataInputs
+          .filter((i) => i.name)
+          .map((i) => i.name)
+          .join(', ');
+      // If there are no args, just use userConfig
+      const params = [argList, 'userConfig'].filter(Boolean).join(', ');
+      return `  ${functionName || 'your_action'}: async (${params}) => {
+    try {
+      // ${argList ? argList.split(', ').map(n => `use ${n}`).join(', ') : 'no arguments'}
+      // userConfig - exposes the user config if you specified one
+      return { 
+        status: 'success',
+        data: {
+          // any object you want to return
+        }
+      };
+    } catch (error) {
+      return { 
+        status: 'error', 
+        error: error.message || 'Failed to execute action' 
+      };
+    }
+  }`;
+    })
+    .join(',\n');
+  return `window.ChatbotActions = {\n${functionsCode}\n};`;
+};
