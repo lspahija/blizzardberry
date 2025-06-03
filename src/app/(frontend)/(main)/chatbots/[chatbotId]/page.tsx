@@ -290,10 +290,9 @@ export default function ChatbotDetails({
               <div className="mt-6 space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900">Installation Instructions</h3>
                 <ul className="list-disc list-inside text-gray-600 space-y-2">
-                  <li>Copy the code snippet above</li>
-                  <li>Add it between the <code>&lt;body&gt;</code> tags of your website's HTML</li>
-                  <li>Make sure to implement all the functions defined in the code</li>
-                  <li>These functions will be available to your chatbot for client-side actions</li>
+                  <li>Implement your client-side functions into your app like the example above</li>
+                  <li>Add the code between the <code>&lt;body&gt;</code> tags of your website's HTML</li>
+                  <li>These functions will be available to your chatbot as client-side actions</li>
                   <li>
                     Need help? Visit our{' '}
                     <a

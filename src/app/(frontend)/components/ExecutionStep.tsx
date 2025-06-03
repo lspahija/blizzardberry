@@ -392,7 +392,7 @@ export default function ExecutionStep({
                     </Button>
                   </div>
                   <ul className="list-disc list-inside text-gray-600 space-y-2 mt-4 text-sm">
-                    <li>Implement your function like the example above</li>
+                    <li>Implement your function into your app like the example above</li>
                     <li>Add the code between the <code>&lt;body&gt;</code> tags of your website's HTML</li>
                     <li>The code will be available to your chatbot as a client-side action</li>
                     <li>
