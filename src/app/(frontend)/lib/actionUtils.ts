@@ -21,25 +21,27 @@ export const getRegisterToolsExample = (
       .filter((i) => i.name)
       .map((i) => i.name)
       .join(', ') || '...';
-  return `window.ChatbotActions = {
-  ${functionName || 'your_action'}: async (args, userConfig) => {
-    try {
-      // args.${argList}
-      // userConfig - exposes the user config if you specified one
-      return { 
-        status: 'success',
-        data: {
-          // any object you want to return
-        }
-      };
-    } catch (error) {
-      return { 
-        status: 'error', 
-        error: error.message || 'Failed to execute action' 
-      };
+  return `<Script id="omni-interface-actions" strategy="afterInteractive">
+  window.ChatbotActions = {
+    ${functionName || 'your_action'}: async (args, userConfig) => {
+      try {
+        // args.${argList}
+        // userConfig - exposes the user config if you specified one
+        return { 
+          status: 'success',
+          data: {
+            // any object you want to return
+          }
+        };
+      } catch (error) {
+        return { 
+          status: 'error', 
+          error: error.message || 'Failed to execute action' 
+        };
+      }
     }
-  }
-};`;
+  };
+</Script>`;
 };
 
 export const getRegisterMultipleToolsExample = (

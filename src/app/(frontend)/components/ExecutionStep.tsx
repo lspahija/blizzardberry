@@ -33,6 +33,9 @@ import {
 import { getInputNames, getRegisterToolsExample } from '../lib/actionUtils';
 import HeaderInput from '@/app/(frontend)/components/HeaderInput';
 import ArgsList from '@/app/(frontend)/components/ArgsList';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Copy, ExternalLink } from 'lucide-react';
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },
@@ -364,12 +367,48 @@ export default function ExecutionStep({
                 </div>
                 <div>
                   <Label className="text-gray-900">How to Implement</Label>
-                  <p className="text-sm text-gray-600 mt-1">
-                    In your app, register this action using the SDK. Example:
-                  </p>
-                  <pre className="bg-[#FFF4DA] border-2 border-gray-900 rounded p-4 text-sm overflow-x-auto mt-8">
-                    {getRegisterToolsExample(functionName, dataInputs)}
-                  </pre>
+                  <div className="relative mt-4">
+                    <SyntaxHighlighter
+                      language="javascript"
+                      style={vscDarkPlus}
+                      customStyle={{
+                        borderRadius: '8px',
+                        padding: '16px',
+                        border: '2px solid #1a1a1a',
+                        backgroundColor: '#1a1a1a',
+                        margin: 0,
+                      }}
+                    >
+                      {getRegisterToolsExample(functionName, dataInputs)}
+                    </SyntaxHighlighter>
+                    <Button
+                      onClick={() => {
+                        navigator.clipboard.writeText(getRegisterToolsExample(functionName, dataInputs));
+                      }}
+                      className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    >
+                      <Copy className="w-4 h-4 mr-2" />
+                      Copy Code
+                    </Button>
+                  </div>
+                  <ul className="list-disc list-inside text-gray-600 space-y-2 mt-4 text-sm">
+                    <li>Implement your function into your app like the example above</li>
+                    <li>Add the code between the <code>&lt;body&gt;</code> tags of your website's HTML</li>
+                    <li>The code will be available to your chatbot as a client-side action</li>
+                    <li>
+                    Need help? Visit our{' '}
+                    <a
+                      href="https://omni-interface.com/docs"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#FE4A60] hover:underline"
+                    >
+                      documentation{' '}
+                      <ExternalLink className="inline w-4 h-4" />
+                    </a>
+                    .
+                  </li>
+                  </ul>
                 </div>
               </div>
             )}
