@@ -249,3 +249,9 @@ This project uses [shadcn/ui](https://ui.shadcn.com/) components
 3. Enable **Developer Mode** in LM Studio.
 4. Start the LM Studio server to serve the model at `http://localhost:1234/v1`.
 5. Set the `MODEL_PROVIDER` environment variable to `lmstudio`.
+
+## Agreement
+66.6% - 33.3% split of the project between Luka and Frankie.
+1 year cliff, 4 year vesting
+Luka is CEO and single board member
+Frankie needs to launch the product by July 4, 2025, or he forfeits his shares.
