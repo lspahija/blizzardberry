@@ -1,4 +1,4 @@
-import { supabaseClient } from '@/app/api/lib/store/supabase';
+import sql from '@/app/api/lib/store/db';
 import {
   Action,
   ExecutionContext,
@@ -6,18 +6,13 @@ import {
 } from '@/app/api/lib/model/action/baseAction';
 
 export const getActions = async (chatbotId: string): Promise<Action[]> => {
-  const { data, error } = await supabaseClient
-    .from('actions')
-    .select(
-      'id, name, description, execution_context, execution_model, chatbot_id'
-    )
-    .eq('chatbot_id', chatbotId);
+  const actions = await sql`
+    SELECT id, name, description, execution_context, execution_model, chatbot_id
+    FROM actions
+    WHERE chatbot_id = ${chatbotId}
+  `;
 
-  if (error) {
-    throw new Error(`Failed to fetch actions: ${error.message}`);
-  }
-
-  return data.map((d) => ({
+  return actions.map((d: any) => ({
     id: d.id,
     name: d.name,
     description: d.description,
@@ -31,29 +26,22 @@ export const getAction = async (
   id: string,
   chatbotId: string
 ): Promise<Action | null> => {
-  const { data, error } = await supabaseClient
-    .from('actions')
-    .select(
-      'id, name, description, execution_context, execution_model, chatbot_id'
-    )
-    .eq('id', id)
-    .eq('chatbot_id', chatbotId)
-    .single();
+  const [action] = await sql`
+    SELECT id, name, description, execution_context, execution_model, chatbot_id
+    FROM actions
+    WHERE id = ${id} AND chatbot_id = ${chatbotId}
+    LIMIT 1
+  `;
 
-  if (error && error.code !== 'PGRST116') {
-    // Throw for errors other than "no rows returned" (PGRST116 is Supabase's code for no results)
-    throw new Error(`Failed to fetch action: ${error.message}`);
-  }
-
-  if (!data) return null;
+  if (!action) return null;
 
   return {
-    id: data.id,
-    name: data.name,
-    description: data.description,
-    executionContext: data.execution_context,
-    executionModel: data.execution_model,
-    chatbotId: data.chatbot_id,
+    id: action.id,
+    name: action.name,
+    description: action.description,
+    executionContext: action.execution_context,
+    executionModel: action.execution_model,
+    chatbotId: action.chatbot_id,
   };
 };
 
@@ -63,26 +51,19 @@ export const createAction = async (
   executionContext: ExecutionContext,
   executionModel: ExecutionModel,
   chatbotId: string
-) =>
-  supabaseClient.from('actions').insert({
-    name: actionName,
-    description,
-    execution_context: executionContext,
-    execution_model: executionModel,
-    chatbot_id: chatbotId,
-  });
+): Promise<void> => {
+  await sql`
+    INSERT INTO actions (name, description, execution_context, execution_model, chatbot_id)
+    VALUES (${actionName}, ${description}, ${executionContext}, ${executionModel}, ${chatbotId})
+  `;
+};
 
 export const deleteAction = async (
   id: string,
   chatbotId: string
 ): Promise<void> => {
-  const { error } = await supabaseClient
-    .from('actions')
-    .delete()
-    .eq('id', id)
-    .eq('chatbot_id', chatbotId);
-
-  if (error) {
-    throw new Error(`Failed to delete action: ${error.message}`);
-  }
+  await sql`
+    DELETE FROM actions
+    WHERE id = ${id} AND chatbot_id = ${chatbotId}
+  `;
 };

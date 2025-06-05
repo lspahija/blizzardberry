@@ -19,12 +19,9 @@ export async function GET(
 
     const { chatbotId } = await params;
 
-    const { data, error } = await getChatbotByUserId(
-      chatbotId,
-      session.user.id
-    );
+    const data = await getChatbotByUserId(chatbotId, session.user.id);
 
-    if (error || !data) {
+    if (!data) {
       console.error('Error fetching chatbot:', error);
       return NextResponse.json(
         { error: 'Chatbot not found or unauthorized' },
@@ -65,12 +62,7 @@ export async function DELETE(
     const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 
-    // Delete the chatbot
-    const { error: deleteError } = await deleteChatbot(chatbotId);
-
-    if (deleteError) {
-      throw new Error(`Failed to delete chatbot: ${deleteError.message}`);
-    }
+    await deleteChatbot(chatbotId);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

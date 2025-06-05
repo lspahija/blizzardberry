@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { supabaseClient } from '@/app/api/lib/store/supabase';
+import sql from '@/app/api/lib/store/db';
 import {
   cleanAndChunk,
   embedText,
@@ -26,7 +26,7 @@ export async function createDocuments(
   const documentsToInsert = validChunks.map(({ chunk, index }, i) => ({
     id: uuidv4(),
     content: chunk,
-    embedding: vectors[i],
+    embedding: `[${vectors[i].join(',')}]`, // Convert array to halfvec string format
     metadata: {
       ...metadata,
       chunk_index: index,
@@ -35,32 +35,39 @@ export async function createDocuments(
     chatbot_id: chatbotId,
   }));
 
-  const { error } = await supabaseClient
-    .from('documents')
-    .insert(documentsToInsert);
+  await sql`
+    INSERT INTO documents (id, content, embedding, metadata, parent_document_id, chatbot_id)
+    VALUES ${sql(
+      documentsToInsert.map((doc) => [
+        doc.id,
+        doc.content,
+        doc.embedding,
+        doc.metadata,
+        doc.parent_document_id,
+        doc.chatbot_id,
+      ])
+    )}
+  `;
 
-  return { error, documents: documentsToInsert };
+  return documentsToInsert;
 }
 
-export function getDocuments(chatbotId: string) {
-  return supabaseClient
-    .from('documents')
-    .select('id, content, metadata, parent_document_id')
-    .eq('chatbot_id', chatbotId);
+export async function getDocuments(chatbotId: string) {
+  return sql`
+    SELECT id, content, metadata, parent_document_id
+    FROM documents
+    WHERE chatbot_id = ${chatbotId}
+  `;
 }
 
 export async function deleteAllChunks(
   parentDocumentId: string,
   chatbotId: string
 ) {
-  // Delete all chunks with this parent_document_id
-  const { error: deleteError } = await supabaseClient
-    .from('documents')
-    .delete()
-    .eq('parent_document_id', parentDocumentId)
-    .eq('chatbot_id', chatbotId);
-
-  return deleteError;
+  await sql`
+      DELETE FROM documents
+      WHERE parent_document_id = ${parentDocumentId} AND chatbot_id = ${chatbotId}
+    `;
 }
 
 export async function similaritySearch(
@@ -70,16 +77,13 @@ export async function similaritySearch(
 ) {
   const embedding = await embedText(query);
 
-  const { data, error } = await supabaseClient.rpc('search_documents', {
-    p_chatbot_id: chatbotId,
-    match_count: k,
-    query_embedding: embedding,
-  });
-
-  if (error) {
-    console.error('Similarity search error:', error);
-    throw new Error(error.message);
-  }
+  const data = await sql`
+      SELECT * FROM search_documents(
+        ${chatbotId},
+        ${k},
+        ${embedding}
+      )
+    `;
 
   return data.reduce((acc: Record<string, any[]>, row: any) => {
     const parentId = row.parent_document_id;

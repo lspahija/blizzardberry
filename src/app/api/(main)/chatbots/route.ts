@@ -12,19 +12,7 @@ export async function POST(req: Request) {
 
     const { name, websiteDomain } = await req.json();
 
-    const { data, error } = await createChatbot(
-      name,
-      websiteDomain,
-      session.user.id
-    );
-
-    if (error) {
-      console.error('Error creating chatbot:', error);
-      return NextResponse.json(
-        { error: 'Failed to create chatbot' },
-        { status: 500 }
-      );
-    }
+    const data = await createChatbot(name, websiteDomain, session.user.id);
 
     return NextResponse.json({ chatbotId: data.id }, { status: 201 });
   } catch (error) {
@@ -43,15 +31,7 @@ export async function GET(_: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data, error } = await getChatbots(session.user.id);
-
-    if (error) {
-      console.error('Error fetching chatbots:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch chatbots' },
-        { status: 500 }
-      );
-    }
+    const data = await getChatbots(session.user.id);
 
     const chatbots: Chatbot[] = data.map((d) => ({
       id: d.id,

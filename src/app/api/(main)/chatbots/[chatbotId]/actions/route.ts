@@ -48,21 +48,13 @@ export async function POST(
 
     const action: Action = await req.json();
 
-    const { error } = await createAction(
+    await createAction(
       action.name,
       action.description,
       action.executionContext,
       action.executionModel,
       chatbotId
     );
-
-    if (error) {
-      console.error('Error creating action:', error);
-      return NextResponse.json(
-        { error: 'Failed to create action' },
-        { status: 500 }
-      );
-    }
 
     return NextResponse.json({ actionName: action.name }, { status: 201 });
   } catch (error) {

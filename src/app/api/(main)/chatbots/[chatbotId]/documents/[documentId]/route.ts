@@ -18,16 +18,11 @@ export async function DELETE(
     const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 
-    const deleteError = await deleteAllChunks(documentId, chatbotId);
-
-    if (deleteError) {
-      throw new Error(
-        `Failed to delete document chunks: ${deleteError.message}`
-      );
-    }
+    await deleteAllChunks(documentId, chatbotId);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
+    console.error('Error deleting document:', error);
     return NextResponse.json(
       { error: 'Failed to delete document' },
       { status: 500 }

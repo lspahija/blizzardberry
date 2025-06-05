@@ -21,15 +21,7 @@ export async function GET(
     const authResponse = await chatbotAuth(session.user.id, chatbotId);
     if (authResponse) return authResponse;
 
-    const { data, error } = await getDocuments(chatbotId);
-
-    if (error) {
-      console.error('Error fetching documents:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch documents', details: error.message },
-        { status: 500 }
-      );
-    }
+    const data = await getDocuments(chatbotId);
 
     if (!data || data.length === 0) {
       console.warn(`No documents found for chatbot_id: ${chatbotId}`);
@@ -88,19 +80,7 @@ export async function POST(
 
     const { text, metadata } = await request.json();
 
-    const { error, documents } = await createDocuments(
-      text,
-      metadata,
-      chatbotId
-    );
-
-    if (error) {
-      console.error('Insert error:', error);
-      return NextResponse.json(
-        { error: 'Failed to store documents in Supabase' },
-        { status: 500 }
-      );
-    }
+    const documents = await createDocuments(text, metadata, chatbotId);
 
     return NextResponse.json(
       {
