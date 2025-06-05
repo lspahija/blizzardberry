@@ -9,6 +9,13 @@ import {
 } from '@/app/(frontend)/components/ui/card';
 import { Input } from '@/app/(frontend)/components/ui/input';
 import { Label } from '@/app/(frontend)/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/app/(frontend)/components/ui/select';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CheckCircle2, Copy, ExternalLink } from 'lucide-react';
@@ -21,6 +28,7 @@ export default function NewChatbotPage() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [websiteDomain, setWebsiteDomain] = useState('');
+  const [model, setModel] = useState('google/gemini-2.0-flash-001');
   const [chatbotId, setChatbotId] = useState(null);
   const [copied, setCopied] = useState(false);
   const { handleCreateChatbot } = useChatbots();
@@ -63,7 +71,7 @@ export default function NewChatbotPage() {
 
   const onCreateChatbot = async () => {
     try {
-      const { chatbotId: newChatbotId } = await handleCreateChatbot({ name, websiteDomain });
+      const { chatbotId: newChatbotId } = await handleCreateChatbot({ name, websiteDomain, model });
       setChatbotId(newChatbotId);
     } catch (error) {
       console.error('Error creating chatbot:', error);
@@ -242,6 +250,29 @@ export default function NewChatbotPage() {
                         placeholder="example.com"
                         className="mt-2 border-[2px] border-gray-900"
                       />
+                    </div>
+                    <div>
+                      <Label htmlFor="model" className="text-gray-900">
+                        Language Model
+                      </Label>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Select the language model to power your chatbot
+                      </p>
+                      <Select value={model} onValueChange={setModel}>
+                        <SelectTrigger className="mt-2 border-[2px] border-gray-900">
+                          <SelectValue placeholder="Select a model" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</SelectItem>
+                          <SelectItem value="google/gemini-2.5-pro-preview">Gemini 2.5 Pro Preview</SelectItem>
+                          <SelectItem value="openai/gpt-4.1">ChatGPT 4.1</SelectItem>
+                          <SelectItem value="openai/chatgpt-4o-latest">ChatGPT 4o</SelectItem>
+                          <SelectItem value="anthropic/claude-sonnet-4">Claude Sonnet 4</SelectItem>
+                          <SelectItem value="x-ai/grok-3-beta">Grok 3 Beta</SelectItem>
+                          <SelectItem value="deepseek/deepseek-r1-distill-qwen-7b">DeepSeek R1 Distill Qwen 7B (Free)</SelectItem>
+                          <SelectItem value="qwen/qwen3-30b-a3b">Qwen 3 30B A3B</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <Button
                       className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"

@@ -33,11 +33,12 @@ export async function getChatbots(userId: string) {
 export async function createChatbot(
   name: string,
   websiteDomain: string,
-  userId: string
+  userId: string,
+  model: string
 ) {
   const [chatbot] = await sql`
-    INSERT INTO chatbots (name, website_domain, created_by)
-    VALUES (${name}, ${websiteDomain}, ${userId})
+    INSERT INTO chatbots (name, website_domain, created_by, model)
+    VALUES (${name}, ${websiteDomain}, ${userId}, ${model})
     RETURNING id
   `;
 

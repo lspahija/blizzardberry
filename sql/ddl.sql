@@ -7,6 +7,7 @@ CREATE TABLE chatbots
     id             UUID                     DEFAULT gen_random_uuid() PRIMARY KEY,
     name           TEXT NOT NULL,
     website_domain TEXT NOT NULL,
+    model          TEXT NOT NULL DEFAULT 'google/gemini-2.0-flash-001',
     created_by     UUID NOT NULL REFERENCES next_auth.users (id) ON DELETE CASCADE,
     created_at     TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
@@ -160,3 +161,5 @@ CREATE TABLE IF NOT EXISTS next_auth.verification_tokens
 
 GRANT ALL ON TABLE next_auth.verification_tokens TO postgres;
 GRANT ALL ON TABLE next_auth.verification_tokens TO service_role;
+
+ALTER TABLE chatbots ADD COLUMN IF NOT EXISTS model TEXT NOT NULL DEFAULT 'google/gemini-2.0-flash-001';
