@@ -4,14 +4,20 @@ import {
   createSearchKnowledgeBaseTool,
   getToolsFromActions,
 } from '@/app/api/lib/tools/toolProvider';
+import { getChatbot } from '@/app/api/lib/store/chatbotStore';
 
 export async function callLLM(
   messages: any,
   userConfig: any,
   chatbotId: string
 ) {
+  const chatbot = await getChatbot(chatbotId);
+  if (!chatbot) {
+    throw new Error('Chatbot not found');
+  }
+
   const stream = streamText({
-    model: getLanguageModel(),
+    model: getLanguageModel(chatbot.model),
     messages: messages,
     system: buildSystemMessage(userConfig),
     tools: {

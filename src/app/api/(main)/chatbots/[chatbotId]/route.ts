@@ -22,7 +22,7 @@ export async function GET(
     const data = await getChatbotByUserId(chatbotId, session.user.id);
 
     if (!data) {
-      console.error('Error fetching chatbot:', error);
+      console.error('Error fetching chatbot:', data);
       return NextResponse.json(
         { error: 'Chatbot not found or unauthorized' },
         { status: 404 }
@@ -33,6 +33,7 @@ export async function GET(
       id: data.id,
       name: data.name,
       websiteDomain: data.website_domain,
+      model: data.model,
       createdBy: data.created_by,
       createdAt: data.created_at,
     };

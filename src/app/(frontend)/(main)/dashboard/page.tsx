@@ -118,8 +118,11 @@ export default function Dashboard() {
                     <p className="text-gray-600 mb-2">
                       <strong>Domain:</strong> {chatbot.websiteDomain}
                     </p>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-gray-600 mb-2">
                       <strong>Created:</strong> {new Date(chatbot.createdAt).toLocaleDateString()}
+                    </p>
+                    <p className="text-gray-600 mb-2">
+                      <strong>Model:</strong> {chatbot.model}
                     </p>
                   </div>
                   <div className="flex justify-between items-end mt-4">

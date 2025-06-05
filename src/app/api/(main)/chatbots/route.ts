@@ -37,6 +37,7 @@ export async function GET(_: Request) {
       id: d.id,
       name: d.name,
       websiteDomain: d.website_domain,
+      model: d.model,
       createdBy: d.created_by,
       createdAt: d.created_at,
     }));

@@ -2,7 +2,7 @@ import sql from '@/app/api/lib/store/db';
 
 export async function getChatbot(chatbotId: string) {
   const [chatbot] = await sql`
-    SELECT id, created_by
+    SELECT id, created_by, model
     FROM chatbots
     WHERE id = ${chatbotId}
     LIMIT 1
@@ -13,7 +13,7 @@ export async function getChatbot(chatbotId: string) {
 
 export async function getChatbotByUserId(chatbotId: string, userId: string) {
   const [chatbot] = await sql`
-    SELECT id, name, website_domain, created_by, created_at
+    SELECT id, name, website_domain, model, xxscreated_by, created_at
     FROM chatbots
     WHERE id = ${chatbotId} AND created_by = ${userId}
     LIMIT 1
@@ -24,7 +24,7 @@ export async function getChatbotByUserId(chatbotId: string, userId: string) {
 
 export async function getChatbots(userId: string) {
   return sql`
-    SELECT id, name, website_domain, created_by, created_at
+    SELECT id, name, website_domain, model, created_by, created_at
     FROM chatbots
     WHERE created_by = ${userId}
   `;
