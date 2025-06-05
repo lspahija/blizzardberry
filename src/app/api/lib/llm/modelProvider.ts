@@ -22,7 +22,7 @@ export function getLanguageModel(model: string = 'google/gemini-2.0-flash-001') 
         name: 'lmstudio',
         baseURL: process.env.LMSTUDIO_BASE_URL!,
       });
-      return lmstudio(model);
+      return lmstudio('qwen3-8b');
 
     default:
       throw new Error(
