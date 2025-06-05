@@ -13,7 +13,7 @@ export async function getChatbot(chatbotId: string) {
 
 export async function getChatbotByUserId(chatbotId: string, userId: string) {
   const [chatbot] = await sql`
-    SELECT id, name, website_domain, model, xxscreated_by, created_at
+    SELECT id, name, website_domain, model, created_by, created_at
     FROM chatbots
     WHERE id = ${chatbotId} AND created_by = ${userId}
     LIMIT 1
