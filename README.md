@@ -99,16 +99,17 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # Things to be done
 
 ## Before Launch
-- test RAG pipeline with big documents and ensure everything works (find best model/API and use it, consider cost as well as in OpenRouter)
-- LLM models: offer all the best models through OpenRouter
-- polish the user onboarding experience. All the forms needs to work well and be easy to use. - use AI to find the webapps with the best UX and then copy what they do well
+- (Frankie) test RAG pipeline with big documents and ensure everything works (find best model/API and use it, consider cost as well) - https://huggingface.co/spaces/mteb/leaderboard
+- (Frankie) LLM models: offer all the best models through OpenRouter
+- (Frankie) polish the user onboarding experience. All the forms needs to work well and be easy to use. - use AI to find the webapps with the best UX and then copy what they do well
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
-- onboard Stripe - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
+- (Luka) onboard Stripe - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
   - have credits? Different models cost different amounts of credits per token.
   - have three tiers of subscriptions with each giving the user a certain amount of credits per month (we want this so we make money even if nobody uses the user's app). these credits don't roll over to the next month i.e. they expire 30 days after purchase. offer a fourth enterprise tier where they contact us
   - allow the user to buy more credits if they run out but these don't expire i.e. they roll over to the next month
   - each tier contains a limited number of actions
-- [finish onboarding](#posthog) PostHog for analytics
+- (Luka) [finish onboarding](#posthog) PostHog for analytics
+- (Luka) create simple event sourcing system that allows users to buy and spend credits (make sure it supports authorizations/holds since we don't know how many tokens the user will use until the LLM responds)
 - landing page needs to sell the product well!
 - add easy to use feedback form so users can report bugs and request features. make it easy for users to talk to us.
 - rename and get domain! - LOTR word like palantir or anduril? - https://grok.com/share/bGVnYWN5_eede228a-6894-4a8f-9025-dff5bc7ed106 - a couple good free ones so far are anduvion, numendil, silmarind, celendil, eryndil, parlur
