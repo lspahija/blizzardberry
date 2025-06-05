@@ -99,8 +99,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # Things to be done
 
 ## Before Launch
-- test RAG pipeline with big documents and ensure everything works - how does chatbase allow users to add new documents?
-- polish the user onboarding experience. All the forms needs to work well and be easy to use.
+- test RAG pipeline with big documents and ensure everything works (find best model/API and use it, consider cost as well as in OpenRouter)
+- LLM models: offer all the best models through OpenRouter
+- polish the user onboarding experience. All the forms needs to work well and be easy to use. - use AI to find the webapps with the best UX and then copy what they do well
 - currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
 - onboard Stripe - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
   - have credits? Different models cost different amounts of credits per token.
