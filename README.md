@@ -108,6 +108,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   - have three tiers of subscriptions with each giving the user a certain amount of credits per month (we want this so we make money even if nobody uses the user's app). these credits don't roll over to the next month i.e. they expire 30 days after purchase. offer a fourth enterprise tier where they contact us
   - allow the user to buy more credits if they run out but these don't expire i.e. they roll over to the next month
   - each tier contains a limited number of actions
+  - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) [finish onboarding](#posthog) PostHog for analytics
 - (Luka) create simple event sourcing system that allows users to buy and spend credits (make sure it supports authorizations/holds since we don't know how many tokens the user will use until the LLM responds)
 - landing page needs to sell the product well!
