@@ -10,9 +10,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { name, websiteDomain } = await req.json();
+    const { name, websiteDomain, model } = await req.json();
 
-    const data = await createChatbot(name, websiteDomain, session.user.id);
+    const data = await createChatbot(name, websiteDomain, session.user.id, model);
 
     return NextResponse.json({ chatbotId: data.id }, { status: 201 });
   } catch (error) {
@@ -37,6 +37,7 @@ export async function GET(_: Request) {
       id: d.id,
       name: d.name,
       websiteDomain: d.website_domain,
+      model: d.model,
       createdBy: d.created_by,
       createdAt: d.created_at,
     }));

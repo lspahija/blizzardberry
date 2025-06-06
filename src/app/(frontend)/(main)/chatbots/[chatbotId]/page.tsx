@@ -196,8 +196,11 @@ export default function ChatbotDetails({
             <p className="text-gray-600 mb-2">
               <strong>Domain:</strong> {chatbot.websiteDomain}
             </p>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 mb-2">
               <strong>Created:</strong> {new Date(chatbot.createdAt).toLocaleString()}
+            </p>
+            <p className="text-gray-600 mb-2">
+              <strong>Model:</strong> {chatbot.model}
             </p>
           </CardContent>
         </Card>

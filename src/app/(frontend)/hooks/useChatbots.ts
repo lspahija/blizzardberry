@@ -4,6 +4,7 @@ import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
 interface CreateChatbotParams {
   name: string;
   websiteDomain: string;
+  model: string;
 }
 
 export function useChatbots() {
@@ -51,7 +52,7 @@ export function useChatbots() {
     }
   }, [chatbots]);
 
-  const handleCreateChatbot = useCallback(async ({ name, websiteDomain }: CreateChatbotParams) => {
+  const handleCreateChatbot = useCallback(async ({ name, websiteDomain, model }: CreateChatbotParams) => {
     setCreatingChatbot(true);
     try {
       const response = await fetch('/api/chatbots', {
@@ -59,7 +60,7 @@ export function useChatbots() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, websiteDomain }),
+        body: JSON.stringify({ name, websiteDomain, model }),
       });
 
       if (!response.ok) {

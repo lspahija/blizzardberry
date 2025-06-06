@@ -6,7 +6,7 @@ enum ModelProvider {
   LMStudio = 'lmstudio',
 }
 
-export function getLanguageModel() {
+export function getLanguageModel(model: string) {
   const modelProvider =
     (process.env.MODEL_PROVIDER as ModelProvider) || ModelProvider.OpenRouter;
 
@@ -15,7 +15,7 @@ export function getLanguageModel() {
       const openrouter = createOpenRouter({
         apiKey: process.env.OPENROUTER_API_KEY!,
       });
-      return openrouter.chat('google/gemini-2.0-flash-001');
+      return openrouter.chat(model);
 
     case ModelProvider.LMStudio:
       const lmstudio = createOpenAICompatible({
