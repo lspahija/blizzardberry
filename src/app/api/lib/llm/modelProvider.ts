@@ -6,7 +6,7 @@ enum ModelProvider {
   LMStudio = 'lmstudio',
 }
 
-export function getLanguageModel(model: string = 'google/gemini-2.0-flash-001') {
+export function getLanguageModel(model: string) {
   const modelProvider =
     (process.env.MODEL_PROVIDER as ModelProvider) || ModelProvider.OpenRouter;
 

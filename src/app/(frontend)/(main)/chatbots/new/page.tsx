@@ -269,7 +269,7 @@ export default function NewChatbotPage() {
                           <SelectItem value="openai/chatgpt-4o-latest">ChatGPT 4o</SelectItem>
                           <SelectItem value="anthropic/claude-sonnet-4">Claude Sonnet 4</SelectItem>
                           <SelectItem value="x-ai/grok-3-beta">Grok 3 Beta</SelectItem>
-                          <SelectItem value="deepseek/deepseek-r1-distill-qwen-7b">DeepSeek R1 Distill Qwen 7B (Free)</SelectItem>
+                          <SelectItem value="deepseek/deepseek-r1-distill-qwen-7b">DeepSeek R1 Distill Qwen 7B</SelectItem>
                           <SelectItem value="qwen/qwen3-30b-a3b">Qwen 3 30B A3B</SelectItem>
                         </SelectContent>
                       </Select>
