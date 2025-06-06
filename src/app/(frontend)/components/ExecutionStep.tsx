@@ -130,9 +130,6 @@ export default function ExecutionStep({
   const handleMethodChange = (method: string) => {
     setApiMethod(method);
     setBodyError(null);
-    if (method === 'GET') {
-      setApiBody('');
-    }
   };
 
   const handleUrlChange = (value: string) => {
@@ -295,7 +292,6 @@ export default function ExecutionStep({
                     <TabsTrigger
                       value="body"
                       className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer"
-                      disabled={apiMethod === 'GET'}
                     >
                       Body
                     </TabsTrigger>
@@ -342,59 +338,53 @@ export default function ExecutionStep({
                       <Label htmlFor="apiBody" className="text-gray-900">
                         Body
                       </Label>
-                      {apiMethod === 'GET' ? (
-                        <div className="mt-2 p-4 bg-[#FFFDF8] border-[2px] border-gray-900 rounded-md">
-                          <p className="text-gray-600">GET requests cannot have a body</p>
-                        </div>
-                      ) : (
-                        <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden bg-[#FFF4DA]">
-                          <div className="relative">
-                            {!apiBody?.trim() && (
-                              <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
-                                {placeholderJSON}
-                              </div>
-                            )}
-                            <Editor
-                              height="200px"
-                              defaultLanguage="json"
-                              value={apiBody}
-                              onChange={handleEditorChange}
-                              beforeMount={handleEditorWillMount}
-                              onMount={(editor) => {
-                                editor.updateOptions({
-                                  lineNumbers: () => '',
-                                  glyphMargin: false,
-                                  lineDecorationsWidth: 0,
-                                  lineNumbersMinChars: 0,
-                                  suggest: {
-                                    showWords: false,
-                                    preview: true,
-                                    showProperties: false,
-                                  },
-                                });
-                                requestAnimationFrame(() => editor.layout());
-                              }}
-                              theme="customTheme"
-                              options={{
-                                fontSize: 14,
-                                minimap: { enabled: false },
-                                scrollBeyondLastLine: false,
-                                wordWrap: 'on',
-                                renderLineHighlight: 'none',
-                                scrollbar: {
-                                  verticalScrollbarSize: 8,
-                                  horizontalScrollbarSize: 8,
+                      <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden bg-[#FFF4DA]">
+                        <div className="relative">
+                          {!apiBody?.trim() && (
+                            <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
+                              {placeholderJSON}
+                            </div>
+                          )}
+                          <Editor
+                            height="200px"
+                            defaultLanguage="json"
+                            value={apiBody}
+                            onChange={handleEditorChange}
+                            beforeMount={handleEditorWillMount}
+                            onMount={(editor) => {
+                              editor.updateOptions({
+                                lineNumbers: () => '',
+                                glyphMargin: false,
+                                lineDecorationsWidth: 0,
+                                lineNumbersMinChars: 0,
+                                suggest: {
+                                  showWords: false,
+                                  preview: true,
+                                  showProperties: false,
                                 },
-                                padding: { top: 12, bottom: 12, left: 12 } as any,
-                                folding: false,
-                                hideCursorInOverviewRuler: true,
-                                guides: { indentation: false },
-                              }}
-                              className="bg-[#FFF4DA]"
-                            />
-                          </div>
+                              });
+                              requestAnimationFrame(() => editor.layout());
+                            }}
+                            theme="customTheme"
+                            options={{
+                              fontSize: 14,
+                              minimap: { enabled: false },
+                              scrollBeyondLastLine: false,
+                              wordWrap: 'on',
+                              renderLineHighlight: 'none',
+                              scrollbar: {
+                                verticalScrollbarSize: 8,
+                                horizontalScrollbarSize: 8,
+                              },
+                              padding: { top: 12, bottom: 12, left: 12 } as any,
+                              folding: false,
+                              hideCursorInOverviewRuler: true,
+                              guides: { indentation: false },
+                            }}
+                            className="bg-[#FFF4DA]"
+                          />
                         </div>
-                      )}
+                      </div>
                     </div>
                   </TabsContent>
                 </Tabs>
