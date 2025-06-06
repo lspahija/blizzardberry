@@ -72,7 +72,7 @@ export default function GeneralStep({
           <CardContent className="space-y-6">
             <div>
               <Label htmlFor="actionName" className="text-gray-900">
-                Action Name *
+                Action Name
               </Label>
               <p className="text-sm text-gray-600 mt-1">
                 A descriptive name for this action. This will help the AI agent
@@ -92,7 +92,7 @@ export default function GeneralStep({
             </div>
             <div>
               <Label htmlFor="description" className="text-gray-900">
-                Description *
+                Description
               </Label>
               <p className="text-sm text-gray-600 mt-1">
                 Explain when the AI Agent should use this action. Include a

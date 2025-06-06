@@ -264,9 +264,7 @@ export default function ExecutionStep({
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="apiUrl" className="flex items-center">
-                        HTTPS URL
-                      </Label>
+                      <Label htmlFor="apiUrl">HTTPS URL</Label>
                       <SuggestInput
                         id="apiUrl"
                         value={apiUrl}
