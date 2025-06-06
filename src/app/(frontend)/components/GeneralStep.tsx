@@ -2,6 +2,7 @@
 
 import { Save } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import {
   BaseAction,
   ExecutionContext,
@@ -37,6 +38,27 @@ export default function GeneralStep({
   setBaseAction,
   onNext,
 }: GeneralStepProps) {
+  const [errors, setErrors] = useState<{ name?: string; description?: string }>({});
+
+  const handleNext = () => {
+    const newErrors: { name?: string; description?: string } = {};
+    
+    if (!baseAction.name.trim()) {
+      newErrors.name = 'Action name is required';
+    }
+    if (!baseAction.description.trim()) {
+      newErrors.description = 'Description is required';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+    onNext();
+  };
+
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
       <div className="relative mb-12">
@@ -50,7 +72,7 @@ export default function GeneralStep({
           <CardContent className="space-y-6">
             <div>
               <Label htmlFor="actionName" className="text-gray-900">
-                Action Name
+                Action Name *
               </Label>
               <p className="text-sm text-gray-600 mt-1">
                 A descriptive name for this action. This will help the AI agent
@@ -59,16 +81,18 @@ export default function GeneralStep({
               <Input
                 id="actionName"
                 value={baseAction.name}
-                onChange={(e) =>
-                  setBaseAction({ ...baseAction, name: e.target.value })
-                }
+                onChange={(e) => {
+                  setErrors(prev => ({ ...prev, name: undefined }));
+                  setBaseAction({ ...baseAction, name: e.target.value });
+                }}
                 placeholder="Update_Subscription"
-                className="mt-2 border-[2px] border-gray-900"
+                className={`mt-2 border-[2px] ${errors.name ? 'border-red-500' : 'border-gray-900'}`}
               />
+              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
             </div>
             <div>
               <Label htmlFor="description" className="text-gray-900">
-                Description
+                Description *
               </Label>
               <p className="text-sm text-gray-600 mt-1">
                 Explain when the AI Agent should use this action. Include a
@@ -79,13 +103,15 @@ export default function GeneralStep({
               <Textarea
                 id="description"
                 value={baseAction.description}
-                onChange={(e) =>
-                  setBaseAction({ ...baseAction, description: e.target.value })
-                }
+                onChange={(e) => {
+                  setErrors(prev => ({ ...prev, description: undefined }));
+                  setBaseAction({ ...baseAction, description: e.target.value });
+                }}
                 placeholder="Describe when the AI agent should use this action..."
-                className="mt-2 border-[2px] border-gray-900"
+                className={`mt-2 border-[2px] ${errors.description ? 'border-red-500' : 'border-gray-900'}`}
                 rows={5}
               />
+              {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
             </div>
             <div>
               <Label className="text-gray-900">Action Type</Label>
@@ -120,7 +146,7 @@ export default function GeneralStep({
             </div>
             <Button
               className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
-              onClick={onNext}
+              onClick={handleNext}
             >
               <Save className="w-4 h-4 mr-2" />
               Save and Continue

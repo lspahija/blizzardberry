@@ -54,7 +54,7 @@ export const createAction = async (
 ): Promise<void> => {
   await sql`
     INSERT INTO actions (name, description, execution_context, execution_model, chatbot_id)
-    VALUES (${actionName}, ${description}, ${executionContext}, ${executionModel}, ${chatbotId})
+    VALUES (${actionName}, ${description}, ${executionContext}, ${JSON.stringify(executionModel)}, ${chatbotId})
   `;
 };
 

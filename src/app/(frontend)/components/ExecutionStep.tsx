@@ -36,6 +36,7 @@ import ArgsList from '@/app/(frontend)/components/ArgsList';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy, ExternalLink } from 'lucide-react';
+import { useState } from 'react';
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },
@@ -109,6 +110,10 @@ export default function ExecutionStep({
   onCreate,
   onBack,
 }: ExecutionStepProps) {
+  const [bodyError, setBodyError] = useState<string | null>(null);
+  const [urlError, setUrlError] = useState<string | null>(null);
+  const [functionNameError, setFunctionNameError] = useState<string | null>(null);
+
   const addHeader = () => {
     setHeaders([...headers, { key: '', value: '' }]);
   };
@@ -118,7 +123,26 @@ export default function ExecutionStep({
     if (!isEditorInteracted && cleanedValue !== '') {
       setIsEditorInteracted(true);
     }
+    setBodyError(null);
     setApiBody(cleanedValue);
+  };
+
+  const handleMethodChange = (method: string) => {
+    setApiMethod(method);
+    setBodyError(null);
+    if (method === 'GET') {
+      setApiBody('');
+    }
+  };
+
+  const handleUrlChange = (value: string) => {
+    setUrlError(null);
+    setApiUrl(value);
+  };
+
+  const handleFunctionNameChange = (value: string) => {
+    setFunctionNameError(null);
+    setFunctionName(value);
   };
 
   const handleEditorWillMount = (monaco) => {
@@ -149,6 +173,29 @@ export default function ExecutionStep({
         };
       },
     });
+  };
+
+  const handleCreate = () => {
+    if (baseAction.executionContext === ExecutionContext.SERVER) {
+      if (!apiUrl.trim()) {
+        setUrlError('URL is required');
+        return;
+      }
+      if (apiMethod === 'PUT' && !apiBody.trim()) {
+        setBodyError('Body is required for PUT requests');
+        return;
+      }
+      if (apiMethod === 'GET' && apiBody.trim()) {
+        setBodyError('GET requests cannot have a body');
+        return;
+      }
+    } else {
+      if (!functionName.trim()) {
+        setFunctionNameError('Function name is required');
+        return;
+      }
+    }
+    onCreate();
   };
 
   return (
@@ -204,7 +251,7 @@ export default function ExecutionStep({
                   <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-4 mt-4">
                     <div>
                       <Label htmlFor="apiMethod">Method</Label>
-                      <Select value={apiMethod} onValueChange={setApiMethod}>
+                      <Select value={apiMethod} onValueChange={handleMethodChange}>
                         <SelectTrigger className="mt-2 border-[2px] border-gray-900">
                           <SelectValue placeholder="Select method" />
                         </SelectTrigger>
@@ -217,16 +264,21 @@ export default function ExecutionStep({
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="apiUrl">HTTPS URL</Label>
+                      <Label htmlFor="apiUrl" className="flex items-center">
+                        HTTPS URL
+                      </Label>
                       <SuggestInput
                         id="apiUrl"
                         value={apiUrl}
-                        onChange={(e) => setApiUrl(e.target.value)}
+                        onChange={(e) => handleUrlChange(e.target.value)}
                         suggestions={getInputNames(dataInputs, true)}
                         placeholder="https://wttr.in/{{city}}?format=j1"
-                        inputClassName="border-[2px] border-gray-900"
+                        inputClassName={`border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
                         matchMode="full"
                       />
+                      {urlError && (
+                        <p className="text-red-500 text-sm mt-1">{urlError}</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -245,10 +297,16 @@ export default function ExecutionStep({
                     <TabsTrigger
                       value="body"
                       className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer"
+                      disabled={apiMethod === 'GET'}
                     >
                       Body
                     </TabsTrigger>
                   </TabsList>
+                  {bodyError && (
+                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                      <p className="text-red-500 text-sm">{bodyError}</p>
+                    </div>
+                  )}
                   <TabsContent value="headers" className="mt-4">
                     <div>
                       <Label className="text-gray-900">Headers</Label>
@@ -286,53 +344,59 @@ export default function ExecutionStep({
                       <Label htmlFor="apiBody" className="text-gray-900">
                         Body
                       </Label>
-                      <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden bg-[#FFF4DA]">
-                        <div className="relative">
-                          {!apiBody?.trim() && (
-                            <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
-                              {placeholderJSON}
-                            </div>
-                          )}
-                          <Editor
-                            height="200px"
-                            defaultLanguage="json"
-                            value={apiBody}
-                            onChange={handleEditorChange}
-                            beforeMount={handleEditorWillMount}
-                            onMount={(editor) => {
-                              editor.updateOptions({
-                                lineNumbers: () => '',
-                                glyphMargin: false,
-                                lineDecorationsWidth: 0,
-                                lineNumbersMinChars: 0,
-                                suggest: {
-                                  showWords: false,
-                                  preview: true,
-                                  showProperties: false,
-                                },
-                              });
-                              requestAnimationFrame(() => editor.layout());
-                            }}
-                            theme="customTheme"
-                            options={{
-                              fontSize: 14,
-                              minimap: { enabled: false },
-                              scrollBeyondLastLine: false,
-                              wordWrap: 'on',
-                              renderLineHighlight: 'none',
-                              scrollbar: {
-                                verticalScrollbarSize: 8,
-                                horizontalScrollbarSize: 8,
-                              },
-                              padding: { top: 12, bottom: 12, left: 12 } as any,
-                              folding: false,
-                              hideCursorInOverviewRuler: true,
-                              guides: { indentation: false },
-                            }}
-                            className="bg-[#FFF4DA]"
-                          />
+                      {apiMethod === 'GET' ? (
+                        <div className="mt-2 p-4 bg-[#FFFDF8] border-[2px] border-gray-900 rounded-md">
+                          <p className="text-gray-600">GET requests cannot have a body</p>
                         </div>
-                      </div>
+                      ) : (
+                        <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden bg-[#FFF4DA]">
+                          <div className="relative">
+                            {!apiBody?.trim() && (
+                              <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
+                                {placeholderJSON}
+                              </div>
+                            )}
+                            <Editor
+                              height="200px"
+                              defaultLanguage="json"
+                              value={apiBody}
+                              onChange={handleEditorChange}
+                              beforeMount={handleEditorWillMount}
+                              onMount={(editor) => {
+                                editor.updateOptions({
+                                  lineNumbers: () => '',
+                                  glyphMargin: false,
+                                  lineDecorationsWidth: 0,
+                                  lineNumbersMinChars: 0,
+                                  suggest: {
+                                    showWords: false,
+                                    preview: true,
+                                    showProperties: false,
+                                  },
+                                });
+                                requestAnimationFrame(() => editor.layout());
+                              }}
+                              theme="customTheme"
+                              options={{
+                                fontSize: 14,
+                                minimap: { enabled: false },
+                                scrollBeyondLastLine: false,
+                                wordWrap: 'on',
+                                renderLineHighlight: 'none',
+                                scrollbar: {
+                                  verticalScrollbarSize: 8,
+                                  horizontalScrollbarSize: 8,
+                                },
+                                padding: { top: 12, bottom: 12, left: 12 } as any,
+                                folding: false,
+                                hideCursorInOverviewRuler: true,
+                                guides: { indentation: false },
+                              }}
+                              className="bg-[#FFF4DA]"
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </TabsContent>
                 </Tabs>
@@ -350,10 +414,13 @@ export default function ExecutionStep({
                   <Input
                     id="functionName"
                     value={functionName}
-                    onChange={(e) => setFunctionName(e.target.value)}
+                    onChange={(e) => handleFunctionNameChange(e.target.value)}
                     placeholder="get_weather"
-                    className="mt-2 border-[2px] border-gray-900"
+                    className={`mt-2 border-[2px] ${functionNameError ? 'border-red-500' : 'border-gray-900'}`}
                   />
+                  {functionNameError && (
+                    <p className="text-red-500 text-sm mt-1">{functionNameError}</p>
+                  )}
                 </div>
                 <div>
                   <Label className="text-gray-900">
@@ -422,7 +489,7 @@ export default function ExecutionStep({
               </Button>
               <Button
                 className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
-                onClick={onCreate}
+                onClick={handleCreate}
               >
                 Create Action
               </Button>
