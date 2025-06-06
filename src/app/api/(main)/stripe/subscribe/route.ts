@@ -12,9 +12,9 @@ export async function POST(req: Request) {
 
   const { tier } = (await req.json()) as { tier: string };
   const priceIds: Record<string, string> = {
-    basic: 'price_1RWKh6PKhdz1KLuNNkvSWH3D',
-    pro: 'price_1RWKhYPKhdz1KLuNQlXax8Pt',
-    premium: 'price_1RWKhkPKhdz1KLuNL5t2QEEI',
+    hobby: process.env.HOBBY_PLAN_PRICE_ID,
+    standard: process.env.STANDARD_PLAN_PRICE_ID,
+    pro: process.env.PRO_PLAN_PRICE_ID,
   };
 
   if (!priceIds[tier])

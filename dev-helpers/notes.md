@@ -755,7 +755,7 @@ CREATE TABLE subscriptions (
 id SERIAL PRIMARY KEY,
 user_id UUID REFERENCES users(id),
 stripe_subscription_id TEXT UNIQUE,
-tier TEXT CHECK (tier IN ('basic', 'pro', 'premium')),
+tier TEXT CHECK (tier IN ('hobby', 'standard', 'pro')),
 credits INTEGER NOT NULL,
 actions_limit INTEGER NOT NULL,
 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

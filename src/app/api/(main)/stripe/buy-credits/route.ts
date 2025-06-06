@@ -15,15 +15,11 @@ export async function POST(_: Request) {
     payment_method_types: ['card'],
     line_items: [
       {
-        price_data: {
-          currency: 'usd',
-          product_data: { name: '10,000 Credits' },
-          unit_amount: 1000, // $10
-        },
+        price: process.env.THOUSAND_CREDITS_PRICE_ID,
         quantity: 1,
       },
     ],
-    metadata: { user_id: session.user.id, credits: '10000' },
+    metadata: { user_id: session.user.id, credits: '1000' },
     mode: 'payment',
     ui_mode: 'embedded',
     return_url: `${process.env.NEXT_PUBLIC_URL}/return?session_id={CHECKOUT_SESSION_ID}`,

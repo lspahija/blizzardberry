@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       break;
 
     case 'checkout.session.completed':
-      console.log('checokut session completed');
+      console.log('checkout session completed');
 
       const session = event.data.object as Stripe.Checkout.Session;
       if (session.mode === 'payment') {
