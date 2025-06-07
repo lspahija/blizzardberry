@@ -43,11 +43,10 @@ export async function POST(req: Request) {
       invoice.billing_reason === 'subscription_create' ||
       invoice.billing_reason === 'subscription_cycle'
     ) {
-      const subscriptionId =
-        invoice.lines.data[0].parent?.subscription_item_details?.subscription;
-      const sub = await stripe.subscriptions.retrieve(subscriptionId, {
-        expand: ['items.data.price'],
-      });
+      const sub = await stripe.subscriptions.retrieve(
+        invoice.lines.data[0].parent?.subscription_item_details?.subscription,
+        { expand: ['items.data.price'] }
+      );
 
       const userId = sub.metadata.user_id;
       const credits = parseInt(sub.metadata.credits);
