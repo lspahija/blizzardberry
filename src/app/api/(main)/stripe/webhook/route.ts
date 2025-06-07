@@ -63,18 +63,21 @@ export async function POST(req: Request) {
   }
 
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as Stripe.Checkout.Session;
+    const checkoutSession = event.data.object as Stripe.Checkout.Session;
 
-    if (session.mode === 'payment' && session.payment_status === 'paid') {
-      const userId = session.metadata.user_id;
-      const pricingName = session.metadata.pricingName;
-      const credits = parseInt(session.metadata.credits);
+    if (
+      checkoutSession.mode === 'payment' &&
+      checkoutSession.payment_status === 'paid'
+    ) {
+      const userId = checkoutSession.metadata.user_id;
+      const pricingName = checkoutSession.metadata.pricingName;
+      const credits = parseInt(checkoutSession.metadata.credits);
 
       console.log(
         `one time credit purchase paid: userId: ${userId}, pricingName: ${pricingName}, credits: ${credits}`
       );
 
-      await addCredits(userId, credits, null, session.id);
+      await addCredits(userId, credits, null, checkoutSession.id);
     }
   }
 
