@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       const renewAt = new Date(sub.items.data[0]?.current_period_end * 1000);
 
       console.log(
-        `subscription created or cycled: ${userId}, tierName: ${tierName} credits: ${credits}, renewAt: ${renewAt}`
+        `subscription created or cycled: userId: ${userId}, tierName: ${tierName} credits: ${credits}, renewAt: ${renewAt}`
       );
 
       await addCredits(userId, credits, renewAt, invoice.id);
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
       const credits = parseInt(session.metadata.credits);
 
       console.log(
-        `one time credit purchase paid: ${userId}, pricingName: ${pricingName}, credits: ${credits}`
+        `one time credit purchase paid: userId: ${userId}, pricingName: ${pricingName}, credits: ${credits}`
       );
 
       await addCredits(userId, credits, null, session.id);
