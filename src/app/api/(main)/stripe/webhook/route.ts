@@ -3,28 +3,29 @@ import { NextResponse } from 'next/server';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Helper – stub out your own persistence layer here
-// ──────────────────────────────────────────────────────────────────────────────
-async function addCreditsToUser(
+/* ────────────────────────────────────────────────────────────────────────── */
+/* Stubs – replace with your DB logic & idempotency checks                    */
+/* ────────────────────────────────────────────────────────────────────────── */
+async function addCredits(
   userId: string,
   credits: number,
-  renewAt?: Date | null
+  renewAt: Date | null,
+  stripeId: string
 ) {
-  /* TODO: upsert credits, tier, renewal date in your DB */
+  /* 1. ensure stripeId (event / invoice / session) hasn’t been processed
+     2. update user’s credit balance
+     3. store renewAt if not null
+  */
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Webhook route
-// ──────────────────────────────────────────────────────────────────────────────
 export async function POST(req: Request) {
-  const body = await req.text();
+  const rawBody = await req.text();
   const sig = req.headers.get('stripe-signature') as string;
 
   let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(
-      body,
+      rawBody,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
@@ -35,61 +36,46 @@ export async function POST(req: Request) {
     );
   }
 
-  switch (event.type) {
-    // ────────────────────────────────────────────────────────────────────
-    // 1) New subscription or plan change  ───────────────────────────────
-    // ────────────────────────────────────────────────────────────────────
-    case 'customer.subscription.created':
-    case 'customer.subscription.updated': {
-      const sub = event.data.object as Stripe.Subscription;
+  if (event.type === 'invoice.payment_succeeded') {
+    const invoice = event.data.object as Stripe.Invoice;
 
-      const userId = sub.metadata.user_id; // from /subscribe route
-      const tier = sub.items.data[0].price.metadata.tier;
-      const credits = parseInt(sub.items.data[0].price.metadata.credits);
-      const renewAt = new Date(sub.current_period_end * 1000); // exact renewal datetime
+    if (
+      invoice.billing_reason === 'subscription_create' ||
+      invoice.billing_reason === 'subscription_cycle'
+    ) {
+      const subscriptionId =
+        invoice.lines.data[0].parent?.subscription_item_details?.subscription;
+      const sub = await stripe.subscriptions.retrieve(subscriptionId, {
+        expand: ['items.data.price'],
+      });
 
-      await addCreditsToUser(userId, credits, renewAt);
-      break;
+      const userId = sub.metadata.user_id;
+      const credits = parseInt(sub.metadata.credits);
+      const tierName = sub.metadata.pricingName;
+      const renewAt = new Date(sub.items.data[0]?.current_period_end * 1000);
+
+      console.log(
+        `subscription created or cycled: ${userId}, tierName: ${tierName} credits: ${credits}, renewAt: ${renewAt}`
+      );
+
+      await addCredits(userId, credits, renewAt, invoice.id);
     }
+  }
 
-    // ────────────────────────────────────────────────────────────────────
-    // 2) Monthly renewal (recurring invoice)  ───────────────────────────
-    // ────────────────────────────────────────────────────────────────────
-    case 'invoice.payment_succeeded': {
-      const invoice = event.data.object as Stripe.Invoice;
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session;
 
-      if (invoice.billing_reason === 'subscription_cycle') {
-        const sub = await stripe.subscriptions.retrieve(
-          invoice.subscription as string,
-          { expand: ['items.data.price'] }
-        );
+    if (session.mode === 'payment' && session.payment_status === 'paid') {
+      const userId = session.metadata.user_id;
+      const pricingName = session.metadata.pricingName;
+      const credits = parseInt(session.metadata.credits);
 
-        const userId = sub.metadata.user_id;
-        const credits = parseInt(sub.items.data[0].price.metadata.credits);
-        const renewAt = new Date(sub.current_period_end * 1000);
+      console.log(
+        `one time credit purchase paid: ${userId}, pricingName: ${pricingName}, credits: ${credits}`
+      );
 
-        await addCreditsToUser(userId, credits, renewAt);
-      }
-      break;
+      await addCredits(userId, credits, null, session.id);
     }
-
-    // ────────────────────────────────────────────────────────────────────
-    // 3) One-time “buy credits” checkout  ────────────────────────────────
-    // ────────────────────────────────────────────────────────────────────
-    case 'checkout.session.completed': {
-      const session = event.data.object as Stripe.Checkout.Session;
-
-      // Only care about one-time payments (mode === 'payment')
-      if (session.mode === 'payment') {
-        const userId = session.metadata.user_id;
-        const credits = parseInt(session.metadata.credits); // “1000” from buy-credits route
-
-        await addCreditsToUser(userId, credits, null);
-      }
-      break;
-    }
-
-    // (optional) handle cleanup on subscription.deleted, payment_failed, etc.
   }
 
   return NextResponse.json({ received: true });

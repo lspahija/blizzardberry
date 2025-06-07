@@ -1,6 +1,7 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
+import { pricing } from '@/app/api/(main)/stripe/model';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -11,24 +12,25 @@ export async function POST(req: Request) {
   }
 
   const { tier } = (await req.json()) as { tier: string };
-  const priceIds: Record<string, string> = {
-    hobby: process.env.HOBBY_PLAN_PRICE_ID,
-    standard: process.env.STANDARD_PLAN_PRICE_ID,
-    pro: process.env.PRO_PLAN_PRICE_ID,
-  };
 
-  if (!priceIds[tier])
+  const tierDetails = pricing.tiers[tier];
+
+  if (!tierDetails)
     return NextResponse.json({ error: 'Invalid tier' }, { status: 400 });
 
   const checkoutSession = await stripe.checkout.sessions.create({
     customer_email: session.user.email,
     payment_method_types: ['card'],
     subscription_data: {
-      metadata: { user_id: session.user.id },
+      metadata: {
+        user_id: session.user.id,
+        pricingName: tierDetails.name,
+        credits: tierDetails.credits,
+      },
     },
     line_items: [
       {
-        price: priceIds[tier],
+        price: tierDetails.priceId,
         quantity: 1,
       },
     ],
