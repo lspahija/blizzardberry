@@ -877,3 +877,308 @@ subscription.items.data[0].price.metadata.actions_limit
 
 return NextResponse.json({ received: true });
 }
+
+
+
+
+
+
+my prompt:
+
+<copy paste the above>
+
+give me the final solution that uses a generic event store but supports:
+-holds (authorizations)
+-adding new credits
+-expiring credits
+-removing credits
+-spending credits (requires the hold/authorization)
+-synchronous projections
+
+give me the ddl and the queries i need for all of this to work. using postgres
+
+
+
+o3 response:
+
+
+Below is a complete, production-ready Postgres schema + the “canonical” SQL you need for every life-cycle action.
+The pattern is always the same:
+
+BEGIN;
+-- 1) append to the generic, append-only event log
+INSERT INTO domain_events …;
+
+-- 2) update the live projection tables (credit_batches / credit_holds)
+COMMIT;
+
+Because both happen in the same transaction, the projection can never drift from the event stream.
+
+⸻
+
+1  DDL
+
+-- 1. Generic event store -------------------------------------------
+CREATE TABLE domain_events (
+id          BIGSERIAL PRIMARY KEY,
+user_id     BIGINT   NOT NULL,
+type        TEXT     NOT NULL,       -- e.g. 'credit_added'
+body        JSONB    NOT NULL,       -- free-shape payload
+created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX ON domain_events (user_id, created_at);
+
+----------------------------------------------------------------------
+-- 2. Projection: spendable credit batches ---------------------------
+CREATE TABLE credit_batches (
+id                 BIGSERIAL PRIMARY KEY,
+user_id            BIGINT   NOT NULL,
+quantity_remaining INT      NOT NULL CHECK (quantity_remaining >= 0),
+expires_at         TIMESTAMPTZ,
+created_at         TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX ON credit_batches (user_id, expires_at NULLS LAST);
+
+----------------------------------------------------------------------
+-- 3. Projection: outstanding “holds” (authorisations) --------------
+CREATE TYPE hold_state AS ENUM ('active','captured','released','expired');
+
+CREATE TABLE credit_holds (
+id             BIGSERIAL PRIMARY KEY,
+user_id        BIGINT   NOT NULL,
+batch_id       BIGINT   NOT NULL REFERENCES credit_batches(id) ON DELETE CASCADE,
+quantity_held  INT      NOT NULL CHECK (quantity_held > 0),
+state          hold_state NOT NULL DEFAULT 'active',
+created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+expires_at     TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '30 minutes')  -- configurable
+);
+CREATE INDEX ON credit_holds (user_id, state);
+
+----------------------------------------------------------------------
+-- 4. (Nice-to-have) summary view for dashboards ---------------------
+CREATE MATERIALIZED VIEW user_credit_summary AS
+SELECT user_id,
+SUM(quantity_remaining)
+FILTER (WHERE expires_at IS NULL OR expires_at > now()) AS active_credits
+FROM credit_batches
+GROUP BY user_id;
+
+
+⸻
+
+2  Queries / stored procedures for every action
+
+You can write these as SQL functions, pg-procedures, or in application code (TypeScript shown for clarity).
+All of them must run in a single transaction.
+
+2.1  Add (or purchase) credits
+
+await sql.begin(async sql => {
+await sql`
+    INSERT INTO domain_events (user_id, type, body)
+    VALUES (${uid}, 'credit_added',
+           ${sql.json({qty, expiresAt, source: 'purchase'})})`;
+
+await sql`
+    INSERT INTO credit_batches (user_id, quantity_remaining, expires_at)
+    VALUES (${uid}, ${qty}, ${expiresAt})`;
+});
+
+
+⸻
+
+2.2  Create a hold / authorisation (start of LLM request)
+
+export async function authoriseCredits(
+userId: number,
+maxProbe: number,          // upper bound you are willing to reserve
+ref: string                // “chat-completion #abc”
+) {
+const holdIds: number[] = [];
+
+await sql.begin(async sql => {
+// pick soon-to-expire batches first, SKIP LOCKED removes race
+const batches = await sql`
+      SELECT id, quantity_remaining
+      FROM credit_batches
+      WHERE user_id = ${userId}
+        AND quantity_remaining > 0
+        AND (expires_at IS NULL OR expires_at > now())
+      ORDER BY expires_at NULLS LAST, created_at
+      FOR UPDATE SKIP LOCKED`;
+
+    let need = maxProbe;
+    for (const b of batches) {
+      if (need === 0) break;
+      const take = Math.min(need, b.quantity_remaining);
+
+      await sql`
+        UPDATE credit_batches
+        SET quantity_remaining = quantity_remaining - ${take}
+        WHERE id = ${b.id}`;
+
+      const [{id: holdId}] = await sql`
+        INSERT INTO credit_holds (user_id, batch_id, quantity_held)
+        VALUES (${userId}, ${b.id}, ${take})
+        RETURNING id`;
+      holdIds.push(holdId);
+
+      need -= take;
+    }
+    if (need > 0) throw new Error('Insufficient balance');
+
+    /* -------- event log -------- */
+    await sql`
+      INSERT INTO domain_events (user_id, type, body)
+      VALUES (${userId}, 'credit_hold_created',
+             ${sql.json({holdIds, maxProbe, ref})})`;
+});
+
+return holdIds;
+}
+
+
+⸻
+
+2.3  Capture (spend) the hold at stream end
+
+export async function captureCredits(
+holdIds: number[],
+actualUsed: number,      // final token count
+ref: string
+) {
+await sql.begin(async sql => {
+const holds = await sql`
+      SELECT id, batch_id, quantity_held
+      FROM credit_holds
+      WHERE id = ANY(${sql.array(holdIds)}) AND state = 'active'
+      FOR UPDATE`;
+
+    let need = actualUsed;
+    for (const h of holds) {
+      if (need === 0) break;
+      const take = Math.min(need, h.quantity_held);
+
+      /* nothing to do on credit_batches: tokens were already removed
+         when the hold was created                              */
+
+      const remainder = h.quantity_held - take;
+      if (remainder > 0) {
+        await sql`
+          UPDATE credit_batches
+          SET quantity_remaining = quantity_remaining + ${remainder}
+          WHERE id = ${h.batch_id}`;
+      }
+
+      await sql`
+        UPDATE credit_holds
+        SET state = 'captured',
+            quantity_held = ${take}
+        WHERE id = ${h.id}`;
+
+      need -= take;
+    }
+    if (need > 0) throw new Error('Used > authorised');
+
+    /* -------- event log -------- */
+    await sql`
+      INSERT INTO domain_events (user_id, type, body)
+      VALUES (
+        (SELECT user_id FROM credit_holds WHERE id = ${holdIds[0]}),
+        'credit_hold_captured',
+        ${sql.json({holdIds, actualUsed, ref})}
+      )`;
+});
+}
+
+
+⸻
+
+2.4  Release / cancel a hold (user abort, timeout)
+
+-- cron job every few minutes
+BEGIN;
+
+WITH expired AS (
+SELECT h.*
+FROM credit_holds h
+WHERE h.state = 'active'
+AND h.expires_at < now()
+FOR UPDATE
+)
+UPDATE credit_batches b
+SET quantity_remaining = quantity_remaining + e.quantity_held
+FROM expired e
+WHERE b.id = e.batch_id;
+
+UPDATE credit_holds
+SET state = 'expired'
+WHERE id IN (SELECT id FROM expired);
+
+INSERT INTO domain_events (user_id, type, body)
+SELECT user_id,
+'credit_hold_expired',
+jsonb_build_object('holdId', id, 'quantity', quantity_held)
+FROM expired;
+
+COMMIT;
+
+
+⸻
+
+2.5  Debit / remove credits directly (e.g. admin refund or penalty)
+
+await sql.begin(async sql => {
+// assume you already know which batch you will debit
+await sql`
+    UPDATE credit_batches
+    SET quantity_remaining = quantity_remaining - ${qty}
+    WHERE id = ${batchId}`;
+
+await sql`
+    INSERT INTO domain_events (user_id, type, body)
+    VALUES (${uid}, 'credit_removed',
+           ${sql.json({batchId, qty, reason: 'fraud'})})`;
+});
+
+
+⸻
+
+2.6  Expire batches nightly
+
+BEGIN;
+
+WITH dying AS (
+SELECT id, user_id, quantity_remaining
+FROM credit_batches
+WHERE quantity_remaining > 0
+AND expires_at < now()
+FOR UPDATE
+)
+UPDATE credit_batches
+SET quantity_remaining = 0
+WHERE id IN (SELECT id FROM dying);
+
+INSERT INTO domain_events (user_id, type, body)
+SELECT user_id,
+'credit_expired',
+jsonb_build_object('batchId', id,
+'qty', quantity_remaining)
+FROM dying
+WHERE quantity_remaining > 0;
+
+COMMIT;
+
+
+⸻
+
+3  Why this satisfies every bullet
+•	Holds / Authorisations – credit_holds projection tracks state; events credit_hold_created|captured|expired record the audit trail.
+•	Adding new credits – credit_added event + insert into credit_batches.
+•	Expiring credits – nightly sweep zeroes the batch and emits credit_expired.
+•	Removing credits – arbitrary admin debit is just another event (credit_removed).
+•	Spending credits – the two-step authorise → capture flow guarantees no double-spend.
+•	Synchronous projections – every mutation touches domain_events and the projections in the same BEGIN … COMMIT, so balances are always real-time and can be checked with a single indexed SELECT quantity_remaining FROM credit_batches ….
+
+That’s all the moving parts you need.
+Keep the event payloads immutable, replayable, and validated in your application layer, and you’ll have a ledger-grade audit trail plus the agility of a generic event store.

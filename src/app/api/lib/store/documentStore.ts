@@ -35,18 +35,17 @@ export async function createDocuments(
     chatbot_id: chatbotId,
   }));
 
+  const documentAsArray = documentsToInsert.map((doc) => [
+    doc.id,
+    doc.content,
+    doc.embedding,
+    doc.metadata,
+    doc.parent_document_id,
+    doc.chatbot_id,
+  ]);
+
   await sql`
-    INSERT INTO documents (id, content, embedding, metadata, parent_document_id, chatbot_id)
-    VALUES ${sql(
-      documentsToInsert.map((doc) => [
-        doc.id,
-        doc.content,
-        doc.embedding,
-        doc.metadata,
-        doc.parent_document_id,
-        doc.chatbot_id,
-      ])
-    )}
+    INSERT INTO documents (id, content, embedding, metadata, parent_document_id, chatbot_id) VALUES ${sql(documentAsArray)}
   `;
 
   return documentsToInsert;

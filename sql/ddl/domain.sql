@@ -1,0 +1,80 @@
+-- TODO: after launch, we should add db migrations (Supabase Migrations/Flyway/Liquibase, etc): https://grok.com/share/bGVnYWN5_028f4133-6951-47e9-803e-da4e87a5ddae
+
+-- chatbots
+
+CREATE TABLE chatbots -- TODO: rename this to agents
+(
+    id             UUID                     DEFAULT gen_random_uuid() PRIMARY KEY,
+    name           TEXT NOT NULL,
+    website_domain TEXT NOT NULL,
+    model          TEXT NOT NULL,
+    created_by     UUID NOT NULL REFERENCES next_auth.users (id) ON DELETE CASCADE,
+    created_at     TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+CREATE INDEX chatbots_created_by_idx ON chatbots (created_by);
+
+-- actions
+
+CREATE TYPE execution_context AS ENUM ('CLIENT', 'SERVER');
+
+CREATE TABLE actions
+(
+    id                UUID                     DEFAULT gen_random_uuid() PRIMARY KEY,
+    name              TEXT              NOT NULL,
+    description       TEXT              NOT NULL,
+    execution_context execution_context NOT NULL,
+    execution_model   JSONB             NOT NULL,
+    chatbot_id        UUID              NOT NULL REFERENCES chatbots (id) ON DELETE CASCADE,
+    created_at        TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+CREATE INDEX actions_chatbot_id_idx ON actions (chatbot_id);
+
+
+
+
+-- 1. Generic event store -------------------------------------------
+CREATE TABLE domain_events (
+                               id          BIGSERIAL PRIMARY KEY,
+                               user_id     BIGINT   NOT NULL,
+                               type        TEXT     NOT NULL,       -- e.g. 'credit_added'
+                               body        JSONB    NOT NULL,
+                               created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX ON domain_events (user_id, created_at);
+
+----------------------------------------------------------------------
+-- 2. Projection: spendable credit batches ---------------------------
+CREATE TABLE credit_batches (
+                                id                 BIGSERIAL PRIMARY KEY,
+                                user_id            BIGINT   NOT NULL,
+                                quantity_remaining INT      NOT NULL CHECK (quantity_remaining >= 0),
+                                expires_at         TIMESTAMPTZ,
+                                created_at         TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX ON credit_batches (user_id, expires_at NULLS LAST);
+
+----------------------------------------------------------------------
+-- 3. Projection: outstanding “holds” (authorisations) --------------
+CREATE TYPE hold_state AS ENUM ('active','captured','released','expired');
+
+CREATE TABLE credit_holds (
+                              id             BIGSERIAL PRIMARY KEY,
+                              user_id        BIGINT   NOT NULL,
+                              batch_id       BIGINT   NOT NULL REFERENCES credit_batches(id) ON DELETE CASCADE,
+                              quantity_held  INT      NOT NULL CHECK (quantity_held > 0),
+                              state          hold_state NOT NULL DEFAULT 'active',
+                              created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+                              expires_at     TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '30 minutes')  -- configurable
+);
+CREATE INDEX ON credit_holds (user_id, state);
+
+----------------------------------------------------------------------
+-- 4. (Nice-to-have) summary view for dashboards ---------------------
+CREATE MATERIALIZED VIEW user_credit_summary AS
+SELECT user_id,
+       SUM(quantity_remaining)
+       FILTER (WHERE expires_at IS NULL OR expires_at > now()) AS active_credits
+FROM credit_batches
+GROUP BY user_id;
