@@ -185,6 +185,7 @@ export default function AddDocument({
                   </div>
                 ))}
                 <Button
+                  type="button"
                   variant="outline"
                   className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
                   onClick={addMetadataField}
