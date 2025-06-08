@@ -71,7 +71,7 @@ export async function captureCredit(
   holdIds: number[],
   actualUsed: number, // final token count
   ref: string,
-  idempotencyKey: string // TODO: maybe calculate a key instead like in releaseExpiredHolds()
+  idempotencyKey: string
 ) {
   await sql.begin(async (sql) => {
     const holds = await sql`
@@ -138,7 +138,7 @@ async function releaseExpiredHolds() {
         SET state = 'expired'
         WHERE id = ${e.id}`;
 
-      const idempotencyKey = `CREDIT_HOLD_EXPIRED_${e.id}`; // TODO: make sure this is a good idempotency key
+      const idempotencyKey = `CREDIT_HOLD_EXPIRED_${e.id}`;
 
       await sql`
         INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
@@ -149,18 +149,17 @@ async function releaseExpiredHolds() {
 }
 
 async function removeCredit(
-  userId: number,
+  userId: string,
   batchId: number,
   qty: number,
-  reason: string
+  reason: string,
+  idempotencyKey: string
 ) {
   await sql.begin(async (sql) => {
     await sql`
       UPDATE credit_batches
       SET quantity_remaining = quantity_remaining - ${qty}
-      WHERE id = ${batchId}`;
-
-    const idempotencyKey = `CREDIT_REMOVED_${batchId}_${qty}_${reason}`; // TODO: make sure this is a good idempotency key
+      WHERE id = ${batchId} AND user_id = ${userId}`;
 
     await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
@@ -185,7 +184,7 @@ async function expireBatches() {
         SET quantity_remaining = 0
         WHERE id = ${d.id}`;
 
-      const idempotencyKey = `CREDIT_EXPIRED_${d.id}`; // TODO: make sure this is a good idempotency key
+      const idempotencyKey = `CREDIT_EXPIRED_${d.id}`;
 
       await sql`
         INSERT INTO domain_events (user_id, idempotency_key, type, event_data)

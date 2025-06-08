@@ -32,6 +32,7 @@ CREATE TABLE actions
 CREATE INDEX actions_chatbot_id_idx ON actions (chatbot_id);
 
 
+-- TODO: create required indexes for the following tables
 -- 1. Generic event store -------------------------------------------
 CREATE TYPE event_status AS ENUM ('PENDING', 'PROCESSED', 'FAILED', 'CANCELLED');
 
@@ -39,7 +40,7 @@ CREATE TABLE domain_events
 (
     id              BIGSERIAL PRIMARY KEY,
     user_id         BIGINT       NOT NULL,
-    idempotency_key TEXT         NOT NULL,
+    idempotency_key TEXT         NOT NULL UNIQUE,
     type            TEXT         NOT NULL,
     event_data      JSONB        NOT NULL,
     created_at      TIMESTAMPTZ  NOT NULL DEFAULT now(),
