@@ -16,4 +16,8 @@ drop table if exists documents;
 drop table if exists chatbots;
 drop function if exists search_documents;
 
+drop table if exists domain_events;
+drop table if exists credit_holds;
+drop table if exists credit_batches;
+
 

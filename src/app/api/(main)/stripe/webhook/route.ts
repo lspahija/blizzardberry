@@ -1,22 +1,8 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
+import { addCredit } from '@/app/api/lib/store/creditStore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
-/* ────────────────────────────────────────────────────────────────────────── */
-/* Stubs – replace with your DB logic & idempotency checks                    */
-/* ────────────────────────────────────────────────────────────────────────── */
-async function addCredits(
-  userId: string,
-  credits: number,
-  renewAt: Date | null,
-  stripeId: string
-) {
-  /* 1. ensure stripeId (event / invoice / session) hasn’t been processed
-     2. update user’s credit balance
-     3. store renewAt if not null
-  */
-}
 
 export async function POST(req: Request) {
   const rawBody = await req.text();
@@ -57,7 +43,7 @@ export async function POST(req: Request) {
         `subscription created or cycled: userId: ${userId}, tierName: ${tierName} credits: ${credits}, renewAt: ${renewAt}`
       );
 
-      await addCredits(userId, credits, renewAt, invoice.id);
+      await addCredit(userId, credits, invoice.id, renewAt);
     }
   }
 
@@ -76,7 +62,7 @@ export async function POST(req: Request) {
         `one time credit purchase paid: userId: ${userId}, pricingName: ${pricingName}, credits: ${credits}`
       );
 
-      await addCredits(userId, credits, null, checkoutSession.id);
+      await addCredit(userId, credits, checkoutSession.id, null);
     }
   }
 

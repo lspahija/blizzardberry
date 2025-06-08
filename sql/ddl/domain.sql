@@ -32,26 +32,32 @@ CREATE TABLE actions
 CREATE INDEX actions_chatbot_id_idx ON actions (chatbot_id);
 
 
-
-
 -- 1. Generic event store -------------------------------------------
-CREATE TABLE domain_events (
-                               id          BIGSERIAL PRIMARY KEY,
-                               user_id     BIGINT   NOT NULL,
-                               type        TEXT     NOT NULL,       -- e.g. 'credit_added'
-                               body        JSONB    NOT NULL,
-                               created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TYPE event_status AS ENUM ('PENDING', 'PROCESSED', 'FAILED', 'CANCELLED');
+
+CREATE TABLE domain_events
+(
+    id              BIGSERIAL PRIMARY KEY,
+    user_id         BIGINT       NOT NULL,
+    idempotency_key TEXT         NOT NULL,
+    type            TEXT         NOT NULL,
+    event_data      JSONB        NOT NULL,
+    created_at      TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    updated_at      TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    status          event_status NOT NULL DEFAULT 'PENDING'
+    -- if we need to perform validations that depend on a user's current state (hydrated state), this table should also include a version number to allow for optimistic concurrency control
 );
 CREATE INDEX ON domain_events (user_id, created_at);
 
 ----------------------------------------------------------------------
 -- 2. Projection: spendable credit batches ---------------------------
-CREATE TABLE credit_batches (
-                                id                 BIGSERIAL PRIMARY KEY,
-                                user_id            BIGINT   NOT NULL,
-                                quantity_remaining INT      NOT NULL CHECK (quantity_remaining >= 0),
-                                expires_at         TIMESTAMPTZ,
-                                created_at         TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE credit_batches
+(
+    id                 BIGSERIAL PRIMARY KEY,
+    user_id            BIGINT      NOT NULL,
+    quantity_remaining INT         NOT NULL CHECK (quantity_remaining >= 0),
+    expires_at         TIMESTAMPTZ,
+    created_at         TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX ON credit_batches (user_id, expires_at NULLS LAST);
 
@@ -59,14 +65,15 @@ CREATE INDEX ON credit_batches (user_id, expires_at NULLS LAST);
 -- 3. Projection: outstanding “holds” (authorisations) --------------
 CREATE TYPE hold_state AS ENUM ('active','captured','released','expired');
 
-CREATE TABLE credit_holds (
-                              id             BIGSERIAL PRIMARY KEY,
-                              user_id        BIGINT   NOT NULL,
-                              batch_id       BIGINT   NOT NULL REFERENCES credit_batches(id) ON DELETE CASCADE,
-                              quantity_held  INT      NOT NULL CHECK (quantity_held > 0),
-                              state          hold_state NOT NULL DEFAULT 'active',
-                              created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
-                              expires_at     TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '30 minutes')  -- configurable
+CREATE TABLE credit_holds
+(
+    id            BIGSERIAL PRIMARY KEY,
+    user_id       BIGINT      NOT NULL,
+    batch_id      BIGINT      NOT NULL REFERENCES credit_batches (id) ON DELETE CASCADE,
+    quantity_held INT         NOT NULL CHECK (quantity_held > 0),
+    state         hold_state  NOT NULL DEFAULT 'active',
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+    expires_at    TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '30 minutes') -- configurable
 );
 CREATE INDEX ON credit_holds (user_id, state);
 

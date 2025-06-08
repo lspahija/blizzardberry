@@ -1,14 +1,15 @@
 import sql from '@/app/api/lib/store/db';
 
-export async function addCredits(
-  userId: number,
+export async function addCredit(
+  userId: string,
   qty: number,
+  idempotencyKey: string,
   expiresAt?: Date
 ) {
   await sql.begin(async (sql) => {
     await sql`
-      INSERT INTO domain_events (user_id, type, body)
-      VALUES (${userId}, 'credit_added',
+      INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
+      VALUES (${userId}, ${idempotencyKey}, 'CREDIT_ADDED',
              ${sql.json({ qty, expiresAt, source: 'purchase' })})`;
 
     await sql`
@@ -17,10 +18,11 @@ export async function addCredits(
   });
 }
 
-export async function holdCredits(
-  userId: number,
+export async function holdCredit(
+  userId: string,
   maxProbe: number, // upper bound you are willing to reserve
-  ref: string // “chat-completion #abc”
+  ref: string, // “chat-completion #abc”
+  idempotencyKey: string
 ) {
   const holdIds: number[] = [];
 
@@ -57,18 +59,19 @@ export async function holdCredits(
 
     /* -------- event log -------- */
     await sql`
-      INSERT INTO domain_events (user_id, type, body)
-      VALUES (${userId}, 'credit_hold_created',
+      INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
+      VALUES (${userId}, ${idempotencyKey} 'credit_hold_created',
              ${sql.json({ holdIds, maxProbe, ref })})`;
   });
 
   return holdIds;
 }
 
-export async function captureCredits(
+export async function captureCredit(
   holdIds: number[],
   actualUsed: number, // final token count
-  ref: string
+  ref: string,
+  idempotencyKey: string // TODO: maybe calculate a key instead like in releaseExpiredHolds()
 ) {
   await sql.begin(async (sql) => {
     const holds = await sql`
@@ -105,10 +108,10 @@ export async function captureCredits(
 
     /* -------- event log -------- */
     await sql`
-      INSERT INTO domain_events (user_id, type, body)
+      INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (
-        (SELECT user_id FROM credit_holds WHERE id = ${holdIds[0]}),
-        'credit_hold_captured',
+        (SELECT user_id FROM credit_holds WHERE id = ${holdIds[0]}), ${idempotencyKey}
+        'CREDIT_HOLD_CAPTURED',
         ${sql.json({ holdIds, actualUsed, ref })}
       )`;
   });
@@ -135,15 +138,17 @@ async function releaseExpiredHolds() {
         SET state = 'expired'
         WHERE id = ${e.id}`;
 
+      const idempotencyKey = `CREDIT_HOLD_EXPIRED_${e.id}`; // TODO: make sure this is a good idempotency key
+
       await sql`
-        INSERT INTO domain_events (user_id, type, body)
-        VALUES (${e.user_id}, 'credit_hold_expired',
+        INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
+        VALUES (${e.user_id}, ${idempotencyKey}, 'CREDIT_HOLD_EXPIRED',
                ${sql.json({ holdId: e.id, quantity: e.quantity_held })})`;
     }
   });
 }
 
-async function removeCredits(
+async function removeCredit(
   userId: number,
   batchId: number,
   qty: number,
@@ -155,9 +160,11 @@ async function removeCredits(
       SET quantity_remaining = quantity_remaining - ${qty}
       WHERE id = ${batchId}`;
 
+    const idempotencyKey = `CREDIT_REMOVED_${batchId}_${qty}_${reason}`; // TODO: make sure this is a good idempotency key
+
     await sql`
-      INSERT INTO domain_events (user_id, type, body)
-      VALUES (${userId}, 'credit_removed',
+      INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
+      VALUES (${userId}, ${idempotencyKey}, 'CREDIT_REMOVED',
              ${sql.json({ batchId, qty, reason })})`;
   });
 }
@@ -178,9 +185,11 @@ async function expireBatches() {
         SET quantity_remaining = 0
         WHERE id = ${d.id}`;
 
+      const idempotencyKey = `CREDIT_EXPIRED_${d.id}`; // TODO: make sure this is a good idempotency key
+
       await sql`
-        INSERT INTO domain_events (user_id, type, body)
-        VALUES (${d.user_id}, 'credit_expired',
+        INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
+        VALUES (${d.user_id}, ${idempotencyKey}, 'CREDIT_EXPIRED',
                ${sql.json({ batchId: d.id, qty: d.quantity_remaining })})`;
     }
   });
