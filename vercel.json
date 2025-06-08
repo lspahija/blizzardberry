@@ -1,0 +1,18 @@
+{
+  "crons": [
+    {
+      "path": "/api/credits/release-expired-holds",
+      "schedule": "*/5 * * * *",
+      "headers": {
+        "Authorization": "Bearer ${CRON_SECRET}"
+      }
+    },
+    {
+      "path": "/api/credits/expire",
+      "schedule": "0 0 * * *",
+      "headers": {
+        "Authorization": "Bearer ${CRON_SECRET}"
+      }
+    }
+  ]
+}

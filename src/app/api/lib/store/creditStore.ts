@@ -121,8 +121,8 @@ export async function captureCredit(
   });
 }
 
-// run every few minutes
-async function releaseExpiredHolds() {
+// TODO: run every few minutes, probably with Vercel cron
+export async function releaseExpiredHolds() {
   await sql.begin(async (sql) => {
     const expired = await sql`
       SELECT h.id, h.user_id, h.batch_id, h.quantity_held
@@ -153,7 +153,7 @@ async function releaseExpiredHolds() {
   });
 }
 
-async function removeCredit(
+export async function removeCredit(
   userId: string,
   batchId: number,
   qty: number,
@@ -174,8 +174,8 @@ async function removeCredit(
   });
 }
 
-// run nightly
-async function expireBatches() {
+// TODO: run nightly - probably with Vercel cron
+export async function expireBatches() {
   await sql.begin(async (sql) => {
     const dying = await sql`
       SELECT id, user_id, quantity_remaining
