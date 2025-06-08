@@ -5,16 +5,28 @@ import {
   getToolsFromActions,
 } from '@/app/api/lib/tools/toolProvider';
 import { getChatbot } from '@/app/api/lib/store/chatbotStore';
+import {
+  createCreditHold,
+  recordUsedTokens,
+} from '@/app/api/lib/llm/tokenUsageManager';
 
 export async function callLLM(
   messages: any,
   userConfig: any,
-  chatbotId: string
+  chatbotId: string,
+  idempotencyKey: string
 ) {
   const chatbot = await getChatbot(chatbotId);
   if (!chatbot) {
     throw new Error('Chatbot not found');
   }
+
+  const holdIds = await createCreditHold(
+    chatbot.created_by,
+    200, // TODO: find a way to pick a sane upper bound
+    `chat-completion #${chatbotId}`,
+    idempotencyKey
+  );
 
   const stream = streamText({
     model: getLanguageModel(chatbot.model),
@@ -32,6 +44,14 @@ export async function callLLM(
       );
     },
     onFinish: async (event) => {
+      await recordUsedTokens(
+        chatbot.created_by,
+        holdIds,
+        event.usage,
+        `chat-completion #${chatbotId}`,
+        idempotencyKey
+      );
+
       console.log('Stream completed:', JSON.stringify(event, null, 2));
     },
   });

@@ -179,6 +179,7 @@
       body: JSON.stringify({
         messages: [...state.messages, actionResultMessage],
         chatbotId,
+        idempotencyKey: generateId(),
       }),
     });
 
@@ -229,6 +230,7 @@
           messages: state.messages,
           userConfig,
           chatbotId,
+          idempotencyKey: generateId(),
         }),
       });
 
