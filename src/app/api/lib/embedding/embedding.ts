@@ -1,37 +1,34 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { CohereClient } from 'cohere-ai';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-const model = genAI.getGenerativeModel({ model: 'gemini-embedding-exp-03-07' });
+const cohere = new CohereClient({
+  token: process.env.COHERE_API_KEY!,
+});
 
 export async function embedText(text: string): Promise<number[]> {
-  const result = await model.embedContent({
-    content: {
-      role: 'user',
-      parts: [{ text }],
-    },
+  const response = await cohere.embed({
+    texts: [text],
+    model: 'embed-v4.0',
+    inputType: 'search_query',
   });
 
-  const vector = result.embedding?.values;
+  const vector = response.embeddings[0];
 
-  if (!vector || vector.length !== 3072) {
-    throw new Error('Invalid Gemini embedding');
+  if (!vector || vector.length !== 1536) {
+    throw new Error('Invalid Cohere embedding');
   }
 
   return vector;
 }
 
 export async function embedTextBatch(texts: string[]): Promise<number[][]> {
-  const requests = texts.map((text) => ({
-    content: {
-      role: 'user',
-      parts: [{ text }],
-    },
-  }));
+  const response = await cohere.embed({
+    texts: texts,
+    model: 'embed-v4.0',
+    inputType: 'search_document',
+  });
 
-  const result = await model.batchEmbedContents({ requests });
-
-  return result.embeddings.map((e) => e.values);
+  return response.embeddings as number[][];
 }
 
 export async function cleanAndChunk(text: string) {
