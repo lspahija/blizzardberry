@@ -123,6 +123,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
       - [create prod OAuth app](https://github.com/settings/developers)
 - add "Powered By omni-interface" to the bottom of the chatbot
 - dogfood the product. Our app needs to have a chatbot integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
+- Differentiate enough to be able to with the PR war when the chatbase founder gets pissed that there’s competition
 
 ## Launch and Sell! 
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
@@ -156,6 +157,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
     - maybe use AI to scan the app's codebase - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
     - Google has a [Chrome extension](https://chromewebstore.google.com/detail/project-mariner-companion/kadmollpgjhjcclemeliidekkajnjaih) where you can teach the AI how to perform tasks. Maybe you can create an extension that records HTTP requests and functions called on each click and turns them into actions.
     - maybe use some tool to autodiscover website endpoints/capabilities
+    - have the widget keep track of all actions the user manually performs and then have an LLM interpret them on the backend and turn them into actions or documentation that can be used in RAG
     - brainstorm what the ideal frictionless onboarding would look like. Ideally the webapp owner doesn't have to do anything. We offer them a chatbot that just works.
 
 # Strategy
