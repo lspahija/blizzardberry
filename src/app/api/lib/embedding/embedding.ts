@@ -8,13 +8,13 @@ const cohere = new CohereClient({
 export async function embedText(text: string): Promise<number[]> {
   const response = await cohere.embed({
     texts: [text],
-    model: 'embed-multilingual-v3.0',
-    inputType: 'search_document',
+    model: 'embed-v4.0',
+    inputType: 'search_query',
   });
 
   const vector = response.embeddings[0];
 
-  if (!vector || vector.length !== 1024) {
+  if (!vector || vector.length !== 1536) {
     throw new Error('Invalid Cohere embedding');
   }
 
@@ -24,7 +24,7 @@ export async function embedText(text: string): Promise<number[]> {
 export async function embedTextBatch(texts: string[]): Promise<number[][]> {
   const response = await cohere.embed({
     texts: texts,
-    model: 'embed-multilingual-v3.0',
+    model: 'embed-v4.0',
     inputType: 'search_document',
   });
 
