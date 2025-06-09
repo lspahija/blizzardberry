@@ -17,7 +17,7 @@ export const getActions = async (chatbotId: string): Promise<Action[]> => {
     name: d.name,
     description: d.description,
     executionContext: d.execution_context,
-    executionModel: d.execution_model,
+    executionModel: JSON.parse(d.execution_model),
     chatbotId: d.chatbot_id,
   }));
 };
@@ -40,7 +40,7 @@ export const getAction = async (
     name: action.name,
     description: action.description,
     executionContext: action.execution_context,
-    executionModel: action.execution_model,
+    executionModel: JSON.parse(action.execution_model),
     chatbotId: action.chatbot_id,
   };
 };
@@ -54,7 +54,7 @@ export const createAction = async (
 ): Promise<void> => {
   await sql`
     INSERT INTO actions (name, description, execution_context, execution_model, chatbot_id)
-    VALUES (${actionName}, ${description}, ${executionContext}, ${JSON.stringify(executionModel)}, ${chatbotId})
+    VALUES (${actionName}, ${description}, ${executionContext}, ${JSON.stringify(executionModel)}::jsonb, ${chatbotId})
   `;
 };
 

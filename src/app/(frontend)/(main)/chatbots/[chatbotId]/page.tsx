@@ -117,7 +117,7 @@ export default function ChatbotDetails({
   const clientActions = actions.filter(action => action.executionContext === ExecutionContext.CLIENT);
   const clientActionsCode = getRegisterMultipleToolsExample(clientActions.map(action => ({
     functionName: action.name,
-    dataInputs: action.executionModel.parameters.map(param => ({
+    dataInputs: (action.executionModel.parameters || []).map(param => ({
       name: param.name,
       type: param.type,
       description: param.description || '',
@@ -427,8 +427,8 @@ export default function ChatbotDetails({
                         </p>
                         <p className="text-sm text-gray-500">
                           Parameters:{' '}
-                          {action.executionModel.parameters.length > 0
-                            ? action.executionModel.parameters
+                          {(action.executionModel.parameters || []).length > 0
+                            ? (action.executionModel.parameters || [])
                                 .map(
                                   (param) =>
                                     `${param.name} (${param.type}${param.isArray ? '[]' : ''})`

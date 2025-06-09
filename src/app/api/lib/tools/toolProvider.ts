@@ -57,7 +57,7 @@ export async function getToolsFromActions(chatbotId: string) {
 
   for (const action of actions) {
     const parameterSchema = createParameterSchema(
-      action.executionModel.parameters
+      action.executionModel.parameters || []
     );
     const prefix =
       action.executionContext === ExecutionContext.SERVER
