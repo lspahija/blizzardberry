@@ -209,7 +209,7 @@ export default function ChatbotDetails({
         <div className="mb-6 flex space-x-4">
           <Button
             asChild
-            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg"
+            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-[#ff6a7a]"
           >
             <Link
               href={`/chatbots/${params.chatbotId}/actions/new`}
@@ -221,7 +221,7 @@ export default function ChatbotDetails({
           </Button>
           <Button
             asChild
-            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg"
+            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-[#ff6a7a]"
           >
             <Link
               href={`/chatbots/${params.chatbotId}/documents/new`}
@@ -411,7 +411,7 @@ export default function ChatbotDetails({
             <CardContent>
               <ul className="space-y-4">
                 {actions.map((action, idx) => (
-                  <li key={action.id || action.name} className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group">
+                  <li key={action.id || action.name} className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2">
                     <Zap className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
                     <div className="flex-1">
                       <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">{action.name}</p>
@@ -486,7 +486,7 @@ export default function ChatbotDetails({
             <CardContent>
               <ul className="space-y-4">
                 {documents.map((doc, idx) => (
-                  <li key={doc.id} className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group">
+                  <li key={doc.id} className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2">
                     <FileText className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
                     <div className="flex-1">
                       <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">
