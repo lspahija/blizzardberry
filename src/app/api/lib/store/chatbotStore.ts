@@ -51,3 +51,23 @@ export async function deleteChatbot(chatbotId: string) {
     WHERE id = ${chatbotId}
   `;
 }
+
+export async function updateChatbot(
+  chatbotId: string,
+  data: {
+    name: string;
+    website_domain: string;
+    model: string;
+  }
+) {
+  const { name, website_domain, model } = data;
+  const result = await sql`
+    UPDATE chatbots
+    SET name = ${name},
+        website_domain = ${website_domain},
+        model = ${model}
+    WHERE id = ${chatbotId}
+    RETURNING *
+  `;
+  return result[0];
+}

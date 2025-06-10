@@ -7,11 +7,14 @@ interface CreateChatbotParams {
   model: string;
 }
 
+interface UpdateChatbotParams extends CreateChatbotParams {}
+
 export function useChatbots() {
   const [chatbots, setChatbots] = useState<Chatbot[]>([]);
   const [loadingChatbots, setLoadingChatbots] = useState(true);
   const [deletingChatbotId, setDeletingChatbotId] = useState<string | null>(null);
   const [creatingChatbot, setCreatingChatbot] = useState(false);
+  const [updatingChatbot, setUpdatingChatbot] = useState(false);
 
   const fetchChatbots = useCallback(async () => {
     try {
@@ -79,13 +82,40 @@ export function useChatbots() {
     }
   }, [fetchChatbots]);
 
+  const handleUpdateChatbot = useCallback(async (chatbotId: string, { name, websiteDomain, model }: UpdateChatbotParams) => {
+    setUpdatingChatbot(true);
+    try {
+      const response = await fetch(`/api/chatbots/${chatbotId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, websiteDomain, model }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update chatbot');
+      }
+
+      await fetchChatbots(); // Refresh the list
+    } catch (error) {
+      console.error('Error updating chatbot:', error);
+      alert('Failed to update chatbot. Please try again.');
+      throw error;
+    } finally {
+      setUpdatingChatbot(false);
+    }
+  }, [fetchChatbots]);
+
   return {
     chatbots,
     loadingChatbots,
     deletingChatbotId,
     creatingChatbot,
+    updatingChatbot,
     fetchChatbots,
     handleDeleteChatbot,
     handleCreateChatbot,
+    handleUpdateChatbot,
   };
 } 

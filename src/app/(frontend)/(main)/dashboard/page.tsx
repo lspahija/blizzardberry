@@ -11,7 +11,7 @@ import {
   CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, PlusCircle, Trash2 } from 'lucide-react';
+import { Loader2, PlusCircle, Trash2, Settings } from 'lucide-react';
 import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
 
 export default function Dashboard() {
@@ -125,19 +125,29 @@ export default function Dashboard() {
                       <strong>Model:</strong> {chatbot.model}
                     </p>
                   </div>
-                  <div className="flex justify-between items-end mt-4">
-                    <Button
-                      asChild
-                      className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
-                    >
-                      <Link href={`/chatbots/${chatbot.id}`}>View Details</Link>
-                    </Button>
+                  <div className="flex justify-between items-center mt-4">
+                    <div className="flex gap-2">
+                      <Button
+                        asChild
+                        className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                      >
+                        <Link href={`/chatbots/${chatbot.id}`}>View Details</Link>
+                      </Button>
+                      <Button
+                        asChild
+                        className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform group"
+                      >
+                        <Link href={`/chatbots/${chatbot.id}/edit`} className="flex items-center gap-2">
+                          <Settings className="h-4 w-4 transition-transform group-hover:rotate-45" />
+                          <span>Edit</span>
+                        </Link>
+                      </Button>
+                    </div>
                     <Button
                       variant="destructive"
-                      size="sm"
                       onClick={() => chatbot.id && handleDeleteChatbot(chatbot.id)}
                       disabled={deletingChatbotId === chatbot.id}
-                      className="border-[3px] border-gray-900 ml-4"
+                      className="border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform h-9 px-4 mt-0.5"
                     >
                       {deletingChatbotId === chatbot.id ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
