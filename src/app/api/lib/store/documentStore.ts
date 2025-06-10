@@ -75,12 +75,13 @@ export async function similaritySearch(
   chatbotId: string
 ) {
   const embedding = await embedText(query);
+  const embeddingString = `[${embedding.join(',')}]`; // Format embedding as string with brackets
 
   const data = await sql`
       SELECT * FROM search_documents(
         ${chatbotId},
         ${k},
-        ${embedding}
+        ${embeddingString}
       )
     `;
 
