@@ -1,5 +1,5 @@
 import sql from '@/app/api/lib/store/db';
-import { processPending } from '@/app/api/lib/store/eventProcessor';
+import { handle } from '@/app/api/lib/store/eventProcessor';
 
 export async function addCredit(
   userId: string,
@@ -8,30 +8,39 @@ export async function addCredit(
   expiresAt?: Date
 ) {
   const eventType = 'CREDIT_ADDED';
+  let eventId: number;
+
   await sql.begin(async (sql) => {
-    await sql`
+    const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (${userId}, ${idempotencyKey}_${eventType}, ${eventType},
-             ${sql.json({ qty, expiresAt, source: 'purchase' })})`;
+              ${sql.json({ qty, expiresAt: expiresAt || null, source: 'purchase' })})
+      RETURNING id`;
+    eventId = event.id;
 
     await sql`
       INSERT INTO credit_batches (user_id, quantity_remaining, expires_at)
       VALUES (${userId}, ${qty}, ${expiresAt || null})`;
   });
 
-  await processPending();
+  await handle({
+    id: eventId,
+    type: eventType,
+    user_id: userId,
+    event_data: { qty, expiresAt: expiresAt || null, source: 'purchase' },
+  });
 }
 
 export async function holdCredit(
   userId: string,
-  maxProbe: number, // upper bound you are willing to reserve
-  ref: string, // “chat-completion #abc”
+  maxProbe: number,
+  ref: string,
   idempotencyKey: string
 ) {
   const holdIds: number[] = [];
+  let eventId: number;
 
   await sql.begin(async (sql) => {
-    // pick soon-to-expire batches first, SKIP LOCKED removes race
     const batches = await sql`
       SELECT id, quantity_remaining
       FROM credit_batches
@@ -39,7 +48,7 @@ export async function holdCredit(
         AND quantity_remaining > 0
         AND (expires_at IS NULL OR expires_at > now())
       ORDER BY expires_at NULLS LAST, created_at
-      FOR UPDATE SKIP LOCKED`;
+        FOR UPDATE SKIP LOCKED`;
 
     let need = maxProbe;
     for (const b of batches) {
@@ -61,15 +70,21 @@ export async function holdCredit(
     }
     if (need > 0) throw new Error('Insufficient balance');
 
-    /* -------- event log -------- */
     const eventType = 'CREDIT_HOLD_CREATED';
-    await sql`
+    const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (${userId}, ${idempotencyKey}_${eventType}, ${eventType},
-             ${sql.json({ holdIds, maxProbe, ref })})`;
+              ${sql.json({ holdIds, maxProbe, ref })})
+      RETURNING id`;
+    eventId = event.id;
   });
 
-  await processPending();
+  await handle({
+    id: eventId,
+    type: 'CREDIT_HOLD_CREATED',
+    user_id: userId,
+    event_data: { holdIds, maxProbe, ref },
+  });
 
   return holdIds;
 }
@@ -77,24 +92,23 @@ export async function holdCredit(
 export async function captureCredit(
   userId: string,
   holdIds: number[],
-  actualUsed: number, // final token count
+  actualUsed: number,
   ref: string,
   idempotencyKey: string
 ) {
+  let eventId: number;
+
   await sql.begin(async (sql) => {
     const holds = await sql`
       SELECT id, batch_id, quantity_held
       FROM credit_holds
       WHERE id = ANY(${sql.array(holdIds)}) AND state = 'ACTIVE'
-      FOR UPDATE`;
+        FOR UPDATE`;
 
     let need = actualUsed;
     for (const h of holds) {
       if (need === 0) break;
       const take = Math.min(need, h.quantity_held);
-
-      /* nothing to do on credit_batches: tokens were already removed
-         when the hold was created                              */
 
       const remainder = h.quantity_held - take;
       if (remainder > 0) {
@@ -114,29 +128,37 @@ export async function captureCredit(
     }
     if (need > 0) throw new Error('Used > authorised');
 
-    /* -------- event log -------- */
     const eventType = 'CREDIT_HOLD_CAPTURED';
-    await sql`
+    const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
-      VALUES (
-        ${userId}, ${idempotencyKey}_${eventType}
-        ${eventType},
-        ${sql.json({ holdIds, actualUsed, ref })}
-      )`;
+      VALUES (${userId}, ${idempotencyKey}_${eventType}, ${eventType},
+              ${sql.json({ holdIds, actualUsed, ref })})
+      RETURNING id`;
+    eventId = event.id;
   });
 
-  await processPending();
+  await handle({
+    id: eventId,
+    type: 'CREDIT_HOLD_CAPTURED',
+    user_id: userId,
+    event_data: { holdIds, actualUsed, ref },
+  });
 }
 
-// TODO: run every few minutes, probably with Vercel cron
 export async function releaseExpiredHolds() {
+  const events: {
+    id: number;
+    user_id: string;
+    event_data: { holdId: number; quantity: number };
+  }[] = [];
+
   await sql.begin(async (sql) => {
     const expired = await sql`
       SELECT h.id, h.user_id, h.batch_id, h.quantity_held
       FROM credit_holds h
       WHERE h.state = 'ACTIVE'
         AND h.expires_at < now()
-      FOR UPDATE`;
+        FOR UPDATE`;
 
     for (const e of expired) {
       await sql`
@@ -152,14 +174,28 @@ export async function releaseExpiredHolds() {
       const eventType = 'CREDIT_HOLD_EXPIRED';
       const idempotencyKey = `${e.id}_${eventType}`;
 
-      await sql`
+      const [event] = await sql`
         INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
         VALUES (${e.user_id}, ${idempotencyKey}, ${eventType},
-               ${sql.json({ holdId: e.id, quantity: e.quantity_held })})`;
+                ${sql.json({ holdId: e.id, quantity: e.quantity_held })})
+        RETURNING id`;
+
+      events.push({
+        id: event.id,
+        user_id: e.user_id,
+        event_data: { holdId: e.id, quantity: e.quantity_held },
+      });
     }
   });
 
-  await processPending();
+  for (const event of events) {
+    await handle({
+      id: event.id,
+      type: 'CREDIT_HOLD_EXPIRED',
+      user_id: event.user_id,
+      event_data: event.event_data,
+    });
+  }
 }
 
 export async function removeCredit(
@@ -169,6 +205,8 @@ export async function removeCredit(
   reason: string,
   idempotencyKey: string
 ) {
+  let eventId: number;
+
   await sql.begin(async (sql) => {
     await sql`
       UPDATE credit_batches
@@ -176,24 +214,36 @@ export async function removeCredit(
       WHERE id = ${batchId} AND user_id = ${userId}`;
 
     const eventType = 'CREDIT_REMOVED';
-    await sql`
+    const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (${userId}, ${idempotencyKey}_${eventType}, ${eventType},
-             ${sql.json({ batchId, qty, reason })})`;
+              ${sql.json({ batchId, qty, reason })})
+      RETURNING id`;
+    eventId = event.id;
   });
 
-  await processPending();
+  await handle({
+    id: eventId,
+    type: 'CREDIT_REMOVED',
+    user_id: userId,
+    event_data: { batchId, qty, reason },
+  });
 }
 
-// TODO: run nightly - probably with Vercel cron
 export async function expireBatches() {
+  const events: {
+    id: number;
+    user_id: string;
+    event_data: { batchId: number; qty: number };
+  }[] = [];
+
   await sql.begin(async (sql) => {
     const dying = await sql`
       SELECT id, user_id, quantity_remaining
       FROM credit_batches
       WHERE quantity_remaining > 0
         AND expires_at < now()
-      FOR UPDATE`;
+        FOR UPDATE`;
 
     for (const d of dying) {
       await sql`
@@ -204,12 +254,26 @@ export async function expireBatches() {
       const eventType = 'CREDIT_EXPIRED';
       const idempotencyKey = `${d.id}_${eventType}`;
 
-      await sql`
+      const [event] = await sql`
         INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
         VALUES (${d.user_id}, ${idempotencyKey}, ${eventType},
-               ${sql.json({ batchId: d.id, qty: d.quantity_remaining })})`;
+                ${sql.json({ batchId: d.id, qty: d.quantity_remaining })})
+        RETURNING id`;
+
+      events.push({
+        id: event.id,
+        user_id: d.user_id,
+        event_data: { batchId: d.id, qty: d.quantity_remaining },
+      });
     }
   });
 
-  await processPending();
+  for (const event of events) {
+    await handle({
+      id: event.id,
+      type: 'CREDIT_EXPIRED',
+      user_id: event.user_id,
+      event_data: event.event_data,
+    });
+  }
 }

@@ -1,7 +1,4 @@
-import {
-  processPending,
-  retryStuckEvents,
-} from '@/app/api/lib/store/eventProcessor';
+import { retryStuckEvents } from '@/app/api/lib/store/eventProcessor';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {

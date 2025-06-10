@@ -1,9 +1,7 @@
 import sql from '@/app/api/lib/store/db';
 import { handlers } from '../event/handlerRegistry';
 
-const BATCH_SIZE = 10; // tune: smaller keeps API latency down
-
-export async function processPending(batch = BATCH_SIZE): Promise<number> {
+export async function processPending(batch: number): Promise<number> {
   return sql.begin(async (sql) => {
     const events = await sql<DomainEvent[]>`
       UPDATE domain_events
@@ -19,21 +17,25 @@ export async function processPending(batch = BATCH_SIZE): Promise<number> {
       RETURNING *`;
 
     for (const ev of events) {
-      try {
-        const h = handlers[ev.type];
-        if (h) await h(ev);
-        await sql`UPDATE domain_events
-                  SET status='PROCESSED', updated_at=now()
-                  WHERE id=${ev.id}`;
-      } catch (err: any) {
-        await sql`UPDATE domain_events
-                  SET status='FAILED', retry_count=retry_count+1,
-                      last_error=${err.message}, updated_at=now()
-                  WHERE id=${ev.id}`;
-      }
+      await handle(ev);
     }
     return events.length;
   });
+}
+
+export async function handle(ev: DomainEvent) {
+  try {
+    const h = handlers[ev.type];
+    if (h) await h(ev);
+    await sql`UPDATE domain_events
+                  SET status='PROCESSED', updated_at=now()
+                  WHERE id=${ev.id}`;
+  } catch (err: any) {
+    await sql`UPDATE domain_events
+                  SET status='FAILED', retry_count=retry_count+1,
+                      last_error=${err.message}, updated_at=now()
+                  WHERE id=${ev.id}`;
+  }
 }
 
 const PROCESSING_TIMEOUT = '1 minute';
