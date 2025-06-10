@@ -34,7 +34,7 @@ CREATE INDEX actions_chatbot_id_idx ON actions (chatbot_id);
 
 -- TODO: create required indexes for the following tables
 -- 1. Generic event store -------------------------------------------
-CREATE TYPE event_status AS ENUM ('PENDING', 'PROCESSED', 'FAILED', 'CANCELLED');
+CREATE TYPE event_status AS ENUM ('PENDING', 'PROCESSING', 'PROCESSED', 'FAILED', 'CANCELLED');
 
 CREATE TABLE domain_events
 (
@@ -45,7 +45,9 @@ CREATE TABLE domain_events
     event_data      JSONB        NOT NULL,
     created_at      TIMESTAMPTZ  NOT NULL DEFAULT now(),
     updated_at      TIMESTAMPTZ  NOT NULL DEFAULT now(),
-    status          event_status NOT NULL DEFAULT 'PENDING'
+    status          event_status NOT NULL DEFAULT 'PENDING',
+    retry_count     INT          NOT NULL DEFAULT 0,
+    last_error      TEXT
     -- if we need to perform validations that depend on a user's current state (hydrated state), this table should also include a version number to allow for optimistic concurrency control
 );
 CREATE INDEX ON domain_events (user_id, created_at);

@@ -13,6 +13,20 @@
       "headers": {
         "Authorization": "Bearer ${CRON_SECRET}"
       }
+    },
+    {
+      "path": "/api/events/process-events",
+      "schedule": "*/1 * * * *",
+      "headers": {
+        "Authorization": "Bearer ${CRON_SECRET}"
+      }
+    },
+    {
+      "path": "/api/events/retry-events",
+      "schedule": "0 * * * * *",
+      "headers": {
+        "Authorization": "Bearer ${CRON_SECRET}"
+      }
     }
   ]
 }

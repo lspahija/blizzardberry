@@ -1,4 +1,5 @@
 import sql from '@/app/api/lib/store/db';
+import { processPending } from '@/app/api/lib/store/eventProcessor';
 
 export async function addCredit(
   userId: string,
@@ -17,6 +18,8 @@ export async function addCredit(
       INSERT INTO credit_batches (user_id, quantity_remaining, expires_at)
       VALUES (${userId}, ${qty}, ${expiresAt || null})`;
   });
+
+  await processPending();
 }
 
 export async function holdCredit(
@@ -65,6 +68,8 @@ export async function holdCredit(
       VALUES (${userId}, ${idempotencyKey}_${eventType}, ${eventType},
              ${sql.json({ holdIds, maxProbe, ref })})`;
   });
+
+  await processPending();
 
   return holdIds;
 }
@@ -119,6 +124,8 @@ export async function captureCredit(
         ${sql.json({ holdIds, actualUsed, ref })}
       )`;
   });
+
+  await processPending();
 }
 
 // TODO: run every few minutes, probably with Vercel cron
@@ -151,6 +158,8 @@ export async function releaseExpiredHolds() {
                ${sql.json({ holdId: e.id, quantity: e.quantity_held })})`;
     }
   });
+
+  await processPending();
 }
 
 export async function removeCredit(
@@ -172,6 +181,8 @@ export async function removeCredit(
       VALUES (${userId}, ${idempotencyKey}_${eventType}, ${eventType},
              ${sql.json({ batchId, qty, reason })})`;
   });
+
+  await processPending();
 }
 
 // TODO: run nightly - probably with Vercel cron
@@ -199,4 +210,6 @@ export async function expireBatches() {
                ${sql.json({ batchId: d.id, qty: d.quantity_remaining })})`;
     }
   });
+
+  await processPending();
 }
