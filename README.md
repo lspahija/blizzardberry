@@ -110,7 +110,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   - each tier contains a limited number of actions
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) [finish onboarding](#posthog) PostHog for analytics
-- (Luka) create simple event sourcing system that allows users to buy and spend credits (make sure it supports authorizations/holds since we don't know how many tokens the user will use until the LLM responds)
 - landing page needs to sell the product well!
 - add easy to use feedback form so users can report bugs and request features. make it easy for users to talk to us.
 - rename and get domain! - LOTR word like palantir or anduril? - https://grok.com/share/bGVnYWN5_eede228a-6894-4a8f-9025-dff5bc7ed106 - a couple good free ones so far are anduvion, numendil, silmarind, celendil, eryndil, parlur
