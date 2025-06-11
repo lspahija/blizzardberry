@@ -5,6 +5,7 @@ import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
 import {
   deleteChatbot,
   getChatbotByUserId,
+  updateChatbot,
 } from '@/app/api/lib/store/chatbotStore';
 import { error } from 'console';
 
@@ -44,6 +45,46 @@ export async function GET(
     console.error('Error processing request:', error);
     return NextResponse.json(
       { error: 'Failed to process request' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ chatbotId: string }> }
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { chatbotId } = await params;
+    const authResponse = await chatbotAuth(session.user.id, chatbotId);
+    if (authResponse) return authResponse;
+
+    const body = await request.json();
+    const { name, websiteDomain, model } = body;
+
+    if (!name || !websiteDomain || !model) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    await updateChatbot(chatbotId, {
+      name,
+      website_domain: websiteDomain,
+      model,
+    });
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error('Error updating chatbot:', error);
+    return NextResponse.json(
+      { error: 'Failed to update chatbot' },
       { status: 500 }
     );
   }
