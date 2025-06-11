@@ -13,15 +13,16 @@ import {
 } from '@/app/(frontend)/components/ui/card';
 import { Loader2, PlusCircle, Trash2, Settings } from 'lucide-react';
 import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
+import posthog from 'posthog-js';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
-  const { 
-    chatbots, 
-    loadingChatbots, 
-    deletingChatbotId, 
-    fetchChatbots, 
-    handleDeleteChatbot 
+  const {
+    chatbots,
+    loadingChatbots,
+    deletingChatbotId,
+    fetchChatbots,
+    handleDeleteChatbot,
   } = useChatbots();
 
   const containerVariants = {
@@ -33,12 +34,32 @@ export default function Dashboard() {
     },
   };
 
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user) {
+      posthog.identify(session.user.id || session.user.email, {
+        email: session.user.email,
+        name: session.user.name,
+      });
+
+      posthog.capture('dashboard_viewed', {
+        user_email: session.user.email,
+      });
+    }
+  }, [status, session]);
+
   // Fetch chatbots
   useEffect(() => {
     if (status === 'authenticated') {
       fetchChatbots();
     }
   }, [status, fetchChatbots]);
+
+  const handleSignOut = async () => {
+    posthog.capture('user_signed_out', {
+      user_email: session?.user?.email,
+    });
+    await signOut({ redirectTo: '/' });
+  };
 
   if (status === 'loading') {
     return (
@@ -64,7 +85,7 @@ export default function Dashboard() {
             <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
             <Button
               className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
-              onClick={() => signOut({ redirectTo: '/' })}
+              onClick={handleSignOut}
             >
               Sign Out
             </Button>
@@ -75,6 +96,11 @@ export default function Dashboard() {
           <Button
             asChild
             className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+            onClick={() =>
+              posthog.capture('create_chatbot_clicked', {
+                user_email: session?.user?.email,
+              })
+            }
           >
             <Link href="/chatbots/new" className="flex items-center">
               <PlusCircle className="mr-2 h-5 w-5" />
@@ -84,6 +110,11 @@ export default function Dashboard() {
           <Button
             asChild
             className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+            onClick={() =>
+              posthog.capture('user_config_clicked', {
+                user_email: session?.user?.email,
+              })
+            }
           >
             <Link href="/user-config" className="flex items-center">
               User Configuration
@@ -102,12 +133,21 @@ export default function Dashboard() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {chatbots.map((chatbot) => (
-              <Card key={chatbot.id} className="border-[3px] border-gray-900 bg-[#FFFDF8] flex flex-col h-full">
+              <Card
+                key={chatbot.id}
+                className="border-[3px] border-gray-900 bg-[#FFFDF8] flex flex-col h-full"
+              >
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-900">
                     <Link
                       href={`/chatbots/${chatbot.id}`}
                       className="hover:underline"
+                      onClick={() =>
+                        posthog.capture('chatbot_view_clicked', {
+                          chatbot_id: chatbot.id,
+                          user_email: session?.user?.email,
+                        })
+                      }
                     >
                       {chatbot.name}
                     </Link>
@@ -119,7 +159,8 @@ export default function Dashboard() {
                       <strong>Domain:</strong> {chatbot.websiteDomain}
                     </p>
                     <p className="text-gray-600 mb-2">
-                      <strong>Created:</strong> {new Date(chatbot.createdAt).toLocaleDateString()}
+                      <strong>Created:</strong>{' '}
+                      {new Date(chatbot.createdAt).toLocaleDateString()}
                     </p>
                     <p className="text-gray-600 mb-2">
                       <strong>Model:</strong> {chatbot.model}
@@ -131,13 +172,18 @@ export default function Dashboard() {
                         asChild
                         className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
                       >
-                        <Link href={`/chatbots/${chatbot.id}`}>View Details</Link>
+                        <Link href={`/chatbots/${chatbot.id}`}>
+                          View Details
+                        </Link>
                       </Button>
                       <Button
                         asChild
                         className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform group"
                       >
-                        <Link href={`/chatbots/${chatbot.id}/edit`} className="flex items-center gap-2">
+                        <Link
+                          href={`/chatbots/${chatbot.id}/edit`}
+                          className="flex items-center gap-2"
+                        >
                           <Settings className="h-4 w-4 transition-transform group-hover:rotate-45" />
                           <span>Edit</span>
                         </Link>
@@ -145,7 +191,9 @@ export default function Dashboard() {
                     </div>
                     <Button
                       variant="destructive"
-                      onClick={() => chatbot.id && handleDeleteChatbot(chatbot.id)}
+                      onClick={() =>
+                        chatbot.id && handleDeleteChatbot(chatbot.id)
+                      }
                       disabled={deletingChatbotId === chatbot.id}
                       className="border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform h-9 px-4 mt-0.5"
                     >

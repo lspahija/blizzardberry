@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import posthog from 'posthog-js';
 
 export default function LoginPage() {
   const [isGitHubLoading, setIsGitHubLoading] = useState(false);
@@ -41,10 +42,12 @@ export default function LoginPage() {
     setIsGitHubLoading(true);
     setError('');
     try {
+      posthog.capture('github_sign_in_attempt');
       await signIn('github', { redirectTo: '/dashboard' });
     } catch (error) {
       setIsGitHubLoading(false);
       setError('Failed to sign in with GitHub. Please try again.');
+      posthog.capture('github_sign_in_failed', { error: error.message });
     }
   };
 
@@ -52,10 +55,12 @@ export default function LoginPage() {
     setIsGoogleLoading(true);
     setError('');
     try {
+      posthog.capture('google_sign_in_attempt');
       await signIn('google', { redirectTo: '/dashboard' });
     } catch (error) {
       setIsGoogleLoading(false);
       setError('Failed to sign in with Google. Please try again.');
+      posthog.capture('google_sign_in_failed', { error: error.message });
     }
   };
 
@@ -63,14 +68,17 @@ export default function LoginPage() {
     setError('');
     if (!validateEmail(email)) {
       setError('Please enter a valid email address.');
+      posthog.capture('resend_sign_in_invalid_email', { email });
       return;
     }
     setIsResendLoading(true);
     try {
+      posthog.capture('resend_sign_in_attempt', { email });
       await signIn('resend', { email, redirectTo: '/dashboard' });
     } catch (error) {
       setIsResendLoading(false);
       setError('Failed to send sign-in email. Please try again.');
+      posthog.capture('resend_sign_in_failed', { email, error: error.message });
     }
   };
 
