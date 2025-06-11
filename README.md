@@ -99,30 +99,28 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # Things to be done
 
 ## Before Launch
-- (Frankie) test RAG pipeline with big documents and ensure everything works (find best model/API and use it, consider cost as well) - https://huggingface.co/spaces/mteb/leaderboard
-- (Frankie) LLM models: offer all the best models through OpenRouter
 - (Frankie) polish the user onboarding experience. All the forms needs to work well and be easy to use. - use AI to find the webapps with the best UX and then copy what they do well
-- currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
-- (Luka) onboard Stripe - I set up Stripe for Brothers of Ostia in November 2024 and it was a pain. [Here's the repo](https://github.com/lucidity-labs/ostians). Maybe the Stripe docs have improved in the meantime though.
-  - have credits? Different models cost different amounts of credits per token.
-  - have three tiers of subscriptions with each giving the user a certain amount of credits per month (we want this so we make money even if nobody uses the user's app). these credits don't roll over to the next month i.e. they expire 30 days after purchase. offer a fourth enterprise tier where they contact us
-  - allow the user to buy more credits if they run out but these don't expire i.e. they roll over to the next month
-  - each tier contains a limited number of actions
+- (Frankie) currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
+- (Luka) complete Posthog integration and test it
+- (Luka) onboard Stripe
+  - map each LLM to credits per token
+  - add enterprise tier where they contact us
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
-- (Luka) [finish onboarding](#posthog) PostHog for analytics
-- landing page needs to sell the product well!
-- add easy to use feedback form so users can report bugs and request features. make it easy for users to talk to us.
-- rename and get domain! - LOTR word like palantir or anduril? - https://grok.com/share/bGVnYWN5_eede228a-6894-4a8f-9025-dff5bc7ed106 - a couple good free ones so far are anduvion, numendil, silmarind, celendil, eryndil, parlur
-- deploy to vercel
-- finish multi-tenancy config
+- (Luka) landing page needs to sell the product well!
+- (Luka) add easy to use feedback form so users can report bugs and request features. make it easy for users to talk to us.
+- (Luka) rename and get domain! a couple good free ones so far are anduvion, numendil, silmarind, celendil, eryndil, parlur
+  - tool that autogenerates variations that are available: https://leandomainsearch.com/search/?q=parlor
+  - other startups and their names: https://www.ycombinator.com/companies?batch=Spring%202025
+  - parlorberry.com is free. so is parloberry.com - combining two good words seems like a good idea
+- (Luka) deploy to vercel
+- finish multi-tenancy config (just need prod configuration)
   - Google OAuth
       - [publish app](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7rg&project=ufcalarm-b270d)
       - [create new client](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7tQ&project=ufcalarm-b270d)
   - GitHub OAuth
       - [create prod OAuth app](https://github.com/settings/developers)
-- add "Powered By omni-interface" to the bottom of the chatbot
 - dogfood the product. Our app needs to have a chatbot integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
-- Differentiate enough to be able to with the PR war when the chatbase founder gets pissed that there’s competition
+- Differentiate enough to be able to win the PR war when the chatbase founder gets pissed that there’s competition
 
 ## Launch and Sell! 
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
@@ -136,6 +134,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
+- add "Powered By omni-interface" to the bottom of the chatbot
 - minify and obfuscate chatbot.js code
 - let the end user see all actions that the chatbot can perform. Make the actions searchable. Expose the thinking tokens if the user chooses to see them.
 - make chatbot design super customizable so app owners can make it look like their app
@@ -188,22 +187,6 @@ The website design is based on this: https://gitingest.com/
 
 ### auth magic link email
 [Dealing with resend issues](https://www.reddit.com/r/Supabase/comments/1d8lz8d/emails_with_resend_still_going_to_spam/) Postmark seems best but no free tier
-
-### PostHog
-
-Successfully installed PostHog!
-
-Changes made:
-- Initialized PostHog and added pageview tracking
-- Created a PostHogClient to use PostHog server-side
-- Setup a reverse proxy to avoid ad blockers blocking analytics requests
-- Added your Project API key to your .env.local file
-
-Next steps:
-- Call posthog.identify() when a user signs into your app
-- Call posthog.capture() to capture custom events in your app
-
-Learn more about PostHog + Next.js: https://posthog.com/docs/libraries/next-js
 
 ### Frankie's tips to optimize RAG:
 
