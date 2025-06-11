@@ -31,6 +31,9 @@ export async function embedTextBatch(texts: string[]): Promise<number[][]> {
   return response.embeddings as number[][];
 }
 
+export const embeddingsToString = (embeddings: number[]): string =>
+  `[${embeddings.join(',')}]`;
+
 export async function cleanAndChunk(text: string) {
   const cleanedText = cleanText(text);
   return await textSplitter.splitText(cleanedText);

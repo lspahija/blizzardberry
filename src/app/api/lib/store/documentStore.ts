@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import sql from '@/app/api/lib/store/db';
 import {
   cleanAndChunk,
+  embeddingsToString,
   embedText,
   embedTextBatch,
 } from '@/app/api/lib/embedding/embedding';
@@ -26,7 +27,7 @@ export async function createDocuments(
   const documentsToInsert = validChunks.map(({ chunk, index }, i) => ({
     id: uuidv4(),
     content: chunk,
-    embedding: `[${vectors[i].join(',')}]`, // Convert array to halfvec string format
+    embedding: embeddingsToString(vectors[i]),
     metadata: {
       ...metadata,
       chunk_index: index,
@@ -74,8 +75,8 @@ export async function similaritySearch(
   k: number,
   chatbotId: string
 ) {
-  const embedding = await embedText(query);
-  const embeddingString = `[${embedding.join(',')}]`; // Format embedding as string with brackets
+  const embeddings = await embedText(query);
+  const embeddingString = embeddingsToString(embeddings);
 
   const data = await sql`
       SELECT * FROM search_documents(
