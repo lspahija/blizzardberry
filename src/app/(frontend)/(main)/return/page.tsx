@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 interface SessionStatus {
   status: string;
   customer_email: string | null;
 }
 
-export default function ReturnPage() {
+function ReturnPageContent() {
   const [status, setStatus] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -51,5 +52,13 @@ export default function ReturnPage() {
       )}
       {!status && <p>Loading...</p>}
     </div>
+  );
+}
+
+export default function ReturnPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ReturnPageContent />
+    </Suspense>
   );
 }
