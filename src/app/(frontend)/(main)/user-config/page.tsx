@@ -117,11 +117,11 @@ export default function UserConfig() {
                         <SelectValue placeholder="Select framework" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
                         <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
                         <SelectItem value={Framework.REACT}>React</SelectItem>
-                        <SelectItem value={Framework.VUE}>Vue</SelectItem>
-                        <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
                         <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                        <SelectItem value={Framework.VUE}>Vue</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

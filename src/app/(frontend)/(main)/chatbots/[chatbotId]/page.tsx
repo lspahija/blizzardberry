@@ -394,7 +394,7 @@ export default function ChatbotDetails({
                     <SelectValue placeholder="Select framework" />
                   </SelectTrigger>
                   <SelectContent>
-                  <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
+                    <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
                     <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
                     <SelectItem value={Framework.REACT}>React</SelectItem>
                     <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
