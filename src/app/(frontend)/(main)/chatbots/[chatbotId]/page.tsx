@@ -34,7 +34,7 @@ import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
 import { getRegisterMultipleToolsExample, Framework } from '@/app/(frontend)/lib/actionUtils';
-import { getChatbotConfigScript, getChatbotScript } from '@/app/(frontend)/lib/scriptUtils';
+import {getChatbotScript} from '@/app/(frontend)/lib/scriptUtils';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
@@ -68,13 +68,6 @@ export default function ChatbotDetails({
     deletingDocumentId,
     handleDeleteDocument,
   } = useDocuments();
-
-  const getChatbotCode = (chatbotId: string) => `<Script
-    id="BlizzardBerry-chatbot"
-    src="http://localhost:3000/chatbot.js"
-    strategy="afterInteractive"
-    data-chatbot-id="${chatbotId}"
-  />`;
       
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -303,11 +296,11 @@ export default function ChatbotDetails({
                         <SelectValue placeholder="Select framework" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
                         <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
                         <SelectItem value={Framework.REACT}>React</SelectItem>
-                        <SelectItem value={Framework.VUE}>Vue</SelectItem>
-                        <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
                         <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                        <SelectItem value={Framework.VUE}>Vue</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -391,6 +384,26 @@ export default function ChatbotDetails({
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Chatbot Installation Code
               </h2>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Framework
+                </label>
+                <Select
+                  value={selectedFramework}
+                  onValueChange={(value) => setSelectedFramework(value as Framework)}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Select framework" />
+                  </SelectTrigger>
+                  <SelectContent>
+                  <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
+                    <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
+                    <SelectItem value={Framework.REACT}>React</SelectItem>
+                    <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                    <SelectItem value={Framework.VUE}>Vue</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="relative mb-2">
                 <SyntaxHighlighter
                   language="html"
@@ -403,10 +416,10 @@ export default function ChatbotDetails({
                     margin: 0,
                   }}
                 >
-                  {getChatbotCode(params.chatbotId)}
+                  {getChatbotScript(selectedFramework, params.chatbotId)}
                 </SyntaxHighlighter>
                 <Button
-                  onClick={() => handleCopy(getChatbotCode(params.chatbotId))}
+                  onClick={() => handleCopy(getChatbotScript(selectedFramework, params.chatbotId))}
                   className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
                 >
                   <Copy className="w-4 h-4 mr-2" />

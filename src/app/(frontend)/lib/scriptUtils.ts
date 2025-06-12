@@ -47,15 +47,26 @@ export const getChatbotConfigScript = (framework: Framework, config: Record<stri
   });
 };
 
+const chatbotScriptNextJs = (chatbotId: string) => `
+  id="blizzardberry-chatbot"
+  src="http://localhost:3000/chatbot.js"
+  strategy="afterInteractive"
+  data-chatbot-id="${chatbotId}"
+`;
+
+const chatbotScriptVanilla = (chatbotId: string) => `
+  id="blizzardberry-chatbot"
+  src="http://localhost:3000/chatbot.js"
+  type="text/javascript"
+  data-chatbot-id="${chatbotId}"
+`;
+
 export const getChatbotScript = (framework: Framework, chatbotId: string) => {
-  return getScriptTag(framework, {
-    id: 'blizzardberry-chatbot',
-    src: 'http://localhost:3000/chatbot.js',
-    strategy: 'afterInteractive',
-    dataAttributes: {
-      'chatbot-id': chatbotId,
-    },
-  });
+  if (framework === Framework.NEXT_JS) {
+    return `<Script ${chatbotScriptNextJs(chatbotId)}/>`;
+  } else {
+    return `<script ${chatbotScriptVanilla(chatbotId)}/>`;
+  }
 };
 
 export const getActionsScript = (framework: Framework, actions: Array<{
@@ -108,4 +119,4 @@ export const getActionsScript = (framework: Framework, actions: Array<{
     content,
     strategy: 'afterInteractive',
   });
-}; 
+};
