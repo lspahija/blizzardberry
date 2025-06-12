@@ -49,6 +49,7 @@ export async function callLLM(
         chatbot.created_by,
         holdIds,
         event.usage,
+        chatbot.model,
         `chat-completion #${chatbotId}`,
         idempotencyKey
       );

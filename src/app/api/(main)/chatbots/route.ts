@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
+import { Chatbot, ChatbotModelList } from '@/app/api/lib/model/chatbot/chatbot';
 import { createChatbot, getChatbots } from '@/app/api/lib/store/chatbotStore';
 
 export async function POST(req: Request) {
@@ -11,6 +11,13 @@ export async function POST(req: Request) {
     }
 
     const { name, websiteDomain, model } = await req.json();
+
+    if (!ChatbotModelList.includes(model)) {
+      return NextResponse.json(
+        { error: 'Invalid model selected' },
+        { status: 400 }
+      );
+    }
 
     const data = await createChatbot(
       name,

@@ -23,13 +23,20 @@ import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
+import {
+  ChatbotModel,
+  ChatbotModelDisplay,
+  ChatbotModelList,
+} from '@/app/api/lib/model/chatbot/chatbot';
 
 export default function NewChatbotPage() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [websiteDomain, setWebsiteDomain] = useState('');
-  const [model, setModel] = useState('google/gemini-2.0-flash-001');
-  const [chatbotId, setChatbotId] = useState(null);
+  const [model, setModel] = useState<ChatbotModel>(
+    ChatbotModel.GEMINI_2_0_FLASH
+  );
+  const [chatbotId, setChatbotId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const { handleCreateChatbot } = useChatbots();
 
@@ -100,7 +107,6 @@ export default function NewChatbotPage() {
         animate="visible"
       >
         {chatbotId ? (
-          // Success State
           <>
             <motion.div className="text-center" variants={itemVariants}>
               <CheckCircle2 className="w-16 h-16 text-[#FE4A60] mx-auto mb-4" />
@@ -201,7 +207,6 @@ export default function NewChatbotPage() {
             </motion.div>
           </>
         ) : (
-          // Form State
           <>
             <motion.h1
               className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900 mb-12 text-center"
@@ -262,35 +267,21 @@ export default function NewChatbotPage() {
                       <p className="text-sm text-gray-600 mt-1">
                         Select the language model to power your chatbot
                       </p>
-                      <Select value={model} onValueChange={setModel}>
+                      <Select
+                        value={model}
+                        onValueChange={(value) =>
+                          setModel(value as ChatbotModel)
+                        }
+                      >
                         <SelectTrigger className="mt-2 border-[2px] border-gray-900">
                           <SelectValue placeholder="Select a model" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="google/gemini-2.0-flash-001">
-                            Gemini 2.0 Flash
-                          </SelectItem>
-                          <SelectItem value="google/gemini-2.5-pro-preview">
-                            Gemini 2.5 Pro Preview
-                          </SelectItem>
-                          <SelectItem value="openai/gpt-4.1">
-                            ChatGPT 4.1
-                          </SelectItem>
-                          <SelectItem value="openai/chatgpt-4o-latest">
-                            ChatGPT 4o
-                          </SelectItem>
-                          <SelectItem value="anthropic/claude-sonnet-4">
-                            Claude Sonnet 4
-                          </SelectItem>
-                          <SelectItem value="x-ai/grok-3-beta">
-                            Grok 3 Beta
-                          </SelectItem>
-                          <SelectItem value="deepseek/deepseek-r1-distill-qwen-7b">
-                            DeepSeek R1 Distill Qwen 7B
-                          </SelectItem>
-                          <SelectItem value="qwen/qwen3-30b-a3b">
-                            Qwen 3 30B A3B
-                          </SelectItem>
+                          {ChatbotModelList.map((modelValue) => (
+                            <SelectItem key={modelValue} value={modelValue}>
+                              {ChatbotModelDisplay[modelValue]}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
