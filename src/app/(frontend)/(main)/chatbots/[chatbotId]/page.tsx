@@ -33,8 +33,8 @@ import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
-import { getRegisterMultipleToolsExample, Framework } from '@/app/(frontend)/lib/actionUtils';
-import {getChatbotScript} from '@/app/(frontend)/lib/scriptUtils';
+import { getRegisterMultipleToolsExample } from '@/app/(frontend)/lib/actionUtils';
+import {Framework, getChatbotScript} from '@/app/(frontend)/lib/scriptUtils';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {

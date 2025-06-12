@@ -7,8 +7,6 @@ interface DataInput {
   isArray: boolean;
 }
 
-export { Framework };
-
 export const getInputNames = (dataInputs: DataInput[], withBraces = false) => {
   const names = dataInputs
     .map((input) => input.name)

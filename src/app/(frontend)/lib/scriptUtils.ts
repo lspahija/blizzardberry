@@ -15,16 +15,11 @@ interface ScriptConfig {
 }
 
 export const getScriptTag = (framework: Framework, config: ScriptConfig) => {
-  const { id, content, src, strategy = 'afterInteractive', dataAttributes = {} } = config;
-  
-  // Convert data attributes to string
-  const dataAttributesStr = Object.entries(dataAttributes)
-    .map(([key, value]) => `data-${key}="${value}"`)
-    .join(' ');
+  const { id, content } = config;
 
   switch (framework) {
     case Framework.NEXT_JS:
-      return `<Script id="${id}" ${src ? `src="${src}"` : ''} strategy="${strategy}" ${dataAttributesStr}>
+      return `<Script id="${id}" strategy="afterInteractive">
 ${content ? `  ${content}` : ''}
 </Script>`;
     case Framework.REACT:
@@ -32,7 +27,7 @@ ${content ? `  ${content}` : ''}
     case Framework.ANGULAR:
     case Framework.VANILLA:
     default:
-      return `<script id="${id}" type="text/javascript" ${src ? `src="${src}"` : ''} ${dataAttributesStr}>
+      return `<script id="${id}" type="text/javascript">
 ${content ? `  ${content}` : ''}
 </script>`;
   }
@@ -84,7 +79,6 @@ export const getActionsScript = (framework: Framework, actions: Array<{
         .filter((i) => i.name)
         .map((i) => i.name)
         .join(', ');
-      // If there are no args, just use userConfig
       const params = [argList, 'userConfig'].filter(Boolean).join(', ');
       return `  ${functionName || 'your_action'}: async (${params}) => {
     try {
