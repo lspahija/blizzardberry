@@ -33,9 +33,17 @@ import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
-import { getRegisterMultipleToolsExample } from '@/app/(frontend)/lib/actionUtils';
+import { getRegisterMultipleToolsExample, Framework } from '@/app/(frontend)/lib/actionUtils';
+import { getChatbotConfigScript, getChatbotScript } from '@/app/(frontend)/lib/scriptUtils';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/app/(frontend)/components/ui/select';
 
 export default function ChatbotDetails({
   params: paramsPromise,
@@ -51,6 +59,7 @@ export default function ChatbotDetails({
   const [showClientActions, setShowClientActions] = useState(false);
   const [showChatbotCode, setShowChatbotCode] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [selectedFramework, setSelectedFramework] = useState<Framework>(Framework.VANILLA);
 
   const { handleDeleteAction } = useActionForm();
   const {
@@ -60,12 +69,19 @@ export default function ChatbotDetails({
     handleDeleteDocument,
   } = useDocuments();
 
-  const getChatbotCode = (chatbotId: string) => `<Script
-  id="BlizzardBerry-chatbot"
-  src="http://localhost:3000/chatbot.js"
-  strategy="afterInteractive"
-  data-chatbot-id="${chatbotId}"
-/>`;
+  const getChatbotCode = (chatbotId: string) => {
+    const config = {
+      user_id: "user_123",
+      account_number: "ACC123456",
+      user_metadata: {
+        name: "John Doe",
+        email: "user@example.com",
+        company: "Example Company"
+      }
+    };
+    
+    return getChatbotConfigScript(selectedFramework, config);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -134,17 +150,6 @@ export default function ChatbotDetails({
   const clientActions = actions.filter(
     (action) => action.executionContext === ExecutionContext.CLIENT
   );
-  const clientActionsCode = getRegisterMultipleToolsExample(
-    clientActions.map((action) => ({
-      functionName: action.name,
-      dataInputs: (action.executionModel.parameters || []).map((param) => ({
-        name: param.name,
-        type: param.type,
-        description: param.description || '',
-        isArray: param.isArray,
-      })),
-    }))
-  );
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -161,8 +166,8 @@ export default function ChatbotDetails({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [showClientActions, showChatbotCode]);
-
+  }, [showClientActions, showChatbotCode]);  
+  
   if (loadingChatbot) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
@@ -274,83 +279,96 @@ export default function ChatbotDetails({
           )}
         </div>
         {showClientActions && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
-            style={{
-              background: 'rgba(0,0,0,0.01)',
-              pointerEvents: 'auto',
-              overscrollBehavior: 'contain',
-              touchAction: 'none',
-            }}
-            onWheel={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.stopPropagation()}
-          >
-            <div
-              className="bg-[#FFFDF8] p-6 rounded-2xl shadow-2xl max-w-4xl w-full relative"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Blurred overlay */}
+            <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
+            {/* Modal content (no Card, no white background) */}
+            <div className="relative z-10 p-0 max-w-4xl w-full">
               <button
-                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                className="absolute top-10 right-6 text-gray-500 hover:text-gray-700"
                 onClick={() => setShowClientActions(false)}
               >
                 <X className="h-6 w-6" />
               </button>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Client Actions Code
-              </h2>
-              <div className="relative mb-2 max-h-[60vh] overflow-auto">
-                <SyntaxHighlighter
-                  language="javascript"
-                  style={vscDarkPlus}
-                  customStyle={{
-                    borderRadius: '8px',
-                    padding: '16px',
-                    border: '2px solid #1a1a1a',
-                    backgroundColor: '#1a1a1a',
-                    margin: 0,
-                  }}
-                >
-                  {clientActionsCode}
-                </SyntaxHighlighter>
-                <Button
-                  onClick={() => handleCopy(clientActionsCode)}
-                  className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
-                >
-                  <Copy className="w-4 h-4 mr-2" />
-                  {copied ? 'Copied!' : 'Copy Code'}
-                </Button>
-              </div>
-              <div className="mt-6 space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Installation Instructions
-                </h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-2">
-                  <li>
-                    Implement your client-side functions into your app like the
-                    example above
-                  </li>
-                  <li>
-                    Add the code between the <code>&lt;body&gt;</code> tags of
-                    your website's HTML
-                  </li>
-                  <li>
-                    These functions will be available to your chatbot as
-                    client-side actions
-                  </li>
-                  <li>
-                    Need help? Visit our{' '}
-                    <a
-                      href="https://blizzardberry.com/docs"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#FE4A60] hover:underline"
+              <Card className="mt-6 bg-[#FFFDF8]">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Code className="w-5 h-5" />
+                    Client Actions Code
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Select Framework
+                    </label>
+                    <Select
+                      value={selectedFramework}
+                      onValueChange={(value) => setSelectedFramework(value as Framework)}
                     >
-                      documentation <ExternalLink className="inline w-4 h-4" />
-                    </a>
-                    .
-                  </li>
-                </ul>
-              </div>
+                      <SelectTrigger className="w-[200px]">
+                        <SelectValue placeholder="Select framework" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
+                        <SelectItem value={Framework.REACT}>React</SelectItem>
+                        <SelectItem value={Framework.VUE}>Vue</SelectItem>
+                        <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
+                        <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="relative">
+                    <SyntaxHighlighter
+                      language="html"
+                      style={vscDarkPlus}
+                      customStyle={{
+                        borderRadius: '8px',
+                        padding: '16px',
+                        border: '2px solid #1a1a1a',
+                        backgroundColor: '#1a1a1a',
+                      }}
+                    >
+                      {getRegisterMultipleToolsExample(
+                        clientActions.map((action) => ({
+                          functionName: action.name,
+                          dataInputs: (action.executionModel.parameters || []).map((param) => ({
+                            name: param.name,
+                            type: param.type,
+                            description: param.description || '',
+                            isArray: param.isArray || false,
+                          })),
+                        })),
+                        selectedFramework
+                      )}
+                    </SyntaxHighlighter>
+                    <Button
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          getRegisterMultipleToolsExample(
+                            clientActions.map((action) => ({
+                              functionName: action.name,
+                              dataInputs: (action.executionModel.parameters || []).map((param) => ({
+                                name: param.name,
+                                type: param.type,
+                                description: param.description || '',
+                                isArray: param.isArray || false,
+                              })),
+                            })),
+                            selectedFramework
+                          )
+                        );
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                      }}
+                      className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
+                    >
+                      <Copy className="w-4 h-4 mr-2" />
+                      {copied ? 'Copied!' : 'Copy Code'}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         )}

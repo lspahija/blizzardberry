@@ -1,9 +1,13 @@
+import { Framework, getActionsScript } from './scriptUtils';
+
 interface DataInput {
   name: string;
   type: string;
   description: string;
   isArray: boolean;
 }
+
+export { Framework };
 
 export const getInputNames = (dataInputs: DataInput[], withBraces = false) => {
   const names = dataInputs
@@ -14,72 +18,18 @@ export const getInputNames = (dataInputs: DataInput[], withBraces = false) => {
 
 export const getRegisterToolsExample = (
   functionName: string,
-  dataInputs: DataInput[]
+  dataInputs: DataInput[],
+  framework: Framework = Framework.VANILLA
 ) => {
-  const argList =
-    dataInputs
-      .filter((i) => i.name)
-      .map((i) => i.name)
-      .join(', ') || '...';
-  return `<Script id="blizzardberry-actions" strategy="afterInteractive">
-  window.ChatbotActions = {
-    ${functionName || 'your_action'}: async (args, userConfig) => {
-      try {
-        // args.${argList}
-        // userConfig - exposes the user config if you specified one
-        return { 
-          status: 'success',
-          data: {
-            // any object you want to return
-          }
-        };
-      } catch (error) {
-        return { 
-          status: 'error', 
-          error: error.message || 'Failed to execute action' 
-        };
-      }
-    }
-  };
-</Script>`;
+  return getActionsScript(framework, [{
+    functionName,
+    dataInputs,
+  }]);
 };
 
 export const getRegisterMultipleToolsExample = (
-  actions: { functionName: string; dataInputs: DataInput[] }[]
+  actions: { functionName: string; dataInputs: DataInput[] }[],
+  framework: Framework = Framework.VANILLA
 ) => {
-  const functionsCode = actions
-    .map(({ functionName, dataInputs }) => {
-      const argList = dataInputs
-        .filter((i) => i.name)
-        .map((i) => i.name)
-        .join(', ');
-      // If there are no args, just use userConfig
-      const params = [argList, 'userConfig'].filter(Boolean).join(', ');
-      return `  ${functionName || 'your_action'}: async (${params}) => {
-    try {
-      // ${
-        argList
-          ? argList
-              .split(', ')
-              .map((n) => `use ${n}`)
-              .join(', ')
-          : 'no arguments'
-      }
-      // userConfig - exposes the user config if you specified one
-      return { 
-        status: 'success',
-        data: {
-          // any object you want to return
-        }
-      };
-    } catch (error) {
-      return { 
-        status: 'error', 
-        error: error.message || 'Failed to execute action' 
-      };
-    }
-  }`;
-    })
-    .join(',\n');
-  return `<Script id="blizzardberry-actions" strategy="afterInteractive">\n  ${`window.ChatbotActions = {\n  ${functionsCode}\n};`}\n</Script>`;
+  return getActionsScript(framework, actions);
 };
