@@ -152,8 +152,8 @@ export default function ChatbotDetails({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [showClientActions, showChatbotCode]);  
-  
+  }, [showClientActions, showChatbotCode]);
+
   if (loadingChatbot) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
@@ -266,9 +266,7 @@ export default function ChatbotDetails({
         </div>
         {showClientActions && (
           <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Blurred overlay */}
             <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
-            {/* Modal content (no Card, no white background) */}
             <div className="relative z-10 p-0 max-w-4xl w-full">
               <button
                 className="absolute top-10 right-6 text-gray-500 hover:text-gray-700"

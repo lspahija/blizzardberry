@@ -62,7 +62,6 @@ export default function NewChatbotPage() {
   };
 
   const handleCopy = () => {
-    if (!chatbotId) return;
     navigator.clipboard.writeText(getChatbotScript(selectedFramework, chatbotId));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

@@ -37,7 +37,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
-import { Framework, getActionsScript } from '@/app/(frontend)/lib/scriptUtils';
+import { Framework } from '@/app/(frontend)/lib/scriptUtils';
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },
