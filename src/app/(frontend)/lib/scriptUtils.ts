@@ -9,9 +9,6 @@ export enum Framework {
 interface ScriptConfig {
   id: string;
   content?: string;
-  src?: string;
-  strategy?: string;
-  dataAttributes?: Record<string, string>;
 }
 
 export const getScriptTag = (framework: Framework, config: ScriptConfig) => {
@@ -38,7 +35,6 @@ export const getChatbotConfigScript = (framework: Framework, config: Record<stri
   return getScriptTag(framework, {
     id: 'blizzardberry-config',
     content,
-    strategy: 'afterInteractive',
   });
 };
 
@@ -111,6 +107,5 @@ export const getActionsScript = (framework: Framework, actions: Array<{
   return getScriptTag(framework, {
     id: 'blizzardberry-actions',
     content,
-    strategy: 'afterInteractive',
   });
 };
