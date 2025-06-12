@@ -62,6 +62,14 @@
     border-radius: 6px;
 }
 
+#chatWidgetFooter {
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    color: #667;
+    border-top: 1px solid #eee;
+}
+
 /* Chat Widget Input Area */
 #chatWidgetInput {
     padding: 16px;

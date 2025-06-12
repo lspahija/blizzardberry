@@ -85,6 +85,16 @@
         if (e.key === 'Enter') handleSubmit();
       });
     widget.appendChild(inputArea);
+
+    const footer = document.createElement('div');
+    footer.id = 'chatWidgetFooter';
+    footer.innerHTML = 'Powered By omni-interface';
+    footer.style.textAlign = 'center';
+    footer.style.padding = '10px';
+    footer.style.fontSize = '12px';
+    footer.style.color = '#666';
+    widget.appendChild(footer);
+
     document.body.appendChild(widget);
   }
 
