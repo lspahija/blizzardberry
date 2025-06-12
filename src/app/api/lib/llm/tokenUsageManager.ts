@@ -44,8 +44,11 @@ export function mapTokenUsageToCreditUsage(
     throw new Error(`No credit cost defined for model: ${model}`);
   }
 
-  const inputCredits = (tokenUsage.promptTokens || 0) * costs.input;
-  const outputCredits = (tokenUsage.completionTokens || 0) * costs.output;
+  const MARKUP_PERCENTAGE = 2.5; // 150% markup
+  const inputCredits =
+    (tokenUsage.promptTokens || 0) * costs.input * MARKUP_PERCENTAGE;
+  const outputCredits =
+    (tokenUsage.completionTokens || 0) * costs.output * MARKUP_PERCENTAGE;
 
   // Round to 4 decimal places to avoid floating-point precision issues
   return Math.round((inputCredits + outputCredits) * 10000) / 10000;
