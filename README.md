@@ -101,7 +101,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## Before Launch
 - (Frankie) polish the user onboarding experience. All the forms needs to work well and be easy to use. - use AI to find the webapps with the best UX and then copy what they do well
 - (Frankie) currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
-- (Luka) complete Posthog integration and test it
 - (Luka) onboard Stripe
   - map each LLM to credits per token
   - add enterprise tier where they contact us
