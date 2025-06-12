@@ -69,20 +69,13 @@ export default function ChatbotDetails({
     handleDeleteDocument,
   } = useDocuments();
 
-  const getChatbotCode = (chatbotId: string) => {
-    const config = {
-      user_id: "user_123",
-      account_number: "ACC123456",
-      user_metadata: {
-        name: "John Doe",
-        email: "user@example.com",
-        company: "Example Company"
-      }
-    };
-    
-    return getChatbotConfigScript(selectedFramework, config);
-  };
-
+  const getChatbotCode = (chatbotId: string) => `<Script
+    id="BlizzardBerry-chatbot"
+    src="http://localhost:3000/chatbot.js"
+    strategy="afterInteractive"
+    data-chatbot-id="${chatbotId}"
+  />`;
+      
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
