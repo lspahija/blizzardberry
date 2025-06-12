@@ -28,6 +28,7 @@ import {
   ChatbotModelDisplay,
   ChatbotModelList,
 } from '@/app/api/lib/model/chatbot/chatbot';
+import { Framework, getChatbotScript } from '@/app/(frontend)/lib/scriptUtils';
 
 export default function NewChatbotPage() {
   const router = useRouter();
@@ -38,6 +39,7 @@ export default function NewChatbotPage() {
   );
   const [chatbotId, setChatbotId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [selectedFramework, setSelectedFramework] = useState<Framework>(Framework.VANILLA);
   const { handleCreateChatbot } = useChatbots();
 
   const containerVariants = {
@@ -59,15 +61,9 @@ export default function NewChatbotPage() {
     visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
   };
 
-  const scriptSnippet = `<Script
-  id="blizzardberry-chatbot"
-  src="https://blizzardberry.com/chatbot.js"
-  strategy="afterInteractive"
-  data-chatbot-id="${chatbotId}"
-/>`;
-
   const handleCopy = () => {
-    navigator.clipboard.writeText(scriptSnippet);
+    if (!chatbotId) return;
+    navigator.clipboard.writeText(getChatbotScript(selectedFramework, chatbotId));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -139,6 +135,26 @@ export default function NewChatbotPage() {
                         snippet below and paste it between the{' '}
                         <code>&lt;body&gt;</code> tags of your website's HTML.
                       </p>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Select Framework
+                        </label>
+                        <Select
+                          value={selectedFramework}
+                          onValueChange={(value) => setSelectedFramework(value as Framework)}
+                        >
+                          <SelectTrigger className="w-[200px]">
+                            <SelectValue placeholder="Select framework" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
+                            <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
+                            <SelectItem value={Framework.REACT}>React</SelectItem>
+                            <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                            <SelectItem value={Framework.VUE}>Vue</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <div className="relative">
                         <SyntaxHighlighter
                           language="html"
@@ -150,7 +166,7 @@ export default function NewChatbotPage() {
                             backgroundColor: '#1a1a1a',
                           }}
                         >
-                          {scriptSnippet}
+                          {chatbotId ? getChatbotScript(selectedFramework, chatbotId) : ''}
                         </SyntaxHighlighter>
                         <Button
                           onClick={handleCopy}
