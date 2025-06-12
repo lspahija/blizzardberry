@@ -21,7 +21,7 @@ export const getRegisterToolsExample = (
       .filter((i) => i.name)
       .map((i) => i.name)
       .join(', ') || '...';
-  return `<Script id="omni-interface-actions" strategy="afterInteractive">
+  return `<Script id="blizzardberry-actions" strategy="afterInteractive">
   window.ChatbotActions = {
     ${functionName || 'your_action'}: async (args, userConfig) => {
       try {
@@ -81,5 +81,5 @@ export const getRegisterMultipleToolsExample = (
   }`;
     })
     .join(',\n');
-  return `<Script id="omni-interface-actions" strategy="afterInteractive">\n  ${`window.ChatbotActions = {\n  ${functionsCode}\n};`}\n</Script>`;
+  return `<Script id="blizzardberry-actions" strategy="afterInteractive">\n  ${`window.ChatbotActions = {\n  ${functionsCode}\n};`}\n</Script>`;
 };

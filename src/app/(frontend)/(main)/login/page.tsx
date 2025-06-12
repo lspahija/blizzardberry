@@ -94,7 +94,7 @@ export default function LoginPage() {
           className="text-4xl font-bold text-gray-900 mb-6"
           variants={itemVariants}
         >
-          Sign In to Omni Interface
+          Sign In to BlizzardBerry
         </motion.h1>
         <motion.p
           className="text-lg text-gray-600 mb-8"

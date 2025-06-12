@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'omni-interface',
+  title: 'BlizzardBerry',
   description: 'Building the Future of UX',
 };
 

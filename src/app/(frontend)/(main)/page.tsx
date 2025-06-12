@@ -180,7 +180,7 @@ export default function LandingPage() {
       <div className="py-16 bg-[#FFFDF8]">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
-            Why Choose Omni Interface?
+            Why Choose BlizzardBerry?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <motion.div
@@ -283,7 +283,7 @@ export default function LandingPage() {
           Ready to Transform Your Webapp?
         </h2>
         <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
-          Join thousands of developers using Omni Interface to power their apps
+          Join thousands of developers using BlizzardBerry to power their apps
           with AI chatbots.
         </p>
         <div className="relative inline-block">

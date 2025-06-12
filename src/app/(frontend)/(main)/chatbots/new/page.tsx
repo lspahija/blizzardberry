@@ -60,8 +60,8 @@ export default function NewChatbotPage() {
   };
 
   const scriptSnippet = `<Script
-  id="omni-interface-chatbot"
-  src="https://omni-interface.com/chatbot.js"
+  id="blizzardberry-chatbot"
+  src="https://blizzardberry.com/chatbot.js"
   strategy="afterInteractive"
   data-chatbot-id="${chatbotId}"
 />`;
@@ -183,7 +183,7 @@ export default function NewChatbotPage() {
                         <li>
                           Need help? Visit our{' '}
                           <a
-                            href="https://omni-interface.com/docs"
+                            href="https://blizzardberry.com/docs"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-[#FE4A60] hover:underline"

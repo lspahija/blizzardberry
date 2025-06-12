@@ -33,7 +33,7 @@ export default function UserConfig() {
     visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
   };
 
-  const configExample = `<Script id="omni-interface-config" strategy="afterInteractive">
+  const configExample = `<Script id="blizzardberry-config" strategy="afterInteractive">
   window.chatbotUserConfig = {
     user_id: "user_123",
     account_number: "ACC123456",
@@ -140,7 +140,7 @@ export default function UserConfig() {
                     <li>
                       Need help? Visit our{' '}
                       <a
-                        href="https://omni-interface.com/docs"
+                        href="https://blizzardberry.com/docs"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#FE4A60] hover:underline"

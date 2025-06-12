@@ -88,7 +88,7 @@
 
     const footer = document.createElement('div');
     footer.id = 'chatWidgetFooter';
-    footer.innerHTML = 'Powered By omni-interface';
+    footer.innerHTML = 'Powered By BlizzardBerry';
     footer.style.textAlign = 'center';
     footer.style.padding = '10px';
     footer.style.fontSize = '12px';

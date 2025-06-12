@@ -15,7 +15,7 @@ export async function sendVerificationRequest(
     body: JSON.stringify({
       from: provider.from,
       to,
-      subject: `Welcome to Omni Interface - Your Magic Link`,
+      subject: `Welcome to BlizzardBerry - Your Magic Link`,
       html: html({ url, host, theme }),
       text: text({ url, host }),
     }),
@@ -45,7 +45,7 @@ function html({ url, host, theme }: { url: string; host: string; theme: any }) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Omni Interface</title>
+  <title>Welcome to BlizzardBerry</title>
 </head>
 <body style="background: ${color.background}; margin: 0; font-family: 'Geist Sans', Helvetica, Arial, sans-serif; color: ${color.text};">
   <div style="max-width: 600px; margin: 20px auto; background: ${color.background}; border-radius: 10px; border-width: 3px; border-style: solid; border-color: ${color.buttonBorder}; padding: 20px;">
@@ -81,15 +81,15 @@ function html({ url, host, theme }: { url: string; host: string; theme: any }) {
 
 function text({ url, host }: { url: string; host: string }) {
   return `
-Welcome to Omni Interface!
+Welcome to BlizzardBerry!
 
 We're excited to have you on board. To sign in to your new account, click the link below:
 ${url}
 
 If the link doesn't work, copy and paste it into your browser.
 
-If you didn't sign up for Omni Interface, you can safely ignore this email.
+If you didn't sign up for BlizzardBerry, you can safely ignore this email.
 
-Omni Interface - Building the Future of UX
+BlizzardBerry - Building the Future of UX
 `;
 }

@@ -471,7 +471,7 @@ export default function ExecutionStep({
                     <li>
                       Need help? Visit our{' '}
                       <a
-                        href="https://omni-interface.com/docs"
+                        href="https://blizzardberry.com/docs"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#FE4A60] hover:underline"
