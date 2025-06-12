@@ -107,7 +107,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) landing page needs to sell the product well!
 - (Luka) add easy to use feedback form so users can report bugs and request features. make it easy for users to talk to us. - have this message us via Slack
-- (Luka) deploy to vercel
 - finish multi-tenancy config (just need prod configuration)
   - Google OAuth
       - [publish app](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7rg&project=ufcalarm-b270d)
