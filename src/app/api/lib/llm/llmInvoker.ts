@@ -9,6 +9,7 @@ import {
   createCreditHold,
   recordUsedTokens,
 } from '@/app/api/lib/llm/tokenUsageManager';
+import { buildSystemMessage } from '@/app/api/lib/llm/systemMessageProvider';
 
 export async function callLLM(
   messages: any,
@@ -23,7 +24,7 @@ export async function callLLM(
 
   const holdIds = await createCreditHold(
     chatbot.created_by,
-    200, // TODO: find a way to pick a sane upper bound
+    5000, // TODO: find a way to pick a sane upper bound
     `chat-completion #${chatbotId}`,
     idempotencyKey
   );

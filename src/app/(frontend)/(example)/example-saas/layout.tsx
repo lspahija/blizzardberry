@@ -59,7 +59,7 @@ export default function ExampleLayout({
           content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; img-src 'self' data: *; manifest-src 'self' *;"
         />
         <div id="chatbot" />
-        <Script id="omni-interface-config" strategy="beforeInteractive">
+        <Script id="omni-interface-config" strategy="afterInteractive">
           {`
                     window.chatbotUserConfig = {
                         user_id: "example_user_123",
@@ -77,7 +77,7 @@ export default function ExampleLayout({
           id="omni-interface-chatbot"
           src="http://localhost:3000/chatbot.js"
           strategy="afterInteractive"
-          data-chatbot-id="ae262222-4bea-48fe-a949-345493dfb465"
+          data-chatbot-id="aaea415d-f10d-42f2-81fb-89890387af67"
         />
         <Script id="omni-interface-actions" strategy="afterInteractive">
           {`

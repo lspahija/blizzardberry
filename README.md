@@ -106,6 +106,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   - add enterprise tier where they contact us
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) landing page needs to sell the product well!
+- (Luka) add "Powered By omni-interface" to the bottom of the chatbot
 - (Luka) add easy to use feedback form so users can report bugs and request features. make it easy for users to talk to us.
 - (Luka) rename and get domain! a couple good free ones so far are anduvion, numendil, silmarind, celendil, eryndil, parlur
   - tool that autogenerates variations that are available: https://leandomainsearch.com/search/?q=parlor
@@ -133,7 +134,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
-- add "Powered By omni-interface" to the bottom of the chatbot
 - minify and obfuscate chatbot.js code
 - let the end user see all actions that the chatbot can perform. Make the actions searchable. Expose the thinking tokens if the user chooses to see them.
 - make chatbot design super customizable so app owners can make it look like their app

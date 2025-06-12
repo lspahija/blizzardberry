@@ -9,11 +9,12 @@ export async function addCredit(
 ) {
   const eventType = 'CREDIT_ADDED';
   let eventId: number;
+  const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;
 
   await sql.begin(async (sql) => {
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
-      VALUES (${userId}, ${idempotencyKey}_${eventType}, ${eventType},
+      VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
               ${sql.json({ qty, expiresAt: expiresAt || null, source: 'purchase' })})
       RETURNING id`;
     eventId = event.id;
@@ -64,16 +65,17 @@ export async function holdCredit(
         INSERT INTO credit_holds (user_id, batch_id, quantity_held)
         VALUES (${userId}, ${b.id}, ${take})
         RETURNING id`;
-      holdIds.push(holdId);
+      holdIds.push(Number(holdId));
 
       need -= take;
     }
     if (need > 0) throw new Error('Insufficient balance');
 
     const eventType = 'CREDIT_HOLD_CREATED';
+    const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
-      VALUES (${userId}, ${idempotencyKey}_${eventType}, ${eventType},
+      VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
               ${sql.json({ holdIds, maxProbe, ref })})
       RETURNING id`;
     eventId = event.id;
@@ -102,8 +104,8 @@ export async function captureCredit(
     const holds = await sql`
       SELECT id, batch_id, quantity_held
       FROM credit_holds
-      WHERE id = ANY(${sql.array(holdIds)}) AND state = 'ACTIVE'
-        FOR UPDATE`;
+      WHERE id = ANY(${holdIds}) AND state = 'ACTIVE'
+      FOR UPDATE`;
 
     let need = actualUsed;
     for (const h of holds) {
@@ -129,9 +131,11 @@ export async function captureCredit(
     if (need > 0) throw new Error('Used > authorised');
 
     const eventType = 'CREDIT_HOLD_CAPTURED';
+    const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;
+
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
-      VALUES (${userId}, ${idempotencyKey}_${eventType}, ${eventType},
+      VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
               ${sql.json({ holdIds, actualUsed, ref })})
       RETURNING id`;
     eventId = event.id;
@@ -214,9 +218,11 @@ export async function removeCredit(
       WHERE id = ${batchId} AND user_id = ${userId}`;
 
     const eventType = 'CREDIT_REMOVED';
+    const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;
+
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
-      VALUES (${userId}, ${idempotencyKey}_${eventType}, ${eventType},
+      VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
               ${sql.json({ batchId, qty, reason })})
       RETURNING id`;
     eventId = event.id;

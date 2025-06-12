@@ -39,7 +39,7 @@ CREATE TYPE event_status AS ENUM ('PENDING', 'PROCESSING', 'PROCESSED', 'FAILED'
 CREATE TABLE domain_events
 (
     id              BIGSERIAL PRIMARY KEY,
-    user_id         BIGINT       NOT NULL,
+    user_id         UUID         NOT NULL,
     idempotency_key TEXT         NOT NULL UNIQUE,
     type            TEXT         NOT NULL,
     event_data      JSONB        NOT NULL,
@@ -57,7 +57,7 @@ CREATE INDEX ON domain_events (user_id, created_at);
 CREATE TABLE credit_batches
 (
     id                 BIGSERIAL PRIMARY KEY,
-    user_id            BIGINT      NOT NULL,
+    user_id            UUID        NOT NULL,
     quantity_remaining INT         NOT NULL CHECK (quantity_remaining >= 0),
     expires_at         TIMESTAMPTZ,
     created_at         TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -66,15 +66,15 @@ CREATE INDEX ON credit_batches (user_id, expires_at NULLS LAST);
 
 ----------------------------------------------------------------------
 -- 3. Projection: outstanding “holds” (authorisations) --------------
-CREATE TYPE hold_state AS ENUM ('active','captured','released','expired');
+CREATE TYPE hold_state AS ENUM ('ACTIVE','CAPTURED','RELEASED','EXPIRED');
 
 CREATE TABLE credit_holds
 (
     id            BIGSERIAL PRIMARY KEY,
-    user_id       BIGINT      NOT NULL,
+    user_id       UUID        NOT NULL,
     batch_id      BIGINT      NOT NULL REFERENCES credit_batches (id) ON DELETE CASCADE,
     quantity_held INT         NOT NULL CHECK (quantity_held > 0),
-    state         hold_state  NOT NULL DEFAULT 'active',
+    state         hold_state  NOT NULL DEFAULT 'ACTIVE',
     created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
     expires_at    TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '30 minutes') -- configurable
 );

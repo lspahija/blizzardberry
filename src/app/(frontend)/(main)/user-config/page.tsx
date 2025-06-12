@@ -12,7 +12,7 @@ import {
 } from '@/app/(frontend)/components/ui/card';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Copy, ExternalLink} from 'lucide-react';
+import { Copy, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 
 export default function UserConfig() {
@@ -33,7 +33,7 @@ export default function UserConfig() {
     visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
   };
 
-  const configExample = `<Script id="omni-interface-config" strategy="beforeInteractive">
+  const configExample = `<Script id="omni-interface-config" strategy="afterInteractive">
   window.chatbotUserConfig = {
     user_id: "user_123",
     account_number: "ACC123456",
@@ -91,7 +91,10 @@ export default function UserConfig() {
               <CardContent className="space-y-6">
                 <div>
                   <p className="text-gray-600 mb-4">
-                    This configuration will be accessible to all your chatbots. Add this script inside your website's <code>&lt;body&gt;</code> tag to provide user context to your chatbots.
+                    This configuration will be accessible to all your chatbots.
+                    Add this script inside your website's{' '}
+                    <code>&lt;body&gt;</code> tag to provide user context to
+                    your chatbots.
                   </p>
                   <div className="relative">
                     <SyntaxHighlighter
@@ -115,7 +118,9 @@ export default function UserConfig() {
                     </Button>
                   </div>
                   <p className="text-gray-600 text-sm mt-2">
-                    <strong>Note:</strong> The keys shown above are just examples. You can add or remove keys as needed to fit your application's requirements.
+                    <strong>Note:</strong> The keys shown above are just
+                    examples. You can add or remove keys as needed to fit your
+                    application's requirements.
                   </p>
                 </div>
                 <div className="space-y-4">
@@ -124,13 +129,13 @@ export default function UserConfig() {
                   </h3>
                   <ul className="list-disc list-inside text-gray-600 space-y-2">
                     <li>
-                      Add this script to your website's HTML, ideally just before the closing <code>&lt;/body&gt;</code> tag
+                      Add this script to your website's HTML, ideally just
+                      before the closing <code>&lt;/body&gt;</code> tag
                     </li>
+                    <li>Update the values with your actual user information</li>
                     <li>
-                      Update the values with your actual user information
-                    </li>
-                    <li>
-                      All your chatbots will automatically have access to this user context
+                      All your chatbots will automatically have access to this
+                      user context
                     </li>
                     <li>
                       Need help? Visit our{' '}
@@ -153,4 +158,4 @@ export default function UserConfig() {
       </div>
     </motion.div>
   );
-} 
+}

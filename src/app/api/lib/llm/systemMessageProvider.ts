@@ -8,7 +8,7 @@ before answering the question by using the search_knowledge_base tool to find re
 before responding.
 `;
 
-function buildSystemMessage(userConfig: any) {
+export function buildSystemMessage(userConfig: any) {
   let message = CHATBOT_SYSTEM_MESSAGE;
 
   if (userConfig)
