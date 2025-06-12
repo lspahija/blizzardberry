@@ -12,7 +12,12 @@ export async function POST(req: Request) {
 
     const { name, websiteDomain, model } = await req.json();
 
-    const data = await createChatbot(name, websiteDomain, session.user.id, model);
+    const data = await createChatbot(
+      name,
+      websiteDomain,
+      session.user.id,
+      model
+    );
 
     return NextResponse.json({ chatbotId: data.id }, { status: 201 });
   } catch (error) {

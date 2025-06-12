@@ -215,9 +215,12 @@ export const useActionForm = () => {
     }
 
     try {
-      const response = await fetch(`/api/chatbots/${chatbotId}/actions/${actionId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `/api/chatbots/${chatbotId}/actions/${actionId}`,
+        {
+          method: 'DELETE',
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Failed to delete action');

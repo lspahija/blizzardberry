@@ -112,7 +112,9 @@ export default function ExecutionStep({
 }: ExecutionStepProps) {
   const [bodyError, setBodyError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
-  const [functionNameError, setFunctionNameError] = useState<string | null>(null);
+  const [functionNameError, setFunctionNameError] = useState<string | null>(
+    null
+  );
 
   const addHeader = () => {
     setHeaders([...headers, { key: '', value: '' }]);
@@ -248,7 +250,10 @@ export default function ExecutionStep({
                   <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-4 mt-4">
                     <div>
                       <Label htmlFor="apiMethod">Method</Label>
-                      <Select value={apiMethod} onValueChange={handleMethodChange}>
+                      <Select
+                        value={apiMethod}
+                        onValueChange={handleMethodChange}
+                      >
                         <SelectTrigger className="mt-2 border-[2px] border-gray-900">
                           <SelectValue placeholder="Select method" />
                         </SelectTrigger>
@@ -407,7 +412,9 @@ export default function ExecutionStep({
                     className={`mt-2 border-[2px] ${functionNameError ? 'border-red-500' : 'border-gray-900'}`}
                   />
                   {functionNameError && (
-                    <p className="text-red-500 text-sm mt-1">{functionNameError}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {functionNameError}
+                    </p>
                   )}
                 </div>
                 <div>
@@ -438,7 +445,9 @@ export default function ExecutionStep({
                     </SyntaxHighlighter>
                     <Button
                       onClick={() => {
-                        navigator.clipboard.writeText(getRegisterToolsExample(functionName, dataInputs));
+                        navigator.clipboard.writeText(
+                          getRegisterToolsExample(functionName, dataInputs)
+                        );
                       }}
                       className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
                     >
@@ -447,22 +456,31 @@ export default function ExecutionStep({
                     </Button>
                   </div>
                   <ul className="list-disc list-inside text-gray-600 space-y-2 mt-4 text-sm">
-                    <li>Implement your function into your app like the example above</li>
-                    <li>Add the code between the <code>&lt;body&gt;</code> tags of your website's HTML</li>
-                    <li>The code will be available to your chatbot as a client-side action</li>
                     <li>
-                    Need help? Visit our{' '}
-                    <a
-                      href="https://omni-interface.com/docs"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#FE4A60] hover:underline"
-                    >
-                      documentation{' '}
-                      <ExternalLink className="inline w-4 h-4" />
-                    </a>
-                    .
-                  </li>
+                      Implement your function into your app like the example
+                      above
+                    </li>
+                    <li>
+                      Add the code between the <code>&lt;body&gt;</code> tags of
+                      your website's HTML
+                    </li>
+                    <li>
+                      The code will be available to your chatbot as a
+                      client-side action
+                    </li>
+                    <li>
+                      Need help? Visit our{' '}
+                      <a
+                        href="https://omni-interface.com/docs"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#FE4A60] hover:underline"
+                      >
+                        documentation{' '}
+                        <ExternalLink className="inline w-4 h-4" />
+                      </a>
+                      .
+                    </li>
                   </ul>
                 </div>
               </div>

@@ -38,11 +38,13 @@ export default function GeneralStep({
   setBaseAction,
   onNext,
 }: GeneralStepProps) {
-  const [errors, setErrors] = useState<{ name?: string; description?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; description?: string }>(
+    {}
+  );
 
   const handleNext = () => {
     const newErrors: { name?: string; description?: string } = {};
-    
+
     if (!baseAction.name.trim()) {
       newErrors.name = 'Action name is required';
     }
@@ -82,13 +84,15 @@ export default function GeneralStep({
                 id="actionName"
                 value={baseAction.name}
                 onChange={(e) => {
-                  setErrors(prev => ({ ...prev, name: undefined }));
+                  setErrors((prev) => ({ ...prev, name: undefined }));
                   setBaseAction({ ...baseAction, name: e.target.value });
                 }}
                 placeholder="Update_Subscription"
                 className={`mt-2 border-[2px] ${errors.name ? 'border-red-500' : 'border-gray-900'}`}
               />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              )}
             </div>
             <div>
               <Label htmlFor="description" className="text-gray-900">
@@ -104,14 +108,18 @@ export default function GeneralStep({
                 id="description"
                 value={baseAction.description}
                 onChange={(e) => {
-                  setErrors(prev => ({ ...prev, description: undefined }));
+                  setErrors((prev) => ({ ...prev, description: undefined }));
                   setBaseAction({ ...baseAction, description: e.target.value });
                 }}
                 placeholder="Describe when the AI agent should use this action..."
                 className={`mt-2 border-[2px] ${errors.description ? 'border-red-500' : 'border-gray-900'}`}
                 rows={5}
               />
-              {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
             <div>
               <Label className="text-gray-900">Action Type</Label>

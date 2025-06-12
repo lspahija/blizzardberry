@@ -71,7 +71,11 @@ export default function NewChatbotPage() {
 
   const onCreateChatbot = async () => {
     try {
-      const { chatbotId: newChatbotId } = await handleCreateChatbot({ name, websiteDomain, model });
+      const { chatbotId: newChatbotId } = await handleCreateChatbot({
+        name,
+        websiteDomain,
+        model,
+      });
       setChatbotId(newChatbotId);
     } catch (error) {
       console.error('Error creating chatbot:', error);
@@ -263,14 +267,30 @@ export default function NewChatbotPage() {
                           <SelectValue placeholder="Select a model" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</SelectItem>
-                          <SelectItem value="google/gemini-2.5-pro-preview">Gemini 2.5 Pro Preview</SelectItem>
-                          <SelectItem value="openai/gpt-4.1">ChatGPT 4.1</SelectItem>
-                          <SelectItem value="openai/chatgpt-4o-latest">ChatGPT 4o</SelectItem>
-                          <SelectItem value="anthropic/claude-sonnet-4">Claude Sonnet 4</SelectItem>
-                          <SelectItem value="x-ai/grok-3-beta">Grok 3 Beta</SelectItem>
-                          <SelectItem value="deepseek/deepseek-r1-distill-qwen-7b">DeepSeek R1 Distill Qwen 7B</SelectItem>
-                          <SelectItem value="qwen/qwen3-30b-a3b">Qwen 3 30B A3B</SelectItem>
+                          <SelectItem value="google/gemini-2.0-flash-001">
+                            Gemini 2.0 Flash
+                          </SelectItem>
+                          <SelectItem value="google/gemini-2.5-pro-preview">
+                            Gemini 2.5 Pro Preview
+                          </SelectItem>
+                          <SelectItem value="openai/gpt-4.1">
+                            ChatGPT 4.1
+                          </SelectItem>
+                          <SelectItem value="openai/chatgpt-4o-latest">
+                            ChatGPT 4o
+                          </SelectItem>
+                          <SelectItem value="anthropic/claude-sonnet-4">
+                            Claude Sonnet 4
+                          </SelectItem>
+                          <SelectItem value="x-ai/grok-3-beta">
+                            Grok 3 Beta
+                          </SelectItem>
+                          <SelectItem value="deepseek/deepseek-r1-distill-qwen-7b">
+                            DeepSeek R1 Distill Qwen 7B
+                          </SelectItem>
+                          <SelectItem value="qwen/qwen3-30b-a3b">
+                            Qwen 3 30B A3B
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

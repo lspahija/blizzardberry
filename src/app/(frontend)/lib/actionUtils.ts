@@ -49,16 +49,22 @@ export const getRegisterMultipleToolsExample = (
 ) => {
   const functionsCode = actions
     .map(({ functionName, dataInputs }) => {
-      const argList =
-        dataInputs
-          .filter((i) => i.name)
-          .map((i) => i.name)
-          .join(', ');
+      const argList = dataInputs
+        .filter((i) => i.name)
+        .map((i) => i.name)
+        .join(', ');
       // If there are no args, just use userConfig
       const params = [argList, 'userConfig'].filter(Boolean).join(', ');
       return `  ${functionName || 'your_action'}: async (${params}) => {
     try {
-      // ${argList ? argList.split(', ').map(n => `use ${n}`).join(', ') : 'no arguments'}
+      // ${
+        argList
+          ? argList
+              .split(', ')
+              .map((n) => `use ${n}`)
+              .join(', ')
+          : 'no arguments'
+      }
       // userConfig - exposes the user config if you specified one
       return { 
         status: 'success',

@@ -10,7 +10,19 @@ import {
   CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, PlusCircle, Trash2, X, Copy, ExternalLink, Bot, FileText, Zap, Info, Code } from 'lucide-react';
+import {
+  Loader2,
+  PlusCircle,
+  Trash2,
+  X,
+  Copy,
+  ExternalLink,
+  Bot,
+  FileText,
+  Zap,
+  Info,
+  Code,
+} from 'lucide-react';
 import {
   Action,
   ExecutionContext,
@@ -41,7 +53,12 @@ export default function ChatbotDetails({
   const [copied, setCopied] = useState(false);
 
   const { handleDeleteAction } = useActionForm();
-  const { documents, loadingDocuments, deletingDocumentId, handleDeleteDocument } = useDocuments();
+  const {
+    documents,
+    loadingDocuments,
+    deletingDocumentId,
+    handleDeleteDocument,
+  } = useDocuments();
 
   const getChatbotCode = (chatbotId: string) => `<Script
   id="omni-interface-chatbot"
@@ -108,22 +125,26 @@ export default function ChatbotDetails({
     setDeletingActionId(actionId);
     try {
       await handleDeleteAction(actionId);
-      setActions(actions.filter(action => action.id !== actionId));
+      setActions(actions.filter((action) => action.id !== actionId));
     } finally {
       setDeletingActionId(null);
     }
   };
 
-  const clientActions = actions.filter(action => action.executionContext === ExecutionContext.CLIENT);
-  const clientActionsCode = getRegisterMultipleToolsExample(clientActions.map(action => ({
-    functionName: action.name,
-    dataInputs: (action.executionModel.parameters || []).map(param => ({
-      name: param.name,
-      type: param.type,
-      description: param.description || '',
-      isArray: param.isArray
+  const clientActions = actions.filter(
+    (action) => action.executionContext === ExecutionContext.CLIENT
+  );
+  const clientActionsCode = getRegisterMultipleToolsExample(
+    clientActions.map((action) => ({
+      functionName: action.name,
+      dataInputs: (action.executionModel.parameters || []).map((param) => ({
+        name: param.name,
+        type: param.type,
+        description: param.description || '',
+        isArray: param.isArray,
+      })),
     }))
-  })));
+  );
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -195,10 +216,12 @@ export default function ChatbotDetails({
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 mb-2 text-base">
-              <span className="font-semibold">Domain:</span> {chatbot.websiteDomain}
+              <span className="font-semibold">Domain:</span>{' '}
+              {chatbot.websiteDomain}
             </p>
             <p className="text-gray-600 mb-2 text-base">
-              <span className="font-semibold">Created:</span> {new Date(chatbot.createdAt).toLocaleString()}
+              <span className="font-semibold">Created:</span>{' '}
+              {new Date(chatbot.createdAt).toLocaleString()}
             </p>
             <p className="text-gray-600 mb-2 text-base">
               <span className="font-semibold">Model:</span> {chatbot.model}
@@ -259,12 +282,12 @@ export default function ChatbotDetails({
               overscrollBehavior: 'contain',
               touchAction: 'none',
             }}
-            onWheel={e => e.stopPropagation()}
-            onTouchMove={e => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
           >
             <div
               className="bg-[#FFFDF8] p-6 rounded-2xl shadow-2xl max-w-4xl w-full relative"
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
               <button
                 className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
@@ -272,7 +295,9 @@ export default function ChatbotDetails({
               >
                 <X className="h-6 w-6" />
               </button>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Client Actions Code</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Client Actions Code
+              </h2>
               <div className="relative mb-2 max-h-[60vh] overflow-auto">
                 <SyntaxHighlighter
                   language="javascript"
@@ -296,11 +321,22 @@ export default function ChatbotDetails({
                 </Button>
               </div>
               <div className="mt-6 space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Installation Instructions</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Installation Instructions
+                </h3>
                 <ul className="list-disc list-inside text-gray-600 space-y-2">
-                  <li>Implement your client-side functions into your app like the example above</li>
-                  <li>Add the code between the <code>&lt;body&gt;</code> tags of your website's HTML</li>
-                  <li>These functions will be available to your chatbot as client-side actions</li>
+                  <li>
+                    Implement your client-side functions into your app like the
+                    example above
+                  </li>
+                  <li>
+                    Add the code between the <code>&lt;body&gt;</code> tags of
+                    your website's HTML
+                  </li>
+                  <li>
+                    These functions will be available to your chatbot as
+                    client-side actions
+                  </li>
                   <li>
                     Need help? Visit our{' '}
                     <a
@@ -309,8 +345,7 @@ export default function ChatbotDetails({
                       rel="noopener noreferrer"
                       className="text-[#FE4A60] hover:underline"
                     >
-                      documentation{' '}
-                      <ExternalLink className="inline w-4 h-4" />
+                      documentation <ExternalLink className="inline w-4 h-4" />
                     </a>
                     .
                   </li>
@@ -329,12 +364,12 @@ export default function ChatbotDetails({
               overscrollBehavior: 'contain',
               touchAction: 'none',
             }}
-            onWheel={e => e.stopPropagation()}
-            onTouchMove={e => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
           >
             <div
               className="bg-[#FFFDF8] p-6 rounded-2xl shadow-2xl max-w-4xl w-full relative"
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
               <button
                 className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
@@ -342,7 +377,9 @@ export default function ChatbotDetails({
               >
                 <X className="h-6 w-6" />
               </button>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Chatbot Installation Code</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Chatbot Installation Code
+              </h2>
               <div className="relative mb-2">
                 <SyntaxHighlighter
                   language="html"
@@ -366,12 +403,20 @@ export default function ChatbotDetails({
                 </Button>
               </div>
               <div className="mt-6 space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Installation Instructions</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Installation Instructions
+                </h3>
                 <ul className="list-disc list-inside text-gray-600 space-y-2">
                   <li>Copy the code snippet above</li>
-                  <li>Paste it between the <code>&lt;body&gt;</code> tags of your website's HTML</li>
+                  <li>
+                    Paste it between the <code>&lt;body&gt;</code> tags of your
+                    website's HTML
+                  </li>
                   <li>Save and publish your website changes</li>
-                  <li>Your chatbot will appear on your website at <code>https://{chatbot.websiteDomain}</code></li>
+                  <li>
+                    Your chatbot will appear on your website at{' '}
+                    <code>https://{chatbot.websiteDomain}</code>
+                  </li>
                   <li>
                     Need help? Visit our{' '}
                     <a
@@ -380,8 +425,7 @@ export default function ChatbotDetails({
                       rel="noopener noreferrer"
                       className="text-[#FE4A60] hover:underline"
                     >
-                      documentation{' '}
-                      <ExternalLink className="inline w-4 h-4" />
+                      documentation <ExternalLink className="inline w-4 h-4" />
                     </a>
                     .
                   </li>
@@ -411,22 +455,34 @@ export default function ChatbotDetails({
             <CardContent>
               <ul className="space-y-4">
                 {actions.map((action, idx) => (
-                  <li key={action.id || action.name} className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2">
+                  <li
+                    key={action.id || action.name}
+                    className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2"
+                  >
                     <Zap className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
                     <div className="flex-1">
-                      <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">{action.name}</p>
-                      <p className="text-sm text-gray-500 mb-1">
-                        <span className="font-semibold">Description:</span> {action.description}
+                      <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">
+                        {action.name}
                       </p>
                       <p className="text-sm text-gray-500 mb-1">
-                        <span className="font-semibold">Context:</span> {action.executionContext}
+                        <span className="font-semibold">Description:</span>{' '}
+                        {action.description}
+                      </p>
+                      <p className="text-sm text-gray-500 mb-1">
+                        <span className="font-semibold">Context:</span>{' '}
+                        {action.executionContext}
                       </p>
                       <p className="text-sm text-gray-500 mb-1">
                         <span className="font-semibold">Model:</span>{' '}
                         {action.executionContext === ExecutionContext.SERVER ? (
                           <>
-                            {(action as BackendAction).executionModel.request.method.toUpperCase()}{' '}
-                            {(action as BackendAction).executionModel.request.url}
+                            {(
+                              action as BackendAction
+                            ).executionModel.request.method.toUpperCase()}{' '}
+                            {
+                              (action as BackendAction).executionModel.request
+                                .url
+                            }
                           </>
                         ) : (
                           (action as FrontendAction).executionModel.functionName
@@ -448,7 +504,9 @@ export default function ChatbotDetails({
                       variant="destructive"
                       size="sm"
                       className="ml-4 rounded-full p-2 hover:bg-[#FE4A60]/80 transition group-hover:scale-110"
-                      onClick={() => action.id && handleDeleteActionWithLoading(action.id)}
+                      onClick={() =>
+                        action.id && handleDeleteActionWithLoading(action.id)
+                      }
                       disabled={deletingActionId === action.id}
                       title="Delete Action"
                     >
@@ -458,7 +516,9 @@ export default function ChatbotDetails({
                         <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
                       )}
                     </Button>
-                    {idx < actions.length - 1 && <hr className="my-2 border-gray-200" />}
+                    {idx < actions.length - 1 && (
+                      <hr className="my-2 border-gray-200" />
+                    )}
                   </li>
                 ))}
               </ul>
@@ -486,7 +546,10 @@ export default function ChatbotDetails({
             <CardContent>
               <ul className="space-y-4">
                 {documents.map((doc, idx) => (
-                  <li key={doc.id} className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2">
+                  <li
+                    key={doc.id}
+                    className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2"
+                  >
                     <FileText className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
                     <div className="flex-1">
                       <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">
@@ -540,7 +603,9 @@ export default function ChatbotDetails({
                         <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
                       )}
                     </Button>
-                    {idx < documents.length - 1 && <hr className="my-2 border-gray-200" />}
+                    {idx < documents.length - 1 && (
+                      <hr className="my-2 border-gray-200" />
+                    )}
                   </li>
                 ))}
               </ul>
