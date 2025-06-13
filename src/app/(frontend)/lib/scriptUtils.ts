@@ -30,45 +30,51 @@ ${content ? `  ${content}` : ''}
   }
 };
 
-export const getChatbotConfigScript = (framework: Framework, config: Record<string, any>) => {
-  const content = `window.chatbotUserConfig = ${JSON.stringify(config, null, 2)};`;
+export const getAgentConfigScript = (
+  framework: Framework,
+  config: Record<string, any>
+) => {
+  const content = `window.agentUserConfig = ${JSON.stringify(config, null, 2)};`;
   return getScriptTag(framework, {
     id: 'blizzardberry-config',
     content,
   });
 };
 
-const chatbotScriptNextJs = (chatbotId: string) => `
-  id="blizzardberry-chatbot"
-  src="http://localhost:3000/chatbot.js"
+const agentScriptNextJs = (agentId: string) => `
+  id="blizzardberry-agent"
+  src="http://localhost:3000/agent.js"
   strategy="afterInteractive"
-  data-chatbot-id="${chatbotId}"
+  data-agent-id="${agentId}"
 `;
 
-const chatbotScriptVanilla = (chatbotId: string) => `
-  id="blizzardberry-chatbot"
-  src="http://localhost:3000/chatbot.js"
+const agentScriptVanilla = (agentId: string) => `
+  id="blizzardberry-agent"
+  src="http://localhost:3000/agent.js"
   type="text/javascript"
-  data-chatbot-id="${chatbotId}"
+  data-agent-id="${agentId}"
 `;
 
-export const getChatbotScript = (framework: Framework, chatbotId: string) => {
+export const getAgentScript = (framework: Framework, agentId: string) => {
   if (framework === Framework.NEXT_JS) {
-    return `<Script ${chatbotScriptNextJs(chatbotId)}/>`;
+    return `<Script ${agentScriptNextJs(agentId)}/>`;
   } else {
-    return `<script ${chatbotScriptVanilla(chatbotId)}/>`;
+    return `<script ${agentScriptVanilla(agentId)}/>`;
   }
 };
 
-export const getActionsScript = (framework: Framework, actions: Array<{
-  functionName: string;
-  dataInputs: Array<{
-    name: string;
-    type: string;
-    description: string;
-    isArray: boolean;
-  }>;
-}>) => {
+export const getActionsScript = (
+  framework: Framework,
+  actions: Array<{
+    functionName: string;
+    dataInputs: Array<{
+      name: string;
+      type: string;
+      description: string;
+      isArray: boolean;
+    }>;
+  }>
+) => {
   const functionsCode = actions
     .map(({ functionName, dataInputs }) => {
       const argList = dataInputs
@@ -103,7 +109,7 @@ export const getActionsScript = (framework: Framework, actions: Array<{
     })
     .join(',\n');
 
-  const content = `window.ChatbotActions = {\n  ${functionsCode}\n};`;
+  const content = `window.AgentActions = {\n  ${functionsCode}\n};`;
   return getScriptTag(framework, {
     id: 'blizzardberry-actions',
     content,

@@ -31,7 +31,7 @@ interface Header {
 export const useActionForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { chatbotId } = useParams();
+  const { agentId } = useParams();
 
   const [step, setStep] = useState(1);
   const [baseAction, setBaseAction] = useState<BaseAction>({
@@ -39,7 +39,7 @@ export const useActionForm = () => {
     name: '',
     description: '',
     executionContext: ExecutionContext.SERVER,
-    chatbotId: chatbotId as string,
+    agentId: agentId as string,
   });
   const [dataInputs, setDataInputs] = useState<DataInput[]>([
     { name: '', type: 'Text', description: '', isArray: false },
@@ -77,7 +77,7 @@ export const useActionForm = () => {
       const actionTypeParam =
         newExecutionContext === ExecutionContext.SERVER ? 'server' : 'client';
       router.replace(
-        `/chatbots/${chatbotId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
+        `/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
       );
     } else if (stepParam) {
       const actionTypeParam =
@@ -85,10 +85,10 @@ export const useActionForm = () => {
           ? 'server'
           : 'client';
       router.replace(
-        `/chatbots/${chatbotId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
+        `/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
       );
     }
-  }, [searchParams, router, chatbotId, baseAction.executionContext]);
+  }, [searchParams, router, agentId, baseAction.executionContext]);
 
   const updateUrl = (newStep: number) => {
     if (newStep > 1) {
@@ -97,10 +97,10 @@ export const useActionForm = () => {
           ? 'server'
           : 'client';
       router.push(
-        `/chatbots/${chatbotId}/actions/new?type=${actionTypeParam}&step=${newStep}`
+        `/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${newStep}`
       );
     } else {
-      router.push(`/chatbots/${chatbotId}/actions/new?step=${newStep}`);
+      router.push(`/agents/${agentId}/actions/new?step=${newStep}`);
     }
     setStep(newStep);
   };
@@ -115,7 +115,7 @@ export const useActionForm = () => {
     if (step > 1) {
       updateUrl(step - 1);
     } else {
-      router.push(`/chatbots/${chatbotId}`);
+      router.push(`/agents/${agentId}`);
     }
   };
 
@@ -190,7 +190,7 @@ export const useActionForm = () => {
     }
 
     try {
-      const response = await fetch(`/api/chatbots/${chatbotId}/actions`, {
+      const response = await fetch(`/api/agents/${agentId}/actions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ export const useActionForm = () => {
 
       if (response.ok) {
         console.log('Action created successfully');
-        router.push(`/chatbots/${chatbotId}`);
+        router.push(`/agents/${agentId}`);
       } else {
         console.error('Failed to create action:', response.statusText);
       }
@@ -216,7 +216,7 @@ export const useActionForm = () => {
 
     try {
       const response = await fetch(
-        `/api/chatbots/${chatbotId}/actions/${actionId}`,
+        `/api/agents/${agentId}/actions/${actionId}`,
         {
           method: 'DELETE',
         }

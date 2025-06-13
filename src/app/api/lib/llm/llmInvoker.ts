@@ -4,7 +4,7 @@ import {
   createSearchKnowledgeBaseTool,
   getToolsFromActions,
 } from '@/app/api/lib/tools/toolProvider';
-import { getChatbot } from '@/app/api/lib/store/chatbotStore';
+import { getAgent } from '@/app/api/lib/store/agentStore';
 import {
   createCreditHold,
   recordUsedTokens,
@@ -14,28 +14,28 @@ import { buildSystemMessage } from '@/app/api/lib/llm/systemMessageProvider';
 export async function callLLM(
   messages: any,
   userConfig: any,
-  chatbotId: string,
+  agentId: string,
   idempotencyKey: string
 ) {
-  const chatbot = await getChatbot(chatbotId);
-  if (!chatbot) {
-    throw new Error('Chatbot not found');
+  const agent = await getAgent(agentId);
+  if (!agent) {
+    throw new Error('Agent not found');
   }
 
   const holdIds = await createCreditHold(
-    chatbot.created_by,
+    agent.created_by,
     5000, // TODO: find a way to pick a sane upper bound
-    `chat-completion #${chatbotId}`,
+    `chat-completion #${agentId}`,
     idempotencyKey
   );
 
   const stream = streamText({
-    model: getLanguageModel(chatbot.model),
+    model: getLanguageModel(agent.model),
     messages: messages,
     system: buildSystemMessage(userConfig),
     tools: {
-      ...(await getToolsFromActions(chatbotId)),
-      search_knowledge_base: createSearchKnowledgeBaseTool(chatbotId),
+      ...(await getToolsFromActions(agentId)),
+      search_knowledge_base: createSearchKnowledgeBaseTool(agentId),
     },
     maxSteps: 5,
     onError: async (event) => {
@@ -46,11 +46,11 @@ export async function callLLM(
     },
     onFinish: async (event) => {
       await recordUsedTokens(
-        chatbot.created_by,
+        agent.created_by,
         holdIds,
         event.usage,
-        chatbot.model,
-        `chat-completion #${chatbotId}`,
+        agent.model,
+        `chat-completion #${agentId}`,
         idempotencyKey
       );
 

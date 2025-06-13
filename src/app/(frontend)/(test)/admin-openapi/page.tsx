@@ -64,13 +64,13 @@ export default function AdminPage() {
       if (response.status === 201) {
         setSubmitResult({
           success: true,
-          message: 'Chatbot created successfully!',
+          message: 'Agent created successfully!',
         });
         setShowInstructions(true);
       } else {
         setSubmitResult({
           success: false,
-          message: 'Failed to create chatbot',
+          message: 'Failed to create agent',
         });
       }
     } catch (error) {
@@ -86,12 +86,12 @@ export default function AdminPage() {
   const copyToClipboard = () => {
     const codeSnippet = `<meta httpEquiv="Content-Security-Policy"
       content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; manifest-src 'self' *;"/>
-<div id="chatbot" />
+<div id="agent" />
 <Script id="widget-script" strategy="afterInteractive">
   {
     \`(function() {
     var s = document.createElement('script');
-    s.src = 'http://localhost:3000/chatbot.js';
+    s.src = 'http://localhost:3000/agent.js';
     s.async = true;
     document.head.appendChild(s);
   })();\`
@@ -115,7 +115,7 @@ export default function AdminPage() {
       });
   };
 
-  const createNewChatbot = () => {
+  const createNewAgent = () => {
     setApiSpec('');
     setSubmitResult(null);
     setShowInstructions(false);
@@ -135,8 +135,8 @@ export default function AdminPage() {
           </h1>
           <p className="mt-3 text-lg text-gray-600">
             {showInstructions
-              ? 'Install Your Chatbot'
-              : 'Create a Chatbot from an OpenAPI Spec'}
+              ? 'Install Your Agent'
+              : 'Create an Agent from an OpenAPI Spec'}
           </p>
         </motion.div>
 
@@ -169,7 +169,7 @@ export default function AdminPage() {
                       disabled={isSubmitting}
                       className={`bg-indigo-600 hover:bg-indigo-700 ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''}`}
                     >
-                      {isSubmitting ? 'Creating Chatbot...' : 'Create Chatbot'}
+                      {isSubmitting ? 'Creating Agent...' : 'Create Agent'}
                     </Button>
                   </div>
 
@@ -189,7 +189,7 @@ export default function AdminPage() {
                     <AlertTitle className="text-green-800">Success!</AlertTitle>
                     <AlertDescription className="text-green-700">
                       {submitResult?.message} Follow the instructions below to
-                      add the chatbot to your website.
+                      add the agent to your website.
                     </AlertDescription>
                   </Alert>
 
@@ -209,12 +209,12 @@ export default function AdminPage() {
                       <pre className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto text-sm font-mono">
                         {`<meta httpEquiv="Content-Security-Policy"
       content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; manifest-src 'self' *;"/>
-<div id="chatbot" />
+<div id="agent" />
 <Script id="widget-script" strategy="afterInteractive">
   {
     \`(function() {
     var s = document.createElement('script');
-    s.src = 'http://localhost:3000/chatbot.js';
+    s.src = 'http://localhost:3000/agent.js';
     s.async = true;
     document.head.appendChild(s);
   })();\`
@@ -236,10 +236,10 @@ export default function AdminPage() {
 
                   <div className="flex justify-center mt-8">
                     <Button
-                      onClick={createNewChatbot}
+                      onClick={createNewAgent}
                       className="bg-indigo-600 hover:bg-indigo-700"
                     >
-                      Create Another Chatbot
+                      Create Another Agent
                     </Button>
                   </div>
                 </div>

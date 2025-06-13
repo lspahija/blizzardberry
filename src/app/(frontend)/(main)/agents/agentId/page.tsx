@@ -27,7 +27,7 @@ import {
   Action,
   ExecutionContext,
 } from '@/app/api/lib/model/action/baseAction';
-import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
+import { Agent } from '@/app/api/lib/model/agent/agent';
 import { use } from 'react';
 import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
@@ -35,7 +35,7 @@ import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import { getRegisterMultipleToolsExample } from '@/app/(frontend)/lib/actionUtils';
-import {Framework, getChatbotScript} from '@/app/(frontend)/lib/scriptUtils';
+import { Framework, getAgentScript } from '@/app/(frontend)/lib/scriptUtils';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
@@ -47,19 +47,19 @@ import {
 } from '@/app/(frontend)/components/ui/select';
 import { Label } from '@/app/(frontend)/components/ui/label';
 
-export default function ChatbotDetails({
+export default function AgentDetails({
   params: paramsPromise,
 }: {
-  params: Promise<{ chatbotId: string }>;
+  params: Promise<{ agentId: string }>;
 }) {
   const params = use(paramsPromise);
-  const [chatbot, setChatbot] = useState<Chatbot | null>(null);
+  const [agent, setAgent] = useState<Agent | null>(null);
   const [actions, setActions] = useState<Action[]>([]);
-  const [loadingChatbot, setLoadingChatbot] = useState(true);
+  const [loadingAgent, setLoadingAgent] = useState(true);
   const [loadingActions, setLoadingActions] = useState(true);
   const [deletingActionId, setDeletingActionId] = useState<string | null>(null);
   const [showClientActions, setShowClientActions] = useState(false);
-  const [showChatbotCode, setShowChatbotCode] = useState(false);
+  const [showAgentCode, setShowAgentCode] = useState(false);
   const [copied, setCopied] = useState(false);
   const { selectedFramework, setSelectedFramework } = useFramework();
 
@@ -70,7 +70,7 @@ export default function ChatbotDetails({
     deletingDocumentId,
     handleDeleteDocument,
   } = useDocuments();
-      
+
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -80,33 +80,31 @@ export default function ChatbotDetails({
     },
   };
 
-  // Fetch chatbot details
+  // Fetch agent details
   useEffect(() => {
-    async function fetchChatbot() {
+    async function fetchAgent() {
       try {
-        const response = await fetch(`/api/chatbots/${params.chatbotId}`);
+        const response = await fetch(`/api/agents/${params.agentId}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch chatbot');
+          throw new Error('Failed to fetch agent');
         }
         const data = await response.json();
-        setChatbot(data.chatbot || null);
+        setAgent(data.agent || null);
       } catch (error) {
-        console.error('Error fetching chatbot:', error);
+        console.error('Error fetching agent:', error);
       } finally {
-        setLoadingChatbot(false);
+        setLoadingAgent(false);
       }
     }
 
-    fetchChatbot();
-  }, [params.chatbotId]);
+    fetchAgent();
+  }, [params.agentId]);
 
-  // Fetch actions for the chatbot
+  // Fetch actions for the agent
   useEffect(() => {
     async function fetchActions() {
       try {
-        const response = await fetch(
-          `/api/chatbots/${params.chatbotId}/actions`
-        );
+        const response = await fetch(`/api/agents/${params.agentId}/actions`);
         if (!response.ok) {
           throw new Error('Failed to fetch actions');
         }
@@ -114,7 +112,7 @@ export default function ChatbotDetails({
         setActions(data.actions || []);
       } catch (error) {
         console.error(
-          `Error fetching actions for chatbot ${params.chatbotId}:`,
+          `Error fetching actions for agent ${params.agentId}:`,
           error
         );
       } finally {
@@ -123,7 +121,7 @@ export default function ChatbotDetails({
     }
 
     fetchActions();
-  }, [params.chatbotId]);
+  }, [params.agentId]);
 
   const handleDeleteActionWithLoading = async (actionId: string) => {
     setDeletingActionId(actionId);
@@ -146,7 +144,7 @@ export default function ChatbotDetails({
   };
 
   useEffect(() => {
-    if (showClientActions || showChatbotCode) {
+    if (showClientActions || showAgentCode) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -154,9 +152,9 @@ export default function ChatbotDetails({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [showClientActions, showChatbotCode]);
+  }, [showClientActions, showAgentCode]);
 
-  if (loadingChatbot) {
+  if (loadingAgent) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
         <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
@@ -164,11 +162,11 @@ export default function ChatbotDetails({
     );
   }
 
-  if (!chatbot) {
+  if (!agent) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
         <p className="text-gray-900 text-lg">
-          Chatbot not found.{' '}
+          Agent not found.{' '}
           <Link href="/dashboard" className="text-[#FE4A60] hover:underline">
             Go back to dashboard
           </Link>
@@ -188,7 +186,7 @@ export default function ChatbotDetails({
       <div className="max-w-4xl mx-auto w-full">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
-            {chatbot.name}
+            {agent.name}
           </h1>
           <Button
             asChild
@@ -204,20 +202,20 @@ export default function ChatbotDetails({
           <CardHeader className="flex items-center space-x-2">
             <Bot className="h-6 w-6 text-[#FE4A60]" />
             <CardTitle className="text-2xl font-bold text-gray-900">
-              Chatbot Details
+              Agent Details
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 mb-2 text-base">
               <span className="font-semibold">Domain:</span>{' '}
-              {chatbot.websiteDomain}
+              {agent.websiteDomain}
             </p>
             <p className="text-gray-600 mb-2 text-base">
               <span className="font-semibold">Created:</span>{' '}
-              {new Date(chatbot.createdAt).toLocaleString()}
+              {new Date(agent.createdAt).toLocaleString()}
             </p>
             <p className="text-gray-600 mb-2 text-base">
-              <span className="font-semibold">Model:</span> {chatbot.model}
+              <span className="font-semibold">Model:</span> {agent.model}
             </p>
           </CardContent>
         </Card>
@@ -228,7 +226,7 @@ export default function ChatbotDetails({
             className="bg-[#FE4A60] text-white border-[3px] border-gray-900 transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-[#ff6a7a]"
           >
             <Link
-              href={`/chatbots/${params.chatbotId}/actions/new`}
+              href={`/agents/${params.agentId}/actions/new`}
               className="flex items-center"
             >
               <PlusCircle className="mr-2 h-5 w-5" />
@@ -240,7 +238,7 @@ export default function ChatbotDetails({
             className="bg-[#FE4A60] text-white border-[3px] border-gray-900 transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-[#ff6a7a]"
           >
             <Link
-              href={`/chatbots/${params.chatbotId}/documents/new`}
+              href={`/agents/${params.agentId}/documents/new`}
               className="flex items-center"
             >
               <PlusCircle className="mr-2 h-5 w-5" />
@@ -249,11 +247,11 @@ export default function ChatbotDetails({
           </Button>
           <Button
             className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg flex items-center gap-2 shadow-md"
-            onClick={() => setShowChatbotCode(true)}
-            title="Show installation code for this chatbot"
+            onClick={() => setShowAgentCode(true)}
+            title="Show installation code for this agent"
           >
             <Code className="h-5 w-5" />
-            Chatbot Code
+            Agent Code
           </Button>
           {clientActions.length > 0 && (
             <Button
@@ -268,7 +266,10 @@ export default function ChatbotDetails({
         </div>
         {showClientActions && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
-            <div className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl shadow-2xl" aria-hidden="true" />
+            <div
+              className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl shadow-2xl"
+              aria-hidden="true"
+            />
             <div className="relative z-10 max-w-4xl w-full max-h-[90vh] rounded-2xl">
               <div className="relative mb-12">
                 <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
@@ -297,21 +298,32 @@ export default function ChatbotDetails({
                           Framework
                         </Label>
                         <p className="text-sm text-gray-600 mt-2 ml-6">
-                          Select the framework you're using to implement the client actions.
+                          Select the framework you're using to implement the
+                          client actions.
                         </p>
                         <div className="mt-2 ml-6">
                           <Select
                             value={selectedFramework}
-                            onValueChange={(value) => setSelectedFramework(value as Framework)}
+                            onValueChange={(value) =>
+                              setSelectedFramework(value as Framework)
+                            }
                           >
                             <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
                               <SelectValue placeholder="Select framework" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
-                              <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
-                              <SelectItem value={Framework.REACT}>React</SelectItem>
-                              <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                              <SelectItem value={Framework.ANGULAR}>
+                                Angular
+                              </SelectItem>
+                              <SelectItem value={Framework.NEXT_JS}>
+                                Next.js
+                              </SelectItem>
+                              <SelectItem value={Framework.REACT}>
+                                React
+                              </SelectItem>
+                              <SelectItem value={Framework.VANILLA}>
+                                Vanilla JS
+                              </SelectItem>
                               <SelectItem value={Framework.VUE}>Vue</SelectItem>
                             </SelectContent>
                           </Select>
@@ -335,7 +347,9 @@ export default function ChatbotDetails({
                           {getRegisterMultipleToolsExample(
                             clientActions.map((action) => ({
                               functionName: action.name,
-                              dataInputs: (action.executionModel.parameters || []).map((param) => ({
+                              dataInputs: (
+                                action.executionModel.parameters || []
+                              ).map((param) => ({
                                 name: param.name,
                                 type: param.type,
                                 description: param.description || '',
@@ -351,7 +365,9 @@ export default function ChatbotDetails({
                               getRegisterMultipleToolsExample(
                                 clientActions.map((action) => ({
                                   functionName: action.name,
-                                  dataInputs: (action.executionModel.parameters || []).map((param) => ({
+                                  dataInputs: (
+                                    action.executionModel.parameters || []
+                                  ).map((param) => ({
                                     name: param.name,
                                     type: param.type,
                                     description: param.description || '',
@@ -378,9 +394,12 @@ export default function ChatbotDetails({
           </div>
         )}
 
-        {showChatbotCode && (
+        {showAgentCode && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
-            <div className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl shadow-2xl" aria-hidden="true" />
+            <div
+              className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl shadow-2xl"
+              aria-hidden="true"
+            />
             <div className="relative z-10 max-w-4xl w-full max-h-[90vh] rounded-2xl">
               <div className="relative mb-12">
                 <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
@@ -390,14 +409,14 @@ export default function ChatbotDetails({
                       <div className="flex items-center space-x-2">
                         <Code className="h-7 w-7 text-[#FE4A60]" />
                         <CardTitle className="text-2xl font-semibold text-gray-900">
-                          Chatbot Installation Code
+                          Agent Installation Code
                         </CardTitle>
                       </div>
                       <Button
                         variant="ghost"
                         size="icon"
                         className="hover:bg-[#FFF4DA]"
-                        onClick={() => setShowChatbotCode(false)}
+                        onClick={() => setShowAgentCode(false)}
                       >
                         <X className="h-6 w-6 text-gray-900" />
                       </Button>
@@ -409,21 +428,32 @@ export default function ChatbotDetails({
                           Framework
                         </Label>
                         <p className="text-sm text-gray-600 mt-2 ml-6">
-                          Select the framework you're using to implement the chatbot.
+                          Select the framework you're using to implement the
+                          agent.
                         </p>
                         <div className="mt-2 ml-6">
                           <Select
                             value={selectedFramework}
-                            onValueChange={(value) => setSelectedFramework(value as Framework)}
+                            onValueChange={(value) =>
+                              setSelectedFramework(value as Framework)
+                            }
                           >
                             <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
                               <SelectValue placeholder="Select framework" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
-                              <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
-                              <SelectItem value={Framework.REACT}>React</SelectItem>
-                              <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                              <SelectItem value={Framework.ANGULAR}>
+                                Angular
+                              </SelectItem>
+                              <SelectItem value={Framework.NEXT_JS}>
+                                Next.js
+                              </SelectItem>
+                              <SelectItem value={Framework.REACT}>
+                                React
+                              </SelectItem>
+                              <SelectItem value={Framework.VANILLA}>
+                                Vanilla JS
+                              </SelectItem>
                               <SelectItem value={Framework.VUE}>Vue</SelectItem>
                             </SelectContent>
                           </Select>
@@ -444,10 +474,14 @@ export default function ChatbotDetails({
                             backgroundColor: '#1a1a1a',
                           }}
                         >
-                          {getChatbotScript(selectedFramework, params.chatbotId)}
+                          {getAgentScript(selectedFramework, params.agentId)}
                         </SyntaxHighlighter>
                         <Button
-                          onClick={() => handleCopy(getChatbotScript(selectedFramework, params.chatbotId))}
+                          onClick={() =>
+                            handleCopy(
+                              getAgentScript(selectedFramework, params.agentId)
+                            )
+                          }
                           className="absolute top-11 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
                         >
                           <Copy className="w-4 h-4" />
@@ -462,13 +496,13 @@ export default function ChatbotDetails({
                         <ul className="list-disc list-inside text-gray-600 space-y-2 ml-6">
                           <li>Copy the code snippet above</li>
                           <li>
-                            Paste it between the <code>&lt;body&gt;</code> tags of your
-                            website's HTML
+                            Paste it between the <code>&lt;body&gt;</code> tags
+                            of your website's HTML
                           </li>
                           <li>Save and publish your website changes</li>
                           <li>
-                            Your chatbot will appear on your website at{' '}
-                            <code>https://{chatbot.websiteDomain}</code>
+                            Your agent will appear on your website at{' '}
+                            <code>https://{agent.websiteDomain}</code>
                           </li>
                           <li>
                             Need help? Visit our{' '}
@@ -478,7 +512,8 @@ export default function ChatbotDetails({
                               rel="noopener noreferrer"
                               className="text-[#FE4A60] hover:underline"
                             >
-                              documentation <ExternalLink className="inline w-4 h-4" />
+                              documentation{' '}
+                              <ExternalLink className="inline w-4 h-4" />
                             </a>
                             .
                           </li>
@@ -626,7 +661,7 @@ export default function ChatbotDetails({
                               ([key]) =>
                                 ![
                                   'loc',
-                                  'chatbot_id',
+                                  'agent_id',
                                   'chunk_index',
                                   'parent_document_id',
                                 ].includes(key)

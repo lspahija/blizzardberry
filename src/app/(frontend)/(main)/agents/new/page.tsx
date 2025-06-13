@@ -18,30 +18,38 @@ import {
 } from '@/app/(frontend)/components/ui/select';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CheckCircle2, Copy, ExternalLink, Bot, Globe, Type, Settings, Loader2, Info } from 'lucide-react';
+import {
+  CheckCircle2,
+  Copy,
+  ExternalLink,
+  Bot,
+  Globe,
+  Type,
+  Settings,
+  Loader2,
+  Info,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
+import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import {
-  ChatbotModel,
-  ChatbotModelDisplay,
-  ChatbotModelList,
-} from '@/app/api/lib/model/chatbot/chatbot';
-import { Framework, getChatbotScript } from '@/app/(frontend)/lib/scriptUtils';
+  AgentModel,
+  AgentModelDisplay,
+  AgentModelList,
+} from '@/app/api/lib/model/agent/agent';
+import { Framework, getAgentScript } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 
-export default function NewChatbotPage() {
+export default function NewAgentPage() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [websiteDomain, setWebsiteDomain] = useState('');
-  const [model, setModel] = useState<ChatbotModel>(
-    ChatbotModel.GEMINI_2_0_FLASH
-  );
-  const [chatbotId, setChatbotId] = useState<string | null>(null);
+  const [model, setModel] = useState<AgentModel>(AgentModel.GEMINI_2_0_FLASH);
+  const [agentId, setAgentId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const { selectedFramework, setSelectedFramework } = useFramework();
-  const { handleCreateChatbot } = useChatbots();
+  const { handleCreateAgent } = useAgents();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -63,7 +71,7 @@ export default function NewChatbotPage() {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(getChatbotScript(selectedFramework, chatbotId));
+    navigator.clipboard.writeText(getAgentScript(selectedFramework, agentId));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -72,16 +80,16 @@ export default function NewChatbotPage() {
     router.push('/dashboard');
   };
 
-  const onCreateChatbot = async () => {
+  const onCreateAgent = async () => {
     try {
-      const { chatbotId: newChatbotId } = await handleCreateChatbot({
+      const { agentId: newAgentId } = await handleCreateAgent({
         name,
         websiteDomain,
         model,
       });
-      setChatbotId(newChatbotId);
+      setAgentId(newAgentId);
     } catch (error) {
-      console.error('Error creating chatbot:', error);
+      console.error('Error creating agent:', error);
     }
   };
 
@@ -102,15 +110,16 @@ export default function NewChatbotPage() {
         initial="hidden"
         animate="visible"
       >
-        {chatbotId ? (
+        {agentId ? (
           <>
             <motion.div className="text-center" variants={itemVariants}>
               <CheckCircle2 className="w-16 h-16 text-[#FE4A60] mx-auto mb-4" />
               <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900 mb-12">
-                Chatbot Created Successfully!
+                Agent Created Successfully!
               </h1>
               <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
-                Your chatbot is ready to be added to your website. Follow the steps below to install it.
+                Your agent is ready to be added to your website. Follow the
+                steps below to install it.
               </p>
             </motion.div>
 
@@ -125,13 +134,15 @@ export default function NewChatbotPage() {
                   <CardHeader className="flex items-center space-x-2">
                     <Bot className="h-7 w-7 text-[#FE4A60]" />
                     <CardTitle className="text-2xl font-semibold text-gray-900">
-                      Install Your Chatbot
+                      Install Your Agent
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-8">
                     <div>
                       <p className="text-base text-gray-600 mb-4">
-                        To add your chatbot to your website, copy the code snippet below and paste it between the <code>&lt;body&gt;</code> tags of your website's HTML.
+                        To add your agent to your website, copy the code snippet
+                        below and paste it between the <code>&lt;body&gt;</code>{' '}
+                        tags of your website's HTML.
                       </p>
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -139,16 +150,26 @@ export default function NewChatbotPage() {
                         </label>
                         <Select
                           value={selectedFramework}
-                          onValueChange={(value) => setSelectedFramework(value as Framework)}
+                          onValueChange={(value) =>
+                            setSelectedFramework(value as Framework)
+                          }
                         >
                           <SelectTrigger className="w-[200px]">
                             <SelectValue placeholder="Select framework" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
-                            <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
-                            <SelectItem value={Framework.REACT}>React</SelectItem>
-                            <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                            <SelectItem value={Framework.ANGULAR}>
+                              Angular
+                            </SelectItem>
+                            <SelectItem value={Framework.NEXT_JS}>
+                              Next.js
+                            </SelectItem>
+                            <SelectItem value={Framework.REACT}>
+                              React
+                            </SelectItem>
+                            <SelectItem value={Framework.VANILLA}>
+                              Vanilla JS
+                            </SelectItem>
                             <SelectItem value={Framework.VUE}>Vue</SelectItem>
                           </SelectContent>
                         </Select>
@@ -164,7 +185,9 @@ export default function NewChatbotPage() {
                             backgroundColor: '#1a1a1a',
                           }}
                         >
-                          {chatbotId ? getChatbotScript(selectedFramework, chatbotId) : ''}
+                          {agentId
+                            ? getAgentScript(selectedFramework, agentId)
+                            : ''}
                         </SyntaxHighlighter>
                         <Button
                           onClick={handleCopy}
@@ -175,7 +198,8 @@ export default function NewChatbotPage() {
                         </Button>
                       </div>
                       <p className="text-sm text-gray-600 mt-2">
-                        This script loads your chatbot with the unique ID: <code>{chatbotId}</code>.
+                        This script loads your agent with the unique ID:{' '}
+                        <code>{agentId}</code>.
                       </p>
                     </div>
                     <div className="space-y-4">
@@ -184,11 +208,14 @@ export default function NewChatbotPage() {
                       </h3>
                       <ul className="list-disc list-inside text-gray-600 space-y-2 text-base">
                         <li>
-                          Paste the code snippet in your website's HTML, ideally just before the closing <code>&lt;/body&gt;</code> tag.
+                          Paste the code snippet in your website's HTML, ideally
+                          just before the closing <code>&lt;/body&gt;</code>{' '}
+                          tag.
                         </li>
                         <li>Save and publish your website changes.</li>
                         <li>
-                          Your chatbot will appear on your website at <code>https://{websiteDomain}</code>.
+                          Your agent will appear on your website at{' '}
+                          <code>https://{websiteDomain}</code>.
                         </li>
                         <li>
                           Need help? Visit our{' '}
@@ -222,7 +249,7 @@ export default function NewChatbotPage() {
               className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900 mb-12 text-center"
               variants={itemVariants}
             >
-              Create New Chatbot
+              Create New Agent
             </motion.h1>
 
             <motion.div
@@ -236,17 +263,20 @@ export default function NewChatbotPage() {
                   <CardHeader className="flex items-center space-x-2">
                     <Bot className="h-7 w-7 text-[#FE4A60]" />
                     <CardTitle className="text-2xl font-semibold text-gray-900">
-                      Chatbot Details
+                      Agent Details
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div>
-                      <Label htmlFor="name" className="text-gray-900 flex items-center gap-2">
+                      <Label
+                        htmlFor="name"
+                        className="text-gray-900 flex items-center gap-2"
+                      >
                         <Type className="h-4 w-4 text-[#FE4A60]" />
-                        Chatbot Name
+                        Agent Name
                       </Label>
                       <p className="text-sm text-gray-600 mt-1 ml-6">
-                        A unique name for your chatbot
+                        A unique name for your agent
                       </p>
                       <div className="relative mt-2">
                         <Input
@@ -260,12 +290,16 @@ export default function NewChatbotPage() {
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="websiteDomain" className="text-gray-900 flex items-center gap-2">
+                      <Label
+                        htmlFor="websiteDomain"
+                        className="text-gray-900 flex items-center gap-2"
+                      >
                         <Globe className="h-4 w-4 text-[#FE4A60]" />
                         Website Domain
                       </Label>
                       <p className="text-sm text-gray-600 mt-1 ml-6">
-                        The domain of the website where this chatbot will be installed
+                        The domain of the website where this agent will be
+                        installed
                       </p>
                       <div className="relative mt-2">
                         <Input
@@ -279,26 +313,31 @@ export default function NewChatbotPage() {
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="model" className="text-gray-900 flex items-center gap-2">
+                      <Label
+                        htmlFor="model"
+                        className="text-gray-900 flex items-center gap-2"
+                      >
                         <Settings className="h-4 w-4 text-[#FE4A60]" />
                         Language Model
                       </Label>
                       <p className="text-sm text-gray-600 mt-1 ml-6">
-                        Select the language model to power your chatbot
+                        Select the language model to power your agent
                       </p>
                       <div className="relative mt-2">
                         <Settings className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none z-10" />
                         <Select
                           value={model}
-                          onValueChange={(value) => setModel(value as ChatbotModel)}
+                          onValueChange={(value) =>
+                            setModel(value as AgentModel)
+                          }
                         >
                           <SelectTrigger className="pl-10 border-[2px] border-gray-900">
                             <SelectValue placeholder="Select a model" />
                           </SelectTrigger>
                           <SelectContent>
-                            {ChatbotModelList.map((modelValue) => (
+                            {AgentModelList.map((modelValue) => (
                               <SelectItem key={modelValue} value={modelValue}>
-                                {ChatbotModelDisplay[modelValue]}
+                                {AgentModelDisplay[modelValue]}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -307,10 +346,10 @@ export default function NewChatbotPage() {
                     </div>
                     <Button
                       className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 hover:bg-[#ff6a7a] transition-transform duration-200 shadow-md text-lg font-semibold w-full"
-                      onClick={onCreateChatbot}
+                      onClick={onCreateAgent}
                     >
                       <CheckCircle2 className="w-4 h-4 mr-2" />
-                      Create Chatbot
+                      Create Agent
                     </Button>
                   </CardContent>
                 </Card>

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
+import { agentAuth } from '@/app/api/lib/auth/agentAuth';
 import {
   createDocuments,
   getDocuments,
@@ -8,7 +8,7 @@ import {
 
 export async function GET(
   _: Request,
-  { params }: { params: Promise<{ chatbotId: string }> }
+  { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
     const session = await auth();
@@ -16,15 +16,15 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { chatbotId } = await params;
+    const { agentId } = await params;
 
-    const authResponse = await chatbotAuth(session.user.id, chatbotId);
+    const authResponse = await agentAuth(session.user.id, agentId);
     if (authResponse) return authResponse;
 
-    const data = await getDocuments(chatbotId);
+    const data = await getDocuments(agentId);
 
     if (!data || data.length === 0) {
-      console.warn(`No documents found for chatbot_id: ${chatbotId}`);
+      console.warn(`No documents found for agent_id: ${agentId}`);
       return NextResponse.json({ documents: [] }, { status: 200 });
     }
 
@@ -65,7 +65,7 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ chatbotId: string }> }
+  { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
     const session = await auth();
@@ -73,14 +73,14 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { chatbotId } = await params;
+    const { agentId } = await params;
 
-    const authResponse = await chatbotAuth(session.user.id, chatbotId);
+    const authResponse = await agentAuth(session.user.id, agentId);
     if (authResponse) return authResponse;
 
     const { text, metadata } = await request.json();
 
-    const documents = await createDocuments(text, metadata, chatbotId);
+    const documents = await createDocuments(text, metadata, agentId);
 
     return NextResponse.json(
       {

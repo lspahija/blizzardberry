@@ -1,4 +1,4 @@
-POST http://localhost:3000/api/chatbots/50ef4958-cbf5-4968-86a5-7da492ac99ce/documents
+POST http://localhost:3000/api/agents/50ef4958-cbf5-4968-86a5-7da492ac99ce/documents
 Content-Type: application/json
 
 {
@@ -6,13 +6,13 @@ Content-Type: application/json
   "metadata": {
     "source": "test",
     "category": "boardgames",
-    "chatbotId": "50ef4958-cbf5-4968-86a5-7da492ac99ce"
+    "agentId": "50ef4958-cbf5-4968-86a5-7da492ac99ce"
   }
 }
 
 ###
 
-POST http://localhost:3000/api/chatbots/50ef4958-cbf5-4968-86a5-7da492ac99ce/documents
+POST http://localhost:3000/api/agents/50ef4958-cbf5-4968-86a5-7da492ac99ce/documents
 Content-Type: application/json
 
 {
@@ -20,28 +20,28 @@ Content-Type: application/json
   "metadata": {
     "source": "test",
     "category": "vacation",
-    "chatbotId": "50ef4958-cbf5-4968-86a5-7da492ac99ce"
+    "agentId": "50ef4958-cbf5-4968-86a5-7da492ac99ce"
   }
 }
 
 ###
 
-POST http://localhost:3000/api/chatbots/50ef4958-cbf5-4968-86a5-7da492ac99ce/documents/search
+POST http://localhost:3000/api/agents/50ef4958-cbf5-4968-86a5-7da492ac99ce/documents/search
 Content-Type: application/json
 
 {
   "query": "the waves are great",
   "topK": 3,
-  "chatbotId": "50ef4958-cbf5-4968-86a5-7da492ac99ce"
+  "agentId": "50ef4958-cbf5-4968-86a5-7da492ac99ce"
 }
 
 ###
 
-POST http://localhost:3000/api/chatbots/50ef4958-cbf5-4968-86a5-7da492ac99ce/documents/search
+POST http://localhost:3000/api/agents/50ef4958-cbf5-4968-86a5-7da492ac99ce/documents/search
 Content-Type: application/json
 
 {
   "query": "checkmate!",
   "topK": 2,
-  "chatbotId": "50ef4958-cbf5-4968-86a5-7da492ac99ce"
+  "agentId": "50ef4958-cbf5-4968-86a5-7da492ac99ce"
 }

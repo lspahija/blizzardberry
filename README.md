@@ -13,7 +13,7 @@ They are considered a competitive advantage and must allow for rapid iteration a
 
 e.g. it must be easy to:
 - add new AI models (as AI models improve, the usefulness of this product should automatically improve in parallel)
-- create new SDKs for different languages so a chatbot can be added to any app
+- create new SDKs for different languages so an agent can be added to any app
 - onboard new apps with minimal friction
 
 # Running the Project Locally
@@ -87,9 +87,9 @@ Open your browser and visit:
 
 ### [See Development Notes](#Development-Notes)
 
-# Use Chatbot
+# Use Agent
 
-See an example SaaS app with integrated chatbot at http://localhost:3000/example-saas
+See an example SaaS app with integrated agent at http://localhost:3000/example-saas
 
 # Deploy
 
@@ -110,7 +110,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
       - [create new client](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7tQ&project=ufcalarm-b270d)
   - GitHub OAuth
       - [create prod OAuth app](https://github.com/settings/developers)
-- dogfood the product. Our app needs to have a chatbot integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
+- dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 - Differentiate enough to be able to win the PR war when the chatbase founder gets pissed that there’s competition
 
 ## Launch and Sell! 
@@ -125,28 +125,28 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
-- minify and obfuscate chatbot.js code
-- let the end user see all actions that the chatbot can perform. Make the actions searchable. Expose the thinking tokens if the user chooses to see them.
-- make chatbot design super customizable so app owners can make it look like their app
+- minify and obfuscate agent.js code
+- let the end user see all actions that the agent can perform. Make the actions searchable. Expose the thinking tokens if the user chooses to see them.
+- make agent design super customizable so app owners can make it look like their app
 - add automated end-to-end test suite so we can introduce new features without breaking existing functionality. Use Playwright for this. [Grok thread](https://grok.com/share/bGVnYWN5_82a58179-e019-4507-a75b-59c398539835)
 - [optimize RAG pipeline](#frankies-tips-to-optimize-rag) - I think current best is knowledge graph RAG with [late chunking](https://jina.ai/news/late-chunking-in-long-context-embedding-models/)
 - stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?) (ai-sdk currently only support react, vue, svelte and solid)
-- create SDKs (analogues to chatbot.js) for non-js frontends i.e. desktop and mobile apps written in go, java, etc.
+- create SDKs (analogues to agent.js) for non-js frontends i.e. desktop and mobile apps written in go, java, etc.
 - add logging, tracing, monitoring so if anything goes wrong anywhere, we can see it - make sure all exceptions users experience are sent to us somehow and reproducing the exception is as easy as possible
-- look through Chatbase's features and add relevant ones. e.g. they have a UI letting their users test the chatbots they created and see if the actions they onboarded work correctly. https://www.chatbase.co/docs/user-guides/chatbot/playground
+- look through Chatbase's features and add relevant ones. e.g. they have a UI letting their users test the agents they created and see if the actions they onboarded work correctly. https://www.chatbase.co/docs/user-guides/agent/playground
 
 ## Longer Term Goals (buy maybe pull them in earlier)
-- make the system prompt auto-improve for each app or even each end user. As the user tells the chatbot what they want, the system prompt is updated to include that information. This way, the chatbot can learn and adapt to the user's needs over time. https://youtu.be/WJoZK9sMwvw?si=CTOwYwskX38WDzOO
+- make the system prompt auto-improve for each app or even each end user. As the user tells the agent what they want, the system prompt is updated to include that information. This way, the agent can learn and adapt to the user's needs over time. https://youtu.be/WJoZK9sMwvw?si=CTOwYwskX38WDzOO
 - allow user to use voice, the ideal is that they just talk to computer - https://x.com/LinusEkenstam/status/1926890672188952774
 - make the actions MCP-compatible? i.e. turn the actions into an MCP server so that any MCP client can call them.
 - make onboarding a new app as simple as possible
     - automatically pull docs from website during RAG onboarding?
-    - maybe let user just pass in their OpenAPI spec and the app will automatically generate a chatbot for them
+    - maybe let user just pass in their OpenAPI spec and the app will automatically generate an agent for them
     - maybe use AI to scan the app's codebase - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
     - Google has a [Chrome extension](https://chromewebstore.google.com/detail/project-mariner-companion/kadmollpgjhjcclemeliidekkajnjaih) where you can teach the AI how to perform tasks. Maybe you can create an extension that records HTTP requests and functions called on each click and turns them into actions.
     - maybe use some tool to autodiscover website endpoints/capabilities
     - have the widget keep track of all actions the user manually performs and then have an LLM interpret them on the backend and turn them into actions or documentation that can be used in RAG
-    - brainstorm what the ideal frictionless onboarding would look like. Ideally the webapp owner doesn't have to do anything. We offer them a chatbot that just works.
+    - brainstorm what the ideal frictionless onboarding would look like. Ideally the webapp owner doesn't have to do anything. We offer them an agent that just works.
 
 # Strategy
 - start off selling but think about what it takes to win big
@@ -167,7 +167,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 
 # Competition
 - https://www.chatbase.co/
-  - [custom actions](https://www.chatbase.co/docs/user-guides/chatbot/actions/custom-action)
+  - [custom actions](https://www.chatbase.co/docs/user-guides/agent/actions/custom-action)
 
 # Design
 The website design is based on this: https://gitingest.com/

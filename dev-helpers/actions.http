@@ -74,8 +74,8 @@ GET http://localhost:3000/api/actions
 Content-Type: application/json
 Accept: application/json
 
-### Get chatbot
-GET http://localhost:3000/api/chatbots/ae262222-4bea-48fe-a949-345493dfb465
+### Get agent
+GET http://localhost:3000/api/agents/ae262222-4bea-48fe-a949-345493dfb465
 Content-Type: application/json
 Accept: application/json
 

@@ -1,33 +1,30 @@
 (function () {
   const actions = {};
   let userConfig = null;
-  let chatbotId = null;
+  let agentId = null;
   let counter = 0;
 
-  function initializeChatbotId() {
+  function initializeAgentId() {
     const script = document.currentScript;
-    chatbotId = script?.dataset?.chatbotId;
-    console.log('Initialized chatbot ID:', chatbotId);
+    agentId = script?.dataset?.agentId;
+    console.log('Initialized agent ID:', agentId);
   }
 
   // Initialize user config
-  if (
-    window.chatbotUserConfig &&
-    typeof window.chatbotUserConfig === 'object'
-  ) {
-    userConfig = window.chatbotUserConfig;
+  if (window.agentUserConfig && typeof window.agentUserConfig === 'object') {
+    userConfig = window.agentUserConfig;
     console.log('Initialized user config:', userConfig);
-    delete window.chatbotUserConfig;
+    delete window.agentUserConfig;
   }
 
-  if (window.ChatbotActions && typeof window.ChatbotActions === 'object') {
-    console.log('Registering actions:', Object.keys(window.ChatbotActions));
-    Object.assign(actions, window.ChatbotActions);
+  if (window.AgentActions && typeof window.AgentActions === 'object') {
+    console.log('Registering actions:', Object.keys(window.AgentActions));
+    Object.assign(actions, window.AgentActions);
     console.log('Available actions:', Object.keys(actions));
-    delete window.ChatbotActions;
+    delete window.AgentActions;
   }
 
-  const generateId = () => `${chatbotId}-${Date.now()}-${counter++}`;
+  const generateId = () => `${agentId}-${Date.now()}-${counter++}`;
 
   const state = {
     messages: [],
@@ -113,7 +110,7 @@
 
   // Handle errors
   function handleError(error, messageText) {
-    console.error(`Chatbot ${chatbotId}:`, error);
+    console.error(`Agent ${agentId}:`, error);
     state.isProcessing = false;
     state.messages.push({
       id: generateId(),
@@ -125,7 +122,7 @@
 
   async function executeAction(actionModel, messageId, partIndex) {
     console.log(
-      `Chatbot ${chatbotId}: Executing action:`,
+      `Agent ${agentId}: Executing action:`,
       JSON.stringify(actionModel, null, 2)
     );
     const key = `${messageId}-${partIndex}`;
@@ -136,10 +133,7 @@
         ? await executeClientAction(actionModel)
         : await executeServerAction(actionModel);
 
-      console.log(
-        `Chatbot ${chatbotId}: Action Result:`,
-        state.actionResults[key]
-      );
+      console.log(`Agent ${agentId}: Action Result:`, state.actionResults[key]);
 
       // Add the action result to the messages array as part of the text content
       state.messages.push({
@@ -188,7 +182,7 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messages: [...state.messages, actionResultMessage],
-        chatbotId,
+        agentId,
         idempotencyKey: generateId(),
       }),
     });
@@ -239,7 +233,7 @@
         body: JSON.stringify({
           messages: state.messages,
           userConfig,
-          chatbotId,
+          agentId,
           idempotencyKey: generateId(),
         }),
       });
@@ -267,7 +261,7 @@
               result: toolResult ? toolResult.result : undefined,
             },
           });
-          console.log(`Chatbot ${chatbotId}: Tool Invoked:`, {
+          console.log(`Agent ${agentId}: Tool Invoked:`, {
             toolCallId: toolCall.toolCallId,
             toolName: toolCall.toolName,
             args: toolCall.args,
@@ -323,10 +317,7 @@
       );
       if (thinkMatch) {
         if (!state.loggedThinkMessages.has(messageId)) {
-          console.log(
-            `Chatbot ${chatbotId}: Think Content:`,
-            thinkMatch[1].trim()
-          );
+          console.log(`Agent ${agentId}: Think Content:`, thinkMatch[1].trim());
           state.loggedThinkMessages.add(messageId);
         }
         return `<div class="text-part">${thinkMatch[2].trim()}</div>`;
@@ -371,12 +362,12 @@
   // Initialize
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      initializeChatbotId(); // Initialize chatbot ID
+      initializeAgentId(); // Initialize agent ID
       injectStyles();
       createWidgetDOM();
     });
   } else {
-    initializeChatbotId(); // Initialize chatbot ID
+    initializeAgentId(); // Initialize agent ID
     injectStyles();
     createWidgetDOM();
   }

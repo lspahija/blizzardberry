@@ -121,7 +121,7 @@ export default function LandingPage() {
           variants={itemVariants}
         >
           Empower Your Webapp with <br />
-          <span className="text-[#FFC480]">Agentic AI Chatbots</span>
+          <span className="text-[#FFC480]">Agentic AI Agents</span>
         </motion.h1>
         <svg
           className="w-16 lg:w-20 h-auto lg:absolute flex-shrink-0 right-0 bottom-0 md:block hidden translate-y-10 md:translate-y-20 lg:translate-y-4 lg:-translate-x-12 -translate-x-10"
@@ -146,7 +146,7 @@ export default function LandingPage() {
           className="text-lg text-gray-600 mb-8 max-w-2xl"
           variants={itemVariants}
         >
-          Seamlessly integrate intelligent chatbots that take actions on your
+          Seamlessly integrate intelligent agents that take actions on your
           webapp. Boost user engagement and automate workflows with ease.
         </motion.p>
         <motion.div className="flex space-x-4" variants={itemVariants}>
@@ -199,7 +199,7 @@ export default function LandingPage() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-gray-600">
-                      Deploy AI chatbots in minutes with a few lines of code.
+                      Deploy AI agents in minutes with a few lines of code.
                     </p>
                   </CardContent>
                 </Card>
@@ -284,7 +284,7 @@ export default function LandingPage() {
         </h2>
         <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
           Join thousands of developers using BlizzardBerry to power their apps
-          with AI chatbots.
+          with AI agents.
         </p>
         <div className="relative inline-block">
           <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>

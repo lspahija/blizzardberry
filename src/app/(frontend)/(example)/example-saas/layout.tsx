@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Example SaaS - Chatbot Demo',
-  description: 'A demo SaaS showcasing our chatbot widget',
+  title: 'Example SaaS - Agent Demo',
+  description: 'A demo SaaS showcasing our agent widget',
 };
 
 // Apply custom styles for this layout
@@ -58,10 +58,10 @@ export default function ExampleLayout({
           httpEquiv="Content-Security-Policy"
           content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; img-src 'self' data: *; manifest-src 'self' *;"
         />
-        <div id="chatbot" />
+        <div id="agent" />
         <Script id="BlizzardBerry-config" strategy="afterInteractive">
           {`
-                    window.chatbotUserConfig = {
+                    window.agentUserConfig = {
                         user_id: "example_user_123",
                         user_hash: "example_hash_456",
                         account_number: "1234567890",
@@ -74,14 +74,14 @@ export default function ExampleLayout({
                 `}
         </Script>
         <Script
-          id="BlizzardBerry-chatbot"
-          src="http://localhost:3000/chatbot.js"
+          id="BlizzardBerry-agent"
+          src="http://localhost:3000/agent.js"
           strategy="afterInteractive"
-          data-chatbot-id="aaea415d-f10d-42f2-81fb-89890387af67"
+          data-agent-id="aaea415d-f10d-42f2-81fb-89890387af67"
         />
         <Script id="BlizzardBerry-actions" strategy="afterInteractive">
           {`
-                    window.ChatbotActions = {
+                    window.AgentActions = {
                         get_weather: async (params, userConfig) => {
                             try {
                                 const geoResponse = await fetch(

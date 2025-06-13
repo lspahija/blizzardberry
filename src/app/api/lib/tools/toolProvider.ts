@@ -13,7 +13,7 @@ import {
 } from '@/app/api/lib/model/action/backendAction';
 import { similaritySearch } from '../store/documentStore';
 
-export function createSearchKnowledgeBaseTool(chatbotId: string): Tool {
+export function createSearchKnowledgeBaseTool(agentId: string): Tool {
   return tool({
     description:
       'Search the knowledge base for information to answer user questions about the application',
@@ -24,7 +24,7 @@ export function createSearchKnowledgeBaseTool(chatbotId: string): Tool {
     }),
     execute: async ({ query }) => {
       try {
-        const groupedResults = await similaritySearch(query, 5, chatbotId);
+        const groupedResults = await similaritySearch(query, 5, agentId);
 
         if (Object.keys(groupedResults).length === 0) {
           return {
@@ -51,8 +51,8 @@ export function createSearchKnowledgeBaseTool(chatbotId: string): Tool {
   });
 }
 
-export async function getToolsFromActions(chatbotId: string) {
-  const actions = await getActions(chatbotId);
+export async function getToolsFromActions(agentId: string) {
+  const actions = await getActions(agentId);
   const tools: Record<string, Tool> = {};
 
   for (const action of actions) {

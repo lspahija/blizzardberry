@@ -9,7 +9,14 @@ import {
   CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, ArrowLeft, PlusCircle, Trash2, FileText, Info } from 'lucide-react';
+import {
+  Loader2,
+  ArrowLeft,
+  PlusCircle,
+  Trash2,
+  FileText,
+  Info,
+} from 'lucide-react';
 import { Input } from '@/app/(frontend)/components/ui/input';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
@@ -25,7 +32,7 @@ interface MetadataField {
 export default function AddDocument({
   params: paramsPromise,
 }: {
-  params: Promise<{ chatbotId: string }>;
+  params: Promise<{ agentId: string }>;
 }) {
   const params = use(paramsPromise);
   const [text, setText] = useState('');
@@ -85,11 +92,11 @@ export default function AddDocument({
             className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg"
           >
             <Link
-              href={`/chatbots/${params.chatbotId}`}
+              href={`/agents/${params.agentId}`}
               className="flex items-center"
             >
               <ArrowLeft className="mr-2 h-5 w-5" />
-              Back to Chatbot
+              Back to Agent
             </Link>
           </Button>
         </div>
@@ -98,7 +105,8 @@ export default function AddDocument({
         <div className="mb-12 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
           <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
           <span className="text-gray-800 text-base">
-            Upload or paste your document content below. You can also add optional metadata to provide more context for your chatbot.
+            Upload or paste your document content below. You can also add
+            optional metadata to provide more context for your agent.
           </span>
         </div>
 
@@ -120,7 +128,8 @@ export default function AddDocument({
                   Document Content
                 </Label>
                 <p className="text-sm text-gray-600 mt-1 ml-6">
-                  Upload a file or enter the text content of the document which will be given to your agent.
+                  Upload a file or enter the text content of the document which
+                  will be given to your agent.
                 </p>
                 <div className="mt-4 space-y-4">
                   <Dropzone onFileDrop={handleFileDrop} className="w-full" />
@@ -151,7 +160,8 @@ export default function AddDocument({
                   Metadata (Optional)
                 </Label>
                 <p className="text-sm text-gray-600 mt-1 ml-6">
-                  Add key-value pairs to provide additional context for the document.
+                  Add key-value pairs to provide additional context for the
+                  document.
                 </p>
                 {metadataFields.map((field, index) => (
                   <div

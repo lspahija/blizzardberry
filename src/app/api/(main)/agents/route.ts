@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { Chatbot, ChatbotModelList } from '@/app/api/lib/model/chatbot/chatbot';
-import { createChatbot, getChatbots } from '@/app/api/lib/store/chatbotStore';
+import { Agent, AgentModelList } from '@/app/api/lib/model/agent/agent';
+import { createAgent, getAgents } from '@/app/api/lib/store/agentStore';
 
 export async function POST(req: Request) {
   try {
@@ -12,21 +12,16 @@ export async function POST(req: Request) {
 
     const { name, websiteDomain, model } = await req.json();
 
-    if (!ChatbotModelList.includes(model)) {
+    if (!AgentModelList.includes(model)) {
       return NextResponse.json(
         { error: 'Invalid model selected' },
         { status: 400 }
       );
     }
 
-    const data = await createChatbot(
-      name,
-      websiteDomain,
-      session.user.id,
-      model
-    );
+    const data = await createAgent(name, websiteDomain, session.user.id, model);
 
-    return NextResponse.json({ chatbotId: data.id }, { status: 201 });
+    return NextResponse.json({ agentId: data.id }, { status: 201 });
   } catch (error) {
     console.error('Error processing request:', error);
     return NextResponse.json(
@@ -43,9 +38,9 @@ export async function GET(_: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const data = await getChatbots(session.user.id);
+    const data = await getAgents(session.user.id);
 
-    const chatbots: Chatbot[] = data.map((d) => ({
+    const agents: Agent[] = data.map((d) => ({
       id: d.id,
       name: d.name,
       websiteDomain: d.website_domain,
@@ -54,7 +49,7 @@ export async function GET(_: Request) {
       createdAt: d.created_at,
     }));
 
-    return NextResponse.json({ chatbots }, { status: 200 });
+    return NextResponse.json({ agents }, { status: 200 });
   } catch (error) {
     console.error('Error processing request:', error);
     return NextResponse.json(

@@ -25,7 +25,7 @@ import {
   Tag,
   X,
 } from 'lucide-react';
-import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
+import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import posthog from 'posthog-js';
 import {
   Dialog,
@@ -41,12 +41,12 @@ import { toast } from 'sonner';
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const {
-    chatbots,
-    loadingChatbots,
-    deletingChatbotId,
-    fetchChatbots,
-    handleDeleteChatbot,
-  } = useChatbots();
+    agents,
+    loadingAgents,
+    deletingAgentId,
+    fetchAgents,
+    handleDeleteAgent,
+  } = useAgents();
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackType, setFeedbackType] = useState('bug');
   const [feedbackEmail, setFeedbackEmail] = useState(
@@ -79,9 +79,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      fetchChatbots();
+      fetchAgents();
     }
-  }, [status, fetchChatbots]);
+  }, [status, fetchAgents]);
 
   const handleSignOut = async () => {
     posthog.capture('user_signed_out', {
@@ -175,15 +175,23 @@ export default function Dashboard() {
               <DialogContent className="bg-[#FFFDF8] border-[3px] border-gray-900 border-l-8 border-l-[#FE4A60] rounded-2xl shadow-2xl p-8">
                 <DialogHeader className="flex items-center gap-2 mb-2">
                   <Send className="h-6 w-6 text-[#FE4A60]" />
-                  <DialogTitle className="text-gray-900 text-2xl font-bold tracking-tight">Send Us Your Feedback</DialogTitle>
+                  <DialogTitle className="text-gray-900 text-2xl font-bold tracking-tight">
+                    Send Us Your Feedback
+                  </DialogTitle>
                 </DialogHeader>
                 <div className="bg-[#FFF4DA] border-l-4 border-[#FFC480] rounded-lg p-4 mb-6 flex items-center gap-3">
                   <Info className="h-5 w-5 text-[#FFC480]" />
-                  <span className="text-gray-700 text-sm">We value your feedback! Please let us know about bugs, feature requests, or anything else that can help us improve.</span>
+                  <span className="text-gray-700 text-sm">
+                    We value your feedback! Please let us know about bugs,
+                    feature requests, or anything else that can help us improve.
+                  </span>
                 </div>
                 <form onSubmit={handleFeedbackSubmit} className="space-y-6">
                   <div>
-                    <Label htmlFor="feedbackEmail" className="text-gray-900 text-base font-semibold flex items-center gap-2">
+                    <Label
+                      htmlFor="feedbackEmail"
+                      className="text-gray-900 text-base font-semibold flex items-center gap-2"
+                    >
                       <Mail className="h-4 w-4 text-[#FE4A60]" />
                       Email
                     </Label>
@@ -196,7 +204,10 @@ export default function Dashboard() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="feedbackType" className="text-gray-900 text-base font-semibold flex items-center gap-2">
+                    <Label
+                      htmlFor="feedbackType"
+                      className="text-gray-900 text-base font-semibold flex items-center gap-2"
+                    >
                       <Tag className="h-4 w-4 text-[#FE4A60]" />
                       Feedback Type
                     </Label>
@@ -212,7 +223,10 @@ export default function Dashboard() {
                     </select>
                   </div>
                   <div>
-                    <Label htmlFor="feedbackMessage" className="text-gray-900 text-base font-semibold flex items-center gap-2">
+                    <Label
+                      htmlFor="feedbackMessage"
+                      className="text-gray-900 text-base font-semibold flex items-center gap-2"
+                    >
                       <MessageSquare className="h-4 w-4 text-[#FE4A60]" />
                       Message
                     </Label>
@@ -268,14 +282,14 @@ export default function Dashboard() {
             asChild
             className="bg-[#FE4A60] text-white border-[3px] border-gray-900 transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-[#ff6a7a]"
             onClick={() =>
-              posthog.capture('create_chatbot_clicked', {
+              posthog.capture('create_agent_clicked', {
                 user_email: session?.user?.email,
               })
             }
           >
-            <Link href="/chatbots/new" className="flex items-center">
+            <Link href="/agents/new" className="flex items-center">
               <PlusCircle className="mr-2 h-5 w-5" />
-              Create New Chatbot
+              Create New Agent
             </Link>
           </Button>
           <Button
@@ -293,54 +307,57 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        {loadingChatbots ? (
+        {loadingAgents ? (
           <div className="flex justify-center">
             <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
           </div>
-        ) : chatbots.length === 0 ? (
+        ) : agents.length === 0 ? (
           <p className="text-gray-600 text-lg mb-4 flex items-center justify-center">
             <Bot className="h-6 w-6 mr-2 text-[#FE4A60]" />
-            No chatbots found. Create one to get started!
+            No agents found. Create one to get started!
           </p>
         ) : (
           <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-6 rounded-xl shadow-xl border-l-8 border-l-[#FE4A60]">
             <CardHeader className="flex items-center space-x-2">
               <Bot className="h-6 w-6 text-[#FE4A60]" />
               <CardTitle className="text-2xl font-bold text-gray-900">
-                Your Chatbots
+                Your Agents
               </CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-4">
-                {chatbots.map((chatbot, idx) => (
+                {agents.map((agent, idx) => (
                   <li
-                    key={chatbot.id}
+                    key={agent.id}
                     className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2"
                   >
                     <Bot className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
                     <div className="flex-1">
                       <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">
                         <Link
-                          href={`/chatbots/${chatbot.id}`}
+                          href={`/agents/${agent.id}`}
                           className="hover:underline focus:underline outline-none"
                           onClick={() =>
-                            posthog.capture('chatbot_view_clicked', {
-                              chatbot_id: chatbot.id,
+                            posthog.capture('agent_view_clicked', {
+                              agent_id: agent.id,
                               user_email: session?.user?.email,
                             })
                           }
                         >
-                          {chatbot.name}
+                          {agent.name}
                         </Link>
                       </p>
                       <p className="text-sm text-gray-500 mb-1">
-                        <span className="font-semibold">Domain:</span> {chatbot.websiteDomain}
+                        <span className="font-semibold">Domain:</span>{' '}
+                        {agent.websiteDomain}
                       </p>
                       <p className="text-sm text-gray-500 mb-1">
-                        <span className="font-semibold">Created:</span> {new Date(chatbot.createdAt).toLocaleString()}
+                        <span className="font-semibold">Created:</span>{' '}
+                        {new Date(agent.createdAt).toLocaleString()}
                       </p>
                       <p className="text-sm text-gray-500 mb-1">
-                        <span className="font-semibold">Model:</span> {chatbot.model}
+                        <span className="font-semibold">Model:</span>{' '}
+                        {agent.model}
                       </p>
                     </div>
                     <div className="flex gap-2 ml-4">
@@ -348,32 +365,35 @@ export default function Dashboard() {
                         asChild
                         className="bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2"
                       >
-                        <Link href={`/chatbots/${chatbot.id}`}>View</Link>
+                        <Link href={`/agents/${agent.id}`}>View</Link>
                       </Button>
                       <Button
                         asChild
                         className="bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
                       >
-                        <Link href={`/chatbots/${chatbot.id}/edit`} className="flex items-center gap-2">
+                        <Link
+                          href={`/agents/${agent.id}/edit`}
+                          className="flex items-center gap-2"
+                        >
                           <Settings className="h-4 w-4 transition-transform group-hover:rotate-45" />
                           <span>Edit</span>
                         </Link>
                       </Button>
                       <Button
                         variant="destructive"
-                        onClick={() => chatbot.id && handleDeleteChatbot(chatbot.id)}
-                        disabled={deletingChatbotId === chatbot.id}
+                        onClick={() => agent.id && handleDeleteAgent(agent.id)}
+                        disabled={deletingAgentId === agent.id}
                         className="border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
-                        title="Delete Chatbot"
+                        title="Delete Agent"
                       >
-                        {deletingChatbotId === chatbot.id ? (
+                        {deletingAgentId === agent.id ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
                           <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
                         )}
                       </Button>
                     </div>
-                    {idx < chatbots.length - 1 && (
+                    {idx < agents.length - 1 && (
                       <hr className="my-2 border-gray-200" />
                     )}
                   </li>

@@ -9,7 +9,7 @@ interface MetadataField {
 
 export const useDocuments = () => {
   const router = useRouter();
-  const { chatbotId } = useParams();
+  const { agentId } = useParams();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loadingDocuments, setLoadingDocuments] = useState(true);
   const [deletingDocumentId, setDeletingDocumentId] = useState<string | null>(
@@ -21,7 +21,7 @@ export const useDocuments = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch(`/api/chatbots/${chatbotId}/documents`, {
+      const response = await fetch(`/api/agents/${agentId}/documents`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -33,10 +33,7 @@ export const useDocuments = () => {
       const data = await response.json();
       setDocuments(data.documents || []);
     } catch (error) {
-      console.error(
-        `Error fetching documents for chatbot ${chatbotId}:`,
-        error
-      );
+      console.error(`Error fetching documents for agent ${agentId}:`, error);
     } finally {
       setLoadingDocuments(false);
     }
@@ -44,7 +41,7 @@ export const useDocuments = () => {
 
   useEffect(() => {
     fetchDocuments();
-  }, [chatbotId]);
+  }, [agentId]);
 
   const handleDeleteDocument = async (documentId: string) => {
     if (!confirm('Are you sure you want to delete this document?')) {
@@ -54,7 +51,7 @@ export const useDocuments = () => {
     setDeletingDocumentId(documentId);
     try {
       const response = await fetch(
-        `/api/chatbots/${chatbotId}/documents/${documentId}`,
+        `/api/agents/${agentId}/documents/${documentId}`,
         {
           method: 'DELETE',
         }
@@ -86,14 +83,14 @@ export const useDocuments = () => {
       (field) => field.key.trim() !== '' && field.value.trim() !== ''
     );
 
-    // Construct metadata object, including chatbotId
+    // Construct metadata object, including agentId
     const metadata = validMetadataFields.reduce((acc, field) => {
       acc[field.key.trim()] = field.value.trim();
       return acc;
     }, {});
 
     try {
-      const response = await fetch(`/api/chatbots/${chatbotId}/documents`, {
+      const response = await fetch(`/api/agents/${agentId}/documents`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -109,7 +106,7 @@ export const useDocuments = () => {
 
       setSuccess(true);
       await fetchDocuments();
-      setTimeout(() => router.push(`/chatbots/${chatbotId}`), 2000);
+      setTimeout(() => router.push(`/agents/${agentId}`), 2000);
     } catch (err: any) {
       setError(err.message || 'An error occurred while adding the document');
     } finally {

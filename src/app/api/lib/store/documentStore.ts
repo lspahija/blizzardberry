@@ -10,7 +10,7 @@ import {
 export async function createDocuments(
   text: string,
   metadata: any,
-  chatbotId: string
+  agentId: string
 ) {
   const chunks = await cleanAndChunk(text);
 
@@ -33,7 +33,7 @@ export async function createDocuments(
       chunk_index: index,
     },
     parent_document_id: parentId,
-    chatbot_id: chatbotId,
+    agent_id: agentId,
   }));
 
   const documentAsArray = documentsToInsert.map((doc) => [
@@ -42,45 +42,45 @@ export async function createDocuments(
     doc.embedding,
     doc.metadata,
     doc.parent_document_id,
-    doc.chatbot_id,
+    doc.agent_id,
   ]);
 
   await sql`
-    INSERT INTO documents (id, content, embedding, metadata, parent_document_id, chatbot_id) VALUES ${sql(documentAsArray)}
+    INSERT INTO documents (id, content, embedding, metadata, parent_document_id, agent_id) VALUES ${sql(documentAsArray)}
   `;
 
   return documentsToInsert;
 }
 
-export async function getDocuments(chatbotId: string) {
+export async function getDocuments(agentId: string) {
   return sql`
     SELECT id, content, metadata, parent_document_id
     FROM documents
-    WHERE chatbot_id = ${chatbotId}
+    WHERE agent_id = ${agentId}
   `;
 }
 
 export async function deleteAllChunks(
   parentDocumentId: string,
-  chatbotId: string
+  agentId: string
 ) {
   await sql`
       DELETE FROM documents
-      WHERE parent_document_id = ${parentDocumentId} AND chatbot_id = ${chatbotId}
+      WHERE parent_document_id = ${parentDocumentId} AND agent_id = ${agentId}
     `;
 }
 
 export async function similaritySearch(
   query: string,
   k: number,
-  chatbotId: string
+  agentId: string
 ) {
   const embeddings = await embedText(query);
   const embeddingString = embeddingsToString(embeddings);
 
   const data = await sql`
       SELECT * FROM search_documents(
-        ${chatbotId},
+        ${agentId},
         ${k},
         ${embeddingString}
       )

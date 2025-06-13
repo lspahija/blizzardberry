@@ -35,7 +35,18 @@ import HeaderInput from '@/app/(frontend)/components/HeaderInput';
 import ArgsList from '@/app/(frontend)/components/ArgsList';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Copy, ExternalLink, Globe, Code, Info, List, PlusCircle, Save, ArrowLeft, Terminal } from 'lucide-react';
+import {
+  Copy,
+  ExternalLink,
+  Globe,
+  Code,
+  Info,
+  List,
+  PlusCircle,
+  Save,
+  ArrowLeft,
+  Terminal,
+} from 'lucide-react';
 import { useState } from 'react';
 import { Framework } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
@@ -269,7 +280,10 @@ export default function ExecutionStep({
                   )}
                   <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-6 mt-6 ml-6">
                     <div>
-                      <Label htmlFor="apiMethod" className="text-base font-medium flex items-center gap-2">
+                      <Label
+                        htmlFor="apiMethod"
+                        className="text-base font-medium flex items-center gap-2"
+                      >
                         <Terminal className="h-4 w-4 text-[#FE4A60]" />
                         Method
                       </Label>
@@ -289,7 +303,10 @@ export default function ExecutionStep({
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="apiUrl" className="text-base font-medium flex items-center gap-2">
+                      <Label
+                        htmlFor="apiUrl"
+                        className="text-base font-medium flex items-center gap-2"
+                      >
                         <Globe className="h-4 w-4 text-[#FE4A60]" />
                         HTTPS URL
                       </Label>
@@ -343,7 +360,10 @@ export default function ExecutionStep({
                   </Button>
                 </div>
                 <div className="mt-8">
-                  <Label htmlFor="apiBody" className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                  <Label
+                    htmlFor="apiBody"
+                    className="text-gray-900 text-lg font-semibold flex items-center gap-2"
+                  >
                     <Code className="h-4 w-4 text-[#FE4A60]" />
                     Body
                   </Label>
@@ -404,7 +424,10 @@ export default function ExecutionStep({
             ) : (
               <div className="space-y-8">
                 <div>
-                  <Label htmlFor="functionName" className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                  <Label
+                    htmlFor="functionName"
+                    className="text-gray-900 text-lg font-semibold flex items-center gap-2"
+                  >
                     <Code className="h-4 w-4 text-[#FE4A60]" />
                     Function Name
                   </Label>
@@ -431,8 +454,8 @@ export default function ExecutionStep({
                     Arguments (Data Inputs)
                   </Label>
                   <p className="text-sm text-gray-600 mt-2 ml-6">
-                    The chatbot will collect these from the user and pass them
-                    as <code>args</code> to your function.
+                    The agent will collect these from the user and pass them as{' '}
+                    <code>args</code> to your function.
                   </p>
                   <div className="mt-4 ml-6">
                     <ArgsList dataInputs={dataInputs} />
@@ -444,21 +467,30 @@ export default function ExecutionStep({
                     Framework
                   </Label>
                   <p className="text-sm text-gray-600 mt-2 ml-6">
-                    Select the framework you're using to implement the client-side function.
+                    Select the framework you're using to implement the
+                    client-side function.
                   </p>
                   <div className="mt-2 ml-6">
                     <Select
                       value={selectedFramework}
-                      onValueChange={(value) => setSelectedFramework(value as Framework)}
+                      onValueChange={(value) =>
+                        setSelectedFramework(value as Framework)
+                      }
                     >
                       <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
                         <SelectValue placeholder="Select framework" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
-                        <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
+                        <SelectItem value={Framework.ANGULAR}>
+                          Angular
+                        </SelectItem>
+                        <SelectItem value={Framework.NEXT_JS}>
+                          Next.js
+                        </SelectItem>
                         <SelectItem value={Framework.REACT}>React</SelectItem>
-                        <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                        <SelectItem value={Framework.VANILLA}>
+                          Vanilla JS
+                        </SelectItem>
                         <SelectItem value={Framework.VUE}>Vue</SelectItem>
                       </SelectContent>
                     </Select>
@@ -480,12 +512,20 @@ export default function ExecutionStep({
                       margin: 0,
                     }}
                   >
-                    {getRegisterToolsExample(functionName, dataInputs, selectedFramework)}
+                    {getRegisterToolsExample(
+                      functionName,
+                      dataInputs,
+                      selectedFramework
+                    )}
                   </SyntaxHighlighter>
                   <Button
                     onClick={() => {
                       navigator.clipboard.writeText(
-                        getRegisterToolsExample(functionName, dataInputs, selectedFramework)
+                        getRegisterToolsExample(
+                          functionName,
+                          dataInputs,
+                          selectedFramework
+                        )
                       );
                     }}
                     className="absolute top-11 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
@@ -496,16 +536,15 @@ export default function ExecutionStep({
                 </div>
                 <ul className="list-disc list-inside text-gray-600 space-y-2 mt-4 text-sm">
                   <li>
-                    Implement your function into your app like the example
-                    above
+                    Implement your function into your app like the example above
                   </li>
                   <li>
                     Add the code between the <code>&lt;body&gt;</code> tags of
                     your website's HTML
                   </li>
                   <li>
-                    The code will be available to your chatbot as a
-                    client-side action
+                    The code will be available to your agent as a client-side
+                    action
                   </li>
                   <li>
                     Need help? Visit our{' '}
@@ -515,8 +554,7 @@ export default function ExecutionStep({
                       rel="noopener noreferrer"
                       className="text-[#FE4A60] hover:underline"
                     >
-                      documentation{' '}
-                      <ExternalLink className="inline w-4 h-4" />
+                      documentation <ExternalLink className="inline w-4 h-4" />
                     </a>
                     .
                   </li>

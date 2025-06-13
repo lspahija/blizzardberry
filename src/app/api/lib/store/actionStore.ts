@@ -5,11 +5,11 @@ import {
   ExecutionModel,
 } from '@/app/api/lib/model/action/baseAction';
 
-export const getActions = async (chatbotId: string): Promise<Action[]> => {
+export const getActions = async (agentId: string): Promise<Action[]> => {
   const actions = await sql`
-    SELECT id, name, description, execution_context, execution_model, chatbot_id
+    SELECT id, name, description, execution_context, execution_model, agent_id
     FROM actions
-    WHERE chatbot_id = ${chatbotId}
+    WHERE agent_id = ${agentId}
   `;
 
   return actions.map((d: any) => ({
@@ -18,18 +18,18 @@ export const getActions = async (chatbotId: string): Promise<Action[]> => {
     description: d.description,
     executionContext: d.execution_context,
     executionModel: JSON.parse(d.execution_model),
-    chatbotId: d.chatbot_id,
+    agentId: d.agent_id,
   }));
 };
 
 export const getAction = async (
   id: string,
-  chatbotId: string
+  agentId: string
 ): Promise<Action | null> => {
   const [action] = await sql`
-    SELECT id, name, description, execution_context, execution_model, chatbot_id
+    SELECT id, name, description, execution_context, execution_model, agent_id
     FROM actions
-    WHERE id = ${id} AND chatbot_id = ${chatbotId}
+    WHERE id = ${id} AND agent_id = ${agentId}
     LIMIT 1
   `;
 
@@ -41,7 +41,7 @@ export const getAction = async (
     description: action.description,
     executionContext: action.execution_context,
     executionModel: JSON.parse(action.execution_model),
-    chatbotId: action.chatbot_id,
+    agentId: action.agent_id,
   };
 };
 
@@ -50,20 +50,20 @@ export const createAction = async (
   description: string,
   executionContext: ExecutionContext,
   executionModel: ExecutionModel,
-  chatbotId: string
+  agentId: string
 ): Promise<void> => {
   await sql`
-    INSERT INTO actions (name, description, execution_context, execution_model, chatbot_id)
-    VALUES (${actionName}, ${description}, ${executionContext}, ${JSON.stringify(executionModel)}::jsonb, ${chatbotId})
+    INSERT INTO actions (name, description, execution_context, execution_model, agent_id)
+    VALUES (${actionName}, ${description}, ${executionContext}, ${JSON.stringify(executionModel)}::jsonb, ${agentId})
   `;
 };
 
 export const deleteAction = async (
   id: string,
-  chatbotId: string
+  agentId: string
 ): Promise<void> => {
   await sql`
     DELETE FROM actions
-    WHERE id = ${id} AND chatbot_id = ${chatbotId}
+    WHERE id = ${id} AND agent_id = ${agentId}
   `;
 };

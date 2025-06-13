@@ -1,8 +1,8 @@
 -- TODO: after launch, we should add db migrations (Supabase Migrations/Flyway/Liquibase, etc): https://grok.com/share/bGVnYWN5_028f4133-6951-47e9-803e-da4e87a5ddae
 
--- chatbots
+-- agents
 
-CREATE TABLE chatbots -- TODO: rename this to agents
+CREATE TABLE agents
 (
     id             UUID                     DEFAULT gen_random_uuid() PRIMARY KEY,
     name           TEXT NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE chatbots -- TODO: rename this to agents
     created_at     TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
-CREATE INDEX chatbots_created_by_idx ON chatbots (created_by);
+CREATE INDEX agents_created_by_idx ON agents (created_by);
 
 -- actions
 
@@ -25,11 +25,11 @@ CREATE TABLE actions
     description       TEXT              NOT NULL,
     execution_context execution_context NOT NULL,
     execution_model   JSONB             NOT NULL,
-    chatbot_id        UUID              NOT NULL REFERENCES chatbots (id) ON DELETE CASCADE,
+    agent_id        UUID              NOT NULL REFERENCES agents (id) ON DELETE CASCADE,
     created_at        TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
-CREATE INDEX actions_chatbot_id_idx ON actions (chatbot_id);
+CREATE INDEX actions_agent_id_idx ON actions (agent_id);
 
 
 -- TODO: create required indexes for the following tables

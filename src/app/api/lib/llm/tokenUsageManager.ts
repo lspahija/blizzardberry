@@ -1,6 +1,6 @@
 import { captureCredit, holdCredit } from '@/app/api/lib/store/creditStore';
 import { LanguageModelUsage } from 'ai';
-import { ChatbotModel } from '@/app/api/lib/model/chatbot/chatbot';
+import { AgentModel } from '@/app/api/lib/model/agent/agent';
 
 export async function createCreditHold(
   userId: string,
@@ -15,7 +15,7 @@ export async function recordUsedTokens(
   userId: string,
   holdIds: number[],
   tokenUsage: LanguageModelUsage,
-  model: ChatbotModel,
+  model: AgentModel,
   ref: string,
   idempotencyKey: string
 ) {
@@ -37,7 +37,7 @@ export async function recordUsedTokens(
 
 export function mapTokenUsageToCreditUsage(
   tokenUsage: LanguageModelUsage,
-  model: ChatbotModel
+  model: AgentModel
 ): number {
   const costs = CREDIT_COSTS_PER_TOKEN[model];
   if (!costs) {
@@ -58,38 +58,38 @@ export function mapTokenUsageToCreditUsage(
 // Costs are per token, derived from approximate pricing per million tokens
 // TODO: Update these costs based on actual pricing from providers
 const CREDIT_COSTS_PER_TOKEN: Record<
-  ChatbotModel,
+  AgentModel,
   { input: number; output: number }
 > = {
-  [ChatbotModel.GEMINI_2_0_FLASH]: {
+  [AgentModel.GEMINI_2_0_FLASH]: {
     input: 0.000035, // $0.35 per million tokens
     output: 0.000035,
   },
-  [ChatbotModel.GEMINI_2_5_PRO]: {
+  [AgentModel.GEMINI_2_5_PRO]: {
     input: 0.00025, // $2.50 per million tokens
     output: 0.00025,
   },
-  [ChatbotModel.CHATGPT_4_1]: {
+  [AgentModel.CHATGPT_4_1]: {
     input: 0.001, // $10 per million tokens
     output: 0.003, // $30 per million tokens
   },
-  [ChatbotModel.CHATGPT_4O]: {
+  [AgentModel.CHATGPT_4O]: {
     input: 0.0005, // $5 per million tokens
     output: 0.0015, // $15 per million tokens
   },
-  [ChatbotModel.CLAUDE_SONNET_4]: {
+  [AgentModel.CLAUDE_SONNET_4]: {
     input: 0.0015, // $15 per million tokens
     output: 0.0075, // $75 per million tokens
   },
-  [ChatbotModel.GROK_3_BETA]: {
+  [AgentModel.GROK_3_BETA]: {
     input: 0.0005, // $5 per million tokens
     output: 0.0005,
   },
-  [ChatbotModel.DEEPSEEK_R1]: {
+  [AgentModel.DEEPSEEK_R1]: {
     input: 0.00002, // $0.20 per million tokens
     output: 0.00002,
   },
-  [ChatbotModel.QWEN_3_30B]: {
+  [AgentModel.QWEN_3_30B]: {
     input: 0.0001, // $1 per million tokens
     output: 0.0001,
   },

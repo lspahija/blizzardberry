@@ -7,25 +7,22 @@ export default function SearchDocumentsPage() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [message, setMessage] = useState('');
 
-  const chatbotId = '50ef4958-cbf5-4968-86a5-7da492ac99ce';
+  const agentId = '50ef4958-cbf5-4968-86a5-7da492ac99ce';
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        `/api/chatbots/${chatbotId}/documents/search`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query: searchQuery,
-            topK: 3,
-            chatbotId,
-          }),
-        }
-      );
+      const response = await fetch(`/api/agents/${agentId}/documents/search`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: searchQuery,
+          topK: 3,
+          agentId,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error('Failed to search documents');

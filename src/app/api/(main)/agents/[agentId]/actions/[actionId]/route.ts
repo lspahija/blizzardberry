@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
+import { agentAuth } from '@/app/api/lib/auth/agentAuth';
 import { deleteAction } from '@/app/api/lib/store/actionStore';
 
 export async function DELETE(
   _: Request,
-  { params }: { params: Promise<{ chatbotId: string; actionId: string }> }
+  { params }: { params: Promise<{ agentId: string; actionId: string }> }
 ) {
   try {
     const session = await auth();
@@ -13,12 +13,12 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { chatbotId, actionId } = await params;
+    const { agentId, actionId } = await params;
 
-    const authResponse = await chatbotAuth(session.user.id, chatbotId);
+    const authResponse = await agentAuth(session.user.id, agentId);
     if (authResponse) return authResponse;
 
-    await deleteAction(actionId, chatbotId);
+    await deleteAction(actionId, agentId);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { Action } from '@/app/api/lib/model/action/baseAction';
 import { auth } from '@/lib/auth/auth';
-import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
+import { agentAuth } from '@/app/api/lib/auth/agentAuth';
 import { createAction, getActions } from '@/app/api/lib/store/actionStore';
 
 export async function GET(
   _: Request,
-  { params }: { params: Promise<{ chatbotId: string }> }
+  { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
     const session = await auth();
@@ -14,12 +14,12 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { chatbotId } = await params;
+    const { agentId } = await params;
 
-    const authResponse = await chatbotAuth(session.user.id, chatbotId);
+    const authResponse = await agentAuth(session.user.id, agentId);
     if (authResponse) return authResponse;
 
-    const actions = await getActions(chatbotId);
+    const actions = await getActions(agentId);
 
     return NextResponse.json({ actions }, { status: 200 });
   } catch (error) {
@@ -33,7 +33,7 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ chatbotId: string }> }
+  { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
     const session = await auth();
@@ -41,9 +41,9 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { chatbotId } = await params;
+    const { agentId } = await params;
 
-    const authResponse = await chatbotAuth(session.user.id, chatbotId);
+    const authResponse = await agentAuth(session.user.id, agentId);
     if (authResponse) return authResponse;
 
     const action: Action = await req.json();
@@ -53,7 +53,7 @@ export async function POST(
       action.description,
       action.executionContext,
       action.executionModel,
-      chatbotId
+      agentId
     );
 
     return NextResponse.json({ actionName: action.name }, { status: 201 });

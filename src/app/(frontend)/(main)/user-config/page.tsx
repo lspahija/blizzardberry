@@ -14,7 +14,10 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy, ExternalLink, Info, UserCog, Loader2, Code } from 'lucide-react';
 import { useState } from 'react';
-import { Framework, getChatbotConfigScript } from '@/app/(frontend)/lib/scriptUtils';
+import {
+  Framework,
+  getAgentConfigScript,
+} from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import {
   Select,
@@ -45,16 +48,16 @@ export default function UserConfig() {
   };
 
   const configObj = {
-    user_id: "user_123",
-    account_number: "ACC123456",
+    user_id: 'user_123',
+    account_number: 'ACC123456',
     user_metadata: {
-      name: "John Doe",
-      email: "user@example.com",
-      company: "Example Company"
-    }
+      name: 'John Doe',
+      email: 'user@example.com',
+      company: 'Example Company',
+    },
   };
 
-  const configExample = getChatbotConfigScript(selectedFramework, configObj);
+  const configExample = getAgentConfigScript(selectedFramework, configObj);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(configExample);
@@ -94,7 +97,8 @@ export default function UserConfig() {
         <div className="mb-12 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
           <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
           <span className="text-gray-800 text-base">
-            Add this script to your website to provide user context to all your chatbots. You can customize the keys as needed.
+            Add this script to your website to provide user context to all your
+            agents. You can customize the keys as needed.
           </span>
         </div>
 
@@ -111,7 +115,10 @@ export default function UserConfig() {
               <CardContent className="space-y-8">
                 <div>
                   <p className="text-gray-600 mb-4 text-base">
-                    This configuration will be accessible to all your chatbots. Add this script inside your website's <code>&lt;body&gt;</code> tag to provide user context to your chatbots.
+                    This configuration will be accessible to all your agents.
+                    Add this script inside your website's{' '}
+                    <code>&lt;body&gt;</code> tag to provide user context to
+                    your agents.
                   </p>
                   <div className="mb-6">
                     <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
@@ -119,21 +126,30 @@ export default function UserConfig() {
                       Framework
                     </Label>
                     <p className="text-sm text-gray-600 mt-2 ml-6">
-                      Select the framework you're using to implement the user configuration.
+                      Select the framework you're using to implement the user
+                      configuration.
                     </p>
                     <div className="mt-2 ml-6">
                       <Select
                         value={selectedFramework}
-                        onValueChange={(value) => setSelectedFramework(value as Framework)}
+                        onValueChange={(value) =>
+                          setSelectedFramework(value as Framework)
+                        }
                       >
                         <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
                           <SelectValue placeholder="Select framework" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
-                          <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
+                          <SelectItem value={Framework.ANGULAR}>
+                            Angular
+                          </SelectItem>
+                          <SelectItem value={Framework.NEXT_JS}>
+                            Next.js
+                          </SelectItem>
                           <SelectItem value={Framework.REACT}>React</SelectItem>
-                          <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                          <SelectItem value={Framework.VANILLA}>
+                            Vanilla JS
+                          </SelectItem>
                           <SelectItem value={Framework.VUE}>Vue</SelectItem>
                         </SelectContent>
                       </Select>
@@ -161,7 +177,9 @@ export default function UserConfig() {
                     </Button>
                   </div>
                   <p className="text-gray-600 text-sm mt-2">
-                    <strong>Note:</strong> The keys shown above are just examples. You can add or remove keys as needed to fit your application's requirements.
+                    <strong>Note:</strong> The keys shown above are just
+                    examples. You can add or remove keys as needed to fit your
+                    application's requirements.
                   </p>
                 </div>
                 <div className="space-y-4">
@@ -170,11 +188,13 @@ export default function UserConfig() {
                   </h3>
                   <ul className="list-disc list-inside text-gray-600 space-y-2 text-base">
                     <li>
-                      Add this script to your website's HTML, ideally just before the closing <code>&lt;/body&gt;</code> tag
+                      Add this script to your website's HTML, ideally just
+                      before the closing <code>&lt;/body&gt;</code> tag
                     </li>
                     <li>Update the values with your actual user information</li>
                     <li>
-                      All your chatbots will automatically have access to this user context
+                      All your agents will automatically have access to this
+                      user context
                     </li>
                     <li>
                       Need help? Visit our{' '}

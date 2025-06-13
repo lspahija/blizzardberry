@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { Chatbot } from '@/app/api/lib/model/chatbot/chatbot';
-import { chatbotAuth } from '@/app/api/lib/auth/chatbotAuth';
+import { Agent } from '@/app/api/lib/model/agent/agent';
+import { agentAuth } from '@/app/api/lib/auth/agentAuth';
 import {
-  deleteChatbot,
-  getChatbotByUserId,
-  updateChatbot,
-} from '@/app/api/lib/store/chatbotStore';
+  deleteAgent,
+  getAgentByUserId,
+  updateAgent,
+} from '@/app/api/lib/store/agentStore';
 
 export async function GET(
   _: Request,
-  { params }: { params: Promise<{ chatbotId: string }> }
+  { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
     const session = await auth();
@@ -18,19 +18,19 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { chatbotId } = await params;
+    const { agentId } = await params;
 
-    const data = await getChatbotByUserId(chatbotId, session.user.id);
+    const data = await getAgentByUserId(agentId, session.user.id);
 
     if (!data) {
-      console.error('Error fetching chatbot:', chatbotId);
+      console.error('Error fetching agent:', agentId);
       return NextResponse.json(
-        { error: 'Chatbot not found or unauthorized' },
+        { error: 'Agent not found or unauthorized' },
         { status: 404 }
       );
     }
 
-    const chatbot: Chatbot = {
+    const agent: Agent = {
       id: data.id,
       name: data.name,
       websiteDomain: data.website_domain,
@@ -39,7 +39,7 @@ export async function GET(
       createdAt: data.created_at,
     };
 
-    return NextResponse.json({ chatbot }, { status: 200 });
+    return NextResponse.json({ agent }, { status: 200 });
   } catch (error) {
     console.error('Error processing request:', error);
     return NextResponse.json(
@@ -51,7 +51,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ chatbotId: string }> }
+  { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
     const session = await auth();
@@ -59,8 +59,8 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { chatbotId } = await params;
-    const authResponse = await chatbotAuth(session.user.id, chatbotId);
+    const { agentId } = await params;
+    const authResponse = await agentAuth(session.user.id, agentId);
     if (authResponse) return authResponse;
 
     const body = await request.json();
@@ -73,7 +73,7 @@ export async function PUT(
       );
     }
 
-    await updateChatbot(chatbotId, {
+    await updateAgent(agentId, {
       name,
       website_domain: websiteDomain,
       model,
@@ -81,9 +81,9 @@ export async function PUT(
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Error updating chatbot:', error);
+    console.error('Error updating agent:', error);
     return NextResponse.json(
-      { error: 'Failed to update chatbot' },
+      { error: 'Failed to update agent' },
       { status: 500 }
     );
   }
@@ -91,7 +91,7 @@ export async function PUT(
 
 export async function DELETE(
   _: Request,
-  { params }: { params: Promise<{ chatbotId: string }> }
+  { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
     const session = await auth();
@@ -99,17 +99,17 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { chatbotId } = await params;
+    const { agentId } = await params;
 
-    const authResponse = await chatbotAuth(session.user.id, chatbotId);
+    const authResponse = await agentAuth(session.user.id, agentId);
     if (authResponse) return authResponse;
 
-    await deleteChatbot(chatbotId);
+    await deleteAgent(agentId);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to delete chatbot' },
+      { error: 'Failed to delete agent' },
       { status: 500 }
     );
   }

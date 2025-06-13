@@ -19,30 +19,28 @@ import {
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
+import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import { use } from 'react';
 import { Bot, Globe, Type, Settings, Loader2 } from 'lucide-react';
 import { Info } from 'lucide-react';
 import {
-  ChatbotModel,
-  ChatbotModelDisplay,
-  ChatbotModelList,
-} from '@/app/api/lib/model/chatbot/chatbot';
+  AgentModel,
+  AgentModelDisplay,
+  AgentModelList,
+} from '@/app/api/lib/model/agent/agent';
 
-export default function EditChatbotPage({
+export default function EditAgentPage({
   params,
 }: {
-  params: Promise<{ chatbotId: string }>;
+  params: Promise<{ agentId: string }>;
 }) {
   const router = useRouter();
   const [name, setName] = useState('');
   const [websiteDomain, setWebsiteDomain] = useState('');
-  const [model, setModel] = useState<ChatbotModel>(
-    ChatbotModel.GEMINI_2_0_FLASH
-  );
+  const [model, setModel] = useState<AgentModel>(AgentModel.GEMINI_2_0_FLASH);
   const [isLoading, setIsLoading] = useState(true);
-  const { handleUpdateChatbot } = useChatbots();
-  const { chatbotId } = use(params);
+  const { handleUpdateAgent } = useAgents();
+  const { agentId } = use(params);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -64,32 +62,32 @@ export default function EditChatbotPage({
   };
 
   useEffect(() => {
-    const fetchChatbot = async () => {
+    const fetchAgent = async () => {
       try {
-        const response = await fetch(`/api/chatbots/${chatbotId}`);
+        const response = await fetch(`/api/agents/${agentId}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch chatbot');
+          throw new Error('Failed to fetch agent');
         }
         const data = await response.json();
-        setName(data.chatbot.name);
-        setWebsiteDomain(data.chatbot.websiteDomain);
-        setModel(data.chatbot.model as ChatbotModel);
+        setName(data.agent.name);
+        setWebsiteDomain(data.agent.websiteDomain);
+        setModel(data.agent.model as AgentModel);
       } catch (error) {
-        console.error('Error fetching chatbot:', error);
+        console.error('Error fetching agent:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchChatbot();
-  }, [chatbotId]);
+    fetchAgent();
+  }, [agentId]);
 
-  const onUpdateChatbot = async () => {
+  const onUpdateAgent = async () => {
     try {
-      await handleUpdateChatbot(chatbotId, { name, websiteDomain, model });
+      await handleUpdateAgent(agentId, { name, websiteDomain, model });
       router.push('/dashboard');
     } catch (error) {
-      console.error('Error updating chatbot:', error);
+      console.error('Error updating agent:', error);
     }
   };
 
@@ -124,7 +122,7 @@ export default function EditChatbotPage({
         >
           <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
           <span className="text-gray-800 text-base">
-            Update your chatbot details below. Changes will be reflected
+            Update your agent details below. Changes will be reflected
             immediately after saving.
           </span>
         </motion.div>
@@ -133,7 +131,7 @@ export default function EditChatbotPage({
           className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900 mb-12 text-center"
           variants={itemVariants}
         >
-          Edit Chatbot
+          Edit Agent
         </motion.h1>
 
         <motion.div
@@ -147,7 +145,7 @@ export default function EditChatbotPage({
               <CardHeader className="flex items-center space-x-2">
                 <Bot className="h-7 w-7 text-[#FE4A60]" />
                 <CardTitle className="text-2xl font-semibold text-gray-900">
-                  Chatbot Details
+                  Agent Details
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -157,10 +155,10 @@ export default function EditChatbotPage({
                     className="text-gray-900 flex items-center gap-2"
                   >
                     <Type className="h-4 w-4 text-[#FE4A60]" />
-                    Chatbot Name
+                    Agent Name
                   </Label>
                   <p className="text-sm text-gray-600 mt-1 ml-6">
-                    A unique name for your chatbot
+                    A unique name for your agent
                   </p>
                   <div className="relative mt-2">
                     <Input
@@ -182,8 +180,7 @@ export default function EditChatbotPage({
                     Website Domain
                   </Label>
                   <p className="text-sm text-gray-600 mt-1 ml-6">
-                    The domain of the website where this chatbot will be
-                    installed
+                    The domain of the website where this agent will be installed
                   </p>
                   <div className="relative mt-2">
                     <Input
@@ -205,21 +202,21 @@ export default function EditChatbotPage({
                     AI Model
                   </Label>
                   <p className="text-sm text-gray-600 mt-1 ml-6">
-                    The AI model that powers your chatbot
+                    The AI model that powers your agent
                   </p>
                   <div className="relative mt-2">
                     <Settings className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none z-10" />
                     <Select
                       value={model}
-                      onValueChange={(value) => setModel(value as ChatbotModel)}
+                      onValueChange={(value) => setModel(value as AgentModel)}
                     >
                       <SelectTrigger className="pl-10 border-[2px] border-gray-900">
                         <SelectValue placeholder="Select a model" />
                       </SelectTrigger>
                       <SelectContent>
-                        {ChatbotModelList.map((modelValue) => (
+                        {AgentModelList.map((modelValue) => (
                           <SelectItem key={modelValue} value={modelValue}>
-                            {ChatbotModelDisplay[modelValue]}
+                            {AgentModelDisplay[modelValue]}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -229,7 +226,7 @@ export default function EditChatbotPage({
                 <div className="flex gap-4">
                   <Button
                     className="flex-1 bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 hover:bg-[#ff6a7a] transition-transform duration-200 shadow-md text-lg font-semibold"
-                    onClick={onUpdateChatbot}
+                    onClick={onUpdateAgent}
                   >
                     Save Changes
                   </Button>
