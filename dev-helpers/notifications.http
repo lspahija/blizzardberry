@@ -1,0 +1,8 @@
+POST http://localhost:3000/api/notifications
+Content-Type: application/json
+
+{
+  "type": "feedback",
+  "emailAddress": "test@example.com",
+  "message": "This is a test message for the Slack webhook."
+}
