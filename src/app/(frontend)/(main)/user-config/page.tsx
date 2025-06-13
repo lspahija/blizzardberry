@@ -12,7 +12,7 @@ import {
 } from '@/app/(frontend)/components/ui/card';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Copy, ExternalLink } from 'lucide-react';
+import { Copy, ExternalLink, Info, UserCog, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { Framework, getChatbotConfigScript } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
@@ -64,47 +64,53 @@ export default function UserConfig() {
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
-        <p className="text-gray-900 text-lg">Loading...</p>
+        <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-screen flex flex-col bg-[#FFFDF8] p-4"
+      className="min-h-screen flex flex-col bg-[#FFFDF8] p-4 relative overflow-hidden"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <div className="max-w-4xl mx-auto w-full">
+      <div className="max-w-4xl mx-auto w-full relative z-10">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
             User Configuration
           </h1>
           <Button
             asChild
-            className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+            className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-base font-semibold px-6 py-2 rounded-lg"
           >
             <Link href="/dashboard">Back to Dashboard</Link>
           </Button>
         </div>
 
+        {/* Info/tip box */}
+        <div className="mb-8 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
+          <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
+          <span className="text-gray-800 text-base">
+            Add this script to your website to provide user context to all your chatbots. You can customize the keys as needed.
+          </span>
+        </div>
+
         <motion.div variants={cardVariants}>
           <div className="relative mb-8">
             <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
-            <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-none">
-              <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-900">
+            <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-xl border-l-8 border-l-[#FE4A60]">
+              <CardHeader className="flex items-center space-x-2">
+                <UserCog className="h-7 w-7 text-[#FE4A60]" />
+                <CardTitle className="text-2xl font-bold text-gray-900">
                   Global User Configuration
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
                   <p className="text-gray-600 mb-4">
-                    This configuration will be accessible to all your chatbots.
-                    Add this script inside your website's{' '}
-                    <code>&lt;body&gt;</code> tag to provide user context to
-                    your chatbots.
+                    This configuration will be accessible to all your chatbots. Add this script inside your website's <code>&lt;body&gt;</code> tag to provide user context to your chatbots.
                   </p>
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -141,31 +147,27 @@ export default function UserConfig() {
                     </SyntaxHighlighter>
                     <Button
                       onClick={handleCopy}
-                      className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                      className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2"
                     >
                       <Copy className="w-4 h-4 mr-2" />
                       {copied ? 'Copied!' : 'Copy Code'}
                     </Button>
                   </div>
                   <p className="text-gray-600 text-sm mt-2">
-                    <strong>Note:</strong> The keys shown above are just
-                    examples. You can add or remove keys as needed to fit your
-                    application's requirements.
+                    <strong>Note:</strong> The keys shown above are just examples. You can add or remove keys as needed to fit your application's requirements.
                   </p>
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-bold text-gray-900 border-l-4 border-[#FE4A60] pl-3 mb-2">
                     Implementation Steps
                   </h3>
                   <ul className="list-disc list-inside text-gray-600 space-y-2">
                     <li>
-                      Add this script to your website's HTML, ideally just
-                      before the closing <code>&lt;/body&gt;</code> tag
+                      Add this script to your website's HTML, ideally just before the closing <code>&lt;/body&gt;</code> tag
                     </li>
                     <li>Update the values with your actual user information</li>
                     <li>
-                      All your chatbots will automatically have access to this
-                      user context
+                      All your chatbots will automatically have access to this user context
                     </li>
                     <li>
                       Need help? Visit our{' '}
