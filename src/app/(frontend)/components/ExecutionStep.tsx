@@ -308,7 +308,6 @@ export default function ExecutionStep({
                     </div>
                   </div>
                 </div>
-                {/* HEADERS SECTION */}
                 <div className="mt-8">
                   <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
                     <List className="h-4 w-4 text-[#FE4A60]" />
@@ -343,7 +342,6 @@ export default function ExecutionStep({
                     Add Header
                   </Button>
                 </div>
-                {/* BODY SECTION */}
                 <div className="mt-8">
                   <Label htmlFor="apiBody" className="text-gray-900 text-lg font-semibold flex items-center gap-2">
                     <Code className="h-4 w-4 text-[#FE4A60]" />
