@@ -457,26 +457,36 @@ export default function ExecutionStep({
                   </div>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Select Framework
-                  </label>
-                  <Select
-                    value={selectedFramework}
-                    onValueChange={(value) => setSelectedFramework(value as Framework)}
-                  >
-                    <SelectTrigger className="w-[200px]">
-                      <SelectValue placeholder="Select framework" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
-                      <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
-                      <SelectItem value={Framework.REACT}>React</SelectItem>
-                      <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
-                      <SelectItem value={Framework.VUE}>Vue</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                    <Code className="h-4 w-4 text-[#FE4A60]" />
+                    Framework
+                  </Label>
+                  <p className="text-sm text-gray-600 mt-2 ml-6">
+                    Select the framework you're using to implement the client-side function.
+                  </p>
+                  <div className="mt-2 ml-6">
+                    <Select
+                      value={selectedFramework}
+                      onValueChange={(value) => setSelectedFramework(value as Framework)}
+                    >
+                      <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
+                        <SelectValue placeholder="Select framework" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
+                        <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
+                        <SelectItem value={Framework.REACT}>React</SelectItem>
+                        <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                        <SelectItem value={Framework.VUE}>Vue</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div className="relative mt-4">
+                <div className="relative mt-4 ml-6">
+                  <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
+                    <Code className="h-4 w-4 text-[#FE4A60]" />
+                    Implementation Example
+                  </Label>
                   <SyntaxHighlighter
                     language="javascript"
                     style={vscDarkPlus}
@@ -496,7 +506,7 @@ export default function ExecutionStep({
                         getRegisterToolsExample(functionName, dataInputs, selectedFramework)
                       );
                     }}
-                    className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    className="absolute top-11 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
                   >
                     <Copy className="w-4 h-4 mr-2" />
                     Copy Code
