@@ -320,7 +320,18 @@ export default function Dashboard() {
                     <Bot className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
                     <div className="flex-1">
                       <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">
-                        {chatbot.name}
+                        <Link
+                          href={`/chatbots/${chatbot.id}`}
+                          className="hover:underline focus:underline outline-none"
+                          onClick={() =>
+                            posthog.capture('chatbot_view_clicked', {
+                              chatbot_id: chatbot.id,
+                              user_email: session?.user?.email,
+                            })
+                          }
+                        >
+                          {chatbot.name}
+                        </Link>
                       </p>
                       <p className="text-sm text-gray-500 mb-1">
                         <span className="font-semibold">Domain:</span> {chatbot.websiteDomain}
