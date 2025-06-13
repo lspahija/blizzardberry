@@ -18,6 +18,7 @@ import {
   Trash2,
   Settings,
   MessageSquare,
+  Bot,
 } from 'lucide-react';
 import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
 import posthog from 'posthog-js';
@@ -145,7 +146,7 @@ export default function Dashboard() {
     >
       <div className="max-w-4xl mx-auto w-full">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
             Welcome, {session.user?.name}!
           </h1>
           <div className="flex gap-2">
@@ -154,7 +155,7 @@ export default function Dashboard() {
                 <div className="relative">
                   <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
                   <Button
-                    className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg shadow-md"
                     onClick={() =>
                       posthog.capture('feedback_form_opened', {
                         user_email: session?.user?.email,
@@ -240,7 +241,7 @@ export default function Dashboard() {
             <div className="relative">
               <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
               <Button
-                className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg shadow-md"
                 onClick={handleSignOut}
               >
                 Sign Out
@@ -249,10 +250,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="mb-6 flex gap-4">
+        <div className="mb-6 flex space-x-4">
           <Button
             asChild
-            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-[#ff6a7a]"
             onClick={() =>
               posthog.capture('create_chatbot_clicked', {
                 user_email: session?.user?.email,
@@ -266,7 +267,7 @@ export default function Dashboard() {
           </Button>
           <Button
             asChild
-            className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+            className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5"
             onClick={() =>
               posthog.capture('user_config_clicked', {
                 user_email: session?.user?.email,
@@ -284,87 +285,78 @@ export default function Dashboard() {
             <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
           </div>
         ) : chatbots.length === 0 ? (
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-lg mb-4 flex items-center justify-center">
+            <Bot className="h-6 w-6 mr-2 text-[#FE4A60]" />
             No chatbots found. Create one to get started!
           </p>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2">
-            {chatbots.map((chatbot) => (
-              <Card
-                key={chatbot.id}
-                className="border-[3px] border-gray-900 bg-[#FFFDF8] flex flex-col h-full"
-              >
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold text-gray-900">
-                    <Link
-                      href={`/chatbots/${chatbot.id}`}
-                      className="hover:underline"
-                      onClick={() =>
-                        posthog.capture('chatbot_view_clicked', {
-                          chatbot_id: chatbot.id,
-                          user_email: session?.user?.email,
-                        })
-                      }
-                    >
-                      {chatbot.name}
-                    </Link>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col flex-1 justify-between">
-                  <div>
-                    <p className="text-gray-600 mb-2">
-                      <strong>Domain:</strong> {chatbot.websiteDomain}
-                    </p>
-                    <p className="text-gray-600 mb-2">
-                      <strong>Created:</strong>{' '}
-                      {new Date(chatbot.createdAt).toLocaleDateString()}
-                    </p>
-                    <p className="text-gray-600 mb-2">
-                      <strong>Model:</strong> {chatbot.model}
-                    </p>
-                  </div>
-                  <div className="flex justify-between items-center mt-4">
-                    <div className="flex gap-2">
+          <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-6 rounded-xl shadow-xl border-l-8 border-l-[#FE4A60]">
+            <CardHeader className="flex items-center space-x-2">
+              <Bot className="h-6 w-6 text-[#FE4A60]" />
+              <CardTitle className="text-2xl font-bold text-gray-900">
+                Your Chatbots
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-4">
+                {chatbots.map((chatbot, idx) => (
+                  <li
+                    key={chatbot.id}
+                    className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2"
+                  >
+                    <Bot className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
+                    <div className="flex-1">
+                      <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">
+                        {chatbot.name}
+                      </p>
+                      <p className="text-sm text-gray-500 mb-1">
+                        <span className="font-semibold">Domain:</span> {chatbot.websiteDomain}
+                      </p>
+                      <p className="text-sm text-gray-500 mb-1">
+                        <span className="font-semibold">Created:</span> {new Date(chatbot.createdAt).toLocaleString()}
+                      </p>
+                      <p className="text-sm text-gray-500 mb-1">
+                        <span className="font-semibold">Model:</span> {chatbot.model}
+                      </p>
+                    </div>
+                    <div className="flex gap-2 ml-4">
                       <Button
                         asChild
-                        className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                        className="bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2"
                       >
-                        <Link href={`/chatbots/${chatbot.id}`}>
-                          View Details
-                        </Link>
+                        <Link href={`/chatbots/${chatbot.id}`}>View</Link>
                       </Button>
                       <Button
                         asChild
-                        className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform group"
+                        className="bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
                       >
-                        <Link
-                          href={`/chatbots/${chatbot.id}/edit`}
-                          className="flex items-center gap-2"
-                        >
+                        <Link href={`/chatbots/${chatbot.id}/edit`} className="flex items-center gap-2">
                           <Settings className="h-4 w-4 transition-transform group-hover:rotate-45" />
                           <span>Edit</span>
                         </Link>
                       </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => chatbot.id && handleDeleteChatbot(chatbot.id)}
+                        disabled={deletingChatbotId === chatbot.id}
+                        className="border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
+                        title="Delete Chatbot"
+                      >
+                        {deletingChatbotId === chatbot.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
+                        )}
+                      </Button>
                     </div>
-                    <Button
-                      variant="destructive"
-                      onClick={() =>
-                        chatbot.id && handleDeleteChatbot(chatbot.id)
-                      }
-                      disabled={deletingChatbotId === chatbot.id}
-                      className="border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform h-9 px-4 mt-0.5"
-                    >
-                      {deletingChatbotId === chatbot.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    {idx < chatbots.length - 1 && (
+                      <hr className="my-2 border-gray-200" />
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
         )}
       </div>
     </motion.div>
