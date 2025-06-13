@@ -292,7 +292,7 @@ export default function ChatbotDetails({
                     </CardHeader>
                     <CardContent className="space-y-8">
                       <div>
-                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mt-4">
                           <Code className="h-4 w-4 text-[#FE4A60]" />
                           Framework
                         </Label>
@@ -404,7 +404,7 @@ export default function ChatbotDetails({
                     </CardHeader>
                     <CardContent className="space-y-8">
                       <div>
-                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mt-4">
                           <Code className="h-4 w-4 text-[#FE4A60]" />
                           Framework
                         </Label>
