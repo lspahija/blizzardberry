@@ -4,6 +4,7 @@ import { Button } from '@/app/(frontend)/components/ui/button';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { SuggestInput } from '@/app/(frontend)/components/ui/suggest-input';
 import { Trash2 } from 'lucide-react';
+import { Key, Tag } from 'lucide-react';
 
 interface Header {
   key: string;
@@ -30,7 +31,10 @@ export default function HeaderInput({
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_50px] gap-4 mt-4 items-end">
       <div>
-        <Label htmlFor={`headerKey${index}`}>Key</Label>
+        <Label htmlFor={`headerKey${index}`} className="flex items-center gap-2">
+          <Key className="h-4 w-4 text-[#FE4A60]" />
+          Key
+        </Label>
         <SuggestInput
           id={`headerKey${index}`}
           value={header.key}
@@ -43,7 +47,10 @@ export default function HeaderInput({
         />
       </div>
       <div>
-        <Label htmlFor={`headerValue${index}`}>Value</Label>
+        <Label htmlFor={`headerValue${index}`} className="flex items-center gap-2">
+          <Tag className="h-4 w-4 text-[#FE4A60]" />
+          Value
+        </Label>
         <SuggestInput
           id={`headerValue${index}`}
           value={header.value}

@@ -35,7 +35,7 @@ import HeaderInput from '@/app/(frontend)/components/HeaderInput';
 import ArgsList from '@/app/(frontend)/components/ArgsList';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Copy, ExternalLink, Globe, Code, Info, List, PlusCircle, Save, ArrowLeft } from 'lucide-react';
+import { Copy, ExternalLink, Globe, Code, Info, List, PlusCircle, Save, ArrowLeft, Terminal } from 'lucide-react';
 import { useState } from 'react';
 import { Framework } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
@@ -269,12 +269,15 @@ export default function ExecutionStep({
                   )}
                   <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-6 mt-6 ml-6">
                     <div>
-                      <Label htmlFor="apiMethod" className="text-base font-medium">Method</Label>
+                      <Label htmlFor="apiMethod" className="text-base font-medium flex items-center gap-2">
+                        <Terminal className="h-4 w-4 text-[#FE4A60]" />
+                        Method
+                      </Label>
                       <Select
                         value={apiMethod}
                         onValueChange={handleMethodChange}
                       >
-                        <SelectTrigger className="mt-2 border-[2px] border-gray-900">
+                        <SelectTrigger className="mt-2 border-[2px] border-gray-900 sm:w-[2rem] md:w-[4rem] lg:w-[6rem]">
                           <SelectValue placeholder="Select method" />
                         </SelectTrigger>
                         <SelectContent>
@@ -286,7 +289,10 @@ export default function ExecutionStep({
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="apiUrl" className="text-base font-medium">HTTPS URL</Label>
+                      <Label htmlFor="apiUrl" className="text-base font-medium flex items-center gap-2">
+                        <Globe className="h-4 w-4 text-[#FE4A60]" />
+                        HTTPS URL
+                      </Label>
                       <SuggestInput
                         id="apiUrl"
                         value={apiUrl}
