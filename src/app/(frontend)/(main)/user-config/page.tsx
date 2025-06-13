@@ -77,20 +77,20 @@ export default function UserConfig() {
       animate="visible"
     >
       <div className="max-w-4xl mx-auto w-full relative z-10">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+        <div className="flex justify-between items-center mb-12">
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900">
             User Configuration
           </h1>
           <Button
             asChild
-            className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-base font-semibold px-6 py-2 rounded-lg"
+            className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg"
           >
             <Link href="/dashboard">Back to Dashboard</Link>
           </Button>
         </div>
 
         {/* Info/tip box */}
-        <div className="mb-8 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
+        <div className="mb-12 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
           <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
           <span className="text-gray-800 text-base">
             Add this script to your website to provide user context to all your chatbots. You can customize the keys as needed.
@@ -98,18 +98,18 @@ export default function UserConfig() {
         </div>
 
         <motion.div variants={cardVariants}>
-          <div className="relative mb-8">
+          <div className="relative mb-12">
             <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
             <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-xl border-l-8 border-l-[#FE4A60]">
               <CardHeader className="flex items-center space-x-2">
                 <UserCog className="h-7 w-7 text-[#FE4A60]" />
-                <CardTitle className="text-2xl font-bold text-gray-900">
+                <CardTitle className="text-2xl font-semibold text-gray-900">
                   Global User Configuration
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-8">
                 <div>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-gray-600 mb-4 text-base">
                     This configuration will be accessible to all your chatbots. Add this script inside your website's <code>&lt;body&gt;</code> tag to provide user context to your chatbots.
                   </p>
                   <div className="mb-4">
@@ -147,7 +147,7 @@ export default function UserConfig() {
                     </SyntaxHighlighter>
                     <Button
                       onClick={handleCopy}
-                      className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2"
+                      className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold"
                     >
                       <Copy className="w-4 h-4 mr-2" />
                       {copied ? 'Copied!' : 'Copy Code'}
@@ -158,10 +158,10 @@ export default function UserConfig() {
                   </p>
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-gray-900 border-l-4 border-[#FE4A60] pl-3 mb-2">
+                  <h3 className="text-lg font-semibold text-gray-900 border-l-4 border-[#FE4A60] pl-3 mb-2">
                     Implementation Steps
                   </h3>
-                  <ul className="list-disc list-inside text-gray-600 space-y-2">
+                  <ul className="list-disc list-inside text-gray-600 space-y-2 text-base">
                     <li>
                       Add this script to your website's HTML, ideally just before the closing <code>&lt;/body&gt;</code> tag
                     </li>
