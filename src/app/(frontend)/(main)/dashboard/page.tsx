@@ -19,6 +19,11 @@ import {
   Settings,
   MessageSquare,
   Bot,
+  Send,
+  Info,
+  Mail,
+  Tag,
+  X,
 } from 'lucide-react';
 import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
 import posthog from 'posthog-js';
@@ -167,15 +172,19 @@ export default function Dashboard() {
                   </Button>
                 </div>
               </DialogTrigger>
-              <DialogContent className="bg-[#FFFDF8] border-[3px] border-gray-900">
-                <DialogHeader>
-                  <DialogTitle className="text-gray-900">
-                    Send Us Your Feedback
-                  </DialogTitle>
+              <DialogContent className="bg-[#FFFDF8] border-[3px] border-gray-900 border-l-8 border-l-[#FE4A60] rounded-2xl shadow-2xl p-8">
+                <DialogHeader className="flex items-center gap-2 mb-2">
+                  <Send className="h-6 w-6 text-[#FE4A60]" />
+                  <DialogTitle className="text-gray-900 text-2xl font-bold tracking-tight">Send Us Your Feedback</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleFeedbackSubmit} className="space-y-4">
+                <div className="bg-[#FFF4DA] border-l-4 border-[#FFC480] rounded-lg p-4 mb-6 flex items-center gap-3">
+                  <Info className="h-5 w-5 text-[#FFC480]" />
+                  <span className="text-gray-700 text-sm">We value your feedback! Please let us know about bugs, feature requests, or anything else that can help us improve.</span>
+                </div>
+                <form onSubmit={handleFeedbackSubmit} className="space-y-6">
                   <div>
-                    <Label htmlFor="feedbackEmail" className="text-gray-900">
+                    <Label htmlFor="feedbackEmail" className="text-gray-900 text-base font-semibold flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-[#FE4A60]" />
                       Email
                     </Label>
                     <Input
@@ -183,18 +192,19 @@ export default function Dashboard() {
                       value={feedbackEmail}
                       onChange={(e) => setFeedbackEmail(e.target.value)}
                       placeholder="Enter your email"
-                      className="mt-1 w-full rounded border-[2px] border-gray-900 p-2 bg-[#FFFDF8] text-gray-900"
+                      className="mt-2 w-full rounded-lg border-[2px] border-gray-900 p-3 bg-[#FFFDF8] text-gray-900 focus:ring-2 focus:ring-[#FE4A60] focus:border-[#FE4A60] transition"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="feedbackType" className="text-gray-900">
+                    <Label htmlFor="feedbackType" className="text-gray-900 text-base font-semibold flex items-center gap-2">
+                      <Tag className="h-4 w-4 text-[#FE4A60]" />
                       Feedback Type
                     </Label>
                     <select
                       id="feedbackType"
                       value={feedbackType}
                       onChange={(e) => setFeedbackType(e.target.value)}
-                      className="mt-1 w-full rounded border-[2px] border-gray-900 p-2 bg-[#FFFDF8] text-gray-900"
+                      className="mt-2 w-full rounded-lg border-[2px] border-gray-900 p-3 bg-[#FFFDF8] text-gray-900 focus:ring-2 focus:ring-[#FE4A60] focus:border-[#FE4A60] transition appearance-none"
                     >
                       <option value="bug">Bug Report</option>
                       <option value="feature">Feature Request</option>
@@ -202,7 +212,8 @@ export default function Dashboard() {
                     </select>
                   </div>
                   <div>
-                    <Label htmlFor="feedbackMessage" className="text-gray-900">
+                    <Label htmlFor="feedbackMessage" className="text-gray-900 text-base font-semibold flex items-center gap-2">
+                      <MessageSquare className="h-4 w-4 text-[#FE4A60]" />
                       Message
                     </Label>
                     <Textarea
@@ -210,29 +221,31 @@ export default function Dashboard() {
                       value={feedbackMessage}
                       onChange={(e) => setFeedbackMessage(e.target.value)}
                       placeholder="Describe the bug or feature request..."
-                      className="mt-1 w-full rounded border-[2px] border-gray-900 p-2 bg-[#FFFDF8] text-gray-900"
+                      className="mt-2 w-full rounded-lg border-[2px] border-gray-900 p-3 bg-[#FFFDF8] text-gray-900 focus:ring-2 focus:ring-[#FE4A60] focus:border-[#FE4A60] transition min-h-[120px]"
                       rows={5}
                     />
                   </div>
-                  <div className="flex justify-end gap-2">
+                  <div className="flex justify-end gap-3 mt-6">
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="destructive"
                       onClick={() => setIsFeedbackOpen(false)}
-                      className="border-[2px] border-gray-900 text-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                      className="border-[2px] border-gray-900 text-white bg-[#FE4A60] hover:bg-[#ff6a7a] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform font-semibold px-6 py-2 rounded-lg flex items-center gap-2"
                     >
+                      <X className="h-4 w-4" />
                       Cancel
                     </Button>
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="bg-[#FE4A60] text-white border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                      className="bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:bg-[#FFD9A0] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform font-semibold px-6 py-2 rounded-lg flex items-center gap-2"
                     >
                       {isSubmitting ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
-                        'Submit'
+                        <Send className="h-4 w-4" />
                       )}
+                      Submit
                     </Button>
                   </div>
                 </form>
