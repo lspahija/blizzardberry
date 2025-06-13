@@ -24,6 +24,9 @@ interface DataInputRowProps {
   index: number;
   updateDataInput: (field: keyof DataInput, value: any) => void;
   removeDataInput: () => void;
+  nameIcon?: React.ReactNode;
+  typeIcon?: React.ReactNode;
+  descriptionIcon?: React.ReactNode;
 }
 
 export default function DataInputRow({
@@ -31,11 +34,17 @@ export default function DataInputRow({
   index,
   updateDataInput,
   removeDataInput,
+  nameIcon,
+  typeIcon,
+  descriptionIcon,
 }: DataInputRowProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr_50px_50px] gap-2 mt-4 items-end">
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr_70px_70px] gap-2 mt-4 items-center">
       <div>
-        <Label htmlFor={`inputName${index}`}>Name</Label>
+        <Label htmlFor={`inputName${index}`} className="flex items-center gap-2">
+          {nameIcon}
+          Name
+        </Label>
         <Input
           id={`inputName${index}`}
           value={input.name}
@@ -45,7 +54,10 @@ export default function DataInputRow({
         />
       </div>
       <div>
-        <Label htmlFor={`inputType${index}`}>Type</Label>
+        <Label htmlFor={`inputType${index}`} className="flex items-center gap-2">
+          {typeIcon}
+          Type
+        </Label>
         <Select
           value={input.type}
           onValueChange={(value) => updateDataInput('type', value)}
@@ -61,7 +73,10 @@ export default function DataInputRow({
         </Select>
       </div>
       <div>
-        <Label htmlFor={`inputDesc${index}`}>Description</Label>
+        <Label htmlFor={`inputDesc${index}`} className="flex items-center gap-2">
+          {descriptionIcon}
+          Description
+        </Label>
         <Input
           id={`inputDesc${index}`}
           value={input.description}
@@ -70,22 +85,20 @@ export default function DataInputRow({
           className="mt-2 border-[2px] border-gray-900"
         />
       </div>
-      <div>
-        <Label htmlFor={`inputArray${index}`}>Array</Label>
-        <div className="mt-2">
-          <input
-            id={`inputArray${index}`}
-            type="checkbox"
-            checked={input.isArray}
-            onChange={(e) => updateDataInput('isArray', e.target.checked)}
-            className="border-[2px] border-gray-900"
-          />
-        </div>
+      <div className="flex flex-col items-center gap-1 mt-2.5">
+        <Label htmlFor={`inputArray${index}`} className="mb-0">Array</Label>
+        <input
+          id={`inputArray${index}`}
+          type="checkbox"
+          checked={input.isArray}
+          onChange={(e) => updateDataInput('isArray', e.target.checked)}
+          className="border-[2px] border-gray-900"
+        />
       </div>
-      <div>
+      <div className="flex items-center justify-center h-full mr-2 mt-6">
         <Button
-          variant="outline"
-          className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
+          variant="destructive"
+          className="border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl"
           onClick={removeDataInput}
         >
           <Trash2 className="w-4 h-4" />
