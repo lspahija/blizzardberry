@@ -19,7 +19,6 @@ export function FrameworkProvider({ children }: { children: ReactNode }) {
     return Framework.VANILLA;
   });
 
-  // Save to localStorage when it changes
   useEffect(() => {
     localStorage.setItem('selectedFramework', selectedFramework);
   }, [selectedFramework]);
