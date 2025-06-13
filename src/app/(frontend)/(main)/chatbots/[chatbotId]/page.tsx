@@ -268,9 +268,9 @@ export default function ChatbotDetails({
         {showClientActions && (
           <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
-            <div className="relative z-10 p-0 max-w-4xl w-full">
+            <div className="relative z-10 p-0 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               <button
-                className="absolute top-10 right-6 text-gray-500 hover:text-gray-700"
+                className="absolute top-10 right-6 text-gray-500 hover:text-gray-700 z-20"
                 onClick={() => setShowClientActions(false)}
               >
                 <X className="h-6 w-6" />
