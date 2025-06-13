@@ -38,6 +38,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 import { Framework } from '@/app/(frontend)/lib/scriptUtils';
+import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },
@@ -116,7 +117,7 @@ export default function ExecutionStep({
   const [functionNameError, setFunctionNameError] = useState<string | null>(
     null
   );
-  const [selectedFramework, setSelectedFramework] = useState(Framework.VANILLA);
+  const { selectedFramework, setSelectedFramework } = useFramework();
 
   const addHeader = () => {
     setHeaders([...headers, { key: '', value: '' }]);

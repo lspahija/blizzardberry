@@ -33,6 +33,7 @@ import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
+import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import { getRegisterMultipleToolsExample } from '@/app/(frontend)/lib/actionUtils';
 import {Framework, getChatbotScript} from '@/app/(frontend)/lib/scriptUtils';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -59,7 +60,7 @@ export default function ChatbotDetails({
   const [showClientActions, setShowClientActions] = useState(false);
   const [showChatbotCode, setShowChatbotCode] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [selectedFramework, setSelectedFramework] = useState<Framework>(Framework.VANILLA);
+  const { selectedFramework, setSelectedFramework } = useFramework();
 
   const { handleDeleteAction } = useActionForm();
   const {

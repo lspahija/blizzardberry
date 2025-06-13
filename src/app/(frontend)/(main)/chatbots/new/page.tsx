@@ -29,6 +29,7 @@ import {
   ChatbotModelList,
 } from '@/app/api/lib/model/chatbot/chatbot';
 import { Framework, getChatbotScript } from '@/app/(frontend)/lib/scriptUtils';
+import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 
 export default function NewChatbotPage() {
   const router = useRouter();
@@ -39,7 +40,7 @@ export default function NewChatbotPage() {
   );
   const [chatbotId, setChatbotId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [selectedFramework, setSelectedFramework] = useState<Framework>(Framework.VANILLA);
+  const { selectedFramework, setSelectedFramework } = useFramework();
   const { handleCreateChatbot } = useChatbots();
 
   const containerVariants = {

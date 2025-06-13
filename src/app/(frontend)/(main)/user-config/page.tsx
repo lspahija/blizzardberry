@@ -15,6 +15,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 import { Framework, getChatbotConfigScript } from '@/app/(frontend)/lib/scriptUtils';
+import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import {
   Select,
   SelectContent,
@@ -26,7 +27,7 @@ import {
 export default function UserConfig() {
   const { data: session, status } = useSession();
   const [copied, setCopied] = useState(false);
-  const [selectedFramework, setSelectedFramework] = useState<Framework>(Framework.VANILLA);
+  const { selectedFramework, setSelectedFramework } = useFramework();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
