@@ -63,11 +63,10 @@ export default function HeaderInput({
       </div>
       <div>
         <Button
-          variant="outline"
-          className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
+          className="bg-[#FE4A60] text-white border-[2px] border-gray-900 hover:bg-[#ff6a7a] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-full p-2"
           onClick={removeHeader}
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="h-4 w-4 text-white transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
         </Button>
       </div>
     </div>
