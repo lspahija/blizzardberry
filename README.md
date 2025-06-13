@@ -102,7 +102,6 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - (Frankie) currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
 - (Luka) onboard Stripe
   - map each LLM to credits per token
-  - add enterprise tier where they contact us - have this message us via Slack
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) landing page needs to sell the product well!
 - (Luka) add easy to use feedback form so users can report bugs and request features. make it easy for users to talk to us. - have this message us via Slack

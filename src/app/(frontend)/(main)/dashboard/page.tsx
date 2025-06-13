@@ -2,18 +2,35 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/app/(frontend)/components/ui/button';
+import { Input } from '@/app/(frontend)/components/ui/input';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, PlusCircle, Trash2, Settings } from 'lucide-react';
+import {
+  Loader2,
+  PlusCircle,
+  Trash2,
+  Settings,
+  MessageSquare,
+} from 'lucide-react';
 import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
 import posthog from 'posthog-js';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/app/(frontend)/components/ui/dialog';
+import { Textarea } from '@/app/(frontend)/components/ui/textarea';
+import { Label } from '@/app/(frontend)/components/ui/label';
+import { toast } from 'sonner';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -24,6 +41,13 @@ export default function Dashboard() {
     fetchChatbots,
     handleDeleteChatbot,
   } = useChatbots();
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedbackType, setFeedbackType] = useState('bug');
+  const [feedbackEmail, setFeedbackEmail] = useState(
+    session?.user?.email || ''
+  );
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -47,7 +71,6 @@ export default function Dashboard() {
     }
   }, [status, session]);
 
-  // Fetch chatbots
   useEffect(() => {
     if (status === 'authenticated') {
       fetchChatbots();
@@ -59,6 +82,50 @@ export default function Dashboard() {
       user_email: session?.user?.email,
     });
     await signOut({ redirectTo: '/' });
+  };
+
+  const handleFeedbackSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedbackMessage.trim()) {
+      toast.error('Please enter a message before submitting.');
+      return;
+    }
+    if (!feedbackEmail.trim()) {
+      toast.error('Please enter an email address.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/notifications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: feedbackType,
+          emailAddress: feedbackEmail,
+          message: feedbackMessage,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success('Thank you for your feedback!');
+        setFeedbackEmail(session?.user?.email || '');
+        setFeedbackMessage('');
+        setIsFeedbackOpen(false);
+        posthog.capture('feedback_submitted', {
+          user_email: session?.user?.email,
+          feedback_type: feedbackType,
+        });
+      } else {
+        throw new Error('Failed to submit feedback');
+      }
+    } catch (error) {
+      toast.error('Failed to submit feedback. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (status === 'loading') {
@@ -81,14 +148,104 @@ export default function Dashboard() {
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
             Welcome, {session.user?.name}!
           </h1>
-          <div className="relative">
-            <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
-            <Button
-              className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
-              onClick={handleSignOut}
-            >
-              Sign Out
-            </Button>
+          <div className="flex gap-2">
+            <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
+              <DialogTrigger asChild>
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
+                  <Button
+                    className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    onClick={() =>
+                      posthog.capture('feedback_form_opened', {
+                        user_email: session?.user?.email,
+                      })
+                    }
+                  >
+                    <MessageSquare className="mr-2 h-5 w-5" />
+                    Feedback
+                  </Button>
+                </div>
+              </DialogTrigger>
+              <DialogContent className="bg-[#FFFDF8] border-[3px] border-gray-900">
+                <DialogHeader>
+                  <DialogTitle className="text-gray-900">
+                    Send Us Your Feedback
+                  </DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleFeedbackSubmit} className="space-y-4">
+                  <div>
+                    <Label htmlFor="feedbackEmail" className="text-gray-900">
+                      Email
+                    </Label>
+                    <Input
+                      id="feedbackEmail"
+                      value={feedbackEmail}
+                      onChange={(e) => setFeedbackEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      className="mt-1 w-full rounded border-[2px] border-gray-900 p-2 bg-[#FFFDF8] text-gray-900"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="feedbackType" className="text-gray-900">
+                      Feedback Type
+                    </Label>
+                    <select
+                      id="feedbackType"
+                      value={feedbackType}
+                      onChange={(e) => setFeedbackType(e.target.value)}
+                      className="mt-1 w-full rounded border-[2px] border-gray-900 p-2 bg-[#FFFDF8] text-gray-900"
+                    >
+                      <option value="bug">Bug Report</option>
+                      <option value="feature">Feature Request</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label htmlFor="feedbackMessage" className="text-gray-900">
+                      Message
+                    </Label>
+                    <Textarea
+                      id="feedbackMessage"
+                      value={feedbackMessage}
+                      onChange={(e) => setFeedbackMessage(e.target.value)}
+                      placeholder="Describe the bug or feature request..."
+                      className="mt-1 w-full rounded border-[2px] border-gray-900 p-2 bg-[#FFFDF8] text-gray-900"
+                      rows={5}
+                    />
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsFeedbackOpen(false)}
+                      className="border-[2px] border-gray-900 text-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="bg-[#FE4A60] text-white border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    >
+                      {isSubmitting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        'Submit'
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
+              <Button
+                className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </Button>
+            </div>
           </div>
         </div>
 
