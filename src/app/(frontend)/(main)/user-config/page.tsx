@@ -14,10 +14,20 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
+import { Framework, getChatbotConfigScript } from '@/app/(frontend)/lib/scriptUtils';
+import { useFramework } from '@/app/(frontend)/contexts/useFramework';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/app/(frontend)/components/ui/select';
 
 export default function UserConfig() {
   const { data: session, status } = useSession();
   const [copied, setCopied] = useState(false);
+  const { selectedFramework, setSelectedFramework } = useFramework();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -33,8 +43,7 @@ export default function UserConfig() {
     visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
   };
 
-  const configExample = `<Script id="blizzardberry-config" strategy="afterInteractive">
-  window.chatbotUserConfig = {
+  const configObj = {
     user_id: "user_123",
     account_number: "ACC123456",
     user_metadata: {
@@ -43,7 +52,8 @@ export default function UserConfig() {
       company: "Example Company"
     }
   };
-</Script>`;
+
+  const configExample = getChatbotConfigScript(selectedFramework, configObj);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(configExample);
@@ -96,6 +106,26 @@ export default function UserConfig() {
                     <code>&lt;body&gt;</code> tag to provide user context to
                     your chatbots.
                   </p>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Select Framework
+                    </label>
+                    <Select
+                      value={selectedFramework}
+                      onValueChange={(value) => setSelectedFramework(value as Framework)}
+                    >
+                      <SelectTrigger className="w-[200px]">
+                        <SelectValue placeholder="Select framework" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
+                        <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
+                        <SelectItem value={Framework.REACT}>React</SelectItem>
+                        <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                        <SelectItem value={Framework.VUE}>Vue</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div className="relative">
                     <SyntaxHighlighter
                       language="javascript"
