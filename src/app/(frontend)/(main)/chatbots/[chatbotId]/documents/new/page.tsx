@@ -9,7 +9,7 @@ import {
   CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
+import { Loader2, ArrowLeft, PlusCircle, Trash2, FileText, Info } from 'lucide-react';
 import { Input } from '@/app/(frontend)/components/ui/input';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
@@ -76,13 +76,13 @@ export default function AddDocument({
       animate="visible"
     >
       <div className="max-w-4xl mx-auto w-full">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+        <div className="flex justify-between items-center mb-12">
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900">
             Add New Document
           </h1>
           <Button
             asChild
-            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg"
           >
             <Link
               href={`/chatbots/${params.chatbotId}`}
@@ -94,24 +94,33 @@ export default function AddDocument({
           </Button>
         </div>
 
-        <Card className="border-[3px] border-gray-900 bg-[#FFFDF8]">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold text-gray-900">
+        {/* Info/tip box */}
+        <div className="mb-12 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
+          <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
+          <span className="text-gray-800 text-base">
+            Upload or paste your document content below. You can also add optional metadata to provide more context for your chatbot.
+          </span>
+        </div>
+
+        <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-12 rounded-lg shadow-xl border-l-8 border-l-[#FE4A60]">
+          <CardHeader className="flex items-center space-x-2">
+            <FileText className="h-7 w-7 text-[#FE4A60]" />
+            <CardTitle className="text-2xl font-semibold text-gray-900">
               Document Details
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-8">
               <div>
                 <Label
                   htmlFor="text"
-                  className="block text-sm font-medium text-gray-900"
+                  className="block text-gray-900 flex items-center gap-2 text-lg font-semibold"
                 >
+                  <FileText className="h-4 w-4 text-[#FE4A60]" />
                   Document Content
                 </Label>
-                <p className="text-sm text-gray-600 mt-1">
-                  Upload a file or enter the text content of the document which
-                  will be given to your agent.
+                <p className="text-sm text-gray-600 mt-1 ml-6">
+                  Upload a file or enter the text content of the document which will be given to your agent.
                 </p>
                 <div className="mt-4 space-y-4">
                   <Dropzone onFileDrop={handleFileDrop} className="w-full" />
@@ -130,19 +139,19 @@ export default function AddDocument({
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     required
-                    className="mt-2 block w-full rounded-md border-gray-900 border-[2px] shadow-sm focus:border-[#FE4A60] focus:ring-[#FE4A60] sm:text-sm p-2"
+                    className="mt-2 block w-full rounded-md border-gray-900 border-[2px] shadow-sm focus:border-[#FE4A60] focus:ring-[#FE4A60] text-base p-2"
                     rows={10}
                     placeholder="Enter the document text here..."
                   />
                 </div>
               </div>
               <div>
-                <Label className="block text-sm font-medium text-gray-900">
+                <Label className="block text-gray-900 flex items-center gap-2 text-lg font-semibold">
+                  <PlusCircle className="h-4 w-4 text-[#FE4A60]" />
                   Metadata (Optional)
                 </Label>
-                <p className="text-sm text-gray-600 mt-1">
-                  Add key-value pairs to provide additional context for the
-                  document.
+                <p className="text-sm text-gray-600 mt-1 ml-6">
+                  Add key-value pairs to provide additional context for the document.
                 </p>
                 {metadataFields.map((field, index) => (
                   <div
@@ -176,7 +185,7 @@ export default function AddDocument({
                     <div>
                       <Button
                         variant="outline"
-                        className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                        className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200"
                         onClick={() => removeMetadataField(index)}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -187,10 +196,10 @@ export default function AddDocument({
                 <Button
                   type="button"
                   variant="outline"
-                  className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                  className="mt-4 bg-white text-gray-900 border border-gray-300 hover:bg-gray-100 hover:border-gray-400 transition-transform duration-200 text-base font-normal px-4 py-2 flex items-center gap-2"
                   onClick={addMetadataField}
                 >
-                  <PlusCircle className="mr-2 h-5 w-5" />
+                  <PlusCircle className="mr-2 h-4 w-4" />
                   Add Metadata Field
                 </Button>
               </div>
@@ -201,7 +210,7 @@ export default function AddDocument({
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 hover:bg-[#ff6a7a] transition-transform duration-200 shadow-md text-lg font-semibold w-full"
               >
                 {isSubmitting ? (
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
