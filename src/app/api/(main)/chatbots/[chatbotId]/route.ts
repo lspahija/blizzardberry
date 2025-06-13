@@ -7,7 +7,6 @@ import {
   getChatbotByUserId,
   updateChatbot,
 } from '@/app/api/lib/store/chatbotStore';
-import { error } from 'console';
 
 export async function GET(
   _: Request,

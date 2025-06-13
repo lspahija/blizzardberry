@@ -45,6 +45,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
+import { Label } from '@/app/(frontend)/components/ui/label';
 
 export default function ChatbotDetails({
   params: paramsPromise,
@@ -266,71 +267,72 @@ export default function ChatbotDetails({
           )}
         </div>
         {showClientActions && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
-            <div className="relative z-10 p-0 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <button
-                className="absolute top-10 right-6 text-gray-500 hover:text-gray-700 z-20"
-                onClick={() => setShowClientActions(false)}
-              >
-                <X className="h-6 w-6" />
-              </button>
-              <Card className="mt-6 bg-[#FFFDF8]">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Code className="w-5 h-5" />
-                    Client Actions Code
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Framework
-                    </label>
-                    <Select
-                      value={selectedFramework}
-                      onValueChange={(value) => setSelectedFramework(value as Framework)}
-                    >
-                      <SelectTrigger className="w-[200px]">
-                        <SelectValue placeholder="Select framework" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
-                        <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
-                        <SelectItem value={Framework.REACT}>React</SelectItem>
-                        <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
-                        <SelectItem value={Framework.VUE}>Vue</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="relative">
-                    <SyntaxHighlighter
-                      language="html"
-                      style={vscDarkPlus}
-                      customStyle={{
-                        borderRadius: '8px',
-                        padding: '16px',
-                        border: '2px solid #1a1a1a',
-                        backgroundColor: '#1a1a1a',
-                      }}
-                    >
-                      {getRegisterMultipleToolsExample(
-                        clientActions.map((action) => ({
-                          functionName: action.name,
-                          dataInputs: (action.executionModel.parameters || []).map((param) => ({
-                            name: param.name,
-                            type: param.type,
-                            description: param.description || '',
-                            isArray: param.isArray || false,
-                          })),
-                        })),
-                        selectedFramework
-                      )}
-                    </SyntaxHighlighter>
-                    <Button
-                      onClick={() => {
-                        navigator.clipboard.writeText(
-                          getRegisterMultipleToolsExample(
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
+            <div className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl shadow-2xl" aria-hidden="true" />
+            <div className="relative z-10 max-w-4xl w-full max-h-[90vh] rounded-2xl">
+              <div className="relative mb-12">
+                <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
+                <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-3xl shadow-2xl border-l-8 border-l-[#FE4A60]">
+                  <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FE4A60]/60 scrollbar-track-[#FFF4DA]/60 rounded-2xl pr-2">
+                    <CardHeader className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Code className="h-7 w-7 text-[#FE4A60]" />
+                        <CardTitle className="text-2xl font-semibold text-gray-900">
+                          Client Actions Code
+                        </CardTitle>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hover:bg-[#FFF4DA]"
+                        onClick={() => setShowClientActions(false)}
+                      >
+                        <X className="h-6 w-6 text-gray-900" />
+                      </Button>
+                    </CardHeader>
+                    <CardContent className="space-y-8">
+                      <div>
+                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mt-4">
+                          <Code className="h-4 w-4 text-[#FE4A60]" />
+                          Framework
+                        </Label>
+                        <p className="text-sm text-gray-600 mt-2 ml-6">
+                          Select the framework you're using to implement the client actions.
+                        </p>
+                        <div className="mt-2 ml-6">
+                          <Select
+                            value={selectedFramework}
+                            onValueChange={(value) => setSelectedFramework(value as Framework)}
+                          >
+                            <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
+                              <SelectValue placeholder="Select framework" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
+                              <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
+                              <SelectItem value={Framework.REACT}>React</SelectItem>
+                              <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                              <SelectItem value={Framework.VUE}>Vue</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <div className="relative">
+                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
+                          <Code className="h-4 w-4 text-[#FE4A60]" />
+                          Implementation Code
+                        </Label>
+                        <SyntaxHighlighter
+                          language="html"
+                          style={vscDarkPlus}
+                          customStyle={{
+                            borderRadius: '8px',
+                            padding: '16px',
+                            border: '2px solid #1a1a1a',
+                            backgroundColor: '#1a1a1a',
+                          }}
+                        >
+                          {getRegisterMultipleToolsExample(
                             clientActions.map((action) => ({
                               functionName: action.name,
                               dataInputs: (action.executionModel.parameters || []).map((param) => ({
@@ -341,118 +343,150 @@ export default function ChatbotDetails({
                               })),
                             })),
                             selectedFramework
-                          )
-                        );
-                        setCopied(true);
-                        setTimeout(() => setCopied(false), 2000);
-                      }}
-                      className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
-                    >
-                      <Copy className="w-4 h-4 mr-2" />
-                      {copied ? 'Copied!' : 'Copy Code'}
-                    </Button>
+                          )}
+                        </SyntaxHighlighter>
+                        <Button
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              getRegisterMultipleToolsExample(
+                                clientActions.map((action) => ({
+                                  functionName: action.name,
+                                  dataInputs: (action.executionModel.parameters || []).map((param) => ({
+                                    name: param.name,
+                                    type: param.type,
+                                    description: param.description || '',
+                                    isArray: param.isArray || false,
+                                  })),
+                                })),
+                                selectedFramework
+                              )
+                            );
+                            setCopied(true);
+                            setTimeout(() => setCopied(false), 2000);
+                          }}
+                          className="absolute top-11 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
+                        >
+                          <Copy className="w-4 h-4" />
+                          {copied ? 'Copied!' : 'Copy Code'}
+                        </Button>
+                      </div>
+                    </CardContent>
                   </div>
-                </CardContent>
-              </Card>
+                </Card>
+              </div>
             </div>
           </div>
         )}
 
         {showChatbotCode && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
-            style={{
-              background: 'rgba(0,0,0,0.01)',
-              pointerEvents: 'auto',
-              overscrollBehavior: 'contain',
-              touchAction: 'none',
-            }}
-            onWheel={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.stopPropagation()}
-          >
-            <div
-              className="bg-[#FFFDF8] p-6 rounded-2xl shadow-2xl max-w-4xl w-full relative"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                onClick={() => setShowChatbotCode(false)}
-              >
-                <X className="h-6 w-6" />
-              </button>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Chatbot Installation Code
-              </h2>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Select Framework
-                </label>
-                <Select
-                  value={selectedFramework}
-                  onValueChange={(value) => setSelectedFramework(value as Framework)}
-                >
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select framework" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
-                    <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
-                    <SelectItem value={Framework.REACT}>React</SelectItem>
-                    <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
-                    <SelectItem value={Framework.VUE}>Vue</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="relative mb-2">
-                <SyntaxHighlighter
-                  language="html"
-                  style={vscDarkPlus}
-                  customStyle={{
-                    borderRadius: '8px',
-                    padding: '16px',
-                    border: '2px solid #1a1a1a',
-                    backgroundColor: '#1a1a1a',
-                    margin: 0,
-                  }}
-                >
-                  {getChatbotScript(selectedFramework, params.chatbotId)}
-                </SyntaxHighlighter>
-                <Button
-                  onClick={() => handleCopy(getChatbotScript(selectedFramework, params.chatbotId))}
-                  className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
-                >
-                  <Copy className="w-4 h-4 mr-2" />
-                  {copied ? 'Copied!' : 'Copy Code'}
-                </Button>
-              </div>
-              <div className="mt-6 space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Installation Instructions
-                </h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-2">
-                  <li>Copy the code snippet above</li>
-                  <li>
-                    Paste it between the <code>&lt;body&gt;</code> tags of your
-                    website's HTML
-                  </li>
-                  <li>Save and publish your website changes</li>
-                  <li>
-                    Your chatbot will appear on your website at{' '}
-                    <code>https://{chatbot.websiteDomain}</code>
-                  </li>
-                  <li>
-                    Need help? Visit our{' '}
-                    <a
-                      href="https://blizzardberry.com/docs"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#FE4A60] hover:underline"
-                    >
-                      documentation <ExternalLink className="inline w-4 h-4" />
-                    </a>
-                    .
-                  </li>
-                </ul>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
+            <div className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl shadow-2xl" aria-hidden="true" />
+            <div className="relative z-10 max-w-4xl w-full max-h-[90vh] rounded-2xl">
+              <div className="relative mb-12">
+                <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
+                <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-3xl shadow-2xl border-l-8 border-l-[#FE4A60]">
+                  <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FE4A60]/60 scrollbar-track-[#FFF4DA]/60 rounded-2xl pr-2">
+                    <CardHeader className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Code className="h-7 w-7 text-[#FE4A60]" />
+                        <CardTitle className="text-2xl font-semibold text-gray-900">
+                          Chatbot Installation Code
+                        </CardTitle>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hover:bg-[#FFF4DA]"
+                        onClick={() => setShowChatbotCode(false)}
+                      >
+                        <X className="h-6 w-6 text-gray-900" />
+                      </Button>
+                    </CardHeader>
+                    <CardContent className="space-y-8">
+                      <div>
+                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mt-4">
+                          <Code className="h-4 w-4 text-[#FE4A60]" />
+                          Framework
+                        </Label>
+                        <p className="text-sm text-gray-600 mt-2 ml-6">
+                          Select the framework you're using to implement the chatbot.
+                        </p>
+                        <div className="mt-2 ml-6">
+                          <Select
+                            value={selectedFramework}
+                            onValueChange={(value) => setSelectedFramework(value as Framework)}
+                          >
+                            <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
+                              <SelectValue placeholder="Select framework" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
+                              <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
+                              <SelectItem value={Framework.REACT}>React</SelectItem>
+                              <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                              <SelectItem value={Framework.VUE}>Vue</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <div className="relative">
+                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
+                          <Code className="h-4 w-4 text-[#FE4A60]" />
+                          Installation Code
+                        </Label>
+                        <SyntaxHighlighter
+                          language="html"
+                          style={vscDarkPlus}
+                          customStyle={{
+                            borderRadius: '8px',
+                            padding: '16px',
+                            border: '2px solid #1a1a1a',
+                            backgroundColor: '#1a1a1a',
+                          }}
+                        >
+                          {getChatbotScript(selectedFramework, params.chatbotId)}
+                        </SyntaxHighlighter>
+                        <Button
+                          onClick={() => handleCopy(getChatbotScript(selectedFramework, params.chatbotId))}
+                          className="absolute top-11 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
+                        >
+                          <Copy className="w-4 h-4" />
+                          {copied ? 'Copied!' : 'Copy Code'}
+                        </Button>
+                      </div>
+                      <div>
+                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
+                          <Info className="h-4 w-4 text-[#FE4A60]" />
+                          Installation Instructions
+                        </Label>
+                        <ul className="list-disc list-inside text-gray-600 space-y-2 ml-6">
+                          <li>Copy the code snippet above</li>
+                          <li>
+                            Paste it between the <code>&lt;body&gt;</code> tags of your
+                            website's HTML
+                          </li>
+                          <li>Save and publish your website changes</li>
+                          <li>
+                            Your chatbot will appear on your website at{' '}
+                            <code>https://{chatbot.websiteDomain}</code>
+                          </li>
+                          <li>
+                            Need help? Visit our{' '}
+                            <a
+                              href="https://blizzardberry.com/docs"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[#FE4A60] hover:underline"
+                            >
+                              documentation <ExternalLink className="inline w-4 h-4" />
+                            </a>
+                            .
+                          </li>
+                        </ul>
+                      </div>
+                    </CardContent>
+                  </div>
+                </Card>
               </div>
             </div>
           </div>
