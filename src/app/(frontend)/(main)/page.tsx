@@ -37,8 +37,8 @@ export default function LandingPage() {
       <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-gray-900 sticky top-0 bg-[#FFFDF8] z-50">
         <div className="flex items-center space-x-2">
           <span className="text-xl font-bold text-gray-900">
-            <span className="text-gray-900">Omni</span>
-            <span className="text-[#FE4A60]">Interface</span>
+            <span className="text-gray-900">Blizzard</span>
+            <span className="text-[#FE4A60]">Berry</span>
           </span>
         </div>
         <div className="hidden md:flex space-x-6">
