@@ -207,7 +207,7 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
     if (typeof window !== 'undefined') {
       import('pdfjs-dist').then((module) => {
         const { getDocument, GlobalWorkerOptions } = module;
-        GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
+        GlobalWorkerOptions.workerSrc = '/pdf/pdf.worker.js';
         setPdfjs({ getDocument });
       });
     }

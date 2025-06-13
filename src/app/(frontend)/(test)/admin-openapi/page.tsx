@@ -91,7 +91,7 @@ export default function AdminPage() {
   {
     \`(function() {
     var s = document.createElement('script');
-    s.src = 'http://localhost:3000/agent.js';
+    s.src = 'http://localhost:3000/agent/agent.js';
     s.async = true;
     document.head.appendChild(s);
   })();\`
@@ -214,7 +214,7 @@ export default function AdminPage() {
   {
     \`(function() {
     var s = document.createElement('script');
-    s.src = 'http://localhost:3000/agent.js';
+    s.src = 'http://localhost:3000/agent/agent.js';
     s.async = true;
     document.head.appendChild(s);
   })();\`

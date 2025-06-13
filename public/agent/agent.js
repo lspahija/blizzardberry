@@ -178,6 +178,7 @@
 
   async function interpretActionResult(actionResultMessage) {
     const chatResponse = await fetch('http://localhost:3000/api/chat', {
+      // TODO: this domain needs to be parameterized
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -228,6 +229,7 @@
 
     try {
       const response = await fetch('http://localhost:3000/api/chat', {
+        // TODO: this domain needs to be parameterized
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

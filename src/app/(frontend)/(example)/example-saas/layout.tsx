@@ -75,7 +75,7 @@ export default function ExampleLayout({
         </Script>
         <Script
           id="BlizzardBerry-agent"
-          src="http://localhost:3000/agent.js"
+          src="http://localhost:3000/agent/agent.js" // TODO: this domain needs to be parameterized
           strategy="afterInteractive"
           data-agent-id="aaea415d-f10d-42f2-81fb-89890387af67"
         />
