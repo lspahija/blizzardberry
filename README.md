@@ -99,7 +99,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 
 ## Before Launch
 - (Frankie) polish the user onboarding experience. All the forms needs to work well and be easy to use. - use AI to find the webapps with the best UX and then copy what they do well
-- (Frankie) currently we give the user `<Script>` tags to put in their app. These are from `'next/script'`. The user isn't necessarily using next.js, so we should give them appropriate script tags for the framework they're using.
+- (Frankie) test <script> tags on all the different frameworks we support
 - (Luka) onboard Stripe
   - map each LLM to credits per token
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
