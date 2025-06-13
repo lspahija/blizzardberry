@@ -308,122 +308,100 @@ export default function ExecutionStep({
                     </div>
                   </div>
                 </div>
-                <Tabs
-                  value={activeTab}
-                  onValueChange={setActiveTab}
-                  className="w-full"
-                >
-                  <TabsList className="grid w-full grid-cols-2 bg-[#FFFDF8] border-[2px] border-gray-900 rounded-lg h-12 px-1 py-[2px]">
-                    <TabsTrigger
-                      value="headers"
-                      className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer text-base font-medium"
-                    >
-                      Headers
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="body"
-                      className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer text-base font-medium"
-                    >
-                      Body
-                    </TabsTrigger>
-                  </TabsList>
+                {/* HEADERS SECTION */}
+                <div className="mt-8">
+                  <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                    <List className="h-4 w-4 text-[#FE4A60]" />
+                    Headers
+                  </Label>
+                  {headers.map((header, index) => (
+                    <HeaderInput
+                      key={index}
+                      header={header}
+                      index={index}
+                      updateHeader={(field, value) => {
+                        const updatedHeaders = [...headers];
+                        updatedHeaders[index] = {
+                          ...updatedHeaders[index],
+                          [field]: value,
+                        };
+                        setHeaders(updatedHeaders);
+                      }}
+                      removeHeader={() =>
+                        setHeaders(headers.filter((_, i) => i !== index))
+                      }
+                      suggestions={getInputNames(dataInputs, true)}
+                      commonHeaderKeys={commonHeaderKeys}
+                    />
+                  ))}
+                  <Button
+                    variant="outline"
+                    className="mt-4 bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
+                    onClick={addHeader}
+                  >
+                    <PlusCircle className="h-4 w-4" />
+                    Add Header
+                  </Button>
+                </div>
+                {/* BODY SECTION */}
+                <div className="mt-8">
+                  <Label htmlFor="apiBody" className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                    <Code className="h-4 w-4 text-[#FE4A60]" />
+                    Body
+                  </Label>
                   {bodyError && (
                     <div className="mt-4 p-4 bg-red-50 border-[2px] border-red-200 rounded-lg">
                       <p className="text-red-500 text-sm">{bodyError}</p>
                     </div>
                   )}
-                  <TabsContent value="headers" className="mt-6">
-                    <div>
-                      <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
-                        <List className="h-4 w-4 text-[#FE4A60]" />
-                        Headers
-                      </Label>
-                      {headers.map((header, index) => (
-                        <HeaderInput
-                          key={index}
-                          header={header}
-                          index={index}
-                          updateHeader={(field, value) => {
-                            const updatedHeaders = [...headers];
-                            updatedHeaders[index] = {
-                              ...updatedHeaders[index],
-                              [field]: value,
-                            };
-                            setHeaders(updatedHeaders);
-                          }}
-                          removeHeader={() =>
-                            setHeaders(headers.filter((_, i) => i !== index))
-                          }
-                          suggestions={getInputNames(dataInputs, true)}
-                          commonHeaderKeys={commonHeaderKeys}
-                        />
-                      ))}
-                      <Button
-                        variant="outline"
-                        className="mt-4 bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
-                        onClick={addHeader}
-                      >
-                        <PlusCircle className="h-4 w-4" />
-                        Add Header
-                      </Button>
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="body" className="mt-6">
-                    <div>
-                      <Label htmlFor="apiBody" className="text-gray-900 text-lg font-semibold flex items-center gap-2">
-                        <Code className="h-4 w-4 text-[#FE4A60]" />
-                        Body
-                      </Label>
-                      <div className="mt-2 border-[2px] border-gray-900 rounded-lg overflow-hidden bg-[#FFF4DA]">
-                        <div className="relative">
-                          {!apiBody?.trim() && (
-                            <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
-                              {placeholderJSON}
-                            </div>
-                          )}
-                          <Editor
-                            height="200px"
-                            defaultLanguage="json"
-                            value={apiBody}
-                            onChange={handleEditorChange}
-                            beforeMount={handleEditorWillMount}
-                            onMount={(editor) => {
-                              editor.updateOptions({
-                                lineNumbers: () => '',
-                                glyphMargin: false,
-                                lineDecorationsWidth: 0,
-                                lineNumbersMinChars: 0,
-                                suggest: {
-                                  showWords: false,
-                                  preview: true,
-                                  showProperties: false,
-                                },
-                              });
-                              requestAnimationFrame(() => editor.layout());
-                            }}
-                            theme="customTheme"
-                            options={{
-                              fontSize: 14,
-                              minimap: { enabled: false },
-                              scrollBeyondLastLine: false,
-                              wordWrap: 'on',
-                              renderLineHighlight: 'none',
-                              scrollbar: {
-                                verticalScrollbarSize: 8,
-                                horizontalScrollbarSize: 8,
-                              },
-                              padding: { top: 12, bottom: 12, left: 12 } as any,
-                              folding: false,
-                              hideCursorInOverviewRuler: true,
-                              guides: { indentation: false },
-                            }}
-                            className="bg-[#FFF4DA]"
-                          />
+                  <div className="mt-2 border-[2px] border-gray-900 rounded-lg overflow-hidden bg-[#FFF4DA]">
+                    <div className="relative">
+                      {!apiBody?.trim() && (
+                        <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
+                          {placeholderJSON}
                         </div>
-                      </div>
+                      )}
+                      <Editor
+                        height="200px"
+                        defaultLanguage="json"
+                        value={apiBody}
+                        onChange={handleEditorChange}
+                        beforeMount={handleEditorWillMount}
+                        onMount={(editor) => {
+                          editor.updateOptions({
+                            lineNumbers: () => '',
+                            glyphMargin: false,
+                            lineDecorationsWidth: 0,
+                            lineNumbersMinChars: 0,
+                            suggest: {
+                              showWords: false,
+                              preview: true,
+                              showProperties: false,
+                            },
+                          });
+                          requestAnimationFrame(() => editor.layout());
+                        }}
+                        theme="customTheme"
+                        options={{
+                          fontSize: 14,
+                          minimap: { enabled: false },
+                          scrollBeyondLastLine: false,
+                          wordWrap: 'on',
+                          renderLineHighlight: 'none',
+                          scrollbar: {
+                            verticalScrollbarSize: 8,
+                            horizontalScrollbarSize: 8,
+                          },
+                          padding: { top: 12, bottom: 12, left: 12 } as any,
+                          folding: false,
+                          hideCursorInOverviewRuler: true,
+                          guides: { indentation: false },
+                        }}
+                        className="bg-[#FFF4DA]"
+                      />
                     </div>
-                  </TabsContent>
-                </Tabs>
+                  </div>
+                </div>
               </>
             ) : (
               <div className="space-y-8">
