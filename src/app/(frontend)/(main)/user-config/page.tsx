@@ -12,7 +12,7 @@ import {
 } from '@/app/(frontend)/components/ui/card';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Copy, ExternalLink, Info, UserCog, Loader2 } from 'lucide-react';
+import { Copy, ExternalLink, Info, UserCog, Loader2, Code } from 'lucide-react';
 import { useState } from 'react';
 import { Framework, getChatbotConfigScript } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
+import { Label } from '@/app/(frontend)/components/ui/label';
 
 export default function UserConfig() {
   const { data: session, status } = useSession();
@@ -112,25 +113,31 @@ export default function UserConfig() {
                   <p className="text-gray-600 mb-4 text-base">
                     This configuration will be accessible to all your chatbots. Add this script inside your website's <code>&lt;body&gt;</code> tag to provide user context to your chatbots.
                   </p>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Framework
-                    </label>
-                    <Select
-                      value={selectedFramework}
-                      onValueChange={(value) => setSelectedFramework(value as Framework)}
-                    >
-                      <SelectTrigger className="w-[200px]">
-                        <SelectValue placeholder="Select framework" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
-                        <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
-                        <SelectItem value={Framework.REACT}>React</SelectItem>
-                        <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
-                        <SelectItem value={Framework.VUE}>Vue</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="mb-6">
+                    <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                      <Code className="h-4 w-4 text-[#FE4A60]" />
+                      Framework
+                    </Label>
+                    <p className="text-sm text-gray-600 mt-2 ml-6">
+                      Select the framework you're using to implement the user configuration.
+                    </p>
+                    <div className="mt-2 ml-6">
+                      <Select
+                        value={selectedFramework}
+                        onValueChange={(value) => setSelectedFramework(value as Framework)}
+                      >
+                        <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
+                          <SelectValue placeholder="Select framework" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
+                          <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
+                          <SelectItem value={Framework.REACT}>React</SelectItem>
+                          <SelectItem value={Framework.VANILLA}>Vanilla JS</SelectItem>
+                          <SelectItem value={Framework.VUE}>Vue</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <div className="relative">
                     <SyntaxHighlighter
