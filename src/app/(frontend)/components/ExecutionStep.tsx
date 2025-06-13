@@ -551,7 +551,7 @@ export default function ExecutionStep({
                 Back
               </Button>
               <Button
-                className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
+                className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:bg-[#ff6a7a] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
                 onClick={handleCreate}
               >
                 <Save className="w-4 h-4" />
