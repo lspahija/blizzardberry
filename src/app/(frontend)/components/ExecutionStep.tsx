@@ -35,7 +35,7 @@ import HeaderInput from '@/app/(frontend)/components/HeaderInput';
 import ArgsList from '@/app/(frontend)/components/ArgsList';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Copy, ExternalLink } from 'lucide-react';
+import { Copy, ExternalLink, Globe, Code, Info, List, PlusCircle, Save, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { Framework } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
@@ -202,45 +202,62 @@ export default function ExecutionStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
+      <div className="mb-12 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
+        <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
+        <span className="text-gray-800 text-base">
+          {baseAction.executionContext === ExecutionContext.SERVER
+            ? 'Configure the API endpoint that the AI Agent will call to retrieve or update data.'
+            : 'Configure the client-side function that will be executed in your application.'}
+        </span>
+      </div>
       <div className="relative mb-12">
         <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
-        <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-none">
-          <CardHeader className="flex flex-row items-center justify-between">
+        <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-xl border-l-8 border-l-[#FE4A60]">
+          <CardHeader className="flex flex-row items-center space-x-2">
+            {baseAction.executionContext === ExecutionContext.SERVER ? (
+              <Globe className="h-7 w-7 text-[#FE4A60]" />
+            ) : (
+              <Code className="h-7 w-7 text-[#FE4A60]" />
+            )}
             <CardTitle className="text-2xl font-semibold text-gray-900">
               {baseAction.executionContext === ExecutionContext.SERVER
                 ? 'API Request'
                 : 'Client Action Configuration'}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-8">
             {baseAction.executionContext === ExecutionContext.SERVER ? (
               <>
                 <div>
-                  <Label className="text-gray-900">API Request</Label>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                    <Globe className="h-4 w-4 text-[#FE4A60]" />
+                    API Request
+                  </Label>
+                  <p className="text-sm text-gray-600 mt-2 ml-6">
                     The API endpoint that should be called by the AI Agent to
                     retrieve data or to send updates. You can include data
                     inputs (variables) collected from the user in the URL,
                     headers, and request body.
                   </p>
                   {dataInputs.filter((input) => input.name).length > 0 && (
-                    <div className="mt-4">
-                      <Label className="text-gray-900 text-sm">
+                    <div className="mt-6 ml-6">
+                      <Label className="text-gray-900 text-base font-medium flex items-center gap-2">
+                        <List className="h-4 w-4 text-[#FE4A60]" />
                         Available Variables
                       </Label>
-                      <div className="mt-1.5 max-h-[100px] overflow-y-auto">
-                        <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-1">
+                      <div className="mt-2 max-h-[100px] overflow-y-auto">
+                        <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-2">
                           {dataInputs
                             .filter((input) => input.name)
                             .map((input, index) => (
                               <div
                                 key={index}
                                 className={cn(
-                                  'bg-[#FFFDF8] px-2 py-1 border border-gray-200 rounded whitespace-nowrap'
+                                  'bg-[#FFFDF8] px-3 py-2 border-[2px] border-gray-900 rounded-lg shadow-sm'
                                 )}
                               >
-                                <div className="font-mono text-xs text-gray-900">{`{{${input.name}}}`}</div>
-                                <div className="text-[10px] text-gray-500 font-medium">
+                                <div className="font-mono text-sm text-gray-900">{`{{${input.name}}}`}</div>
+                                <div className="text-xs text-gray-500 font-medium">
                                   {input.type}
                                   {input.isArray ? '[]' : ''}
                                 </div>
@@ -250,9 +267,9 @@ export default function ExecutionStep({
                       </div>
                     </div>
                   )}
-                  <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-4 mt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-6 mt-6 ml-6">
                     <div>
-                      <Label htmlFor="apiMethod">Method</Label>
+                      <Label htmlFor="apiMethod" className="text-base font-medium">Method</Label>
                       <Select
                         value={apiMethod}
                         onValueChange={handleMethodChange}
@@ -269,18 +286,18 @@ export default function ExecutionStep({
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="apiUrl">HTTPS URL</Label>
+                      <Label htmlFor="apiUrl" className="text-base font-medium">HTTPS URL</Label>
                       <SuggestInput
                         id="apiUrl"
                         value={apiUrl}
                         onChange={(e) => handleUrlChange(e.target.value)}
                         suggestions={getInputNames(dataInputs, true)}
                         placeholder="https://wttr.in/{{city}}?format=j1"
-                        inputClassName={`border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
+                        inputClassName={`mt-2 border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
                         matchMode="full"
                       />
                       {urlError && (
-                        <p className="text-red-500 text-sm mt-1">{urlError}</p>
+                        <p className="text-red-500 text-sm mt-2">{urlError}</p>
                       )}
                     </div>
                   </div>
@@ -290,28 +307,31 @@ export default function ExecutionStep({
                   onValueChange={setActiveTab}
                   className="w-full"
                 >
-                  <TabsList className="grid w-full grid-cols-2 bg-[#FFFDF8] border-[2px] border-gray-900 rounded-lg h-10 px-1 py-[2px]">
+                  <TabsList className="grid w-full grid-cols-2 bg-[#FFFDF8] border-[2px] border-gray-900 rounded-lg h-12 px-1 py-[2px]">
                     <TabsTrigger
                       value="headers"
-                      className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer"
+                      className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer text-base font-medium"
                     >
                       Headers
                     </TabsTrigger>
                     <TabsTrigger
                       value="body"
-                      className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer"
+                      className="data-[state=active]:bg-[#FFC480] data-[state=active]:text-gray-900 data-[state=active]:border-[2px] data-[state=active]:border-gray-900 rounded-md transition-all hover:bg-[#FFF4DA] flex items-center justify-center h-full cursor-pointer text-base font-medium"
                     >
                       Body
                     </TabsTrigger>
                   </TabsList>
                   {bodyError && (
-                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                    <div className="mt-4 p-4 bg-red-50 border-[2px] border-red-200 rounded-lg">
                       <p className="text-red-500 text-sm">{bodyError}</p>
                     </div>
                   )}
-                  <TabsContent value="headers" className="mt-4">
+                  <TabsContent value="headers" className="mt-6">
                     <div>
-                      <Label className="text-gray-900">Headers</Label>
+                      <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                        <List className="h-4 w-4 text-[#FE4A60]" />
+                        Headers
+                      </Label>
                       {headers.map((header, index) => (
                         <HeaderInput
                           key={index}
@@ -334,19 +354,21 @@ export default function ExecutionStep({
                       ))}
                       <Button
                         variant="outline"
-                        className="mt-4 bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
+                        className="mt-4 bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
                         onClick={addHeader}
                       >
+                        <PlusCircle className="h-4 w-4" />
                         Add Header
                       </Button>
                     </div>
                   </TabsContent>
-                  <TabsContent value="body" className="mt-4">
+                  <TabsContent value="body" className="mt-6">
                     <div>
-                      <Label htmlFor="apiBody" className="text-gray-900">
+                      <Label htmlFor="apiBody" className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                        <Code className="h-4 w-4 text-[#FE4A60]" />
                         Body
                       </Label>
-                      <div className="mt-2 border-[2px] border-gray-900 rounded-md overflow-hidden bg-[#FFF4DA]">
+                      <div className="mt-2 border-[2px] border-gray-900 rounded-lg overflow-hidden bg-[#FFF4DA]">
                         <div className="relative">
                           {!apiBody?.trim() && (
                             <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
@@ -398,12 +420,13 @@ export default function ExecutionStep({
                 </Tabs>
               </>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
-                  <Label htmlFor="functionName" className="text-gray-900">
+                  <Label htmlFor="functionName" className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                    <Code className="h-4 w-4 text-[#FE4A60]" />
                     Function Name
                   </Label>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 mt-2 ml-6">
                     The name of the client-side function to be executed. You
                     will implement this in your app using the SDK.
                   </p>
@@ -412,23 +435,26 @@ export default function ExecutionStep({
                     value={functionName}
                     onChange={(e) => handleFunctionNameChange(e.target.value)}
                     placeholder="get_weather"
-                    className={`mt-2 border-[2px] ${functionNameError ? 'border-red-500' : 'border-gray-900'}`}
+                    className={`mt-2 ml-6 border-[2px] ${functionNameError ? 'border-red-500' : 'border-gray-900'}`}
                   />
                   {functionNameError && (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red-500 text-sm mt-2 ml-6">
                       {functionNameError}
                     </p>
                   )}
                 </div>
                 <div>
-                  <Label className="text-gray-900">
+                  <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                    <List className="h-4 w-4 text-[#FE4A60]" />
                     Arguments (Data Inputs)
                   </Label>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 mt-2 ml-6">
                     The chatbot will collect these from the user and pass them
                     as <code>args</code> to your function.
                   </p>
-                  <ArgsList dataInputs={dataInputs} />
+                  <div className="mt-4 ml-6">
+                    <ArgsList dataInputs={dataInputs} />
+                  </div>
                 </div>
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -508,15 +534,17 @@ export default function ExecutionStep({
             <div className="flex space-x-4">
               <Button
                 variant="outline"
-                className="bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
+                className="bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
                 onClick={onBack}
               >
+                <ArrowLeft className="w-4 h-4" />
                 Back
               </Button>
               <Button
-                className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
+                className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
                 onClick={handleCreate}
               >
+                <Save className="w-4 h-4" />
                 Create Action
               </Button>
             </div>
