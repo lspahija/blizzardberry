@@ -1,6 +1,6 @@
 'use client';
 
-import { Save } from 'lucide-react';
+import { Save, Settings, Info, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import {
@@ -63,46 +63,54 @@ export default function GeneralStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
+      <div className="mb-12 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
+        <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
+        <span className="text-gray-800 text-base">
+          Fill out the general information for your action. This helps the AI agent understand when and how to use it.
+        </span>
+      </div>
       <div className="relative mb-12">
         <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
-        <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-none">
-          <CardHeader>
+        <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-xl border-l-8 border-l-[#FE4A60]">
+          <CardHeader className="flex items-center space-x-2">
+            <Settings className="h-7 w-7 text-[#FE4A60]" />
             <CardTitle className="text-2xl font-semibold text-gray-900">
               General
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-8">
             <div>
-              <Label htmlFor="actionName" className="text-gray-900">
+              <Label htmlFor="actionName" className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                <Zap className="h-4 w-4 text-[#FE4A60]" />
                 Action Name
               </Label>
-              <p className="text-sm text-gray-600 mt-1">
-                A descriptive name for this action. This will help the AI agent
-                know when to use it.
+              <p className="text-sm text-gray-600 mt-1 ml-6">
+                A descriptive name for this action. This will help the AI agent know when to use it.
               </p>
-              <Input
-                id="actionName"
-                value={baseAction.name}
-                onChange={(e) => {
-                  setErrors((prev) => ({ ...prev, name: undefined }));
-                  setBaseAction({ ...baseAction, name: e.target.value });
-                }}
-                placeholder="Update_Subscription"
-                className={`mt-2 border-[2px] ${errors.name ? 'border-red-500' : 'border-gray-900'}`}
-              />
+              <div className="relative">
+                <Input
+                  id="actionName"
+                  value={baseAction.name}
+                  onChange={(e) => {
+                    setErrors((prev) => ({ ...prev, name: undefined }));
+                    setBaseAction({ ...baseAction, name: e.target.value });
+                  }}
+                  placeholder="Update_Subscription"
+                  className={`mt-2 border-[2px] ${errors.name ? 'border-red-500' : 'border-gray-900'} pl-10`}
+                />
+                <Zap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+              </div>
               {errors.name && (
                 <p className="text-red-500 text-sm mt-1">{errors.name}</p>
               )}
             </div>
             <div>
-              <Label htmlFor="description" className="text-gray-900">
+              <Label htmlFor="description" className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                <Info className="h-4 w-4 text-[#FE4A60]" />
                 Description
               </Label>
-              <p className="text-sm text-gray-600 mt-1">
-                Explain when the AI Agent should use this action. Include a
-                description of what this action does, the data it provides, and
-                any updates it makes. Include example queries that should
-                trigger this action.
+              <p className="text-sm text-gray-600 mt-1 ml-6">
+                Explain when the AI Agent should use this action. Include a description of what this action does, the data it provides, and any updates it makes. Include example queries that should trigger this action.
               </p>
               <Textarea
                 id="description"
@@ -112,7 +120,7 @@ export default function GeneralStep({
                   setBaseAction({ ...baseAction, description: e.target.value });
                 }}
                 placeholder="Describe when the AI agent should use this action..."
-                className={`mt-2 border-[2px] ${errors.description ? 'border-red-500' : 'border-gray-900'}`}
+                className={`mt-2 border-[2px] ${errors.description ? 'border-red-500' : 'border-gray-900'} text-base`}
                 rows={5}
               />
               {errors.description && (
@@ -122,7 +130,7 @@ export default function GeneralStep({
               )}
             </div>
             <div>
-              <Label className="text-gray-900">Action Type</Label>
+              <Label className="text-gray-900 text-lg font-semibold">Action Type</Label>
               <RadioGroup
                 value={baseAction.executionContext}
                 onValueChange={(value: ExecutionContext) =>
@@ -135,8 +143,7 @@ export default function GeneralStep({
                   <Label htmlFor="server" className="text-gray-900">
                     Server Action
                     <p className="text-sm text-gray-600">
-                      This action will be executed on the server. There is no
-                      need to write any client-side code.
+                      This action will be executed on the server. There is no need to write any client-side code.
                     </p>
                   </Label>
                 </div>
@@ -145,15 +152,14 @@ export default function GeneralStep({
                   <Label htmlFor="client" className="text-gray-900">
                     Client Action
                     <p className="text-sm text-gray-600">
-                      This action will be executed on the client. You will need
-                      to write some client-side code. Explore the docs.
+                      This action will be executed on the client. You will need to write some client-side code. Explore the docs.
                     </p>
                   </Label>
                 </div>
               </RadioGroup>
             </div>
             <Button
-              className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer"
+              className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 hover:bg-[#ff6a7a] transition-transform duration-200 shadow-md text-lg font-semibold w-full"
               onClick={handleNext}
             >
               <Save className="w-4 h-4 mr-2" />
