@@ -23,6 +23,11 @@ import { useChatbots } from '@/app/(frontend)/hooks/useChatbots';
 import { use } from 'react';
 import { Bot, Globe, Type, Settings, Loader2 } from 'lucide-react';
 import { Info } from 'lucide-react';
+import {
+  ChatbotModel,
+  ChatbotModelDisplay,
+  ChatbotModelList,
+} from '@/app/api/lib/model/chatbot/chatbot';
 
 export default function EditChatbotPage({
   params,
@@ -32,7 +37,9 @@ export default function EditChatbotPage({
   const router = useRouter();
   const [name, setName] = useState('');
   const [websiteDomain, setWebsiteDomain] = useState('');
-  const [model, setModel] = useState('google/gemini-2.0-flash-001');
+  const [model, setModel] = useState<ChatbotModel>(
+    ChatbotModel.GEMINI_2_0_FLASH
+  );
   const [isLoading, setIsLoading] = useState(true);
   const { handleUpdateChatbot } = useChatbots();
   const { chatbotId } = use(params);
@@ -66,7 +73,7 @@ export default function EditChatbotPage({
         const data = await response.json();
         setName(data.chatbot.name);
         setWebsiteDomain(data.chatbot.websiteDomain);
-        setModel(data.chatbot.model);
+        setModel(data.chatbot.model as ChatbotModel);
       } catch (error) {
         console.error('Error fetching chatbot:', error);
       } finally {
@@ -117,7 +124,8 @@ export default function EditChatbotPage({
         >
           <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
           <span className="text-gray-800 text-base">
-            Update your chatbot details below. Changes will be reflected immediately after saving.
+            Update your chatbot details below. Changes will be reflected
+            immediately after saving.
           </span>
         </motion.div>
 
@@ -144,7 +152,10 @@ export default function EditChatbotPage({
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <Label htmlFor="name" className="text-gray-900 flex items-center gap-2">
+                  <Label
+                    htmlFor="name"
+                    className="text-gray-900 flex items-center gap-2"
+                  >
                     <Type className="h-4 w-4 text-[#FE4A60]" />
                     Chatbot Name
                   </Label>
@@ -163,12 +174,16 @@ export default function EditChatbotPage({
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="websiteDomain" className="text-gray-900 flex items-center gap-2">
+                  <Label
+                    htmlFor="websiteDomain"
+                    className="text-gray-900 flex items-center gap-2"
+                  >
                     <Globe className="h-4 w-4 text-[#FE4A60]" />
                     Website Domain
                   </Label>
                   <p className="text-sm text-gray-600 mt-1 ml-6">
-                    The domain of the website where this chatbot will be installed
+                    The domain of the website where this chatbot will be
+                    installed
                   </p>
                   <div className="relative mt-2">
                     <Input
@@ -182,7 +197,10 @@ export default function EditChatbotPage({
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="model" className="text-gray-900 flex items-center gap-2">
+                  <Label
+                    htmlFor="model"
+                    className="text-gray-900 flex items-center gap-2"
+                  >
                     <Settings className="h-4 w-4 text-[#FE4A60]" />
                     AI Model
                   </Label>
@@ -191,35 +209,19 @@ export default function EditChatbotPage({
                   </p>
                   <div className="relative mt-2">
                     <Settings className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none z-10" />
-                    <Select value={model} onValueChange={setModel}>
+                    <Select
+                      value={model}
+                      onValueChange={(value) => setModel(value as ChatbotModel)}
+                    >
                       <SelectTrigger className="pl-10 border-[2px] border-gray-900">
                         <SelectValue placeholder="Select a model" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="google/gemini-2.0-flash-001">
-                          Gemini 2.0 Flash
-                        </SelectItem>
-                        <SelectItem value="google/gemini-2.5-pro-preview">
-                          Gemini 2.5 Pro Preview
-                        </SelectItem>
-                        <SelectItem value="openai/gpt-4.1">
-                          ChatGPT 4.1
-                        </SelectItem>
-                        <SelectItem value="openai/chatgpt-4o-latest">
-                          ChatGPT 4o
-                        </SelectItem>
-                        <SelectItem value="anthropic/claude-sonnet-4">
-                          Claude Sonnet 4
-                        </SelectItem>
-                        <SelectItem value="x-ai/grok-3-beta">
-                          Grok 3 Beta
-                        </SelectItem>
-                        <SelectItem value="deepseek/deepseek-r1-distill-qwen-7b">
-                          DeepSeek R1 Distill Qwen 7B
-                        </SelectItem>
-                        <SelectItem value="qwen/qwen3-30b-a3b">
-                          Qwen 3 30B A3B
-                        </SelectItem>
+                        {ChatbotModelList.map((modelValue) => (
+                          <SelectItem key={modelValue} value={modelValue}>
+                            {ChatbotModelDisplay[modelValue]}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
