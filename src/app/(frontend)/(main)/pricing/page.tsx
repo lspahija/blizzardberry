@@ -231,7 +231,7 @@ export default function PricingPage() {
               <EmbeddedCheckout />
             </EmbeddedCheckoutProvider>
             <button
-              className="mt-4 py-3 px-4 bg-[#FE4A60] text-white border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium w-full"
+              className="mt-4 py-2 px-6 bg-white text-[#FE4A60] border-[2px] border-[#FE4A60] rounded-xl hover:bg-[#ffe9e9] transition font-medium mx-auto block"
               onClick={() => setShowCheckout(false)}
             >
               Cancel
