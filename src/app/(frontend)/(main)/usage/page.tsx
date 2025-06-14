@@ -6,12 +6,20 @@ import { Button } from "@/app/(frontend)/components/ui/button";
 export default function UsagePage() {
   const [credits, setCredits] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/credits")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch credits");
+        return res.json();
+      })
       .then((data) => {
         setCredits(data.credits);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError("Could not load credits. Please try again.");
         setLoading(false);
       });
   }, []);
@@ -25,7 +33,11 @@ export default function UsagePage() {
           {loading ? "..." : credits}
         </div>
         <div className="text-base text-gray-700">
-          {loading ? "Loading your credits..." : `You have ${credits} credits available.`}
+          {loading
+            ? "Loading your credits..."
+            : error
+              ? error
+              : `You have ${credits} credits available.`}
         </div>
         <div className="text-base text-gray-700 mt-6 flex items-center">
           Would you like to buy more credits?
