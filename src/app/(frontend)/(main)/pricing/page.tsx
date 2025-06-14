@@ -222,7 +222,7 @@ export default function PricingPage() {
 
       {showCheckout && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-[#FFFDF8] p-8 border-[2px] border-gray-900 rounded-xl max-w-lg w-full hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
+          <div className="bg-[#FFFDF8] p-8 border-[2px] border-gray-900 rounded-xl max-w-lg w-full hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-semibold mb-4">Complete Payment</h2>
             <EmbeddedCheckoutProvider
               stripe={stripePromise}
