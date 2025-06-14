@@ -33,6 +33,7 @@
   /* --- Primary / Brand --- */
   --color-primary: #FFC480;
   --color-primary-foreground: #1F2937;
+  --color-brand: #FE4A60;
 
   /* --- Secondary --- */
   --color-secondary: #FFFDF8;
@@ -86,6 +87,7 @@
   /* --- Primary / Brand --- */
   --color-primary-dark: #FFC480;
   --color-primary-foreground-dark: #1F2937;
+  --color-brand-dark: #FE4A60;
 
   /* --- Secondary --- */
   --color-secondary-dark: #4B5563;
