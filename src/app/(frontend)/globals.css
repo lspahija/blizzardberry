@@ -21,109 +21,85 @@
   --font-mono: var(--font-geist-mono);
 
   /* ========================================================================
-   * Colors (Light Mode)
+   * Colors (Light Mode) - BlizzardBerry "Retro Frost" Theme
    * ======================================================================== */
   /* --- Base --- */
-  --color-background: #FFFDF8;
-  --color-foreground: #1F2937;
-  --color-border: #1F2937;
-  --color-ring: #1F2937;
-  --color-input: #1F2937;
+  --color-background: #F9FAFB;      /* A very light, cool gray (like fresh snow) */
+  --color-foreground: #111827;      /* A strong, near-black for high contrast text */
+  --color-border: #374151;        /* A solid, cool-toned dark gray for borders */
+  --color-ring: #60A5FA;          /* A clear, accessible blue for focus rings */
+  --color-input: #D1D5DB;         /* A light stone gray for inputs */
+  --color-shadow: #2563EB;        /* KEY CHANGE: The retro, deep blue shadow */
 
   /* --- Primary / Brand --- */
-  --color-primary: #FFC480;
-  --color-primary-foreground: #1F2937;
-  --color-brand: #FE4A60;
+  --color-primary: #3B82F6;        /* A vibrant, "Glacial Blue" for primary buttons */
+  --color-primary-foreground: #FFFFFF; /* Crisp white text */
+  --color-brand: #E11D48;          /* A deep, rich "Frozen Raspberry" red */
 
   /* --- Secondary --- */
-  --color-secondary: #FFFDF8;
-  --color-secondary-foreground: #1F2937;
+  --color-secondary: #E0E7FF;      /* Light "Lavender Frost" */
+  --color-secondary-foreground: #111827;
 
   /* --- Muted --- */
-  --color-muted: #FFF4DA;
-  --color-muted-foreground: #4B5563;
+  --color-muted: #F3F4F6;         /* A very subtle, cool gray */
+  --color-muted-foreground: #4B5563; /* A softer gray for less important text */
 
   /* --- Accent --- */
-  --color-accent: #FFF4DA;
-  --color-accent-foreground: #1F2937;
+  --color-accent: #E0E7FF;         /* Light "Lavender Frost" for accents */
+  --color-accent-foreground: #111827;
 
   /* --- Components --- */
-  --color-card: #FFF4DA;
-  --color-card-foreground: #1F2937;
-  --color-popover: #FFFDF8;
-  --color-popover-foreground: #1F2937;
+  --color-card: #FFFFFF;           /* Pure white for a clean, crystalline card */
+  --color-card-foreground: #111827;
+  --color-popover: #FFFFFF;        /* Pure white for popovers */
+  --color-popover-foreground: #111827;
 
   /* --- Destructive --- */
-  --color-destructive: #EF4444;
+  --color-destructive: #E11D48;   /* Using the "Frozen Raspberry" for destructive actions */
 
-  /* --- Custom: Sidebar --- */
-  --color-sidebar: #FFFDF8;
-  --color-sidebar-foreground: #1F2937;
-  --color-sidebar-primary: #FFC480;
-  --color-sidebar-primary-foreground: #1F2937;
-  --color-sidebar-accent: #FFF4DA;
-  --color-sidebar-accent-foreground: #1F2937;
-  --color-sidebar-border: #1F2937;
-  --color-sidebar-ring: #1F2937;
-
-  /* --- Custom: Chart --- */
-  --color-chart-1: #FFFDF8;
-  --color-chart-2: #FFF4DA;
-  --color-chart-3: #FFC480;
-  --color-chart-4: #FFC480;
-  --color-chart-5: #5CF1A4;
+  /* --- Custom: Chart & SVG Colors --- */
+  --color-chart-1: #BFDBFE;       /* Light Glacial Blue */
+  --color-chart-2: #60A5FA;       /* Medium Glacial Blue */
+  --color-chart-3: #3B82F6;       /* Primary Glacial Blue */
+  --color-chart-4: #E11D48;       /* Frozen Raspberry */
+  --color-chart-5: #C026D3;       /* KEY CHANGE: "Magenta Frost" - replaces the jarring green */
 
   /* ========================================================================
-   * Colors (Dark Mode)
-   * The `-dark` suffix is automatically picked up by Tailwind.
+   * Colors (Dark Mode) - BlizzardBerry "Midnight Frost" Theme
    * ======================================================================== */
   /* --- Base --- */
-  --color-background-dark: #1F2937;
-  --color-foreground-dark: #FFFDF8;
-  --color-border-dark: #FFFDF8;
-  --color-ring-dark: #9CA3AF;
-  --color-input-dark: #FFFDF8;
+  --color-background-dark: #1F2937; /* A deep, "Midnight Frost" blue-gray */
+  --color-foreground-dark: #F9FAFB; /* Off-white for comfortable reading */
+  --color-border-dark: #9CA3AF;     /* A clear "Ice" border */
+  --color-ring-dark: #60A5FA;       /* Glacial Blue ring stands out well */
+  --color-input-dark: #4B5563;
+  --color-shadow-dark: #9333EA;     /* A vibrant, retro "Frozen Purple" shadow */
 
   /* --- Primary / Brand --- */
-  --color-primary-dark: #FFC480;
-  --color-primary-foreground-dark: #1F2937;
-  --color-brand-dark: #FE4A60;
+  --color-primary-dark: #60A5FA;   /* A lighter "Glacial Blue" for better contrast in dark mode */
+  --color-primary-foreground-dark: #111827; /* Dark text for contrast on the lighter blue */
+  --color-brand-dark: #F43F5E;     /* A slightly brighter "Raspberry" to pop in the dark */
 
   /* --- Secondary --- */
-  --color-secondary-dark: #4B5563;
-  --color-secondary-foreground-dark: #FFFDF8;
+  --color-secondary-dark: #374151; /* A darker slate */
+  --color-secondary-foreground-dark: #F9FAFB;
 
   /* --- Muted --- */
-  --color-muted-dark: #4B5563;
-  --color-muted-foreground-dark: #9CA3AF;
+  --color-muted-dark: #374151;
+  --color-muted-foreground-dark: #9CA3AF; /* A soft, "frosty" gray */
 
   /* --- Accent --- */
   --color-accent-dark: #4B5563;
-  --color-accent-foreground-dark: #FFFDF8;
+  --color-accent-foreground-dark: #F9FAFB;
 
   /* --- Components --- */
-  --color-card-dark: #374151;
-  --color-card-foreground-dark: #FFFDF8;
-  --color-popover-dark: #374151;
-  --color-popover-foreground-dark: #FFFDF8;
+  --color-card-dark: #111827;     /* A deep, near-black for cards to stand out */
+  --color-card-foreground-dark: #F9FAFB;
+  --color-popover-dark: #111827;
+  --color-popover-foreground-dark: #F9FAFB;
 
   /* --- Destructive --- */
-  --color-destructive-dark: #DC2626;
-
-  /* --- Custom: Sidebar --- */
-  --color-sidebar-dark: #374151;
-  --color-sidebar-foreground-dark: #FFFDF8;
-  --color-sidebar-primary-dark: #FFC480;
-  --color-sidebar-primary-foreground-dark: #1F2937;
-  --color-sidebar-accent-dark: #4B5563;
-  --color-sidebar-accent-foreground-dark: #FFFDF8;
-  --color-sidebar-border-dark: #FFFDF8;
-  --color-sidebar-ring-dark: #9CA3AF;
-
-  /* --- Custom: Chart --- */
-  --color-chart-1-dark: #374151;
-  --color-chart-2-dark: #4B5563;
-  /* Chart 3, 4, and 5 are the same in both themes, so no -dark version is needed */
+  --color-destructive-dark: #F43F5E;
 }
 
 @layer base {

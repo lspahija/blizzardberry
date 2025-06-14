@@ -14,8 +14,8 @@ import { Zap, Shield, Rocket, Code } from 'lucide-react';
 // Reusable component for the drop-shadow effect on buttons and cards
 const ShadowWrapper = ({ children }: { children: React.ReactNode }) => (
   <div className="relative">
-    {/* This creates the shadow effect */}
-    <div className="absolute inset-0 rounded-lg bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:-translate-x-0 group-hover:-translate-y-0"></div>
+    {/* This creates the shadow effect - The ONLY change is here */}
+    <div className="absolute inset-0 rounded-lg bg-shadow translate-x-1 translate-y-1 transition-transform group-hover:-translate-x-0 group-hover:-translate-y-0"></div>
     {children}
   </div>
 );
