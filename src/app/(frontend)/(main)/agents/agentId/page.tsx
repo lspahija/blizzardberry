@@ -46,8 +46,27 @@ import {
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
 import { Label } from '@/app/(frontend)/components/ui/label';
+import { Suspense } from 'react';
 
-export default function AgentDetails({
+export default function AgentDetailsWrapper({
+  params: paramsPromise,
+}: {
+  params: Promise<{ agentId: string }>;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+        </div>
+      }
+    >
+      <AgentDetails params={paramsPromise} />
+    </Suspense>
+  );
+}
+
+function AgentDetails({
   params: paramsPromise,
 }: {
   params: Promise<{ agentId: string }>;
