@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme inline {
+@theme {
   --color-background: #FFFDF8;
   --color-foreground: #1F2937;
   --font-sans: var(--font-geist-sans);
@@ -45,13 +45,13 @@
 
 :root {
   --radius: 0.5rem;
-  --background: #FFFDF8;
+  --background: #0f2de3;
   --foreground: #1F2937;
   --card: #FFF4DA;
   --card-foreground: #1F2937;
   --popover: #FFFDF8;
   --popover-foreground: #1F2937;
-  --primary: #FFC480;
+  --primary: #d6107a;
   --primary-foreground: #1F2937;
   --secondary: #FFFDF8;
   --secondary-foreground: #1F2937;

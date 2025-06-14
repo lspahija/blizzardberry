@@ -121,7 +121,7 @@ export default function LandingPage() {
           variants={itemVariants}
         >
           Empower Your Webapp with <br />
-          <span className="text-[#FFC480]">Agentic AI Agents</span>
+          <span className="text-[#FFC480]">AI Agents</span>
         </motion.h1>
         <svg
           className="w-16 lg:w-20 h-auto lg:absolute flex-shrink-0 right-0 bottom-0 md:block hidden translate-y-10 md:translate-y-20 lg:translate-y-4 lg:-translate-x-12 -translate-x-10"
