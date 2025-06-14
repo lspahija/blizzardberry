@@ -6,6 +6,7 @@ import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from '@stripe/react-stripe-js';
+import { Check } from 'lucide-react';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -95,148 +96,206 @@ export default function PricingPage() {
   );
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Pricing Plans</h1>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="p-6 border rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">Hobby</h2>
-          <p className="text-2xl font-bold mb-4">$35/month</p>
-          <ul className="mb-4">
-            <li>2,000 credits</li>
-            <li>8 actions</li>
+    <div className="container mx-auto px-4 py-16 max-w-7xl">
+      <div className="text-center mb-16">
+        <h1 className="text-5xl font-bold mb-6 text-gray-900">Pricing</h1>
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">Choose the perfect plan for your needs. All plans include our core features with different usage limits.</p>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+        <div className="bg-[#FFFDF8] p-8 border-[2px] border-gray-900 rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-[#FFC480] transition-colors">Hobby</h2>
+            <p className="text-4xl font-bold mb-2 text-gray-900">$35<span className="text-lg font-normal text-gray-600">/month</span></p>
+            <p className="text-sm text-gray-600 font-medium">Perfect for side projects</p>
+          </div>
+          <ul className="space-y-4 mb-8 text-gray-700">
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-[#FFC480] group-hover:scale-110 transition-transform" />
+              <span>2,000 credits</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-[#FFC480] group-hover:scale-110 transition-transform" />
+              <span>8 actions</span>
+            </li>
           </ul>
           <button
-            className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
             onClick={() => handleSubscribe('hobby')}
           >
-            Subscribe
+            Get Started
           </button>
         </div>
-        <div className="p-6 border rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">Standard</h2>
-          <p className="text-2xl font-bold mb-4">$150/month</p>
-          <ul className="mb-4">
-            <li>13,000 credits</li>
-            <li>16 actions</li>
+
+        <div className="bg-[#FFFDF8] p-8 border-[2px] border-gray-900 rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-[#FFC480] transition-colors">Standard</h2>
+            <p className="text-4xl font-bold mb-2 text-gray-900">$150<span className="text-lg font-normal text-gray-600">/month</span></p>
+            <p className="text-sm text-gray-600 font-medium">Great for growing teams</p>
+          </div>
+          <ul className="space-y-4 mb-8 text-gray-700">
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-[#FFC480] group-hover:scale-110 transition-transform" />
+              <span>13,000 credits</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-[#FFC480] group-hover:scale-110 transition-transform" />
+              <span>16 actions</span>
+            </li>
           </ul>
           <button
-            className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
             onClick={() => handleSubscribe('standard')}
           >
-            Subscribe
+            Get Started
           </button>
         </div>
-        <div className="p-6 border rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">Pro</h2>
-          <p className="text-2xl font-bold mb-4">$500/month</p>
-          <ul className="mb-4">
-            <li>50,000 credits</li>
-            <li>24 actions</li>
+
+        <div className="bg-[#FFFDF8] p-8 border-[2px] border-gray-900 rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-[#FFC480] transition-colors">Pro</h2>
+            <p className="text-4xl font-bold mb-2 text-gray-900">$500<span className="text-lg font-normal text-gray-600">/month</span></p>
+            <p className="text-sm text-gray-600 font-medium">For power users</p>
+          </div>
+          <ul className="space-y-4 mb-8 text-gray-700">
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-[#FFC480] group-hover:scale-110 transition-transform" />
+              <span>50,000 credits</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-[#FFC480] group-hover:scale-110 transition-transform" />
+              <span>24 actions</span>
+            </li>
           </ul>
           <button
-            className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
             onClick={() => handleSubscribe('pro')}
           >
-            Subscribe
+            Get Started
           </button>
         </div>
-        <div className="p-6 border rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">Enterprise</h2>
-          <p className="text-2xl font-bold mb-4">Custom</p>
-          <ul className="mb-4">
-            <li>Custom credits</li>
-            <li>Unlimited actions</li>
-            <li>Dedicated support</li>
+
+        <div className="bg-[#FFFDF8] p-8 border-[2px] border-gray-900 rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-[#FFC480] transition-colors">Enterprise</h2>
+            <p className="text-4xl font-bold mb-2 text-gray-900">Custom</p>
+            <p className="text-sm text-gray-600 font-medium">For large organizations</p>
+          </div>
+          <ul className="space-y-4 mb-8 text-gray-700">
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-[#FFC480] group-hover:scale-110 transition-transform" />
+              <span>Custom credits</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-[#FFC480] group-hover:scale-110 transition-transform" />
+              <span>Unlimited actions</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-[#FFC480] group-hover:scale-110 transition-transform" />
+              <span>Dedicated support</span>
+            </li>
           </ul>
           <button
-            className="w-full p-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
             onClick={() => setShowEnterpriseForm(true)}
           >
             Contact Us
           </button>
         </div>
       </div>
-      <div className="text-center">
-        <h2 className="text-xl font-semibold mb-2">Additional Credits</h2>
-        <p className="mb-4">Buy 1,000 credits for $12 (no expiration)</p>
+
+      <div className="bg-[#FFFDF8] p-8 border-[2px] border-gray-900 rounded-xl max-w-2xl mx-auto text-center hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <h2 className="text-2xl font-bold mb-4 text-gray-900 hover:text-[#FFC480] transition-colors">Need More Credits?</h2>
+        <p className="text-lg mb-6 text-gray-600 font-medium">Buy additional credits anytime. They never expire!</p>
+        <div className="flex items-center justify-center gap-4 mb-6">
+          <span className="text-4xl font-bold text-gray-900">1,000 credits</span>
+          <span className="text-xl text-gray-600">for</span>
+          <span className="text-4xl font-bold text-gray-900">$12</span>
+        </div>
         <button
-          className="p-2 bg-green-500 text-white rounded hover:bg-green-600"
+          className="py-3 px-8 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
           onClick={handleBuyCredits}
         >
           Buy Credits
         </button>
       </div>
+
       {showCheckout && (
-        <div className="my-8 p-6 border rounded-lg bg-gray-50 max-w-lg mx-auto">
-          <h2 className="text-xl font-semibold mb-4">Complete Payment</h2>
-          <EmbeddedCheckoutProvider
-            stripe={stripePromise}
-            options={{ fetchClientSecret }}
-          >
-            <EmbeddedCheckout />
-          </EmbeddedCheckoutProvider>
-          <button
-            className="mt-4 p-2 bg-red-500 text-white rounded hover:bg-red-600 w-full"
-            onClick={() => setShowCheckout(false)}
-          >
-            Cancel
-          </button>
-        </div>
-      )}
-      {showEnterpriseForm && (
-        <div className="my-8 p-6 border rounded-lg bg-gray-50 max-w-lg mx-auto">
-          <h2 className="text-xl font-semibold mb-4">Enterprise Inquiry</h2>
-          <form onSubmit={handleEnterpriseSubmit}>
-            <div className="mb-4">
-              <label htmlFor="email" className="block mb-1">
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={emailAddress}
-                onChange={(e) => setEmailAddress(e.target.value)}
-                required
-                className="w-full p-2 border rounded"
-                placeholder="your@email.com"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="message" className="block mb-1">
-                Message
-              </label>
-              <textarea
-                id="message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                required
-                className="w-full p-2 border rounded"
-                rows={4}
-                placeholder="Tell us about your needs..."
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full p-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-[#FFFDF8] p-8 border-[2px] border-gray-900 rounded-xl max-w-lg w-full hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
+            <h2 className="text-xl font-semibold mb-4">Complete Payment</h2>
+            <EmbeddedCheckoutProvider
+              stripe={stripePromise}
+              options={{ fetchClientSecret }}
             >
-              Send Inquiry
-            </button>
+              <EmbeddedCheckout />
+            </EmbeddedCheckoutProvider>
             <button
-              type="button"
-              className="mt-2 w-full p-2 bg-red-500 text-white rounded hover:bg-red-600"
-              onClick={() => {
-                setShowEnterpriseForm(false);
-                setEmailAddress('');
-                setMessage('');
-                setFormStatus('');
-              }}
+              className="mt-4 py-3 px-4 bg-[#FE4A60] text-white border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium w-full"
+              onClick={() => setShowCheckout(false)}
             >
               Cancel
             </button>
-          </form>
-          {formStatus && (
-            <p className="mt-4 text-center text-sm">{formStatus}</p>
-          )}
+          </div>
+        </div>
+      )}
+
+      {showEnterpriseForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-[#FFFDF8] p-8 border-[2px] border-gray-900 rounded-xl max-w-lg w-full hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
+            <h2 className="text-xl font-semibold mb-4">Enterprise Inquiry</h2>
+            <form onSubmit={handleEnterpriseSubmit}>
+              <div className="mb-4">
+                <label htmlFor="email" className="block mb-1">
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={emailAddress}
+                  onChange={(e) => setEmailAddress(e.target.value)}
+                  required
+                  className="w-full p-3 border-[2px] border-gray-900 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#FFC480] focus:border-transparent transition-all duration-200"
+                  placeholder="your@email.com"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="message" className="block mb-1">
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                  className="w-full p-3 border-[2px] border-gray-900 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#FFC480] focus:border-transparent transition-all duration-200"
+                  rows={4}
+                  placeholder="Tell us about your needs..."
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
+              >
+                Send Inquiry
+              </button>
+              <button
+                type="button"
+                className="mt-2 w-full py-3 px-4 bg-[#FE4A60] text-white border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
+                onClick={() => {
+                  setShowEnterpriseForm(false);
+                  setEmailAddress('');
+                  setMessage('');
+                  setFormStatus('');
+                }}
+              >
+                Cancel
+              </button>
+            </form>
+            {formStatus && (
+              <p className="mt-4 text-center text-sm font-medium text-gray-700">{formStatus}</p>
+            )}
+          </div>
         </div>
       )}
     </div>
