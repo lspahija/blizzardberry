@@ -120,7 +120,7 @@ export default function PricingPage() {
             </li>
           </ul>
           <button
-            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
+            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
             onClick={() => handleSubscribe('hobby')}
           >
             Subscribe
@@ -144,7 +144,7 @@ export default function PricingPage() {
             </li>
           </ul>
           <button
-            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
+            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
             onClick={() => handleSubscribe('standard')}
           >
             Subscribe
@@ -168,7 +168,7 @@ export default function PricingPage() {
             </li>
           </ul>
           <button
-            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
+            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
             onClick={() => handleSubscribe('pro')}
           >
             Subscribe
@@ -196,7 +196,7 @@ export default function PricingPage() {
             </li>
           </ul>
           <button
-            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
+            className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
             onClick={() => setShowEnterpriseForm(true)}
           >
             Contact Us
@@ -215,7 +215,7 @@ export default function PricingPage() {
           <span className="text-4xl font-bold text-gray-900">$12</span>
         </div>
         <button
-          className="py-3 px-8 bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
+          className="py-3 px-8 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
           onClick={handleBuyCredits}
         >
           Buy Credits
@@ -233,7 +233,7 @@ export default function PricingPage() {
               <EmbeddedCheckout />
             </EmbeddedCheckoutProvider>
             <button
-              className="mt-4 py-2 px-6 bg-white text-[#FE4A60] border-[3px] border-[#FE4A60] rounded-xl hover:bg-[#ffe9e9] transition font-medium mx-auto block"
+              className="mt-4 py-2 px-6 bg-white text-[#FE4A60] border-[2px] border-[#FE4A60] rounded-xl hover:bg-[#ffe9e9] transition font-medium mx-auto block"
               onClick={() => setShowCheckout(false)}
             >
               Cancel
@@ -261,7 +261,7 @@ export default function PricingPage() {
                   value={emailAddress}
                   onChange={(e) => setEmailAddress(e.target.value)}
                   required
-                  className="w-full p-3 border-[3px] border-gray-900 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#FFC480] focus:border-transparent transition-all duration-200"
+                  className="w-full p-3 border-[2px] border-gray-900 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#FFC480] focus:border-transparent transition-all duration-200"
                   placeholder="your@email.com"
                 />
               </div>
@@ -275,7 +275,7 @@ export default function PricingPage() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   required
-                  className="w-full p-3 border-[3px] border-gray-900 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#FFC480] focus:border-transparent transition-all duration-200"
+                  className="w-full p-3 border-[2px] border-gray-900 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#FFC480] focus:border-transparent transition-all duration-200"
                   rows={4}
                   placeholder="Tell us about your needs..."
                 />
@@ -283,7 +283,7 @@ export default function PricingPage() {
               <div className="flex justify-end gap-3 mt-6">
                 <button
                   type="button"
-                  className="border-[3px] border-gray-900 text-white bg-[#FE4A60] hover:bg-[#ff6a7a] rounded-xl flex items-center gap-2 px-3 py-1.5 text-sm font-semibold transition"
+                  className="border-[2px] border-gray-900 text-white bg-[#FE4A60] hover:bg-[#ff6a7a] rounded-xl flex items-center gap-2 px-3 py-1.5 text-sm font-semibold transition"
                   onClick={() => {
                     setShowEnterpriseForm(false);
                     setEmailAddress('');
@@ -296,7 +296,7 @@ export default function PricingPage() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:bg-[#FFD9A0] rounded-xl flex items-center gap-2 px-3 py-1.5 text-sm font-semibold transition"
+                  className="bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:bg-[#FFD9A0] rounded-xl flex items-center gap-2 px-3 py-1.5 text-sm font-semibold transition"
                 >
                   <Send className="h-3 w-3" />
                   Send Inquiry
