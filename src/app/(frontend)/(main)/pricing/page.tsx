@@ -123,7 +123,7 @@ export default function PricingPage() {
             className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
             onClick={() => handleSubscribe('hobby')}
           >
-            Get Started
+            Subscribe
           </button>
         </div>
 
@@ -147,7 +147,7 @@ export default function PricingPage() {
             className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
             onClick={() => handleSubscribe('standard')}
           >
-            Get Started
+            Subscribe
           </button>
         </div>
 
@@ -171,7 +171,7 @@ export default function PricingPage() {
             className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
             onClick={() => handleSubscribe('pro')}
           >
-            Get Started
+            Subscribe
           </button>
         </div>
 
