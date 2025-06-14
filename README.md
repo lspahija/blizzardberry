@@ -111,7 +111,9 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
   - GitHub OAuth
       - [create prod OAuth app](https://github.com/settings/developers)
 - dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
-- Differentiate enough to be able to win the PR war when the chatbase founder gets pissed that there’s competition
+- Differentiate enough to be able to win the PR war when the chatbase founder gets pissed that there’s competition. Differentiating is probably in our interest because we don't want to seem like a knock off. We want to seem like our own thing.
+- make the website responsive and mobile-friendly
+- test the different frameworks we support and add basic automated tests of the agent with Playwright
 
 ## Launch and Sell! 
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
