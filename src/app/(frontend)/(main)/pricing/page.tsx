@@ -6,7 +6,7 @@ import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from '@stripe/react-stripe-js';
-import { Check } from 'lucide-react';
+import { Check, Mail, MessageSquare, X, Send } from 'lucide-react';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -241,12 +241,16 @@ export default function PricingPage() {
       )}
 
       {showEnterpriseForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-[#FFFDF8] p-8 border-[2px] border-gray-900 rounded-xl max-w-lg w-full hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
-            <h2 className="text-xl font-semibold mb-4">Enterprise Inquiry</h2>
-            <form onSubmit={handleEnterpriseSubmit}>
-              <div className="mb-4">
-                <label htmlFor="email" className="block mb-1">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-[#FFFDF8] p-8 border-[3px] border-gray-900 border-l-8 border-l-[#FE4A60] rounded-2xl shadow-2xl max-w-lg w-full">
+            <div className="flex items-center gap-2 mb-4">
+              <Mail className="h-6 w-6 text-[#FE4A60]" />
+              <h2 className="text-2xl font-bold text-gray-900">Enterprise Inquiry</h2>
+            </div>
+            <form onSubmit={handleEnterpriseSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="email" className="text-gray-900 text-base font-semibold flex items-center gap-2 mb-2">
+                  <Mail className="h-4 w-4 text-[#FE4A60]" />
                   Email Address
                 </label>
                 <input
@@ -259,8 +263,9 @@ export default function PricingPage() {
                   placeholder="your@email.com"
                 />
               </div>
-              <div className="mb-4">
-                <label htmlFor="message" className="block mb-1">
+              <div>
+                <label htmlFor="message" className="text-gray-900 text-base font-semibold flex items-center gap-2 mb-2">
+                  <MessageSquare className="h-4 w-4 text-[#FE4A60]" />
                   Message
                 </label>
                 <textarea
@@ -273,24 +278,28 @@ export default function PricingPage() {
                   placeholder="Tell us about your needs..."
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full py-3 px-4 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
-              >
-                Send Inquiry
-              </button>
-              <button
-                type="button"
-                className="mt-2 w-full py-3 px-4 bg-[#FE4A60] text-white border-[2px] border-gray-900 rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
-                onClick={() => {
-                  setShowEnterpriseForm(false);
-                  setEmailAddress('');
-                  setMessage('');
-                  setFormStatus('');
-                }}
-              >
-                Cancel
-              </button>
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  type="button"
+                  className="border-[2px] border-gray-900 text-white bg-[#FE4A60] hover:bg-[#ff6a7a] rounded-xl flex items-center gap-2 px-3 py-1.5 text-sm font-semibold transition"
+                  onClick={() => {
+                    setShowEnterpriseForm(false);
+                    setEmailAddress('');
+                    setMessage('');
+                    setFormStatus('');
+                  }}
+                >
+                  <X className="h-3 w-3" />
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:bg-[#FFD9A0] rounded-xl flex items-center gap-2 px-3 py-1.5 text-sm font-semibold transition"
+                >
+                  <Send className="h-3 w-3" />
+                  Send Inquiry
+                </button>
+              </div>
             </form>
             {formStatus && (
               <p className="mt-4 text-center text-sm font-medium text-gray-700">{formStatus}</p>
