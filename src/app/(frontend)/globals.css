@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Sets up the 'dark:' variant to work with a .dark class on a parent element */
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -20,80 +19,83 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
+  --font-size-base: 1rem; /* 16px */
+  --line-height-base: 1.5rem; /* Relaxed line height for body text */
+
   /* ========================================================================
    * Colors (Light Mode) - BlizzardBerry "Retro Frost" Theme
    * ======================================================================== */
   /* --- Base --- */
-  --color-background: #F9FAFB;      /* A very light, cool gray (like fresh snow) */
-  --color-foreground: #111827;      /* A strong, near-black for high contrast text */
-  --color-border: #374151;        /* A solid, cool-toned dark gray for borders */
-  --color-ring: #60A5FA;          /* A clear, accessible blue for focus rings */
-  --color-input: #D1D5DB;         /* A light stone gray for inputs */
-  --color-shadow: #2563EB;        /* KEY CHANGE: The retro, deep blue shadow */
+  --color-background: #F9FAFB;
+  --color-foreground: #111827;
+  --color-border: #374151;
+  --color-ring: #60A5FA;
+  --color-input: #D1D5DB;
+  --color-shadow: #2563EB;
 
   /* --- Primary / Brand --- */
-  --color-primary: #3B82F6;        /* A vibrant, "Glacial Blue" for primary buttons */
-  --color-primary-foreground: #FFFFFF; /* Crisp white text */
-  --color-brand: #E11D48;          /* A deep, rich "Frozen Raspberry" red */
+  --color-primary: #3B82F6;
+  --color-primary-foreground: #FFFFFF;
+  --color-brand: #E11D48;
 
   /* --- Secondary --- */
-  --color-secondary: #E0E7FF;      /* Light "Lavender Frost" */
+  --color-secondary: #E0E7FF;
   --color-secondary-foreground: #111827;
 
   /* --- Muted --- */
-  --color-muted: #F3F4F6;         /* A very subtle, cool gray */
-  --color-muted-foreground: #4B5563; /* A softer gray for less important text */
+  --color-muted: #F3F4F6;
+  --color-muted-foreground: #4B5563;
 
   /* --- Accent --- */
-  --color-accent: #E0E7FF;         /* Light "Lavender Frost" for accents */
+  --color-accent: #E0E7FF;
   --color-accent-foreground: #111827;
 
   /* --- Components --- */
-  --color-card: #FFFFFF;           /* Pure white for a clean, crystalline card */
+  --color-card: #FFFFFF;
   --color-card-foreground: #111827;
-  --color-popover: #FFFFFF;        /* Pure white for popovers */
+  --color-popover: #FFFFFF;
   --color-popover-foreground: #111827;
 
   /* --- Destructive --- */
-  --color-destructive: #E11D48;   /* Using the "Frozen Raspberry" for destructive actions */
+  --color-destructive: #E11D48;
 
   /* --- Custom: Chart & SVG Colors --- */
-  --color-chart-1: #BFDBFE;       /* Light Glacial Blue */
-  --color-chart-2: #60A5FA;       /* Medium Glacial Blue */
-  --color-chart-3: #3B82F6;       /* Primary Glacial Blue */
-  --color-chart-4: #E11D48;       /* Frozen Raspberry */
-  --color-chart-5: #C026D3;       /* KEY CHANGE: "Magenta Frost" - replaces the jarring green */
+  --color-chart-1: #BFDBFE;
+  --color-chart-2: #60A5FA;
+  --color-chart-3: #3B82F6;
+  --color-chart-4: #E11D48;
+  --color-chart-5: #C026D3;
 
   /* ========================================================================
-   * Colors (Dark Mode) - BlizzardBerry "Midnight Frost" Theme
-   * ======================================================================== */
+     * Colors (Dark Mode) - BlizzardBerry "Midnight Frost" Theme
+     * ======================================================================== */
   /* --- Base --- */
-  --color-background-dark: #1F2937; /* A deep, "Midnight Frost" blue-gray */
-  --color-foreground-dark: #F9FAFB; /* Off-white for comfortable reading */
-  --color-border-dark: #9CA3AF;     /* A clear "Ice" border */
-  --color-ring-dark: #60A5FA;       /* Glacial Blue ring stands out well */
+  --color-background-dark: #1F2937;
+  --color-foreground-dark: #F9FAFB;
+  --color-border-dark: #9CA3AF;
+  --color-ring-dark: #60A5FA;
   --color-input-dark: #4B5563;
-  --color-shadow-dark: #9333EA;     /* A vibrant, retro "Frozen Purple" shadow */
+  --color-shadow-dark: #9333EA;
 
   /* --- Primary / Brand --- */
-  --color-primary-dark: #60A5FA;   /* A lighter "Glacial Blue" for better contrast in dark mode */
-  --color-primary-foreground-dark: #111827; /* Dark text for contrast on the lighter blue */
-  --color-brand-dark: #F43F5E;     /* A slightly brighter "Raspberry" to pop in the dark */
+  --color-primary-dark: #60A5FA;
+  --color-primary-foreground-dark: #111827;
+  --color-brand-dark: #F43F5E;
 
   /* --- Secondary --- */
-  --color-secondary-dark: #374151; /* A darker slate */
+  --color-secondary-dark: #374151;
   --color-secondary-foreground-dark: #F9FAFB;
 
   /* --- Muted --- */
   --color-muted-dark: #374151;
-  --color-muted-foreground-dark: #9CA3AF; /* A soft, "frosty" gray */
+  --color-muted-foreground-dark: #9CA3AF;
 
   /* --- Accent --- */
   --color-accent-dark: #4B5563;
   --color-accent-foreground-dark: #F9FAFB;
 
   /* --- Components --- */
-  --color-card-dark: #111827;     /* A deep, near-black for cards to stand out */
+  --color-card-dark: #111827;
   --color-card-foreground-dark: #F9FAFB;
   --color-popover-dark: #111827;
   --color-popover-foreground-dark: #F9FAFB;
@@ -104,11 +106,15 @@
 
 @layer base {
   * {
-    /* Uses the 'border' and 'ring' color variables defined in @theme */
     @apply border-border outline-ring/50;
   }
   body {
-    /* Uses the 'background', 'foreground', and 'sans' variables defined in @theme */
     @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer utilities {
+  .leading-relaxed {
+    line-height: var(--line-height-base);
   }
 }

@@ -49,7 +49,8 @@ export default function DataInputsStep({
       <div className="mb-12 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
         <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
         <span className="text-gray-800 text-base">
-          Specify any data inputs your action needs. The AI agent can use these to perform the action more effectively.
+          Specify any data inputs your action needs. The AI agent can use these
+          to perform the action more effectively.
         </span>
       </div>
       <div className="relative mb-12">
@@ -69,7 +70,10 @@ export default function DataInputsStep({
               </label>
               <div className="flex items-center gap-2 mt-2">
                 <p className="text-sm text-gray-600 ml-2">
-                  List any information the AI Agent needs to perform the action. The agent can find the data in the chat history, request it from the user, or retrieve it from the specified user config if available.
+                  List any information the AI Agent needs to perform the action.
+                  The agent can find the data in the chat history, request it
+                  from the user, or retrieve it from the specified user config
+                  if available.
                 </p>
               </div>
               {dataInputs.map((input, index) => (

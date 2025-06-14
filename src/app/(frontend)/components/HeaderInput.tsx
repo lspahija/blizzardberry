@@ -31,7 +31,10 @@ export default function HeaderInput({
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_50px] gap-4 mt-4 items-end">
       <div>
-        <Label htmlFor={`headerKey${index}`} className="flex items-center gap-2">
+        <Label
+          htmlFor={`headerKey${index}`}
+          className="flex items-center gap-2"
+        >
           <Key className="h-4 w-4 text-[#FE4A60]" />
           Key
         </Label>
@@ -47,7 +50,10 @@ export default function HeaderInput({
         />
       </div>
       <div>
-        <Label htmlFor={`headerValue${index}`} className="flex items-center gap-2">
+        <Label
+          htmlFor={`headerValue${index}`}
+          className="flex items-center gap-2"
+        >
           <Tag className="h-4 w-4 text-[#FE4A60]" />
           Value
         </Label>

@@ -12,4 +12,4 @@ export async function GET() {
     SELECT active_credits FROM user_credit_summary WHERE user_id = ${userId}
   `;
   return NextResponse.json({ credits: row?.active_credits ?? 0 });
-} 
+}

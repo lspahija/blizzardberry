@@ -66,7 +66,8 @@ export default function GeneralStep({
       <div className="mb-12 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
         <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
         <span className="text-gray-800 text-base">
-          Fill out the general information for your action. This helps the AI agent understand when and how to use it.
+          Fill out the general information for your action. This helps the AI
+          agent understand when and how to use it.
         </span>
       </div>
       <div className="relative mb-12">
@@ -80,12 +81,16 @@ export default function GeneralStep({
           </CardHeader>
           <CardContent className="space-y-8">
             <div>
-              <Label htmlFor="actionName" className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+              <Label
+                htmlFor="actionName"
+                className="text-gray-900 text-lg font-semibold flex items-center gap-2"
+              >
                 <Zap className="h-4 w-4 text-[#FE4A60]" />
                 Action Name
               </Label>
               <p className="text-sm text-gray-600 mt-1 ml-6">
-                A descriptive name for this action. This will help the AI agent know when to use it.
+                A descriptive name for this action. This will help the AI agent
+                know when to use it.
               </p>
               <div className="relative">
                 <Input
@@ -105,12 +110,18 @@ export default function GeneralStep({
               )}
             </div>
             <div>
-              <Label htmlFor="description" className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+              <Label
+                htmlFor="description"
+                className="text-gray-900 text-lg font-semibold flex items-center gap-2"
+              >
                 <Info className="h-4 w-4 text-[#FE4A60]" />
                 Description
               </Label>
               <p className="text-sm text-gray-600 mt-1 ml-6">
-                Explain when the AI Agent should use this action. Include a description of what this action does, the data it provides, and any updates it makes. Include example queries that should trigger this action.
+                Explain when the AI Agent should use this action. Include a
+                description of what this action does, the data it provides, and
+                any updates it makes. Include example queries that should
+                trigger this action.
               </p>
               <Textarea
                 id="description"
@@ -130,7 +141,9 @@ export default function GeneralStep({
               )}
             </div>
             <div>
-              <Label className="text-gray-900 text-lg font-semibold">Action Type</Label>
+              <Label className="text-gray-900 text-lg font-semibold">
+                Action Type
+              </Label>
               <RadioGroup
                 value={baseAction.executionContext}
                 onValueChange={(value: ExecutionContext) =>
@@ -143,7 +156,8 @@ export default function GeneralStep({
                   <Label htmlFor="server" className="text-gray-900">
                     Server Action
                     <p className="text-sm text-gray-600">
-                      This action will be executed on the server. There is no need to write any client-side code.
+                      This action will be executed on the server. There is no
+                      need to write any client-side code.
                     </p>
                   </Label>
                 </div>
@@ -152,7 +166,8 @@ export default function GeneralStep({
                   <Label htmlFor="client" className="text-gray-900">
                     Client Action
                     <p className="text-sm text-gray-600">
-                      This action will be executed on the client. You will need to write some client-side code. Explore the docs.
+                      This action will be executed on the client. You will need
+                      to write some client-side code. Explore the docs.
                     </p>
                   </Label>
                 </div>

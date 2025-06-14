@@ -34,7 +34,9 @@ function ReturnPageContent() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4 text-foreground">Payment Status</h1>
+      <h1 className="text-2xl font-bold mb-4 text-foreground">
+        Payment Status
+      </h1>
       {status === 'complete' && (
         <p className="text-primary">
           Payment successful! Redirecting to dashboard...

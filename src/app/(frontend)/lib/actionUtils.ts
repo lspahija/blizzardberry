@@ -19,10 +19,12 @@ export const getRegisterToolsExample = (
   dataInputs: DataInput[],
   framework: Framework = Framework.VANILLA
 ) => {
-  return getActionsScript(framework, [{
-    functionName,
-    dataInputs,
-  }]);
+  return getActionsScript(framework, [
+    {
+      functionName,
+      dataInputs,
+    },
+  ]);
 };
 
 export const getRegisterMultipleToolsExample = (

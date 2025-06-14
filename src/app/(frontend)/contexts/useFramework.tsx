@@ -1,6 +1,12 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import { Framework } from '@/app/(frontend)/lib/scriptUtils';
 
 interface FrameworkContextType {
@@ -8,7 +14,9 @@ interface FrameworkContextType {
   setSelectedFramework: (framework: Framework) => void;
 }
 
-const FrameworkContext = createContext<FrameworkContextType | undefined>(undefined);
+const FrameworkContext = createContext<FrameworkContextType | undefined>(
+  undefined
+);
 
 export function FrameworkProvider({ children }: { children: ReactNode }) {
   const [selectedFramework, setSelectedFramework] = useState<Framework>(() => {
@@ -24,7 +32,9 @@ export function FrameworkProvider({ children }: { children: ReactNode }) {
   }, [selectedFramework]);
 
   return (
-    <FrameworkContext.Provider value={{ selectedFramework, setSelectedFramework }}>
+    <FrameworkContext.Provider
+      value={{ selectedFramework, setSelectedFramework }}
+    >
       {children}
     </FrameworkContext.Provider>
   );

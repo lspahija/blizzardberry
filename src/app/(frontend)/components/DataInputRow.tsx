@@ -41,7 +41,10 @@ export default function DataInputRow({
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr_70px_70px] gap-2 mt-4 items-center">
       <div>
-        <Label htmlFor={`inputName${index}`} className="flex items-center gap-2">
+        <Label
+          htmlFor={`inputName${index}`}
+          className="flex items-center gap-2"
+        >
           {nameIcon}
           Name
         </Label>
@@ -54,7 +57,10 @@ export default function DataInputRow({
         />
       </div>
       <div>
-        <Label htmlFor={`inputType${index}`} className="flex items-center gap-2">
+        <Label
+          htmlFor={`inputType${index}`}
+          className="flex items-center gap-2"
+        >
           {typeIcon}
           Type
         </Label>
@@ -73,7 +79,10 @@ export default function DataInputRow({
         </Select>
       </div>
       <div>
-        <Label htmlFor={`inputDesc${index}`} className="flex items-center gap-2">
+        <Label
+          htmlFor={`inputDesc${index}`}
+          className="flex items-center gap-2"
+        >
           {descriptionIcon}
           Description
         </Label>
@@ -86,7 +95,9 @@ export default function DataInputRow({
         />
       </div>
       <div className="flex flex-col items-center gap-1 mt-2.5">
-        <Label htmlFor={`inputArray${index}`} className="mb-0">Array</Label>
+        <Label htmlFor={`inputArray${index}`} className="mb-0">
+          Array
+        </Label>
         <input
           id={`inputArray${index}`}
           type="checkbox"

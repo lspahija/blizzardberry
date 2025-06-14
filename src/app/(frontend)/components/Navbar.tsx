@@ -1,10 +1,25 @@
-"use client";
+'use client';
 
-import { MessageSquare, LogOut, Send, Info, Mail, Tag, X, Loader2 } from 'lucide-react';
+import {
+  MessageSquare,
+  LogOut,
+  Send,
+  Info,
+  Mail,
+  Tag,
+  X,
+  Loader2,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/app/(frontend)/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/app/(frontend)/components/ui/dialog';
 import { Input } from '@/app/(frontend)/components/ui/input';
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { Label } from '@/app/(frontend)/components/ui/label';
@@ -14,7 +29,9 @@ export function Navbar() {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackType, setFeedbackType] = useState('bug');
   const { data: session } = useSession();
-  const [feedbackEmail, setFeedbackEmail] = useState(session?.user?.email || '');
+  const [feedbackEmail, setFeedbackEmail] = useState(
+    session?.user?.email || ''
+  );
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -64,12 +81,39 @@ export function Navbar() {
           Blizzard<span className="text-[#FE4A60]">Berry</span>
         </Link>
         <span className="mx-2 text-gray-300 select-none">|</span>
-        <Link href="/dashboard" className="text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900">Dashboard</Link>
-        <Link href="/usage" className="text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900">Usage</Link>
-        <Link href="/pricing" className="text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900">Pricing</Link>
-        <Link href="/settings" className="text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900">Settings</Link>
+        <Link
+          href="/dashboard"
+          className="text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900"
+        >
+          Dashboard
+        </Link>
+        <Link
+          href="/usage"
+          className="text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900"
+        >
+          Usage
+        </Link>
+        <Link
+          href="/pricing"
+          className="text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900"
+        >
+          Pricing
+        </Link>
+        <Link
+          href="/settings"
+          className="text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900"
+        >
+          Settings
+        </Link>
         <div className="flex items-center gap-2 ml-auto">
-          <a href="https://blizzardberry.com/docs" target="_blank" rel="noopener noreferrer" className="text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-[#FE4A60]">Docs</a>
+          <a
+            href="https://blizzardberry.com/docs"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-[#FE4A60]"
+          >
+            Docs
+          </a>
           <button
             className="flex items-center gap-2 px-3 py-1.5 text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] rounded-lg transition"
             onClick={() => setIsFeedbackOpen(true)}
@@ -79,7 +123,7 @@ export function Navbar() {
           </button>
           <button
             className="flex items-center gap-2 px-3 py-1.5 text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] rounded-lg transition"
-            onClick={() => signOut({ callbackUrl: '/login' })}
+            onClick={() => signOut({ redirectTo: '/' })}
           >
             <LogOut className="h-4 w-4" />
             Sign Out
@@ -97,12 +141,16 @@ export function Navbar() {
           <div className="bg-[#FFF4DA] border-l-4 border-[#FFC480] rounded-lg p-4 mb-6 flex items-center gap-3">
             <Info className="h-5 w-5 text-[#FFC480]" />
             <span className="text-gray-700 text-sm">
-              We value your feedback! Please let us know about bugs, feature requests, or anything else that can help us improve.
+              We value your feedback! Please let us know about bugs, feature
+              requests, or anything else that can help us improve.
             </span>
           </div>
           <form onSubmit={handleFeedbackSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="feedbackEmail" className="text-gray-900 text-base font-semibold flex items-center gap-2">
+              <Label
+                htmlFor="feedbackEmail"
+                className="text-gray-900 text-base font-semibold flex items-center gap-2"
+              >
                 <Mail className="h-4 w-4 text-[#FE4A60]" />
                 Email
               </Label>
@@ -115,7 +163,10 @@ export function Navbar() {
               />
             </div>
             <div>
-              <Label htmlFor="feedbackType" className="text-gray-900 text-base font-semibold flex items-center gap-2">
+              <Label
+                htmlFor="feedbackType"
+                className="text-gray-900 text-base font-semibold flex items-center gap-2"
+              >
                 <Tag className="h-4 w-4 text-[#FE4A60]" />
                 Feedback Type
               </Label>
@@ -131,7 +182,10 @@ export function Navbar() {
               </select>
             </div>
             <div>
-              <Label htmlFor="feedbackMessage" className="text-gray-900 text-base font-semibold flex items-center gap-2">
+              <Label
+                htmlFor="feedbackMessage"
+                className="text-gray-900 text-base font-semibold flex items-center gap-2"
+              >
                 <MessageSquare className="h-4 w-4 text-[#FE4A60]" />
                 Message
               </Label>
@@ -171,4 +225,4 @@ export function Navbar() {
       </Dialog>
     </>
   );
-} 
+}
