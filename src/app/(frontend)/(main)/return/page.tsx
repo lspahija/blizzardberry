@@ -34,23 +34,23 @@ function ReturnPageContent() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Payment Status</h1>
+      <h1 className="text-2xl font-bold mb-4 text-foreground">Payment Status</h1>
       {status === 'complete' && (
-        <p className="text-green-600">
+        <p className="text-primary">
           Payment successful! Redirecting to dashboard...
         </p>
       )}
       {status === 'open' && (
-        <p className="text-red-600">
+        <p className="text-destructive">
           Payment failed or was canceled. Please try again.
         </p>
       )}
       {status === 'error' && (
-        <p className="text-red-600">
+        <p className="text-destructive">
           An error occurred. Please try again or contact support.
         </p>
       )}
-      {!status && <p>Loading...</p>}
+      {!status && <p className="text-muted-foreground">Loading...</p>}
     </div>
   );
 }

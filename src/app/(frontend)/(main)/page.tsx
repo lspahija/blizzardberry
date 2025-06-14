@@ -131,8 +131,8 @@ export default function LandingPage() {
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-4"
           variants={itemVariants}
         >
-          Empower Your Webapp with <br />
-          <span className="text-primary">AI Agents</span>
+          Give Every User an <span className="text-primary"> Agent </span> for
+          Your App
         </motion.h1>
 
         <svg
@@ -160,8 +160,10 @@ export default function LandingPage() {
           className="text-lg text-muted-foreground mb-8 max-w-2xl"
           variants={itemVariants}
         >
-          Seamlessly integrate intelligent agents that take actions on your
-          webapp. Boost user engagement and automate workflows with ease.
+          Our AI agent learns your documentation to provide instant answers and
+          executes actions on your users' behalf. Let them navigate your app,
+          manage their accounts, and complete workflows—all through a simple
+          conversation.
         </motion.p>
         <motion.div className="flex space-x-4" variants={itemVariants}>
           <div className="relative group">
@@ -183,7 +185,7 @@ export default function LandingPage() {
               asChild
             >
               <Link href="https://github.com/your-repo" target="_blank">
-                Star on GitHub
+                Talk with Us
               </Link>
             </Button>
           </div>
@@ -194,29 +196,29 @@ export default function LandingPage() {
       <div className="py-16 bg-background">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12">
-            Why Choose BlizzardBerry?
+            More Than a Chatbot. A Complete Action Engine.
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
               {
                 icon: Zap,
-                title: 'Lightning Fast',
-                text: 'Deploy AI agents in minutes with a few lines of code.',
+                title: 'From Intent to Action, Instantly',
+                text: 'Connect your app\'s key functions to the agent. When a user says, "Upgrade my account" or "Add a teammate," our agent securely executes the command through your existing APIs. It\'s the most direct path from user request to conversion.',
               },
               {
                 icon: Shield,
-                title: 'Secure & Reliable',
-                text: 'Built with enterprise-grade security to protect your users.',
+                title: 'Learns Your App in Minutes',
+                text: 'No need to manually build complex conversation flows. Simply point the agent to your documentation or knowledge base. It instantly becomes an expert on your product, ready to answer user questions with precision. Embed with a single code snippet.',
               },
               {
                 icon: Rocket,
-                title: 'Scalable',
-                text: 'Handles millions of interactions with zero downtime.',
+                title: "You're Always in Control",
+                text: "You define exactly which actions the agent can and cannot perform. Set permissions, require user confirmation for sensitive tasks, and review a full audit log of every interaction. Enterprise-grade security isn't just a promise; it's built into the foundation.",
               },
               {
                 icon: Code,
-                title: 'Developer Friendly',
-                text: 'Built with Next.js, React, and TypeScript for easy integration.',
+                title: 'Drive Adoption, Not Just Support Tickets',
+                text: 'Empower users to solve their own problems and discover features 24/7. Our agent reduces support load while actively guiding users to success. Turn your user assistance from a cost center into a powerful engine for engagement and retention.',
               },
             ].map((item, index) => (
               <motion.div

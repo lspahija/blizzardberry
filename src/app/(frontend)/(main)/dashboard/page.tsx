@@ -136,29 +136,29 @@ export default function Dashboard() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
-        <p className="text-gray-900 text-lg">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-foreground text-lg">Loading...</p>
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-screen flex flex-col bg-[#FFFDF8] p-4"
+      className="min-h-screen flex flex-col bg-background p-4"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <div className="max-w-4xl mx-auto w-full">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
             Welcome, {session.user?.name}!
           </h1>
         </div>
         <div className="mb-6 flex space-x-4">
           <Button
             asChild
-            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-[#ff6a7a]"
+            className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90"
             onClick={() =>
               posthog.capture('create_agent_clicked', {
                 user_email: session?.user?.email,
@@ -172,7 +172,7 @@ export default function Dashboard() {
           </Button>
           <Button
             asChild
-            className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5"
+            className="bg-secondary text-secondary-foreground border-[3px] border-border transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5"
             onClick={() =>
               posthog.capture('user_config_clicked', {
                 user_email: session?.user?.email,
@@ -187,18 +187,18 @@ export default function Dashboard() {
 
         {loadingAgents ? (
           <div className="flex justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+            <Loader2 className="h-8 w-8 animate-spin text-foreground" />
           </div>
         ) : agents.length === 0 ? (
-          <p className="text-gray-600 text-lg mb-4 flex items-center justify-center">
-            <Bot className="h-6 w-6 mr-2 text-[#FE4A60]" />
+          <p className="text-muted-foreground text-lg mb-4 flex items-center justify-center">
+            <Bot className="h-6 w-6 mr-2 text-brand" />
             No agents found. Create one to get started!
           </p>
         ) : (
-          <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-6 rounded-xl shadow-xl border-l-8 border-l-[#FE4A60]">
+          <Card className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8 border-l-brand">
             <CardHeader className="flex items-center space-x-2">
-              <Bot className="h-6 w-6 text-[#FE4A60]" />
-              <CardTitle className="text-2xl font-bold text-gray-900">
+              <Bot className="h-6 w-6 text-brand" />
+              <CardTitle className="text-2xl font-bold text-foreground">
                 Your Agents
               </CardTitle>
             </CardHeader>
@@ -207,11 +207,11 @@ export default function Dashboard() {
                 {agents.map((agent, idx) => (
                   <li
                     key={agent.id}
-                    className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2"
+                    className="border-t pt-2 flex items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-4 py-2"
                   >
-                    <Bot className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
+                    <Bot className="h-4 w-4 text-brand/80 mr-3 mt-1" />
                     <div className="flex-1">
-                      <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">
+                      <p className="text-lg md:text-lg text-base text-foreground font-semibold mb-1">
                         <Link
                           href={`/agents/${agent.id}`}
                           className="hover:underline focus:underline outline-none"
@@ -225,15 +225,15 @@ export default function Dashboard() {
                           {agent.name}
                         </Link>
                       </p>
-                      <p className="text-sm text-gray-500 mb-1">
+                      <p className="text-sm text-muted-foreground mb-1">
                         <span className="font-semibold">Domain:</span>{' '}
                         {agent.websiteDomain}
                       </p>
-                      <p className="text-sm text-gray-500 mb-1">
+                      <p className="text-sm text-muted-foreground mb-1">
                         <span className="font-semibold">Created:</span>{' '}
                         {new Date(agent.createdAt).toLocaleString()}
                       </p>
-                      <p className="text-sm text-gray-500 mb-1">
+                      <p className="text-sm text-muted-foreground mb-1">
                         <span className="font-semibold">Model:</span>{' '}
                         {agent.model}
                       </p>
@@ -241,13 +241,13 @@ export default function Dashboard() {
                     <div className="flex gap-2 ml-4">
                       <Button
                         asChild
-                        className="bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2"
+                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2"
                       >
                         <Link href={`/agents/${agent.id}`}>View</Link>
                       </Button>
                       <Button
                         asChild
-                        className="bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
+                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
                       >
                         <Link
                           href={`/agents/${agent.id}/edit`}
@@ -261,7 +261,7 @@ export default function Dashboard() {
                         variant="destructive"
                         onClick={() => agent.id && handleDeleteAgent(agent.id)}
                         disabled={deletingAgentId === agent.id}
-                        className="border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
+                        className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
                         title="Delete Agent"
                       >
                         {deletingAgentId === agent.id ? (
@@ -272,7 +272,7 @@ export default function Dashboard() {
                       </Button>
                     </div>
                     {idx < agents.length - 1 && (
-                      <hr className="my-2 border-gray-200" />
+                      <hr className="my-2 border-border" />
                     )}
                   </li>
                 ))}

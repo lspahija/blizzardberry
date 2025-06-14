@@ -94,12 +94,12 @@ export default function NewAgentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8]">
-      <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-gray-900 sticky top-0 bg-[#FFFDF8] z-50">
+    <div className="min-h-screen bg-background">
+      <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-border sticky top-0 bg-background z-50">
         <div className="flex items-center space-x-2">
-          <span className="text-xl font-bold text-gray-900">
-            <span className="text-gray-900">Blizzard</span>
-            <span className="text-[#FE4A60]">Berry</span>
+          <span className="text-xl font-bold text-foreground">
+            <span className="text-foreground">Blizzard</span>
+            <span className="text-brand">Berry</span>
           </span>
         </div>
       </nav>
@@ -113,11 +113,11 @@ export default function NewAgentPage() {
         {agentId ? (
           <>
             <motion.div className="text-center" variants={itemVariants}>
-              <CheckCircle2 className="w-16 h-16 text-[#FE4A60] mx-auto mb-4" />
-              <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900 mb-12">
+              <CheckCircle2 className="w-16 h-16 text-brand mx-auto mb-4" />
+              <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-12">
                 Agent Created Successfully!
               </h1>
-              <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+              <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
                 Your agent is ready to be added to your website. Follow the
                 steps below to install it.
               </p>
@@ -129,23 +129,23 @@ export default function NewAgentPage() {
               whileInView="visible"
             >
               <div className="relative mb-12">
-                <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
-                <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-xl border-l-8 border-l-[#FE4A60]">
+                <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
+                <Card className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8 border-l-brand">
                   <CardHeader className="flex items-center space-x-2">
-                    <Bot className="h-7 w-7 text-[#FE4A60]" />
-                    <CardTitle className="text-2xl font-semibold text-gray-900">
+                    <Bot className="h-7 w-7 text-brand" />
+                    <CardTitle className="text-2xl font-semibold text-foreground">
                       Install Your Agent
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-8">
                     <div>
-                      <p className="text-base text-gray-600 mb-4">
+                      <p className="text-base text-muted-foreground mb-4">
                         To add your agent to your website, copy the code snippet
                         below and paste it between the <code>&lt;body&gt;</code>{' '}
                         tags of your website's HTML.
                       </p>
                       <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-foreground mb-2">
                           Select Framework
                         </label>
                         <Select
@@ -181,7 +181,7 @@ export default function NewAgentPage() {
                           customStyle={{
                             borderRadius: '8px',
                             padding: '16px',
-                            border: '2px solid #1a1a1a',
+                            border: '2px solid var(--color-border)',
                             backgroundColor: '#1a1a1a',
                           }}
                         >
@@ -191,22 +191,22 @@ export default function NewAgentPage() {
                         </SyntaxHighlighter>
                         <Button
                           onClick={handleCopy}
-                          className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold"
+                          className="absolute top-2 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold"
                         >
                           <Copy className="w-4 h-4 mr-2" />
                           {copied ? 'Copied!' : 'Copy Code'}
                         </Button>
                       </div>
-                      <p className="text-sm text-gray-600 mt-2">
+                      <p className="text-sm text-muted-foreground mt-2">
                         This script loads your agent with the unique ID:{' '}
                         <code>{agentId}</code>.
                       </p>
                     </div>
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-gray-900 border-l-4 border-[#FE4A60] pl-3 mb-2">
+                      <h3 className="text-lg font-semibold text-foreground border-l-4 border-brand pl-3 mb-2">
                         Next Steps
                       </h3>
-                      <ul className="list-disc list-inside text-gray-600 space-y-2 text-base">
+                      <ul className="list-disc list-inside text-muted-foreground space-y-2 text-base">
                         <li>
                           Paste the code snippet in your website's HTML, ideally
                           just before the closing <code>&lt;/body&gt;</code>{' '}
@@ -223,7 +223,7 @@ export default function NewAgentPage() {
                             href="https://blizzardberry.com/docs"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#FE4A60] hover:underline"
+                            className="text-brand hover:underline"
                           >
                             documentation{' '}
                             <ExternalLink className="inline w-4 h-4" />
@@ -233,7 +233,7 @@ export default function NewAgentPage() {
                       </ul>
                     </div>
                     <Button
-                      className="w-full bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 hover:bg-[#ff6a7a] transition-transform duration-200 shadow-md text-lg font-semibold"
+                      className="w-full bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/90 transition-transform duration-200 shadow-md text-lg font-semibold"
                       onClick={handleContinue}
                     >
                       Go to Dashboard
@@ -246,7 +246,7 @@ export default function NewAgentPage() {
         ) : (
           <>
             <motion.h1
-              className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900 mb-12 text-center"
+              className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-12 text-center"
               variants={itemVariants}
             >
               Create New Agent
@@ -258,11 +258,11 @@ export default function NewAgentPage() {
               whileInView="visible"
             >
               <div className="relative mb-12">
-                <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
-                <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-xl border-l-8 border-l-[#FE4A60]">
+                <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
+                <Card className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8 border-l-brand">
                   <CardHeader className="flex items-center space-x-2">
-                    <Bot className="h-7 w-7 text-[#FE4A60]" />
-                    <CardTitle className="text-2xl font-semibold text-gray-900">
+                    <Bot className="h-7 w-7 text-brand" />
+                    <CardTitle className="text-2xl font-semibold text-foreground">
                       Agent Details
                     </CardTitle>
                   </CardHeader>
@@ -270,12 +270,12 @@ export default function NewAgentPage() {
                     <div>
                       <Label
                         htmlFor="name"
-                        className="text-gray-900 flex items-center gap-2"
+                        className="text-foreground flex items-center gap-2"
                       >
-                        <Type className="h-4 w-4 text-[#FE4A60]" />
+                        <Type className="h-4 w-4 text-brand" />
                         Agent Name
                       </Label>
-                      <p className="text-sm text-gray-600 mt-1 ml-6">
+                      <p className="text-sm text-muted-foreground mt-1 ml-6">
                         A unique name for your agent
                       </p>
                       <div className="relative mt-2">
@@ -284,20 +284,20 @@ export default function NewAgentPage() {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           placeholder="My Customer Service Bot"
-                          className="pl-10 border-[2px] border-gray-900"
+                          className="pl-10 border-[2px] border-border"
                         />
-                        <Type className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                        <Type className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                       </div>
                     </div>
                     <div>
                       <Label
                         htmlFor="websiteDomain"
-                        className="text-gray-900 flex items-center gap-2"
+                        className="text-foreground flex items-center gap-2"
                       >
-                        <Globe className="h-4 w-4 text-[#FE4A60]" />
+                        <Globe className="h-4 w-4 text-brand" />
                         Website Domain
                       </Label>
-                      <p className="text-sm text-gray-600 mt-1 ml-6">
+                      <p className="text-sm text-muted-foreground mt-1 ml-6">
                         The domain of the website where this agent will be
                         installed
                       </p>
@@ -307,31 +307,31 @@ export default function NewAgentPage() {
                           value={websiteDomain}
                           onChange={(e) => setWebsiteDomain(e.target.value)}
                           placeholder="example.com"
-                          className="pl-10 border-[2px] border-gray-900"
+                          className="pl-10 border-[2px] border-border"
                         />
-                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                       </div>
                     </div>
                     <div>
                       <Label
                         htmlFor="model"
-                        className="text-gray-900 flex items-center gap-2"
+                        className="text-foreground flex items-center gap-2"
                       >
-                        <Settings className="h-4 w-4 text-[#FE4A60]" />
+                        <Settings className="h-4 w-4 text-brand" />
                         Language Model
                       </Label>
-                      <p className="text-sm text-gray-600 mt-1 ml-6">
+                      <p className="text-sm text-muted-foreground mt-1 ml-6">
                         Select the language model to power your agent
                       </p>
                       <div className="relative mt-2">
-                        <Settings className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none z-10" />
+                        <Settings className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
                         <Select
                           value={model}
                           onValueChange={(value) =>
                             setModel(value as AgentModel)
                           }
                         >
-                          <SelectTrigger className="pl-10 border-[2px] border-gray-900">
+                          <SelectTrigger className="pl-10 border-[2px] border-border">
                             <SelectValue placeholder="Select a model" />
                           </SelectTrigger>
                           <SelectContent>
@@ -345,7 +345,7 @@ export default function NewAgentPage() {
                       </div>
                     </div>
                     <Button
-                      className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 hover:bg-[#ff6a7a] transition-transform duration-200 shadow-md text-lg font-semibold w-full"
+                      className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/90 transition-transform duration-200 shadow-md text-lg font-semibold w-full"
                       onClick={onCreateAgent}
                     >
                       <CheckCircle2 className="w-4 h-4 mr-2" />
