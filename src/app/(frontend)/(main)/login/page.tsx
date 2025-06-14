@@ -83,7 +83,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <motion.div
         className="max-w-md w-full text-center"
         variants={containerVariants}
@@ -91,13 +91,13 @@ export default function LoginPage() {
         animate="visible"
       >
         <motion.h1
-          className="text-4xl font-bold text-gray-900 mb-6"
+          className="text-4xl font-bold text-foreground mb-6"
           variants={itemVariants}
         >
           Sign In to BlizzardBerry
         </motion.h1>
         <motion.p
-          className="text-lg text-gray-600 mb-8"
+          className="text-lg text-muted-foreground mb-8"
           variants={itemVariants}
         >
           Choose your preferred method to sign in and get started.
@@ -105,7 +105,7 @@ export default function LoginPage() {
         <motion.div className="flex flex-col space-y-4" variants={itemVariants}>
           {error && (
             <motion.div
-              className="text-red-600 text-sm"
+              className="text-destructive text-sm"
               variants={errorVariants}
               initial="hidden"
               animate="visible"
@@ -114,10 +114,10 @@ export default function LoginPage() {
             </motion.div>
           )}
           <div className="relative">
-            <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
+            <div className="absolute inset-0 bg-foreground rounded translate-x-1 translate-y-1"></div>
             <Button
               size="lg"
-              className="relative w-full bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
+              className="relative w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
               onClick={handleGitHubSignIn}
               disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
             >
@@ -142,10 +142,10 @@ export default function LoginPage() {
             </Button>
           </div>
           <div className="relative">
-            <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
+            <div className="absolute inset-0 bg-foreground rounded translate-x-1 translate-y-1"></div>
             <Button
               size="lg"
-              className="relative w-full bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
+              className="relative w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
               onClick={handleGoogleSignIn}
               disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
             >
@@ -170,8 +170,8 @@ export default function LoginPage() {
             </Button>
           </div>
           <div className="relative">
-            <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
-            <div className="relative w-full bg-[#FFFDF8] border-[3px] border-gray-900 rounded p-4 flex flex-col space-y-4">
+            <div className="absolute inset-0 bg-foreground rounded translate-x-1 translate-y-1"></div>
+            <div className="relative w-full bg-background border-[3px] border-border rounded p-4 flex flex-col space-y-4">
               <input
                 type="email"
                 id="email-resend"
@@ -182,12 +182,12 @@ export default function LoginPage() {
                   setError('');
                 }}
                 placeholder="Enter your email"
-                className="w-full px-3 py-2 text-gray-900 bg-[#FFFDF8] border-[2px] border-gray-900 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
+                className="w-full px-3 py-2 text-foreground bg-background border-[2px] border-border rounded focus:outline-none focus:ring-2 focus:ring-border"
                 disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
               />
               <Button
                 size="lg"
-                className="w-full bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
+                className="w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
                 onClick={handleResendSignIn}
                 disabled={
                   isGitHubLoading ||
@@ -207,7 +207,7 @@ export default function LoginPage() {
                       fill="currentColor"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" />
+                      <path d="M20 4H4C2.897 4 2 4.897 2 6v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm0 2v.511l-8 6.223-8-6.222V6h16zM4 18V9.044l8 6.223 8-6.223V18H4z" />
                     </svg>
                   )}
                   <span>

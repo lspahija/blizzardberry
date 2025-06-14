@@ -67,36 +67,36 @@ export default function UserConfig() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-foreground" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-screen flex flex-col bg-[#FFFDF8] p-4 relative overflow-hidden"
+      className="min-h-screen flex flex-col bg-background p-4 relative overflow-hidden"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <div className="max-w-4xl mx-auto w-full relative z-10">
         <div className="flex justify-between items-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900">
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground">
             User Configuration
           </h1>
           <Button
             asChild
-            className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg"
+            className="bg-accent text-accent-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg"
           >
             <Link href="/dashboard">Back to Dashboard</Link>
           </Button>
         </div>
 
         {/* Info/tip box */}
-        <div className="mb-12 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
-          <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
-          <span className="text-gray-800 text-base">
+        <div className="mb-12 flex items-center bg-muted border-l-4 border-destructive p-4 rounded-lg shadow-md">
+          <Info className="h-6 w-6 text-destructive mr-3" />
+          <span className="text-foreground text-base">
             Add this script to your website to provide user context to all your
             agents. You can customize the keys as needed.
           </span>
@@ -104,28 +104,28 @@ export default function UserConfig() {
 
         <motion.div variants={cardVariants}>
           <div className="relative mb-12">
-            <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
-            <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-xl border-l-8 border-l-[#FE4A60]">
+            <div className="absolute inset-0 bg-foreground rounded-lg translate-x-1 translate-y-1"></div>
+            <Card className="relative bg-muted border-[3px] border-border rounded-lg shadow-xl border-l-8 border-l-destructive">
               <CardHeader className="flex items-center space-x-2">
-                <UserCog className="h-7 w-7 text-[#FE4A60]" />
-                <CardTitle className="text-2xl font-semibold text-gray-900">
+                <UserCog className="h-7 w-7 text-destructive" />
+                <CardTitle className="text-2xl font-semibold text-foreground">
                   Global User Configuration
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-8">
                 <div>
-                  <p className="text-gray-600 mb-4 text-base">
+                  <p className="text-muted-foreground mb-4 text-base">
                     This configuration will be accessible to all your agents.
                     Add this script inside your website's{' '}
                     <code>&lt;body&gt;</code> tag to provide user context to
                     your agents.
                   </p>
                   <div className="mb-6">
-                    <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
-                      <Code className="h-4 w-4 text-[#FE4A60]" />
+                    <Label className="text-foreground text-lg font-semibold flex items-center gap-2">
+                      <Code className="h-4 w-4 text-destructive" />
                       Framework
                     </Label>
-                    <p className="text-sm text-gray-600 mt-2 ml-6">
+                    <p className="text-sm text-muted-foreground mt-2 ml-6">
                       Select the framework you're using to implement the user
                       configuration.
                     </p>
@@ -136,7 +136,7 @@ export default function UserConfig() {
                           setSelectedFramework(value as Framework)
                         }
                       >
-                        <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
+                        <SelectTrigger className="w-[200px] border-[2px] border-border">
                           <SelectValue placeholder="Select framework" />
                         </SelectTrigger>
                         <SelectContent>
@@ -162,31 +162,31 @@ export default function UserConfig() {
                       customStyle={{
                         borderRadius: '8px',
                         padding: '16px',
-                        border: '2px solid #1a1a1a',
-                        backgroundColor: '#1a1a1a',
+                        border: '2px solid var(--color-border)',
+                        backgroundColor: 'var(--color-background-dark)',
                       }}
                     >
                       {configExample}
                     </SyntaxHighlighter>
                     <Button
                       onClick={handleCopy}
-                      className="absolute top-2 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold"
+                      className="absolute top-2 right-2 bg-accent text-accent-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold"
                     >
                       <Copy className="w-4 h-4 mr-2" />
                       {copied ? 'Copied!' : 'Copy Code'}
                     </Button>
                   </div>
-                  <p className="text-gray-600 text-sm mt-2">
+                  <p className="text-muted-foreground text-sm mt-2">
                     <strong>Note:</strong> The keys shown above are just
                     examples. You can add or remove keys as needed to fit your
                     application's requirements.
                   </p>
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-l-4 border-[#FE4A60] pl-3 mb-2">
+                  <h3 className="text-lg font-semibold text-foreground border-l-4 border-destructive pl-3 mb-2">
                     Implementation Steps
                   </h3>
-                  <ul className="list-disc list-inside text-gray-600 space-y-2 text-base">
+                  <ul className="list-disc list-inside text-muted-foreground space-y-2 text-base">
                     <li>
                       Add this script to your website's HTML, ideally just
                       before the closing <code>&lt;/body&gt;</code> tag
@@ -202,7 +202,7 @@ export default function UserConfig() {
                         href="https://blizzardberry.com/docs"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[#FE4A60] hover:underline"
+                        className="text-destructive hover:underline"
                       >
                         documentation{' '}
                         <ExternalLink className="inline w-4 h-4" />
