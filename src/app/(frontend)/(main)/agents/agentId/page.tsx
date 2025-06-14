@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -47,6 +47,127 @@ import {
 } from '@/app/(frontend)/components/ui/select';
 import { Label } from '@/app/(frontend)/components/ui/label';
 
+const containerVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8 },
+  },
+};
+
+function ActionsContent({
+  actions,
+  deletingActionId,
+  setActions,
+  setDeletingActionId,
+}: {
+  actions: Action[];
+  deletingActionId: string | null;
+  setActions: (actions: Action[]) => void;
+  setDeletingActionId: (id: string | null) => void;
+}) {
+  const { handleDeleteAction } = useActionForm();
+
+  const handleDeleteActionWithLoading = async (actionId: string) => {
+    setDeletingActionId(actionId);
+    try {
+      await handleDeleteAction(actionId);
+      setActions(actions.filter((action) => action.id !== actionId));
+    } finally {
+      setDeletingActionId(null);
+    }
+  };
+
+  return (
+    <>
+      {actions.length === 0 ? (
+        <p className="text-gray-600 text-lg mb-4 flex items-center justify-center">
+          <Zap className="h-6 w-6 mr-2 text-[#FE4A60]" />
+          No actions found. Create one to get started!
+        </p>
+      ) : (
+        <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-6 rounded-xl shadow-xl border-l-8 border-l-[#FE4A60]">
+          <CardHeader className="flex items-center space-x-2">
+            <Zap className="h-6 w-6 text-[#FE4A60]" />
+            <CardTitle className="text-2xl font-bold text-gray-900">
+              Actions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-4">
+              {actions.map((action, idx) => (
+                <li
+                  key={action.id || action.name}
+                  className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2"
+                >
+                  <Zap className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
+                  <div className="flex-1">
+                    <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">
+                      {action.name}
+                    </p>
+                    <p className="text-sm text-gray-500 mb-1">
+                      <span className="font-semibold">Description:</span>{' '}
+                      {action.description}
+                    </p>
+                    <p className="text-sm text-gray-500 mb-1">
+                      <span className="font-semibold">Context:</span>{' '}
+                      {action.executionContext}
+                    </p>
+                    <p className="text-sm text-gray-500 mb-1">
+                      <span className="font-semibold">Model:</span>{' '}
+                      {action.executionContext === ExecutionContext.SERVER ? (
+                        <>
+                          {(
+                            action as BackendAction
+                          ).executionModel.request.method.toUpperCase()}{' '}
+                          {(action as BackendAction).executionModel.request.url}
+                        </>
+                      ) : (
+                        (action as FrontendAction).executionModel.functionName
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-500 mb-1">
+                      <span className="font-semibold">Parameters:</span>{' '}
+                      {(action.executionModel.parameters || []).length > 0
+                        ? (action.prototype.executionModel.parameters || [])
+                            .map(
+                              (param) =>
+                                `${param.name} (${param.type}${param.isArray ? '[]' : ''})`
+                            )
+                            .join(', ')
+                        : 'None'}
+                    </p>
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="ml-4 rounded-full p-2 hover:bg-[#FE4A60]/80 transition group-hover:scale-110"
+                    onClick={() =>
+                      action.id && handleDeleteActionWithLoading(action.id)
+                    }
+                    disabled={deletingActionId === action.id}
+                    title="Delete Action"
+                  >
+                    {deletingActionId === action.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
+                    )}
+                  </Button>
+                  {idx < actions.length - 1 && (
+                    <hr className="my-2 border-gray-200" />
+                  )}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+    </>
+  );
+}
+
 export default function AgentDetails({
   params: paramsPromise,
 }: {
@@ -62,8 +183,6 @@ export default function AgentDetails({
   const [showAgentCode, setShowAgentCode] = useState(false);
   const [copied, setCopied] = useState(false);
   const { selectedFramework, setSelectedFramework } = useFramework();
-
-  const { handleDeleteAction } = useActionForm();
   const {
     documents,
     loadingDocuments,
@@ -71,16 +190,16 @@ export default function AgentDetails({
     handleDeleteDocument,
   } = useDocuments();
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8 },
-    },
+  const clientActions = actions.filter(
+    (action) => action.executionContext === ExecutionContext.CLIENT
+  );
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  // Fetch agent details
   useEffect(() => {
     async function fetchAgent() {
       try {
@@ -100,7 +219,6 @@ export default function AgentDetails({
     fetchAgent();
   }, [params.agentId]);
 
-  // Fetch actions for the agent
   useEffect(() => {
     async function fetchActions() {
       try {
@@ -122,26 +240,6 @@ export default function AgentDetails({
 
     fetchActions();
   }, [params.agentId]);
-
-  const handleDeleteActionWithLoading = async (actionId: string) => {
-    setDeletingActionId(actionId);
-    try {
-      await handleDeleteAction(actionId);
-      setActions(actions.filter((action) => action.id !== actionId));
-    } finally {
-      setDeletingActionId(null);
-    }
-  };
-
-  const clientActions = actions.filter(
-    (action) => action.executionContext === ExecutionContext.CLIENT
-  );
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   useEffect(() => {
     if (showClientActions || showAgentCode) {
@@ -264,6 +362,7 @@ export default function AgentDetails({
             </Button>
           )}
         </div>
+
         {showClientActions && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
             <div
@@ -531,91 +630,21 @@ export default function AgentDetails({
           <div className="flex justify-center">
             <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
           </div>
-        ) : actions.length === 0 ? (
-          <p className="text-gray-600 text-lg mb-4 flex items-center justify-center">
-            <Zap className="h-6 w-6 mr-2 text-[#FE4A60]" />
-            No actions found. Create one to get started!
-          </p>
         ) : (
-          <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-6 rounded-xl shadow-xl border-l-8 border-l-[#FE4A60]">
-            <CardHeader className="flex items-center space-x-2">
-              <Zap className="h-6 w-6 text-[#FE4A60]" />
-              <CardTitle className="text-2xl font-bold text-gray-900">
-                Actions
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-4">
-                {actions.map((action, idx) => (
-                  <li
-                    key={action.id || action.name}
-                    className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2"
-                  >
-                    <Zap className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
-                    <div className="flex-1">
-                      <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">
-                        {action.name}
-                      </p>
-                      <p className="text-sm text-gray-500 mb-1">
-                        <span className="font-semibold">Description:</span>{' '}
-                        {action.description}
-                      </p>
-                      <p className="text-sm text-gray-500 mb-1">
-                        <span className="font-semibold">Context:</span>{' '}
-                        {action.executionContext}
-                      </p>
-                      <p className="text-sm text-gray-500 mb-1">
-                        <span className="font-semibold">Model:</span>{' '}
-                        {action.executionContext === ExecutionContext.SERVER ? (
-                          <>
-                            {(
-                              action as BackendAction
-                            ).executionModel.request.method.toUpperCase()}{' '}
-                            {
-                              (action as BackendAction).executionModel.request
-                                .url
-                            }
-                          </>
-                        ) : (
-                          (action as FrontendAction).executionModel.functionName
-                        )}
-                      </p>
-                      <p className="text-sm text-gray-500 mb-1">
-                        <span className="font-semibold">Parameters:</span>{' '}
-                        {(action.executionModel.parameters || []).length > 0
-                          ? (action.executionModel.parameters || [])
-                              .map(
-                                (param) =>
-                                  `${param.name} (${param.type}${param.isArray ? '[]' : ''})`
-                              )
-                              .join(', ')
-                          : 'None'}
-                      </p>
-                    </div>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="ml-4 rounded-full p-2 hover:bg-[#FE4A60]/80 transition group-hover:scale-110"
-                      onClick={() =>
-                        action.id && handleDeleteActionWithLoading(action.id)
-                      }
-                      disabled={deletingActionId === action.id}
-                      title="Delete Action"
-                    >
-                      {deletingActionId === action.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                      )}
-                    </Button>
-                    {idx < actions.length - 1 && (
-                      <hr className="my-2 border-gray-200" />
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+          <Suspense
+            fallback={
+              <div className="flex justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+              </div>
+            }
+          >
+            <ActionsContent
+              actions={actions}
+              deletingActionId={deletingActionId}
+              setActions={setActions}
+              setDeletingActionId={setDeletingActionId}
+            />
+          </Suspense>
         )}
 
         {loadingDocuments ? (
