@@ -32,9 +32,9 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8]">
+    <div className="min-h-screen bg-background">
       {/* Navbar */}
-      <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-gray-900 sticky top-0 bg-[#FFFDF8] z-50">
+      <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-gray-900 sticky top-0 bg-background z-50">
         <div className="flex items-center space-x-2">
           <span className="text-xl font-bold text-gray-900">
             <span className="text-gray-900">Blizzard</span>
@@ -72,7 +72,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
             <Button
               variant="outline"
-              className="relative bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+              className="relative bg-background text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
               asChild
             >
               <Link href="/login">Sign In</Link>
@@ -81,7 +81,7 @@ export default function LandingPage() {
           <div className="relative">
             <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
             <Button
-              className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+              className="relative bg-primary text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
               asChild
             >
               <Link href="/login">Try For Free</Link>
@@ -154,7 +154,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
             <Button
               size="lg"
-              className="relative bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+              className="relative bg-primary text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
               asChild
             >
               <Link href="/login">Get Started Now</Link>
@@ -165,7 +165,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               variant="outline"
-              className="relative bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+              className="relative bg-background text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
               asChild
             >
               <Link href="https://github.com/your-repo" target="_blank">
@@ -177,7 +177,7 @@ export default function LandingPage() {
       </motion.div>
 
       {/* Value Proposition Section */}
-      <div className="py-16 bg-[#FFFDF8]">
+      <div className="py-16 bg-background">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
             Why Choose BlizzardBerry?
@@ -278,7 +278,7 @@ export default function LandingPage() {
       </div>
 
       {/* CTA Section */}
-      <div className="py-16 text-center bg-[#FFC480]">
+      <div className="py-16 text-center bg-primary">
         <h2 className="text-4xl font-bold text-gray-900 mb-4">
           Ready to Transform Your Webapp?
         </h2>
@@ -290,7 +290,7 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-gray-900 rounded translate-x-1 translate-y-1"></div>
           <Button
             size="lg"
-            className="relative bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+            className="relative bg-background text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
             asChild
           >
             <Link href="/login">Get Started for Free</Link>

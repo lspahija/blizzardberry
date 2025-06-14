@@ -1,122 +1,136 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Sets up the 'dark:' variant to work with a .dark class on a parent element */
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-background: #FFFDF8;
-  --color-foreground: #1F2937;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: #1F2937;
-  --color-sidebar-border: #1F2937;
-  --color-sidebar-accent-foreground: #1F2937;
-  --color-sidebar-accent: #FFF4DA;
-  --color-sidebar-primary-foreground: #1F2937;
-  --color-sidebar-primary: #FFC480;
-  --color-sidebar-foreground: #1F2937;
-  --color-sidebar: #FFFDF8;
-  --color-chart-5: #5CF1A4;
-  --color-chart-4: #FFC480;
-  --color-chart-3: #FFC480;
-  --color-chart-2: #FFF4DA;
-  --color-chart-1: #FFFDF8;
-  --color-ring: #1F2937;
-  --color-input: #1F2937;
-  --color-border: #1F2937;
-  --color-destructive: #EF4444;
-  --color-accent-foreground: #1F2937;
-  --color-accent: #FFF4DA;
-  --color-muted-foreground: #4B5563;
-  --color-muted: #FFF4DA;
-  --color-secondary-foreground: #1F2937;
-  --color-secondary: #FFFDF8;
-  --color-primary-foreground: #1F2937;
-  --color-primary: #FFC480;
-  --color-popover-foreground: #1F2937;
-  --color-popover: #FFFDF8;
-  --color-card-foreground: #1F2937;
-  --color-card: #FFF4DA;
+  /* ========================================================================
+   * Radius / Border Radius
+   * ======================================================================== */
+  --radius: 0.5rem;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-}
 
-:root {
-  --radius: 0.5rem;
-  --background: #0f2de3;
-  --foreground: #1F2937;
-  --card: #FFF4DA;
-  --card-foreground: #1F2937;
-  --popover: #FFFDF8;
-  --popover-foreground: #1F2937;
-  --primary: #d6107a;
-  --primary-foreground: #1F2937;
-  --secondary: #FFFDF8;
-  --secondary-foreground: #1F2937;
-  --muted: #FFF4DA;
-  --muted-foreground: #4B5563;
-  --accent: #FFF4DA;
-  --accent-foreground: #1F2937;
-  --destructive: #EF4444;
-  --border: #1F2937;
-  --input: #1F2937;
-  --ring: #1F2937;
-  --chart-1: #FFFDF8;
-  --chart-2: #FFF4DA;
-  --chart-3: #FFC480;
-  --chart-4: #FFC480;
-  --chart-5: #5CF1A4;
-  --sidebar: #FFFDF8;
-  --sidebar-foreground: #1F2937;
-  --sidebar-primary: #FFC480;
-  --sidebar-primary-foreground: #1F2937;
-  --sidebar-accent: #FFF4DA;
-  --sidebar-accent-foreground: #1F2937;
-  --sidebar-border: #1F2937;
-  --sidebar-ring: #1F2937;
-}
+  /* ========================================================================
+   * Fonts
+   * ======================================================================== */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 
-.dark {
-  --background: #1F2937;
-  --foreground: #FFFDF8;
-  --card: #374151;
-  --card-foreground: #FFFDF8;
-  --popover: #374151;
-  --popover-foreground: #FFFDF8;
-  --primary: #FFC480;
-  --primary-foreground: #1F2937;
-  --secondary: #4B5563;
-  --secondary-foreground: #FFFDF8;
-  --muted: #4B5563;
-  --muted-foreground: #9CA3AF;
-  --accent: #4B5563;
-  --accent-foreground: #FFFDF8;
-  --destructive: #DC2626;
-  --border: #FFFDF8;
-  --input: #FFFDF8;
-  --ring: #9CA3AF;
-  --chart-1: #374151;
-  --chart-2: #4B5563;
-  --chart-3: #FFC480;
-  --chart-4: #FFC480;
-  --chart-5: #5CF1A4;
-  --sidebar: #374151;
-  --sidebar-foreground: #FFFDF8;
-  --sidebar-primary: #FFC480;
-  --sidebar-primary-foreground: #1F2937;
-  --sidebar-accent: #4B5563;
-  --sidebar-accent-foreground: #FFFDF8;
-  --sidebar-border: #FFFDF8;
-  --sidebar-ring: #9CA3AF;
+  /* ========================================================================
+   * Colors (Light Mode)
+   * ======================================================================== */
+  /* --- Base --- */
+  --color-background: #FFFDF8;
+  --color-foreground: #1F2937;
+  --color-border: #1F2937;
+  --color-ring: #1F2937;
+  --color-input: #1F2937;
+
+  /* --- Primary / Brand --- */
+  --color-primary: #FFC480;
+  --color-primary-foreground: #1F2937;
+
+  /* --- Secondary --- */
+  --color-secondary: #FFFDF8;
+  --color-secondary-foreground: #1F2937;
+
+  /* --- Muted --- */
+  --color-muted: #FFF4DA;
+  --color-muted-foreground: #4B5563;
+
+  /* --- Accent --- */
+  --color-accent: #FFF4DA;
+  --color-accent-foreground: #1F2937;
+
+  /* --- Components --- */
+  --color-card: #FFF4DA;
+  --color-card-foreground: #1F2937;
+  --color-popover: #FFFDF8;
+  --color-popover-foreground: #1F2937;
+
+  /* --- Destructive --- */
+  --color-destructive: #EF4444;
+
+  /* --- Custom: Sidebar --- */
+  --color-sidebar: #FFFDF8;
+  --color-sidebar-foreground: #1F2937;
+  --color-sidebar-primary: #FFC480;
+  --color-sidebar-primary-foreground: #1F2937;
+  --color-sidebar-accent: #FFF4DA;
+  --color-sidebar-accent-foreground: #1F2937;
+  --color-sidebar-border: #1F2937;
+  --color-sidebar-ring: #1F2937;
+
+  /* --- Custom: Chart --- */
+  --color-chart-1: #FFFDF8;
+  --color-chart-2: #FFF4DA;
+  --color-chart-3: #FFC480;
+  --color-chart-4: #FFC480;
+  --color-chart-5: #5CF1A4;
+
+  /* ========================================================================
+   * Colors (Dark Mode)
+   * The `-dark` suffix is automatically picked up by Tailwind.
+   * ======================================================================== */
+  /* --- Base --- */
+  --color-background-dark: #1F2937;
+  --color-foreground-dark: #FFFDF8;
+  --color-border-dark: #FFFDF8;
+  --color-ring-dark: #9CA3AF;
+  --color-input-dark: #FFFDF8;
+
+  /* --- Primary / Brand --- */
+  --color-primary-dark: #FFC480;
+  --color-primary-foreground-dark: #1F2937;
+
+  /* --- Secondary --- */
+  --color-secondary-dark: #4B5563;
+  --color-secondary-foreground-dark: #FFFDF8;
+
+  /* --- Muted --- */
+  --color-muted-dark: #4B5563;
+  --color-muted-foreground-dark: #9CA3AF;
+
+  /* --- Accent --- */
+  --color-accent-dark: #4B5563;
+  --color-accent-foreground-dark: #FFFDF8;
+
+  /* --- Components --- */
+  --color-card-dark: #374151;
+  --color-card-foreground-dark: #FFFDF8;
+  --color-popover-dark: #374151;
+  --color-popover-foreground-dark: #FFFDF8;
+
+  /* --- Destructive --- */
+  --color-destructive-dark: #DC2626;
+
+  /* --- Custom: Sidebar --- */
+  --color-sidebar-dark: #374151;
+  --color-sidebar-foreground-dark: #FFFDF8;
+  --color-sidebar-primary-dark: #FFC480;
+  --color-sidebar-primary-foreground-dark: #1F2937;
+  --color-sidebar-accent-dark: #4B5563;
+  --color-sidebar-accent-foreground-dark: #FFFDF8;
+  --color-sidebar-border-dark: #FFFDF8;
+  --color-sidebar-ring-dark: #9CA3AF;
+
+  /* --- Custom: Chart --- */
+  --color-chart-1-dark: #374151;
+  --color-chart-2-dark: #4B5563;
+  /* Chart 3, 4, and 5 are the same in both themes, so no -dark version is needed */
 }
 
 @layer base {
   * {
+    /* Uses the 'border' and 'ring' color variables defined in @theme */
     @apply border-border outline-ring/50;
   }
   body {
+    /* Uses the 'background', 'foreground', and 'sans' variables defined in @theme */
     @apply bg-background text-foreground font-sans;
   }
 }
