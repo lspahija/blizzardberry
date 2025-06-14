@@ -177,16 +177,18 @@
   }
 
   async function interpretActionResult(actionResultMessage) {
-    const chatResponse = await fetch('http://localhost:3000/api/chat', {
-      // TODO: this domain needs to be parameterized
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [...state.messages, actionResultMessage],
-        agentId,
-        idempotencyKey: generateId(),
-      }),
-    });
+    const chatResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/chat`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...state.messages, actionResultMessage],
+          agentId,
+          idempotencyKey: generateId(),
+        }),
+      }
+    );
 
     if (!chatResponse.ok) throw new Error('Failed to fetch AI response');
     const { text } = await chatResponse.json();
@@ -228,8 +230,7 @@
     }, 300);
 
     try {
-      const response = await fetch('http://localhost:3000/api/chat', {
-        // TODO: this domain needs to be parameterized
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -43,17 +43,17 @@ export const getAgentConfigScript = (
 
 const agentScriptNextJs = (agentId: string) => `
   id="blizzardberry-agent"
-  src="http://localhost:3000/agent/agent.js" 
+  src="${process.env.NEXT_PUBLIC_URL}/agent/agent.js" 
   strategy="afterInteractive"
   data-agent-id="${agentId}"
-`; // TODO: this domain needs to be parameterized
+`;
 
 const agentScriptVanilla = (agentId: string) => `
   id="blizzardberry-agent"
-  src="http://localhost:3000/agent/agent.js"
+  src="${process.env.NEXT_PUBLIC_URL}/agent/agent.js"
   type="text/javascript"
   data-agent-id="${agentId}"
-`; // TODO: this domain needs to be parameterized
+`;
 
 export const getAgentScript = (framework: Framework, agentId: string) => {
   if (framework === Framework.NEXT_JS) {
