@@ -106,7 +106,7 @@ export default function LandingPage() {
         animate="visible"
       >
         <svg
-          className="absolute h-auto w-16 sm:w-20 md:w-24 flex-shrink-0 p-2 md:relative sm:absolute lg:absolute left-0 lg:-translate-x-full lg:ml-32 md:translate-x-10 sm:-translate-y-16 md:-translate-y-0 -translate-x-2 lg:-translate-y-1"
+          className="hidden lg:block absolute h-auto w-16 lg:w-20 flex-shrink-0 p-2 left-0 -translate-x-4 lg:-translate-x-8 xl:-translate-x-12"
           viewBox="0 0 91 98"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -116,7 +116,7 @@ export default function LandingPage() {
             strokeWidth="3.445"
           ></path>
           <path
-            d="M79.653 5.729c-2.436 5.323-9.515 15.25-18.341 12.374m9.197 16.336c2.6-5.851 10.008-16.834 18.842-13.956m-9.738-15.07c-.374 3.787 1.076 12.078 9.869 14.943M70.61 34.6c.503-4.21-.69-13.346-9.49-16.214M14.922 65.967c1.338 5.677 6.372 16.756 15.808 15.659M18.21 95.832c-1.392-6.226-6.54-18.404-15.984-17.305m12.85-12.892c-.41 3.771-3.576 11.588-12.968 12.681M18.025 96c.367-4.21 3.453-12.905 12.854-14"
+            d="M79.653 5.729c-2.436 5.323-9.515 15.25-18.341 12.374m9.197 16.336c2.6-5.851 10.008-16.834 18.842-13.956m-9.738-15.07c-.374 3.787 1.076 12.078 9.869 14.943M70.61 34.6c.503-4.21-.69-13.346-9.49-16.214M14.922 65.967c1.338 5.677 6.372 16.756 15.808 15.659M18.21 95.832c-1.392-6.226-6.54-18.404-15.984-17.305m12.85-12.892c-.41 3.771-3.576 11.588-12.968 12.681M18.025 96c.367-4.2 3.453-12.905 12.854-14"
             className="stroke-foreground"
             fill="none"
             strokeWidth="2.548"
@@ -125,7 +125,7 @@ export default function LandingPage() {
         </svg>
 
         <motion.h1
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-4"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-4 z-10"
           variants={itemVariants}
         >
           Give Your Users an
@@ -134,7 +134,7 @@ export default function LandingPage() {
         </motion.h1>
 
         <svg
-          className="w-16 lg:w-20 h-auto lg:absolute flex-shrink-0 right-0 bottom-0 md:block hidden translate-y-10 md:translate-y-20 lg:translate-y-4 lg:-translate-x-12 -translate-x-10"
+          className="hidden lg:block absolute w-16 lg:w-20 h-auto flex-shrink-0 right-0 bottom-0 translate-y-12 lg:translate-y-8 -translate-x-8 lg:-translate-x-12 xl:-translate-x-16"
           viewBox="0 0 92 80"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -153,7 +153,7 @@ export default function LandingPage() {
         </svg>
 
         <motion.p
-          className="text-lg text-muted-foreground mb-8 max-w-2xl"
+          className="text-lg text-muted-foreground mb-8 max-w-2xl z-10"
           variants={itemVariants}
         >
           Our AI agents learn your documentation to provide instant answers and
@@ -161,7 +161,7 @@ export default function LandingPage() {
           manage their accounts, and complete workflows—all through a simple
           conversation.
         </motion.p>
-        <motion.div className="flex space-x-4" variants={itemVariants}>
+        <motion.div className="flex space-x-4 z-10" variants={itemVariants}>
           <div className="relative group">
             <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
             <Button
