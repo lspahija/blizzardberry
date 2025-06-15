@@ -99,7 +99,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 
 ## Before Launch
 - (Frankie) polish the user onboarding experience. All the forms needs to work well and be easy to use. - use AI to find the webapps with the best UX and then copy what they do well
-- (Frankie) test <script> tags on all the different frameworks we support
+- (Frankie) test <script> tags on all the different frameworks we support and add basic automated tests of the agent with Playwright (Playwright can be used to test the agent.js script tag in different frameworks)
 - (Luka) onboard Stripe
   - map each LLM to credits per token
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
@@ -113,7 +113,6 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 - Differentiate enough to be able to win the PR war when the chatbase founder gets pissed that there’s competition. Differentiating is probably in our interest because we don't want to seem like a knock off. We want to be our own thing and that should be people's first impression.
 - make the website responsive and mobile-friendly
-- test the different frameworks we support and add basic automated tests of the agent with Playwright
 
 ## Launch and Sell! 
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
