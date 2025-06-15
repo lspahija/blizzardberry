@@ -248,8 +248,7 @@ export default function LandingPage() {
             Ready to Transform Your Webapp?
           </h2>
           <p className="text-lg mb-6">
-            Join thousands of developers using BlizzardBerry to power their apps
-            with AI agents.
+            Create an agent for your users in minutes.
           </p>
           <div className="relative inline-block group">
             <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
