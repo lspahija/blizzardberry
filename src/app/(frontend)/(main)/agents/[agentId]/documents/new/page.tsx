@@ -77,19 +77,19 @@ export default function AddDocument({
 
   return (
     <motion.div
-      className="min-h-screen flex flex-col bg-[#FFFDF8] p-4"
+      className="min-h-screen flex flex-col bg-background p-4"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <div className="max-w-4xl mx-auto w-full">
         <div className="flex justify-between items-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900">
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground">
             Add New Document
           </h1>
           <Button
             asChild
-            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg"
+            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg"
           >
             <Link
               href={`/agents/${params.agentId}`}
@@ -102,18 +102,18 @@ export default function AddDocument({
         </div>
 
         {/* Info/tip box */}
-        <div className="mb-12 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
-          <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
-          <span className="text-gray-800 text-base">
+        <div className="mb-12 flex items-center bg-muted border-l-4 border-brand p-4 rounded-lg shadow-md">
+          <Info className="h-6 w-6 text-brand mr-3" />
+          <span className="text-foreground text-base">
             Upload or paste your document content below. You can also add
             optional metadata to provide more context for your agent.
           </span>
         </div>
 
-        <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-12 rounded-lg shadow-xl border-l-8 border-l-[#FE4A60]">
+        <Card className="border-[3px] border-border bg-card mb-12 rounded-lg shadow-xl border-l-8 border-l-brand">
           <CardHeader className="flex items-center space-x-2">
-            <FileText className="h-7 w-7 text-[#FE4A60]" />
-            <CardTitle className="text-2xl font-semibold text-gray-900">
+            <FileText className="h-7 w-7 text-brand" />
+            <CardTitle className="text-2xl font-semibold text-foreground">
               Document Details
             </CardTitle>
           </CardHeader>
@@ -122,12 +122,12 @@ export default function AddDocument({
               <div>
                 <Label
                   htmlFor="text"
-                  className="block text-gray-900 flex items-center gap-2 text-lg font-semibold"
+                  className="block text-foreground flex items-center gap-2 text-lg font-semibold"
                 >
-                  <FileText className="h-4 w-4 text-[#FE4A60]" />
+                  <FileText className="h-4 w-4 text-brand" />
                   Document Content
                 </Label>
-                <p className="text-sm text-gray-600 mt-1 ml-6">
+                <p className="text-sm text-muted-foreground mt-1 ml-6">
                   Upload a file or enter the text content of the document which
                   will be given to your agent.
                 </p>
@@ -135,10 +135,10 @@ export default function AddDocument({
                   <Dropzone onFileDrop={handleFileDrop} className="w-full" />
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-900"></div>
+                      <div className="w-full border-t border-border"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                      <span className="bg-[#FFFDF8] px-2 text-gray-900">
+                      <span className="bg-background px-2 text-foreground">
                         or
                       </span>
                     </div>
@@ -148,18 +148,18 @@ export default function AddDocument({
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     required
-                    className="mt-2 block w-full rounded-md border-gray-900 border-[2px] shadow-sm focus:border-[#FE4A60] focus:ring-[#FE4A60] text-base p-2"
+                    className="mt-2 block w-full rounded-md border-border border-[2px] shadow-sm focus:border-brand focus:ring-brand text-base p-2"
                     rows={10}
                     placeholder="Enter the document text here..."
                   />
                 </div>
               </div>
               <div>
-                <Label className="block text-gray-900 flex items-center gap-2 text-lg font-semibold">
-                  <PlusCircle className="h-4 w-4 text-[#FE4A60]" />
+                <Label className="block text-foreground flex items-center gap-2 text-lg font-semibold">
+                  <PlusCircle className="h-4 w-4 text-brand" />
                   Metadata (Optional)
                 </Label>
-                <p className="text-sm text-gray-600 mt-1 ml-6">
+                <p className="text-sm text-muted-foreground mt-1 ml-6">
                   Add key-value pairs to provide additional context for the
                   document.
                 </p>
@@ -177,7 +177,7 @@ export default function AddDocument({
                           updateMetadataField(index, 'key', e.target.value)
                         }
                         placeholder="category"
-                        className="mt-2 border-[2px] border-gray-900"
+                        className="mt-2 border-[2px] border-border"
                       />
                     </div>
                     <div>
@@ -189,13 +189,13 @@ export default function AddDocument({
                           updateMetadataField(index, 'value', e.target.value)
                         }
                         placeholder="product_info"
-                        className="mt-2 border-[2px] border-gray-900"
+                        className="mt-2 border-[2px] border-border"
                       />
                     </div>
                     <div>
                       <Button
                         variant="outline"
-                        className="bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200"
+                        className="bg-background text-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200"
                         onClick={() => removeMetadataField(index)}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -206,21 +206,21 @@ export default function AddDocument({
                 <Button
                   type="button"
                   variant="outline"
-                  className="mt-4 bg-white text-gray-900 border border-gray-300 hover:bg-gray-100 hover:border-gray-400 transition-transform duration-200 text-base font-normal px-4 py-2 flex items-center gap-2"
+                  className="mt-4 bg-card text-foreground border border-border hover:bg-muted hover:border-border transition-transform duration-200 text-base font-normal px-4 py-2 flex items-center gap-2"
                   onClick={addMetadataField}
                 >
                   <PlusCircle className="mr-2 h-4 w-4" />
                   Add Metadata Field
                 </Button>
               </div>
-              {error && <p className="text-red-600">{error}</p>}
+              {error && <p className="text-destructive">{error}</p>}
               {success && (
                 <p className="text-green-600">Document added successfully!</p>
               )}
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 hover:bg-[#ff6a7a] transition-transform duration-200 shadow-md text-lg font-semibold w-full"
+                className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/80 transition-transform duration-200 shadow-md text-lg font-semibold w-full"
               >
                 {isSubmitting ? (
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />

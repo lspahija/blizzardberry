@@ -56,7 +56,7 @@ export default function AgentDetailsWrapper({
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
+        <div className="min-h-screen flex items-center justify-center bg-background">
           <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
         </div>
       }
@@ -175,7 +175,7 @@ function AgentDetails({
 
   if (loadingAgent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
       </div>
     );
@@ -183,8 +183,8 @@ function AgentDetails({
 
   if (!agent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FFFDF8]">
-        <p className="text-gray-900 text-lg">
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-foreground text-lg">
           Agent not found.{' '}
           <Link href="/dashboard" className="text-[#FE4A60] hover:underline">
             Go back to dashboard
@@ -197,19 +197,19 @@ function AgentDetails({
 
   return (
     <motion.div
-      className="min-h-screen flex flex-col bg-[#FFFDF8] p-4"
+      className="min-h-screen flex flex-col bg-background p-4"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <div className="max-w-4xl mx-auto w-full">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
             {agent.name}
           </h1>
           <Button
             asChild
-            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg"
+            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg"
           >
             <Link href="/dashboard" className="flex items-center">
               Back to Dashboard
@@ -217,23 +217,23 @@ function AgentDetails({
           </Button>
         </div>
 
-        <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-6 rounded-xl shadow-xl border-l-8 border-l-[#FE4A60]">
+        <Card className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8 border-l-brand">
           <CardHeader className="flex items-center space-x-2">
-            <Bot className="h-6 w-6 text-[#FE4A60]" />
-            <CardTitle className="text-2xl font-bold text-gray-900">
+            <Bot className="h-6 w-6 text-brand" />
+            <CardTitle className="text-2xl font-bold text-foreground">
               Agent Details
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-600 mb-2 text-base">
+            <p className="text-muted-foreground mb-2 text-base">
               <span className="font-semibold">Domain:</span>{' '}
               {agent.websiteDomain}
             </p>
-            <p className="text-gray-600 mb-2 text-base">
+            <p className="text-muted-foreground mb-2 text-base">
               <span className="font-semibold">Created:</span>{' '}
               {new Date(agent.createdAt).toLocaleString()}
             </p>
-            <p className="text-gray-600 mb-2 text-base">
+            <p className="text-muted-foreground mb-2 text-base">
               <span className="font-semibold">Model:</span> {agent.model}
             </p>
           </CardContent>
@@ -242,7 +242,7 @@ function AgentDetails({
         <div className="mb-6 flex space-x-4">
           <Button
             asChild
-            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-[#ff6a7a]"
+            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg"
           >
             <Link
               href={`/agents/${params.agentId}/actions/new`}
@@ -254,7 +254,7 @@ function AgentDetails({
           </Button>
           <Button
             asChild
-            className="bg-[#FE4A60] text-white border-[3px] border-gray-900 transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-[#ff6a7a]"
+            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg"
           >
             <Link
               href={`/agents/${params.agentId}/documents/new`}
@@ -265,7 +265,7 @@ function AgentDetails({
             </Link>
           </Button>
           <Button
-            className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg flex items-center gap-2 shadow-md"
+            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg flex items-center gap-2 shadow-md"
             onClick={() => setShowAgentCode(true)}
             title="Show installation code for this agent"
           >
@@ -274,7 +274,7 @@ function AgentDetails({
           </Button>
           {clientActions.length > 0 && (
             <Button
-              className="bg-[#FFC480] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg flex items-center gap-2 shadow-md"
+              className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg flex items-center gap-2 shadow-md"
               onClick={() => setShowClientActions(true)}
               title="Show code for client actions"
             >
@@ -551,7 +551,7 @@ function AgentDetails({
             <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
           </div>
         ) : actions.length === 0 ? (
-          <p className="text-gray-600 text-lg mb-4 flex items-center justify-center">
+          <p className="text-foreground text-lg mb-4 flex items-center justify-center">
             <Zap className="h-6 w-6 mr-2 text-[#FE4A60]" />
             No actions found. Create one to get started!
           </p>
@@ -642,7 +642,7 @@ function AgentDetails({
             <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
           </div>
         ) : documents.length === 0 ? (
-          <p className="text-gray-600 text-lg mb-4 flex items-center justify-center">
+          <p className="text-foreground text-lg mb-4 flex items-center justify-center">
             <FileText className="h-6 w-6 mr-2 text-[#FE4A60]" />
             No documents found. Add one to get started!
           </p>

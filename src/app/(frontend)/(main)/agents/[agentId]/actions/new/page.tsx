@@ -56,7 +56,7 @@ function ActionFormContent() {
       animate="visible"
     >
       <motion.h1
-        className="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900 mb-12 text-center"
+        className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-12 text-center"
         variants={itemVariants}
       >
         Create Custom Action
@@ -107,12 +107,12 @@ function ActionFormContent() {
 
 export default function NewActionPage() {
   return (
-    <div className="min-h-screen bg-[#FFFDF8]">
-      <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-gray-900 sticky top-0 bg-[#FFFDF8] z-50">
+    <div className="min-h-screen bg-background">
+      <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-border sticky top-0 bg-background z-50">
         <div className="flex items-center space-x-2">
-          <span className="text-xl font-bold text-gray-900">
-            <span className="text-gray-900">Blizzard</span>
-            <span className="text-[#FE4A60]">Berry</span>
+          <span className="text-xl font-bold text-foreground">
+            <span className="text-foreground">Blizzard</span>
+            <span className="text-brand">Berry</span>
           </span>
         </div>
       </nav>
@@ -120,7 +120,7 @@ export default function NewActionPage() {
       <Suspense
         fallback={
           <div className="flex items-center justify-center min-h-[50vh]">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+            <Loader2 className="h-8 w-8 animate-spin text-foreground" />
           </div>
         }
       >
