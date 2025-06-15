@@ -128,8 +128,9 @@ export default function LandingPage() {
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-4"
           variants={itemVariants}
         >
-          Give Every User an <span className="text-primary"> Agent </span> for
-          Your App
+          Give Your Users an
+          <br />
+          <span className="text-primary"> AI Agent </span>
         </motion.h1>
 
         <svg
@@ -155,8 +156,8 @@ export default function LandingPage() {
           className="text-lg text-muted-foreground mb-8 max-w-2xl"
           variants={itemVariants}
         >
-          Our AI agent learns your documentation to provide instant answers and
-          executes actions on your users' behalf. Let them navigate your app,
+          Our AI agents learn your documentation to provide instant answers and
+          execute actions on your users' behalf. Let users navigate your app,
           manage their accounts, and complete workflows—all through a simple
           conversation.
         </motion.p>
@@ -180,7 +181,7 @@ export default function LandingPage() {
               asChild
             >
               <Link href="https://github.com/your-repo" target="_blank">
-                Talk with Us
+                Talk With Us
               </Link>
             </Button>
           </div>
