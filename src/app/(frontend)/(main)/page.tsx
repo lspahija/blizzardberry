@@ -9,7 +9,7 @@ import {
 } from '@/app/(frontend)/components/ui/card';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Zap, Shield, Rocket, Code } from 'lucide-react';
+import { Code, Rocket, Zap } from 'lucide-react';
 
 // Reusable component for the drop-shadow effect on buttons and cards
 const ShadowWrapper = ({ children }: { children: React.ReactNode }) => (
