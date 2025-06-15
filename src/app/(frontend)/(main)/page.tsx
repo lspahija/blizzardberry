@@ -192,7 +192,7 @@ export default function LandingPage() {
       <div className="py-16 bg-background">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12">
-            More Than a Chatbot. A Complete Action Engine.
+            More Than a Chatbot. An Agent Working for Your Users
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             {[
@@ -229,7 +229,7 @@ export default function LandingPage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="flex-1">
-                      <p className="text-base text-muted-foreground leading-relaxed">
+                      <p className="text-base text-foreground leading-relaxed">
                         {item.text}
                       </p>
                     </CardContent>

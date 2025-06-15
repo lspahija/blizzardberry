@@ -75,7 +75,7 @@ export function Navbar() {
     <>
       <nav className="bg-[#FFFDF8] border-b-[3px] border-gray-900 px-6 py-3 flex items-center gap-6 rounded-b-2xl shadow-md mb-8 sticky top-0 z-40">
         <Link
-          href="/dashboard"
+          href="/"
           className="text-2xl font-bold text-gray-900 tracking-tight select-none hover:underline focus:underline outline-none flex items-center"
         >
           Blizzard<span className="text-[#FE4A60]">Berry</span>
