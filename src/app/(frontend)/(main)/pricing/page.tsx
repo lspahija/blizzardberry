@@ -97,15 +97,15 @@ export default function PricingPage() {
 
   return (
     <div className="container mx-auto px-4 py-16 max-w-7xl">
-      <div className="text-center mb-16">
-        <h1 className="text-5xl font-bold mb-6 text-foreground">Pricing</h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+      <div className="text-center mb-8 md:mb-16">
+        <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 text-foreground">Pricing</h1>
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-4">
           Choose the perfect plan for your needs. All plans include our core
           features with different usage limits.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-16 px-4">
         <div className="bg-card p-8 border-[2px] border-border rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-3 text-foreground group-hover:text-secondary transition-colors">
@@ -238,19 +238,19 @@ export default function PricingPage() {
         </div>
       </div>
 
-      <div className="bg-card p-8 border-[2px] border-border rounded-xl max-w-2xl mx-auto text-center hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
-        <h2 className="text-2xl font-bold mb-4 text-foreground group-hover:text-secondary transition-colors">
+      <div className="bg-card p-6 md:p-8 border-[2px] border-border rounded-xl max-w-2xl mx-auto text-center hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
+        <h2 className="text-xl md:text-2xl font-bold mb-4 text-foreground group-hover:text-secondary transition-colors">
           Need More Credits?
         </h2>
-        <p className="text-lg mb-6 text-muted-foreground font-medium">
+        <p className="text-base md:text-lg mb-6 text-muted-foreground font-medium">
           Buy additional credits anytime. They never expire!
         </p>
-        <div className="flex items-center justify-center gap-4 mb-6">
-          <span className="text-4xl font-bold text-foreground">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 mb-6">
+          <span className="text-3xl md:text-4xl font-bold text-foreground">
             1,000 credits
           </span>
-          <span className="text-xl text-muted-foreground">for</span>
-          <span className="text-4xl font-bold text-foreground">$12</span>
+          <span className="text-lg md:text-xl text-muted-foreground">for</span>
+          <span className="text-3xl md:text-4xl font-bold text-foreground">$12</span>
         </div>
         <button
           className="py-3 px-8 bg-secondary text-secondary-foreground border-[2px] border-border rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"

@@ -203,15 +203,15 @@ function AgentDetails({
       animate="visible"
     >
       <div className="max-w-4xl mx-auto w-full">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
             {agent.name}
           </h1>
           <Button
             asChild
-            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg"
+            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full md:w-auto"
           >
-            <Link href="/dashboard" className="flex items-center">
+            <Link href="/dashboard" className="flex items-center justify-center">
               Back to Dashboard
             </Link>
           </Button>
@@ -220,33 +220,33 @@ function AgentDetails({
         <Card className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8 border-l-brand">
           <CardHeader className="flex items-center space-x-2">
             <Bot className="h-6 w-6 text-brand" />
-            <CardTitle className="text-2xl font-bold text-foreground">
+            <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
               Agent Details
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-2 text-base">
+            <p className="text-muted-foreground mb-2 text-sm sm:text-base">
               <span className="font-semibold">Domain:</span>{' '}
               {agent.websiteDomain}
             </p>
-            <p className="text-muted-foreground mb-2 text-base">
+            <p className="text-muted-foreground mb-2 text-sm sm:text-base">
               <span className="font-semibold">Created:</span>{' '}
               {new Date(agent.createdAt).toLocaleString()}
             </p>
-            <p className="text-muted-foreground mb-2 text-base">
+            <p className="text-muted-foreground mb-2 text-sm sm:text-base">
               <span className="font-semibold">Model:</span> {agent.model}
             </p>
           </CardContent>
         </Card>
 
-        <div className="mb-6 flex space-x-4">
+        <div className="mb-6 flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
           <Button
             asChild
-            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg"
+            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto"
           >
             <Link
               href={`/agents/${params.agentId}/actions/new`}
-              className="flex items-center"
+              className="flex items-center justify-center"
             >
               <PlusCircle className="mr-2 h-5 w-5" />
               Create New Action
@@ -254,18 +254,18 @@ function AgentDetails({
           </Button>
           <Button
             asChild
-            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg"
+            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto"
           >
             <Link
               href={`/agents/${params.agentId}/documents/new`}
-              className="flex items-center"
+              className="flex items-center justify-center"
             >
               <PlusCircle className="mr-2 h-5 w-5" />
               Add New Document
             </Link>
           </Button>
           <Button
-            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg flex items-center gap-2 shadow-md"
+            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center"
             onClick={() => setShowAgentCode(true)}
             title="Show installation code for this agent"
           >
@@ -274,7 +274,7 @@ function AgentDetails({
           </Button>
           {clientActions.length > 0 && (
             <Button
-              className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-2 rounded-lg flex items-center gap-2 shadow-md"
+              className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center"
               onClick={() => setShowClientActions(true)}
               title="Show code for client actions"
             >
@@ -284,27 +284,27 @@ function AgentDetails({
           )}
         </div>
         {showClientActions && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-8">
             <div
               className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl shadow-2xl"
               aria-hidden="true"
             />
-            <div className="relative z-10 max-w-4xl w-full max-h-[90vh] rounded-2xl">
-              <div className="relative mb-12">
+            <div className="relative z-10 w-full max-w-lg sm:max-w-2xl md:max-w-4xl max-h-[90vh] rounded-2xl">
+              <div className="relative mb-8 md:mb-12">
                 <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
                 <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-3xl shadow-2xl border-l-8 border-l-[#FE4A60]">
                   <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FE4A60]/60 scrollbar-track-[#FFF4DA]/60 rounded-2xl pr-2">
-                    <CardHeader className="flex items-center justify-between">
+                    <CardHeader className="flex flex-col sm:flex-row items-center justify-between gap-2">
                       <div className="flex items-center space-x-2">
                         <Code className="h-7 w-7 text-[#FE4A60]" />
-                        <CardTitle className="text-2xl font-semibold text-gray-900">
+                        <CardTitle className="text-lg sm:text-2xl font-semibold text-gray-900">
                           Client Actions Code
                         </CardTitle>
                       </div>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="hover:bg-[#FFF4DA]"
+                        className="hover:bg-[#FFF4DA] mt-2 sm:mt-0"
                         onClick={() => setShowClientActions(false)}
                       >
                         <X className="h-6 w-6 text-gray-900" />
@@ -414,30 +414,31 @@ function AgentDetails({
         )}
 
         {showAgentCode && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-8">
             <div
               className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl shadow-2xl"
               aria-hidden="true"
             />
-            <div className="relative z-10 max-w-4xl w-full max-h-[90vh] rounded-2xl">
-              <div className="relative mb-12">
+            <div className="relative z-10 w-full max-w-lg sm:max-w-2xl md:max-w-4xl max-h-[90vh] rounded-2xl">
+              <div className="relative mb-8 md:mb-12">
                 <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
                 <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-3xl shadow-2xl border-l-8 border-l-[#FE4A60]">
                   <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FE4A60]/60 scrollbar-track-[#FFF4DA]/60 rounded-2xl pr-2">
-                    <CardHeader className="flex items-center justify-between">
+                    <CardHeader className="flex items-center justify-between relative">
                       <div className="flex items-center space-x-2">
                         <Code className="h-7 w-7 text-[#FE4A60]" />
-                        <CardTitle className="text-2xl font-semibold text-gray-900">
+                        <CardTitle className="text-lg sm:text-2xl font-semibold text-gray-900">
                           Agent Installation Code
                         </CardTitle>
                       </div>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="hover:bg-[#FFF4DA]"
+                        aria-label="Close"
+                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-3 rounded-full hover:bg-[#FFF4DA] transition"
                         onClick={() => setShowAgentCode(false)}
                       >
-                        <X className="h-6 w-6 text-gray-900" />
+                        <X className="h-5 w-5 sm:h-6 sm:w-6 text-gray-900" />
                       </Button>
                     </CardHeader>
                     <CardContent className="space-y-8">
@@ -551,7 +552,7 @@ function AgentDetails({
             <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
           </div>
         ) : actions.length === 0 ? (
-          <p className="text-foreground text-lg mb-4 flex items-center justify-center">
+          <p className="text-foreground text-base sm:text-lg mb-4 flex items-center justify-center text-center">
             <Zap className="h-6 w-6 mr-2 text-[#FE4A60]" />
             No actions found. Create one to get started!
           </p>
@@ -559,7 +560,7 @@ function AgentDetails({
           <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-6 rounded-xl shadow-xl border-l-8 border-l-[#FE4A60]">
             <CardHeader className="flex items-center space-x-2">
               <Zap className="h-6 w-6 text-[#FE4A60]" />
-              <CardTitle className="text-2xl font-bold text-gray-900">
+              <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">
                 Actions
               </CardTitle>
             </CardHeader>
@@ -568,22 +569,22 @@ function AgentDetails({
                 {actions.map((action, idx) => (
                   <li
                     key={action.id || action.name}
-                    className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2"
+                    className="border-t pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2 sm:gap-0"
                   >
                     <Zap className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
                     <div className="flex-1">
-                      <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">
+                      <p className="text-base sm:text-lg text-gray-900 font-semibold mb-1">
                         {action.name}
                       </p>
-                      <p className="text-sm text-gray-500 mb-1">
+                      <p className="text-xs sm:text-sm text-gray-500 mb-1">
                         <span className="font-semibold">Description:</span>{' '}
                         {action.description}
                       </p>
-                      <p className="text-sm text-gray-500 mb-1">
+                      <p className="text-xs sm:text-sm text-gray-500 mb-1">
                         <span className="font-semibold">Context:</span>{' '}
                         {action.executionContext}
                       </p>
-                      <p className="text-sm text-gray-500 mb-1">
+                      <p className="text-xs sm:text-sm text-gray-500 mb-1">
                         <span className="font-semibold">Model:</span>{' '}
                         {action.executionContext === ExecutionContext.SERVER ? (
                           <>
@@ -599,7 +600,7 @@ function AgentDetails({
                           (action as FrontendAction).executionModel.functionName
                         )}
                       </p>
-                      <p className="text-sm text-gray-500 mb-1">
+                      <p className="text-xs sm:text-sm text-gray-500 mb-1">
                         <span className="font-semibold">Parameters:</span>{' '}
                         {(action.executionModel.parameters || []).length > 0
                           ? (action.executionModel.parameters || [])
@@ -614,7 +615,7 @@ function AgentDetails({
                     <Button
                       variant="destructive"
                       size="sm"
-                      className="ml-4 rounded-full p-2 hover:bg-[#FE4A60]/80 transition group-hover:scale-110"
+                      className="ml-0 sm:ml-4 rounded-full p-2 hover:bg-[#FE4A60]/80 transition group-hover:scale-110 w-full sm:w-auto"
                       onClick={() =>
                         action.id && handleDeleteActionWithLoading(action.id)
                       }
@@ -642,7 +643,7 @@ function AgentDetails({
             <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
           </div>
         ) : documents.length === 0 ? (
-          <p className="text-foreground text-lg mb-4 flex items-center justify-center">
+          <p className="text-foreground text-base sm:text-lg mb-4 flex items-center justify-center text-center">
             <FileText className="h-6 w-6 mr-2 text-[#FE4A60]" />
             No documents found. Add one to get started!
           </p>
@@ -650,7 +651,7 @@ function AgentDetails({
           <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] rounded-xl shadow-xl border-l-8 border-l-[#FE4A60]">
             <CardHeader className="flex items-center space-x-2">
               <FileText className="h-6 w-6 text-[#FE4A60]" />
-              <CardTitle className="text-2xl font-bold text-gray-900">
+              <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">
                 Documents
               </CardTitle>
             </CardHeader>
@@ -659,20 +660,20 @@ function AgentDetails({
                 {documents.map((doc, idx) => (
                   <li
                     key={doc.id}
-                    className="border-t pt-2 flex items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-4 py-2"
+                    className="border-t pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2 sm:gap-0"
                   >
                     <FileText className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
                     <div className="flex-1">
-                      <p className="text-lg md:text-lg text-base text-gray-900 font-semibold mb-1">
+                      <p className="text-base sm:text-lg text-gray-900 font-semibold mb-1">
                         Document {idx + 1}
                       </p>
-                      <p className="text-sm text-gray-500 mb-1">
+                      <p className="text-xs sm:text-sm text-gray-500 mb-1">
                         <span className="font-semibold">Content:</span>{' '}
                         {doc.content.length > 100
                           ? `${doc.content.substring(0, 100)}...`
                           : doc.content}
                       </p>
-                      <div className="text-sm text-gray-500 mb-1">
+                      <div className="text-xs sm:text-sm text-gray-500 mb-1">
                         <span className="font-semibold">Metadata:</span>
                         <ul>
                           {Object.entries(doc.metadata)
@@ -703,7 +704,7 @@ function AgentDetails({
                     <Button
                       variant="destructive"
                       size="sm"
-                      className="ml-4 rounded-full p-2 hover:bg-[#FE4A60]/80 transition group-hover:scale-110"
+                      className="ml-0 sm:ml-4 rounded-full p-2 hover:bg-[#FE4A60]/80 transition group-hover:scale-110 w-full sm:w-auto"
                       onClick={() => doc.id && handleDeleteDocument(doc.id)}
                       disabled={deletingDocumentId === doc.id}
                       title="Delete Document"
