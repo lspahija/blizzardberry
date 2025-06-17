@@ -48,6 +48,7 @@ export default function NewAgentPage() {
   const [model, setModel] = useState<AgentModel>(AgentModel.GEMINI_2_0_FLASH);
   const [agentId, setAgentId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; websiteDomain?: string }>({});
   const { selectedFramework, setSelectedFramework } = useFramework();
   const { handleCreateAgent } = useAgents();
 
@@ -81,6 +82,26 @@ export default function NewAgentPage() {
   };
 
   const onCreateAgent = async () => {
+    // Reset errors
+    setErrors({});
+    
+    // Validate fields
+    const newErrors: { name?: string; websiteDomain?: string } = {};
+    
+    if (!name.trim()) {
+      newErrors.name = 'Agent name is required';
+    }
+    
+    if (!websiteDomain.trim()) {
+      newErrors.websiteDomain = 'Website domain is required';
+    }
+    
+    // If there are errors, set them and return
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     try {
       const { agentId: newAgentId } = await handleCreateAgent({
         name,
@@ -282,12 +303,20 @@ export default function NewAgentPage() {
                         <Input
                           id="name"
                           value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          onChange={(e) => {
+                            setName(e.target.value);
+                            if (errors.name) {
+                              setErrors(prev => ({ ...prev, name: undefined }));
+                            }
+                          }}
                           placeholder="My Customer Service Bot"
-                          className="pl-10 border-[2px] border-border"
+                          className={`pl-10 border-[2px] ${errors.name ? 'border-red-500' : 'border-border'}`}
                         />
                         <Type className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                       </div>
+                      {errors.name && (
+                        <p className="text-sm text-red-500 mt-1 ml-6">{errors.name}</p>
+                      )}
                     </div>
                     <div>
                       <Label
@@ -305,12 +334,20 @@ export default function NewAgentPage() {
                         <Input
                           id="websiteDomain"
                           value={websiteDomain}
-                          onChange={(e) => setWebsiteDomain(e.target.value)}
+                          onChange={(e) => {
+                            setWebsiteDomain(e.target.value);
+                            if (errors.websiteDomain) {
+                              setErrors(prev => ({ ...prev, websiteDomain: undefined }));
+                            }
+                          }}
                           placeholder="example.com"
-                          className="pl-10 border-[2px] border-border"
+                          className={`pl-10 border-[2px] ${errors.websiteDomain ? 'border-red-500' : 'border-border'}`}
                         />
                         <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                       </div>
+                      {errors.websiteDomain && (
+                        <p className="text-sm text-red-500 mt-1 ml-6">{errors.websiteDomain}</p>
+                      )}
                     </div>
                     <div>
                       <Label
