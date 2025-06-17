@@ -217,9 +217,9 @@ function AgentDetails({
           </Button>
         </div>
 
-        <Card className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8 border-l-brand">
+        <Card className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
           <CardHeader className="flex items-center space-x-2">
-            <Bot className="h-6 w-6 text-brand" />
+            <Bot className="h-6 w-6 text-destructive" />
             <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
               Agent Details
             </CardTitle>
@@ -292,31 +292,31 @@ function AgentDetails({
             <div className="relative z-10 w-full max-w-lg sm:max-w-2xl md:max-w-4xl max-h-[90vh] rounded-2xl">
               <div className="relative mb-8 md:mb-12">
                 <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
-                <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-3xl shadow-2xl border-l-8 border-l-[#FE4A60]">
-                  <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FE4A60]/60 scrollbar-track-[#FFF4DA]/60 rounded-2xl pr-2">
+                <Card className="relative bg-card border-[3px] border-border rounded-3xl shadow-2xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+                  <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-destructive/60 scrollbar-track-card/60 rounded-2xl pr-2">
                     <CardHeader className="flex flex-col sm:flex-row items-center justify-between gap-2">
                       <div className="flex items-center space-x-2">
-                        <Code className="h-7 w-7 text-[#FE4A60]" />
-                        <CardTitle className="text-lg sm:text-2xl font-semibold text-gray-900">
+                        <Code className="h-7 w-7 text-destructive" />
+                        <CardTitle className="text-lg sm:text-2xl font-semibold text-foreground">
                           Client Actions Code
                         </CardTitle>
                       </div>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="hover:bg-[#FFF4DA] mt-2 sm:mt-0"
+                        className="hover:bg-card mt-2 sm:mt-0"
                         onClick={() => setShowClientActions(false)}
                       >
-                        <X className="h-6 w-6 text-gray-900" />
+                        <X className="h-6 w-6 text-foreground" />
                       </Button>
                     </CardHeader>
                     <CardContent className="space-y-8">
                       <div>
-                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mt-4">
-                          <Code className="h-4 w-4 text-[#FE4A60]" />
+                        <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mt-4">
+                          <Code className="h-4 w-4 text-destructive" />
                           Framework
                         </Label>
-                        <p className="text-sm text-gray-600 mt-2 ml-6">
+                        <p className="text-sm text-muted-foreground mt-2 ml-6">
                           Select the framework you're using to implement the
                           client actions.
                         </p>
@@ -327,7 +327,7 @@ function AgentDetails({
                               setSelectedFramework(value as Framework)
                             }
                           >
-                            <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
+                            <SelectTrigger className="w-[200px] border-[2px] border-border">
                               <SelectValue placeholder="Select framework" />
                             </SelectTrigger>
                             <SelectContent>
@@ -349,8 +349,8 @@ function AgentDetails({
                         </div>
                       </div>
                       <div className="relative">
-                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
-                          <Code className="h-4 w-4 text-[#FE4A60]" />
+                        <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
+                          <Code className="h-4 w-4 text-destructive" />
                           Implementation Code
                         </Label>
                         <SyntaxHighlighter
@@ -359,8 +359,8 @@ function AgentDetails({
                           customStyle={{
                             borderRadius: '8px',
                             padding: '16px',
-                            border: '2px solid #1a1a1a',
-                            backgroundColor: '#1a1a1a',
+                            border: '2px solid var(--color-border)',
+                            backgroundColor: 'var(--color-background-dark)',
                           }}
                         >
                           {getRegisterMultipleToolsExample(
@@ -399,7 +399,7 @@ function AgentDetails({
                             setCopied(true);
                             setTimeout(() => setCopied(false), 2000);
                           }}
-                          className="absolute top-11 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
+                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
                         >
                           <Copy className="w-4 h-4" />
                           {copied ? 'Copied!' : 'Copy Code'}
@@ -422,12 +422,12 @@ function AgentDetails({
             <div className="relative z-10 w-full max-w-lg sm:max-w-2xl md:max-w-4xl max-h-[90vh] rounded-2xl">
               <div className="relative mb-8 md:mb-12">
                 <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
-                <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-3xl shadow-2xl border-l-8 border-l-[#FE4A60]">
-                  <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FE4A60]/60 scrollbar-track-[#FFF4DA]/60 rounded-2xl pr-2">
+                <Card className="relative bg-muted border-[3px] border-border rounded-3xl shadow-2xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+                  <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-destructive/60 scrollbar-track-card/60 rounded-2xl pr-2">
                     <CardHeader className="flex items-center justify-between relative">
                       <div className="flex items-center space-x-2">
-                        <Code className="h-7 w-7 text-[#FE4A60]" />
-                        <CardTitle className="text-lg sm:text-2xl font-semibold text-gray-900">
+                        <Code className="h-7 w-7 text-destructive" />
+                        <CardTitle className="text-lg sm:text-2xl font-semibold text-foreground">
                           Agent Installation Code
                         </CardTitle>
                       </div>
@@ -435,19 +435,19 @@ function AgentDetails({
                         variant="ghost"
                         size="icon"
                         aria-label="Close"
-                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-3 rounded-full hover:bg-[#FFF4DA] transition"
+                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-3 rounded-full hover:bg-card transition"
                         onClick={() => setShowAgentCode(false)}
                       >
-                        <X className="h-5 w-5 sm:h-6 sm:w-6 text-gray-900" />
+                        <X className="h-5 w-5 sm:h-6 sm:w-6 text-foreground" />
                       </Button>
                     </CardHeader>
-                    <CardContent className="space-y-8">
+                    <CardContent className="space-y-8 mt-8">
                       <div>
-                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mt-4">
-                          <Code className="h-4 w-4 text-[#FE4A60]" />
+                        <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
+                          <Code className="h-4 w-4 text-destructive" />
                           Framework
                         </Label>
-                        <p className="text-sm text-gray-600 mt-2 ml-6">
+                        <p className="text-sm text-muted-foreground mt-2 ml-6">
                           Select the framework you're using to implement the
                           agent.
                         </p>
@@ -458,7 +458,7 @@ function AgentDetails({
                               setSelectedFramework(value as Framework)
                             }
                           >
-                            <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
+                            <SelectTrigger className="w-[200px] border-[2px] border-border">
                               <SelectValue placeholder="Select framework" />
                             </SelectTrigger>
                             <SelectContent>
@@ -480,8 +480,8 @@ function AgentDetails({
                         </div>
                       </div>
                       <div className="relative">
-                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
-                          <Code className="h-4 w-4 text-[#FE4A60]" />
+                        <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
+                          <Code className="h-4 w-4 text-destructive" />
                           Installation Code
                         </Label>
                         <SyntaxHighlighter
@@ -490,8 +490,8 @@ function AgentDetails({
                           customStyle={{
                             borderRadius: '8px',
                             padding: '16px',
-                            border: '2px solid #1a1a1a',
-                            backgroundColor: '#1a1a1a',
+                            border: '2px solid var(--color-border)',
+                            backgroundColor: 'var(--color-background-dark)',
                           }}
                         >
                           {getAgentScript(selectedFramework, params.agentId)}
@@ -502,18 +502,18 @@ function AgentDetails({
                               getAgentScript(selectedFramework, params.agentId)
                             )
                           }
-                          className="absolute top-11 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
+                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
                         >
                           <Copy className="w-4 h-4" />
                           {copied ? 'Copied!' : 'Copy Code'}
                         </Button>
                       </div>
                       <div>
-                        <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
-                          <Info className="h-4 w-4 text-[#FE4A60]" />
+                        <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
+                          <Info className="h-4 w-4 text-destructive" />
                           Installation Instructions
                         </Label>
-                        <ul className="list-disc list-inside text-gray-600 space-y-2 ml-6">
+                        <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-6">
                           <li>Copy the code snippet above</li>
                           <li>
                             Paste it between the <code>&lt;body&gt;</code> tags
@@ -530,7 +530,7 @@ function AgentDetails({
                               href="https://blizzardberry.com/docs"
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-[#FE4A60] hover:underline"
+                              className="text-destructive hover:underline"
                             >
                               documentation{' '}
                               <ExternalLink className="inline w-4 h-4" />
@@ -557,10 +557,10 @@ function AgentDetails({
             No actions found. Create one to get started!
           </p>
         ) : (
-          <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] mb-6 rounded-xl shadow-xl border-l-8 border-l-[#FE4A60]">
+          <Card className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
             <CardHeader className="flex items-center space-x-2">
-              <Zap className="h-6 w-6 text-[#FE4A60]" />
-              <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">
+              <Zap className="h-6 w-6 text-destructive" />
+              <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
                 Actions
               </CardTitle>
             </CardHeader>
@@ -569,22 +569,22 @@ function AgentDetails({
                 {actions.map((action, idx) => (
                   <li
                     key={action.id || action.name}
-                    className="border-t pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2 sm:gap-0"
+                    className="border-t pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2 sm:gap-0"
                   >
-                    <Zap className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
+                    <Zap className="h-4 w-4 text-destructive/80 mr-3 mt-1" />
                     <div className="flex-1">
-                      <p className="text-base sm:text-lg text-gray-900 font-semibold mb-1">
+                      <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
                         {action.name}
                       </p>
-                      <p className="text-xs sm:text-sm text-gray-500 mb-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                         <span className="font-semibold">Description:</span>{' '}
                         {action.description}
                       </p>
-                      <p className="text-xs sm:text-sm text-gray-500 mb-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                         <span className="font-semibold">Context:</span>{' '}
                         {action.executionContext}
                       </p>
-                      <p className="text-xs sm:text-sm text-gray-500 mb-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                         <span className="font-semibold">Model:</span>{' '}
                         {action.executionContext === ExecutionContext.SERVER ? (
                           <>
@@ -600,7 +600,7 @@ function AgentDetails({
                           (action as FrontendAction).executionModel.functionName
                         )}
                       </p>
-                      <p className="text-xs sm:text-sm text-gray-500 mb-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                         <span className="font-semibold">Parameters:</span>{' '}
                         {(action.executionModel.parameters || []).length > 0
                           ? (action.executionModel.parameters || [])
@@ -615,7 +615,7 @@ function AgentDetails({
                     <Button
                       variant="destructive"
                       size="sm"
-                      className="ml-0 sm:ml-4 rounded-full p-2 hover:bg-[#FE4A60]/80 transition group-hover:scale-110 w-full sm:w-auto"
+                      className="ml-0 sm:ml-4 rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110 w-full sm:w-auto"
                       onClick={() =>
                         action.id && handleDeleteActionWithLoading(action.id)
                       }
@@ -629,7 +629,7 @@ function AgentDetails({
                       )}
                     </Button>
                     {idx < actions.length - 1 && (
-                      <hr className="my-2 border-gray-200" />
+                      <hr className="my-2 border-border" />
                     )}
                   </li>
                 ))}
@@ -648,10 +648,10 @@ function AgentDetails({
             No documents found. Add one to get started!
           </p>
         ) : (
-          <Card className="border-[3px] border-gray-900 bg-[#FFFDF8] rounded-xl shadow-xl border-l-8 border-l-[#FE4A60]">
+          <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
             <CardHeader className="flex items-center space-x-2">
-              <FileText className="h-6 w-6 text-[#FE4A60]" />
-              <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">
+              <FileText className="h-6 w-6 text-destructive" />
+              <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
                 Documents
               </CardTitle>
             </CardHeader>
@@ -660,20 +660,20 @@ function AgentDetails({
                 {documents.map((doc, idx) => (
                   <li
                     key={doc.id}
-                    className="border-t pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-[#FFF4DA] hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2 sm:gap-0"
+                    className="border-t pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2 sm:gap-0"
                   >
-                    <FileText className="h-4 w-4 text-[#FE4A60]/80 mr-3 mt-1" />
+                    <FileText className="h-4 w-4 text-destructive/80 mr-3 mt-1" />
                     <div className="flex-1">
-                      <p className="text-base sm:text-lg text-gray-900 font-semibold mb-1">
+                      <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
                         Document {idx + 1}
                       </p>
-                      <p className="text-xs sm:text-sm text-gray-500 mb-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                         <span className="font-semibold">Content:</span>{' '}
                         {doc.content.length > 100
                           ? `${doc.content.substring(0, 100)}...`
                           : doc.content}
                       </p>
-                      <div className="text-xs sm:text-sm text-gray-500 mb-1">
+                      <div className="text-xs sm:text-sm text-muted-foreground mb-1">
                         <span className="font-semibold">Metadata:</span>
                         <ul>
                           {Object.entries(doc.metadata)
@@ -704,7 +704,7 @@ function AgentDetails({
                     <Button
                       variant="destructive"
                       size="sm"
-                      className="ml-0 sm:ml-4 rounded-full p-2 hover:bg-[#FE4A60]/80 transition group-hover:scale-110 w-full sm:w-auto"
+                      className="ml-0 sm:ml-4 rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110 w-full sm:w-auto"
                       onClick={() => doc.id && handleDeleteDocument(doc.id)}
                       disabled={deletingDocumentId === doc.id}
                       title="Delete Document"
@@ -716,7 +716,7 @@ function AgentDetails({
                       )}
                     </Button>
                     {idx < documents.length - 1 && (
-                      <hr className="my-2 border-gray-200" />
+                      <hr className="my-2 border-border" />
                     )}
                   </li>
                 ))}

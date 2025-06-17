@@ -63,19 +63,19 @@ export default function GeneralStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-      <div className="mb-6 md:mb-12 flex items-start md:items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-3 md:p-4 rounded-lg shadow-md">
-        <Info className="h-5 w-5 md:h-6 md:w-6 text-[#FE4A60] mr-2 md:mr-3 mt-1 md:mt-0 flex-shrink-0" />
-        <span className="text-gray-800 text-sm md:text-base">
+      <div className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 p-3 md:p-4 rounded-lg shadow-md" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+        <Info className="h-5 w-5 md:h-6 md:w-6 text-destructive mr-2 md:mr-3 mt-1 md:mt-0 flex-shrink-0" />
+        <span className="text-foreground text-sm md:text-base">
           Fill out the general information for your action. This helps the AI
           agent understand when and how to use it.
         </span>
       </div>
       <div className="relative mb-6 md:mb-12">
-        <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
-        <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-xl border-l-8 border-l-[#FE4A60]">
+        <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
+        <Card className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
           <CardHeader className="flex items-center space-x-2 p-4 md:p-6">
-            <Settings className="h-5 w-5 md:h-7 md:w-7 text-[#FE4A60]" />
-            <CardTitle className="text-xl md:text-2xl font-semibold text-gray-900">
+            <Settings className="h-5 w-5 md:h-7 md:w-7 text-destructive" />
+            <CardTitle className="text-xl md:text-2xl font-semibold text-foreground">
               General
             </CardTitle>
           </CardHeader>
@@ -83,12 +83,12 @@ export default function GeneralStep({
             <div>
               <Label
                 htmlFor="actionName"
-                className="text-gray-900 text-base md:text-lg font-semibold flex items-center gap-2"
+                className="text-foreground text-base md:text-lg font-semibold flex items-center gap-2"
               >
-                <Zap className="h-4 w-4 text-[#FE4A60]" />
+                <Zap className="h-4 w-4 text-destructive" />
                 Action Name
               </Label>
-              <p className="text-xs md:text-sm text-gray-600 mt-1 ml-6">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1 ml-6">
                 A descriptive name for this action. This will help the AI agent
                 know when to use it.
               </p>
@@ -101,23 +101,23 @@ export default function GeneralStep({
                     setBaseAction({ ...baseAction, name: e.target.value });
                   }}
                   placeholder="Update_Subscription"
-                  className={`mt-2 border-[2px] ${errors.name ? 'border-red-500' : 'border-gray-900'} pl-10 text-sm md:text-base`}
+                  className={`mt-2 border-[2px] ${errors.name ? 'border-destructive' : 'border-border'} pl-10 text-sm md:text-base`}
                 />
-                <Zap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                <Zap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               </div>
               {errors.name && (
-                <p className="text-red-500 text-xs md:text-sm mt-1">{errors.name}</p>
+                <p className="text-destructive text-xs md:text-sm mt-1">{errors.name}</p>
               )}
             </div>
             <div>
               <Label
                 htmlFor="description"
-                className="text-gray-900 text-base md:text-lg font-semibold flex items-center gap-2"
+                className="text-foreground text-base md:text-lg font-semibold flex items-center gap-2"
               >
-                <Info className="h-4 w-4 text-[#FE4A60]" />
+                <Info className="h-4 w-4 text-destructive" />
                 Description
               </Label>
-              <p className="text-xs md:text-sm text-gray-600 mt-1 ml-6">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1 ml-6">
                 Explain when the AI Agent should use this action. Include a
                 description of what this action does, the data it provides, and
                 any updates it makes. Include example queries that should
@@ -131,17 +131,17 @@ export default function GeneralStep({
                   setBaseAction({ ...baseAction, description: e.target.value });
                 }}
                 placeholder="Describe when the AI agent should use this action..."
-                className={`mt-2 border-[2px] ${errors.description ? 'border-red-500' : 'border-gray-900'} text-sm md:text-base`}
+                className={`mt-2 border-[2px] ${errors.description ? 'border-destructive' : 'border-border'} text-sm md:text-base`}
                 rows={5}
               />
               {errors.description && (
-                <p className="text-red-500 text-xs md:text-sm mt-1">
+                <p className="text-destructive text-xs md:text-sm mt-1">
                   {errors.description}
                 </p>
               )}
             </div>
             <div>
-              <Label className="text-gray-900 text-base md:text-lg font-semibold">
+              <Label className="text-foreground text-base md:text-lg font-semibold">
                 Action Type
               </Label>
               <RadioGroup
@@ -152,20 +152,20 @@ export default function GeneralStep({
                 className="flex flex-col sm:flex-row sm:space-x-4 mt-2 space-y-4 sm:space-y-0"
               >
                 <div className="flex items-start space-x-2">
-                  <RadioGroupItem value={ExecutionContext.SERVER} id="server" className="mt-1" />
-                  <Label htmlFor="server" className="text-gray-900">
+                  <RadioGroupItem value={ExecutionContext.SERVER} id="server" className="mt-5" />
+                  <Label htmlFor="server" className="text-foreground">
                     Server Action
-                    <p className="text-xs md:text-sm text-gray-600 mt-1">
+                    <p className="text-xs md:text-sm text-muted-foreground mt-1">
                       This action will be executed on the server. There is no
                       need to write any client-side code.
                     </p>
                   </Label>
                 </div>
                 <div className="flex items-start space-x-2">
-                  <RadioGroupItem value={ExecutionContext.CLIENT} id="client" className="mt-1" />
-                  <Label htmlFor="client" className="text-gray-900">
+                  <RadioGroupItem value={ExecutionContext.CLIENT} id="client" className="mt-5" />
+                  <Label htmlFor="client" className="text-foreground">
                     Client Action
-                    <p className="text-xs md:text-sm text-gray-600 mt-1">
+                    <p className="text-xs md:text-sm text-muted-foreground mt-1">
                       This action will be executed on the client. You will need
                       to write some client-side code. Explore the docs.
                     </p>
@@ -174,7 +174,7 @@ export default function GeneralStep({
               </RadioGroup>
             </div>
             <Button
-              className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:-translate-y-1 hover:-translate-x-1 hover:bg-[#ff6a7a] transition-transform duration-200 shadow-md text-base md:text-lg font-semibold w-full"
+              className="bg-destructive text-white border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand transition-transform duration-200 shadow-md text-base md:text-lg font-semibold w-full"
               onClick={handleNext}
             >
               <Save className="w-4 h-4 mr-2" />

@@ -43,7 +43,7 @@ export default function DataInputRow({
       <div>
         <Label
           htmlFor={`inputName${index}`}
-          className="flex items-center gap-2 text-sm md:text-base"
+          className="flex items-center gap-2 text-sm md:text-base text-foreground"
         >
           {nameIcon}
           Name
@@ -53,13 +53,13 @@ export default function DataInputRow({
           value={input.name}
           onChange={(e) => updateDataInput('name', e.target.value)}
           placeholder="city"
-          className="mt-2 border-[2px] border-gray-900 text-sm md:text-base"
+          className="mt-2 border-[2px] border-border text-sm md:text-base text-foreground"
         />
       </div>
       <div>
         <Label
           htmlFor={`inputType${index}`}
-          className="flex items-center gap-2 text-sm md:text-base"
+          className="flex items-center gap-2 text-sm md:text-base text-foreground"
         >
           {typeIcon}
           Type
@@ -68,7 +68,7 @@ export default function DataInputRow({
           value={input.type}
           onValueChange={(value) => updateDataInput('type', value)}
         >
-          <SelectTrigger className="mt-2 border-[2px] border-gray-900 text-sm md:text-base">
+          <SelectTrigger className="mt-2 border-[2px] border-border text-sm md:text-base text-foreground">
             <SelectValue placeholder="Select type" />
           </SelectTrigger>
           <SelectContent>
@@ -81,7 +81,7 @@ export default function DataInputRow({
       <div>
         <Label
           htmlFor={`inputDesc${index}`}
-          className="flex items-center gap-2 text-sm md:text-base"
+          className="flex items-center gap-2 text-sm md:text-base text-foreground"
         >
           {descriptionIcon}
           Description
@@ -91,11 +91,11 @@ export default function DataInputRow({
           value={input.description}
           onChange={(e) => updateDataInput('description', e.target.value)}
           placeholder="The city to get weather for, e.g. Los Angeles"
-          className="mt-2 border-[2px] border-gray-900 text-sm md:text-base"
+          className="mt-2 border-[2px] border-border text-sm md:text-base text-foreground"
         />
       </div>
       <div className="flex flex-row md:flex-col items-center gap-4 md:gap-1 mt-2.5">
-        <Label htmlFor={`inputArray${index}`} className="mb-0 text-sm md:text-base whitespace-nowrap">
+        <Label htmlFor={`inputArray${index}`} className="mb-0 text-sm md:text-base whitespace-nowrap text-foreground">
           Array
         </Label>
         <input
@@ -103,13 +103,13 @@ export default function DataInputRow({
           type="checkbox"
           checked={input.isArray}
           onChange={(e) => updateDataInput('isArray', e.target.checked)}
-          className="border-[2px] border-gray-900 w-4 h-4 md:w-5 md:h-5"
+          className="border-[2px] border-border w-4 h-4 md:w-5 md:h-5"
         />
       </div>
       <div className="flex items-center justify-end md:justify-center h-full mr-2 mt-2 md:mt-6">
         <Button
           variant="destructive"
-          className="border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl p-2 md:p-3"
+          className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl p-2 md:p-3 mt-2"
           onClick={removeDataInput}
         >
           <Trash2 className="w-4 h-4" />

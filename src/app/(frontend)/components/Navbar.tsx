@@ -25,6 +25,13 @@ import { Input } from '@/app/(frontend)/components/ui/input';
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { toast } from 'sonner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/app/(frontend)/components/ui/select';
 
 export function Navbar() {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -82,7 +89,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="bg-[#FFFDF8] border-b-[3px] border-gray-900 px-4 sm:px-6 py-3 flex items-center justify-between rounded-b-2xl shadow-md mb-8 sticky top-0 z-40">
+      <nav className="bg-card border-b-[3px] border-border px-4 sm:px-6 py-3 flex items-center justify-between rounded-b-2xl shadow-md mb-8 sticky top-0 z-40">
         <div className="flex items-center gap-4">
           <Link
             href="/"
@@ -96,7 +103,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900"
+                className="text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
               >
                 {link.label}
               </Link>
@@ -109,26 +116,26 @@ export function Navbar() {
             href="https://blizzardberry.com/docs"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-[#FE4A60]"
+            className="hidden sm:flex text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-[#FE4A60]"
           >
             Docs
           </a>
           <button
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] rounded-lg transition"
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-muted hover:bg-muted rounded-lg transition"
             onClick={() => setIsFeedbackOpen(true)}
           >
             <MessageSquare className="h-4 w-4" />
             Feedback
           </button>
           <button
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] rounded-lg transition"
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-muted hover:bg-muted rounded-lg transition"
             onClick={() => signOut({ redirectTo: '/' })}
           >
             <LogOut className="h-4 w-4" />
             Sign Out
           </button>
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-[#FFF4DA] transition-colors"
+            className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <Menu className="h-6 w-6 text-gray-900" />
@@ -145,7 +152,7 @@ export function Navbar() {
               <h2 className="text-xl font-bold text-gray-900">Menu</h2>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 rounded-lg hover:bg-[#FFF4DA] transition-colors"
+                className="p-2 rounded-lg hover:bg-muted transition-colors"
               >
                 <X className="h-6 w-6 text-gray-900" />
               </button>
@@ -155,7 +162,7 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900"
+                  className="block text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.label}
@@ -165,12 +172,12 @@ export function Navbar() {
                 href="https://blizzardberry.com/docs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-[#FE4A60]"
+                className="block text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-[#FE4A60]"
               >
                 Docs
               </a>
               <button
-                className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900"
+                className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
                 onClick={() => {
                   setIsMobileMenuOpen(false);
                   setIsFeedbackOpen(true);
@@ -179,7 +186,7 @@ export function Navbar() {
                 Feedback
               </button>
               <button
-                className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-[#FE4A60] hover:bg-[#FFF4DA] transition-colors text-gray-900"
+                className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
                 onClick={() => signOut({ redirectTo: '/' })}
               >
                 Sign Out
@@ -190,16 +197,16 @@ export function Navbar() {
       )}
 
       <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
-        <DialogContent className="bg-[#FFFDF8] border-[3px] border-gray-900 border-l-8 border-l-[#FE4A60] rounded-2xl shadow-2xl p-4 sm:p-8 max-w-[95vw] sm:max-w-lg">
+        <DialogContent className="bg-card border-[3px] border-border border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
           <DialogHeader className="flex items-center gap-2 mb-2">
-            <Send className="h-5 w-5 sm:h-6 sm:w-6 text-[#FE4A60]" />
-            <DialogTitle className="text-gray-900 text-xl sm:text-2xl font-bold tracking-tight">
+            <Send className="h-5 w-5 sm:h-6 sm:w-6 text-destructive" />
+            <DialogTitle className="text-foreground text-xl sm:text-2xl font-bold tracking-tight">
               Send Us Your Feedback
             </DialogTitle>
           </DialogHeader>
-          <div className="bg-[#FFF4DA] border-l-4 border-[#FFC480] rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3">
-            <Info className="h-4 w-4 sm:h-5 sm:w-5 text-[#FFC480]" />
-            <span className="text-gray-700 text-xs sm:text-sm">
+          <div className="bg-muted border-l-4 border-destructive rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3">
+            <Info className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
+            <span className="text-muted-foreground text-xs sm:text-sm">
               We value your feedback! Please let us know about bugs, feature
               requests, or anything else that can help us improve.
             </span>
@@ -208,9 +215,9 @@ export function Navbar() {
             <div>
               <Label
                 htmlFor="feedbackEmail"
-                className="text-gray-900 text-sm sm:text-base font-semibold flex items-center gap-2"
+                className="text-foreground text-sm sm:text-base font-semibold flex items-center gap-2"
               >
-                <Mail className="h-4 w-4 text-[#FE4A60]" />
+                <Mail className="h-4 w-4 text-destructive" />
                 Email
               </Label>
               <Input
@@ -218,34 +225,37 @@ export function Navbar() {
                 value={feedbackEmail}
                 onChange={(e) => setFeedbackEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="mt-2 w-full rounded-lg border-[2px] border-gray-900 p-2 sm:p-3 bg-[#FFFDF8] text-gray-900 focus:ring-2 focus:ring-[#FE4A60] focus:border-[#FE4A60] transition text-sm sm:text-base"
+                className="mt-2 w-full rounded-lg border-[2px] border-border p-2 sm:p-3 bg-card text-foreground focus:ring-2 focus:ring-destructive focus:border-destructive transition text-sm sm:text-base"
               />
             </div>
             <div>
               <Label
                 htmlFor="feedbackType"
-                className="text-gray-900 text-sm sm:text-base font-semibold flex items-center gap-2"
+                className="text-foreground text-sm sm:text-base font-semibold flex items-center gap-2"
               >
-                <Tag className="h-4 w-4 text-[#FE4A60]" />
+                <Tag className="h-4 w-4 text-destructive" />
                 Feedback Type
               </Label>
-              <select
-                id="feedbackType"
+              <Select
                 value={feedbackType}
-                onChange={(e) => setFeedbackType(e.target.value)}
-                className="mt-2 w-full rounded-lg border-[2px] border-gray-900 p-2 sm:p-3 bg-[#FFFDF8] text-gray-900 focus:ring-2 focus:ring-[#FE4A60] focus:border-[#FE4A60] transition appearance-none text-sm sm:text-base"
+                onValueChange={setFeedbackType}
               >
-                <option value="bug">Bug Report</option>
-                <option value="feature">Feature Request</option>
-                <option value="other">Other</option>
-              </select>
+                <SelectTrigger className="mt-2 w-full rounded-lg border-[2px] border-border p-2 sm:p-3 bg-card text-foreground focus:ring-2 focus:ring-destructive focus:border-destructive transition text-sm sm:text-base">
+                  <SelectValue placeholder="Select feedback type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bug">Bug Report</SelectItem>
+                  <SelectItem value="feature">Feature Request</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label
                 htmlFor="feedbackMessage"
-                className="text-gray-900 text-sm sm:text-base font-semibold flex items-center gap-2"
+                className="text-foreground text-sm sm:text-base font-semibold flex items-center gap-2"
               >
-                <MessageSquare className="h-4 w-4 text-[#FE4A60]" />
+                <MessageSquare className="h-4 w-4 text-destructive" />
                 Message
               </Label>
               <Textarea
@@ -253,14 +263,14 @@ export function Navbar() {
                 value={feedbackMessage}
                 onChange={(e) => setFeedbackMessage(e.target.value)}
                 placeholder="Describe the bug or feature request..."
-                className="mt-2 w-full rounded-lg border-[2px] border-gray-900 p-2 sm:p-3 bg-[#FFFDF8] text-gray-900 focus:ring-2 focus:ring-[#FE4A60] focus:border-[#FE4A60] transition min-h-[100px] sm:min-h-[120px] text-sm sm:text-base"
+                className="mt-2 w-full rounded-lg border-[2px] border-border p-2 sm:p-3 bg-card text-foreground focus:ring-2 focus:ring-destructive focus:border-destructive transition min-h-[100px] sm:min-h-[120px] text-sm sm:text-base"
                 rows={5}
               />
             </div>
             <div className="flex justify-end gap-2 mt-4 sm:mt-6">
               <button
                 type="button"
-                className="border-[2px] border-gray-900 text-white bg-[#FE4A60] hover:bg-[#ff6a7a] transition font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs sm:text-sm"
+                className="border-[2px] border-border text-white bg-destructive hover:bg-destructive/80 transition font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs sm:text-sm"
                 onClick={() => setIsFeedbackOpen(false)}
               >
                 <X className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -269,7 +279,7 @@ export function Navbar() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:bg-[#FFD9A0] transition font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs sm:text-sm"
+                className="bg-secondary text-foreground border-[2px] border-border hover:bg-muted transition font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs sm:text-sm"
               >
                 {isSubmitting ? (
                   <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
