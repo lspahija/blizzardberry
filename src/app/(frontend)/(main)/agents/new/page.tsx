@@ -82,10 +82,8 @@ export default function NewAgentPage() {
   };
 
   const onCreateAgent = async () => {
-    // Reset errors
     setErrors({});
     
-    // Validate fields
     const newErrors: { name?: string; websiteDomain?: string } = {};
     
     if (!name.trim()) {
@@ -96,7 +94,6 @@ export default function NewAgentPage() {
       newErrors.websiteDomain = 'Website domain is required';
     }
     
-    // If there are errors, set them and return
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
