@@ -45,7 +45,7 @@ export default function HeaderInput({
           onSelect={(val) => updateHeader('key', val)}
           suggestions={commonHeaderKeys}
           placeholder="Authorization"
-          inputClassName="border-[2px] border-gray-900"
+          inputClassName="border-[2px] border-border text-foreground"
           matchMode="word"
         />
       </div>
@@ -63,13 +63,13 @@ export default function HeaderInput({
           onChange={(e) => updateHeader('value', e.target.value)}
           suggestions={suggestions}
           placeholder="Bearer {{token}}"
-          inputClassName="border-[2px] border-gray-900"
+          inputClassName="border-[2px] border-border text-foreground"
           matchMode="word"
         />
       </div>
       <div>
         <Button
-          className="bg-[#FE4A60] text-white border-[2px] border-gray-900 hover:bg-[#ff6a7a] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-full p-2"
+          className="bg-destructive text-white border-[2px] border-border hover:bg-brand hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-full p-2"
           onClick={removeHeader}
         >
           <Trash2 className="h-4 w-4 text-white transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />

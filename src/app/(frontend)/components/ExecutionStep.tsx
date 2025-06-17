@@ -16,12 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/app/(frontend)/components/ui/tabs';
 import { motion } from 'framer-motion';
 import Editor from '@monaco-editor/react';
 import { SuggestInput } from '@/app/(frontend)/components/ui/suggest-input';
@@ -163,7 +157,7 @@ export default function ExecutionStep({
       base: 'vs',
       inherit: true,
       rules: [],
-      colors: { 'editor.background': '#FFF4DA' },
+      colors: { 'editor.background': '#FFFFFF' },
     });
 
     monaco.languages.registerCompletionItemProvider('json', {
@@ -213,17 +207,20 @@ export default function ExecutionStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-      <div className="mb-12 flex items-center bg-[#FFF4DA] border-l-4 border-[#FE4A60] p-4 rounded-lg shadow-md">
-        <Info className="h-6 w-6 text-[#FE4A60] mr-3" />
-        <span className="text-gray-800 text-base">
+      <div className="mb-12 flex items-center bg-muted border-l-4 p-4 rounded-lg shadow-md" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+        <Info className="h-6 w-6 text-destructive mr-3" />
+        <span className="text-foreground text-base">
           {baseAction.executionContext === ExecutionContext.SERVER
             ? 'Configure the API endpoint that the AI Agent will call to retrieve or update data.'
             : 'Configure the client-side function that will be executed in your application.'}
         </span>
       </div>
       <div className="relative mb-12">
-        <div className="absolute inset-0 bg-gray-900 rounded-lg translate-x-1 translate-y-1"></div>
-        <Card className="relative bg-[#FFF4DA] border-[3px] border-gray-900 rounded-lg shadow-xl border-l-8 border-l-[#FE4A60]">
+        <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
+        <Card
+          className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8"
+          style={{ borderLeftColor: 'var(--color-destructive)' }}
+        >
           <CardHeader className="flex flex-row items-center space-x-2">
             {baseAction.executionContext === ExecutionContext.SERVER ? (
               <Globe className="h-7 w-7 text-[#FE4A60]" />
@@ -372,7 +369,7 @@ export default function ExecutionStep({
                       <p className="text-red-500 text-sm">{bodyError}</p>
                     </div>
                   )}
-                  <div className="mt-2 border-[2px] border-gray-900 rounded-lg overflow-hidden bg-[#FFF4DA]">
+                  <div className="mt-2 border-[2px] border-border rounded-lg overflow-hidden" style={{ backgroundColor: 'var(--color-muted)' }}>
                     <div className="relative">
                       {!apiBody?.trim() && (
                         <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
@@ -415,7 +412,7 @@ export default function ExecutionStep({
                           hideCursorInOverviewRuler: true,
                           guides: { indentation: false },
                         }}
-                        className="bg-[#FFF4DA]"
+                        className="bg-transparent"
                       />
                     </div>
                   </div>
@@ -435,13 +432,15 @@ export default function ExecutionStep({
                     The name of the client-side function to be executed. You
                     will implement this in your app using the SDK.
                   </p>
-                  <Input
-                    id="functionName"
-                    value={functionName}
-                    onChange={(e) => handleFunctionNameChange(e.target.value)}
-                    placeholder="get_weather"
-                    className={`mt-2 ml-6 border-[2px] ${functionNameError ? 'border-red-500' : 'border-gray-900'}`}
-                  />
+                  <div className="w-full md:ml-6 md:mr-6 md:max-w-screen-sm">
+                    <Input
+                      id="functionName"
+                      value={functionName}
+                      onChange={(e) => handleFunctionNameChange(e.target.value)}
+                      placeholder="get_weather"
+                      className={`mt-2 w-full ${functionNameError ? 'border-red-500' : 'border-border'}`}
+                    />
+                  </div>
                   {functionNameError && (
                     <p className="text-red-500 text-sm mt-2 ml-6">
                       {functionNameError}
@@ -507,9 +506,8 @@ export default function ExecutionStep({
                     customStyle={{
                       borderRadius: '8px',
                       padding: '16px',
-                      border: '2px solid #1a1a1a',
-                      backgroundColor: '#1a1a1a',
-                      margin: 0,
+                      border: '2px solid var(--color-border)',
+                      backgroundColor: 'var(--color-background-dark)',
                     }}
                   >
                     {getRegisterToolsExample(
@@ -528,7 +526,7 @@ export default function ExecutionStep({
                         )
                       );
                     }}
-                    className="absolute top-11 right-2 bg-[#FFC480] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform"
+                    className="absolute top-12 right-4 bg-accent text-accent-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold"
                   >
                     <Copy className="w-4 h-4 mr-2" />
                     Copy Code
@@ -571,7 +569,7 @@ export default function ExecutionStep({
                 Back
               </Button>
               <Button
-                className="bg-[#FE4A60] text-white border-[3px] border-gray-900 hover:bg-[#ff6a7a] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
+                className="bg-destructive text-white border-[3px] border-gray-900 hover:bg-[#ff6a7a] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
                 onClick={handleCreate}
               >
                 <Save className="w-4 h-4" />

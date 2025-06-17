@@ -194,8 +194,8 @@ export default function AddDocument({
                     </div>
                     <div>
                       <Button
-                        variant="outline"
-                        className="bg-background text-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200"
+                        variant="destructive"
+                        className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl p-2 md:p-3 mb-0.2"
                         onClick={() => removeMetadataField(index)}
                       >
                         <Trash2 className="w-4 h-4" />

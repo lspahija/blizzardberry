@@ -110,18 +110,18 @@ export function SuggestInput({
           onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 200)}
           className={cn(
-            'mt-2 h-9 w-full rounded-md border-2 border-gray-900 bg-[#fdf1dc] px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+            'mt-2 h-9 w-full rounded-md border-2 border-border bg-card px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 text-foreground',
             inputClassName
           )}
           {...props}
         />
         {open && filteredSuggestions.length > 0 && (
-          <CommandList className="absolute z-50 mt-1 w-full max-h-60 overflow-auto rounded-md border border-gray-900 bg-white shadow-md text-sm p-1">
+          <CommandList className="absolute z-50 mt-1 w-full max-h-60 overflow-auto rounded-md border border-border bg-card shadow-md text-sm p-1">
             {filteredSuggestions.map((suggestion, index) => (
               <CommandItem
                 key={index}
                 onSelect={() => handleSelect(suggestion)}
-                className="cursor-default select-none px-3 py-1.5 text-sm text-black rounded-sm transition-colors data-[selected=true]:bg-[#fdf1dc] data-[selected=true]:text-black"
+                className="cursor-default select-none px-3 py-1.5 text-sm text-foreground rounded-sm transition-colors data-[selected=true]:bg-muted data-[selected=true]:text-foreground"
               >
                 {suggestion}
               </CommandItem>

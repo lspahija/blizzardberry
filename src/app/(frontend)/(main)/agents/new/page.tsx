@@ -200,7 +200,7 @@ export default function NewAgentPage() {
                             borderRadius: '8px',
                             padding: '16px',
                             border: '2px solid var(--color-border)',
-                            backgroundColor: '#1a1a1a',
+                            backgroundColor: 'var(--color-background-dark)',
                           }}
                         >
                           {agentId
