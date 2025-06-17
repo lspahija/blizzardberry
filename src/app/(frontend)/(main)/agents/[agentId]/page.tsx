@@ -588,8 +588,13 @@ function AgentDetails({
                         <span className="font-semibold">Model:</span>{' '}
                         {action.executionContext === ExecutionContext.SERVER ? (
                           <>
-                            {(action as BackendAction).executionModel.request.method.toUpperCase()}{' '}
-                            {(action as BackendAction).executionModel.request.url}
+                            {(
+                              action as BackendAction
+                            ).executionModel.request.method.toUpperCase()}{' '}
+                            {
+                              (action as BackendAction).executionModel.request
+                                .url
+                            }
                           </>
                         ) : (
                           (action as FrontendAction).executionModel.functionName
