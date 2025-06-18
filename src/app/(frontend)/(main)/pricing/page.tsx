@@ -275,7 +275,7 @@ export default function PricingPage() {
       </div>
 
       {showCheckout && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
           <div className="bg-card p-8 border-[2px] border-border rounded-xl max-w-lg w-full hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-semibold mb-4 text-foreground">
               Complete Payment
@@ -297,7 +297,7 @@ export default function PricingPage() {
       )}
 
       {showEnterpriseForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
           <div className="bg-card p-8 border-[3px] border-border border-l-8 border-l-brand rounded-2xl shadow-2xl max-w-lg w-full">
             <div className="flex items-center gap-2 mb-4">
               <Mail className="h-6 w-6 text-brand" />
