@@ -51,22 +51,10 @@ export default function LandingPage() {
         </div>
         <div className="hidden md:flex space-x-6">
           <Link
-            href="/product"
-            className="text-foreground hover:-translate-y-0.5 transition-transform"
-          >
-            Product
-          </Link>
-          <Link
             href="/docs"
             className="text-foreground hover:-translate-y-0.5 transition-transform"
           >
             Docs
-          </Link>
-          <Link
-            href="/blog"
-            className="text-foreground hover:-translate-y-0.5 transition-transform"
-          >
-            Blog
           </Link>
           <Link
             href="/pricing"
