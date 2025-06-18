@@ -7,6 +7,8 @@ import {
   EmbeddedCheckout,
 } from '@stripe/react-stripe-js';
 import { Check, Mail, MessageSquare, X, Send } from 'lucide-react';
+import { useAuth } from '@/app/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -18,6 +20,8 @@ interface CheckoutResponse {
 }
 
 export default function PricingPage() {
+  const router = useRouter();
+  const { isLoggedIn } = useAuth();
   const [showCheckout, setShowCheckout] = useState<boolean>(false);
   const [clientSecret, setClientSecret] = useState<string>('');
   const [checkoutSessionId, setCheckoutSessionId] = useState<string>('');
@@ -27,6 +31,11 @@ export default function PricingPage() {
   const [formStatus, setFormStatus] = useState<string>('');
 
   const handleSubscribe = async (tier: string) => {
+    if (!isLoggedIn) {
+      router.push('/login');
+      return;
+    }
+
     try {
       const res = await fetch('/api/stripe/subscribe', {
         method: 'POST',
@@ -45,6 +54,11 @@ export default function PricingPage() {
   };
 
   const handleBuyCredits = async () => {
+    if (!isLoggedIn) {
+      router.push('/login');
+      return;
+    }
+
     try {
       const res = await fetch('/api/stripe/buy-credits', {
         method: 'POST',
