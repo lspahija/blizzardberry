@@ -209,7 +209,7 @@ function AgentDetails({
           </h1>
           <Button
             asChild
-            className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full md:w-auto"
+            className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full md:w-auto hover:bg-secondary/90"
           >
             <Link href="/dashboard" className="flex items-center justify-center">
               Back to Dashboard
@@ -242,7 +242,7 @@ function AgentDetails({
         <div className="mb-6 flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
           <Button
             asChild
-            className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto"
+            className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto hover:bg-brand/90"
           >
             <Link
               href={`/agents/${params.agentId}/actions/new`}
@@ -254,7 +254,7 @@ function AgentDetails({
           </Button>
           <Button
             asChild
-            className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto"
+            className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto hover:bg-brand/90"
           >
             <Link
               href={`/agents/${params.agentId}/documents/new`}
@@ -265,7 +265,7 @@ function AgentDetails({
             </Link>
           </Button>
           <Button
-            className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center"
+            className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center hover:bg-secondary/90"
             onClick={() => setShowAgentCode(true)}
             title="Show installation code for this agent"
           >
@@ -274,7 +274,7 @@ function AgentDetails({
           </Button>
           {clientActions.length > 0 && (
             <Button
-              className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center"
+              className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center hover:bg-secondary/90"
               onClick={() => setShowClientActions(true)}
               title="Show code for client actions"
             >
@@ -399,7 +399,7 @@ function AgentDetails({
                             setCopied(true);
                             setTimeout(() => setCopied(false), 2000);
                           }}
-                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
+                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 hover:bg-secondary/90"
                         >
                           <Copy className="w-4 h-4" />
                           {copied ? 'Copied!' : 'Copy Code'}

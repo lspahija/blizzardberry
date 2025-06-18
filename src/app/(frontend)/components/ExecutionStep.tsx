@@ -349,7 +349,7 @@ export default function ExecutionStep({
                   ))}
                   <Button
                     variant="outline"
-                    className="mt-4 bg-[#FFFDF8] text-gray-900 border-[2px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
+                    className="mt-4 bg-card text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
                     onClick={addHeader}
                   >
                     <PlusCircle className="h-4 w-4" />
@@ -526,7 +526,7 @@ export default function ExecutionStep({
                         )
                       );
                     }}
-                    className="absolute top-12 right-4 bg-accent text-accent-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold"
+                    className="absolute top-12 right-4 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold hover:bg-secondary/90"
                   >
                     <Copy className="w-4 h-4 mr-2" />
                     Copy Code
@@ -562,7 +562,7 @@ export default function ExecutionStep({
             <div className="flex space-x-4">
               <Button
                 variant="outline"
-                className="bg-[#FFFDF8] text-gray-900 border-[3px] border-gray-900 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
+                className="bg-card text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
                 onClick={onBack}
               >
                 <ArrowLeft className="w-4 h-4" />

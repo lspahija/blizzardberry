@@ -170,7 +170,7 @@ export default function UserConfig() {
                     </SyntaxHighlighter>
                     <Button
                       onClick={handleCopy}
-                      className="absolute top-2 right-2 bg-accent text-accent-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold"
+                      className="absolute top-2 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold hover:bg-secondary/90"
                     >
                       <Copy className="w-4 h-4 mr-2" />
                       {copied ? 'Copied!' : 'Copy Code'}

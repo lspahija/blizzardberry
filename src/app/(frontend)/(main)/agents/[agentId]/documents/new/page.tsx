@@ -89,7 +89,7 @@ export default function AddDocument({
           </h1>
           <Button
             asChild
-            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg"
+            className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg hover:bg-secondary/90"
           >
             <Link
               href={`/agents/${params.agentId}`}
