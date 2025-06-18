@@ -220,7 +220,7 @@ export default function AddDocument({
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/80 transition-transform duration-200 shadow-md text-lg font-semibold w-full"
+                className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/80 transition-transform duration-200 shadow-md text-lg font-semibold w-full"
               >
                 {isSubmitting ? (
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />

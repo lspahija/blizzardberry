@@ -209,7 +209,7 @@ function AgentDetails({
           </h1>
           <Button
             asChild
-            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full md:w-auto"
+            className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full md:w-auto"
           >
             <Link href="/dashboard" className="flex items-center justify-center">
               Back to Dashboard
@@ -242,7 +242,7 @@ function AgentDetails({
         <div className="mb-6 flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
           <Button
             asChild
-            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto"
+            className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto"
           >
             <Link
               href={`/agents/${params.agentId}/actions/new`}
@@ -254,7 +254,7 @@ function AgentDetails({
           </Button>
           <Button
             asChild
-            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto"
+            className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto"
           >
             <Link
               href={`/agents/${params.agentId}/documents/new`}
@@ -265,7 +265,7 @@ function AgentDetails({
             </Link>
           </Button>
           <Button
-            className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center"
+            className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center"
             onClick={() => setShowAgentCode(true)}
             title="Show installation code for this agent"
           >
@@ -274,7 +274,7 @@ function AgentDetails({
           </Button>
           {clientActions.length > 0 && (
             <Button
-              className="bg-brand text-brand-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center"
+              className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center"
               onClick={() => setShowClientActions(true)}
               title="Show code for client actions"
             >

@@ -141,7 +141,7 @@ export default function EditAgentPage({
         >
           <div className="relative mb-12">
             <div className="absolute inset-0 bg-foreground rounded-lg translate-x-1 translate-y-1"></div>
-            <Card className="relative bg-muted border-[3px] border-border rounded-lg shadow-xl border-l-8 border-l-destructive">
+            <Card className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8 border-l-destructive">
               <CardHeader className="flex items-center space-x-2">
                 <Bot className="h-7 w-7 text-destructive" />
                 <CardTitle className="text-2xl font-semibold text-foreground">
@@ -225,7 +225,7 @@ export default function EditAgentPage({
                 </div>
                 <div className="flex gap-4">
                   <Button
-                    className="flex-1 bg-destructive text-destructive-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-destructive/80 transition-transform duration-200 shadow-md text-lg font-semibold"
+                    className="flex-1 bg-destructive text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-destructive/80 transition-transform duration-200 shadow-md text-lg font-semibold"
                     onClick={onUpdateAgent}
                   >
                     Save Changes
