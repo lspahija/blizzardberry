@@ -46,7 +46,10 @@ export default function DataInputsStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-      <div className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 p-3 md:p-4 rounded-lg shadow-md" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+      <div
+        className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 p-3 md:p-4 rounded-lg shadow-md"
+        style={{ borderLeftColor: 'var(--color-destructive)' }}
+      >
         <Info className="h-5 w-5 md:h-6 md:w-6 text-destructive mr-2 md:mr-3 mt-1 md:mt-0 flex-shrink-0" />
         <span className="text-foreground text-sm md:text-base">
           Specify any data inputs your action needs. The AI agent can use these
@@ -55,7 +58,10 @@ export default function DataInputsStep({
       </div>
       <div className="relative mb-6 md:mb-12">
         <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
-        <Card className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+        <Card
+          className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8"
+          style={{ borderLeftColor: 'var(--color-destructive)' }}
+        >
           <CardHeader className="flex flex-row items-center space-x-2 p-4 md:p-6">
             <List className="h-5 w-5 md:h-7 md:w-7 text-destructive" />
             <CardTitle className="text-xl md:text-2xl font-semibold text-foreground">
@@ -94,7 +100,9 @@ export default function DataInputsStep({
                   }
                   nameIcon={<Zap className="h-4 w-4 text-destructive" />}
                   typeIcon={<Tag className="h-4 w-4 text-destructive" />}
-                  descriptionIcon={<Info className="h-4 w-4 text-destructive" />}
+                  descriptionIcon={
+                    <Info className="h-4 w-4 text-destructive" />
+                  }
                 />
               ))}
               <Button

@@ -98,7 +98,9 @@ export function Navbar() {
           >
             Blizzard<span className="text-[#FE4A60]">Berry</span>
           </Link>
-          <span className="hidden sm:block mx-2 text-gray-300 select-none">|</span>
+          <span className="hidden sm:block mx-2 text-gray-300 select-none">
+            |
+          </span>
           <div className="hidden md:flex items-center gap-2">
             {navLinks.map((link) => (
               <Link
@@ -145,7 +147,10 @@ export function Navbar() {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="fixed inset-0 bg-black/20" onClick={() => setIsMobileMenuOpen(false)} />
+          <div
+            className="fixed inset-0 bg-black/20"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
           <div className="fixed right-0 top-0 h-full w-[280px] bg-[#FFFDF8] border-l-[3px] border-gray-900 p-6 overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-900">Menu</h2>
@@ -194,7 +199,10 @@ export function Navbar() {
       )}
 
       <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
-        <DialogContent className="bg-card border-[3px] border-border border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+        <DialogContent
+          className="bg-card border-[3px] border-border border-l-8"
+          style={{ borderLeftColor: 'var(--color-destructive)' }}
+        >
           <DialogHeader className="flex items-center gap-2 mb-2">
             <Send className="h-5 w-5 sm:h-6 sm:w-6 text-destructive" />
             <DialogTitle className="text-foreground text-xl sm:text-2xl font-bold tracking-tight">
@@ -208,7 +216,10 @@ export function Navbar() {
               requests, or anything else that can help us improve.
             </span>
           </div>
-          <form onSubmit={handleFeedbackSubmit} className="space-y-4 sm:space-y-6">
+          <form
+            onSubmit={handleFeedbackSubmit}
+            className="space-y-4 sm:space-y-6"
+          >
             <div>
               <Label
                 htmlFor="feedbackEmail"
@@ -233,10 +244,7 @@ export function Navbar() {
                 <Tag className="h-4 w-4 text-destructive" />
                 Feedback Type
               </Label>
-              <Select
-                value={feedbackType}
-                onValueChange={setFeedbackType}
-              >
+              <Select value={feedbackType} onValueChange={setFeedbackType}>
                 <SelectTrigger className="mt-2 w-full rounded-lg border-[2px] border-border p-2 sm:p-3 bg-card text-foreground focus:ring-2 focus:ring-destructive focus:border-destructive transition text-sm sm:text-base">
                   <SelectValue placeholder="Select feedback type" />
                 </SelectTrigger>

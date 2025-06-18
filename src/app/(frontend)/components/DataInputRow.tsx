@@ -95,7 +95,10 @@ export default function DataInputRow({
         />
       </div>
       <div className="flex flex-row md:flex-col items-center gap-4 md:gap-1 mt-2.5">
-        <Label htmlFor={`inputArray${index}`} className="mb-0 text-sm md:text-base whitespace-nowrap text-foreground">
+        <Label
+          htmlFor={`inputArray${index}`}
+          className="mb-0 text-sm md:text-base whitespace-nowrap text-foreground"
+        >
           Array
         </Label>
         <input

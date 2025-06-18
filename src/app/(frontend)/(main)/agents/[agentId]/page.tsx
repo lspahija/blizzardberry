@@ -211,13 +211,19 @@ function AgentDetails({
             asChild
             className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full md:w-auto hover:bg-secondary/90"
           >
-            <Link href="/dashboard" className="flex items-center justify-center">
+            <Link
+              href="/dashboard"
+              className="flex items-center justify-center"
+            >
               Back to Dashboard
             </Link>
           </Button>
         </div>
 
-        <Card className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+        <Card
+          className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8"
+          style={{ borderLeftColor: 'var(--color-destructive)' }}
+        >
           <CardHeader className="flex items-center space-x-2">
             <Bot className="h-6 w-6 text-destructive" />
             <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
@@ -292,7 +298,10 @@ function AgentDetails({
             <div className="relative z-10 w-full max-w-lg sm:max-w-2xl md:max-w-4xl max-h-[90vh] rounded-2xl">
               <div className="relative mb-8 md:mb-12">
                 <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
-                <Card className="relative bg-card border-[3px] border-border rounded-3xl shadow-2xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+                <Card
+                  className="relative bg-card border-[3px] border-border rounded-3xl shadow-2xl border-l-8"
+                  style={{ borderLeftColor: 'var(--color-destructive)' }}
+                >
                   <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-destructive/60 scrollbar-track-card/60 rounded-2xl pr-2">
                     <CardHeader className="flex flex-col sm:flex-row items-center justify-between gap-2">
                       <div className="flex items-center space-x-2">
@@ -422,7 +431,10 @@ function AgentDetails({
             <div className="relative z-10 w-full max-w-lg sm:max-w-2xl md:max-w-4xl max-h-[90vh] rounded-2xl">
               <div className="relative mb-8 md:mb-12">
                 <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
-                <Card className="relative bg-muted border-[3px] border-border rounded-3xl shadow-2xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+                <Card
+                  className="relative bg-muted border-[3px] border-border rounded-3xl shadow-2xl border-l-8"
+                  style={{ borderLeftColor: 'var(--color-destructive)' }}
+                >
                   <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-destructive/60 scrollbar-track-card/60 rounded-2xl pr-2">
                     <CardHeader className="flex items-center justify-between relative">
                       <div className="flex items-center space-x-2">
@@ -555,7 +567,10 @@ function AgentDetails({
             No actions found. Create one to get started!
           </p>
         ) : (
-          <Card className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+          <Card
+            className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8"
+            style={{ borderLeftColor: 'var(--color-destructive)' }}
+          >
             <CardHeader className="flex items-center space-x-2">
               <Zap className="h-6 w-6 text-destructive" />
               <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
@@ -646,7 +661,10 @@ function AgentDetails({
             No documents found. Add one to get started!
           </p>
         ) : (
-          <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+          <Card
+            className="border-[3px] border-border bg-card rounded-xl shadow-xl border-l-8"
+            style={{ borderLeftColor: 'var(--color-destructive)' }}
+          >
             <CardHeader className="flex items-center space-x-2">
               <FileText className="h-6 w-6 text-destructive" />
               <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">

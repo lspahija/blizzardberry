@@ -212,6 +212,11 @@ Which could be useful when you have a lot of chunks and a variety of content.
 pnpm format
 ```
 
+## Run Tests
+```bash
+pnpm exec playwright test
+```
+
 ## UI Components
 This project uses [shadcn/ui](https://ui.shadcn.com/) components
 
