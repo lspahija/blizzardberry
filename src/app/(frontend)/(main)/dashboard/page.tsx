@@ -172,7 +172,7 @@ export default function Dashboard() {
           </Button>
           <Button
             asChild
-            className="bg-secondary text-secondary-foreground border-[3px] border-border transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5"
+            className="bg-secondary text-secondary-foreground border-[3px] border-border transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90"
             onClick={() =>
               posthog.capture('user_config_clicked', {
                 user_email: session?.user?.email,
@@ -241,13 +241,13 @@ export default function Dashboard() {
                     <div className="flex gap-2 ml-4">
                       <Button
                         asChild
-                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2"
+                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 hover:bg-secondary/90"
                       >
                         <Link href={`/agents/${agent.id}`}>View</Link>
                       </Button>
                       <Button
                         asChild
-                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
+                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 hover:bg-secondary/90"
                       >
                         <Link
                           href={`/agents/${agent.id}/edit`}

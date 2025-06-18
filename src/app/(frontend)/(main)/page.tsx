@@ -80,7 +80,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
             <Button
               variant="outline"
-              className="relative bg-background text-foreground border-[3px] border-border"
+              className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90"
               asChild
             >
               <Link href="/login">Sign In</Link>
@@ -89,7 +89,7 @@ export default function LandingPage() {
           <div className="relative group">
             <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
             <Button
-              className="relative bg-primary text-primary-foreground border-[3px] border-border"
+              className="relative bg-secondary text-secondary-foreground border-[3px] border-border hover:bg-secondary/90"
               asChild
             >
               <Link href="/login">Try For Free</Link>
@@ -130,7 +130,7 @@ export default function LandingPage() {
         >
           Give Your Users an
           <br />
-          <span className="text-primary"> AI Agent </span>
+          <span className="text-brand"> AI Agent </span>
         </motion.h1>
 
         <svg
@@ -166,7 +166,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
             <Button
               size="lg"
-              className="relative bg-primary text-primary-foreground border-[3px] border-border"
+              className="relative bg-secondary text-secondary-foreground border-[3px] border-border hover:bg-secondary/90"
               asChild
             >
               <Link href="/login">Get Started Now</Link>
@@ -177,7 +177,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               variant="outline"
-              className="relative bg-background text-foreground border-[3px] border-border"
+              className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90"
               asChild
             >
               <Link href="https://github.com/your-repo" target="_blank">
@@ -223,7 +223,7 @@ export default function LandingPage() {
                 <ShadowWrapper>
                   <Card className="relative bg-card text-card-foreground border-[3px] border-border rounded-lg shadow-none flex flex-col">
                     <CardHeader className="pb-4">
-                      <item.icon className="w-8 h-8 text-primary mb-3" />
+                      <item.icon className="w-8 h-8 text-brand mb-3" />
                       <CardTitle className="text-xl font-semibold leading-tight">
                         {item.title}
                       </CardTitle>
@@ -242,7 +242,7 @@ export default function LandingPage() {
       </div>
 
       {/* CTA Section */}
-      <div className="py-16 text-center bg-primary text-primary-foreground">
+      <div className="py-16 text-center bg-secondary text-secondary-foreground">
         <div className="max-w-2xl mx-auto px-4">
           <h2 className="text-4xl font-bold mb-4">
             Ready to Transform Your Webapp?
@@ -254,7 +254,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
             <Button
               size="lg"
-              className="relative bg-background text-foreground border-[3px] border-border"
+              className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90"
               asChild
             >
               <Link href="/login">Get Started for Free</Link>
