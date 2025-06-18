@@ -270,7 +270,7 @@ export function Navbar() {
             <div className="flex justify-end gap-2 mt-4 sm:mt-6">
               <button
                 type="button"
-                className="border-[2px] border-border text-white bg-destructive hover:bg-destructive/80 transition font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs sm:text-sm"
+                className="border-[2px] border-border text-white bg-destructive hover:bg-destructive/80 hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs sm:text-sm"
                 onClick={() => setIsFeedbackOpen(false)}
               >
                 <X className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -279,7 +279,7 @@ export function Navbar() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-secondary text-foreground border-[2px] border-border hover:bg-muted transition font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs sm:text-sm"
+                className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs sm:text-sm hover:bg-secondary/90"
               >
                 {isSubmitting ? (
                   <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
