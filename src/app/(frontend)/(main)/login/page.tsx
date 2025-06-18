@@ -117,7 +117,7 @@ export default function LoginPage() {
             <div className="absolute inset-0 bg-foreground rounded translate-x-1 translate-y-1"></div>
             <Button
               size="lg"
-              className="relative w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
+              className="relative w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center hover:bg-secondary/90"
               onClick={handleGitHubSignIn}
               disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
             >
@@ -145,7 +145,7 @@ export default function LoginPage() {
             <div className="absolute inset-0 bg-foreground rounded translate-x-1 translate-y-1"></div>
             <Button
               size="lg"
-              className="relative w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
+              className="relative w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center hover:bg-secondary/90"
               onClick={handleGoogleSignIn}
               disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
             >
@@ -187,7 +187,7 @@ export default function LoginPage() {
               />
               <Button
                 size="lg"
-                className="w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center"
+                className="w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center hover:bg-secondary/90"
                 onClick={handleResendSignIn}
                 disabled={
                   isGitHubLoading ||

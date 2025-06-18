@@ -80,7 +80,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
             <Button
               variant="outline"
-              className="relative bg-background text-foreground border-[3px] border-border"
+              className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90"
               asChild
             >
               <Link href="/login">Sign In</Link>
