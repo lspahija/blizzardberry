@@ -113,11 +113,10 @@ export default function LoginPage() {
               {error}
             </motion.div>
           )}
-          <div className="relative">
-            <div className="absolute inset-0 bg-foreground rounded translate-x-1 translate-y-1"></div>
+          <div>
             <Button
               size="lg"
-              className="relative w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center hover:bg-secondary/90"
+              className="w-full bg-background text-foreground border-[3px] border-border rounded flex items-center justify-center transition-transform duration-150 hover:scale-105 hover:bg-secondary/90"
               onClick={handleGitHubSignIn}
               disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
             >
@@ -141,11 +140,10 @@ export default function LoginPage() {
               </div>
             </Button>
           </div>
-          <div className="relative">
-            <div className="absolute inset-0 bg-foreground rounded translate-x-1 translate-y-1"></div>
+          <div>
             <Button
               size="lg"
-              className="relative w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center hover:bg-secondary/90"
+              className="w-full bg-background text-foreground border-[3px] border-border rounded flex items-center justify-center transition-transform duration-150 hover:scale-105 hover:bg-secondary/90"
               onClick={handleGoogleSignIn}
               disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
             >
@@ -169,9 +167,8 @@ export default function LoginPage() {
               </div>
             </Button>
           </div>
-          <div className="relative">
-            <div className="absolute inset-0 bg-foreground rounded translate-x-1 translate-y-1"></div>
-            <div className="relative w-full bg-background border-[3px] border-border rounded p-4 flex flex-col space-y-4">
+          <div>
+            <div className="w-full bg-background border-[3px] border-border rounded p-4 flex flex-col space-y-4">
               <input
                 type="email"
                 id="email-resend"
@@ -187,7 +184,7 @@ export default function LoginPage() {
               />
               <Button
                 size="lg"
-                className="w-full bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform flex items-center justify-center hover:bg-secondary/90"
+                className="w-full bg-background text-foreground border-[3px] border-border rounded flex items-center justify-center transition-transform duration-150 hover:scale-105 hover:bg-secondary/90"
                 onClick={handleResendSignIn}
                 disabled={
                   isGitHubLoading ||
