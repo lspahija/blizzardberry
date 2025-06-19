@@ -44,15 +44,14 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Navbar */}
       <nav className="flex justify-between items-center p-4 pb-2 max-w-4xl mx-auto border-b-[3px] border-border sticky top-0 bg-background z-50">
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center">
           {' '}
           <Link href="/" className="flex items-center">
-            {' '}
             <Image
-              src="/logo3.png"
+              src="/image/logo.png"
               alt="BlizzardBerry Logo"
-              width={90}
-              height={90}
+              width={60}
+              height={60}
               className="object-contain"
             />
             <span className="text-2xl font-bold">
