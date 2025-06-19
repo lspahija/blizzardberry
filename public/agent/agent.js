@@ -6,7 +6,7 @@
   let counter = 0;
 
   function initializeAgentId() {
-    // Try to get agent ID from current script first
+    // Try to get agent ID from current script first (most reliable)
     let script = document.currentScript;
     if (script && script.dataset && script.dataset.agentId) {
       agentId = script.dataset.agentId;
@@ -14,23 +14,31 @@
       return;
     }
     
-    // Fallback: find the script tag by ID
-    script = document.getElementById('blizzardberry-agent');
-    if (script && script.dataset && script.dataset.agentId) {
-      agentId = script.dataset.agentId;
-      console.log('Initialized agent ID from script element:', agentId);
+    // If currentScript is not available, we need to find the specific script that loaded this instance
+    // We can do this by looking for scripts that have the same src as this script
+    const currentScriptSrc = script?.src;
+    if (currentScriptSrc) {
+      // Find script with matching src and data-agent-id
+      const matchingScripts = document.querySelectorAll(`script[src="${currentScriptSrc}"][data-agent-id]`);
+      if (matchingScripts.length === 1) {
+        agentId = matchingScripts[0].dataset.agentId;
+        console.log('Initialized agent ID from matching script:', agentId);
+        return;
+      } else if (matchingScripts.length > 1) {
+        console.error('Multiple scripts with same src and data-agent-id found. Cannot determine which agent ID to use.');
+        return;
+      }
+    }
+    
+    // Last resort: if we have a specific ID, try to find it
+    const specificScript = document.getElementById('blizzardberry-agent');
+    if (specificScript && specificScript.dataset && specificScript.dataset.agentId) {
+      agentId = specificScript.dataset.agentId;
+      console.log('Initialized agent ID from specific script element:', agentId);
       return;
     }
     
-    // Fallback: find any script tag with data-agent-id
-    const scripts = document.querySelectorAll('script[data-agent-id]');
-    if (scripts.length > 0) {
-      agentId = scripts[0].dataset.agentId;
-      console.log('Initialized agent ID from first script with data-agent-id:', agentId);
-      return;
-    }
-    
-    console.error('Could not find agent ID in any script tag');
+    console.error('Could not find agent ID. Make sure the script tag has data-agent-id attribute.');
   }
 
   // Initialize user config
@@ -59,18 +67,23 @@
   // Inject CSS
   function injectStyles() {
     console.log('Injecting styles...');
+    
     // Try to get script src from current script first
     let script = document.currentScript;
     if (!script || !script.src) {
-      // Fallback: find the script tag by ID
-      script = document.getElementById('blizzardberry-agent');
-    }
-    if (!script || !script.src) {
-      // Fallback: find any script tag with data-agent-id
-      const scripts = document.querySelectorAll('script[data-agent-id]');
-      if (scripts.length > 0) {
-        script = scripts[0];
+      // If currentScript is not available, find the specific script that loaded this instance
+      const currentScriptSrc = script?.src;
+      if (currentScriptSrc) {
+        const matchingScripts = document.querySelectorAll(`script[src="${currentScriptSrc}"]`);
+        if (matchingScripts.length === 1) {
+          script = matchingScripts[0];
+        }
       }
+    }
+    
+    // Last resort: try to find by specific ID
+    if (!script || !script.src) {
+      script = document.getElementById('blizzardberry-agent');
     }
     
     if (script && script.src) {
