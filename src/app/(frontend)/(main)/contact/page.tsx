@@ -1,7 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/app/(frontend)/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@/app/(frontend)/components/ui/card';
 import { Input } from '@/app/(frontend)/components/ui/input';
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { Button } from '@/app/(frontend)/components/ui/button';
@@ -45,7 +50,9 @@ export default function ContactPage() {
 
   return (
     <div className="container mx-auto max-w-4xl py-16 px-4">
-      <h1 className="text-3xl md:text-5xl font-bold mb-20 text-center text-foreground">Contact Us</h1>
+      <h1 className="text-3xl md:text-5xl font-bold mb-20 text-center text-foreground">
+        Contact Us
+      </h1>
       <div className="flex flex-col md:flex-row gap-8">
         <Card className="flex-1 min-w-0">
           <CardHeader>
@@ -65,7 +72,7 @@ export default function ContactPage() {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="your@email.com"
                   className="mt-2"
@@ -79,7 +86,7 @@ export default function ContactPage() {
                 <Textarea
                   id="message"
                   value={message}
-                  onChange={e => setMessage(e.target.value)}
+                  onChange={(e) => setMessage(e.target.value)}
                   required
                   rows={6}
                   placeholder="How can we help you?"
@@ -95,7 +102,9 @@ export default function ContactPage() {
                 {isSubmitting ? 'Sending...' : 'Send Message'}
               </Button>
               {formStatus && (
-                <p className="text-center text-sm font-medium text-muted-foreground mt-2">{formStatus}</p>
+                <p className="text-center text-sm font-medium text-muted-foreground mt-2">
+                  {formStatus}
+                </p>
               )}
             </form>
           </CardContent>

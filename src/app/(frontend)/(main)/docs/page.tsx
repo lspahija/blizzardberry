@@ -421,8 +421,8 @@ export class AppComponent implements OnInit {
               <span className="text-brand"> Documentation</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Learn how to add powerful AI agents to your website in minutes. 
-              Create custom actions, upload knowledge documents, and provide 
+              Learn how to add powerful AI agents to your website in minutes.
+              Create custom actions, upload knowledge documents, and provide
               natural language interfaces to your users.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -479,7 +479,8 @@ export class AppComponent implements OnInit {
                 </CardHeader>
                 <CardContent className="text-center">
                   <p className="text-muted-foreground">
-                    Set up your AI agent with a name, website domain, and choose your preferred AI model.
+                    Set up your AI agent with a name, website domain, and choose
+                    your preferred AI model.
                   </p>
                 </CardContent>
               </Card>
@@ -495,7 +496,8 @@ export class AppComponent implements OnInit {
                 </CardHeader>
                 <CardContent className="text-center">
                   <p className="text-muted-foreground">
-                    Define custom actions your agent can perform - from form submissions to API calls.
+                    Define custom actions your agent can perform - from form
+                    submissions to API calls.
                   </p>
                 </CardContent>
               </Card>
@@ -511,7 +513,8 @@ export class AppComponent implements OnInit {
                 </CardHeader>
                 <CardContent className="text-center">
                   <p className="text-muted-foreground">
-                    Add knowledge documents to help your agent answer questions and provide support.
+                    Add knowledge documents to help your agent answer questions
+                    and provide support.
                   </p>
                 </CardContent>
               </Card>
@@ -527,7 +530,8 @@ export class AppComponent implements OnInit {
                 </CardHeader>
                 <CardContent className="text-center">
                   <p className="text-muted-foreground">
-                    Copy the installation code and paste it into your website. Your agent is ready!
+                    Copy the installation code and paste it into your website.
+                    Your agent is ready!
                   </p>
                 </CardContent>
               </Card>
@@ -562,9 +566,14 @@ export class AppComponent implements OnInit {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <Code className="h-6 w-6 text-brand" />
-                      <CardTitle className="text-xl">Installation Code</CardTitle>
+                      <CardTitle className="text-xl">
+                        Installation Code
+                      </CardTitle>
                     </div>
-                    <Select value={selectedFramework} onValueChange={setSelectedFramework}>
+                    <Select
+                      value={selectedFramework}
+                      onValueChange={setSelectedFramework}
+                    >
                       <SelectTrigger className="w-[180px] border-[2px] border-border">
                         <SelectValue placeholder="Select framework" />
                       </SelectTrigger>
@@ -596,11 +605,19 @@ export class AppComponent implements OnInit {
                       {getCodeForFramework(selectedFramework)}
                     </SyntaxHighlighter>
                     <Button
-                      onClick={() => handleCopy(getCodeForFramework(selectedFramework), selectedFramework)}
+                      onClick={() =>
+                        handleCopy(
+                          getCodeForFramework(selectedFramework),
+                          selectedFramework
+                        )
+                      }
                       className="absolute top-2 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 hover:bg-secondary/90"
                     >
                       <Copy className="w-4 h-4" />
-                      {copiedCode === `${selectedFramework}-${getCodeForFramework(selectedFramework).slice(0, 20)}` ? 'Copied!' : 'Copy'}
+                      {copiedCode ===
+                      `${selectedFramework}-${getCodeForFramework(selectedFramework).slice(0, 20)}`
+                        ? 'Copied!'
+                        : 'Copy'}
                     </Button>
                   </div>
                 </CardContent>
@@ -613,7 +630,9 @@ export class AppComponent implements OnInit {
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Settings className="h-6 w-6 text-brand" />
-                    <CardTitle className="text-xl">Installation Steps</CardTitle>
+                    <CardTitle className="text-xl">
+                      Installation Steps
+                    </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -628,13 +647,25 @@ export class AppComponent implements OnInit {
                       <span className="flex-shrink-0 w-6 h-6 bg-brand text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
                         2
                       </span>
-                      <span>Replace <code className="bg-muted px-1 rounded">your-agent-id</code> with your actual agent ID</span>
+                      <span>
+                        Replace{' '}
+                        <code className="bg-muted px-1 rounded">
+                          your-agent-id
+                        </code>{' '}
+                        with your actual agent ID
+                      </span>
                     </li>
                     <li className="flex items-start space-x-3">
                       <span className="flex-shrink-0 w-6 h-6 bg-brand text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
                         3
                       </span>
-                      <span>Paste the code before the closing <code className="bg-muted px-1 rounded">&lt;/body&gt;</code> tag</span>
+                      <span>
+                        Paste the code before the closing{' '}
+                        <code className="bg-muted px-1 rounded">
+                          &lt;/body&gt;
+                        </code>{' '}
+                        tag
+                      </span>
                     </li>
                     <li className="flex items-start space-x-3">
                       <span className="flex-shrink-0 w-6 h-6 bg-brand text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
@@ -679,8 +710,9 @@ export class AppComponent implements OnInit {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Create client-side and server-side actions that your agent can execute. 
-                    From form submissions to API calls, your agent can perform any task.
+                    Create client-side and server-side actions that your agent
+                    can execute. From form submissions to API calls, your agent
+                    can perform any task.
                   </p>
                 </CardContent>
               </Card>
@@ -696,8 +728,9 @@ export class AppComponent implements OnInit {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Upload documents, FAQs, and knowledge articles. Your agent will 
-                    use this information to provide accurate answers and support.
+                    Upload documents, FAQs, and knowledge articles. Your agent
+                    will use this information to provide accurate answers and
+                    support.
                   </p>
                 </CardContent>
               </Card>
@@ -713,7 +746,7 @@ export class AppComponent implements OnInit {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Users can interact with your agent using natural language. 
+                    Users can interact with your agent using natural language.
                     No need to learn specific commands or syntax.
                   </p>
                 </CardContent>
@@ -730,8 +763,8 @@ export class AppComponent implements OnInit {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Pass user information and preferences to your agent. 
-                    Provide personalized experiences based on user data.
+                    Pass user information and preferences to your agent. Provide
+                    personalized experiences based on user data.
                   </p>
                 </CardContent>
               </Card>
@@ -747,8 +780,9 @@ export class AppComponent implements OnInit {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    All communications are encrypted. Your data stays private 
-                    and secure. No sensitive information is stored unnecessarily.
+                    All communications are encrypted. Your data stays private
+                    and secure. No sensitive information is stored
+                    unnecessarily.
                   </p>
                 </CardContent>
               </Card>
@@ -764,7 +798,7 @@ export class AppComponent implements OnInit {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Instant responses and real-time interactions. Your agent 
+                    Instant responses and real-time interactions. Your agent
                     responds immediately to user queries and actions.
                   </p>
                 </CardContent>
@@ -946,7 +980,8 @@ export class AppComponent implements OnInit {
               Ready to Get Started?
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Create your first AI agent in minutes and transform how users interact with your website.
+              Create your first AI agent in minutes and transform how users
+              interact with your website.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button

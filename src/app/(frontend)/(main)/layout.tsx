@@ -18,9 +18,7 @@ export default function FrontendLayout({
     <Suspense fallback={null}>
       <SessionProvider>
         <AuthProvider>
-          <FrameworkProvider>
-            {children}
-          </FrameworkProvider>
+          <FrameworkProvider>{children}</FrameworkProvider>
         </AuthProvider>
       </SessionProvider>
     </Suspense>
