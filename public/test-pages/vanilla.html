@@ -129,9 +129,9 @@
     <!-- 3. Agent Script - Load the BlizzardBerry agent -->
     <script
         id="blizzardberry-agent"
-        src="/agent/agent-test.js"
+        src="/agent/agent.js"
         type="text/javascript"
-        data-agent-id="test-agent-vanilla"
+        data-agent-id="8b5d8bfb-f6b4-45de-9500-aa95c7046487"
     ></script>
 
     <script>
@@ -199,14 +199,14 @@
             if (agentScript) {
                 addTestResult('Agent script element found', 'success');
                 
-                // Check if agent is initialized (this would depend on your agent implementation)
-                if (window.BlizzardBerryAgent) {
-                    addTestResult('BlizzardBerryAgent object found', 'success');
-                    updateAgentStatus('Agent initialized successfully', 'success');
-                } else {
-                    addTestResult('BlizzardBerryAgent object not found - agent may still be loading', 'info');
-                    updateAgentStatus('Agent loading...', 'info');
-                }
+                // Debug: Check if script loaded successfully
+                agentScript.addEventListener('load', () => {
+                    addTestResult('Agent script loaded successfully', 'success');
+                });
+                
+                agentScript.addEventListener('error', (error) => {
+                    addTestResult('Agent script failed to load: ' + error.message, 'error');
+                });
             } else {
                 addTestResult('Agent script element not found', 'error');
                 updateAgentStatus('Agent script not found', 'error');
@@ -216,6 +216,24 @@
         // Run initial tests when page loads
         window.addEventListener('load', () => {
             addTestResult('Page loaded, running initial tests...', 'info');
+            
+            // Debug: Check if agent script loaded
+            const agentScript = document.getElementById('blizzardberry-agent');
+            if (agentScript) {
+                addTestResult('Agent script element found', 'success');
+                
+                // Debug: Check if script loaded successfully
+                agentScript.addEventListener('load', () => {
+                    addTestResult('Agent script loaded successfully', 'success');
+                });
+                
+                agentScript.addEventListener('error', (error) => {
+                    addTestResult('Agent script failed to load: ' + error.message, 'error');
+                });
+            } else {
+                addTestResult('Agent script element not found', 'error');
+            }
+            
             testUserConfig();
             testAgentInitialization();
             

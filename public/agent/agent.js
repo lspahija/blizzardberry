@@ -1,13 +1,36 @@
 (function () {
+  console.log('Agent script starting...');
   const actions = {};
   let userConfig = null;
   let agentId = null;
   let counter = 0;
 
   function initializeAgentId() {
-    const script = document.currentScript;
-    agentId = script?.dataset?.agentId;
-    console.log('Initialized agent ID:', agentId);
+    // Try to get agent ID from current script first
+    let script = document.currentScript;
+    if (script && script.dataset && script.dataset.agentId) {
+      agentId = script.dataset.agentId;
+      console.log('Initialized agent ID from currentScript:', agentId);
+      return;
+    }
+    
+    // Fallback: find the script tag by ID
+    script = document.getElementById('blizzardberry-agent');
+    if (script && script.dataset && script.dataset.agentId) {
+      agentId = script.dataset.agentId;
+      console.log('Initialized agent ID from script element:', agentId);
+      return;
+    }
+    
+    // Fallback: find any script tag with data-agent-id
+    const scripts = document.querySelectorAll('script[data-agent-id]');
+    if (scripts.length > 0) {
+      agentId = scripts[0].dataset.agentId;
+      console.log('Initialized agent ID from first script with data-agent-id:', agentId);
+      return;
+    }
+    
+    console.error('Could not find agent ID in any script tag');
   }
 
   // Initialize user config
@@ -35,64 +58,89 @@
 
   // Inject CSS
   function injectStyles() {
-    const script = document.currentScript;
-    const css = document.createElement('link');
-    css.rel = 'stylesheet';
-    css.href = script.src.replace(/\.js$/, '.css');
-    document.head.appendChild(css);
+    console.log('Injecting styles...');
+    // Try to get script src from current script first
+    let script = document.currentScript;
+    if (!script || !script.src) {
+      // Fallback: find the script tag by ID
+      script = document.getElementById('blizzardberry-agent');
+    }
+    if (!script || !script.src) {
+      // Fallback: find any script tag with data-agent-id
+      const scripts = document.querySelectorAll('script[data-agent-id]');
+      if (scripts.length > 0) {
+        script = scripts[0];
+      }
+    }
+    
+    if (script && script.src) {
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = script.src.replace(/\.js$/, '.css');
+      document.head.appendChild(css);
+      console.log('CSS injected:', css.href);
+    } else {
+      console.error('Could not find script src for CSS injection');
+    }
   }
 
   // Create widget DOM
   function createWidgetDOM() {
-    const toggle = document.createElement('div');
-    toggle.id = 'chatWidgetToggle';
-    toggle.innerHTML = '💬';
-    toggle.addEventListener('click', toggleChatWidget);
-    document.body.appendChild(toggle);
+    console.log('Creating widget DOM...');
+    try {
+      const toggle = document.createElement('div');
+      toggle.id = 'chatWidgetToggle';
+      toggle.innerHTML = '💬';
+      toggle.addEventListener('click', toggleChatWidget);
+      document.body.appendChild(toggle);
 
-    const widget = document.createElement('div');
-    widget.id = 'chatWidget';
-    widget.classList.add('hidden');
+      const widget = document.createElement('div');
+      widget.id = 'chatWidget';
+      widget.classList.add('hidden');
 
-    const header = document.createElement('div');
-    header.id = 'chatWidgetHeader';
-    header.innerHTML =
-      '<div>Chat</div><button id="chatWidgetCloseButton">⌄</button>';
-    header
-      .querySelector('#chatWidgetCloseButton')
-      .addEventListener('click', toggleChatWidget);
-    widget.appendChild(header);
+      const header = document.createElement('div');
+      header.id = 'chatWidgetHeader';
+      header.innerHTML =
+        '<div>Chat</div><button id="chatWidgetCloseButton">⌄</button>';
+      header
+        .querySelector('#chatWidgetCloseButton')
+        .addEventListener('click', toggleChatWidget);
+      widget.appendChild(header);
 
-    const body = document.createElement('div');
-    body.id = 'chatWidgetBody';
-    widget.appendChild(body);
+      const body = document.createElement('div');
+      body.id = 'chatWidgetBody';
+      widget.appendChild(body);
 
-    const inputArea = document.createElement('div');
-    inputArea.id = 'chatWidgetInput';
-    inputArea.innerHTML = `
-      <input id="chatWidgetInputField" type="text" placeholder="Type a message...">
-      <button id="chatWidgetSendButton">Send</button>
-    `;
-    inputArea
-      .querySelector('#chatWidgetSendButton')
-      .addEventListener('click', handleSubmit);
-    inputArea
-      .querySelector('#chatWidgetInputField')
-      .addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleSubmit();
-      });
-    widget.appendChild(inputArea);
+      const inputArea = document.createElement('div');
+      inputArea.id = 'chatWidgetInput';
+      inputArea.innerHTML = `
+        <input id="chatWidgetInputField" type="text" placeholder="Type a message...">
+        <button id="chatWidgetSendButton">Send</button>
+      `;
+      inputArea
+        .querySelector('#chatWidgetSendButton')
+        .addEventListener('click', handleSubmit);
+      inputArea
+        .querySelector('#chatWidgetInputField')
+        .addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') handleSubmit();
+        });
+      widget.appendChild(inputArea);
 
-    const footer = document.createElement('div');
-    footer.id = 'chatWidgetFooter';
-    footer.innerHTML = 'Powered By BlizzardBerry';
-    footer.style.textAlign = 'center';
-    footer.style.padding = '10px';
-    footer.style.fontSize = '12px';
-    footer.style.color = '#666';
-    widget.appendChild(footer);
+      const footer = document.createElement('div');
+      footer.id = 'chatWidgetFooter';
+      footer.innerHTML = 'Powered By BlizzardBerry';
+      footer.style.textAlign = 'center';
+      footer.style.padding = '10px';
+      footer.style.fontSize = '12px';
+      footer.style.color = '#666';
+      widget.appendChild(footer);
 
-    document.body.appendChild(widget);
+      document.body.appendChild(widget);
+      console.log('Widget DOM created successfully');
+    } catch (error) {
+      console.error('Error creating widget DOM:', error);
+    }
   }
 
   // Toggle widget visibility
@@ -363,13 +411,17 @@
   }
 
   // Initialize
+  console.log('Starting initialization, document.readyState:', document.readyState);
   if (document.readyState === 'loading') {
+    console.log('Document still loading, adding DOMContentLoaded listener');
     document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOMContentLoaded fired, initializing...');
       initializeAgentId(); // Initialize agent ID
       injectStyles();
       createWidgetDOM();
     });
   } else {
+    console.log('Document already loaded, initializing immediately');
     initializeAgentId(); // Initialize agent ID
     injectStyles();
     createWidgetDOM();

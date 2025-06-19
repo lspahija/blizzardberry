@@ -13,7 +13,7 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       
       // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
-      await expect(chatWidget).toBeVisible();
+      await expect(chatWidget).toBeAttached();
     });
 
     test('Vue agent actions are available', async ({ page }) => {
@@ -27,7 +27,7 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       
       // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
-      await expect(chatWidget).toBeVisible();
+      await expect(chatWidget).toBeAttached();
     });
 
     test('Vue user configuration is properly set', async ({ page }) => {
@@ -41,7 +41,7 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       
       // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
-      await expect(chatWidget).toBeVisible();
+      await expect(chatWidget).toBeAttached();
     });
   });
 
@@ -53,7 +53,7 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       
       // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
-      await expect(chatWidget).toBeVisible();
+      await expect(chatWidget).toBeAttached();
     });
 
     test('Angular agent actions are available', async ({ page }) => {
@@ -67,7 +67,7 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       
       // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
-      await expect(chatWidget).toBeVisible();
+      await expect(chatWidget).toBeAttached();
     });
 
     test('Angular user configuration is properly set', async ({ page }) => {
@@ -81,7 +81,7 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       
       // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
-      await expect(chatWidget).toBeVisible();
+      await expect(chatWidget).toBeAttached();
     });
   });
 
@@ -100,7 +100,7 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
         
         // Verify all frameworks use the same agent script
         const agentScript = page.locator('#blizzardberry-agent');
-        await expect(agentScript).toHaveAttribute('src', '/agent/agent-test.js');
+        await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
         
         // Verify all frameworks have the same basic structure
         const configScript = page.locator('#blizzardberry-config');
@@ -126,7 +126,7 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
         
         // Check that the chat widget was created (indicates agent script loaded successfully)
         const chatWidget = page.locator('#chatWidget');
-        await expect(chatWidget).toBeVisible();
+        await expect(chatWidget).toBeAttached();
       }
     });
 
@@ -144,7 +144,7 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
         
         // Check that the chat widget was created (indicates agent script loaded successfully)
         const chatWidget = page.locator('#chatWidget');
-        await expect(chatWidget).toBeVisible();
+        await expect(chatWidget).toBeAttached();
       }
     });
   });

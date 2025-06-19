@@ -33,11 +33,11 @@ test.describe('BlizzardBerry Agent Tests', () => {
     
     // Check that the chat widget was created (indicates agent script loaded successfully)
     const chatWidget = page.locator('#chatWidget');
-    await expect(chatWidget).toBeVisible();
+    await expect(chatWidget).toBeAttached();
     
     // Test that the agent script has the correct attributes
-    await expect(agentScript).toHaveAttribute('data-agent-id', 'test-agent-vanilla');
-    await expect(agentScript).toHaveAttribute('src', '/agent/agent-test.js');
+    await expect(agentScript).toHaveAttribute('data-agent-id', '8b5d8bfb-f6b4-45de-9500-aa95c7046487');
+    await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
   });
 
   test('Vanilla JavaScript - Agent actions work correctly', async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe('BlizzardBerry Agent Tests', () => {
     
     // Check that the chat widget was created (indicates agent script loaded successfully)
     const chatWidget = page.locator('#chatWidget');
-    await expect(chatWidget).toBeVisible();
+    await expect(chatWidget).toBeAttached();
   });
 
   test('Vanilla JavaScript - User configuration is properly set', async ({ page }) => {
@@ -73,7 +73,7 @@ test.describe('BlizzardBerry Agent Tests', () => {
     
     // Check that the chat widget was created (indicates agent script loaded successfully)
     const chatWidget = page.locator('#chatWidget');
-    await expect(chatWidget).toBeVisible();
+    await expect(chatWidget).toBeAttached();
   });
 
   test('Vanilla JavaScript - Console logs are working', async ({ page }) => {
@@ -185,11 +185,11 @@ test.describe('BlizzardBerry Agent Tests', () => {
     
     // Check that the agent script is loaded from the correct location
     const agentScript = page.locator('#blizzardberry-agent');
-    await expect(agentScript).toHaveAttribute('src', '/agent/agent-test.js');
+    await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
     
     // Verify the script is actually loaded (not just the element exists)
     const scriptSrc = await agentScript.getAttribute('src');
-    expect(scriptSrc).toBe('/agent/agent-test.js');
+    expect(scriptSrc).toBe('/agent/agent.js');
   });
 
   test('Vanilla JavaScript - Agent ID is properly configured', async ({ page }) => {
@@ -197,10 +197,10 @@ test.describe('BlizzardBerry Agent Tests', () => {
     
     // Check that the agent ID is set correctly
     const agentScript = page.locator('#blizzardberry-agent');
-    await expect(agentScript).toHaveAttribute('data-agent-id', 'test-agent-vanilla');
+    await expect(agentScript).toHaveAttribute('data-agent-id', '8b5d8bfb-f6b4-45de-9500-aa95c7046487');
     
     // Verify the agent ID value
     const agentId = await agentScript.getAttribute('data-agent-id');
-    expect(agentId).toBe('test-agent-vanilla');
+    expect(agentId).toBe('8b5d8bfb-f6b4-45de-9500-aa95c7046487');
   });
 }); 

@@ -2,10 +2,10 @@ import { test, expect } from '@playwright/test';
 
 test.describe('BlizzardBerry Framework Comparison Tests', () => {
   const frameworks = [
-    { name: 'Vanilla JavaScript', file: 'vanilla.html', agentId: 'test-agent-vanilla' },
-    { name: 'React', file: 'react.html', agentId: 'test-agent-react' },
-    { name: 'Vue', file: 'vue.html', agentId: 'test-agent-vue' },
-    { name: 'Angular', file: 'angular.html', agentId: 'test-agent-angular' }
+    { name: 'Vanilla JavaScript', file: 'vanilla.html', agentId: '8b5d8bfb-f6b4-45de-9500-aa95c7046487' },
+    { name: 'React', file: 'react.html', agentId: '8b5d8bfb-f6b4-45de-9500-aa95c7046487' },
+    { name: 'Vue', file: 'vue.html', agentId: '8b5d8bfb-f6b4-45de-9500-aa95c7046487' },
+    { name: 'Angular', file: 'angular.html', agentId: '8b5d8bfb-f6b4-45de-9500-aa95c7046487' }
   ];
 
   for (const framework of frameworks) {
@@ -27,7 +27,7 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
         await expect(agentScript).toHaveAttribute('data-agent-id', framework.agentId);
         
         // Verify script source
-        await expect(agentScript).toHaveAttribute('src', '/agent/agent-test.js');
+        await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
       });
 
       test('User configuration is properly set', async ({ page }) => {
@@ -39,7 +39,7 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
         
         // Check that the chat widget was created (indicates agent script loaded successfully)
         const chatWidget = page.locator('#chatWidget');
-        await expect(chatWidget).toBeVisible();
+        await expect(chatWidget).toBeAttached();
       });
 
       test('Agent actions are functional', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
         
         // Check that the chat widget was created (indicates agent script loaded successfully)
         const chatWidget = page.locator('#chatWidget');
-        await expect(chatWidget).toBeVisible();
+        await expect(chatWidget).toBeAttached();
       });
 
       test('Console logging works correctly', async ({ page }) => {
@@ -154,11 +154,11 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
       
       // Verify that the agent script loads the same way in both frameworks
       const agentScript = page.locator('#blizzardberry-agent');
-      await expect(agentScript).toHaveAttribute('src', '/agent/agent-test.js');
+      await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
       
       // Verify that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
-      await expect(chatWidget).toBeVisible();
+      await expect(chatWidget).toBeAttached();
     }
   });
 
