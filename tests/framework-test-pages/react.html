@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlizzardBerry - React Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        #agent-status {
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .react-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BlizzardBerry Agent Test - React</h1>
+        
+        <div class="react-info">
+            <strong>React Integration Note:</strong> This page demonstrates how BlizzardBerry agent works with React applications. 
+            The agent script is framework-agnostic and uses standard script tags, just like vanilla JavaScript.
+        </div>
+        
+        <div class="test-section">
+            <h2>Agent Status</h2>
+            <div id="agent-status">Checking agent status...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Actions</h2>
+            <button onclick="testAgentActions()">Test Agent Actions</button>
+            <button onclick="testUserConfig()">Test User Config</button>
+            <button onclick="testAgentInitialization()">Test Agent Init</button>
+            <button onclick="testReactIntegration()">Test React Integration</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Results</h2>
+            <div id="test-results"></div>
+        </div>
+    </div>
+
+    <!-- 1. Agent Configuration - Set up user context and metadata -->
+    <script id="blizzardberry-config" type="text/javascript">
+        window.agentUserConfig = {
+            userId: "react_user_123",
+            userHash: "react_hash_456",
+            accountNumber: "1234567890",
+            userMetadata: {
+                name: "React Test User",
+                email: "react@example.com",
+                company: "React Test Corp"
+            }
+        };
+        console.log('BlizzardBerry config loaded (React):', window.agentUserConfig);
+    </script>
+
+    <!-- 2. Agent Script - Load the BlizzardBerry agent -->
+    <script
+        id="blizzardberry-agent"
+        src="https://blizzardberry.com/agent/agent.js"
+        type="text/javascript"
+        data-agent-id="test-agent-react"
+    ></script>
+
+    <!-- 3. Custom Actions - Define what your agent can do -->
+    <script id="blizzardberry-actions" type="text/javascript">
+        window.AgentActions = {
+            // Test action that returns success
+            testAction: async (params, userConfig) => {
+                console.log('React test action called with:', params, userConfig);
+                return { 
+                    status: 'success', 
+                    message: 'React test action executed successfully',
+                    timestamp: new Date().toISOString(),
+                    framework: 'React'
+                };
+            },
+            
+            // Test action that simulates React state update
+            updateReactState: async (newState, userConfig) => {
+                console.log('React state update test:', { newState, userConfig });
+                return { 
+                    status: 'success', 
+                    message: 'React state updated successfully',
+                    newState: newState,
+                    framework: 'React'
+                };
+            },
+            
+            // Test action that simulates React component interaction
+            interactWithComponent: async (componentId, action, userConfig) => {
+                console.log('React component interaction:', { componentId, action, userConfig });
+                return { 
+                    status: 'success', 
+                    message: 'React component interaction successful',
+                    componentId: componentId,
+                    action: action,
+                    framework: 'React'
+                };
+            }
+        };
+        console.log('BlizzardBerry actions loaded (React):', window.AgentActions);
+    </script>
+
+    <script>
+        // Test functions
+        function addTestResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `status ${type}`;
+            resultDiv.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        function updateAgentStatus(status, type = 'info') {
+            const statusDiv = document.getElementById('agent-status');
+            statusDiv.textContent = status;
+            statusDiv.className = `status ${type}`;
+        }
+
+        function testAgentActions() {
+            addTestResult('Testing React agent actions...', 'info');
+            
+            if (window.AgentActions) {
+                addTestResult('AgentActions object found (React)', 'success');
+                
+                // Test React-specific actions
+                window.AgentActions.testAction({ test: true, framework: 'React' }, window.agentUserConfig)
+                    .then(result => {
+                        addTestResult(`React test action result: ${JSON.stringify(result)}`, 'success');
+                    })
+                    .catch(error => {
+                        addTestResult(`React test action error: ${error.message}`, 'error');
+                    });
+            } else {
+                addTestResult('AgentActions object not found (React)', 'error');
+            }
+        }
+
+        function testUserConfig() {
+            addTestResult('Testing React user configuration...', 'info');
+            
+            if (window.agentUserConfig) {
+                addTestResult('User config found (React)', 'success');
+                addTestResult(`User ID: ${window.agentUserConfig.userId}`, 'info');
+                addTestResult(`User Name: ${window.agentUserConfig.userMetadata.name}`, 'info');
+            } else {
+                addTestResult('User config not found (React)', 'error');
+            }
+        }
+
+        function testAgentInitialization() {
+            addTestResult('Testing React agent initialization...', 'info');
+            
+            // Check if agent script loaded
+            const agentScript = document.getElementById('blizzardberry-agent');
+            if (agentScript) {
+                addTestResult('Agent script element found (React)', 'success');
+                
+                // Check if agent is initialized
+                if (window.BlizzardBerryAgent) {
+                    addTestResult('BlizzardBerryAgent object found (React)', 'success');
+                    updateAgentStatus('React agent initialized successfully', 'success');
+                } else {
+                    addTestResult('BlizzardBerryAgent object not found - agent may still be loading (React)', 'info');
+                    updateAgentStatus('React agent loading...', 'info');
+                }
+            } else {
+                addTestResult('Agent script element not found (React)', 'error');
+                updateAgentStatus('React agent script not found', 'error');
+            }
+        }
+
+        function testReactIntegration() {
+            addTestResult('Testing React-specific integration...', 'info');
+            
+            // Test React state update action
+            window.AgentActions.updateReactState({ count: 42, user: 'test' }, window.agentUserConfig)
+                .then(result => {
+                    addTestResult(`React state update result: ${JSON.stringify(result)}`, 'success');
+                })
+                .catch(error => {
+                    addTestResult(`React state update error: ${error.message}`, 'error');
+                });
+            
+            // Test React component interaction
+            window.AgentActions.interactWithComponent('test-component', 'click', window.agentUserConfig)
+                .then(result => {
+                    addTestResult(`React component interaction result: ${JSON.stringify(result)}`, 'success');
+                })
+                .catch(error => {
+                    addTestResult(`React component interaction error: ${error.message}`, 'error');
+                });
+        }
+
+        // Run initial tests when page loads
+        window.addEventListener('load', () => {
+            addTestResult('React test page loaded, running initial tests...', 'info');
+            testUserConfig();
+            testAgentInitialization();
+            
+            // Wait a bit for agent to load, then test actions
+            setTimeout(() => {
+                testAgentActions();
+                testReactIntegration();
+            }, 2000);
+        });
+    </script>
+</body>
+</html> 

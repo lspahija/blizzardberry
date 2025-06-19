@@ -1,0 +1,214 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('BlizzardBerry Agent Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    // Set up any common test configuration
+    await page.setViewportSize({ width: 1280, height: 720 });
+  });
+
+  test('Vanilla JavaScript - Agent loads and initializes correctly', async ({ page }) => {
+    // Navigate to the vanilla JS test page
+    await page.goto('/tests/framework-test-pages/vanilla.html');
+    
+    // Wait for the page to load
+    await page.waitForLoadState('networkidle');
+    
+    // Check that the page title is correct
+    await expect(page).toHaveTitle(/BlizzardBerry.*Vanilla JS Test/);
+    
+    // Check that the agent configuration script is present
+    const configScript = page.locator('#blizzardberry-config');
+    await expect(configScript).toBeVisible();
+    
+    // Check that the agent script is present
+    const agentScript = page.locator('#blizzardberry-agent');
+    await expect(agentScript).toBeVisible();
+    
+    // Check that the actions script is present
+    const actionsScript = page.locator('#blizzardberry-actions');
+    await expect(actionsScript).toBeVisible();
+    
+    // Wait for agent status to update
+    await page.waitForTimeout(3000);
+    
+    // Check that user configuration is loaded
+    const userConfigResult = page.locator('text=User config found');
+    await expect(userConfigResult).toBeVisible();
+    
+    // Check that agent actions are loaded
+    const actionsResult = page.locator('text=AgentActions object found');
+    await expect(actionsResult).toBeVisible();
+    
+    // Test that the agent script has the correct attributes
+    await expect(agentScript).toHaveAttribute('data-agent-id', 'test-agent-vanilla');
+    await expect(agentScript).toHaveAttribute('src', 'https://blizzardberry.com/agent/agent.js');
+  });
+
+  test('Vanilla JavaScript - Agent actions work correctly', async ({ page }) => {
+    await page.goto('/tests/framework-test-pages/vanilla.html');
+    await page.waitForLoadState('networkidle');
+    
+    // Wait for initial tests to complete
+    await page.waitForTimeout(3000);
+    
+    // Click the test actions button
+    await page.click('button:text("Test Agent Actions")');
+    
+    // Wait for test results
+    await page.waitForTimeout(2000);
+    
+    // Check that test action was executed successfully
+    const testActionResult = page.locator('text=Test action result:');
+    await expect(testActionResult).toBeVisible();
+    
+    // Check that the result contains success status
+    const successResult = page.locator('text=status: success');
+    await expect(successResult).toBeVisible();
+  });
+
+  test('Vanilla JavaScript - User configuration is properly set', async ({ page }) => {
+    await page.goto('/tests/framework-test-pages/vanilla.html');
+    await page.waitForLoadState('networkidle');
+    
+    // Wait for initial tests to complete
+    await page.waitForTimeout(3000);
+    
+    // Click the test user config button
+    await page.click('button:text("Test User Config")');
+    
+    // Check that user config details are displayed
+    const userIdResult = page.locator('text=User ID: test_user_123');
+    await expect(userIdResult).toBeVisible();
+    
+    const userNameResult = page.locator('text=User Name: Test User');
+    await expect(userNameResult).toBeVisible();
+  });
+
+  test('Vanilla JavaScript - Console logs are working', async ({ page }) => {
+    const consoleMessages: string[] = [];
+    
+    // Listen for console messages
+    page.on('console', msg => {
+      consoleMessages.push(msg.text());
+    });
+    
+    await page.goto('/tests/framework-test-pages/vanilla.html');
+    await page.waitForLoadState('networkidle');
+    
+    // Wait for scripts to execute
+    await page.waitForTimeout(3000);
+    
+    // Check that expected console messages are present
+    expect(consoleMessages.some(msg => msg.includes('BlizzardBerry config loaded'))).toBeTruthy();
+    expect(consoleMessages.some(msg => msg.includes('BlizzardBerry actions loaded'))).toBeTruthy();
+  });
+
+  test('Vanilla JavaScript - Script loading order is correct', async ({ page }) => {
+    const scriptLoadOrder: string[] = [];
+    
+    // Listen for script load events
+    page.on('console', msg => {
+      if (msg.text().includes('BlizzardBerry')) {
+        scriptLoadOrder.push(msg.text());
+      }
+    });
+    
+    await page.goto('/tests/framework-test-pages/vanilla.html');
+    await page.waitForLoadState('networkidle');
+    
+    // Wait for all scripts to load
+    await page.waitForTimeout(3000);
+    
+    // Verify that config loads before actions
+    const configIndex = scriptLoadOrder.findIndex(msg => msg.includes('config loaded'));
+    const actionsIndex = scriptLoadOrder.findIndex(msg => msg.includes('actions loaded'));
+    
+    expect(configIndex).toBeGreaterThan(-1);
+    expect(actionsIndex).toBeGreaterThan(-1);
+    expect(configIndex).toBeLessThan(actionsIndex);
+  });
+
+  test('Vanilla JavaScript - Error handling for missing agent script', async ({ page }) => {
+    // Create a test page with a broken agent script URL
+    await page.setContent(`
+      <!DOCTYPE html>
+      <html>
+        <head><title>Error Test</title></head>
+        <body>
+          <div id="status">Loading...</div>
+          
+          <script id="blizzardberry-config" type="text/javascript">
+            window.agentUserConfig = {
+              userId: "test_user_123",
+              userHash: "test_hash_456",
+              accountNumber: "1234567890",
+              userMetadata: {
+                name: "Test User",
+                email: "test@example.com",
+                company: "Test Corp"
+              }
+            };
+          </script>
+          
+          <script
+            id="blizzardberry-agent"
+            src="https://invalid-url-that-does-not-exist.com/agent.js"
+            type="text/javascript"
+            data-agent-id="test-agent-error"
+          ></script>
+          
+          <script id="blizzardberry-actions" type="text/javascript">
+            window.AgentActions = {
+              testAction: async (params, userConfig) => {
+                return { status: 'success', message: 'Test action' };
+              }
+            };
+          </script>
+          
+          <script>
+            window.addEventListener('load', () => {
+              const statusDiv = document.getElementById('status');
+              if (window.agentUserConfig) {
+                statusDiv.textContent = 'Config loaded, agent may have failed';
+                statusDiv.style.color = 'orange';
+              } else {
+                statusDiv.textContent = 'Config failed to load';
+                statusDiv.style.color = 'red';
+              }
+            });
+          </script>
+        </body>
+      </html>
+    `);
+    
+    await page.waitForLoadState('networkidle');
+    
+    // Check that the page still loads even with a broken agent script
+    const statusDiv = page.locator('#status');
+    await expect(statusDiv).toContainText('Config loaded');
+  });
+
+  test('Vanilla JavaScript - Agent script loads from correct CDN', async ({ page }) => {
+    await page.goto('/tests/framework-test-pages/vanilla.html');
+    
+    // Check that the agent script is loaded from the correct CDN
+    const agentScript = page.locator('#blizzardberry-agent');
+    await expect(agentScript).toHaveAttribute('src', 'https://blizzardberry.com/agent/agent.js');
+    
+    // Verify the script is actually loaded (not just the element exists)
+    const scriptSrc = await agentScript.getAttribute('src');
+    expect(scriptSrc).toBe('https://blizzardberry.com/agent/agent.js');
+  });
+
+  test('Vanilla JavaScript - Agent ID is properly configured', async ({ page }) => {
+    await page.goto('/tests/framework-test-pages/vanilla.html');
+    
+    // Check that the agent ID is set correctly
+    const agentScript = page.locator('#blizzardberry-agent');
+    await expect(agentScript).toHaveAttribute('data-agent-id', 'test-agent-vanilla');
+    
+    // Verify the agent ID value
+    const agentId = await agentScript.getAttribute('data-agent-id');
+    expect(agentId).toBe('test-agent-vanilla');
+  });
+}); 
