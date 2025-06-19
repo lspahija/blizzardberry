@@ -526,15 +526,13 @@ function AgentDetails({
                           </li>
                           <li>
                             Need help? Visit our{' '}
-                            <a
-                              href="https://blizzardberry.com/docs"
-                              target="_blank"
-                              rel="noopener noreferrer"
+                            <Link
+                              href="/docs"
                               className="text-destructive hover:underline"
                             >
                               documentation{' '}
                               <ExternalLink className="inline w-4 h-4" />
-                            </a>
+                            </Link>
                             .
                           </li>
                         </ul>

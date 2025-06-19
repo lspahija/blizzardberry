@@ -28,6 +28,7 @@ import {
   Settings,
   Loader2,
   Info,
+  Link,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -237,15 +238,13 @@ export default function NewAgentPage() {
                         </li>
                         <li>
                           Need help? Visit our{' '}
-                          <a
-                            href="https://blizzardberry.com/docs"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <Link
+                            href="/docs"
                             className="text-brand hover:underline"
                           >
                             documentation{' '}
                             <ExternalLink className="inline w-4 h-4" />
-                          </a>
+                          </Link>
                           .
                         </li>
                       </ul>
