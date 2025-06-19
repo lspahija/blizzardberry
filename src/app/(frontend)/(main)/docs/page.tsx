@@ -7,6 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/app/(frontend)/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/app/(frontend)/components/ui/select';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import {
@@ -31,6 +38,7 @@ import { useState } from 'react';
 
 export default function DocsPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [selectedFramework, setSelectedFramework] = useState('vanilla');
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -183,6 +191,152 @@ export default function App() {
   return <div>Your app content</div>;
 }`;
 
+  const vueCode = `<template>
+  <div id="app">
+    <!-- Your Vue app content -->
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App',
+  mounted() {
+    // Agent Configuration
+    window.agentUserConfig = {
+      userId: "user_123",
+      userHash: "hash_456",
+      accountNumber: "1234567890",
+      userMetadata: {
+        name: "John Doe",
+        email: "john@example.com",
+        company: "Example Corp"
+      }
+    };
+
+    // Load Agent Script
+    const script = document.createElement('script');
+    script.id = 'blizzardberry-agent';
+    script.src = 'https://blizzardberry.com/agent/agent.js';
+    script.setAttribute('data-agent-id', 'your-agent-id');
+    document.body.appendChild(script);
+
+    // Load Actions
+    const actionsScript = document.createElement('script');
+    actionsScript.id = 'blizzardberry-actions';
+    actionsScript.textContent = \`
+      window.AgentActions = {
+        // Your actions here
+      };
+    \`;
+    document.body.appendChild(actionsScript);
+  }
+}
+</script>`;
+
+  const angularCode = `import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: '<div>Your Angular app content</div>'
+})
+export class AppComponent implements OnInit {
+  ngOnInit() {
+    // Agent Configuration
+    (window as any).agentUserConfig = {
+      userId: "user_123",
+      userHash: "hash_456",
+      accountNumber: "1234567890",
+      userMetadata: {
+        name: "John Doe",
+        email: "john@example.com",
+        company: "Example Corp"
+      }
+    };
+
+    // Load Agent Script
+    const script = document.createElement('script');
+    script.id = 'blizzardberry-agent';
+    script.src = 'https://blizzardberry.com/agent/agent.js';
+    script.setAttribute('data-agent-id', 'your-agent-id');
+    document.body.appendChild(script);
+
+    // Load Actions
+    const actionsScript = document.createElement('script');
+    actionsScript.id = 'blizzardberry-actions';
+    actionsScript.textContent = \`
+      (window as any).AgentActions = {
+        // Your actions here
+      };
+    \`;
+    document.body.appendChild(actionsScript);
+  }
+}`;
+
+  const getCodeForFramework = (framework: string) => {
+    switch (framework) {
+      case 'vanilla':
+        return installationCode;
+      case 'nextjs':
+        return nextJsCode;
+      case 'react':
+        return reactCode;
+      case 'vue':
+        return vueCode;
+      case 'angular':
+        return angularCode;
+      default:
+        return installationCode;
+    }
+  };
+
+  const getLanguageForFramework = (framework: string) => {
+    switch (framework) {
+      case 'vanilla':
+        return 'html';
+      case 'nextjs':
+      case 'react':
+      case 'vue':
+      case 'angular':
+        return 'jsx';
+      default:
+        return 'html';
+    }
+  };
+
+  const getFrameworkName = (framework: string) => {
+    switch (framework) {
+      case 'vanilla':
+        return 'Vanilla JavaScript';
+      case 'nextjs':
+        return 'Next.js';
+      case 'react':
+        return 'React';
+      case 'vue':
+        return 'Vue.js';
+      case 'angular':
+        return 'Angular';
+      default:
+        return 'Vanilla JavaScript';
+    }
+  };
+
+  const getFrameworkDescription = (framework: string) => {
+    switch (framework) {
+      case 'vanilla':
+        return 'Works with any HTML website or JavaScript framework';
+      case 'nextjs':
+        return 'Optimized for Next.js applications with proper script loading';
+      case 'react':
+        return 'For React applications using useEffect for script loading';
+      case 'vue':
+        return 'For Vue.js applications using the mounted lifecycle hook';
+      case 'angular':
+        return 'For Angular applications using ngOnInit lifecycle hook';
+      default:
+        return 'Works with any HTML website or JavaScript framework';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -333,22 +487,36 @@ export default function App() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Vanilla JavaScript */}
+            {/* Code Example */}
             <motion.div variants={itemVariants}>
               <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
                 <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Code className="h-6 w-6 text-brand" />
-                    <CardTitle className="text-xl">Vanilla JavaScript</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Code className="h-6 w-6 text-brand" />
+                      <CardTitle className="text-xl">Installation Code</CardTitle>
+                    </div>
+                    <Select value={selectedFramework} onValueChange={setSelectedFramework}>
+                      <SelectTrigger className="w-[180px] border-[2px] border-border">
+                        <SelectValue placeholder="Select framework" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="vanilla">Vanilla JavaScript</SelectItem>
+                        <SelectItem value="nextjs">Next.js</SelectItem>
+                        <SelectItem value="react">React</SelectItem>
+                        <SelectItem value="vue">Vue.js</SelectItem>
+                        <SelectItem value="angular">Angular</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <p className="text-muted-foreground">
-                    Works with any HTML website or JavaScript framework
+                  <p className="text-muted-foreground mt-3">
+                    {getFrameworkDescription(selectedFramework)}
                   </p>
                 </CardHeader>
                 <CardContent>
                   <div className="relative">
                     <SyntaxHighlighter
-                      language="html"
+                      language={getLanguageForFramework(selectedFramework)}
                       style={vscDarkPlus}
                       customStyle={{
                         borderRadius: '8px',
@@ -357,90 +525,14 @@ export default function App() {
                         backgroundColor: 'var(--color-background-dark)',
                       }}
                     >
-                      {installationCode}
+                      {getCodeForFramework(selectedFramework)}
                     </SyntaxHighlighter>
                     <Button
-                      onClick={() => handleCopy(installationCode, 'vanilla')}
-                      className="absolute top-2 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
+                      onClick={() => handleCopy(getCodeForFramework(selectedFramework), selectedFramework)}
+                      className="absolute top-2 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 hover:bg-secondary/90"
                     >
                       <Copy className="w-4 h-4" />
-                      {copiedCode === 'vanilla-installationCode' ? 'Copied!' : 'Copy'}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Next.js */}
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Code className="h-6 w-6 text-brand" />
-                    <CardTitle className="text-xl">Next.js</CardTitle>
-                  </div>
-                  <p className="text-muted-foreground">
-                    Optimized for Next.js applications with proper script loading
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="relative">
-                    <SyntaxHighlighter
-                      language="jsx"
-                      style={vscDarkPlus}
-                      customStyle={{
-                        borderRadius: '8px',
-                        padding: '16px',
-                        border: '2px solid var(--color-border)',
-                        backgroundColor: 'var(--color-background-dark)',
-                      }}
-                    >
-                      {nextJsCode}
-                    </SyntaxHighlighter>
-                    <Button
-                      onClick={() => handleCopy(nextJsCode, 'nextjs')}
-                      className="absolute top-2 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
-                    >
-                      <Copy className="w-4 h-4" />
-                      {copiedCode === 'nextjs-nextJsCode' ? 'Copied!' : 'Copy'}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* React */}
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Code className="h-6 w-6 text-brand" />
-                    <CardTitle className="text-xl">React</CardTitle>
-                  </div>
-                  <p className="text-muted-foreground">
-                    For React applications using useEffect for script loading
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="relative">
-                    <SyntaxHighlighter
-                      language="jsx"
-                      style={vscDarkPlus}
-                      customStyle={{
-                        borderRadius: '8px',
-                        padding: '16px',
-                        border: '2px solid var(--color-border)',
-                        backgroundColor: 'var(--color-background-dark)',
-                      }}
-                    >
-                      {reactCode}
-                    </SyntaxHighlighter>
-                    <Button
-                      onClick={() => handleCopy(reactCode, 'react')}
-                      className="absolute top-2 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
-                    >
-                      <Copy className="w-4 h-4" />
-                      {copiedCode === 'react-reactCode' ? 'Copied!' : 'Copy'}
+                      {copiedCode === `${selectedFramework}-${getCodeForFramework(selectedFramework).slice(0, 20)}` ? 'Copied!' : 'Copy'}
                     </Button>
                   </div>
                 </CardContent>
