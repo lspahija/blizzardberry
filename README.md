@@ -214,7 +214,7 @@ pnpm format
 
 ## Run Tests
 ```bash
-pnpm exec playwright test
+pnpm test
 ```
 
 ## UI Components
