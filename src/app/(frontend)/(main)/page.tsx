@@ -62,6 +62,12 @@ export default function LandingPage() {
           >
             Pricing
           </Link>
+          <Link
+            href="/contact"
+            className="text-foreground hover:-translate-y-0.5 transition-transform"
+          >
+            Contact
+          </Link>
         </div>
         <div className="flex space-x-3">
           <div className="relative group">
@@ -168,7 +174,7 @@ export default function LandingPage() {
               className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90"
               asChild
             >
-              <Link href="https://github.com/your-repo" target="_blank">
+              <Link href="/contact" target="_blank">
                 Talk With Us
               </Link>
             </Button>
