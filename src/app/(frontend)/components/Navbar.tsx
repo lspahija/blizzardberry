@@ -113,14 +113,12 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <a
-            href="https://blizzardberry.com/docs"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/docs"
             className="hidden sm:flex text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-[#FE4A60]"
           >
             Docs
-          </a>
+          </Link>
           <button
             className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-muted hover:bg-muted rounded-lg transition"
             onClick={() => setIsFeedbackOpen(true)}
@@ -169,14 +167,12 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <a
-                href="https://blizzardberry.com/docs"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/docs"
                 className="block text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-[#FE4A60]"
               >
                 Docs
-              </a>
+              </Link>
               <button
                 className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
                 onClick={() => {

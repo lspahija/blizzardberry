@@ -40,6 +40,7 @@ import {
   Save,
   ArrowLeft,
   Terminal,
+  Link,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Framework } from '@/app/(frontend)/lib/scriptUtils';
@@ -546,14 +547,12 @@ export default function ExecutionStep({
                   </li>
                   <li>
                     Need help? Visit our{' '}
-                    <a
-                      href="https://blizzardberry.com/docs"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <Link
+                      href="/docs"
                       className="text-[#FE4A60] hover:underline"
                     >
                       documentation <ExternalLink className="inline w-4 h-4" />
-                    </a>
+                    </Link>
                     .
                   </li>
                 </ul>
