@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlizzardBerry - Vanilla JS Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        #agent-status {
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BlizzardBerry Agent Test - Vanilla JavaScript</h1>
+        
+        <div class="test-section">
+            <h2>Agent Status</h2>
+            <div id="agent-status">Checking agent status...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Actions</h2>
+            <button onclick="testAgentActions()">Test Agent Actions</button>
+            <button onclick="testUserConfig()">Test User Config</button>
+            <button onclick="testAgentInitialization()">Test Agent Init</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Results</h2>
+            <div id="test-results"></div>
+        </div>
+    </div>
+
+    <!-- 1. Agent Configuration - Set up user context and metadata -->
+    <script id="blizzardberry-config" type="text/javascript">
+        window.agentUserConfig = {
+            userId: "test_user_123",
+            userHash: "test_hash_456",
+            accountNumber: "1234567890",
+            userMetadata: {
+                name: "Test User",
+                email: "test@example.com",
+                company: "Test Corp"
+            }
+        };
+        console.log('BlizzardBerry config loaded:', window.agentUserConfig);
+    </script>
+
+    <!-- 2. Custom Actions - Define what your agent can do -->
+    <script id="blizzardberry-actions" type="text/javascript">
+        window.AgentActions = {
+            // Test action that returns success
+            testAction: async (params, userConfig) => {
+                console.log('Test action called with:', params, userConfig);
+                return { 
+                    status: 'success', 
+                    message: 'Test action executed successfully',
+                    timestamp: new Date().toISOString()
+                };
+            },
+            
+            // Test action that simulates form submission
+            submitTestForm: async (name, email, message, userConfig) => {
+                console.log('Form submission test:', { name, email, message, userConfig });
+                return { 
+                    status: 'success', 
+                    message: 'Test form submitted successfully',
+                    data: { name, email, message }
+                };
+            },
+            
+            // Test action that simulates search
+            searchTestData: async (query, userConfig) => {
+                console.log('Search test:', { query, userConfig });
+                return { 
+                    status: 'success', 
+                    results: [
+                        { id: 1, title: 'Test Result 1', content: 'This is a test result' },
+                        { id: 2, title: 'Test Result 2', content: 'Another test result' }
+                    ],
+                    query: query
+                };
+            }
+        };
+        console.log('BlizzardBerry actions loaded:', window.AgentActions);
+    </script>
+
+    <!-- 3. Agent Script - Load the BlizzardBerry agent -->
+    <script
+        id="blizzardberry-agent"
+        src="/agent/agent-test.js"
+        type="text/javascript"
+        data-agent-id="test-agent-vanilla"
+    ></script>
+
+    <script>
+        // Test functions
+        function addTestResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `status ${type}`;
+            resultDiv.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        function updateAgentStatus(status, type = 'info') {
+            const statusDiv = document.getElementById('agent-status');
+            statusDiv.textContent = status;
+            statusDiv.className = `status ${type}`;
+        }
+
+        function testAgentActions() {
+            addTestResult('Testing agent actions...', 'info');
+            
+            // Check if AgentActions exists (it might be consumed by the agent script)
+            if (window.AgentActions) {
+                addTestResult('AgentActions object found', 'success');
+                
+                // Test each action
+                window.AgentActions.testAction({ test: true }, window.agentUserConfig)
+                    .then(result => {
+                        addTestResult(`Test action result: ${JSON.stringify(result)}`, 'success');
+                    })
+                    .catch(error => {
+                        addTestResult(`Test action error: ${error.message}`, 'error');
+                    });
+            } else {
+                // AgentActions might have been consumed by the agent script
+                addTestResult('AgentActions object consumed by agent script (expected behavior)', 'info');
+                
+                // Check if the agent script created a chat widget (indicates it loaded successfully)
+                const chatWidget = document.getElementById('chatWidget');
+                if (chatWidget) {
+                    addTestResult('Agent script loaded and created chat widget', 'success');
+                } else {
+                    addTestResult('Agent script may not have loaded properly', 'error');
+                }
+            }
+        }
+
+        function testUserConfig() {
+            addTestResult('Testing user configuration...', 'info');
+            
+            if (window.agentUserConfig) {
+                addTestResult('User config found', 'success');
+                addTestResult(`User ID: ${window.agentUserConfig.userId}`, 'info');
+                addTestResult(`User Name: ${window.agentUserConfig.userMetadata.name}`, 'info');
+            } else {
+                addTestResult('User config not found', 'error');
+            }
+        }
+
+        function testAgentInitialization() {
+            addTestResult('Testing agent initialization...', 'info');
+            
+            // Check if agent script loaded
+            const agentScript = document.getElementById('blizzardberry-agent');
+            if (agentScript) {
+                addTestResult('Agent script element found', 'success');
+                
+                // Check if agent is initialized (this would depend on your agent implementation)
+                if (window.BlizzardBerryAgent) {
+                    addTestResult('BlizzardBerryAgent object found', 'success');
+                    updateAgentStatus('Agent initialized successfully', 'success');
+                } else {
+                    addTestResult('BlizzardBerryAgent object not found - agent may still be loading', 'info');
+                    updateAgentStatus('Agent loading...', 'info');
+                }
+            } else {
+                addTestResult('Agent script element not found', 'error');
+                updateAgentStatus('Agent script not found', 'error');
+            }
+        }
+
+        // Run initial tests when page loads
+        window.addEventListener('load', () => {
+            addTestResult('Page loaded, running initial tests...', 'info');
+            testUserConfig();
+            testAgentInitialization();
+            
+            // Wait a bit for agent to load, then test actions
+            setTimeout(() => {
+                testAgentActions();
+            }, 2000);
+        });
+    </script>
+</body>
+</html> 
