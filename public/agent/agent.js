@@ -1,26 +1,91 @@
 (function () {
-  const actions = {};
-  let userConfig = null;
+  function getExecutingScript() {
+    // Most reliable: modern browsers support this
+    if (document.currentScript) {
+      return document.currentScript;
+    }
+
+    // Fallback for older browsers or specific scenarios
+    // We find the script by its unique src attribute.
+    // This part of the logic from the original code is kept,
+    // assuming there's a reason to handle multiple scripts with the same src.
+    const scripts = document.getElementsByTagName('script');
+    for (let i = scripts.length - 1; i >= 0; i--) {
+      const script = scripts[i];
+      // A more robust check could be to see if this script's src
+      // matches a known pattern for your agent.
+      // For this refactoring, we'll assume any script with a 'data-agent-id' is a candidate.
+      if (script.src && script.dataset.agentId) {
+        // This is a simplified approach. If multiple agent scripts could be on a page,
+        // a more specific selector would be needed.
+        const currentScriptSrc = script.src;
+        const matchingScripts = document.querySelectorAll(
+          `script[src="${currentScriptSrc}"][data-agent-id]`
+        );
+        if (matchingScripts.length === 1) {
+          return matchingScripts[0];
+        } else if (matchingScripts.length > 1) {
+          console.error(
+            'Multiple scripts with same src and data-agent-id found. Cannot determine which script to use.'
+          );
+          return null;
+        }
+      }
+    }
+
+    // Last resort: find by a specific ID
+    const specificScript = document.getElementById('blizzardberry-agent');
+    if (specificScript) {
+      return specificScript;
+    }
+
+    return null; // Return null if no script was found
+  }
+
   let agentId = null;
+  let userConfig = null;
+  const actions = {};
   let counter = 0;
 
-  function initializeAgentId() {
-    const script = document.currentScript;
-    agentId = script?.dataset?.agentId;
-    console.log('Initialized agent ID:', agentId);
+  function initializeAgentId(script) {
+    if (script && script.dataset && script.dataset.agentId) {
+      agentId = script.dataset.agentId;
+    } else {
+      console.error(
+        'Could not find agent ID. Make sure the script tag has the data-agent-id attribute.'
+      );
+    }
+  }
+
+  function injectStyles(script) {
+    if (script && script.src) {
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = script.src.replace(/\.js$/, '.css');
+      document.head.appendChild(css);
+    } else {
+      console.error('Could not find script src for CSS injection');
+    }
+  }
+
+  // --- Initialization Logic ---
+
+  const agentScript = getExecutingScript();
+
+  if (agentScript) {
+    initializeAgentId(agentScript);
+    injectStyles(agentScript);
   }
 
   // Initialize user config
   if (window.agentUserConfig && typeof window.agentUserConfig === 'object') {
     userConfig = window.agentUserConfig;
-    console.log('Initialized user config:', userConfig);
     delete window.agentUserConfig;
   }
 
+  // Initialize custom actions
   if (window.AgentActions && typeof window.AgentActions === 'object') {
-    console.log('Registering actions:', Object.keys(window.AgentActions));
     Object.assign(actions, window.AgentActions);
-    console.log('Available actions:', Object.keys(actions));
     delete window.AgentActions;
   }
 
@@ -33,66 +98,61 @@
     loggedThinkMessages: new Set(),
   };
 
-  // Inject CSS
-  function injectStyles() {
-    const script = document.currentScript;
-    const css = document.createElement('link');
-    css.rel = 'stylesheet';
-    css.href = script.src.replace(/\.js$/, '.css');
-    document.head.appendChild(css);
-  }
-
   // Create widget DOM
   function createWidgetDOM() {
-    const toggle = document.createElement('div');
-    toggle.id = 'chatWidgetToggle';
-    toggle.innerHTML = '💬';
-    toggle.addEventListener('click', toggleChatWidget);
-    document.body.appendChild(toggle);
+    try {
+      const toggle = document.createElement('div');
+      toggle.id = 'chatWidgetToggle';
+      toggle.innerHTML = '💬';
+      toggle.addEventListener('click', toggleChatWidget);
+      document.body.appendChild(toggle);
 
-    const widget = document.createElement('div');
-    widget.id = 'chatWidget';
-    widget.classList.add('hidden');
+      const widget = document.createElement('div');
+      widget.id = 'chatWidget';
+      widget.classList.add('hidden');
 
-    const header = document.createElement('div');
-    header.id = 'chatWidgetHeader';
-    header.innerHTML =
-      '<div>Chat</div><button id="chatWidgetCloseButton">⌄</button>';
-    header
-      .querySelector('#chatWidgetCloseButton')
-      .addEventListener('click', toggleChatWidget);
-    widget.appendChild(header);
+      const header = document.createElement('div');
+      header.id = 'chatWidgetHeader';
+      header.innerHTML =
+        '<div>Chat</div><button id="chatWidgetCloseButton">⌄</button>';
+      header
+        .querySelector('#chatWidgetCloseButton')
+        .addEventListener('click', toggleChatWidget);
+      widget.appendChild(header);
 
-    const body = document.createElement('div');
-    body.id = 'chatWidgetBody';
-    widget.appendChild(body);
+      const body = document.createElement('div');
+      body.id = 'chatWidgetBody';
+      widget.appendChild(body);
 
-    const inputArea = document.createElement('div');
-    inputArea.id = 'chatWidgetInput';
-    inputArea.innerHTML = `
-      <input id="chatWidgetInputField" type="text" placeholder="Type a message...">
-      <button id="chatWidgetSendButton">Send</button>
-    `;
-    inputArea
-      .querySelector('#chatWidgetSendButton')
-      .addEventListener('click', handleSubmit);
-    inputArea
-      .querySelector('#chatWidgetInputField')
-      .addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleSubmit();
-      });
-    widget.appendChild(inputArea);
+      const inputArea = document.createElement('div');
+      inputArea.id = 'chatWidgetInput';
+      inputArea.innerHTML = `
+        <input id="chatWidgetInputField" type="text" placeholder="Type a message...">
+        <button id="chatWidgetSendButton">Send</button>
+      `;
+      inputArea
+        .querySelector('#chatWidgetSendButton')
+        .addEventListener('click', handleSubmit);
+      inputArea
+        .querySelector('#chatWidgetInputField')
+        .addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') handleSubmit();
+        });
+      widget.appendChild(inputArea);
 
-    const footer = document.createElement('div');
-    footer.id = 'chatWidgetFooter';
-    footer.innerHTML = 'Powered By BlizzardBerry';
-    footer.style.textAlign = 'center';
-    footer.style.padding = '10px';
-    footer.style.fontSize = '12px';
-    footer.style.color = '#666';
-    widget.appendChild(footer);
+      const footer = document.createElement('div');
+      footer.id = 'chatWidgetFooter';
+      footer.innerHTML = 'Powered By BlizzardBerry';
+      footer.style.textAlign = 'center';
+      footer.style.padding = '10px';
+      footer.style.fontSize = '12px';
+      footer.style.color = '#666';
+      widget.appendChild(footer);
 
-    document.body.appendChild(widget);
+      document.body.appendChild(widget);
+    } catch (error) {
+      console.error('Error creating widget DOM:', error);
+    }
   }
 
   // Toggle widget visibility
@@ -110,7 +170,6 @@
 
   // Handle errors
   function handleError(error, messageText) {
-    console.error(`Agent ${agentId}:`, error);
     state.isProcessing = false;
     state.messages.push({
       id: generateId(),
@@ -121,10 +180,6 @@
   }
 
   async function executeAction(actionModel, messageId, partIndex) {
-    console.log(
-      `Agent ${agentId}: Executing action:`,
-      JSON.stringify(actionModel, null, 2)
-    );
     const key = `${messageId}-${partIndex}`;
     try {
       state.actionResults[key] = actionModel.functionName?.startsWith(
@@ -132,8 +187,6 @@
       )
         ? await executeClientAction(actionModel)
         : await executeServerAction(actionModel);
-
-      console.log(`Agent ${agentId}: Action Result:`, state.actionResults[key]);
 
       // Add the action result to the messages array as part of the text content
       state.messages.push({
@@ -264,11 +317,6 @@
               result: toolResult ? toolResult.result : undefined,
             },
           });
-          console.log(`Agent ${agentId}: Tool Invoked:`, {
-            toolCallId: toolCall.toolCallId,
-            toolName: toolCall.toolName,
-            args: toolCall.args,
-          });
         });
       }
 
@@ -320,7 +368,6 @@
       );
       if (thinkMatch) {
         if (!state.loggedThinkMessages.has(messageId)) {
-          console.log(`Agent ${agentId}: Think Content:`, thinkMatch[1].trim());
           state.loggedThinkMessages.add(messageId);
         }
         return `<div class="text-part">${thinkMatch[2].trim()}</div>`;
