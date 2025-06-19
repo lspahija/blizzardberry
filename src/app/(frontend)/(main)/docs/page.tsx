@@ -569,7 +569,7 @@ export class AppComponent implements OnInit {
                         <SelectValue placeholder="Select framework" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="vanilla">Vanilla JavaScript</SelectItem>
+                        <SelectItem value="vanilla">Vanilla JS</SelectItem>
                         <SelectItem value="nextjs">Next.js</SelectItem>
                         <SelectItem value="react">React</SelectItem>
                         <SelectItem value="vue">Vue.js</SelectItem>
