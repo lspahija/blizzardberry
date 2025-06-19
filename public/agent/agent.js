@@ -1,5 +1,4 @@
 (function () {
-  console.log('Agent script starting...');
   const actions = {};
   let userConfig = null;
   let agentId = null;
@@ -10,7 +9,6 @@
     let script = document.currentScript;
     if (script && script.dataset && script.dataset.agentId) {
       agentId = script.dataset.agentId;
-      console.log('Initialized agent ID from currentScript:', agentId);
       return;
     }
     
@@ -22,7 +20,6 @@
       const matchingScripts = document.querySelectorAll(`script[src="${currentScriptSrc}"][data-agent-id]`);
       if (matchingScripts.length === 1) {
         agentId = matchingScripts[0].dataset.agentId;
-        console.log('Initialized agent ID from matching script:', agentId);
         return;
       } else if (matchingScripts.length > 1) {
         console.error('Multiple scripts with same src and data-agent-id found. Cannot determine which agent ID to use.');
@@ -34,7 +31,6 @@
     const specificScript = document.getElementById('blizzardberry-agent');
     if (specificScript && specificScript.dataset && specificScript.dataset.agentId) {
       agentId = specificScript.dataset.agentId;
-      console.log('Initialized agent ID from specific script element:', agentId);
       return;
     }
     
@@ -44,14 +40,11 @@
   // Initialize user config
   if (window.agentUserConfig && typeof window.agentUserConfig === 'object') {
     userConfig = window.agentUserConfig;
-    console.log('Initialized user config:', userConfig);
     delete window.agentUserConfig;
   }
 
   if (window.AgentActions && typeof window.AgentActions === 'object') {
-    console.log('Registering actions:', Object.keys(window.AgentActions));
     Object.assign(actions, window.AgentActions);
-    console.log('Available actions:', Object.keys(actions));
     delete window.AgentActions;
   }
 
@@ -66,8 +59,6 @@
 
   // Inject CSS
   function injectStyles() {
-    console.log('Injecting styles...');
-    
     // Try to get script src from current script first
     let script = document.currentScript;
     if (!script || !script.src) {
@@ -91,7 +82,6 @@
       css.rel = 'stylesheet';
       css.href = script.src.replace(/\.js$/, '.css');
       document.head.appendChild(css);
-      console.log('CSS injected:', css.href);
     } else {
       console.error('Could not find script src for CSS injection');
     }
@@ -99,7 +89,6 @@
 
   // Create widget DOM
   function createWidgetDOM() {
-    console.log('Creating widget DOM...');
     try {
       const toggle = document.createElement('div');
       toggle.id = 'chatWidgetToggle';
@@ -150,7 +139,6 @@
       widget.appendChild(footer);
 
       document.body.appendChild(widget);
-      console.log('Widget DOM created successfully');
     } catch (error) {
       console.error('Error creating widget DOM:', error);
     }
@@ -171,7 +159,6 @@
 
   // Handle errors
   function handleError(error, messageText) {
-    console.error(`Agent ${agentId}:`, error);
     state.isProcessing = false;
     state.messages.push({
       id: generateId(),
@@ -182,10 +169,6 @@
   }
 
   async function executeAction(actionModel, messageId, partIndex) {
-    console.log(
-      `Agent ${agentId}: Executing action:`,
-      JSON.stringify(actionModel, null, 2)
-    );
     const key = `${messageId}-${partIndex}`;
     try {
       state.actionResults[key] = actionModel.functionName?.startsWith(
@@ -193,8 +176,6 @@
       )
         ? await executeClientAction(actionModel)
         : await executeServerAction(actionModel);
-
-      console.log(`Agent ${agentId}: Action Result:`, state.actionResults[key]);
 
       // Add the action result to the messages array as part of the text content
       state.messages.push({
@@ -325,11 +306,6 @@
               result: toolResult ? toolResult.result : undefined,
             },
           });
-          console.log(`Agent ${agentId}: Tool Invoked:`, {
-            toolCallId: toolCall.toolCallId,
-            toolName: toolCall.toolName,
-            args: toolCall.args,
-          });
         });
       }
 
@@ -381,7 +357,6 @@
       );
       if (thinkMatch) {
         if (!state.loggedThinkMessages.has(messageId)) {
-          console.log(`Agent ${agentId}: Think Content:`, thinkMatch[1].trim());
           state.loggedThinkMessages.add(messageId);
         }
         return `<div class="text-part">${thinkMatch[2].trim()}</div>`;
@@ -424,17 +399,13 @@
   }
 
   // Initialize
-  console.log('Starting initialization, document.readyState:', document.readyState);
   if (document.readyState === 'loading') {
-    console.log('Document still loading, adding DOMContentLoaded listener');
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('DOMContentLoaded fired, initializing...');
       initializeAgentId(); // Initialize agent ID
       injectStyles();
       createWidgetDOM();
     });
   } else {
-    console.log('Document already loaded, initializing immediately');
     initializeAgentId(); // Initialize agent ID
     injectStyles();
     createWidgetDOM();
