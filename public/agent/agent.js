@@ -1,40 +1,80 @@
 (function () {
-  const actions = {};
-  let userConfig = null;
-  let agentId = null;
-  let counter = 0;
-
-  function initializeAgentId() {
-    // Try to get agent ID from current script first (most reliable)
-    let script = document.currentScript;
-    if (script && script.dataset && script.dataset.agentId) {
-      agentId = script.dataset.agentId;
-      return;
+  function getExecutingScript() {
+    // Most reliable: modern browsers support this
+    if (document.currentScript) {
+      return document.currentScript;
     }
-    
-    // If currentScript is not available, we need to find the specific script that loaded this instance
-    // We can do this by looking for scripts that have the same src as this script
-    const currentScriptSrc = script?.src;
-    if (currentScriptSrc) {
-      // Find script with matching src and data-agent-id
-      const matchingScripts = document.querySelectorAll(`script[src="${currentScriptSrc}"][data-agent-id]`);
-      if (matchingScripts.length === 1) {
-        agentId = matchingScripts[0].dataset.agentId;
-        return;
-      } else if (matchingScripts.length > 1) {
-        console.error('Multiple scripts with same src and data-agent-id found. Cannot determine which agent ID to use.');
-        return;
+
+    // Fallback for older browsers or specific scenarios
+    // We find the script by its unique src attribute.
+    // This part of the logic from the original code is kept,
+    // assuming there's a reason to handle multiple scripts with the same src.
+    const scripts = document.getElementsByTagName('script');
+    for (let i = scripts.length - 1; i >= 0; i--) {
+      const script = scripts[i];
+      // A more robust check could be to see if this script's src
+      // matches a known pattern for your agent.
+      // For this refactoring, we'll assume any script with a 'data-agent-id' is a candidate.
+      if (script.src && script.dataset.agentId) {
+        // This is a simplified approach. If multiple agent scripts could be on a page,
+        // a more specific selector would be needed.
+        const currentScriptSrc = script.src;
+        const matchingScripts = document.querySelectorAll(
+          `script[src="${currentScriptSrc}"][data-agent-id]`
+        );
+        if (matchingScripts.length === 1) {
+          return matchingScripts[0];
+        } else if (matchingScripts.length > 1) {
+          console.error(
+            'Multiple scripts with same src and data-agent-id found. Cannot determine which script to use.'
+          );
+          return null;
+        }
       }
     }
-    
-    // Last resort: if we have a specific ID, try to find it
+
+    // Last resort: find by a specific ID
     const specificScript = document.getElementById('blizzardberry-agent');
-    if (specificScript && specificScript.dataset && specificScript.dataset.agentId) {
-      agentId = specificScript.dataset.agentId;
-      return;
+    if (specificScript) {
+      return specificScript;
     }
-    
-    console.error('Could not find agent ID. Make sure the script tag has data-agent-id attribute.');
+
+    return null; // Return null if no script was found
+  }
+
+  let agentId = null;
+  let userConfig = null;
+  const actions = {};
+  let counter = 0;
+
+  function initializeAgentId(script) {
+    if (script && script.dataset && script.dataset.agentId) {
+      agentId = script.dataset.agentId;
+    } else {
+      console.error(
+        'Could not find agent ID. Make sure the script tag has the data-agent-id attribute.'
+      );
+    }
+  }
+
+  function injectStyles(script) {
+    if (script && script.src) {
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = script.src.replace(/\.js$/, '.css');
+      document.head.appendChild(css);
+    } else {
+      console.error('Could not find script src for CSS injection');
+    }
+  }
+
+  // --- Initialization Logic ---
+
+  const agentScript = getExecutingScript();
+
+  if (agentScript) {
+    initializeAgentId(agentScript);
+    injectStyles(agentScript);
   }
 
   // Initialize user config
@@ -43,6 +83,7 @@
     delete window.agentUserConfig;
   }
 
+  // Initialize custom actions
   if (window.AgentActions && typeof window.AgentActions === 'object') {
     Object.assign(actions, window.AgentActions);
     delete window.AgentActions;
@@ -56,36 +97,6 @@
     isProcessing: false,
     loggedThinkMessages: new Set(),
   };
-
-  // Inject CSS
-  function injectStyles() {
-    // Try to get script src from current script first
-    let script = document.currentScript;
-    if (!script || !script.src) {
-      // If currentScript is not available, find the specific script that loaded this instance
-      const currentScriptSrc = script?.src;
-      if (currentScriptSrc) {
-        const matchingScripts = document.querySelectorAll(`script[src="${currentScriptSrc}"]`);
-        if (matchingScripts.length === 1) {
-          script = matchingScripts[0];
-        }
-      }
-    }
-    
-    // Last resort: try to find by specific ID
-    if (!script || !script.src) {
-      script = document.getElementById('blizzardberry-agent');
-    }
-    
-    if (script && script.src) {
-      const css = document.createElement('link');
-      css.rel = 'stylesheet';
-      css.href = script.src.replace(/\.js$/, '.css');
-      document.head.appendChild(css);
-    } else {
-      console.error('Could not find script src for CSS injection');
-    }
-  }
 
   // Create widget DOM
   function createWidgetDOM() {
