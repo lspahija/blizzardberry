@@ -49,7 +49,10 @@ export default function NewAgentPage() {
   const [model, setModel] = useState<AgentModel>(AgentModel.GEMINI_2_0_FLASH);
   const [agentId, setAgentId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [errors, setErrors] = useState<{ name?: string; websiteDomain?: string }>({});
+  const [errors, setErrors] = useState<{
+    name?: string;
+    websiteDomain?: string;
+  }>({});
   const { selectedFramework, setSelectedFramework } = useFramework();
   const { handleCreateAgent } = useAgents();
 
@@ -84,17 +87,17 @@ export default function NewAgentPage() {
 
   const onCreateAgent = async () => {
     setErrors({});
-    
+
     const newErrors: { name?: string; websiteDomain?: string } = {};
-    
+
     if (!name.trim()) {
       newErrors.name = 'Agent name is required';
     }
-    
+
     if (!websiteDomain.trim()) {
       newErrors.websiteDomain = 'Website domain is required';
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -302,7 +305,10 @@ export default function NewAgentPage() {
                           onChange={(e) => {
                             setName(e.target.value);
                             if (errors.name) {
-                              setErrors(prev => ({ ...prev, name: undefined }));
+                              setErrors((prev) => ({
+                                ...prev,
+                                name: undefined,
+                              }));
                             }
                           }}
                           placeholder="My Customer Service Bot"
@@ -311,7 +317,9 @@ export default function NewAgentPage() {
                         <Type className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                       </div>
                       {errors.name && (
-                        <p className="text-sm text-red-500 mt-1 ml-6">{errors.name}</p>
+                        <p className="text-sm text-red-500 mt-1 ml-6">
+                          {errors.name}
+                        </p>
                       )}
                     </div>
                     <div>
@@ -333,7 +341,10 @@ export default function NewAgentPage() {
                           onChange={(e) => {
                             setWebsiteDomain(e.target.value);
                             if (errors.websiteDomain) {
-                              setErrors(prev => ({ ...prev, websiteDomain: undefined }));
+                              setErrors((prev) => ({
+                                ...prev,
+                                websiteDomain: undefined,
+                              }));
                             }
                           }}
                           placeholder="example.com"
@@ -342,7 +353,9 @@ export default function NewAgentPage() {
                         <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                       </div>
                       {errors.websiteDomain && (
-                        <p className="text-sm text-red-500 mt-1 ml-6">{errors.websiteDomain}</p>
+                        <p className="text-sm text-red-500 mt-1 ml-6">
+                          {errors.websiteDomain}
+                        </p>
                       )}
                     </div>
                     <div>

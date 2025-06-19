@@ -115,7 +115,9 @@ export default function PricingPage() {
       {isLoggedIn && <Navbar />}
       <div className="container mx-auto px-4 py-16 max-w-7xl">
         <div className="text-center mb-8 md:mb-16">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 text-foreground">Pricing</h1>
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 text-foreground">
+            Pricing
+          </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-4">
             Choose the perfect plan for your needs. All plans include our core
             features with different usage limits.
@@ -266,8 +268,12 @@ export default function PricingPage() {
             <span className="text-3xl md:text-4xl font-bold text-foreground">
               1,000 credits
             </span>
-            <span className="text-lg md:text-xl text-muted-foreground">for</span>
-            <span className="text-3xl md:text-4xl font-bold text-foreground">$12</span>
+            <span className="text-lg md:text-xl text-muted-foreground">
+              for
+            </span>
+            <span className="text-3xl md:text-4xl font-bold text-foreground">
+              $12
+            </span>
           </div>
           <button
             className="py-3 px-8 bg-secondary text-secondary-foreground border-[2px] border-border rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"

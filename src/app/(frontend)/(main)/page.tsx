@@ -100,7 +100,7 @@ export default function LandingPage() {
         animate="visible"
       >
         <svg
-          className="hidden lg:block absolute h-auto w-16 lg:w-20 flex-shrink-0 p-2 left-0 -translate-x-4 lg:-translate-x-8 xl:-translate-x-12"
+          className="hidden lg:block absolute h-auto w-16 lg:w-20 flex-shrink-0 p-2 left-0 translate-y-20 lg:-translate-y-20 -translate-x-4 lg:-translate-x-8 xl:-translate-x-12"
           viewBox="0 0 91 98"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -128,13 +128,13 @@ export default function LandingPage() {
         </motion.h1>
 
         <svg
-          className="hidden lg:block absolute w-16 lg:w-20 h-auto flex-shrink-0 right-0 bottom-0 translate-y-12 lg:translate-y-8 -translate-x-8 lg:-translate-x-12 xl:-translate-x-16"
+          className="hidden lg:block absolute w-16 lg:w-20 h-auto flex-shrink-0 right-0 bottom-0 translate-y-12 lg:-translate-y-5 translate-x-15 lg:translate-x-15 xl:translate-x-15"
           viewBox="0 0 92 80"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
             d="m35.213 16.953.595-5.261 2.644 4.587a35.056 35.056 0 0 0 26.432 17.33l5.261.594-4.587 2.644A35.056 35.056 0 0 0 48.23 63.28l-.595 5.26-2.644-4.587a35.056 35.056 0 0 0-26.432-17.328l-5.261-.595 4.587-2.644a35.056 35.056 0 0 0 17.329-26.433Z"
-            className="fill-chart-5 stroke-foreground"
+            className="fill-primary stroke-foreground"
             strokeWidth="2.868"
           ></path>
           <path

@@ -63,7 +63,10 @@ export default function GeneralStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-      <div className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 p-3 md:p-4 rounded-lg shadow-md" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+      <div
+        className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 p-3 md:p-4 rounded-lg shadow-md"
+        style={{ borderLeftColor: 'var(--color-destructive)' }}
+      >
         <Info className="h-5 w-5 md:h-6 md:w-6 text-destructive mr-2 md:mr-3 mt-1 md:mt-0 flex-shrink-0" />
         <span className="text-foreground text-sm md:text-base">
           Fill out the general information for your action. This helps the AI
@@ -72,7 +75,10 @@ export default function GeneralStep({
       </div>
       <div className="relative mb-6 md:mb-12">
         <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
-        <Card className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+        <Card
+          className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8"
+          style={{ borderLeftColor: 'var(--color-destructive)' }}
+        >
           <CardHeader className="flex items-center space-x-2 p-4 md:p-6">
             <Settings className="h-5 w-5 md:h-7 md:w-7 text-destructive" />
             <CardTitle className="text-xl md:text-2xl font-semibold text-foreground">
@@ -106,7 +112,9 @@ export default function GeneralStep({
                 <Zap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               </div>
               {errors.name && (
-                <p className="text-destructive text-xs md:text-sm mt-1">{errors.name}</p>
+                <p className="text-destructive text-xs md:text-sm mt-1">
+                  {errors.name}
+                </p>
               )}
             </div>
             <div>
@@ -152,7 +160,11 @@ export default function GeneralStep({
                 className="flex flex-col sm:flex-row sm:space-x-4 mt-2 space-y-4 sm:space-y-0"
               >
                 <div className="flex items-start space-x-2">
-                  <RadioGroupItem value={ExecutionContext.SERVER} id="server" className="mt-5" />
+                  <RadioGroupItem
+                    value={ExecutionContext.SERVER}
+                    id="server"
+                    className="mt-5"
+                  />
                   <Label htmlFor="server" className="text-foreground">
                     Server Action
                     <p className="text-xs md:text-sm text-muted-foreground mt-1">
@@ -162,7 +174,11 @@ export default function GeneralStep({
                   </Label>
                 </div>
                 <div className="flex items-start space-x-2">
-                  <RadioGroupItem value={ExecutionContext.CLIENT} id="client" className="mt-5" />
+                  <RadioGroupItem
+                    value={ExecutionContext.CLIENT}
+                    id="client"
+                    className="mt-5"
+                  />
                   <Label htmlFor="client" className="text-foreground">
                     Client Action
                     <p className="text-xs md:text-sm text-muted-foreground mt-1">

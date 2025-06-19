@@ -208,7 +208,10 @@ export default function ExecutionStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-      <div className="mb-12 flex items-center bg-muted border-l-4 p-4 rounded-lg shadow-md" style={{ borderLeftColor: 'var(--color-destructive)' }}>
+      <div
+        className="mb-12 flex items-center bg-muted border-l-4 p-4 rounded-lg shadow-md"
+        style={{ borderLeftColor: 'var(--color-destructive)' }}
+      >
         <Info className="h-6 w-6 text-destructive mr-3" />
         <span className="text-foreground text-base">
           {baseAction.executionContext === ExecutionContext.SERVER
@@ -370,7 +373,10 @@ export default function ExecutionStep({
                       <p className="text-red-500 text-sm">{bodyError}</p>
                     </div>
                   )}
-                  <div className="mt-2 border-[2px] border-border rounded-lg overflow-hidden" style={{ backgroundColor: 'var(--color-muted)' }}>
+                  <div
+                    className="mt-2 border-[2px] border-border rounded-lg overflow-hidden"
+                    style={{ backgroundColor: 'var(--color-muted)' }}
+                  >
                     <div className="relative">
                       {!apiBody?.trim() && (
                         <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">

@@ -30,7 +30,9 @@ export default function UsagePage() {
         Your Usage
       </h1>
       <div className="bg-card border-4 border-brand rounded-2xl shadow-lg p-4 sm:p-8 flex flex-col items-start">
-        <div className="text-xl sm:text-2xl font-bold mb-2 text-foreground">Credits</div>
+        <div className="text-xl sm:text-2xl font-bold mb-2 text-foreground">
+          Credits
+        </div>
         <div className="text-4xl sm:text-5xl font-extrabold text-brand mb-2">
           {loading ? '...' : credits}
         </div>
