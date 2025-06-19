@@ -49,13 +49,13 @@ export default function LandingPage() {
           <Link href="/" className="flex items-center">
             {' '}
             <Image
-              src="/logo.png"
+              src="/logo3.png"
               alt="BlizzardBerry Logo"
-              width={60}
-              height={60}
+              width={90}
+              height={90}
               className="object-contain"
             />
-            <span className="text-xl font-bold">
+            <span className="text-2xl font-bold">
               <span>Blizzard</span>
               <span className="text-brand">Berry</span>
             </span>
