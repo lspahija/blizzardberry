@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from '@/app/(frontend)/components/ui/card';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Code, Rocket, Zap } from 'lucide-react';
 
@@ -42,12 +43,23 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Navbar */}
-      <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-border sticky top-0 bg-background z-50">
-        <div className="flex items-center space-x-2">
-          <span className="text-xl font-bold">
-            <span>Blizzard</span>
-            <span className="text-brand">Berry</span>
-          </span>
+      <nav className="flex justify-between items-center p-4 pb-2 max-w-4xl mx-auto border-b-[3px] border-border sticky top-0 bg-background z-50">
+        <div className="flex items-center space-x-1">
+          {' '}
+          <Link href="/" className="flex items-center">
+            {' '}
+            <Image
+              src="/logo.png"
+              alt="BlizzardBerry Logo"
+              width={60}
+              height={60}
+              className="object-contain"
+            />
+            <span className="text-xl font-bold">
+              <span>Blizzard</span>
+              <span className="text-brand">Berry</span>
+            </span>
+          </Link>
         </div>
         <div className="hidden md:flex space-x-6">
           <Link
