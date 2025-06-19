@@ -60,7 +60,8 @@ export default function DocsPage() {
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  const installationCode = `<script id="blizzardberry-config" type="text/javascript">
+  const installationCode = `<!-- 1. Agent Configuration - Set up user context and metadata -->
+<script id="blizzardberry-config" type="text/javascript">
   window.agentUserConfig = {
     userId: "user_123",
     userHash: "hash_456",
@@ -73,6 +74,7 @@ export default function DocsPage() {
   };
 </script>
 
+<!-- 2. Agent Script - Load the BlizzardBerry agent -->
 <script
   id="blizzardberry-agent"
   src="https://blizzardberry.com/agent/agent.js"
@@ -80,31 +82,19 @@ export default function DocsPage() {
   data-agent-id="your-agent-id"
 ></script>
 
+<!-- 3. Custom Actions - Define what your agent can do -->
 <script id="blizzardberry-actions" type="text/javascript">
   window.AgentActions = {
+    // Example: Submit a contact form
     submitContactForm: async (name, email, message, userConfig) => {
-      try {
-        const form = document.getElementById('contact-form');
-        const nameField = form.querySelector('[name="name"]');
-        const emailField = form.querySelector('[name="email"]');
-        const messageField = form.querySelector('[name="message"]');
-        
-        nameField.value = name;
-        emailField.value = email;
-        messageField.value = message;
-        
-        form.submit();
-        
-        return { 
-          status: 'success',
-          data: { message: 'Contact form submitted successfully' }
-        };
-      } catch (error) {
-        return { 
-          status: 'error', 
-          error: error.message || 'Failed to submit form' 
-        };
-      }
+      // Your custom action logic here
+      return { status: 'success', message: 'Form submitted' };
+    },
+    
+    // Example: Search products
+    searchProducts: async (query, userConfig) => {
+      // Your custom action logic here
+      return { status: 'success', results: [] };
     }
   };
 </script>`;
@@ -117,7 +107,7 @@ export default function Layout({ children }) {
       <body>
         {children}
         
-        {/* Agent Configuration */}
+        {/* 1. Agent Configuration - Set up user context and metadata */}
         <Script id="blizzardberry-config" strategy="afterInteractive">
           {\`
             window.agentUserConfig = {
@@ -133,7 +123,7 @@ export default function Layout({ children }) {
           \`}
         </Script>
         
-        {/* Agent Script */}
+        {/* 2. Agent Script - Load the BlizzardBerry agent */}
         <Script
           id="blizzardberry-agent"
           src="https://blizzardberry.com/agent/agent.js"
@@ -141,11 +131,21 @@ export default function Layout({ children }) {
           data-agent-id="your-agent-id"
         />
         
-        {/* Actions */}
+        {/* 3. Custom Actions - Define what your agent can do */}
         <Script id="blizzardberry-actions" strategy="afterInteractive">
           {\`
             window.AgentActions = {
-              // Your actions here
+              // Example: Submit a contact form
+              submitContactForm: async (name, email, message, userConfig) => {
+                // Your custom action logic here
+                return { status: 'success', message: 'Form submitted' };
+              },
+              
+              // Example: Search products
+              searchProducts: async (query, userConfig) => {
+                // Your custom action logic here
+                return { status: 'success', results: [] };
+              }
             };
           \`}
         </Script>
@@ -154,44 +154,116 @@ export default function Layout({ children }) {
   );
 }`;
 
-  const reactCode = `import { useEffect } from 'react';
+  const reactCode = `// Add this to your main App component or layout
+// The agent script is framework-agnostic and works with any JavaScript framework
+
+// Option 1: Add scripts to your HTML template
+<!-- 1. Agent Configuration - Set up user context and metadata -->
+<script id="blizzardberry-config" type="text/javascript">
+  window.agentUserConfig = {
+    userId: "user_123",
+    userHash: "hash_456",
+    accountNumber: "1234567890",
+    userMetadata: {
+      name: "John Doe",
+      email: "john@example.com",
+      company: "Example Corp"
+    }
+  };
+</script>
+
+<!-- 2. Agent Script - Load the BlizzardBerry agent -->
+<script
+  id="blizzardberry-agent"
+  src="https://blizzardberry.com/agent/agent.js"
+  type="text/javascript"
+  data-agent-id="your-agent-id"
+></script>
+
+<!-- 3. Custom Actions - Define what your agent can do -->
+<script id="blizzardberry-actions" type="text/javascript">
+  window.AgentActions = {
+    // Example: Submit a contact form
+    submitContactForm: async (name, email, message, userConfig) => {
+      // Your custom action logic here
+      return { status: 'success', message: 'Form submitted' };
+    },
+    
+    // Example: Search products
+    searchProducts: async (query, userConfig) => {
+      // Your custom action logic here
+      return { status: 'success', results: [] };
+    }
+  };
+</script>
+
+// Option 2: Load dynamically in useEffect (if needed)
+import { useEffect } from 'react';
 
 export default function App() {
   useEffect(() => {
-    // Agent Configuration
-    window.agentUserConfig = {
-      userId: "user_123",
-      userHash: "hash_456",
-      accountNumber: "1234567890",
-      userMetadata: {
-        name: "John Doe",
-        email: "john@example.com",
-        company: "Example Corp"
-      }
-    };
-
-    // Load Agent Script
-    const script = document.createElement('script');
-    script.id = 'blizzardberry-agent';
-    script.src = 'https://blizzardberry.com/agent/agent.js';
-    script.setAttribute('data-agent-id', 'your-agent-id');
-    document.body.appendChild(script);
-
-    // Load Actions
-    const actionsScript = document.createElement('script');
-    actionsScript.id = 'blizzardberry-actions';
-    actionsScript.textContent = \`
-      window.AgentActions = {
-        // Your actions here
+    // Only load if not already loaded
+    if (!window.agentUserConfig) {
+      window.agentUserConfig = {
+        userId: "user_123",
+        userHash: "hash_456",
+        accountNumber: "1234567890",
+        userMetadata: {
+          name: "John Doe",
+          email: "john@example.com",
+          company: "Example Corp"
+        }
       };
-    \`;
-    document.body.appendChild(actionsScript);
+    }
   }, []);
 
   return <div>Your app content</div>;
 }`;
 
-  const vueCode = `<template>
+  const vueCode = `<!-- Add this to your index.html or main template -->
+<!-- The agent script is framework-agnostic and works with any JavaScript framework -->
+
+<!-- 1. Agent Configuration - Set up user context and metadata -->
+<script id="blizzardberry-config" type="text/javascript">
+  window.agentUserConfig = {
+    userId: "user_123",
+    userHash: "hash_456",
+    accountNumber: "1234567890",
+    userMetadata: {
+      name: "John Doe",
+      email: "john@example.com",
+      company: "Example Corp"
+    }
+  };
+</script>
+
+<!-- 2. Agent Script - Load the BlizzardBerry agent -->
+<script
+  id="blizzardberry-agent"
+  src="https://blizzardberry.com/agent/agent.js"
+  type="text/javascript"
+  data-agent-id="your-agent-id"
+></script>
+
+<!-- 3. Custom Actions - Define what your agent can do -->
+<script id="blizzardberry-actions" type="text/javascript">
+  window.AgentActions = {
+    // Example: Submit a contact form
+    submitContactForm: async (name, email, message, userConfig) => {
+      // Your custom action logic here
+      return { status: 'success', message: 'Form submitted' };
+    },
+    
+    // Example: Search products
+    searchProducts: async (query, userConfig) => {
+      // Your custom action logic here
+      return { status: 'success', results: [] };
+    }
+  };
+</script>
+
+<!-- Or load dynamically in your Vue component (if needed) -->
+<template>
   <div id="app">
     <!-- Your Vue app content -->
   </div>
@@ -201,39 +273,67 @@ export default function App() {
 export default {
   name: 'App',
   mounted() {
-    // Agent Configuration
-    window.agentUserConfig = {
-      userId: "user_123",
-      userHash: "hash_456",
-      accountNumber: "1234567890",
-      userMetadata: {
-        name: "John Doe",
-        email: "john@example.com",
-        company: "Example Corp"
-      }
-    };
-
-    // Load Agent Script
-    const script = document.createElement('script');
-    script.id = 'blizzardberry-agent';
-    script.src = 'https://blizzardberry.com/agent/agent.js';
-    script.setAttribute('data-agent-id', 'your-agent-id');
-    document.body.appendChild(script);
-
-    // Load Actions
-    const actionsScript = document.createElement('script');
-    actionsScript.id = 'blizzardberry-actions';
-    actionsScript.textContent = \`
-      window.AgentActions = {
-        // Your actions here
+    // Only load if not already loaded
+    if (!window.agentUserConfig) {
+      window.agentUserConfig = {
+        userId: "user_123",
+        userHash: "hash_456",
+        accountNumber: "1234567890",
+        userMetadata: {
+          name: "John Doe",
+          email: "john@example.com",
+          company: "Example Corp"
+        }
       };
-    \`;
-    document.body.appendChild(actionsScript);
+    }
   }
 }
 </script>`;
 
-  const angularCode = `import { Component, OnInit } from '@angular/core';
+  const angularCode = `<!-- Add this to your index.html -->
+<!-- The agent script is framework-agnostic and works with any JavaScript framework -->
+
+<!-- 1. Agent Configuration - Set up user context and metadata -->
+<script id="blizzardberry-config" type="text/javascript">
+  window.agentUserConfig = {
+    userId: "user_123",
+    userHash: "hash_456",
+    accountNumber: "1234567890",
+    userMetadata: {
+      name: "John Doe",
+      email: "john@example.com",
+      company: "Example Corp"
+    }
+  };
+</script>
+
+<!-- 2. Agent Script - Load the BlizzardBerry agent -->
+<script
+  id="blizzardberry-agent"
+  src="https://blizzardberry.com/agent/agent.js"
+  type="text/javascript"
+  data-agent-id="your-agent-id"
+></script>
+
+<!-- 3. Custom Actions - Define what your agent can do -->
+<script id="blizzardberry-actions" type="text/javascript">
+  window.AgentActions = {
+    // Example: Submit a contact form
+    submitContactForm: async (name, email, message, userConfig) => {
+      // Your custom action logic here
+      return { status: 'success', message: 'Form submitted' };
+    },
+    
+    // Example: Search products
+    searchProducts: async (query, userConfig) => {
+      // Your custom action logic here
+      return { status: 'success', results: [] };
+    }
+  };
+</script>
+
+<!-- Or load dynamically in your Angular component (if needed) -->
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -241,34 +341,19 @@ export default {
 })
 export class AppComponent implements OnInit {
   ngOnInit() {
-    // Agent Configuration
-    (window as any).agentUserConfig = {
-      userId: "user_123",
-      userHash: "hash_456",
-      accountNumber: "1234567890",
-      userMetadata: {
-        name: "John Doe",
-        email: "john@example.com",
-        company: "Example Corp"
-      }
-    };
-
-    // Load Agent Script
-    const script = document.createElement('script');
-    script.id = 'blizzardberry-agent';
-    script.src = 'https://blizzardberry.com/agent/agent.js';
-    script.setAttribute('data-agent-id', 'your-agent-id');
-    document.body.appendChild(script);
-
-    // Load Actions
-    const actionsScript = document.createElement('script');
-    actionsScript.id = 'blizzardberry-actions';
-    actionsScript.textContent = \`
-      (window as any).AgentActions = {
-        // Your actions here
+    // Only load if not already loaded
+    if (!(window as any).agentUserConfig) {
+      (window as any).agentUserConfig = {
+        userId: "user_123",
+        userHash: "hash_456",
+        accountNumber: "1234567890",
+        userMetadata: {
+          name: "John Doe",
+          email: "john@example.com",
+          company: "Example Corp"
+        }
       };
-    \`;
-    document.body.appendChild(actionsScript);
+    }
   }
 }`;
 
@@ -303,23 +388,6 @@ export class AppComponent implements OnInit {
     }
   };
 
-  const getFrameworkName = (framework: string) => {
-    switch (framework) {
-      case 'vanilla':
-        return 'Vanilla JavaScript';
-      case 'nextjs':
-        return 'Next.js';
-      case 'react':
-        return 'React';
-      case 'vue':
-        return 'Vue.js';
-      case 'angular':
-        return 'Angular';
-      default:
-        return 'Vanilla JavaScript';
-    }
-  };
-
   const getFrameworkDescription = (framework: string) => {
     switch (framework) {
       case 'vanilla':
@@ -327,11 +395,11 @@ export class AppComponent implements OnInit {
       case 'nextjs':
         return 'Optimized for Next.js applications with proper script loading';
       case 'react':
-        return 'For React applications using useEffect for script loading';
+        return 'Add scripts to HTML template or load dynamically in useEffect';
       case 'vue':
-        return 'For Vue.js applications using the mounted lifecycle hook';
+        return 'Add scripts to index.html or load dynamically in mounted hook';
       case 'angular':
-        return 'For Angular applications using ngOnInit lifecycle hook';
+        return 'Add scripts to index.html or load dynamically in ngOnInit';
       default:
         return 'Works with any HTML website or JavaScript framework';
     }
