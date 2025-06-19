@@ -1,38 +1,28 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-import '../globals.css';
 import { SessionProvider } from 'next-auth/react';
 import { FrameworkProvider } from '@/app/(frontend)/contexts/useFramework';
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
+import { Suspense } from 'react';
+import { AuthProvider } from '@/app/context/AuthContext';
 
 export const metadata: Metadata = {
   title: 'BlizzardBerry',
   description: 'Building the Future of UX',
 };
 
-export default function RootLayout({
+export default function FrontendLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <SessionProvider>
-          <FrameworkProvider>{children}</FrameworkProvider>
-        </SessionProvider>
-      </body>
-    </html>
+    <Suspense fallback={null}>
+      <SessionProvider>
+        <AuthProvider>
+          <FrameworkProvider>
+            {children}
+          </FrameworkProvider>
+        </AuthProvider>
+      </SessionProvider>
+    </Suspense>
   );
 }
