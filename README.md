@@ -118,7 +118,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 
 ## Launch and Sell! 
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
-- find a CRM that makes selling and tracking our numbers fun! it should be a fun game to see the numbers go up.
+- find a CRM that makes selling and tracking our numbers fun! it should be a fun game to see the numbers go up. - use HubSpot
 - sell companies on the idea that they replace their customer support team. We save them money: https://youtu.be/K4s6Cgicw_A?si=MT1kzLH3p4m7CVyS&t=809
 - use latest AI video models (Google's Veo 3) to create great marketing videos. Use good taste to make excellent stuff. 
 - [post on HN](https://x.com/marc_louvion/status/1924846419967672829?s=46)
