@@ -40,11 +40,11 @@ import {
   Save,
   ArrowLeft,
   Terminal,
-  Link,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Framework } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
+import Link from 'next/link';
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },

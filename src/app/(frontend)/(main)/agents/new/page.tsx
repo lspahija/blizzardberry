@@ -18,6 +18,7 @@ import {
 } from '@/app/(frontend)/components/ui/select';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   CheckCircle2,
   Copy,
@@ -26,9 +27,6 @@ import {
   Globe,
   Type,
   Settings,
-  Loader2,
-  Info,
-  Link,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -248,7 +246,6 @@ export default function NewAgentPage() {
                             documentation{' '}
                             <ExternalLink className="inline w-4 h-4" />
                           </Link>
-                          .
                         </li>
                       </ul>
                     </div>
