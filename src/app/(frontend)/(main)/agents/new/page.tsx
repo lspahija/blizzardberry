@@ -18,6 +18,7 @@ import {
 } from '@/app/(frontend)/components/ui/select';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   CheckCircle2,
   Copy,
@@ -26,9 +27,6 @@ import {
   Globe,
   Type,
   Settings,
-  Loader2,
-  Info,
-  Link,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -213,10 +211,15 @@ export default function NewAgentPage() {
                         </SyntaxHighlighter>
                         <Button
                           onClick={handleCopy}
-                          className="absolute top-2 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold hover:bg-secondary/90"
+                          className="absolute top-2 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-xs sm:text-sm font-semibold hover:bg-secondary/90 flex items-center gap-1 sm:gap-2"
                         >
-                          <Copy className="w-4 h-4 mr-2" />
-                          {copied ? 'Copied!' : 'Copy Code'}
+                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="hidden sm:inline">
+                            {copied ? 'Copied!' : 'Copy Code'}
+                          </span>
+                          <span className="sm:hidden">
+                            {copied ? 'Copied!' : 'Copy'}
+                          </span>
                         </Button>
                       </div>
                       <p className="text-sm text-muted-foreground mt-2">
@@ -248,7 +251,6 @@ export default function NewAgentPage() {
                             documentation{' '}
                             <ExternalLink className="inline w-4 h-4" />
                           </Link>
-                          .
                         </li>
                       </ul>
                     </div>

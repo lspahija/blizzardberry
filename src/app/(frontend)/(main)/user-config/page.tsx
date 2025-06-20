@@ -81,15 +81,20 @@ export default function UserConfig() {
       animate="visible"
     >
       <div className="max-w-4xl mx-auto w-full relative z-10">
-        <div className="flex justify-between items-center mb-12">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-12">
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground">
             User Configuration
           </h1>
           <Button
             asChild
-            className="bg-accent text-accent-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg"
+            className="bg-accent text-accent-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg w-full sm:w-auto hover:bg-accent/90"
           >
-            <Link href="/dashboard">Back to Dashboard</Link>
+            <Link
+              href="/dashboard"
+              className="flex items-center justify-center"
+            >
+              Back to Dashboard
+            </Link>
           </Button>
         </div>
 
@@ -170,10 +175,15 @@ export default function UserConfig() {
                     </SyntaxHighlighter>
                     <Button
                       onClick={handleCopy}
-                      className="absolute top-2 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold hover:bg-secondary/90"
+                      className="absolute top-2 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-xs sm:text-sm font-semibold hover:bg-secondary/90 flex items-center gap-1 sm:gap-2"
                     >
-                      <Copy className="w-4 h-4 mr-2" />
-                      {copied ? 'Copied!' : 'Copy Code'}
+                      <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span className="hidden sm:inline">
+                        {copied ? 'Copied!' : 'Copy Code'}
+                      </span>
+                      <span className="sm:hidden">
+                        {copied ? 'Copied!' : 'Copy'}
+                      </span>
                     </Button>
                   </div>
                   <p className="text-muted-foreground text-sm mt-2">

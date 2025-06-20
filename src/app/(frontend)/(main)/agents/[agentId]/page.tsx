@@ -299,11 +299,11 @@ function AgentDetails({
               <div className="relative mb-8 md:mb-12">
                 <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
                 <Card
-                  className="relative bg-card border-[3px] border-border rounded-3xl shadow-2xl border-l-8"
+                  className="relative bg-muted border-[3px] border-border rounded-3xl shadow-2xl border-l-8"
                   style={{ borderLeftColor: 'var(--color-destructive)' }}
                 >
                   <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-destructive/60 scrollbar-track-card/60 rounded-2xl pr-2">
-                    <CardHeader className="flex flex-col sm:flex-row items-center justify-between gap-2">
+                    <CardHeader className="flex items-center justify-between relative">
                       <div className="flex items-center space-x-2">
                         <Code className="h-7 w-7 text-destructive" />
                         <CardTitle className="text-lg sm:text-2xl font-semibold text-foreground">
@@ -313,13 +313,14 @@ function AgentDetails({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="hover:bg-card mt-2 sm:mt-0"
+                        aria-label="Close"
+                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-3 rounded-full hover:bg-destructive/10 transition"
                         onClick={() => setShowClientActions(false)}
                       >
-                        <X className="h-6 w-6 text-foreground" />
+                        <X className="h-5 w-5 sm:h-6 sm:w-6 text-foreground" />
                       </Button>
                     </CardHeader>
-                    <CardContent className="space-y-8">
+                    <CardContent className="space-y-8 mt-8">
                       <div>
                         <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mt-4">
                           <Code className="h-4 w-4 text-destructive" />
@@ -408,12 +409,40 @@ function AgentDetails({
                             setCopied(true);
                             setTimeout(() => setCopied(false), 2000);
                           }}
-                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 hover:bg-secondary/90"
+                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 hover:bg-secondary/90 px-2 py-1 sm:px-3 sm:py-1.5"
                         >
-                          <Copy className="w-4 h-4" />
-                          {copied ? 'Copied!' : 'Copy Code'}
+                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="text-xs sm:text-sm">
+                            {copied ? 'Copied!' : 'Copy Code'}
+                          </span>
+                          <span className="sm:hidden">
+                            {copied ? 'Copied!' : 'Copy'}
+                          </span>
                         </Button>
                       </div>
+                      <ul className="list-disc list-inside text-gray-600 space-y-2 mt-4 text-sm">
+                        <li>
+                          Implement your functions into your app like the example above
+                        </li>
+                        <li>
+                          Add the code between the <code>&lt;body&gt;</code> tags of
+                          your website's HTML
+                        </li>
+                        <li>
+                          The code will be available to your agent as a client-side
+                          action
+                        </li>
+                        <li>
+                          Need help? Visit our{' '}
+                          <Link
+                            href="/docs"
+                            className="text-[#FE4A60] hover:underline"
+                          >
+                            documentation <ExternalLink className="inline w-4 h-4" />
+                          </Link>
+                          .
+                        </li>
+                      </ul>
                     </CardContent>
                   </div>
                 </Card>
@@ -447,7 +476,7 @@ function AgentDetails({
                         variant="ghost"
                         size="icon"
                         aria-label="Close"
-                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-3 rounded-full hover:bg-card transition"
+                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-3 rounded-full hover:bg-destructive/10 transition"
                         onClick={() => setShowAgentCode(false)}
                       >
                         <X className="h-5 w-5 sm:h-6 sm:w-6 text-foreground" />
@@ -514,10 +543,15 @@ function AgentDetails({
                               getAgentScript(selectedFramework, params.agentId)
                             )
                           }
-                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
+                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 px-2 py-1 sm:px-3 sm:py-1.5"
                         >
-                          <Copy className="w-4 h-4" />
-                          {copied ? 'Copied!' : 'Copy Code'}
+                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="text-xs sm:text-sm">
+                            {copied ? 'Copied!' : 'Copy Code'}
+                          </span>
+                          <span className="sm:hidden">
+                            {copied ? 'Copied!' : 'Copy'}
+                          </span>
                         </Button>
                       </div>
                       <div>
