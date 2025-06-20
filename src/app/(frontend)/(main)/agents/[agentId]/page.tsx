@@ -409,10 +409,15 @@ function AgentDetails({
                             setCopied(true);
                             setTimeout(() => setCopied(false), 2000);
                           }}
-                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 hover:bg-secondary/90"
+                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 hover:bg-secondary/90 px-2 py-1 sm:px-3 sm:py-1.5"
                         >
-                          <Copy className="w-4 h-4" />
-                          {copied ? 'Copied!' : 'Copy Code'}
+                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="text-xs sm:text-sm">
+                            {copied ? 'Copied!' : 'Copy Code'}
+                          </span>
+                          <span className="sm:hidden">
+                            {copied ? 'Copied!' : 'Copy'}
+                          </span>
                         </Button>
                       </div>
                       <ul className="list-disc list-inside text-gray-600 space-y-2 mt-4 text-sm">
@@ -538,10 +543,15 @@ function AgentDetails({
                               getAgentScript(selectedFramework, params.agentId)
                             )
                           }
-                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2"
+                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 px-2 py-1 sm:px-3 sm:py-1.5"
                         >
-                          <Copy className="w-4 h-4" />
-                          {copied ? 'Copied!' : 'Copy Code'}
+                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="text-xs sm:text-sm">
+                            {copied ? 'Copied!' : 'Copy Code'}
+                          </span>
+                          <span className="sm:hidden">
+                            {copied ? 'Copied!' : 'Copy'}
+                          </span>
                         </Button>
                       </div>
                       <div>

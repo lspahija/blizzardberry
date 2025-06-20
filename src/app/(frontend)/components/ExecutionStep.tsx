@@ -124,6 +124,7 @@ export default function ExecutionStep({
     null
   );
   const { selectedFramework, setSelectedFramework } = useFramework();
+  const [copied, setCopied] = useState(false);
 
   const addHeader = () => {
     setHeaders([...headers, { key: '', value: '' }]);
@@ -151,6 +152,12 @@ export default function ExecutionStep({
   const handleFunctionNameChange = (value: string) => {
     setFunctionNameError(null);
     setFunctionName(value);
+  };
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleEditorWillMount = (monaco) => {
@@ -524,19 +531,24 @@ export default function ExecutionStep({
                     )}
                   </SyntaxHighlighter>
                   <Button
-                    onClick={() => {
-                      navigator.clipboard.writeText(
+                    onClick={() =>
+                      handleCopy(
                         getRegisterToolsExample(
                           functionName,
                           dataInputs,
                           selectedFramework
                         )
-                      );
-                    }}
-                    className="absolute top-12 right-4 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-base font-semibold hover:bg-secondary/90"
+                      )
+                    }
+                    className="absolute top-12 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-xs sm:text-sm font-semibold hover:bg-secondary/90 flex items-center gap-1 sm:gap-2"
                   >
-                    <Copy className="w-4 h-4 mr-2" />
-                    Copy Code
+                    <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">
+                      {copied ? 'Copied!' : 'Copy Code'}
+                    </span>
+                    <span className="sm:hidden">
+                      {copied ? 'Copied!' : 'Copy'}
+                    </span>
                   </Button>
                 </div>
                 <ul className="list-disc list-inside text-gray-600 space-y-2 mt-4 text-sm">
