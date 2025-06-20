@@ -155,31 +155,37 @@ export default function Dashboard() {
             Welcome, {session.user?.name}!
           </h1>
         </div>
-        <div className="mb-6 flex space-x-4">
+        <div className="mb-6 flex flex-col sm:flex-row gap-2">
           <Button
             asChild
-            className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90"
+            className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 w-full sm:w-auto"
             onClick={() =>
               posthog.capture('create_agent_clicked', {
                 user_email: session?.user?.email,
               })
             }
           >
-            <Link href="/agents/new" className="flex items-center">
+            <Link
+              href="/agents/new"
+              className="flex items-center justify-center"
+            >
               <PlusCircle className="mr-2 h-5 w-5" />
               Create New Agent
             </Link>
           </Button>
           <Button
             asChild
-            className="bg-secondary text-secondary-foreground border-[3px] border-border transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90"
+            className="bg-secondary text-secondary-foreground border-[3px] border-border transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90 w-full sm:w-auto"
             onClick={() =>
               posthog.capture('user_config_clicked', {
                 user_email: session?.user?.email,
               })
             }
           >
-            <Link href="/user-config" className="flex items-center">
+            <Link
+              href="/user-config"
+              className="flex items-center justify-center"
+            >
               User Configuration
             </Link>
           </Button>
@@ -207,51 +213,58 @@ export default function Dashboard() {
                 {agents.map((agent, idx) => (
                   <li
                     key={agent.id}
-                    className="border-t pt-2 flex items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-4 py-2"
+                    className="border-t pt-4 sm:pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-4 py-2"
                   >
-                    <Bot className="h-4 w-4 text-brand/80 mr-3 mt-1" />
-                    <div className="flex-1">
-                      <p className="text-lg md:text-lg text-base text-foreground font-semibold mb-1">
-                        <Link
-                          href={`/agents/${agent.id}`}
-                          className="hover:underline focus:underline outline-none"
-                          onClick={() =>
-                            posthog.capture('agent_view_clicked', {
-                              agent_id: agent.id,
-                              user_email: session?.user?.email,
-                            })
-                          }
-                        >
-                          {agent.name}
-                        </Link>
-                      </p>
-                      <p className="text-sm text-muted-foreground mb-1">
-                        <span className="font-semibold">Domain:</span>{' '}
-                        {agent.websiteDomain}
-                      </p>
-                      <p className="text-sm text-muted-foreground mb-1">
-                        <span className="font-semibold">Created:</span>{' '}
-                        {new Date(agent.createdAt).toLocaleString()}
-                      </p>
-                      <p className="text-sm text-muted-foreground mb-1">
-                        <span className="font-semibold">Model:</span>{' '}
-                        {agent.model}
-                      </p>
+                    <div className="flex flex-1 min-w-0 items-start">
+                      <Bot className="h-4 w-4 text-brand/80 mr-3 mt-1" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-lg md:text-lg text-base text-foreground font-semibold mb-1 truncate">
+                          <Link
+                            href={`/agents/${agent.id}`}
+                            className="hover:underline focus:underline outline-none"
+                            onClick={() =>
+                              posthog.capture('agent_view_clicked', {
+                                agent_id: agent.id,
+                                user_email: session?.user?.email,
+                              })
+                            }
+                          >
+                            {agent.name}
+                          </Link>
+                        </p>
+                        <p className="text-sm text-muted-foreground mb-1 truncate">
+                          <span className="font-semibold">Domain:</span>{' '}
+                          {agent.websiteDomain}
+                        </p>
+                        <p className="text-sm text-muted-foreground mb-1">
+                          <span className="font-semibold">Created:</span>{' '}
+                          {new Date(agent.createdAt).toLocaleString()}
+                        </p>
+                        <p className="text-sm text-muted-foreground mb-1 truncate">
+                          <span className="font-semibold">Model:</span>{' '}
+                          {agent.model}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex gap-2 ml-4">
+                    <div className="flex gap-2 w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
                       <Button
                         asChild
-                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 hover:bg-secondary/90"
+                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 hover:bg-secondary/90 flex-1 sm:flex-none"
                       >
-                        <Link href={`/agents/${agent.id}`}>View</Link>
+                        <Link
+                          href={`/agents/${agent.id}`}
+                          className="flex-1 sm:flex-none"
+                        >
+                          View
+                        </Link>
                       </Button>
                       <Button
                         asChild
-                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 hover:bg-secondary/90"
+                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 hover:bg-secondary/90 flex-1 sm:flex-none"
                       >
                         <Link
                           href={`/agents/${agent.id}/edit`}
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 justify-center"
                         >
                           <Settings className="h-4 w-4 transition-transform group-hover:rotate-45" />
                           <span>Edit</span>
