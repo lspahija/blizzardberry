@@ -221,10 +221,9 @@ export default function LandingPage() {
           className="text-lg text-muted-foreground mb-8 max-w-2xl z-10"
           variants={itemVariants}
         >
-          Our AI agents learn your documentation to provide instant answers and
-          execute actions on your users' behalf. Let users navigate your app,
-          manage their accounts, and complete workflows—all through a simple
-          conversation.
+          Our AI Agent doesn't just find answers in your documentation—it takes
+          action. Let your users manage their accounts, navigate your app, and
+          complete workflows—all through a simple conversation.
         </motion.p>
         <motion.div
           className="flex flex-col sm:flex-row items-center gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-8 sm:px-0"
