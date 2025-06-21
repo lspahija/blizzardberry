@@ -125,6 +125,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - [affiliate program](https://x.com/marc_louvion/status/1922271980260331772?s=46)
 - work with [Pieter Levels](https://x.com/levelsio) or other big guys on X and have them push this as their own
 - scour X for the best strategies and threads [like this](https://x.com/johnrushx/status/1927026143196020750)
+- make little tools that go viral and use them to drive traffic to the main product - e.g. a tool that converts any image to super bright HDR
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
