@@ -11,7 +11,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Code, Rocket, Zap, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Reusable component for the drop-shadow effect on buttons and cards
 const ShadowWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -23,6 +23,18 @@ const ShadowWrapper = ({ children }: { children: React.ReactNode }) => (
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [isMenuOpen]);
+
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -120,7 +132,7 @@ export default function LandingPage() {
       </nav>
 
       {isMenuOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-sm p-4 space-y-4 absolute top-[75px] left-0 right-0 z-40">
+        <div className="md:hidden bg-background/95 backdrop-blur-sm px-4 py-6 space-y-4 fixed top-[75px] left-0 right-0 bottom-0 z-40">
           <Link
             href="/docs"
             className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
@@ -139,7 +151,7 @@ export default function LandingPage() {
           >
             Contact
           </Link>
-          <div className="flex flex-col space-y-3 pt-4 border-t border-border">
+          <div className="flex flex-col space-y-3 pt-6 mt-4 border-t border-border">
             <div className="relative group">
               <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
               <Button
