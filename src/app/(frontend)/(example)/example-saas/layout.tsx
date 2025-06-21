@@ -75,7 +75,7 @@ export default function ExampleLayout({
           id="BlizzardBerry-agent"
           src="http://localhost:3000/agent/agent.js"
           strategy="afterInteractive"
-          data-agent-id="aaea415d-f10d-42f2-81fb-89890387af67"
+          data-agent-id="788b2e00-aaf1-4310-b1ab-54293496e396"
         />
         <Script id="BlizzardBerry-actions" strategy="afterInteractive">
           {`
