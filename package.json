@@ -9,6 +9,7 @@
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx}\"",
     "test": "playwright test",
+    "test:serial": "playwright test tests/backend-response.spec.ts --workers=1",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
