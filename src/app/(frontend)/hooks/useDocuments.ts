@@ -9,7 +9,7 @@ interface MetadataField {
 
 export const useDocuments = () => {
   const router = useRouter();
-  const { agentId } = useParams();
+  const { agentId, teamId } = useParams();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loadingDocuments, setLoadingDocuments] = useState(true);
   const [deletingDocumentId, setDeletingDocumentId] = useState<string | null>(
@@ -106,7 +106,7 @@ export const useDocuments = () => {
 
       setSuccess(true);
       await fetchDocuments();
-      setTimeout(() => router.push(`/agents/${agentId}`), 2000);
+      setTimeout(() => router.push(`/dashboard/${teamId}/agents/${agentId}`), 2000);
     } catch (err: any) {
       setError(err.message || 'An error occurred while adding the document');
     } finally {

@@ -1,6 +1,104 @@
 -- TODO: after launch, we should add db migrations (Supabase Migrations/Flyway/Liquibase, etc): https://grok.com/share/bGVnYWN5_028f4133-6951-47e9-803e-da4e87a5ddae
 
--- agents
+-- teams
+
+CREATE TABLE teams
+(
+    id          UUID                     DEFAULT gen_random_uuid() PRIMARY KEY,
+    name        TEXT NOT NULL UNIQUE,
+    slug        TEXT NOT NULL UNIQUE,
+    created_by  UUID NOT NULL REFERENCES next_auth.users (id) ON DELETE CASCADE,
+    created_at  TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+CREATE INDEX teams_created_by_idx ON teams (created_by);
+CREATE INDEX teams_slug_idx ON teams (slug);
+
+-- Function to generate unique team slug from user name
+CREATE OR REPLACE FUNCTION generate_team_slug(user_name TEXT)
+RETURNS TEXT AS $$
+DECLARE
+    base_slug TEXT;
+    final_slug TEXT;
+    counter INTEGER := 0;
+BEGIN
+    -- Convert name to slug format (lowercase, replace spaces with hyphens, remove special chars)
+    base_slug := lower(regexp_replace(regexp_replace(user_name, '[^a-zA-Z0-9\s]', '', 'g'), '\s+', '-', 'g'));
+    
+    -- Remove leading/trailing hyphens
+    base_slug := trim(both '-' from base_slug);
+    
+    -- Ensure slug is not empty
+    IF base_slug = '' THEN
+        base_slug := 'team';
+    END IF;
+    
+    -- Add '-team' suffix
+    base_slug := base_slug || '-team';
+    
+    -- Check if slug exists and find next available number
+    final_slug := base_slug;
+    WHILE EXISTS (SELECT 1 FROM teams WHERE slug = final_slug) LOOP
+        counter := counter + 1;
+        final_slug := base_slug || '_' || counter;
+    END LOOP;
+    
+    RETURN final_slug;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to create default team for new user
+CREATE OR REPLACE FUNCTION create_default_team_for_user()
+RETURNS TRIGGER AS $$
+DECLARE
+    team_id UUID;
+    team_slug TEXT;
+    team_name TEXT;
+BEGIN
+    -- Only create default team if user has a name
+    IF NEW.name IS NOT NULL AND NEW.name != '' THEN
+        -- Generate team slug from user name
+        team_slug := generate_team_slug(NEW.name);
+        team_name := NEW.name || '''s Team';
+        
+        -- Create the team
+        INSERT INTO teams (name, slug, created_by)
+        VALUES (team_name, team_slug, NEW.id)
+        RETURNING id INTO team_id;
+        
+        -- Add user as admin of their own team
+        INSERT INTO team_members (team_id, user_id, role)
+        VALUES (team_id, NEW.id, 'ADMIN');
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger to create default team when user is created
+CREATE TRIGGER create_default_team_trigger
+    AFTER INSERT ON next_auth.users
+    FOR EACH ROW
+    EXECUTE FUNCTION create_default_team_for_user();
+
+-- team members with roles
+
+CREATE TYPE team_role AS ENUM ('ADMIN', 'USER');
+
+CREATE TABLE team_members
+(
+    id         UUID                     DEFAULT gen_random_uuid() PRIMARY KEY,
+    team_id    UUID NOT NULL REFERENCES teams (id) ON DELETE CASCADE,
+    user_id    UUID NOT NULL REFERENCES next_auth.users (id) ON DELETE CASCADE,
+    role       team_role NOT NULL DEFAULT 'USER',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    UNIQUE(team_id, user_id)
+);
+
+CREATE INDEX team_members_team_id_idx ON team_members (team_id);
+CREATE INDEX team_members_user_id_idx ON team_members (user_id);
+
+-- agents (updated to reference teams instead of users)
 
 CREATE TABLE agents
 (
@@ -8,10 +106,12 @@ CREATE TABLE agents
     name           TEXT NOT NULL,
     website_domain TEXT NOT NULL,
     model          TEXT NOT NULL,
+    team_id        UUID NOT NULL REFERENCES teams (id) ON DELETE CASCADE,
     created_by     UUID NOT NULL REFERENCES next_auth.users (id) ON DELETE CASCADE,
     created_at     TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
+CREATE INDEX agents_team_id_idx ON agents (team_id);
 CREATE INDEX agents_created_by_idx ON agents (created_by);
 
 -- actions
@@ -65,7 +165,7 @@ CREATE TABLE credit_batches
 CREATE INDEX ON credit_batches (user_id, expires_at NULLS LAST);
 
 ----------------------------------------------------------------------
--- 3. Projection: outstanding “holds” (authorisations) --------------
+-- 3. Projection: outstanding "holds" (authorisations) --------------
 CREATE TYPE hold_state AS ENUM ('ACTIVE','CAPTURED','RELEASED','EXPIRED');
 
 CREATE TABLE credit_holds
@@ -80,7 +180,72 @@ CREATE TABLE credit_holds
 );
 CREATE INDEX ON credit_holds (user_id, state);
 
-----------------------------------------------------------------------
+-- Helper functions for team management
+
+-- Function to get user's teams with their roles
+CREATE OR REPLACE FUNCTION get_user_teams(user_uuid UUID)
+RETURNS TABLE (
+    team_id UUID,
+    team_name TEXT,
+    team_slug TEXT,
+    user_role team_role,
+    is_admin BOOLEAN
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        t.id,
+        t.name,
+        t.slug,
+        tm.role,
+        tm.role = 'ADMIN'::team_role
+    FROM teams t
+    JOIN team_members tm ON t.id = tm.team_id
+    WHERE tm.user_id = user_uuid
+    ORDER BY t.created_at DESC;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to check if user has access to team
+CREATE OR REPLACE FUNCTION user_has_team_access(user_uuid UUID, team_uuid UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 
+        FROM team_members 
+        WHERE user_id = user_uuid AND team_id = team_uuid
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to check if user is team admin
+CREATE OR REPLACE FUNCTION user_is_team_admin(user_uuid UUID, team_uuid UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 
+        FROM team_members 
+        WHERE user_id = user_uuid AND team_id = team_uuid AND role = 'ADMIN'
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- View for team members with user details
+CREATE VIEW team_members_with_details AS
+SELECT 
+    tm.id,
+    tm.team_id,
+    tm.user_id,
+    tm.role,
+    tm.created_at,
+    t.name as team_name,
+    t.slug as team_slug,
+    u.name as user_name,
+    u.email as user_email
+FROM team_members tm
+JOIN teams t ON tm.team_id = t.id
+JOIN next_auth.users u ON tm.user_id = u.id;
+
 -- 4. (Nice-to-have) summary view for dashboards ---------------------
 CREATE MATERIALIZED VIEW user_credit_summary AS
 SELECT user_id,

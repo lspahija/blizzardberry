@@ -4,7 +4,7 @@ import { Agent } from '@/app/api/lib/model/agent/agent';
 import { agentAuth } from '@/app/api/lib/auth/agentAuth';
 import {
   deleteAgent,
-  getAgentByUserId,
+  getAgentByTeamAccess,
   updateAgent,
 } from '@/app/api/lib/store/agentStore';
 
@@ -20,7 +20,7 @@ export async function GET(
 
     const { agentId } = await params;
 
-    const data = await getAgentByUserId(agentId, session.user.id);
+    const data = await getAgentByTeamAccess(agentId, session.user.id);
 
     if (!data) {
       console.error('Error fetching agent:', agentId);
@@ -35,6 +35,7 @@ export async function GET(
       name: data.name,
       websiteDomain: data.website_domain,
       model: data.model,
+      teamId: data.team_id,
       createdBy: data.created_by,
       createdAt: data.created_at,
     };
@@ -50,7 +51,7 @@ export async function GET(
 }
 
 export async function PUT(
-  request: Request,
+  req: Request,
   { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
@@ -60,30 +61,28 @@ export async function PUT(
     }
 
     const { agentId } = await params;
-    const authResponse = await agentAuth(session.user.id, agentId);
-    if (authResponse) return authResponse;
+    const { name, websiteDomain, model } = await req.json();
 
-    const body = await request.json();
-    const { name, websiteDomain, model } = body;
-
-    if (!name || !websiteDomain || !model) {
+    // Check if user has access to the agent through team membership
+    const agent = await getAgentByTeamAccess(agentId, session.user.id);
+    if (!agent) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
+        { error: 'Agent not found or unauthorized' },
+        { status: 404 }
       );
     }
 
-    await updateAgent(agentId, {
+    const data = await updateAgent(agentId, {
       name,
       website_domain: websiteDomain,
       model,
     });
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json({ agent: data }, { status: 200 });
   } catch (error) {
-    console.error('Error updating agent:', error);
+    console.error('Error processing request:', error);
     return NextResponse.json(
-      { error: 'Failed to update agent' },
+      { error: 'Failed to process request' },
       { status: 500 }
     );
   }
@@ -101,15 +100,22 @@ export async function DELETE(
 
     const { agentId } = await params;
 
-    const authResponse = await agentAuth(session.user.id, agentId);
-    if (authResponse) return authResponse;
+    // Check if user has access to the agent through team membership
+    const agent = await getAgentByTeamAccess(agentId, session.user.id);
+    if (!agent) {
+      return NextResponse.json(
+        { error: 'Agent not found or unauthorized' },
+        { status: 404 }
+      );
+    }
 
     await deleteAgent(agentId);
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json({ message: 'Agent deleted successfully' }, { status: 200 });
   } catch (error) {
+    console.error('Error processing request:', error);
     return NextResponse.json(
-      { error: 'Failed to delete agent' },
+      { error: 'Failed to process request' },
       { status: 500 }
     );
   }

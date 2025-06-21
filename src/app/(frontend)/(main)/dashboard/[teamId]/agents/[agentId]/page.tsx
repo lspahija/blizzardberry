@@ -47,12 +47,13 @@ import {
 } from '@/app/(frontend)/components/ui/select';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { Suspense } from 'react';
+import { useParams } from 'next/navigation';
 
-export default function AgentDetailsWrapper({
-  params: paramsPromise,
-}: {
-  params: Promise<{ agentId: string }>;
-}) {
+export default function AgentDetailsWrapper() {
+  const params = useParams();
+  const teamId = params.teamId as string;
+  const agentId = params.agentId as string;
+
   return (
     <Suspense
       fallback={
@@ -61,17 +62,18 @@ export default function AgentDetailsWrapper({
         </div>
       }
     >
-      <AgentDetails params={paramsPromise} />
+      <AgentDetails teamId={teamId} agentId={agentId} />
     </Suspense>
   );
 }
 
 function AgentDetails({
-  params: paramsPromise,
+  teamId,
+  agentId,
 }: {
-  params: Promise<{ agentId: string }>;
+  teamId: string;
+  agentId: string;
 }) {
-  const params = use(paramsPromise);
   const [agent, setAgent] = useState<Agent | null>(null);
   const [actions, setActions] = useState<Action[]>([]);
   const [loadingAgent, setLoadingAgent] = useState(true);
@@ -103,7 +105,7 @@ function AgentDetails({
   useEffect(() => {
     async function fetchAgent() {
       try {
-        const response = await fetch(`/api/agents/${params.agentId}`);
+        const response = await fetch(`/api/agents/${agentId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch agent');
         }
@@ -117,13 +119,13 @@ function AgentDetails({
     }
 
     fetchAgent();
-  }, [params.agentId]);
+  }, [agentId]);
 
   // Fetch actions for the agent
   useEffect(() => {
     async function fetchActions() {
       try {
-        const response = await fetch(`/api/agents/${params.agentId}/actions`);
+        const response = await fetch(`/api/agents/${agentId}/actions`);
         if (!response.ok) {
           throw new Error('Failed to fetch actions');
         }
@@ -131,7 +133,7 @@ function AgentDetails({
         setActions(data.actions || []);
       } catch (error) {
         console.error(
-          `Error fetching actions for agent ${params.agentId}:`,
+          `Error fetching actions for agent ${agentId}:`,
           error
         );
       } finally {
@@ -140,7 +142,7 @@ function AgentDetails({
     }
 
     fetchActions();
-  }, [params.agentId]);
+  }, [agentId]);
 
   const handleDeleteActionWithLoading = async (actionId: string) => {
     setDeletingActionId(actionId);
@@ -251,7 +253,7 @@ function AgentDetails({
             className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto hover:bg-brand/90"
           >
             <Link
-              href={`/agents/${params.agentId}/actions/new`}
+              href={`/dashboard/${teamId}/agents/${agentId}/actions/new`}
               className="flex items-center justify-center"
             >
               <PlusCircle className="mr-2 h-5 w-5" />
@@ -263,7 +265,7 @@ function AgentDetails({
             className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto hover:bg-brand/90"
           >
             <Link
-              href={`/agents/${params.agentId}/documents/new`}
+              href={`/dashboard/${teamId}/agents/${agentId}/documents/new`}
               className="flex items-center justify-center"
             >
               <PlusCircle className="mr-2 h-5 w-5" />
@@ -537,12 +539,12 @@ function AgentDetails({
                             backgroundColor: 'var(--color-background-dark)',
                           }}
                         >
-                          {getAgentScript(selectedFramework, params.agentId)}
+                          {getAgentScript(selectedFramework, agentId)}
                         </SyntaxHighlighter>
                         <Button
                           onClick={() =>
                             handleCopy(
-                              getAgentScript(selectedFramework, params.agentId)
+                              getAgentScript(selectedFramework, agentId)
                             )
                           }
                           className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 px-2 py-1 sm:px-3 sm:py-1.5"

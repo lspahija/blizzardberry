@@ -2,9 +2,17 @@ export interface Agent {
   id: string;
   name: string;
   websiteDomain: string;
-  model: AgentModel;
+  model: string;
+  teamId: string;
   createdBy: string;
   createdAt: string;
+}
+
+export interface CreateAgentParams {
+  name: string;
+  websiteDomain: string;
+  model: string;
+  teamId: string;
 }
 
 export enum AgentModel {

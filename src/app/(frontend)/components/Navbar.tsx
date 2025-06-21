@@ -2,7 +2,7 @@
 
 import {
   MessageSquare,
-  LogOut,
+  LogOut, 
   Send,
   Info,
   Mail,
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import {
   Dialog,
@@ -32,8 +33,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
+import { TeamSwitcher } from '@/app/(frontend)/components/TeamSwitcher';
 
 export function Navbar() {
+  const router = useRouter();
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackType, setFeedbackType] = useState('bug');
   const { data: session } = useSession();
@@ -43,6 +46,7 @@ export function Navbar() {
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [currentTeamId, setCurrentTeamId] = useState<string | undefined>();
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -54,6 +58,30 @@ export function Navbar() {
       document.body.classList.remove('overflow-hidden');
     };
   }, [isMobileMenuOpen]);
+
+  // Set currentTeamId from URL path
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      const teamMatch = path.match(/\/dashboard\/([^\/]+)/);
+      if (teamMatch && teamMatch[1] && teamMatch[1] !== 'new-team') {
+        setCurrentTeamId(teamMatch[1]);
+      }
+    }
+  }, []);
+
+  // ==> ADD THIS EFFECT TO HANDLE REDIRECTS <==
+  useEffect(() => {
+    if (currentTeamId && typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      const teamMatch = path.match(/\/dashboard\/([^\/]+)/);
+      
+      // Only redirect if we are on a generic page or the wrong team's page
+      if (!path.includes(currentTeamId)) {
+        router.push(`/dashboard/${currentTeamId}/agents`);
+      }
+    }
+  }, [currentTeamId, router]);
 
   const handleFeedbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,9 +123,14 @@ export function Navbar() {
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/usage', label: 'Usage' },
     { href: '/pricing', label: 'Pricing' },
-    { href: '/settings', label: 'Settings' },
+    { href: '/dashboard/new-team', label: 'New Team' },
     { href: '/contact', label: 'Contact' },
   ];
+
+  // Dynamic links that need currentTeamId
+  const dynamicLinks = currentTeamId ? [
+    { href: `/dashboard/${currentTeamId}/settings`, label: 'Settings' },
+  ] : [];
 
   return (
     <>
@@ -112,8 +145,32 @@ export function Navbar() {
           <span className="hidden sm:block mx-2 text-gray-300 select-none">
             |
           </span>
+          
+          {/* Team Switcher */}
+          {session?.user && (
+            <div className="hidden md:block">
+              <TeamSwitcher
+                currentTeamId={currentTeamId}
+                onTeamChange={setCurrentTeamId}
+              />
+            </div>
+          )}
+          
+          <span className="hidden sm:block mx-2 text-gray-300 select-none">
+            |
+          </span>
+          
           <div className="hidden md:flex items-center gap-2">
             {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
+              >
+                {link.label}
+              </Link>
+            ))}
+            {dynamicLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -172,8 +229,29 @@ export function Navbar() {
                 <X className="h-6 w-6 text-gray-900" />
               </button>
             </div>
+            
+            {/* Mobile Team Switcher */}
+            {session?.user && (
+              <div className="mb-4">
+                <TeamSwitcher
+                  currentTeamId={currentTeamId}
+                  onTeamChange={setCurrentTeamId}
+                />
+              </div>
+            )}
+            
             <div className="space-y-4">
               {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              {dynamicLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}

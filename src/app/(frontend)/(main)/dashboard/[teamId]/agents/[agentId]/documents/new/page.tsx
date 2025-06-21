@@ -32,9 +32,11 @@ interface MetadataField {
 export default function AddDocument({
   params: paramsPromise,
 }: {
-  params: Promise<{ agentId: string }>;
+  params: Promise<{ teamId: string; agentId: string }>;
 }) {
   const params = use(paramsPromise);
+  const teamId = params.teamId;
+  const agentId = params.agentId;
   const [text, setText] = useState('');
   const [metadataFields, setMetadataFields] = useState<MetadataField[]>([]);
   const { handleCreateDocument, isSubmitting, error, success } = useDocuments();
@@ -92,7 +94,7 @@ export default function AddDocument({
             className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg hover:bg-secondary/90"
           >
             <Link
-              href={`/agents/${params.agentId}`}
+              href={`/dashboard/${params.teamId}/agents/${params.agentId}`}
               className="flex items-center"
             >
               <ArrowLeft className="mr-2 h-5 w-5" />

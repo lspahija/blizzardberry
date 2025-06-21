@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -40,19 +40,31 @@ import {
 import { Framework, getAgentScript } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 
-export default function NewAgentPage() {
+interface NewAgentPageProps {
+  params: Promise<{ teamId: string }>;
+}
+
+export default function NewAgentPage({ params }: NewAgentPageProps) {
   const router = useRouter();
   const [name, setName] = useState('');
   const [websiteDomain, setWebsiteDomain] = useState('');
   const [model, setModel] = useState<AgentModel>(AgentModel.GEMINI_2_0_FLASH);
   const [agentId, setAgentId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [teamId, setTeamId] = useState<string>('');
   const [errors, setErrors] = useState<{
     name?: string;
     websiteDomain?: string;
   }>({});
   const { selectedFramework, setSelectedFramework } = useFramework();
   const { handleCreateAgent } = useAgents();
+
+  // Get teamId from URL params
+  useEffect(() => {
+    params.then(({ teamId }) => {
+      setTeamId(teamId);
+    });
+  }, [params]);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -96,6 +108,11 @@ export default function NewAgentPage() {
       newErrors.websiteDomain = 'Website domain is required';
     }
 
+    if (!teamId) {
+      console.error('No team ID available');
+      return;
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -106,6 +123,7 @@ export default function NewAgentPage() {
         name,
         websiteDomain,
         model,
+        teamId,
       });
       setAgentId(newAgentId);
     } catch (error) {
