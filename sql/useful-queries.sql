@@ -23,5 +23,5 @@ drop table if exists credit_batches;
 
 
 insert into credit_batches(user_id, quantity_remaining)
-values ('b39364e1-dd7a-4c43-a07d-ab8bc1945bf2', 1000000)
+values ('83d476b1-1777-4b1d-8f07-28d7df584f25', 1000000)
 

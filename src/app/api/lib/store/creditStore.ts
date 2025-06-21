@@ -10,25 +10,30 @@ export async function addCredit(
   const eventType = 'CREDIT_ADDED';
   let eventId: number;
   const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;
+  const roundedQty = Math.ceil(qty);
 
   await sql.begin(async (sql) => {
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
-              ${sql.json({ qty, expiresAt: expiresAt || null, source: 'purchase' })})
+              ${sql.json({ qty: roundedQty, expiresAt: expiresAt || null, source: 'purchase' })})
       RETURNING id`;
     eventId = event.id;
 
     await sql`
       INSERT INTO credit_batches (user_id, quantity_remaining, expires_at)
-      VALUES (${userId}, ${qty}, ${expiresAt || null})`;
+      VALUES (${userId}, ${roundedQty}, ${expiresAt || null})`;
   });
 
   await handle({
     id: eventId,
     type: eventType,
     user_id: userId,
-    event_data: { qty, expiresAt: expiresAt || null, source: 'purchase' },
+    event_data: {
+      qty: roundedQty,
+      expiresAt: expiresAt || null,
+      source: 'purchase',
+    },
   });
 }
 
@@ -40,6 +45,7 @@ export async function holdCredit(
 ) {
   const holdIds: number[] = [];
   let eventId: number;
+  const roundedMaxProbe = Math.ceil(maxProbe);
 
   await sql.begin(async (sql) => {
     const batches = await sql`
@@ -51,19 +57,19 @@ export async function holdCredit(
       ORDER BY expires_at NULLS LAST, created_at
         FOR UPDATE SKIP LOCKED`;
 
-    let need = maxProbe;
+    let need = roundedMaxProbe;
     for (const b of batches) {
       if (need === 0) break;
       const take = Math.min(need, b.quantity_remaining);
 
       await sql`
         UPDATE credit_batches
-        SET quantity_remaining = quantity_remaining - ${take}
+        SET quantity_remaining = quantity_remaining - ${Math.ceil(take)}
         WHERE id = ${b.id}`;
 
       const [{ id: holdId }] = await sql`
         INSERT INTO credit_holds (user_id, batch_id, quantity_held)
-        VALUES (${userId}, ${b.id}, ${take})
+        VALUES (${userId}, ${b.id}, ${Math.ceil(take)})
         RETURNING id`;
       holdIds.push(Number(holdId));
 
@@ -76,7 +82,7 @@ export async function holdCredit(
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
-              ${sql.json({ holdIds, maxProbe, ref })})
+              ${sql.json({ holdIds, maxProbe: roundedMaxProbe, ref })})
       RETURNING id`;
     eventId = event.id;
   });
@@ -85,7 +91,7 @@ export async function holdCredit(
     id: eventId,
     type: 'CREDIT_HOLD_CREATED',
     user_id: userId,
-    event_data: { holdIds, maxProbe, ref },
+    event_data: { holdIds, maxProbe: roundedMaxProbe, ref },
   });
 
   return holdIds;
@@ -99,15 +105,16 @@ export async function captureCredit(
   idempotencyKey: string
 ) {
   let eventId: number;
+  const roundedActualUsed = Math.ceil(actualUsed);
 
   await sql.begin(async (sql) => {
     const holds = await sql`
       SELECT id, batch_id, quantity_held
       FROM credit_holds
       WHERE id = ANY(${holdIds}) AND state = 'ACTIVE'
-      FOR UPDATE`;
+        FOR UPDATE`;
 
-    let need = actualUsed;
+    let need = roundedActualUsed;
     for (const h of holds) {
       if (need === 0) break;
       const take = Math.min(need, h.quantity_held);
@@ -116,14 +123,14 @@ export async function captureCredit(
       if (remainder > 0) {
         await sql`
           UPDATE credit_batches
-          SET quantity_remaining = quantity_remaining + ${remainder}
+          SET quantity_remaining = quantity_remaining + ${Math.floor(remainder)}
           WHERE id = ${h.batch_id}`;
       }
 
       await sql`
         UPDATE credit_holds
         SET state = 'CAPTURED',
-            quantity_held = ${take}
+            quantity_held = ${Math.ceil(take)}
         WHERE id = ${h.id}`;
 
       need -= take;
@@ -136,7 +143,7 @@ export async function captureCredit(
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
-              ${sql.json({ holdIds, actualUsed, ref })})
+              ${sql.json({ holdIds, actualUsed: roundedActualUsed, ref })})
       RETURNING id`;
     eventId = event.id;
   });
@@ -145,7 +152,7 @@ export async function captureCredit(
     id: eventId,
     type: 'CREDIT_HOLD_CAPTURED',
     user_id: userId,
-    event_data: { holdIds, actualUsed, ref },
+    event_data: { holdIds, actualUsed: roundedActualUsed, ref },
   });
 }
 
@@ -167,7 +174,7 @@ export async function releaseExpiredHolds() {
     for (const e of expired) {
       await sql`
         UPDATE credit_batches
-        SET quantity_remaining = quantity_remaining + ${e.quantity_held}
+        SET quantity_remaining = quantity_remaining + ${Math.floor(e.quantity_held)}
         WHERE id = ${e.batch_id}`;
 
       await sql`
@@ -181,13 +188,13 @@ export async function releaseExpiredHolds() {
       const [event] = await sql`
         INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
         VALUES (${e.user_id}, ${idempotencyKey}, ${eventType},
-                ${sql.json({ holdId: e.id, quantity: e.quantity_held })})
+                ${sql.json({ holdId: e.id, quantity: Math.floor(e.quantity_held) })})
         RETURNING id`;
 
       events.push({
         id: event.id,
         user_id: e.user_id,
-        event_data: { holdId: e.id, quantity: e.quantity_held },
+        event_data: { holdId: e.id, quantity: Math.floor(e.quantity_held) },
       });
     }
   });
@@ -210,11 +217,12 @@ export async function removeCredit(
   idempotencyKey: string
 ) {
   let eventId: number;
+  const roundedQty = Math.ceil(qty);
 
   await sql.begin(async (sql) => {
     await sql`
       UPDATE credit_batches
-      SET quantity_remaining = quantity_remaining - ${qty}
+      SET quantity_remaining = quantity_remaining - ${roundedQty}
       WHERE id = ${batchId} AND user_id = ${userId}`;
 
     const eventType = 'CREDIT_REMOVED';
@@ -223,7 +231,7 @@ export async function removeCredit(
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
-              ${sql.json({ batchId, qty, reason })})
+              ${sql.json({ batchId, qty: roundedQty, reason })})
       RETURNING id`;
     eventId = event.id;
   });
@@ -232,7 +240,7 @@ export async function removeCredit(
     id: eventId,
     type: 'CREDIT_REMOVED',
     user_id: userId,
-    event_data: { batchId, qty, reason },
+    event_data: { batchId, qty: roundedQty, reason },
   });
 }
 
@@ -263,13 +271,13 @@ export async function expireBatches() {
       const [event] = await sql`
         INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
         VALUES (${d.user_id}, ${idempotencyKey}, ${eventType},
-                ${sql.json({ batchId: d.id, qty: d.quantity_remaining })})
+                ${sql.json({ batchId: d.id, qty: Math.floor(d.quantity_remaining) })})
         RETURNING id`;
 
       events.push({
         id: event.id,
         user_id: d.user_id,
-        event_data: { batchId: d.id, qty: d.quantity_remaining },
+        event_data: { batchId: d.id, qty: Math.floor(d.quantity_remaining) },
       });
     }
   });

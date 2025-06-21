@@ -1,4 +1,7 @@
 (function () {
+  const baseUrl = window.location.hostname.includes('localhost')
+    ? 'http://localhost:3000'
+    : 'https://blizzardberry.com';
   const actions = {};
   let userConfig = null;
   let agentId = null;
@@ -174,18 +177,15 @@
   }
 
   async function interpretActionResult(actionResultMessage) {
-    const chatResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/chat`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...state.messages, actionResultMessage],
-          agentId,
-          idempotencyKey: generateId(),
-        }),
-      }
-    );
+    const chatResponse = await fetch(`${baseUrl}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [...state.messages, actionResultMessage],
+        agentId,
+        idempotencyKey: generateId(),
+      }),
+    });
 
     if (!chatResponse.ok) throw new Error('Failed to fetch AI response');
     const { text } = await chatResponse.json();
@@ -227,7 +227,7 @@
     }, 300);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/chat`, {
+      const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -300,6 +300,7 @@
         updateChatUI();
       }
     } catch (error) {
+      console.error(error);
       handleError(error, 'Error: Failed to get response');
     }
   }
