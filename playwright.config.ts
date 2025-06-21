@@ -13,16 +13,27 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   projects: [
+    // Project for tests that must run serially
     {
-      name: 'chromium',
+      name: 'Chromium Serial',
+      testMatch: /backend-response\.spec\.ts/,
+      workers: 1,
+      use: { ...devices['Desktop Chrome'] },
+    },
+    // Project for all other tests that can run in parallel
+    {
+      name: 'Chromium Parallel',
+      testIgnore: /backend-response\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'firefox',
+      testIgnore: /backend-response\.spec\.ts/,
       use: { ...devices['Desktop Firefox'] },
     },
     {
       name: 'webkit',
+      testIgnore: /backend-response\.spec\.ts/,
       use: { ...devices['Desktop Safari'] },
     },
   ],
