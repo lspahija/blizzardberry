@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '../../globals.css';
-import Script from 'next/script'; // Import from root
+import Script from 'next/script';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -48,11 +48,9 @@ export default function ExampleLayout({
   }
 
   return (
-    <html lang="en">
-      <head>
-        <style>{customStyles}</style>
-      </head>
-      <body className={`${inter.variable} antialiased`}>
+    <>
+      <style>{customStyles}</style>
+      <div className={`${inter.variable} antialiased`}>
         {children}
         <meta
           httpEquiv="Content-Security-Policy"
@@ -61,17 +59,17 @@ export default function ExampleLayout({
         <div id="agent" />
         <Script id="BlizzardBerry-config" strategy="afterInteractive">
           {`
-                    window.agentUserConfig = {
-                        user_id: "example_user_123",
-                        user_hash: "example_hash_456",
-                        account_number: "1234567890",
-                        user_metadata: {
-                            name: "John Doe",
-                            email: "john@example.com",
-                            company: "Example Corp"
-                        }
-                    };
-                `}
+            window.agentUserConfig = {
+              user_id: "example_user_123",
+              user_hash: "example_hash_456",
+              account_number: "1234567890",
+              user_metadata: {
+                name: "John Doe",
+                email: "john@example.com",
+                company: "Example Corp"
+              }
+            };
+          `}
         </Script>
         <Script
           id="BlizzardBerry-agent"
@@ -81,46 +79,46 @@ export default function ExampleLayout({
         />
         <Script id="BlizzardBerry-actions" strategy="afterInteractive">
           {`
-                    window.AgentActions = {
-                        get_weather: async (params, userConfig) => {
-                            try {
-                                const geoResponse = await fetch(
-                                    \`https://geocoding-api.open-meteo.com/v1/search?name=\${encodeURIComponent(params.location)}&count=1\`
-                                );
-                                const geoData = await geoResponse.json();
-                                
-                                if (!geoData.results?.[0]) {
-                                    return { status: 'error', error: \`Location "\${params.location}" not found\` };
-                                }
+            window.AgentActions = {
+              get_weather: async (params, userConfig) => {
+                try {
+                  const geoResponse = await fetch(
+                    \`https://geocoding-api.open-meteo.com/v1/search?name=\${encodeURIComponent(params.location)}&count=1\`
+                  );
+                  const geoData = await geoResponse.json();
+                  
+                  if (!geoData.results?.[0]) {
+                    return { status: 'error', error: \`Location "\${params.location}" not found\` };
+                  }
 
-                                const { latitude, longitude, name, country } = geoData.results[0];
-                                
-                                const weatherResponse = await fetch(
-                                    \`https://api.open-meteo.com/v1/forecast?latitude=\${latitude}&longitude=\${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code\`
-                                );
-                                const weatherData = await weatherResponse.json();
-                                
-                                if (!weatherData.current) {
-                                    return { status: 'error', error: 'Could not fetch weather data' };
-                                }
+                  const { latitude, longitude, name, country } = geoData.results[0];
+                  
+                  const weatherResponse = await fetch(
+                    \`https://api.open-meteo.com/v1/forecast?latitude=\${latitude}&longitude=\${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code\`
+                  );
+                  const weatherData = await weatherResponse.json();
+                  
+                  if (!weatherData.current) {
+                    return { status: 'error', error: 'Could not fetch weather data' };
+                  }
 
-                                return {
-                                    status: 'success',
-                                    data: {
-                                        location: \`\${name}, \${country}\`,
-                                        temperature: \`\${weatherData.current.temperature_2m}°C\`,
-                                        humidity: \`\${weatherData.current.relative_humidity_2m}%\`,
-                                        windSpeed: \`\${weatherData.current.wind_speed_10m} km/h\`,
-                                    }
-                                };
-                            } catch (error) {
-                                return { status: 'error', error: error.message || 'Failed to fetch weather data' };
-                            }
-                        }
-                    };
-                `}
+                  return {
+                    status: 'success',
+                    data: {
+                      location: \`\${name}, \${country}\`,
+                      temperature: \`\${weatherData.current.temperature_2m}°C\`,
+                      humidity: \`\${weatherData.current.relative_humidity_2m}%\`,
+                      windSpeed: \`\${weatherData.current.wind_speed_10m} km/h\`,
+                    }
+                  };
+                } catch (error) {
+                  return { status: 'error', error: error.message || 'Failed to fetch weather data' };
+                }
+              }
+            };
+          `}
         </Script>
-      </body>
-    </html>
+      </div>
+    </>
   );
 }
