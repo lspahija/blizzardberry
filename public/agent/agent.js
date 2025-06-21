@@ -1,91 +1,26 @@
 (function () {
-  function getExecutingScript() {
-    // Most reliable: modern browsers support this
-    if (document.currentScript) {
-      return document.currentScript;
-    }
-
-    // Fallback for older browsers or specific scenarios
-    // We find the script by its unique src attribute.
-    // This part of the logic from the original code is kept,
-    // assuming there's a reason to handle multiple scripts with the same src.
-    const scripts = document.getElementsByTagName('script');
-    for (let i = scripts.length - 1; i >= 0; i--) {
-      const script = scripts[i];
-      // A more robust check could be to see if this script's src
-      // matches a known pattern for your agent.
-      // For this refactoring, we'll assume any script with a 'data-agent-id' is a candidate.
-      if (script.src && script.dataset.agentId) {
-        // This is a simplified approach. If multiple agent scripts could be on a page,
-        // a more specific selector would be needed.
-        const currentScriptSrc = script.src;
-        const matchingScripts = document.querySelectorAll(
-          `script[src="${currentScriptSrc}"][data-agent-id]`
-        );
-        if (matchingScripts.length === 1) {
-          return matchingScripts[0];
-        } else if (matchingScripts.length > 1) {
-          console.error(
-            'Multiple scripts with same src and data-agent-id found. Cannot determine which script to use.'
-          );
-          return null;
-        }
-      }
-    }
-
-    // Last resort: find by a specific ID
-    const specificScript = document.getElementById('blizzardberry-agent');
-    if (specificScript) {
-      return specificScript;
-    }
-
-    return null; // Return null if no script was found
-  }
-
-  let agentId = null;
-  let userConfig = null;
   const actions = {};
+  let userConfig = null;
+  let agentId = null;
   let counter = 0;
 
-  function initializeAgentId(script) {
-    if (script && script.dataset && script.dataset.agentId) {
-      agentId = script.dataset.agentId;
-    } else {
-      console.error(
-        'Could not find agent ID. Make sure the script tag has the data-agent-id attribute.'
-      );
-    }
-  }
-
-  function injectStyles(script) {
-    if (script && script.src) {
-      const css = document.createElement('link');
-      css.rel = 'stylesheet';
-      css.href = script.src.replace(/\.js$/, '.css');
-      document.head.appendChild(css);
-    } else {
-      console.error('Could not find script src for CSS injection');
-    }
-  }
-
-  // --- Initialization Logic ---
-
-  const agentScript = getExecutingScript();
-
-  if (agentScript) {
-    initializeAgentId(agentScript);
-    injectStyles(agentScript);
+  function initializeAgentId() {
+    const script = document.currentScript;
+    agentId = script?.dataset?.agentId;
+    console.log('Initialized agent ID:', agentId);
   }
 
   // Initialize user config
   if (window.agentUserConfig && typeof window.agentUserConfig === 'object') {
     userConfig = window.agentUserConfig;
+    console.log('Initialized user config:', userConfig);
     delete window.agentUserConfig;
   }
 
-  // Initialize custom actions
   if (window.AgentActions && typeof window.AgentActions === 'object') {
+    console.log('Registering actions:', Object.keys(window.AgentActions));
     Object.assign(actions, window.AgentActions);
+    console.log('Available actions:', Object.keys(actions));
     delete window.AgentActions;
   }
 
@@ -97,6 +32,15 @@
     isProcessing: false,
     loggedThinkMessages: new Set(),
   };
+
+  // Inject CSS
+  function injectStyles() {
+    const script = document.currentScript;
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = script.src.replace(/\.js$/, '.css');
+    document.head.appendChild(css);
+  }
 
   // Create widget DOM
   function createWidgetDOM() {
