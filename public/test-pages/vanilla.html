@@ -74,8 +74,11 @@
 
     <!-- 1. Agent Configuration - Set up user context and metadata -->
     <script id="blizzardberry-config" type="text/javascript">
+        // Set the Next.js public URL for the agent script
+        window.NEXT_PUBLIC_URL = window.location.origin;
+        
         window.agentUserConfig = {
-            userId: "test_user_123",
+            userId: "b39364e1-dd7a-4c43-a07d-ab8bc1945bf2",
             userHash: "test_hash_456",
             accountNumber: "1234567890",
             userMetadata: {
@@ -85,6 +88,7 @@
             }
         };
         console.log('BlizzardBerry config loaded:', window.agentUserConfig);
+        console.log('Next.js public URL set to:', window.NEXT_PUBLIC_URL);
     </script>
 
     <!-- 2. Custom Actions - Define what your agent can do -->

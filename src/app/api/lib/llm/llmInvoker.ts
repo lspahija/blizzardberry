@@ -54,12 +54,12 @@ export async function callLLM(
         idempotencyKey
       );
 
-      console.log('Stream completed:', JSON.stringify(event, null, 2));
+      // console.log('Stream completed:', JSON.stringify(event, null, 2));
     },
   });
 
   const data = await processStream(stream);
-  console.log('LLM response:', JSON.stringify(data, null, 2));
+  // console.log('LLM response:', JSON.stringify(data, null, 2));
   return data;
 }
 
