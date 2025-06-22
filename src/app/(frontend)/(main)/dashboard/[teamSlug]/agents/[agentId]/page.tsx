@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, useContext, use } from 'react';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -22,13 +22,16 @@ import {
   Zap,
   Info,
   Code,
+  Globe,
+  Settings,
+  Edit,
+  Plus,
 } from 'lucide-react';
 import {
   Action,
   ExecutionContext,
 } from '@/app/api/lib/model/action/baseAction';
 import { Agent } from '@/app/api/lib/model/agent/agent';
-import { use } from 'react';
 import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
@@ -46,34 +49,55 @@ import {
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
 import { Label } from '@/app/(frontend)/components/ui/label';
-import { Suspense } from 'react';
-import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useTeams } from '@/app/(frontend)/hooks/useTeams';
+import { TeamContext } from '@/app/(frontend)/contexts/TeamContext';
+import { useAgents } from '@/app/(frontend)/hooks/useAgents';
+import { toast } from 'sonner';
 
-export default function AgentDetailsWrapper() {
-  const params = useParams();
-  const teamId = params.teamId as string;
-  const agentId = params.agentId as string;
+interface AgentPageProps {
+  params: Promise<{ teamSlug: string; agentId: string }>;
+}
+
+export default function AgentPage({ params }: AgentPageProps) {
+  const { teamSlug, agentId } = use(params);
+  const { data: session } = useSession();
+  const { teams, loading: teamsLoading } = useContext(TeamContext);
+
+  if (teamsLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="h-8 w-8 animate-spin text-foreground" />
+      </div>
+    );
+  }
+
+  const currentTeam = teams?.find(t => t.slug === teamSlug);
+
+  if (!currentTeam) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <p className="text-foreground text-lg">Team not found.</p>
+      </div>
+    );
+  }
 
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
-        </div>
-      }
-    >
-      <AgentDetails teamId={teamId} agentId={agentId} />
-    </Suspense>
+    <div className="h-full">
+      <Suspense fallback={<Loader2 className="h-8 w-8 animate-spin" />}>
+        <AgentDetails agentId={agentId} teamSlug={teamSlug} />
+      </Suspense>
+    </div>
   );
 }
 
-function AgentDetails({
-  teamId,
-  agentId,
-}: {
-  teamId: string;
+interface AgentDetailsProps {
   agentId: string;
-}) {
+  teamSlug: string;
+}
+
+function AgentDetails({ agentId, teamSlug }: AgentDetailsProps) {
   const [agent, setAgent] = useState<Agent | null>(null);
   const [actions, setActions] = useState<Action[]>([]);
   const [loadingAgent, setLoadingAgent] = useState(true);
@@ -105,7 +129,7 @@ function AgentDetails({
   useEffect(() => {
     async function fetchAgent() {
       try {
-        const response = await fetch(`/api/agents/${agentId}`);
+        const response = await fetch(`/api/teams/${teamSlug}/agents/${agentId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch agent');
         }
@@ -125,7 +149,7 @@ function AgentDetails({
   useEffect(() => {
     async function fetchActions() {
       try {
-        const response = await fetch(`/api/agents/${agentId}/actions`);
+        const response = await fetch(`/api/teams/${teamSlug}/agents/${agentId}/actions`);
         if (!response.ok) {
           throw new Error('Failed to fetch actions');
         }
@@ -253,7 +277,7 @@ function AgentDetails({
             className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto hover:bg-brand/90"
           >
             <Link
-              href={`/dashboard/${teamId}/agents/${agentId}/actions/new`}
+              href={`/dashboard/${teamSlug}/agents/${agentId}/actions/new`}
               className="flex items-center justify-center"
             >
               <PlusCircle className="mr-2 h-5 w-5" />
@@ -265,7 +289,7 @@ function AgentDetails({
             className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto hover:bg-brand/90"
           >
             <Link
-              href={`/dashboard/${teamId}/agents/${agentId}/documents/new`}
+              href={`/dashboard/${teamSlug}/agents/${agentId}/documents/new`}
               className="flex items-center justify-center"
             >
               <PlusCircle className="mr-2 h-5 w-5" />

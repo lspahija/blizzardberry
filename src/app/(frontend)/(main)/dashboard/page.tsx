@@ -43,8 +43,8 @@ export default function DashboardRedirectPage() {
       if (!loadingTeams && teams !== undefined) {
         console.log('Teams loaded, checking redirection...');
         if (teams.length > 0) {
-          console.log('Redirecting to first team:', teams[0].id);
-          router.replace(`/dashboard/${teams[0].id}/agents`);
+          console.log('Redirecting to first team:', teams[0].slug);
+          router.replace(`/dashboard/${teams[0].slug}/agents`);
         } else {
           console.log('No teams found, redirecting to new-team');
           router.replace('/dashboard/new-team');

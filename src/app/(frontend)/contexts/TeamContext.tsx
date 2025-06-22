@@ -23,7 +23,7 @@ export function TeamProvider({ children }: { children: ReactNode }) {
   }, [fetchTeams]);
 
   useEffect(() => {
-    if (teams.length > 0) {
+    if (teams && teams.length > 0) {
       const teamId = localStorage.getItem('currentTeamId');
       if (teamId && teams.some(t => t.id === teamId)) {
         setCurrentTeam(teams.find(t => t.id === teamId) || null);
@@ -35,10 +35,12 @@ export function TeamProvider({ children }: { children: ReactNode }) {
   }, [teams]);
 
   const handleSetCurrentTeamId = (teamId: string) => {
-    const team = teams.find(t => t.id === teamId);
-    if (team) {
-      setCurrentTeam(team);
-      localStorage.setItem('currentTeamId', teamId);
+    if (teams) {
+      const team = teams.find(t => t.id === teamId);
+      if (team) {
+        setCurrentTeam(team);
+        localStorage.setItem('currentTeamId', teamId);
+      }
     }
   };
 

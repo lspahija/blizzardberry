@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useContext, use } from 'react';
 import {
   Card,
   CardHeader,
@@ -21,18 +21,23 @@ import {
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import posthog from 'posthog-js';
 import { useParams } from 'next/navigation';
+import { TeamContext } from '@/app/(frontend)/contexts/TeamContext';
 
-export default function AgentsPage() {
+interface AgentsPageProps {
+  params: Promise<{ teamSlug: string }>;
+}
+
+export default function AgentsPage({ params }: AgentsPageProps) {
   const { data: session, status: sessionStatus } = useSession();
-  const params = useParams();
-  const teamId = params.teamId as string;
+  const { teamSlug } = use(params);
+  const { teams } = useContext(TeamContext);
+
   const {
     agents,
     loading: loadingAgents,
     deletingAgentId,
-    fetchAgents,
     handleDeleteAgent,
-  } = useAgents(teamId);
+  } = useAgents(teamSlug);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -44,7 +49,7 @@ export default function AgentsPage() {
   };
 
   useEffect(() => {
-    if (sessionStatus === 'authenticated' && session?.user && teamId) {
+    if (sessionStatus === 'authenticated' && session?.user && teamSlug) {
       posthog.identify(session.user.id || session.user.email, {
         email: session.user.email,
         name: session.user.name,
@@ -52,16 +57,10 @@ export default function AgentsPage() {
 
       posthog.capture('agents_page_viewed', {
         user_email: session.user.email,
-        teamId: teamId,
+        teamSlug: teamSlug,
       });
     }
-  }, [sessionStatus, session, teamId]);
-
-  useEffect(() => {
-    if (sessionStatus === 'authenticated' && teamId) {
-      fetchAgents();
-    }
-  }, [sessionStatus, fetchAgents, teamId]);
+  }, [sessionStatus, session, teamSlug]);
 
   if (loadingAgents && agents.length === 0) {
     return (
@@ -91,12 +90,12 @@ export default function AgentsPage() {
             onClick={() =>
               posthog.capture('create_agent_clicked', {
                 user_email: session?.user?.email,
-                teamId: teamId,
+                teamSlug: teamSlug,
               })
             }
           >
             <Link
-              href={`/dashboard/${teamId}/agents/new`}
+              href={`/dashboard/${teamSlug}/agents/new`}
               className="flex items-center justify-center"
             >
               <PlusCircle className="mr-2 h-5 w-5" />
@@ -109,7 +108,7 @@ export default function AgentsPage() {
             onClick={() =>
               posthog.capture('user_config_clicked', {
                 user_email: session?.user?.email,
-                teamId: teamId,
+                teamSlug: teamSlug,
               })
             }
           >
@@ -151,13 +150,13 @@ export default function AgentsPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-lg md:text-lg text-base text-foreground font-semibold mb-1 truncate">
                           <Link
-                            href={`/dashboard/${teamId}/agents/${agent.id}`}
+                            href={`/dashboard/${teamSlug}/agents/${agent.id}`}
                             className="hover:underline focus:underline outline-none"
                             onClick={() =>
                               posthog.capture('agent_view_clicked', {
                                 agent_id: agent.id,
                                 user_email: session?.user?.email,
-                                teamId: teamId,
+                                teamSlug: teamSlug,
                               })
                             }
                           >
@@ -184,7 +183,7 @@ export default function AgentsPage() {
                         className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 hover:bg-secondary/90 flex-1 sm:flex-none"
                       >
                         <Link
-                          href={`/dashboard/${teamId}/agents/${agent.id}`}
+                          href={`/dashboard/${teamSlug}/agents/${agent.id}`}
                           className="flex-1 sm:flex-none"
                         >
                           View
@@ -195,7 +194,7 @@ export default function AgentsPage() {
                         className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 hover:bg-secondary/90 flex-1 sm:flex-none"
                       >
                         <Link
-                          href={`/dashboard/${teamId}/agents/${agent.id}/edit`}
+                          href={`/dashboard/${teamSlug}/agents/${agent.id}/edit`}
                           className="flex items-center gap-2 justify-center"
                         >
                           <Settings className="h-4 w-4 transition-transform group-hover:rotate-45" />

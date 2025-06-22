@@ -244,4 +244,103 @@ export async function updateTeam(teamId: string, name: string, slug?: string): P
     createdBy: team.created_by,
     createdAt: team.created_at,
   };
+}
+
+export async function createTeamInvitation(teamId: string, email: string, role: TeamRole, invitedBy: string): Promise<any> {
+  const [invitation] = await sql`
+    INSERT INTO team_invitations (team_id, email, role, invited_by)
+    VALUES (${teamId}, ${email}, ${role}, ${invitedBy})
+    RETURNING id, team_id, email, role, invited_by, expires_at, created_at
+  `;
+
+  return {
+    id: invitation.id,
+    teamId: invitation.team_id,
+    email: invitation.email,
+    role: invitation.role,
+    invitedBy: invitation.invited_by,
+    expiresAt: invitation.expires_at,
+    createdAt: invitation.created_at,
+  };
+}
+
+export async function getTeamInvitations(teamId: string): Promise<any[]> {
+  const invitations = await sql`
+    SELECT 
+      ti.id,
+      ti.team_id,
+      ti.email,
+      ti.role,
+      ti.invited_by,
+      ti.expires_at,
+      ti.created_at,
+      u.name as invited_by_name,
+      u.email as invited_by_email
+    FROM team_invitations ti
+    JOIN next_auth.users u ON ti.invited_by = u.id
+    WHERE ti.team_id = ${teamId} AND ti.expires_at > NOW()
+    ORDER BY ti.created_at DESC
+  `;
+
+  return invitations.map((invitation: any) => ({
+    id: invitation.id,
+    teamId: invitation.team_id,
+    email: invitation.email,
+    role: invitation.role,
+    invitedBy: invitation.invited_by,
+    invitedByName: invitation.invited_by_name,
+    invitedByEmail: invitation.invited_by_email,
+    expiresAt: invitation.expires_at,
+    createdAt: invitation.created_at,
+  }));
+}
+
+export async function acceptTeamInvitation(invitationId: string, userId: string): Promise<TeamMember> {
+  // Get the invitation
+  const [invitation] = await sql`
+    SELECT team_id, email, role
+    FROM team_invitations
+    WHERE id = ${invitationId} AND expires_at > NOW()
+    LIMIT 1
+  `;
+
+  if (!invitation) {
+    throw new Error('Invitation not found or expired');
+  }
+
+  // Verify the user's email matches the invitation
+  const [user] = await sql`
+    SELECT email
+    FROM next_auth.users
+    WHERE id = ${userId}
+    LIMIT 1
+  `;
+
+  if (!user || user.email !== invitation.email) {
+    throw new Error('Email does not match invitation');
+  }
+
+  // Add the user to the team
+  const member = await addTeamMember(invitation.team_id, userId, invitation.role);
+
+  // Delete the invitation
+  await sql`
+    DELETE FROM team_invitations
+    WHERE id = ${invitationId}
+  `;
+
+  return member;
+}
+
+export async function deleteTeamInvitation(invitationId: string, teamId: string, userId: string): Promise<void> {
+  // Check if user is admin of the team
+  const isAdmin = await userIsTeamAdmin(userId, teamId);
+  if (!isAdmin) {
+    throw new Error('Only team admins can delete invitations');
+  }
+
+  await sql`
+    DELETE FROM team_invitations
+    WHERE id = ${invitationId} AND team_id = ${teamId}
+  `;
 } 

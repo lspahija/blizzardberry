@@ -1,4 +1,4 @@
-import { useState, useCallback, useContext } from 'react';
+import { useState, useCallback, useContext, useEffect } from 'react';
 import { Agent, CreateAgentParams } from '@/app/api/lib/model/agent/agent';
 import posthog from 'posthog-js';
 import { useSession } from 'next-auth/react';
@@ -6,26 +6,33 @@ import { TeamContext } from '../contexts/TeamContext';
 
 interface UpdateAgentParams extends Partial<CreateAgentParams> {}
 
-export function useAgents(teamId?: string) {
+export function useAgents(teamSlug?: string) {
   const { data: session } = useSession();
+  const { teams, loading: teamsLoading } = useContext(TeamContext);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingAgentId, setDeletingAgentId] = useState<string | null>(null);
   const [creatingAgent, setCreatingAgent] = useState(false);
   const [updatingAgent, setUpdatingAgent] = useState(false);
-  const { currentTeam } = useContext(TeamContext);
-
-  const activeTeamId = teamId || currentTeam?.id;
 
   const fetchAgents = useCallback(async () => {
-    if (!session?.user?.id || !activeTeamId) return;
+    if (!session?.user?.id || !teamSlug) return;
 
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`/api/teams/${activeTeamId}/agents`);
+      // We need to look up the team from the context to get its ID for the API call.
+      const team = teams?.find(t => t.slug === teamSlug);
+      if (!team) {
+        // This can happen if the teams are not loaded yet, or the slug is invalid.
+        // The UI should handle this by showing a loading or error state.
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch(`/api/teams/${team.id}/agents`);
       if (!response.ok) {
         throw new Error('Failed to fetch agents');
       }
@@ -36,13 +43,23 @@ export function useAgents(teamId?: string) {
     } finally {
       setLoading(false);
     }
-  }, [session?.user?.id, activeTeamId]);
+  }, [session?.user?.id, teamSlug, teams]);
+
+  useEffect(() => {
+    // Only fetch agents if the team context is done loading and we have a slug.
+    if (!teamsLoading && teamSlug) {
+      fetchAgents();
+    }
+  }, [teamSlug, teamsLoading, fetchAgents]);
+
 
   const handleDeleteAgent = useCallback(async (agentId: string) => {
-    if (!activeTeamId) return;
+    const team = teams?.find(t => t.slug === teamSlug);
+    if (!team) return;
+
     setDeletingAgentId(agentId);
     try {
-      const response = await fetch(`/api/teams/${activeTeamId}/agents/${agentId}`, {
+      const response = await fetch(`/api/teams/${team.id}/agents/${agentId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -54,22 +71,23 @@ export function useAgents(teamId?: string) {
     } finally {
       setDeletingAgentId(null);
     }
-  }, [activeTeamId, fetchAgents]);
+  }, [teamSlug, teams, fetchAgents]);
 
   const handleCreateAgent = useCallback(
-    async (params: CreateAgentParams) => {
-      if (!session?.user?.id) return null;
+    async (params: Omit<CreateAgentParams, 'teamId'>) => {
+      const team = teams?.find(t => t.slug === teamSlug);
+      if (!session?.user?.id || !team) return null;
 
       setCreatingAgent(true);
       setError(null);
 
       try {
-        const response = await fetch('/api/agents', {
+        const response = await fetch(`/api/teams/${team.id}/agents`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(params),
+          body: JSON.stringify({ ...params, teamId: team.id }),
         });
 
         if (!response.ok) {
@@ -79,14 +97,12 @@ export function useAgents(teamId?: string) {
 
         const data = await response.json();
         
-        // Track the event
         posthog.capture('agent_created', {
           agentId: data.agentId,
           model: params.model,
-          teamId: params.teamId,
+          teamId: team.id,
         });
         
-        // Refresh agents list
         await fetchAgents();
         
         return data.agentId;
@@ -97,7 +113,7 @@ export function useAgents(teamId?: string) {
         setCreatingAgent(false);
       }
     },
-    [session?.user?.id, fetchAgents]
+    [session?.user?.id, teamSlug, teams, fetchAgents]
   );
 
   const handleUpdateAgent = useCallback(
@@ -105,9 +121,12 @@ export function useAgents(teamId?: string) {
       agentId: string,
       { name, websiteDomain, model }: UpdateAgentParams
     ) => {
+      const team = teams?.find(t => t.slug === teamSlug);
+      if (!team) return;
+
       setUpdatingAgent(true);
       try {
-        const response = await fetch(`/api/agents/${agentId}`, {
+        const response = await fetch(`/api/teams/${team.id}/agents/${agentId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -119,7 +138,7 @@ export function useAgents(teamId?: string) {
           throw new Error('Failed to update agent');
         }
 
-        await fetchAgents(); // Refresh the list
+        await fetchAgents();
       } catch (error) {
         console.error('Error updating agent:', error);
         alert('Failed to update agent. Please try again.');
@@ -128,7 +147,7 @@ export function useAgents(teamId?: string) {
         setUpdatingAgent(false);
       }
     },
-    [fetchAgents]
+    [teamSlug, teams, fetchAgents]
   );
 
   return {
@@ -138,7 +157,6 @@ export function useAgents(teamId?: string) {
     deletingAgentId,
     creatingAgent,
     updatingAgent,
-    fetchAgents,
     handleDeleteAgent,
     handleCreateAgent,
     handleUpdateAgent,

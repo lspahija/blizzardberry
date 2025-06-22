@@ -255,6 +255,89 @@ export function useTeams() {
     }
   }, [session?.user?.id]);
 
+  const sendTeamInvitation = useCallback(async (teamId: string, email: string, role: TeamRole = TeamRole.USER): Promise<boolean> => {
+    if (!session?.user?.id) return false;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/teams/${teamId}/invitations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          role,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send invitation');
+      }
+
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, [session?.user?.id]);
+
+  const getTeamInvitations = useCallback(async (teamId: string): Promise<any[]> => {
+    if (!session?.user?.id) return [];
+
+    try {
+      const response = await fetch(`/api/teams/${teamId}/invitations`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch team invitations');
+      }
+
+      const data = await response.json();
+      return data.invitations;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      return [];
+    }
+  }, [session?.user?.id]);
+
+  const joinTeam = useCallback(async (slug: string): Promise<Team | null> => {
+    if (!session?.user?.id) return null;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/teams/join', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ slug }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to join team');
+      }
+
+      const data = await response.json();
+      
+      // Refresh teams list
+      await fetchTeams();
+      
+      return data.team;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, [session?.user?.id, fetchTeams]);
+
   return {
     teams,
     loading,
@@ -267,5 +350,8 @@ export function useTeams() {
     addTeamMember,
     updateTeamMember,
     removeTeamMember,
+    sendTeamInvitation,
+    getTeamInvitations,
+    joinTeam,
   };
 } 

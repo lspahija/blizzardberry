@@ -28,11 +28,12 @@ export default function NewTeamPage() {
   const router = useRouter();
   const { data: session } = useSession();
   const [newTeamName, setNewTeamName] = useState('');
+  const [newTeamSlug, setNewTeamSlug] = useState('');
   const [joinTeamSlug, setJoinTeamSlug] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreatingTeam, setIsCreatingTeam] = useState(false);
 
-  const { teams, loading, fetchTeams, createTeam } = useTeams();
+  const { teams, loading, fetchTeams, createTeam, joinTeam } = useTeams();
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -45,13 +46,25 @@ export default function NewTeamPage() {
       toast.error('Team name is required');
       return;
     }
-
+    if (!newTeamSlug.trim()) {
+      toast.error('Team slug is required');
+      return;
+    }
+    const slugRegex = /^[a-z0-9-]+$/;
+    if (!slugRegex.test(newTeamSlug.trim())) {
+      toast.error('Slug can only contain lowercase letters, numbers, and hyphens');
+      return;
+    }
+    if (newTeamSlug.trim().length < 3) {
+      toast.error('Slug must be at least 3 characters long');
+      return;
+    }
     setIsCreatingTeam(true);
     try {
-      const newTeam = await createTeam({ name: newTeamName.trim() });
+      const newTeam = await createTeam({ name: newTeamName.trim(), slug: newTeamSlug.trim() });
       if (newTeam) {
         toast.success(`Team "${newTeam.name}" created successfully!`);
-        router.push(`/dashboard/${newTeam.id}/agents`);
+        router.push(`/dashboard/${newTeam.slug}/agents`);
       }
     } catch (error) {
       toast.error(
@@ -63,7 +76,24 @@ export default function NewTeamPage() {
   };
 
   const handleJoinTeam = async () => {
-    toast.info('Joining teams by slug is coming soon!');
+    if (!joinTeamSlug.trim()) {
+      toast.error('Team slug is required');
+      return;
+    }
+
+    try {
+      const team = await joinTeam(joinTeamSlug.trim());
+      if (team) {
+        toast.success(`Successfully joined team "${team.name}"!`);
+        router.push(`/dashboard/${team.slug}/agents`);
+      } else {
+        toast.error('Failed to join team. Please check the slug and try again.');
+      }
+    } catch (error) {
+      toast.error(
+        (error as Error).message || 'Failed to join team. Please try again.'
+      );
+    }
   };
 
   const filteredTeams =
@@ -110,6 +140,21 @@ export default function NewTeamPage() {
                   placeholder="e.g., Marketing Squad"
                   className="border-[2px] border-border"
                 />
+              </div>
+              <div>
+                <Label htmlFor="newTeamSlug" className="font-semibold mb-2 block">
+                  Team Slug
+                </Label>
+                <Input
+                  id="newTeamSlug"
+                  value={newTeamSlug}
+                  onChange={(e) => setNewTeamSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                  placeholder="e.g., marketing-squad"
+                  className="border-[2px] border-border"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Used for team URLs. Only lowercase letters, numbers, and hyphens allowed. Min 3 characters.
+                </p>
               </div>
               <Button
                 onClick={handleCreateTeam}

@@ -46,7 +46,7 @@ export function Navbar() {
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentTeamId, setCurrentTeamId] = useState<string | undefined>();
+  const [currentTeamSlug, setCurrentTeamSlug] = useState<string | undefined>();
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -59,29 +59,29 @@ export function Navbar() {
     };
   }, [isMobileMenuOpen]);
 
-  // Set currentTeamId from URL path
+  // Set currentTeamSlug from URL path
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname;
       const teamMatch = path.match(/\/dashboard\/([^\/]+)/);
       if (teamMatch && teamMatch[1] && teamMatch[1] !== 'new-team') {
-        setCurrentTeamId(teamMatch[1]);
+        setCurrentTeamSlug(teamMatch[1]);
       }
     }
   }, []);
 
   // ==> ADD THIS EFFECT TO HANDLE REDIRECTS <==
   useEffect(() => {
-    if (currentTeamId && typeof window !== 'undefined') {
+    if (currentTeamSlug && typeof window !== 'undefined') {
       const path = window.location.pathname;
       const teamMatch = path.match(/\/dashboard\/([^\/]+)/);
       
       // Only redirect if we are on a generic page or the wrong team's page
-      if (!path.includes(currentTeamId)) {
-        router.push(`/dashboard/${currentTeamId}/agents`);
+      if (!path.includes(currentTeamSlug)) {
+        router.push(`/dashboard/${currentTeamSlug}/agents`);
       }
     }
-  }, [currentTeamId, router]);
+  }, [currentTeamSlug, router]);
 
   const handleFeedbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,9 +127,9 @@ export function Navbar() {
     { href: '/contact', label: 'Contact' },
   ];
 
-  // Dynamic links that need currentTeamId
-  const dynamicLinks = currentTeamId ? [
-    { href: `/dashboard/${currentTeamId}/settings`, label: 'Settings' },
+  // Dynamic links that need currentTeamSlug
+  const dynamicLinks = currentTeamSlug ? [
+    { href: `/dashboard/${currentTeamSlug}/settings`, label: 'Settings' },
   ] : [];
 
   return (
@@ -150,8 +150,8 @@ export function Navbar() {
           {session?.user && (
             <div className="hidden md:block">
               <TeamSwitcher
-                currentTeamId={currentTeamId}
-                onTeamChange={setCurrentTeamId}
+                currentTeamSlug={currentTeamSlug}
+                onTeamChange={setCurrentTeamSlug}
               />
             </div>
           )}
@@ -234,8 +234,8 @@ export function Navbar() {
             {session?.user && (
               <div className="mb-4">
                 <TeamSwitcher
-                  currentTeamId={currentTeamId}
-                  onTeamChange={setCurrentTeamId}
+                  currentTeamSlug={currentTeamSlug}
+                  onTeamChange={setCurrentTeamSlug}
                 />
               </div>
             )}

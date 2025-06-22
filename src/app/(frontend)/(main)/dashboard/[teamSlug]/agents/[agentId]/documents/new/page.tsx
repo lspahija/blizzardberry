@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, use } from 'react';
+import { useState, use, useEffect } from 'react';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import { motion } from 'framer-motion';
 import {
@@ -23,23 +23,52 @@ import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { Dropzone } from '@/app/(frontend)/components/ui/dropzone';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useTeams } from '@/app/(frontend)/hooks/useTeams';
 
 interface MetadataField {
   key: string;
   value: string;
 }
 
-export default function AddDocument({
-  params: paramsPromise,
-}: {
-  params: Promise<{ teamId: string; agentId: string }>;
-}) {
-  const params = use(paramsPromise);
-  const teamId = params.teamId;
-  const agentId = params.agentId;
+interface NewDocumentPageProps {
+  params: Promise<{ teamSlug: string; agentId: string }>;
+}
+
+export default function NewDocumentPage({ params }: NewDocumentPageProps) {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const { teams } = useTeams();
+  const [teamSlug, setTeamSlug] = useState<string>('');
+  const [agentId, setAgentId] = useState<string>('');
+  const [currentTeam, setCurrentTeam] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
   const [text, setText] = useState('');
   const [metadataFields, setMetadataFields] = useState<MetadataField[]>([]);
   const { handleCreateDocument, isSubmitting, error, success } = useDocuments();
+
+  // Get teamSlug and agentId from URL params
+  useEffect(() => {
+    params.then(({ teamSlug, agentId }) => {
+      setTeamSlug(teamSlug);
+      setAgentId(agentId);
+    });
+  }, [params]);
+
+  // Find team by slug
+  useEffect(() => {
+    if (teamSlug && teams) {
+      const team = teams.find(t => t.slug === teamSlug);
+      if (team) {
+        setCurrentTeam(team);
+        setIsLoading(false);
+      }
+    }
+  }, [teamSlug, teams]);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -77,6 +106,10 @@ export default function AddDocument({
     setText(fileText);
   };
 
+  const handleBack = () => {
+    router.push(`/dashboard/${teamSlug}/agents/${agentId}`);
+  };
+
   return (
     <motion.div
       className="min-h-screen flex flex-col bg-background p-4"
@@ -94,7 +127,7 @@ export default function AddDocument({
             className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg hover:bg-secondary/90"
           >
             <Link
-              href={`/dashboard/${params.teamId}/agents/${params.agentId}`}
+              href={`/dashboard/${teamSlug}/agents/${agentId}`}
               className="flex items-center"
             >
               <ArrowLeft className="mr-2 h-5 w-5" />

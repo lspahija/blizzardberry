@@ -253,3 +253,20 @@ SELECT user_id,
        FILTER (WHERE expires_at IS NULL OR expires_at > now()) AS active_credits
 FROM credit_batches
 GROUP BY user_id;
+
+-- Team invitations table
+CREATE TABLE IF NOT EXISTS team_invitations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
+  email VARCHAR(255) NOT NULL,
+  role team_role NOT NULL DEFAULT 'USER',
+  invited_by UUID NOT NULL REFERENCES next_auth.users(id) ON DELETE CASCADE,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (NOW() + INTERVAL '7 days'),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  UNIQUE(team_id, email)
+);
+
+-- Index for faster lookups
+CREATE INDEX IF NOT EXISTS idx_team_invitations_email ON team_invitations(email);
+CREATE INDEX IF NOT EXISTS idx_team_invitations_team_id ON team_invitations(team_id);
+CREATE INDEX IF NOT EXISTS idx_team_invitations_expires_at ON team_invitations(expires_at);

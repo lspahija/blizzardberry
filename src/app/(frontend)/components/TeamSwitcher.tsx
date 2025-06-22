@@ -9,11 +9,11 @@ import { TeamRole } from '@/app/api/lib/model/team/team';
 import { toast } from 'sonner';
 
 interface TeamSwitcherProps {
-  currentTeamId?: string;
-  onTeamChange?: (teamId: string) => void;
+  currentTeamSlug?: string;
+  onTeamChange?: (teamSlug: string) => void;
 }
 
-export function TeamSwitcher({ currentTeamId, onTeamChange }: TeamSwitcherProps) {
+export function TeamSwitcher({ currentTeamSlug, onTeamChange }: TeamSwitcherProps) {
   const { data: session } = useSession();
   const { teams, loading, fetchTeams, createTeam } = useTeams();
   const [isOpen, setIsOpen] = useState(false);
@@ -47,7 +47,7 @@ export function TeamSwitcher({ currentTeamId, onTeamChange }: TeamSwitcherProps)
     );
   }
 
-  const currentTeam = teams.find(team => team.id === currentTeamId) || teams[0];
+  const currentTeam = teams.find(team => team.slug === currentTeamSlug) || teams[0];
 
   const handleCreateTeam = async () => {
     if (!newTeamName.trim()) {
@@ -62,7 +62,7 @@ export function TeamSwitcher({ currentTeamId, onTeamChange }: TeamSwitcherProps)
         setNewTeamName('');
         toast.success(`Team "${newTeam.name}" created successfully!`);
         // Switch to the new team
-        onTeamChange?.(newTeam.id);
+        onTeamChange?.(newTeam.slug);
         setIsOpen(false);
       }
     } catch (error) {
@@ -72,8 +72,8 @@ export function TeamSwitcher({ currentTeamId, onTeamChange }: TeamSwitcherProps)
     }
   };
 
-  const handleTeamSelect = (teamId: string) => {
-    onTeamChange?.(teamId);
+  const handleTeamSelect = (teamSlug: string) => {
+    onTeamChange?.(teamSlug);
     setIsOpen(false);
   };
 
@@ -113,9 +113,9 @@ export function TeamSwitcher({ currentTeamId, onTeamChange }: TeamSwitcherProps)
             {teams.map((team) => (
               <button
                 key={team.id}
-                onClick={() => handleTeamSelect(team.id)}
+                onClick={() => handleTeamSelect(team.slug)}
                 className={`w-full flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-muted transition-colors text-left ${
-                  team.id === currentTeamId ? 'bg-muted' : ''
+                  team.slug === currentTeamSlug ? 'bg-muted' : ''
                 }`}
               >
                 <Users className="h-4 w-4 text-muted-foreground" />

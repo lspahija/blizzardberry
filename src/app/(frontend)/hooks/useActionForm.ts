@@ -31,7 +31,7 @@ interface Header {
 export const useActionForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { agentId, teamId } = useParams();
+  const { agentId, teamSlug } = useParams();
 
   const [step, setStep] = useState(1);
   const [baseAction, setBaseAction] = useState<BaseAction>({
@@ -77,7 +77,7 @@ export const useActionForm = () => {
       const actionTypeParam =
         newExecutionContext === ExecutionContext.SERVER ? 'server' : 'client';
       router.replace(
-        `/dashboard/${teamId}/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
+        `/dashboard/${teamSlug}/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
       );
     } else if (stepParam) {
       const actionTypeParam =
@@ -85,10 +85,10 @@ export const useActionForm = () => {
           ? 'server'
           : 'client';
       router.replace(
-        `/dashboard/${teamId}/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
+        `/dashboard/${teamSlug}/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
       );
     }
-  }, [searchParams, router, agentId, baseAction.executionContext, teamId]);
+  }, [searchParams, router, agentId, baseAction.executionContext, teamSlug]);
 
   const updateUrl = (newStep: number) => {
     if (newStep > 1) {
@@ -97,10 +97,10 @@ export const useActionForm = () => {
           ? 'server'
           : 'client';
       router.push(
-        `/dashboard/${teamId}/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${newStep}`
+        `/dashboard/${teamSlug}/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${newStep}`
       );
     } else {
-      router.push(`/dashboard/${teamId}/agents/${agentId}/actions/new?step=${newStep}`);
+      router.push(`/dashboard/${teamSlug}/agents/${agentId}/actions/new?step=${newStep}`);
     }
     setStep(newStep);
   };
@@ -115,7 +115,7 @@ export const useActionForm = () => {
     if (step > 1) {
       updateUrl(step - 1);
     } else {
-      router.push(`/dashboard/${teamId}/agents/${agentId}`);
+      router.push(`/dashboard/${teamSlug}/agents/${agentId}`);
     }
   };
 
@@ -200,7 +200,7 @@ export const useActionForm = () => {
 
       if (response.ok) {
         console.log('Action created successfully');
-        router.push(`/dashboard/${teamId}/agents/${agentId}`);
+        router.push(`/dashboard/${teamSlug}/agents/${agentId}`);
       } else {
         console.error('Failed to create action:', response.statusText);
       }
