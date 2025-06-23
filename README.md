@@ -112,7 +112,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
   - GitHub OAuth
       - [create prod OAuth app](https://github.com/settings/developers)
 - dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
-- (Luka) add number of agents and number of teammembers to pricing and add yearly pricing option
+- (Luka) add number of agents to pricing and add yearly pricing option
 - (Luka) make chatbot and button look better
 - store conversations so webapp owners can see what their users are asking and how the agent is responding
 - differentiate enough from Chatbase. We want to be our own thing and that should be people's first impression.
