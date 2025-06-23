@@ -22,18 +22,6 @@ export async function callLLM(
     if (!agent) {
       throw new Error('Agent not found');
     }
-
-    // Validate that the user making the request exists
-    // const userId = userConfig?.userId;
-    // if (!userId) {
-    //   return {
-    //     error: 'User ID is required. Please setup agent user config. See https://blizzardberry.com/docs',
-    //     text: '',
-    //     toolCalls: [],
-    //     toolResults: []
-    //   };
-    // }
-    // Check credits for the agent owner (agent.created_by)
     const holdIds = await createCreditHold(
       agent.created_by,
       5000, // TODO: find a way to pick a sane upper bound
