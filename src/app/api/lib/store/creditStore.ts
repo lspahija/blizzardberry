@@ -291,3 +291,14 @@ export async function expireBatches() {
     });
   }
 }
+
+export async function getCreditBalance(userId: string): Promise<number> {
+  const result = await sql`
+    SELECT COALESCE(SUM(quantity_remaining), 0) as balance
+    FROM credit_batches
+    WHERE user_id = ${userId}
+      AND quantity_remaining > 0
+      AND (expires_at IS NULL OR expires_at > now())`;
+  
+  return Number(result[0]?.balance || 0);
+}

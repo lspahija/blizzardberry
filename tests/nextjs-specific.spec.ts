@@ -1,5 +1,17 @@
 import { test, expect } from '@playwright/test';
 
+// Define TestUserConfig interface locally since creditTestHelper was deleted
+interface TestUserConfig {
+  userId?: string;
+  userHash: string;
+  accountNumber: string;
+  userMetadata: {
+    name: string;
+    email: string;
+    company: string;
+  };
+}
+
 // Extend Window interface for Next.js specific properties
 declare global {
   interface Window {
@@ -15,18 +27,7 @@ declare global {
     AgentActions?: {
       [key: string]: (...args: any[]) => Promise<any>;
     };
-    agentUserConfig?: {
-      userId: string;
-      userHash: string;
-      accountNumber: string;
-      userMetadata: {
-        name: string;
-        email: string;
-        company: string;
-        framework?: string;
-        version?: string;
-      };
-    };
+    agentUserConfig?: TestUserConfig;
   }
 }
 

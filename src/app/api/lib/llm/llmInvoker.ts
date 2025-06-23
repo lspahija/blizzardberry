@@ -17,50 +17,90 @@ export async function callLLM(
   agentId: string,
   idempotencyKey: string
 ) {
-  const agent = await getAgent(agentId);
-  if (!agent) {
-    throw new Error('Agent not found');
+  try {
+    const agent = await getAgent(agentId);
+    if (!agent) {
+      return {
+        error: 'Agent not found',
+        text: '',
+        toolCalls: [],
+        toolResults: []
+      };
+    }
+
+    // Validate that the user making the request exists
+    // const userId = userConfig?.userId;
+    // if (!userId) {
+    //   return {
+    //     error: 'User ID is required. Please setup agent user config. See https://blizzardberry.com/docs',
+    //     text: '',
+    //     toolCalls: [],
+    //     toolResults: []
+    //   };
+    // }
+    // Check credits for the agent owner (agent.created_by)
+    const holdIds = await createCreditHold(
+      agent.created_by,
+      5000, // TODO: find a way to pick a sane upper bound
+      `chat-completion #${agentId}`,
+      idempotencyKey
+    );
+
+    const stream = streamText({
+      model: getLanguageModel(agent.model),
+      messages: messages,
+      system: buildSystemMessage(userConfig),
+      tools: {
+        ...(await getToolsFromActions(agentId)),
+        search_knowledge_base: createSearchKnowledgeBaseTool(agentId),
+      },
+      maxSteps: 5,
+      onError: async (event) => {
+        console.error(
+          'StreamText Error:',
+          JSON.stringify({ error: event.error }, null, 2)
+        );
+      },
+      onFinish: async (event) => {
+        await recordUsedTokens(
+          agent.created_by,
+          holdIds,
+          event.usage,
+          agent.model,
+          `chat-completion #${agentId}`,
+          idempotencyKey
+        );
+
+        // console.log('Stream completed:', JSON.stringify(event, null, 2));
+      },
+    });
+
+    const data = await processStream(stream);
+    // console.log('LLM response:', JSON.stringify(data, null, 2));
+    return data;
+  } catch (error) {
+    // Provide specific error messages based on the error type
+    let errorMessage = 'An error occurred while processing your request';
+    
+    if (error instanceof Error) {
+      if (error.message.includes('Insufficient balance')) {
+        errorMessage = 'You do not have enough credits to complete this request. Please purchase more credits: See https://blizzardberry.com/pricing';
+      } else if (error.message.includes('Agent not found')) {
+        errorMessage = 'The requested agent could not be found.';
+      } else if (error.message.includes('User not found') || error.message.includes('User ID')) {
+        errorMessage = 'User not found or authentication error. Please check your user configuration.';
+      } else {
+        errorMessage = error.message;
+      }
+    }
+    
+    return {
+      error: errorMessage,
+      text: '',
+      toolCalls: [],
+      toolResults: []
+    };
   }
-
-  const holdIds = await createCreditHold(
-    agent.created_by,
-    5000, // TODO: find a way to pick a sane upper bound
-    `chat-completion #${agentId}`,
-    idempotencyKey
-  );
-
-  const stream = streamText({
-    model: getLanguageModel(agent.model),
-    messages: messages,
-    system: buildSystemMessage(userConfig),
-    tools: {
-      ...(await getToolsFromActions(agentId)),
-      search_knowledge_base: createSearchKnowledgeBaseTool(agentId),
-    },
-    maxSteps: 5,
-    onError: async (event) => {
-      console.error(
-        'StreamText Error:',
-        JSON.stringify({ error: event.error }, null, 2)
-      );
-    },
-    onFinish: async (event) => {
-      await recordUsedTokens(
-        agent.created_by,
-        holdIds,
-        event.usage,
-        agent.model,
-        `chat-completion #${agentId}`,
-        idempotencyKey
-      );
-
-      // console.log('Stream completed:', JSON.stringify(event, null, 2));
-    },
-  });
-
-  const data = await processStream(stream);
-  // console.log('LLM response:', JSON.stringify(data, null, 2));
-  return data;
 }
 
 async function processStream(result: any) {

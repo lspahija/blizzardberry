@@ -304,12 +304,8 @@
       parts: [{ type: 'text', text }],
     });
     input.value = '';
+    state.isProcessing = true;
     updateChatUI();
-
-    setTimeout(() => {
-      state.isProcessing = true;
-      updateChatUI();
-    }, 300);
 
     try {
       const response = await fetch(`${baseUrl}/api/chat`, {
@@ -324,8 +320,14 @@
       });
 
       if (!response.ok) throw new Error('Failed to fetch AI response');
-      const { text, toolCalls, toolResults } = await response.json();
+      const { text, toolCalls, toolResults, error, message } = await response.json();
       const parts = [];
+
+      // If backend returned an error or message, show it in the chat widget
+      if (error || message) {
+        handleError(null, error || message);
+        return;
+      }
 
       if (text && (!toolResults || toolResults.length === 0)) {
         parts.push({ type: 'text', text });

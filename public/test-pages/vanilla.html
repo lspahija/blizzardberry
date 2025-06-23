@@ -64,6 +64,8 @@
             <button onclick="testAgentActions()">Test Agent Actions</button>
             <button onclick="testUserConfig()">Test User Config</button>
             <button onclick="testAgentInitialization()">Test Agent Init</button>
+            <button onclick="testCreditScenarios()">Test Credit Scenarios</button>
+            <button onclick="testErrorHandling()">Test Error Handling</button>
         </div>
 
         <div class="test-section">
@@ -78,7 +80,7 @@
         window.NEXT_PUBLIC_URL = window.location.origin;
         
         window.agentUserConfig = {
-            userId: "b39364e1-dd7a-4c43-a07d-ab8bc1945bf2",
+            userId: "",
             userHash: "test_hash_456",
             accountNumber: "1234567890",
             userMetadata: {
@@ -87,6 +89,10 @@
                 company: "Test Corp"
             }
         };
+
+        // Immediately capture the config for testing, before the agent script consumes the original.
+        window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
+        
         console.log('BlizzardBerry config loaded:', window.agentUserConfig);
         console.log('Next.js public URL set to:', window.NEXT_PUBLIC_URL);
     </script>
@@ -186,12 +192,19 @@
         function testUserConfig() {
             addTestResult('Testing user configuration...', 'info');
             
-            if (window.agentUserConfig) {
-                addTestResult('User config found', 'success');
-                addTestResult(`User ID: ${window.agentUserConfig.userId}`, 'info');
-                addTestResult(`User Name: ${window.agentUserConfig.userMetadata.name}`, 'info');
+            // Check the captured config, which should always exist.
+            if (window.initialAgentConfigForTest && window.initialAgentConfigForTest.userId) {
+                addTestResult('Initial user config was set correctly.', 'success');
+                addTestResult(`Initial User ID: ${window.initialAgentConfigForTest.userId}`, 'info');
             } else {
-                addTestResult('User config not found', 'error');
+                addTestResult('Initial user config was NOT set.', 'error');
+            }
+
+            // After the agent script loads, it is expected to consume and delete the global config.
+            if (window.agentUserConfig) {
+                addTestResult('Agent did NOT consume the global user config.', 'error');
+            } else {
+                addTestResult('Agent correctly consumed and cleaned up the global user config.', 'success');
             }
         }
 
@@ -215,6 +228,41 @@
                 addTestResult('Agent script element not found', 'error');
                 updateAgentStatus('Agent script not found', 'error');
             }
+        }
+
+        function testCreditScenarios() {
+            addTestResult('Testing credit scenarios...', 'info');
+            
+            // Test with current user config
+            if (window.agentUserConfig) {
+                addTestResult('Testing with user that has config', 'info');
+                // This should work normally
+                testAgentActions();
+            } else {
+                addTestResult('Testing with non-existent user', 'info');
+                // This should trigger authentication errors
+                testAgentActions();
+            }
+        }
+
+        function testErrorHandling() {
+            addTestResult('Testing error handling scenarios...', 'info');
+            
+            // Test with invalid user ID
+            const originalConfig = window.agentUserConfig;
+            window.agentUserConfig = {
+                ...originalConfig,
+                userId: 'invalid-user-id'
+            };
+            
+            addTestResult('Testing with invalid user ID', 'info');
+            testAgentActions();
+            
+            // Restore original config
+            setTimeout(() => {
+                window.agentUserConfig = originalConfig;
+                addTestResult('Restored original user config', 'info');
+            }, 2000);
         }
 
         // Run initial tests when page loads

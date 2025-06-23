@@ -16,7 +16,7 @@ export default defineConfig({
     // Project for tests that must run serially
     {
       name: 'Chromium Serial',
-      testMatch: /backend-response\.spec\.ts/,
+      testMatch: /backend-response\.spec\.ts|credit-scenarios\.spec\.ts/,
       workers: 1,
       use: { ...devices['Desktop Chrome'] },
     },
