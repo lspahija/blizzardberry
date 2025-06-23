@@ -1,9 +1,5 @@
 (function () {
   let agentId = null;
-  let userConfig = null;
-  let baseUrl = null;
-  const actions = {};
-  let counter = 0;
 
   function initializeAgentId(script) {
     if (script && script.dataset && script.dataset.agentId) {
@@ -29,23 +25,18 @@
   // --- Initialization Logic ---
   const agentScript = document.currentScript;
 
+  const baseUrl = new URL(agentScript.src).origin;
   initializeAgentId(agentScript);
   injectStyles(agentScript);
-  baseUrl = new URL(agentScript.src).origin;
+
+  const userConfig = window.agentUserConfig;
+  const actions = window.agentActions;
+  delete window.agentUserConfig;
+  delete window.agentActions;
+
   console.log('BlizzardBerry Agent initialized:', { agentId, baseUrl });
 
-  // Initialize user config
-  if (window.agentUserConfig && typeof window.agentUserConfig === 'object') {
-    userConfig = window.agentUserConfig;
-    delete window.agentUserConfig;
-  }
-
-  // Initialize custom actions
-  if (window.agentActions && typeof window.agentActions === 'object') {
-    Object.assign(actions, window.agentActions);
-    delete window.agentActions;
-  }
-
+  let counter = 0;
   const generateId = () => `${agentId}-${Date.now()}-${counter++}`;
 
   const state = {
@@ -187,18 +178,15 @@
   }
 
   async function interpretActionResult(actionResultMessage) {
-    const chatResponse = await fetch(
-      `${baseUrl}/api/chat`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...state.messages, actionResultMessage],
-          agentId,
-          idempotencyKey: generateId(),
-        }),
-      }
-    );
+    const chatResponse = await fetch(`${baseUrl}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [...state.messages, actionResultMessage],
+        agentId,
+        idempotencyKey: generateId(),
+      }),
+    });
 
     if (!chatResponse.ok) throw new Error('Failed to fetch AI response');
     const { text } = await chatResponse.json();
@@ -248,7 +236,8 @@
       });
 
       if (!response.ok) throw new Error('Failed to fetch AI response');
-      const { text, toolCalls, toolResults, error, message } = await response.json();
+      const { text, toolCalls, toolResults, error, message } =
+        await response.json();
       const parts = [];
 
       // If backend returned an error or message, show it in the chat widget
