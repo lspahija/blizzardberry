@@ -64,7 +64,7 @@ const CREDIT_COSTS_PER_TOKEN: Record<
   [AgentModel.GEMINI_2_0_FLASH]: {
     input: 0.000035, // $0.35 per million tokens
     output: 0.000035,
-  },  
+  },
   [AgentModel.GEMINI_2_5_PRO]: {
     input: 0.00025, // $2.50 per million tokens
     output: 0.00025,
@@ -112,7 +112,7 @@ const CREDIT_COSTS_PER_TOKEN: Record<
   [AgentModel.GROK_3_BETA]: {
     input: 0.0005, // $5 per million tokens
     output: 0.0005,
-  },  
+  },
   [AgentModel.GPT_4_1_NANO]: {
     input: 0.00005, // $0.50 per million tokens
     output: 0.0002, // $2 per million tokens

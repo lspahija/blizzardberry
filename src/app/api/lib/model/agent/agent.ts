@@ -25,7 +25,7 @@ export enum AgentModel {
   GROK_3_BETA = 'x-ai/grok-3-beta',
   LLAMA_4_MAVERICK = 'meta-llama/llama-4-maverick',
   LLAMA_4_SCOUT = 'meta-llama/llama-4-scout',
-  DEEPSEEK_V3 = 'deepseek/deepseek-chat', 
+  DEEPSEEK_V3 = 'deepseek/deepseek-chat',
   DEEPSEEK_R1 = 'deepseek/deepseek-r1-0528',
   QWEN_3_30B = 'qwen/qwen3-30b-a3b',
 }

@@ -35,21 +35,28 @@ test.describe('Backend Response Tests', () => {
       await page.waitForTimeout(5000);
 
       // Check if we got any response (success or error)
-      const aiMessages = page.locator('.assistant-message:not(.typing-indicator)');
+      const aiMessages = page.locator(
+        '.assistant-message:not(.typing-indicator)'
+      );
       const messageCount = await aiMessages.count();
-      
+
       if (messageCount > 0) {
         // We got a response, verify it contains text
         const aiMessage = aiMessages.first();
         const messageText = await aiMessage.textContent();
         expect(messageText).toBeTruthy();
         expect(messageText!.length).toBeGreaterThan(0);
-        console.log('✅ Received response from backend:', messageText?.substring(0, 100) + '...');
+        console.log(
+          '✅ Received response from backend:',
+          messageText?.substring(0, 100) + '...'
+        );
       } else {
         // Check if we got an error message
-        const errorMessages = page.locator('.assistant-message:not(.typing-indicator)');
+        const errorMessages = page.locator(
+          '.assistant-message:not(.typing-indicator)'
+        );
         const errorCount = await errorMessages.count();
-        
+
         if (errorCount > 0) {
           const errorMessage = errorMessages.first();
           const errorText = await errorMessage.textContent();
@@ -106,7 +113,9 @@ test.describe('Backend Response Tests', () => {
       await expect(typingIndicator).toBeVisible();
     });
 
-    test('Receives HTTP response from backend when sending a message', async ({ page }) => {
+    test('Receives HTTP response from backend when sending a message', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
@@ -120,10 +129,12 @@ test.describe('Backend Response Tests', () => {
       let responseReceived = false;
 
       // Listen to all responses
-      page.on('response', response => {
+      page.on('response', (response) => {
         const url = response.url();
         if (url.includes('/api/chat')) {
-          console.log(`🔍 API Response detected: ${url} - Status: ${response.status()}`);
+          console.log(
+            `🔍 API Response detected: ${url} - Status: ${response.status()}`
+          );
           apiResponse = response;
           responseReceived = true;
         }
@@ -144,10 +155,13 @@ test.describe('Backend Response Tests', () => {
         // Log the actual status code and response
         const status = apiResponse.status();
         console.log(`🔍 Backend response status: ${status}`);
-        
+
         try {
           const body = await apiResponse.json();
-          console.log(`🔍 Backend response body:`, JSON.stringify(body, null, 2));
+          console.log(
+            `🔍 Backend response body:`,
+            JSON.stringify(body, null, 2)
+          );
         } catch (e) {
           console.log(`🔍 Backend response body: Could not parse as JSON`);
         }
@@ -155,21 +169,26 @@ test.describe('Backend Response Tests', () => {
         // Assert that we got some response
         expect(status).toBeGreaterThan(0);
       } else {
-        console.log('🔍 No API response detected - checking if request was made');
-        
+        console.log(
+          '🔍 No API response detected - checking if request was made'
+        );
+
         // Check if there are any network requests to /api/chat
         const requests = await page.evaluate(() => {
-          return performance.getEntriesByType('resource')
-            .filter(entry => entry.name.includes('/api/chat'))
-            .map(entry => ({ name: entry.name, duration: entry.duration }));
+          return performance
+            .getEntriesByType('resource')
+            .filter((entry) => entry.name.includes('/api/chat'))
+            .map((entry) => ({ name: entry.name, duration: entry.duration }));
         });
-        
+
         console.log('🔍 Network requests to /api/chat:', requests);
-        
+
         if (requests.length === 0) {
-          console.log('🔍 No requests to /api/chat found - the request might not be happening');
+          console.log(
+            '🔍 No requests to /api/chat found - the request might not be happening'
+          );
         }
-        
+
         // For now, let's just verify the message was sent
         const userMessage = page.locator('.user-message').first();
         await expect(userMessage).toContainText('What status code do I get?');
@@ -177,7 +196,9 @@ test.describe('Backend Response Tests', () => {
       }
     });
 
-    test('Debug: Check what happens when sending a message', async ({ page }) => {
+    test('Debug: Check what happens when sending a message', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
@@ -188,14 +209,14 @@ test.describe('Backend Response Tests', () => {
 
       // Listen to console messages
       const consoleMessages = [];
-      page.on('console', msg => {
+      page.on('console', (msg) => {
         consoleMessages.push(msg.text());
         console.log(`🔍 Console: ${msg.text()}`);
       });
 
       // Listen to page errors
       const pageErrors = [];
-      page.on('pageerror', error => {
+      page.on('pageerror', (error) => {
         pageErrors.push(error.message);
         console.log(`🔍 Page Error: ${error.message}`);
       });
@@ -216,11 +237,13 @@ test.describe('Backend Response Tests', () => {
       await page.waitForTimeout(5000);
 
       // Check if we got any response
-      const aiMessages = page.locator('.assistant-message:not(.typing-indicator)');
+      const aiMessages = page.locator(
+        '.assistant-message:not(.typing-indicator)'
+      );
       const messageCount = await aiMessages.count();
-      
+
       console.log(`🔍 AI messages found: ${messageCount}`);
-      
+
       if (messageCount > 0) {
         const aiMessage = aiMessages.first();
         const messageText = await aiMessage.textContent();
@@ -233,11 +256,12 @@ test.describe('Backend Response Tests', () => {
 
       // Check if there are any network requests
       const requests = await page.evaluate(() => {
-        return performance.getEntriesByType('resource')
-          .filter(entry => entry.name.includes('/api/'))
-          .map(entry => ({ name: entry.name, duration: entry.duration }));
+        return performance
+          .getEntriesByType('resource')
+          .filter((entry) => entry.name.includes('/api/'))
+          .map((entry) => ({ name: entry.name, duration: entry.duration }));
       });
-      
+
       console.log(`🔍 API requests found: ${requests.length}`, requests);
 
       // Test passes if we can send a message (even if no backend response)
@@ -251,11 +275,13 @@ test.describe('Backend Response Tests', () => {
       { name: 'React', file: 'react.html' },
       { name: 'Vue', file: 'vue.html' },
       { name: 'Angular', file: 'angular.html' },
-      { name: 'Next.js', file: 'nextjs.html' }
+      { name: 'Next.js', file: 'nextjs.html' },
     ];
 
     for (const framework of frameworks) {
-      test(`${framework.name} - Can send message to backend`, async ({ page }) => {
+      test(`${framework.name} - Can send message to backend`, async ({
+        page,
+      }) => {
         await page.goto(`/test-pages/${framework.file}`);
         await page.waitForLoadState('networkidle');
         await page.waitForTimeout(3000);
@@ -280,9 +306,11 @@ test.describe('Backend Response Tests', () => {
         await page.waitForTimeout(5000);
 
         // Check if we got any response (success or error)
-        const aiMessages = page.locator('.assistant-message:not(.typing-indicator)');
+        const aiMessages = page.locator(
+          '.assistant-message:not(.typing-indicator)'
+        );
         const messageCount = await aiMessages.count();
-        
+
         if (messageCount > 0) {
           // We got a response, verify it contains text
           const aiMessage = aiMessages.first();
@@ -292,9 +320,11 @@ test.describe('Backend Response Tests', () => {
           console.log(`✅ ${framework.name}: Received response from backend`);
         } else {
           // Check if we got an error message
-          const errorMessages = page.locator('.assistant-message:not(.typing-indicator)');
+          const errorMessages = page.locator(
+            '.assistant-message:not(.typing-indicator)'
+          );
           const errorCount = await errorMessages.count();
-          
+
           if (errorCount > 0) {
             const errorMessage = errorMessages.first();
             const errorText = await errorMessage.textContent();
@@ -302,7 +332,9 @@ test.describe('Backend Response Tests', () => {
             console.log(`⚠️ ${framework.name}: Received error from backend`);
           } else {
             // No response yet - this is acceptable for this test
-            console.log(`ℹ️ ${framework.name}: No response received yet - backend might be slow`);
+            console.log(
+              `ℹ️ ${framework.name}: No response received yet - backend might be slow`
+            );
             expect(true).toBe(true);
           }
         }
@@ -318,10 +350,12 @@ test.describe('Backend Response Tests', () => {
 
       // Check if the chat widget was created
       const chatWidget = page.locator('#chatWidget');
-      const isChatWidgetAttached = await chatWidget.count() > 0;
-      
+      const isChatWidgetAttached = (await chatWidget.count()) > 0;
+
       if (!isChatWidgetAttached) {
-        console.log('Chat widget not created, skipping malformed response test');
+        console.log(
+          'Chat widget not created, skipping malformed response test'
+        );
         expect(true).toBe(true);
         return;
       }
@@ -331,11 +365,11 @@ test.describe('Backend Response Tests', () => {
       await expect(page.locator('#chatWidget')).toBeVisible();
 
       // Mock a malformed API response
-      await page.route('**/api/chat', async route => {
+      await page.route('**/api/chat', async (route) => {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: '{"invalid": "response"}'
+          body: '{"invalid": "response"}',
         });
       });
 
@@ -348,16 +382,20 @@ test.describe('Backend Response Tests', () => {
       await page.waitForTimeout(5000);
 
       // Verify that an error message is displayed (exclude typing indicator)
-      const errorMessage = page.locator('.assistant-message:not(.typing-indicator)');
+      const errorMessage = page.locator(
+        '.assistant-message:not(.typing-indicator)'
+      );
       const errorCount = await errorMessage.count();
-      
+
       if (errorCount > 0) {
         await expect(errorMessage).toContainText('Error');
         console.log('✅ Error handling works correctly');
       } else {
-        console.log('ℹ️ No error message displayed - malformed response might have been handled gracefully');
+        console.log(
+          'ℹ️ No error message displayed - malformed response might have been handled gracefully'
+        );
         expect(true).toBe(true);
       }
     });
   });
-}); 
+});

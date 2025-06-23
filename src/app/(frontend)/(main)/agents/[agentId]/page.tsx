@@ -422,15 +422,16 @@ function AgentDetails({
                       </div>
                       <ul className="list-disc list-inside text-gray-600 space-y-2 mt-4 text-sm">
                         <li>
-                          Implement your functions into your app like the example above
+                          Implement your functions into your app like the
+                          example above
                         </li>
                         <li>
-                          Add the code between the <code>&lt;body&gt;</code> tags of
-                          your website's HTML
+                          Add the code between the <code>&lt;body&gt;</code>{' '}
+                          tags of your website's HTML
                         </li>
                         <li>
-                          The code will be available to your agent as a client-side
-                          action
+                          The code will be available to your agent as a
+                          client-side action
                         </li>
                         <li>
                           Need help? Visit our{' '}
@@ -438,7 +439,8 @@ function AgentDetails({
                             href="/docs"
                             className="text-[#FE4A60] hover:underline"
                           >
-                            documentation <ExternalLink className="inline w-4 h-4" />
+                            documentation{' '}
+                            <ExternalLink className="inline w-4 h-4" />
                           </Link>
                           .
                         </li>
