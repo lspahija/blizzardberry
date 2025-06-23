@@ -61,7 +61,7 @@ export async function holdCredit(
     for (const b of batches) {
       if (need === 0) break;
       const take = Math.min(need, b.quantity_remaining);
-
+      
       await sql`
         UPDATE credit_batches
         SET quantity_remaining = quantity_remaining - ${Math.ceil(take)}
@@ -75,7 +75,7 @@ export async function holdCredit(
 
       need -= take;
     }
-    if (need > 0) throw new Error('Insufficient balance');
+    if (need > 0) throw new Error('You do not have enough credits to complete this request. Please purchase more credits: See https://blizzardberry.com/pricing');
 
     const eventType = 'CREDIT_HOLD_CREATED';
     const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;

@@ -84,7 +84,7 @@ export default function DocsPage() {
 
 <!-- 3. Custom Actions - Define what your agent can do -->
 <script id="blizzardberry-actions" type="text/javascript">
-  window.AgentActions = {
+  window.agentActions = {
     // Example: Submit a contact form
     submitContactForm: async (name, email, message, userConfig) => {
       // Your custom action logic here
@@ -134,7 +134,7 @@ export default function Layout({ children }) {
         {/* 3. Custom Actions - Define what your agent can do */}
         <Script id="blizzardberry-actions" strategy="afterInteractive">
           {\`
-            window.AgentActions = {
+            window.agentActions = {
               // Example: Submit a contact form
               submitContactForm: async (name, email, message, userConfig) => {
                 // Your custom action logic here
@@ -182,7 +182,7 @@ export default function Layout({ children }) {
 
 <!-- 3. Custom Actions - Define what your agent can do -->
 <script id="blizzardberry-actions" type="text/javascript">
-  window.AgentActions = {
+  window.agentActions = {
     // Example: Submit a contact form
     submitContactForm: async (name, email, message, userConfig) => {
       // Your custom action logic here
@@ -247,7 +247,7 @@ export default function App() {
 
 <!-- 3. Custom Actions - Define what your agent can do -->
 <script id="blizzardberry-actions" type="text/javascript">
-  window.AgentActions = {
+  window.agentActions = {
     // Example: Submit a contact form
     submitContactForm: async (name, email, message, userConfig) => {
       // Your custom action logic here
@@ -317,7 +317,7 @@ export default {
 
 <!-- 3. Custom Actions - Define what your agent can do -->
 <script id="blizzardberry-actions" type="text/javascript">
-  window.AgentActions = {
+  window.agentActions = {
     // Example: Submit a contact form
     submitContactForm: async (name, email, message, userConfig) => {
       // Your custom action logic here

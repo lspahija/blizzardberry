@@ -78,6 +78,8 @@
             <button onclick="testUserConfig()">Test User Config</button>
             <button onclick="testAgentInitialization()">Test Agent Init</button>
             <button onclick="testAngularIntegration()">Test Angular Integration</button>
+            <button onclick="testCreditScenarios()">Test Credit Scenarios</button>
+            <button onclick="testErrorHandling()">Test Error Handling</button>
         </div>
 
         <div class="test-section">
@@ -86,24 +88,24 @@
         </div>
     </div>
 
-    <!-- 1. Agent Configuration - Set up user context and metadata -->
+    <!-- 1. Agent Configuration -->
     <script id="blizzardberry-config" type="text/javascript">
         window.agentUserConfig = {
-            userId: "angular_user_123",
-            userHash: "angular_hash_456",
+            userId: "test_user_123",
+            userHash: "test_hash_456",
             accountNumber: "1234567890",
             userMetadata: {
-                name: "Angular User",
-                email: "angular@example.com",
-                company: "Angular Corp"
+                name: "Test User",
+                email: "test@example.com",
+                company: "Test Corp"
             }
         };
-        console.log('BlizzardBerry config loaded (Angular):', window.agentUserConfig);
+        window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
     </script>
 
-    <!-- 2. Custom Actions - Define what your agent can do -->
+    <!-- 2. Custom Actions -->
     <script id="blizzardberry-actions" type="text/javascript">
-        window.AgentActions = {
+        window.agentActions = {
             // Test action that returns success
             testAction: async (params, userConfig) => {
                 console.log('Angular test action called with:', params, userConfig);
@@ -126,7 +128,7 @@
                 };
             }
         };
-        console.log('BlizzardBerry actions loaded (Angular):', window.AgentActions);
+        console.log('BlizzardBerry actions loaded (Angular):', window.agentActions);
     </script>
 
     <!-- 3. Agent Script - Load the BlizzardBerry agent -->
@@ -156,12 +158,12 @@
         function testAgentActions() {
             addTestResult('Testing agent actions...', 'info');
             
-            // Check if AgentActions exists (it might be consumed by the agent script)
-            if (window.AgentActions) {
-                addTestResult('AgentActions object found', 'success');
+            // Check if agentActions exists (it might be consumed by the agent script)
+            if (window.agentActions) {
+                addTestResult('agentActions object found', 'success');
                 
                 // Test each action
-                window.AgentActions.testAction({ test: true }, window.agentUserConfig)
+                window.agentActions.testAction({ test: true }, window.agentUserConfig)
                     .then(result => {
                         addTestResult(`Test action result: ${JSON.stringify(result)}`, 'success');
                     })
@@ -169,8 +171,8 @@
                         addTestResult(`Test action error: ${error.message}`, 'error');
                     });
             } else {
-                // AgentActions might have been consumed by the agent script
-                addTestResult('AgentActions object consumed by agent script (expected behavior)', 'info');
+                // agentActions might have been consumed by the agent script
+                addTestResult('agentActions object consumed by agent script (expected behavior)', 'info');
                 
                 // Check if the agent script created a chat widget (indicates it loaded successfully)
                 const chatWidget = document.getElementById('chatWidget');
@@ -183,14 +185,19 @@
         }
 
         function testUserConfig() {
-            addTestResult('Testing Angular user configuration...', 'info');
+            addTestResult('Testing user configuration...', 'info');
             
-            if (window.agentUserConfig) {
-                addTestResult('User config found (Angular)', 'success');
-                addTestResult(`User ID: ${window.agentUserConfig.userId}`, 'info');
-                addTestResult(`User Name: ${window.agentUserConfig.userMetadata.name}`, 'info');
+            if (window.initialAgentConfigForTest && window.initialAgentConfigForTest.userId) {
+                addTestResult('Initial user config was set correctly.', 'success');
+                addTestResult(`Initial User ID: ${window.initialAgentConfigForTest.userId}`, 'info');
             } else {
-                addTestResult('User config not found (Angular)', 'error');
+                addTestResult('Initial user config was NOT set.', 'error');
+            }
+
+            if (window.agentUserConfig) {
+                addTestResult('Agent did NOT consume the global user config.', 'error');
+            } else {
+                addTestResult('Agent correctly consumed and cleaned up the global user config.', 'success');
             }
         }
 
@@ -220,7 +227,7 @@
             addTestResult('Testing Angular-specific integration...', 'info');
             
             // Test Angular service call
-            window.AgentActions.callAngularService('UserService', 'getUser', { id: 123 }, window.agentUserConfig)
+            window.agentActions.callAngularService('UserService', 'getUser', { id: 123 }, window.agentUserConfig)
                 .then(result => {
                     addTestResult(`Angular service call result: ${JSON.stringify(result)}`, 'success');
                 })
@@ -229,7 +236,7 @@
                 });
             
             // Test Angular component interaction
-            window.AgentActions.interactWithComponent('UserComponent', 'updateUser', { name: 'John Doe' }, window.agentUserConfig)
+            window.agentActions.interactWithComponent('UserComponent', 'updateUser', { name: 'John Doe' }, window.agentUserConfig)
                 .then(result => {
                     addTestResult(`Angular component interaction result: ${JSON.stringify(result)}`, 'success');
                 })
@@ -238,7 +245,7 @@
                 });
             
             // Test Angular lifecycle hook
-            window.AgentActions.triggerAngularLifecycle('ngOnInit', { componentId: 'test-component' }, window.agentUserConfig)
+            window.agentActions.triggerAngularLifecycle('ngOnInit', { componentId: 'test-component' }, window.agentUserConfig)
                 .then(result => {
                     addTestResult(`Angular lifecycle result: ${JSON.stringify(result)}`, 'success');
                 })
@@ -247,13 +254,48 @@
                 });
             
             // Test Angular HTTP service
-            window.AgentActions.callAngularHttp('/api/users', 'GET', null, window.agentUserConfig)
+            window.agentActions.callAngularHttp('/api/users', 'GET', null, window.agentUserConfig)
                 .then(result => {
                     addTestResult(`Angular HTTP result: ${JSON.stringify(result)}`, 'success');
                 })
                 .catch(error => {
                     addTestResult(`Angular HTTP error: ${error.message}`, 'error');
                 });
+        }
+
+        function testCreditScenarios() {
+            addTestResult('Testing credit scenarios...', 'info');
+            
+            // Test with current user config
+            if (window.agentUserConfig && window.agentUserConfig.userId) {
+                addTestResult('Testing with user that has userId', 'info');
+                // This will test for credits (could succeed or fail depending on DB)
+                testAgentActions();
+            } else {
+                addTestResult('Testing with missing or blank userId', 'info');
+                // This will trigger the "User ID is required" error
+                testAgentActions();
+            }
+        }
+
+        function testErrorHandling() {
+            addTestResult('Testing error handling scenarios...', 'info');
+            
+            // Test with invalid user ID
+            const originalConfig = window.agentUserConfig;
+            window.agentUserConfig = {
+                ...originalConfig,
+                userId: ''
+            };
+            
+            addTestResult('Testing with invalid user ID', 'info');
+            testAgentActions();
+            
+            // Restore original config
+            setTimeout(() => {
+                window.agentUserConfig = originalConfig;
+                addTestResult('Restored original user config', 'info');
+            }, 2000);
         }
 
         // Run initial tests when page loads

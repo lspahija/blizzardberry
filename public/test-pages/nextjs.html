@@ -89,6 +89,8 @@
             <button onclick="testUserConfig()">Test User Config</button>
             <button onclick="testAgentInitialization()">Test Agent Init</button>
             <button onclick="testNextJSSpecific()">Test Next.js Specific</button>
+            <button onclick="testCreditScenarios()">Test Credit Scenarios</button>
+            <button onclick="testErrorHandling()">Test Error Handling</button>
         </div>
 
         <div class="test-section">
@@ -99,26 +101,24 @@
 
     <!-- Next.js Script Component Simulation -->
     <div class="nextjs-script-container">
-        <!-- 1. Agent Configuration - Set up user context and metadata -->
+        <!-- 1. Agent Configuration -->
         <script id="blizzardberry-config" type="text/javascript">
             window.agentUserConfig = {
-                userId: "nextjs_user_123",
-                userHash: "nextjs_hash_456",
+                userId: "test_user_123",
+                userHash: "test_hash_456",
                 accountNumber: "1234567890",
                 userMetadata: {
-                    name: "Next.js User",
-                    email: "nextjs@example.com",
-                    company: "Next.js Corp",
-                    framework: "Next.js",
-                    version: "14.0.0"
+                    name: "Test User",
+                    email: "test@example.com",
+                    company: "Test Corp"
                 }
             };
-            console.log('BlizzardBerry config loaded in Next.js environment:', window.agentUserConfig);
+            window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
         </script>
 
-        <!-- 2. Custom Actions - Define what your agent can do -->
+        <!-- 2. Custom Actions -->
         <script id="blizzardberry-actions" type="text/javascript">
-            window.AgentActions = {
+            window.agentActions = {
                 // Next.js specific action that updates React state
                 updateNextJSState: async (key, value, userConfig) => {
                     console.log('Next.js state update:', { key, value, userConfig });
@@ -159,10 +159,10 @@
                     };
                 }
             };
-            console.log('BlizzardBerry actions loaded in Next.js environment:', window.AgentActions);
+            console.log('BlizzardBerry actions loaded in Next.js environment:', window.agentActions);
         </script>
 
-        <!-- 3. Agent Script - Load the BlizzardBerry agent -->
+        <!-- 3. Agent Script -->
         <script
             id="blizzardberry-agent"
             src="/agent/agent.js"
@@ -216,12 +216,12 @@
         function testAgentActions() {
             addTestResult('Testing agent actions in Next.js environment...', 'info');
             
-            // Check if AgentActions exists (it might be consumed by the agent script)
-            if (window.AgentActions) {
-                addTestResult('AgentActions object found in Next.js', 'success');
+            // Check if agentActions exists (it might be consumed by the agent script)
+            if (window.agentActions) {
+                addTestResult('agentActions object found in Next.js', 'success');
                 
                 // Test Next.js specific actions
-                window.AgentActions.updateNextJSState('testKey', 'testValue', window.agentUserConfig)
+                window.agentActions.updateNextJSState('testKey', 'testValue', window.agentUserConfig)
                     .then(result => {
                         addTestResult(`Next.js state update result: ${JSON.stringify(result)}`, 'success');
                     })
@@ -229,7 +229,7 @@
                         addTestResult(`Next.js state update error: ${error.message}`, 'error');
                     });
                     
-                window.AgentActions.callNextJSAPI('/api/test', { test: true }, window.agentUserConfig)
+                window.agentActions.callNextJSAPI('/api/test', { test: true }, window.agentUserConfig)
                     .then(result => {
                         addTestResult(`Next.js API call result: ${JSON.stringify(result)}`, 'success');
                     })
@@ -237,8 +237,8 @@
                         addTestResult(`Next.js API call error: ${error.message}`, 'error');
                     });
             } else {
-                // AgentActions might have been consumed by the agent script
-                addTestResult('AgentActions object consumed by agent script (expected behavior)', 'info');
+                // agentActions might have been consumed by the agent script
+                addTestResult('agentActions object consumed by agent script (expected behavior)', 'info');
                 
                 // Check if the agent script created a chat widget (indicates it loaded successfully)
                 const chatWidget = document.getElementById('chatWidget');
@@ -251,15 +251,19 @@
         }
 
         function testUserConfig() {
-            addTestResult('Testing user configuration in Next.js...', 'info');
+            addTestResult('Testing user configuration...', 'info');
             
-            if (window.agentUserConfig) {
-                addTestResult('User config found in Next.js', 'success');
-                addTestResult(`User ID: ${window.agentUserConfig.userId}`, 'info');
-                addTestResult(`User Name: ${window.agentUserConfig.userMetadata.name}`, 'info');
-                addTestResult(`Framework: ${window.agentUserConfig.userMetadata.framework}`, 'info');
+            if (window.initialAgentConfigForTest && window.initialAgentConfigForTest.userId) {
+                addTestResult('Initial user config was set correctly.', 'success');
+                addTestResult(`Initial User ID: ${window.initialAgentConfigForTest.userId}`, 'info');
             } else {
-                addTestResult('User config not found in Next.js', 'error');
+                addTestResult('Initial user config was NOT set.', 'error');
+            }
+
+            if (window.agentUserConfig) {
+                addTestResult('Agent did NOT consume the global user config.', 'error');
+            } else {
+                addTestResult('Agent correctly consumed and cleaned up the global user config.', 'success');
             }
         }
 
@@ -307,6 +311,41 @@
             } else {
                 addTestResult('No Next.js script elements found', 'error');
             }
+        }
+
+        function testCreditScenarios() {
+            addTestResult('Testing credit scenarios...', 'info');
+            
+            // Test with current user config
+            if (window.agentUserConfig && window.agentUserConfig.userId) {
+                addTestResult('Testing with user that has userId', 'info');
+                // This will test for credits (could succeed or fail depending on DB)
+                testAgentActions();
+            } else {
+                addTestResult('Testing with missing or blank userId', 'info');
+                // This will trigger the "User ID is required" error
+                testAgentActions();
+            }
+        }
+
+        function testErrorHandling() {
+            addTestResult('Testing error handling scenarios...', 'info');
+            
+            // Test with invalid user ID
+            const originalConfig = window.agentUserConfig;
+            window.agentUserConfig = {
+                ...originalConfig,
+                userId: ''
+            };
+            
+            addTestResult('Testing with invalid user ID', 'info');
+            testAgentActions();
+            
+            // Restore original config
+            setTimeout(() => {
+                window.agentUserConfig = originalConfig;
+                addTestResult('Restored original user config', 'info');
+            }, 2000);
         }
 
         // Initialize Next.js environment simulation

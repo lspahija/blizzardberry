@@ -6,16 +6,18 @@ test.describe('Chat Widget Functionality Tests', () => {
   });
 
   test.describe('Chat Widget UI Tests', () => {
-    test('Chat widget toggle button is created and visible', async ({ page }) => {
+    test('Chat widget toggle button is created and visible', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
-      
+
       // Check that the toggle button exists
       const toggleButton = page.locator('#chatWidgetToggle');
       await expect(toggleButton).toBeAttached();
       await expect(toggleButton).toBeVisible();
-      
+
       // Check that it has the chat emoji
       await expect(toggleButton).toContainText('💬');
     });
@@ -24,26 +26,28 @@ test.describe('Chat Widget Functionality Tests', () => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
-      
+
       // Check that the chat widget exists but is hidden
       const chatWidget = page.locator('#chatWidget');
       await expect(chatWidget).toBeAttached();
       await expect(chatWidget).toHaveClass(/hidden/);
     });
 
-    test('Chat widget shows when toggle button is clicked', async ({ page }) => {
+    test('Chat widget shows when toggle button is clicked', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
-      
+
       // Click the toggle button
       await page.click('#chatWidgetToggle');
-      
+
       // Check that the chat widget is now visible
       const chatWidget = page.locator('#chatWidget');
       await expect(chatWidget).toBeVisible();
       await expect(chatWidget).not.toHaveClass(/hidden/);
-      
+
       // Check that the toggle button is now hidden
       const toggleButton = page.locator('#chatWidgetToggle');
       await expect(toggleButton).toHaveClass(/hidden/);
@@ -53,18 +57,18 @@ test.describe('Chat Widget Functionality Tests', () => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
-      
+
       // First show the chat widget
       await page.click('#chatWidgetToggle');
       await expect(page.locator('#chatWidget')).toBeVisible();
-      
+
       // Click the close button
       await page.click('#chatWidgetCloseButton');
-      
+
       // Check that the chat widget is now hidden
       const chatWidget = page.locator('#chatWidget');
       await expect(chatWidget).toHaveClass(/hidden/);
-      
+
       // Check that the toggle button is now visible
       const toggleButton = page.locator('#chatWidgetToggle');
       await expect(toggleButton).toBeVisible();
@@ -76,18 +80,21 @@ test.describe('Chat Widget Functionality Tests', () => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
-      
+
       // Show the chat widget
       await page.click('#chatWidgetToggle');
-      
+
       // Check that the input field exists
       const inputField = page.locator('#chatWidgetInputField');
       await expect(inputField).toBeAttached();
       await expect(inputField).toBeVisible();
-      
+
       // Check that it has the correct placeholder
-      await expect(inputField).toHaveAttribute('placeholder', 'Type a message...');
-      
+      await expect(inputField).toHaveAttribute(
+        'placeholder',
+        'Type a message...'
+      );
+
       // Test typing in the input field
       await inputField.fill('Hello, BlizzardBerry!');
       await expect(inputField).toHaveValue('Hello, BlizzardBerry!');
@@ -97,10 +104,10 @@ test.describe('Chat Widget Functionality Tests', () => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
-      
+
       // Show the chat widget
       await page.click('#chatWidgetToggle');
-      
+
       // Check that the send button exists
       const sendButton = page.locator('#chatWidgetSendButton');
       await expect(sendButton).toBeAttached();
@@ -112,15 +119,15 @@ test.describe('Chat Widget Functionality Tests', () => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
-      
+
       // Show the chat widget
       await page.click('#chatWidgetToggle');
-      
+
       // Type a message and press Enter
       const inputField = page.locator('#chatWidgetInputField');
       await inputField.fill('Test message');
       await inputField.press('Enter');
-      
+
       // Check that the input field is cleared
       await expect(inputField).toHaveValue('');
     });
@@ -131,28 +138,28 @@ test.describe('Chat Widget Functionality Tests', () => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
-      
+
       // Show the chat widget
       await page.click('#chatWidgetToggle');
-      
+
       // Check for header
       const header = page.locator('#chatWidgetHeader');
       await expect(header).toBeAttached();
       await expect(header).toContainText('Chat');
-      
+
       // Check for close button in header
       const closeButton = page.locator('#chatWidgetCloseButton');
       await expect(closeButton).toBeAttached();
       await expect(closeButton).toContainText('⌄');
-      
+
       // Check for chat body
       const chatBody = page.locator('#chatWidgetBody');
       await expect(chatBody).toBeAttached();
-      
+
       // Check for input area
       const inputArea = page.locator('#chatWidgetInput');
       await expect(inputArea).toBeAttached();
-      
+
       // Check for footer
       const footer = page.locator('#chatWidgetFooter');
       await expect(footer).toBeAttached();
@@ -163,21 +170,21 @@ test.describe('Chat Widget Functionality Tests', () => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
-      
+
       // Show the chat widget
       await page.click('#chatWidgetToggle');
-      
+
       // Check that the chat widget has proper positioning
       const chatWidget = page.locator('#chatWidget');
-      const position = await chatWidget.evaluate(el => 
-        window.getComputedStyle(el).position
+      const position = await chatWidget.evaluate(
+        (el) => window.getComputedStyle(el).position
       );
       expect(position).toBe('fixed');
-      
+
       // Check that the toggle button has proper positioning
       const toggleButton = page.locator('#chatWidgetToggle');
-      const togglePosition = await toggleButton.evaluate(el => 
-        window.getComputedStyle(el).position
+      const togglePosition = await toggleButton.evaluate(
+        (el) => window.getComputedStyle(el).position
       );
       expect(togglePosition).toBe('fixed');
     });
@@ -189,34 +196,36 @@ test.describe('Chat Widget Functionality Tests', () => {
       { name: 'React', file: 'react.html' },
       { name: 'Vue', file: 'vue.html' },
       { name: 'Angular', file: 'angular.html' },
-      { name: 'Next.js', file: 'nextjs.html' }
+      { name: 'Next.js', file: 'nextjs.html' },
     ];
 
     for (const framework of frameworks) {
-      test(`${framework.name} - Chat widget functionality works`, async ({ page }) => {
+      test(`${framework.name} - Chat widget functionality works`, async ({
+        page,
+      }) => {
         await page.goto(`/test-pages/${framework.file}`);
         await page.waitForLoadState('networkidle');
         await page.waitForTimeout(3000);
-        
+
         // Check that chat widget is created
         const chatWidget = page.locator('#chatWidget');
         await expect(chatWidget).toBeAttached();
-        
+
         // Check that toggle button is created
         const toggleButton = page.locator('#chatWidgetToggle');
         await expect(toggleButton).toBeAttached();
         await expect(toggleButton).toBeVisible();
-        
+
         // Test toggle functionality
         await toggleButton.click();
         await expect(chatWidget).toBeVisible();
-        
+
         // Test input functionality
         const inputField = page.locator('#chatWidgetInputField');
         await expect(inputField).toBeAttached();
         await inputField.fill('Test message');
         await expect(inputField).toHaveValue('Test message');
-        
+
         // Test close functionality
         await page.click('#chatWidgetCloseButton');
         await expect(chatWidget).toHaveClass(/hidden/);
@@ -250,7 +259,7 @@ test.describe('Chat Widget Functionality Tests', () => {
             ></script>
             
             <script id="blizzardberry-actions" type="text/javascript">
-              window.AgentActions = {
+              window.agentActions = {
                 testAction: async () => ({ status: 'success' })
               };
             </script>
@@ -278,28 +287,30 @@ test.describe('Chat Widget Functionality Tests', () => {
           </body>
         </html>
       `);
-      
+
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(7000); // Increased wait time
-      
+
       // Check that the page provides some feedback (even if widget creation failed)
       const statusDiv = page.locator('#status');
       const statusText = await statusDiv.textContent();
-      
+
       // Accept any of the possible outcomes as valid
       expect(statusText).toMatch(/Chat widget|agent script/);
-      
+
       // If the chat widget was created, verify it exists
       const chatWidget = page.locator('#chatWidget');
       const toggleButton = page.locator('#chatWidgetToggle');
-      
+
       if (statusText?.includes('created successfully')) {
         await expect(chatWidget).toBeAttached();
         await expect(toggleButton).toBeAttached();
-      } else if (statusText?.includes('Chat widget created but toggle missing')) {
+      } else if (
+        statusText?.includes('Chat widget created but toggle missing')
+      ) {
         await expect(chatWidget).toBeAttached();
       }
       // If widget wasn't created, that's also acceptable for error handling test
     });
   });
-}); 
+});

@@ -11,7 +11,8 @@
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
-    "test:debug": "playwright test --debug"
+    "test:debug": "playwright test --debug",
+    "test-model-tools": "node -r dotenv/config test-model-tools.js dotenv_config_path=.env.local"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.3.22",

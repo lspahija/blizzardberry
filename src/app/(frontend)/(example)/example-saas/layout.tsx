@@ -79,7 +79,7 @@ export default function ExampleLayout({
         />
         <Script id="BlizzardBerry-actions" strategy="afterInteractive">
           {`
-            window.AgentActions = {
+            window.agentActions = {
               get_weather: async (params, userConfig) => {
                 try {
                   const geoResponse = await fetch(

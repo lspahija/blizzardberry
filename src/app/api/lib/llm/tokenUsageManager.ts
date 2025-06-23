@@ -5,7 +5,7 @@ import { AgentModel } from '@/app/api/lib/model/agent/agent';
 export async function createCreditHold(
   userId: string,
   creditsToHold: number,
-  ref: string, // “chat-completion #abc”
+  ref: string, // "chat-completion #abc"
   idempotencyKey: string
 ) {
   return await holdCredit(userId, creditsToHold, ref, idempotencyKey);
@@ -64,10 +64,14 @@ const CREDIT_COSTS_PER_TOKEN: Record<
   [AgentModel.GEMINI_2_0_FLASH]: {
     input: 0.000035, // $0.35 per million tokens
     output: 0.000035,
-  },
+  },  
   [AgentModel.GEMINI_2_5_PRO]: {
     input: 0.00025, // $2.50 per million tokens
     output: 0.00025,
+  },
+  [AgentModel.GPT_4O_MINI]: {
+    input: 0.00015, // $1.50 per million tokens
+    output: 0.0006, // $6 per million tokens
   },
   [AgentModel.CHATGPT_4_1]: {
     input: 0.001, // $10 per million tokens
@@ -77,20 +81,64 @@ const CREDIT_COSTS_PER_TOKEN: Record<
     input: 0.0005, // $5 per million tokens
     output: 0.0015, // $15 per million tokens
   },
+  [AgentModel.O4_MINI]: {
+    input: 0.00015, // $1.50 per million tokens
+    output: 0.0006, // $6 per million tokens
+  },
+  [AgentModel.O4_MINI_HIGH]: {
+    input: 0.0003, // $3 per million tokens
+    output: 0.0012, // $12 per million tokens
+  },
+  [AgentModel.CLAUDE_3_7_SONNET]: {
+    input: 0.003, // $30 per million tokens
+    output: 0.015, // $150 per million tokens
+  },
   [AgentModel.CLAUDE_SONNET_4]: {
     input: 0.0015, // $15 per million tokens
     output: 0.0075, // $75 per million tokens
   },
+  [AgentModel.CLAUDE_OPUS_4]: {
+    input: 0.015, // $150 per million tokens
+    output: 0.075, // $750 per million tokens
+  },
+  [AgentModel.GROK_3_MINI]: {
+    input: 0.0001, // $1 per million tokens
+    output: 0.0001,
+  },
+  [AgentModel.GROK_3]: {
+    input: 0.0002, // $2 per million tokens
+    output: 0.0002,
+  },
   [AgentModel.GROK_3_BETA]: {
     input: 0.0005, // $5 per million tokens
     output: 0.0005,
+  },  
+  [AgentModel.GPT_4_1_NANO]: {
+    input: 0.00005, // $0.50 per million tokens
+    output: 0.0002, // $2 per million tokens
   },
-  [AgentModel.DEEPSEEK_R1]: {
-    input: 0.00002, // $0.20 per million tokens
-    output: 0.00002,
+  [AgentModel.GPT_4_1_MINI]: {
+    input: 0.0001, // $1 per million tokens
+    output: 0.0004, // $4 per million tokens
   },
-  [AgentModel.QWEN_3_30B]: {
+  [AgentModel.LLAMA_4_MAVERICK]: {
+    input: 0.0002, // $2 per million tokens
+    output: 0.0002,
+  },
+  [AgentModel.LLAMA_4_SCOUT]: {
+    input: 0.0003, // $3 per million tokens
+    output: 0.0003,
+  },
+  [AgentModel.DEEPSEEK_V3]: {
     input: 0.0001, // $1 per million tokens
     output: 0.0001,
+  },
+  [AgentModel.DEEPSEEK_R1]: {
+    input: 0.0001, // $1 per million tokens
+    output: 0.0001,
+  },
+  [AgentModel.QWEN_3_30B]: {
+    input: 0.00005, // $0.50 per million tokens
+    output: 0.0002, // $2 per million tokens
   },
 };

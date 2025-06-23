@@ -1,32 +1,42 @@
 (function () {
-  const baseUrl = window.location.hostname.includes('localhost')
-    ? 'http://localhost:3000'
-    : 'https://blizzardberry.com';
-  const actions = {};
-  let userConfig = null;
   let agentId = null;
+
+  function initializeAgentId(script) {
+    if (script && script.dataset && script.dataset.agentId) {
+      agentId = script.dataset.agentId;
+    } else {
+      console.error(
+        'Could not find agent ID. Make sure the script tag has the data-agent-id attribute.'
+      );
+    }
+  }
+
+  function injectStyles(script) {
+    if (script && script.src) {
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = script.src.replace(/\.js$/, '.css');
+      document.head.appendChild(css);
+    } else {
+      console.error('Could not find script src for CSS injection');
+    }
+  }
+
+  // --- Initialization Logic ---
+  const agentScript = document.currentScript;
+
+  const baseUrl = new URL(agentScript.src).origin;
+  initializeAgentId(agentScript);
+  injectStyles(agentScript);
+
+  const userConfig = window.agentUserConfig;
+  const actions = window.agentActions;
+  delete window.agentUserConfig;
+  delete window.agentActions;
+
+  console.log('BlizzardBerry Agent initialized:', { agentId, baseUrl });
+
   let counter = 0;
-
-  function initializeAgentId() {
-    const script = document.currentScript;
-    agentId = script?.dataset?.agentId;
-    console.log('Initialized agent ID:', agentId);
-  }
-
-  // Initialize user config
-  if (window.agentUserConfig && typeof window.agentUserConfig === 'object') {
-    userConfig = window.agentUserConfig;
-    console.log('Initialized user config:', userConfig);
-    delete window.agentUserConfig;
-  }
-
-  if (window.AgentActions && typeof window.AgentActions === 'object') {
-    console.log('Registering actions:', Object.keys(window.AgentActions));
-    Object.assign(actions, window.AgentActions);
-    console.log('Available actions:', Object.keys(actions));
-    delete window.AgentActions;
-  }
-
   const generateId = () => `${agentId}-${Date.now()}-${counter++}`;
 
   const state = {
@@ -35,15 +45,6 @@
     isProcessing: false,
     loggedThinkMessages: new Set(),
   };
-
-  // Inject CSS
-  function injectStyles() {
-    const script = document.currentScript;
-    const css = document.createElement('link');
-    css.rel = 'stylesheet';
-    css.href = script.src.replace(/\.js$/, '.css');
-    document.head.appendChild(css);
-  }
 
   // Create widget DOM
   function createWidgetDOM() {
@@ -219,12 +220,8 @@
       parts: [{ type: 'text', text }],
     });
     input.value = '';
+    state.isProcessing = true;
     updateChatUI();
-
-    setTimeout(() => {
-      state.isProcessing = true;
-      updateChatUI();
-    }, 300);
 
     try {
       const response = await fetch(`${baseUrl}/api/chat`, {
@@ -239,8 +236,15 @@
       });
 
       if (!response.ok) throw new Error('Failed to fetch AI response');
-      const { text, toolCalls, toolResults } = await response.json();
+      const { text, toolCalls, toolResults, error, message } =
+        await response.json();
       const parts = [];
+
+      // If backend returned an error or message, show it in the chat widget
+      if (error || message) {
+        handleError(null, error || message);
+        return;
+      }
 
       if (text && (!toolResults || toolResults.length === 0)) {
         parts.push({ type: 'text', text });
@@ -300,7 +304,6 @@
         updateChatUI();
       }
     } catch (error) {
-      console.error(error);
       handleError(error, 'Error: Failed to get response');
     }
   }
@@ -356,14 +359,8 @@
 
   // Initialize
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initializeAgentId(); // Initialize agent ID
-      injectStyles();
-      createWidgetDOM();
-    });
+    document.addEventListener('DOMContentLoaded', createWidgetDOM);
   } else {
-    initializeAgentId(); // Initialize agent ID
-    injectStyles();
     createWidgetDOM();
   }
 })();
