@@ -1,4 +1,30 @@
 (function () {
+  // --- Base URL Detection ---
+  function detectBaseUrl(script) {
+    // Method 1: Check for data attribute on script tag (highest priority)
+    if (script && script.dataset && script.dataset.apiBaseUrl) {
+      return script.dataset.apiBaseUrl;
+    }
+
+    // Method 2: Check for global configuration
+    if (window.agentApiBaseUrl) {
+      return window.agentApiBaseUrl;
+    }
+
+    // Method 3: Extract from script src (most reliable for hosted widgets)
+    if (script && script.src) {
+      try {
+        const scriptUrl = new URL(script.src);
+        return `${scriptUrl.protocol}//${scriptUrl.host}`;
+      } catch (e) {
+        console.warn('Could not parse script URL for base URL detection:', e);
+      }
+    }
+
+    // Method 4: Fallback to current origin (for local development)
+    return window.location.origin;
+  }
+
   function getExecutingScript() {
     // Most reliable: modern browsers support this
     if (document.currentScript) {
@@ -44,6 +70,7 @@
 
   let agentId = null;
   let userConfig = null;
+  let baseUrl = null;
   const actions = {};
   let counter = 0;
 
@@ -75,6 +102,8 @@
   if (agentScript) {
     initializeAgentId(agentScript);
     injectStyles(agentScript);
+    baseUrl = detectBaseUrl(agentScript);
+    console.log('BlizzardBerry Agent initialized:', { agentId, baseUrl });
   }
 
   // Initialize user config
@@ -231,7 +260,7 @@
 
   async function interpretActionResult(actionResultMessage) {
     const chatResponse = await fetch(
-      `/api/chat`,
+      `${baseUrl}/api/chat`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -283,7 +312,7 @@
     }, 300);
 
     try {
-      const response = await fetch(`/api/chat`, {
+      const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
