@@ -20,12 +20,7 @@ export async function callLLM(
   try {
     const agent = await getAgent(agentId);
     if (!agent) {
-      return {
-        error: 'Agent not found',
-        text: '',
-        toolCalls: [],
-        toolResults: []
-      };
+      throw new Error('Agent not found');
     }
 
     // Validate that the user making the request exists
@@ -83,17 +78,8 @@ export async function callLLM(
     let errorMessage = 'An error occurred while processing your request';
     
     if (error instanceof Error) {
-      if (error.message.includes('Insufficient balance')) {
-        errorMessage = 'You do not have enough credits to complete this request. Please purchase more credits: See https://blizzardberry.com/pricing';
-      } else if (error.message.includes('Agent not found')) {
-        errorMessage = 'The requested agent could not be found.';
-      } else if (error.message.includes('User not found') || error.message.includes('User ID')) {
-        errorMessage = 'User not found or authentication error. Please check your user configuration.';
-      } else {
-        errorMessage = error.message;
-      }
+      errorMessage = error.message;
     }
-    
     return {
       error: errorMessage,
       text: '',

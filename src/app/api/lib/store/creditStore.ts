@@ -75,7 +75,7 @@ export async function holdCredit(
 
       need -= take;
     }
-    if (need > 0) throw new Error('Insufficient balance');
+    if (need > 0) throw new Error('You do not have enough credits to complete this request. Please purchase more credits: See https://blizzardberry.com/pricing');
 
     const eventType = 'CREDIT_HOLD_CREATED';
     const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;
@@ -290,15 +290,4 @@ export async function expireBatches() {
       event_data: event.event_data,
     });
   }
-}
-
-export async function getCreditBalance(userId: string): Promise<number> {
-  const result = await sql`
-    SELECT COALESCE(SUM(quantity_remaining), 0) as balance
-    FROM credit_batches
-    WHERE user_id = ${userId}
-      AND quantity_remaining > 0
-      AND (expires_at IS NULL OR expires_at > now())`;
-  
-  return Number(result[0]?.balance || 0);
 }
