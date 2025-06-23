@@ -118,7 +118,7 @@
 
         <!-- 2. Custom Actions -->
         <script id="blizzardberry-actions" type="text/javascript">
-            window.AgentActions = {
+            window.agentActions = {
                 // Next.js specific action that updates React state
                 updateNextJSState: async (key, value, userConfig) => {
                     console.log('Next.js state update:', { key, value, userConfig });
@@ -159,7 +159,7 @@
                     };
                 }
             };
-            console.log('BlizzardBerry actions loaded in Next.js environment:', window.AgentActions);
+            console.log('BlizzardBerry actions loaded in Next.js environment:', window.agentActions);
         </script>
 
         <!-- 3. Agent Script -->
@@ -216,12 +216,12 @@
         function testAgentActions() {
             addTestResult('Testing agent actions in Next.js environment...', 'info');
             
-            // Check if AgentActions exists (it might be consumed by the agent script)
-            if (window.AgentActions) {
-                addTestResult('AgentActions object found in Next.js', 'success');
+            // Check if agentActions exists (it might be consumed by the agent script)
+            if (window.agentActions) {
+                addTestResult('agentActions object found in Next.js', 'success');
                 
                 // Test Next.js specific actions
-                window.AgentActions.updateNextJSState('testKey', 'testValue', window.agentUserConfig)
+                window.agentActions.updateNextJSState('testKey', 'testValue', window.agentUserConfig)
                     .then(result => {
                         addTestResult(`Next.js state update result: ${JSON.stringify(result)}`, 'success');
                     })
@@ -229,7 +229,7 @@
                         addTestResult(`Next.js state update error: ${error.message}`, 'error');
                     });
                     
-                window.AgentActions.callNextJSAPI('/api/test', { test: true }, window.agentUserConfig)
+                window.agentActions.callNextJSAPI('/api/test', { test: true }, window.agentUserConfig)
                     .then(result => {
                         addTestResult(`Next.js API call result: ${JSON.stringify(result)}`, 'success');
                     })
@@ -237,8 +237,8 @@
                         addTestResult(`Next.js API call error: ${error.message}`, 'error');
                     });
             } else {
-                // AgentActions might have been consumed by the agent script
-                addTestResult('AgentActions object consumed by agent script (expected behavior)', 'info');
+                // agentActions might have been consumed by the agent script
+                addTestResult('agentActions object consumed by agent script (expected behavior)', 'info');
                 
                 // Check if the agent script created a chat widget (indicates it loaded successfully)
                 const chatWidget = document.getElementById('chatWidget');

@@ -109,7 +109,7 @@ export const getActionsScript = (
     })
     .join(',\n');
 
-  const content = `window.AgentActions = {\n  ${functionsCode}\n};`;
+  const content = `window.agentActions = {\n  ${functionsCode}\n};`;
   return getScriptTag(framework, {
     id: 'blizzardberry-actions',
     content,

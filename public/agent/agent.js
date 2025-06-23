@@ -1,73 +1,4 @@
 (function () {
-  // --- Base URL Detection ---
-  function detectBaseUrl(script) {
-    // Method 1: Check for data attribute on script tag (highest priority)
-    if (script && script.dataset && script.dataset.apiBaseUrl) {
-      return script.dataset.apiBaseUrl;
-    }
-
-    // Method 2: Check for global configuration
-    if (window.agentApiBaseUrl) {
-      return window.agentApiBaseUrl;
-    }
-
-    // Method 3: Extract from script src (most reliable for hosted widgets)
-    if (script && script.src) {
-      try {
-        const scriptUrl = new URL(script.src);
-        return `${scriptUrl.protocol}//${scriptUrl.host}`;
-      } catch (e) {
-        console.warn('Could not parse script URL for base URL detection:', e);
-      }
-    }
-
-    // Method 4: Fallback to current origin (for local development)
-    return window.location.origin;
-  }
-
-  function getExecutingScript() {
-    // Most reliable: modern browsers support this
-    if (document.currentScript) {
-      return document.currentScript;
-    }
-
-    // Fallback for older browsers or specific scenarios
-    // We find the script by its unique src attribute.
-    // This part of the logic from the original code is kept,
-    // assuming there's a reason to handle multiple scripts with the same src.
-    const scripts = document.getElementsByTagName('script');
-    for (let i = scripts.length - 1; i >= 0; i--) {
-      const script = scripts[i];
-      // A more robust check could be to see if this script's src
-      // matches a known pattern for your agent.
-      // For this refactoring, we'll assume any script with a 'data-agent-id' is a candidate.
-      if (script.src && script.dataset.agentId) {
-        // This is a simplified approach. If multiple agent scripts could be on a page,
-        // a more specific selector would be needed.
-        const currentScriptSrc = script.src;
-        const matchingScripts = document.querySelectorAll(
-          `script[src="${currentScriptSrc}"][data-agent-id]`
-        );
-        if (matchingScripts.length === 1) {
-          return matchingScripts[0];
-        } else if (matchingScripts.length > 1) {
-          console.error(
-            'Multiple scripts with same src and data-agent-id found. Cannot determine which script to use.'
-          );
-          return null;
-        }
-      }
-    }
-
-    // Last resort: find by a specific ID
-    const specificScript = document.getElementById('blizzardberry-agent');
-    if (specificScript) {
-      return specificScript;
-    }
-
-    return null; // Return null if no script was found
-  }
-
   let agentId = null;
   let userConfig = null;
   let baseUrl = null;
@@ -96,15 +27,12 @@
   }
 
   // --- Initialization Logic ---
+  const agentScript = document.currentScript;
 
-  const agentScript = getExecutingScript();
-
-  if (agentScript) {
-    initializeAgentId(agentScript);
-    injectStyles(agentScript);
-    baseUrl = detectBaseUrl(agentScript);
-    console.log('BlizzardBerry Agent initialized:', { agentId, baseUrl });
-  }
+  initializeAgentId(agentScript);
+  injectStyles(agentScript);
+  baseUrl = new URL(agentScript.src).origin;
+  console.log('BlizzardBerry Agent initialized:', { agentId, baseUrl });
 
   // Initialize user config
   if (window.agentUserConfig && typeof window.agentUserConfig === 'object') {
@@ -113,9 +41,9 @@
   }
 
   // Initialize custom actions
-  if (window.AgentActions && typeof window.AgentActions === 'object') {
-    Object.assign(actions, window.AgentActions);
-    delete window.AgentActions;
+  if (window.agentActions && typeof window.agentActions === 'object') {
+    Object.assign(actions, window.agentActions);
+    delete window.agentActions;
   }
 
   const generateId = () => `${agentId}-${Date.now()}-${counter++}`;
