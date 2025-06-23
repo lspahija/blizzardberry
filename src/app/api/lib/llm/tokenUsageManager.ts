@@ -64,7 +64,7 @@ const CREDIT_COSTS_PER_TOKEN: Record<
   [AgentModel.GEMINI_2_0_FLASH]: {
     input: 0.000035, // $0.35 per million tokens
     output: 0.000035,
-  },  
+  },
   [AgentModel.GEMINI_2_5_PRO]: {
     input: 0.00025, // $2.50 per million tokens
     output: 0.00025,
