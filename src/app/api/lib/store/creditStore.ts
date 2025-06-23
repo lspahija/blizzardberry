@@ -75,7 +75,10 @@ export async function holdCredit(
 
       need -= take;
     }
-    if (need > 0) throw new Error('You do not have enough credits to complete this request. Please purchase more credits: See https://blizzardberry.com/pricing');
+    if (need > 0)
+      throw new Error(
+        'You do not have enough credits to complete this request. Please purchase more credits: See https://blizzardberry.com/pricing'
+      );
 
     const eventType = 'CREDIT_HOLD_CREATED';
     const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;

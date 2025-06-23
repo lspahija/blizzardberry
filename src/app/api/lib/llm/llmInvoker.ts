@@ -64,7 +64,7 @@ export async function callLLM(
   } catch (error) {
     // Provide specific error messages based on the error type
     let errorMessage = 'An error occurred while processing your request';
-    
+
     if (error instanceof Error) {
       errorMessage = error.message;
     }
@@ -72,7 +72,7 @@ export async function callLLM(
       error: errorMessage,
       text: '',
       toolCalls: [],
-      toolResults: []
+      toolResults: [],
     };
   }
 }

@@ -25,7 +25,7 @@ test.describe('Credit Management Tests', () => {
     // Check if we got a response
     const messages = page.locator('.assistant-message');
     const messageCount = await messages.count();
-    
+
     if (messageCount > 0) {
       const allMessages = [];
       for (let i = 0; i < messageCount; i++) {
@@ -36,12 +36,13 @@ test.describe('Credit Management Tests', () => {
       const uiMessage = allMessages[allMessages.length - 1] || '';
       expect(uiMessage).toBeTruthy();
       console.log('Response:', uiMessage);
-      
+
       // Check if it's a credit error or successful response
-      const hasCreditError = uiMessage?.toLowerCase().includes('credit') || 
-                            uiMessage?.toLowerCase().includes('balance') ||
-                            uiMessage?.toLowerCase().includes('insufficient');
-      
+      const hasCreditError =
+        uiMessage?.toLowerCase().includes('credit') ||
+        uiMessage?.toLowerCase().includes('balance') ||
+        uiMessage?.toLowerCase().includes('insufficient');
+
       if (hasCreditError) {
         console.log('✅ Credit error detected - system is working as expected');
       } else {
@@ -58,7 +59,7 @@ test.describe('Credit Management Tests', () => {
     { name: 'React', file: 'react.html' },
     { name: 'Vue', file: 'vue.html' },
     { name: 'Angular', file: 'angular.html' },
-    { name: 'Next.js', file: 'nextjs.html' }
+    { name: 'Next.js', file: 'nextjs.html' },
   ];
 
   for (const framework of frameworks) {
@@ -82,7 +83,7 @@ test.describe('Credit Management Tests', () => {
       // Check if we got any response
       const messages = page.locator('.assistant-message');
       const messageCount = await messages.count();
-      
+
       if (messageCount > 0) {
         const allMessages = [];
         for (let i = 0; i < messageCount; i++) {
@@ -106,10 +107,12 @@ test.describe('Credit Management Tests', () => {
     let apiResponse = null;
 
     // Listen to all responses
-    page.on('response', response => {
+    page.on('response', (response) => {
       const url = response.url();
       if (url.includes('/api/chat')) {
-        console.log(`🔍 API Response detected: ${url} - Status: ${response.status()}`);
+        console.log(
+          `🔍 API Response detected: ${url} - Status: ${response.status()}`
+        );
         apiResponse = response;
       }
     });
@@ -129,7 +132,7 @@ test.describe('Credit Management Tests', () => {
     if (apiResponse) {
       const status = apiResponse.status();
       console.log(`🔍 Backend response status: ${status}`);
-      
+
       try {
         const body = await apiResponse.json();
         console.log(`🔍 Backend response body:`, JSON.stringify(body, null, 2));
@@ -140,16 +143,17 @@ test.describe('Credit Management Tests', () => {
       expect(status).toBeGreaterThan(0);
     } else {
       console.log('🔍 No API response detected - checking if request was made');
-      
+
       // Check if there are any network requests to /api/chat
       const requests = await page.evaluate(() => {
-        return performance.getEntriesByType('resource')
-          .filter(entry => entry.name.includes('/api/chat'))
-          .map(entry => ({ name: entry.name, duration: entry.duration }));
+        return performance
+          .getEntriesByType('resource')
+          .filter((entry) => entry.name.includes('/api/chat'))
+          .map((entry) => ({ name: entry.name, duration: entry.duration }));
       });
-      
+
       console.log('🔍 Network requests to /api/chat:', requests);
-      
+
       // Verify the message was sent
       const userMessage = page.locator('.user-message').first();
       await expect(userMessage).toContainText('Test credit validation');

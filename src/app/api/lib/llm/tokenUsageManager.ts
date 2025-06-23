@@ -112,7 +112,7 @@ const CREDIT_COSTS_PER_TOKEN: Record<
   [AgentModel.GROK_3_BETA]: {
     input: 0.0005, // $5 per million tokens
     output: 0.0005,
-  },  
+  },
   [AgentModel.GPT_4_1_NANO]: {
     input: 0.00005, // $0.50 per million tokens
     output: 0.0002, // $2 per million tokens

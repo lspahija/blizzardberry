@@ -11,7 +11,14 @@ import { Input } from '@/app/(frontend)/components/ui/input';
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import { Label } from '@/app/(frontend)/components/ui/label';
-import { Mail, MessageSquare, Send, Calendar, MapPin, Phone } from 'lucide-react';
+import {
+  Mail,
+  MessageSquare,
+  Send,
+  Calendar,
+  MapPin,
+  Phone,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function ContactPage() {
@@ -64,7 +71,7 @@ export default function ContactPage() {
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="container mx-auto max-w-6xl py-16 px-4"
       variants={containerVariants}
       initial="hidden"
@@ -75,7 +82,8 @@ export default function ContactPage() {
           Get in Touch
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Have questions about our AI agents? We'd love to hear from you. Send us a message or book a meeting.
+          Have questions about our AI agents? We'd love to hear from you. Send
+          us a message or book a meeting.
         </p>
       </motion.div>
 
@@ -94,7 +102,10 @@ export default function ContactPage() {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <Label htmlFor="email" className="text-base font-semibold text-foreground">
+                  <Label
+                    htmlFor="email"
+                    className="text-base font-semibold text-foreground"
+                  >
                     Email Address
                   </Label>
                   <Input
@@ -108,7 +119,10 @@ export default function ContactPage() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="message" className="text-base font-semibold text-foreground">
+                  <Label
+                    htmlFor="message"
+                    className="text-base font-semibold text-foreground"
+                  >
                     Message
                   </Label>
                   <Textarea
@@ -130,7 +144,7 @@ export default function ContactPage() {
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>
                 {formStatus && (
-                  <motion.p 
+                  <motion.p
                     className="text-center text-sm font-medium text-muted-foreground mt-4 p-3 rounded-lg bg-muted/50"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -157,7 +171,8 @@ export default function ContactPage() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-                Schedule a 30-minute call to discuss your AI agent requirements and see how we can help.
+                Schedule a 30-minute call to discuss your AI agent requirements
+                and see how we can help.
               </p>
               <Button
                 asChild
@@ -174,7 +189,6 @@ export default function ContactPage() {
               </Button>
             </CardContent>
           </Card>
-
         </motion.div>
       </div>
     </motion.div>
