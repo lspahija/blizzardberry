@@ -102,18 +102,17 @@
     <!-- Next.js Script Component Simulation -->
     <div class="nextjs-script-container">
         <!-- 1. Agent Configuration -->
-        <script>
+        <script id="blizzardberry-config" type="text/javascript">
             window.agentUserConfig = {
-                userId: "",
-                userHash: "nextjs_hash_jkl",
-                accountNumber: "1122334455",
+                userId: "test_user_123",
+                userHash: "test_hash_456",
+                accountNumber: "1234567890",
                 userMetadata: {
-                    name: "Next.js Test User",
-                    email: "nextjs@example.com",
-                    company: "Next.js Corp"
+                    name: "Test User",
+                    email: "test@example.com",
+                    company: "Test Corp"
                 }
             };
-            // Immediately capture the config for testing, before the agent script consumes it.
             window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
         </script>
 

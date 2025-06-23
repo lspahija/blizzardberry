@@ -89,18 +89,17 @@
     </div>
 
     <!-- 1. Agent Configuration -->
-    <script>
+    <script id="blizzardberry-config" type="text/javascript">
         window.agentUserConfig = {
-            userId: "angular_user_456",
-            userHash: "angular_hash_ghi",
-            accountNumber: "6789012345",
+            userId: "test_user_123",
+            userHash: "test_hash_456",
+            accountNumber: "1234567890",
             userMetadata: {
-                name: "Angular Test User",
-                email: "angular@example.com",
-                company: "Angular Corp"
+                name: "Test User",
+                email: "test@example.com",
+                company: "Test Corp"
             }
         };
-        // Immediately capture the config for testing, before the agent script consumes it.
         window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
     </script>
 

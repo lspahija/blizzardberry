@@ -183,18 +183,17 @@ test.describe('Next.js Specific BlizzardBerry Tests', () => {
       const testResults = page.locator('#test-results');
       const resultsText = await testResults.textContent();
       
-      if (resultsText?.includes('User config found in Next.js')) {
+      if (resultsText?.includes('Initial user config was set correctly')) {
         // If config was found, check for specific values
-        await expect(testResults).toContainText('nextjs_user_123');
-        await expect(testResults).toContainText('Next.js User');
-        await expect(testResults).toContainText('Next.js');
-      } else if (resultsText?.includes('User config not found')) {
+        await expect(testResults).toContainText('test_user_123');
+        await expect(testResults).toContainText('Initial User ID: test_user_123');
+      } else if (resultsText?.includes('Agent correctly consumed and cleaned up the global user config')) {
         // If config was consumed by agent script, that's expected behavior
         // The main success indicator is that the chat widget was created
         await expect(chatWidget).toBeAttached();
       } else {
         // If neither case is found, fail the test
-        throw new Error('Unexpected test result: neither "User config found" nor "User config not found" was detected');
+        throw new Error('Unexpected test result: neither "Initial user config was set correctly" nor "Agent correctly consumed and cleaned up the global user config" was detected');
       }
     });
 

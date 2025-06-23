@@ -89,18 +89,17 @@
     </div>
 
     <!-- 1. Agent Configuration -->
-    <script>
+    <script id="blizzardberry-config" type="text/javascript">
         window.agentUserConfig = {
-            userId: "test",
-            userHash: "vue_hash_def",
-            accountNumber: "5432109876",
+            userId: "test_user_123",
+            userHash: "test_hash_456",
+            accountNumber: "1234567890",
             userMetadata: {
-                name: "Vue Test User",
-                email: "vue@example.com",
-                company: "Vue Corp"
+                name: "Test User",
+                email: "test@example.com",
+                company: "Test Corp"
             }
         };
-        // Immediately capture the config for testing, before the agent script consumes it.
         window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
     </script>
 

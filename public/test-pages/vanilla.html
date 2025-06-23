@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    <!-- 1. Agent Configuration - Set up user context and metadata -->
+    <!-- 1. Agent Configuration -->
     <script id="blizzardberry-config" type="text/javascript">
         // Set the Next.js public URL for the agent script
         window.NEXT_PUBLIC_URL = window.location.origin;
@@ -97,7 +97,7 @@
         console.log('Next.js public URL set to:', window.NEXT_PUBLIC_URL);
     </script>
 
-    <!-- 2. Custom Actions - Define what your agent can do -->
+    <!-- 2. Custom Actions -->
     <script id="blizzardberry-actions" type="text/javascript">
         window.AgentActions = {
             // Test action that returns success
@@ -136,7 +136,7 @@
         console.log('BlizzardBerry actions loaded:', window.AgentActions);
     </script>
 
-    <!-- 3. Agent Script - Load the BlizzardBerry agent -->
+    <!-- 3. Agent Script -->
     <script
         id="blizzardberry-agent"
         src="/agent/agent.js"
