@@ -178,15 +178,18 @@
   }
 
   async function interpretActionResult(actionResultMessage) {
-    const chatResponse = await fetch(`${baseUrl}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [...state.messages, actionResultMessage],
-        agentId,
-        idempotencyKey: generateId(),
-      }),
-    });
+    const chatResponse = await fetch(
+      `/api/chat`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...state.messages, actionResultMessage],
+          agentId,
+          idempotencyKey: generateId(),
+        }),
+      }
+    );
 
     if (!chatResponse.ok) throw new Error('Failed to fetch AI response');
     const { text } = await chatResponse.json();
@@ -224,7 +227,7 @@
     updateChatUI();
 
     try {
-      const response = await fetch(`${baseUrl}/api/chat`, {
+      const response = await fetch(`/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
