@@ -268,13 +268,13 @@
             addTestResult('Testing credit scenarios...', 'info');
             
             // Test with current user config
-            if (window.agentUserConfig) {
-                addTestResult('Testing with user that has config', 'info');
-                // This should work normally
+            if (window.agentUserConfig && window.agentUserConfig.userId) {
+                addTestResult('Testing with user that has userId', 'info');
+                // This will test for credits (could succeed or fail depending on DB)
                 testAgentActions();
             } else {
-                addTestResult('Testing with non-existent user', 'info');
-                // This should trigger authentication errors
+                addTestResult('Testing with missing or blank userId', 'info');
+                // This will trigger the "User ID is required" error
                 testAgentActions();
             }
         }
@@ -286,7 +286,7 @@
             const originalConfig = window.agentUserConfig;
             window.agentUserConfig = {
                 ...originalConfig,
-                userId: 'invalid-user-id'
+                userId: ''
             };
             
             addTestResult('Testing with invalid user ID', 'info');
