@@ -98,8 +98,9 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 # Things to be done
 
 ## Before Launch
-- (Frankie) polish the user onboarding experience. All the forms needs to work well and be easy to use. - use AI to find the webapps with the best UX and then copy what they do well
-- (Frankie) test <script> tags on all the different frameworks we support and add basic automated tests of the agent with Playwright (Playwright can be used to test the agent.js script tag in different frameworks)
+- (Frankie) remove this from snippets: window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
+- (Frankie) fix src= in all the snippets in each framework
+- (Frankie) go through all the screens and flows and makes sure everything is polished
 - (Luka) onboard Stripe
   - map each LLM to credits per token
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
@@ -129,6 +130,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
+- add set up and teardown code to integration tests (e.g. create a user and agent. add credits to the user. delete the user and agent after the test)
 - let users configure the agent's starting message
 - minify and obfuscate agent.js code
 - let the end user see all actions that the agent can perform. Make the actions searchable. Expose the thinking tokens if the user chooses to see them.
