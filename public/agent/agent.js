@@ -65,8 +65,14 @@
 
       const header = document.createElement('div');
       header.id = 'chatWidgetHeader';
-      header.innerHTML =
-        '<div>AI Agent</div><button id="chatWidgetCloseButton">⌄</button>';
+      header.innerHTML = `
+    <div>AI Agent</div>
+    <button id="chatWidgetCloseButton">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6" /> <!-- Downward chevron -->
+        </svg>
+    </button>
+`;
       header
         .querySelector('#chatWidgetCloseButton')
         .addEventListener('click', toggleChatWidget);
@@ -79,16 +85,27 @@
       const inputArea = document.createElement('div');
       inputArea.id = 'chatWidgetInput';
       inputArea.innerHTML = `
-        <input id="chatWidgetInputField" type="text" placeholder="Type a message...">
-        <button id="chatWidgetSendButton">Send</button>
-      `;
+    <textarea id="chatWidgetInputField" placeholder="Type a message..."></textarea>
+    <button id="chatWidgetSendButton">Send</button>
+`;
+
+      // Add event listener to adjust textarea height dynamically
+      const inputField = inputArea.querySelector('#chatWidgetInputField');
+      inputField.addEventListener('input', () => {
+        inputField.style.height = 'auto'; // Reset height
+        inputField.style.height = `${Math.min(inputField.scrollHeight, 120)}px`; // Set to content height, capped at max-height
+      });
       inputArea
         .querySelector('#chatWidgetSendButton')
         .addEventListener('click', handleSubmit);
       inputArea
         .querySelector('#chatWidgetInputField')
         .addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') handleSubmit();
+          if (e.key === 'Enter' && !e.shiftKey) {
+            // Allow Shift+Enter for new lines
+            e.preventDefault();
+            handleSubmit();
+          }
         });
       widget.appendChild(inputArea);
 

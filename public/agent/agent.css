@@ -71,29 +71,49 @@
 }
 
 /* Chat Widget Input Area */
+/* Chat Widget Input Area */
 #chatWidgetInput {
     padding: 16px;
     border-top: 1px solid #e2e8f0;
     display: flex;
     background-color: #ffffff;
-    align-items: center;
+    align-items: flex-end; /* Align items to the bottom */
 }
 
 #chatWidgetInputField {
     flex: 1;
     padding: 12px 16px;
     border: 1px solid #e2e8f0;
-    border-radius: 24px;
+    border-radius: 24px; /* Restored rounded corners */
     margin-right: 12px;
     font-size: 14px;
     outline: none;
     transition: all 0.2s ease;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    resize: none; /* Prevent manual resizing */
+    min-height: 40px; /* Initial height */
+    max-height: 120px; /* Maximum height before scrolling */
+    overflow-y: auto; /* Enable vertical scrollbar if needed */
+    line-height: 1.5;
+    font-family: inherit;
 }
 
 #chatWidgetInputField:focus {
     border-color: #9ca3af;
     box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.25);
+}
+
+#chatWidgetInputField::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chatWidgetInputField::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+#chatWidgetInputField::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 6px;
 }
 
 #chatWidgetSendButton {
@@ -277,6 +297,31 @@
 
 .typing-indicator span:nth-child(3) {
     animation-delay: 0.4s;
+}
+
+/* Chat Widget Header Close Button */
+#chatWidgetCloseButton {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 20px; /* Larger icon */
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+    padding: 0;
+}
+
+#chatWidgetCloseButton:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#chatWidgetCloseButton:active {
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
 @keyframes typing {
