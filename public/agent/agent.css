@@ -71,7 +71,6 @@
 }
 
 /* Chat Widget Input Area */
-/* Chat Widget Input Area */
 #chatWidgetInput {
     padding: 16px;
     border-top: 1px solid #e2e8f0;
@@ -84,7 +83,7 @@
     flex: 1;
     padding: 12px 16px;
     border: 1px solid #e2e8f0;
-    border-radius: 24px; /* Restored rounded corners */
+    border-radius: 24px;
     margin-right: 12px;
     font-size: 14px;
     outline: none;
@@ -116,22 +115,30 @@
     border-radius: 6px;
 }
 
+/* MODIFIED: Send button is now a circular icon button */
 #chatWidgetSendButton {
     background-color: #000000;
-    color: #ffffff;
+    color: #ffffff; /* Sets the color for the SVG stroke */
     border: none;
-    border-radius: 24px;
-    padding: 10px 18px;
+    border-radius: 50%; /* Makes the button circular */
+    width: 40px;
+    height: 40px;
+    padding: 0;
     cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
     transition: all 0.2s ease;
-    min-width: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0; /* Prevents the button from shrinking */
 }
+
+#chatWidgetSendButton svg {
+    width: 20px;
+    height: 20px;
+    transform: translateY(-1px); /* Minor visual adjustment */
+}
+
 
 #chatWidgetSendButton:hover {
     background-color: rgba(37, 37, 37, 0.85);
