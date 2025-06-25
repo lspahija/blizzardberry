@@ -53,34 +53,12 @@
 <body>
     <div class="container">
         <h1>BlizzardBerry Agent Test - Vanilla JavaScript</h1>
-        
-        <div class="test-section">
-            <h2>Agent Status</h2>
-            <div id="agent-status">Checking agent status...</div>
-        </div>
-
-        <div class="test-section">
-            <h2>Test Actions</h2>
-            <button onclick="testAgentActions()">Test Agent Actions</button>
-            <button onclick="testUserConfig()">Test User Config</button>
-            <button onclick="testAgentInitialization()">Test Agent Init</button>
-            <button onclick="testCreditScenarios()">Test Credit Scenarios</button>
-            <button onclick="testErrorHandling()">Test Error Handling</button>
-        </div>
-
-        <div class="test-section">
-            <h2>Test Results</h2>
-            <div id="test-results"></div>
-        </div>
     </div>
 
     <!-- 1. Agent Configuration -->
     <script id="blizzardberry-config" type="text/javascript">
-        // Set the Next.js public URL for the agent script
-        window.NEXT_PUBLIC_URL = window.location.origin;
-        
         window.agentUserConfig = {
-            userId: "",
+            userId: "test_user_123",
             userHash: "test_hash_456",
             accountNumber: "1234567890",
             userMetadata: {
@@ -89,12 +67,6 @@
                 company: "Test Corp"
             }
         };
-
-        // Immediately capture the config for testing, before the agent script consumes the original.
-        window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
-        
-        console.log('BlizzardBerry config loaded:', window.agentUserConfig);
-        console.log('Next.js public URL set to:', window.NEXT_PUBLIC_URL);
     </script>
 
     <!-- 2. Custom Actions -->
@@ -139,161 +111,10 @@
     <!-- 3. Agent Script -->
     <script
         id="blizzardberry-agent"
-        src="/agent/agent.js"
+        src="http://localhost:3000/agent/agent.js"
         type="text/javascript"
         data-agent-id="8b5d8bfb-f6b4-45de-9500-aa95c7046487"
     ></script>
 
-    <script>
-        // Test functions
-        function addTestResult(message, type = 'info') {
-            const resultsDiv = document.getElementById('test-results');
-            const resultDiv = document.createElement('div');
-            resultDiv.className = `status ${type}`;
-            resultDiv.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
-            resultsDiv.appendChild(resultDiv);
-        }
-
-        function updateAgentStatus(status, type = 'info') {
-            const statusDiv = document.getElementById('agent-status');
-            statusDiv.textContent = status;
-            statusDiv.className = `status ${type}`;
-        }
-
-        function testAgentActions() {
-            addTestResult('Testing agent actions...', 'info');
-            
-            // Check if agentActions exists (it might be consumed by the agent script)
-            if (window.agentActions) {
-                addTestResult('agentActions object found', 'success');
-                
-                // Test each action
-                window.agentActions.testAction({ test: true }, window.agentUserConfig)
-                    .then(result => {
-                        addTestResult(`Test action result: ${JSON.stringify(result)}`, 'success');
-                    })
-                    .catch(error => {
-                        addTestResult(`Test action error: ${error.message}`, 'error');
-                    });
-            } else {
-                // agentActions might have been consumed by the agent script
-                addTestResult('AgentActions object consumed by agent script (expected behavior)', 'info');
-                
-                // Check if the agent script created a chat widget (indicates it loaded successfully)
-                const chatWidget = document.getElementById('chatWidget');
-                if (chatWidget) {
-                    addTestResult('Agent script loaded and created chat widget', 'success');
-                } else {
-                    addTestResult('Agent script may not have loaded properly', 'error');
-                }
-            }
-        }
-
-        function testUserConfig() {
-            addTestResult('Testing user configuration...', 'info');
-            
-            // Check the captured config, which should always exist.
-            if (window.initialAgentConfigForTest && window.initialAgentConfigForTest.userId) {
-                addTestResult('Initial user config was set correctly.', 'success');
-                addTestResult(`Initial User ID: ${window.initialAgentConfigForTest.userId}`, 'info');
-            } else {
-                addTestResult('Initial user config was NOT set.', 'error');
-            }
-
-            // After the agent script loads, it is expected to consume and delete the global config.
-            if (window.agentUserConfig) {
-                addTestResult('Agent did NOT consume the global user config.', 'error');
-            } else {
-                addTestResult('Agent correctly consumed and cleaned up the global user config.', 'success');
-            }
-        }
-
-        function testAgentInitialization() {
-            addTestResult('Testing agent initialization...', 'info');
-            
-            // Check if agent script loaded
-            const agentScript = document.getElementById('blizzardberry-agent');
-            if (agentScript) {
-                addTestResult('Agent script element found', 'success');
-                
-                // Debug: Check if script loaded successfully
-                agentScript.addEventListener('load', () => {
-                    addTestResult('Agent script loaded successfully', 'success');
-                });
-                
-                agentScript.addEventListener('error', (error) => {
-                    addTestResult('Agent script failed to load: ' + error.message, 'error');
-                });
-            } else {
-                addTestResult('Agent script element not found', 'error');
-                updateAgentStatus('Agent script not found', 'error');
-            }
-        }
-
-        function testCreditScenarios() {
-            addTestResult('Testing credit scenarios...', 'info');
-            
-            // Test with current user config
-            if (window.agentUserConfig && window.agentUserConfig.userId) {
-                addTestResult('Testing with user that has userId', 'info');
-                // This will test for credits (could succeed or fail depending on DB)
-                testAgentActions();
-            } else {
-                addTestResult('Testing with missing or blank userId', 'info');
-                // This will trigger the "User ID is required" error
-                testAgentActions();
-            }
-        }
-
-        function testErrorHandling() {
-            addTestResult('Testing error handling scenarios...', 'info');
-            
-            // Test with invalid user ID
-            const originalConfig = window.agentUserConfig;
-            window.agentUserConfig = {
-                ...originalConfig,
-                userId: ''
-            };
-            
-            addTestResult('Testing with invalid user ID', 'info');
-            testAgentActions();
-            
-            // Restore original config
-            setTimeout(() => {
-                window.agentUserConfig = originalConfig;
-                addTestResult('Restored original user config', 'info');
-            }, 2000);
-        }
-
-        // Run initial tests when page loads
-        window.addEventListener('load', () => {
-            addTestResult('Page loaded, running initial tests...', 'info');
-            
-            // Debug: Check if agent script loaded
-            const agentScript = document.getElementById('blizzardberry-agent');
-            if (agentScript) {
-                addTestResult('Agent script element found', 'success');
-                
-                // Debug: Check if script loaded successfully
-                agentScript.addEventListener('load', () => {
-                    addTestResult('Agent script loaded successfully', 'success');
-                });
-                
-                agentScript.addEventListener('error', (error) => {
-                    addTestResult('Agent script failed to load: ' + error.message, 'error');
-                });
-            } else {
-                addTestResult('Agent script element not found', 'error');
-            }
-            
-            testUserConfig();
-            testAgentInitialization();
-            
-            // Wait a bit for agent to load, then test actions
-            setTimeout(() => {
-                testAgentActions();
-            }, 2000);
-        });
-    </script>
 </body>
 </html> 

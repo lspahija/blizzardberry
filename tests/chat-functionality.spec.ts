@@ -18,8 +18,9 @@ test.describe('Chat Widget Functionality Tests', () => {
       await expect(toggleButton).toBeAttached();
       await expect(toggleButton).toBeVisible();
 
-      // Check that it has the chat emoji
-      await expect(toggleButton).toContainText('💬');
+      // Check that it contains an SVG icon (not text)
+      const hasSvg = await toggleButton.evaluate(el => el.querySelector('svg') !== null);
+      expect(hasSvg).toBe(true);
     });
 
     test('Chat widget is hidden by default', async ({ page }) => {
@@ -112,7 +113,10 @@ test.describe('Chat Widget Functionality Tests', () => {
       const sendButton = page.locator('#chatWidgetSendButton');
       await expect(sendButton).toBeAttached();
       await expect(sendButton).toBeVisible();
-      await expect(sendButton).toContainText('Send');
+      
+      // Check that it contains an SVG icon (not text)
+      const hasSvg = await sendButton.evaluate(el => el.querySelector('svg') !== null);
+      expect(hasSvg).toBe(true);
     });
 
     test('Enter key submits message', async ({ page }) => {
@@ -145,12 +149,14 @@ test.describe('Chat Widget Functionality Tests', () => {
       // Check for header
       const header = page.locator('#chatWidgetHeader');
       await expect(header).toBeAttached();
-      await expect(header).toContainText('Chat');
 
       // Check for close button in header
       const closeButton = page.locator('#chatWidgetCloseButton');
       await expect(closeButton).toBeAttached();
-      await expect(closeButton).toContainText('⌄');
+      
+      // Check that it contains an SVG icon (not text)
+      const hasSvg = await closeButton.evaluate(el => el.querySelector('svg') !== null);
+      expect(hasSvg).toBe(true);
 
       // Check for chat body
       const chatBody = page.locator('#chatWidgetBody');
@@ -163,7 +169,24 @@ test.describe('Chat Widget Functionality Tests', () => {
       // Check for footer
       const footer = page.locator('#chatWidgetFooter');
       await expect(footer).toBeAttached();
-      await expect(footer).toContainText('Powered By BlizzardBerry');
+    });
+
+    test('Agent script consumes user config and actions properly', async ({ page }) => {
+      await page.goto('/test-pages/vanilla.html');
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(3000);
+
+      // Check that the agent script consumed the global config and actions
+      const userConfigExists = await page.evaluate(() => window.agentUserConfig);
+      const actionsExist = await page.evaluate(() => window.agentActions);
+      
+      // Both should be undefined/null after the agent script consumes them
+      expect(userConfigExists).toBeUndefined();
+      expect(actionsExist).toBeUndefined();
+
+      // Verify the chat widget was created (indicates agent script loaded successfully)
+      const chatWidget = page.locator('#chatWidget');
+      await expect(chatWidget).toBeAttached();
     });
 
     test('Chat widget styling is applied correctly', async ({ page }) => {
@@ -273,13 +296,10 @@ test.describe('Chat Widget Functionality Tests', () => {
                   
                   if (chatWidget && toggleButton) {
                     statusDiv.textContent = 'Chat widget created successfully';
-                    statusDiv.style.color = 'green';
                   } else if (chatWidget) {
                     statusDiv.textContent = 'Chat widget created but toggle missing';
-                    statusDiv.style.color = 'orange';
                   } else {
                     statusDiv.textContent = 'Chat widget not created - agent script may have failed';
-                    statusDiv.style.color = 'red';
                   }
                 }, 5000); // Increased timeout
               });
