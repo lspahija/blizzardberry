@@ -58,7 +58,7 @@
     <!-- 1. Agent Configuration -->
     <script id="blizzardberry-config" type="text/javascript">
         window.agentUserConfig = {
-            userId: "",
+            userId: "test_user_123",
             userHash: "test_hash_456",
             accountNumber: "1234567890",
             userMetadata: {
@@ -73,10 +73,8 @@
     <script>
         // Check config immediately after the config script runs
         if (window.agentUserConfig && window.agentUserConfig.userId) {
-            window.configInitiallySet = true;
             console.log('Config was initially set correctly:', window.agentUserConfig);
         } else {
-            window.configInitiallySet = false;
             console.log('Config was not set initially');
         }
     </script>

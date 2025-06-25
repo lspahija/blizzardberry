@@ -22,6 +22,11 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
       file: 'angular.html',
       agentId: '8b5d8bfb-f6b4-45de-9500-aa95c7046487',
     },
+    {
+      name: 'Next.js',
+      file: 'nextjs.html',
+      agentId: '8b5d8bfb-f6b4-45de-9500-aa95c7046487',
+    },
   ];
 
   for (const framework of frameworks) {
@@ -161,6 +166,7 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
       { framework: 'React', file: 'react.html' },
       { framework: 'Vue', file: 'vue.html' },
       { framework: 'Angular', file: 'angular.html' },
+      { framework: 'Next.js', file: 'nextjs.html' },
     ];
 
     for (const testCase of testCases) {

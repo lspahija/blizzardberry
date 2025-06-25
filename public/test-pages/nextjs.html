@@ -72,10 +72,8 @@
         <script>
             // Check config immediately after the config script runs
             if (window.agentUserConfig && window.agentUserConfig.userId) {
-                window.configInitiallySet = true;
                 console.log('Config was initially set correctly:', window.agentUserConfig);
             } else {
-                window.configInitiallySet = false;
                 console.log('Config was not set initially');
             }
         </script>
