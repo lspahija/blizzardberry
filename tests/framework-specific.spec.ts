@@ -92,9 +92,6 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
 
-      // Wait for agent script to load and consume the config
-      await page.waitForTimeout(3000);
-
       // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
       await expect(chatWidget).toBeAttached();
@@ -258,11 +255,6 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
     test('Vue user configuration is properly set', async ({ page }) => {
       await page.goto('/test-pages/vue.html');
       await page.waitForLoadState('networkidle');
-
-      // Wait for agent script to load and consume the config
-      await page.waitForTimeout(3000);
-
-      // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
       await expect(chatWidget).toBeAttached();
     });
@@ -302,11 +294,6 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
     test('Angular user configuration is properly set', async ({ page }) => {
       await page.goto('/test-pages/angular.html');
       await page.waitForLoadState('networkidle');
-
-      // Wait for agent script to load and consume the config
-      await page.waitForTimeout(3000);
-
-      // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
       await expect(chatWidget).toBeAttached();
     });
@@ -344,11 +331,6 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
     test('React user configuration is properly set', async ({ page }) => {
       await page.goto('/test-pages/react.html');
       await page.waitForLoadState('networkidle');
-
-      // Wait for agent script to load and consume the config
-      await page.waitForTimeout(3000);
-
-      // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
       await expect(chatWidget).toBeAttached();
     });
@@ -409,11 +391,6 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
     test('Next.js user configuration is properly set', async ({ page }) => {
       await page.goto('/test-pages/nextjs.html');
       await page.waitForLoadState('networkidle');
-
-      // Wait for agent script to load and consume the config
-      await page.waitForTimeout(3000);
-
-      // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
       await expect(chatWidget).toBeAttached();
     });
