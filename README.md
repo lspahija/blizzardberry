@@ -101,7 +101,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - (Frankie) remove this from snippets: window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
 - (Frankie) fix src= in all the snippets in each framework
 - (Frankie) go through all the screens and flows and makes sure everything is polished
-- (Luka) onboard Stripe
+- (Luka) onboard Stripe (complete stripe profile)
   - map each LLM to credits per token
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) landing page needs to sell the product well!
@@ -112,7 +112,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
   - GitHub OAuth
       - [create prod OAuth app](https://github.com/settings/developers)
 - dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
-- (Luka) add number of agents to pricing and add yearly pricing option
+- (Luka) add yearly pricing option and other information (models, etc. for each tier)
 - (Frankie) store conversations so webapp owners can see what their users are asking and how the agent is responding
 - differentiate enough from Chatbase. We want to be our own thing and that should be people's first impression.
 
