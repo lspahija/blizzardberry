@@ -82,16 +82,6 @@
         };
     </script>
 
-    <!-- Test script to check config immediately after it's set -->
-    <script>
-        // Check config immediately after the config script runs
-        if (window.agentUserConfig && window.agentUserConfig.userId) {
-            console.log('Config was initially set correctly:', window.agentUserConfig);
-        } else {
-            console.log('Config was not set initially');
-        }
-    </script>
-
     <!-- 2. Custom Actions -->
     <script id="blizzardberry-actions" type="text/javascript">
         window.agentActions = {

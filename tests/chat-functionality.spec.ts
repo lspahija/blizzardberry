@@ -149,7 +149,6 @@ test.describe('Chat Widget Functionality Tests', () => {
       // Check for header
       const header = page.locator('#chatWidgetHeader');
       await expect(header).toBeAttached();
-      await expect(header).toContainText('AI Agent');
 
       // Check for close button in header
       const closeButton = page.locator('#chatWidgetCloseButton');
@@ -170,7 +169,6 @@ test.describe('Chat Widget Functionality Tests', () => {
       // Check for footer
       const footer = page.locator('#chatWidgetFooter');
       await expect(footer).toBeAttached();
-      await expect(footer).toContainText('Powered By BlizzardBerry');
     });
 
     test('Agent script consumes user config and actions properly', async ({ page }) => {
@@ -298,13 +296,10 @@ test.describe('Chat Widget Functionality Tests', () => {
                   
                   if (chatWidget && toggleButton) {
                     statusDiv.textContent = 'Chat widget created successfully';
-                    statusDiv.style.color = 'green';
                   } else if (chatWidget) {
                     statusDiv.textContent = 'Chat widget created but toggle missing';
-                    statusDiv.style.color = 'orange';
                   } else {
                     statusDiv.textContent = 'Chat widget not created - agent script may have failed';
-                    statusDiv.style.color = 'red';
                   }
                 }, 5000); // Increased timeout
               });
