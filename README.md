@@ -98,12 +98,12 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 # Things to be done
 
 ## Before Launch
-- (Frankie) remove this from snippets: window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
-- (Frankie) fix src= in all the snippets in each framework
+- (Frankie) store conversations so webapp owners can see what their users are asking and how the agent is responding
 - (Frankie) go through all the screens and flows and makes sure everything is polished
+- (Luka) add yearly pricing option and other information (models, etc. for each tier)
 - (Luka) onboard Stripe (complete stripe profile)
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
-- (Luka) landing page needs to sell the product well!
+- (Luka) landing page needs to sell the product well
 - (Luka) finish multi-tenancy config (just need prod configuration)
   - Google OAuth
       - [publish app](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7rg&project=ufcalarm-b270d)
@@ -111,8 +111,6 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
   - GitHub OAuth
       - [create prod OAuth app](https://github.com/settings/developers)
 - dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
-- (Luka) add yearly pricing option and other information (models, etc. for each tier)
-- (Frankie) store conversations so webapp owners can see what their users are asking and how the agent is responding
 - differentiate enough from Chatbase. We want to be our own thing and that should be people's first impression.
 
 ## Launch and Sell! 
@@ -131,6 +129,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - add set up and teardown code to integration tests (e.g. create a user and agent. add credits to the user. delete the user and agent after the test)
 - let users configure the agent's starting message
 - minify and obfuscate agent.js code
+- support teams i.e. each user is part of a team and can manage the team's agents
 - let the end user see all actions that the agent can perform. Make the actions searchable. Expose the thinking tokens if the user chooses to see them.
 - make agent design super customizable so app owners can make it look like their app
 - add automated end-to-end test suite so we can introduce new features without breaking existing functionality. Use Playwright for this. [Grok thread](https://grok.com/share/bGVnYWN5_82a58179-e019-4507-a75b-59c398539835)
