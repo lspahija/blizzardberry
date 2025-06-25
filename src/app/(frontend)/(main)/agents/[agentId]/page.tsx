@@ -620,7 +620,6 @@ function AgentDetails({
                     key={action.id || action.name}
                     className="border-t pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2 sm:gap-0"
                   >
-                    <Zap className="h-4 w-4 text-destructive/80 mr-3 mt-1" />
                     <div className="flex-1">
                       <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
                         {action.name}
@@ -714,10 +713,9 @@ function AgentDetails({
                     key={doc.id}
                     className="border-t pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2 sm:gap-0"
                   >
-                    <FileText className="h-4 w-4 text-destructive/80 mr-3 mt-1" />
                     <div className="flex-1">
                       <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
-                        Document {idx + 1}
+                          Document {idx + 1}
                       </p>
                       <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                         <span className="font-semibold">Content:</span>{' '}

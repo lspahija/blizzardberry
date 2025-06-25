@@ -175,9 +175,10 @@ async function ocrPdfPages(
 interface DropzoneProps {
   onFileDrop: (text: string) => void;
   className?: string;
+  disabled?: boolean;
 }
 
-function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
+function DropzoneComponent({ onFileDrop, className, disabled = false }: DropzoneProps) {
   const [isDragging, setIsDragging] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [isProcessing, setIsProcessing] = React.useState(false);
@@ -199,7 +200,10 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
     workerRef,
     isInitializing: isTesseractInitializing,
     error: tesseractError,
+    initialize,
+    terminate,
   } = useTesseractWorker();
+
   const isInitializing = isTesseractInitializing;
 
   // Initialize PDF.js on client side
@@ -231,7 +235,9 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragging(true);
+    if (!disabled) {
+      setIsDragging(true);
+    }
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
@@ -352,7 +358,7 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
   };
 
   const handleFileSelect = async (file: File) => {
-    if (isInitializing) {
+    if (isInitializing || disabled) {
       setError('Please wait while document processing is initializing...');
       return;
     }
@@ -386,6 +392,7 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
 
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
+    if (disabled) return;
     setIsDragging(false);
 
     const file = e.dataTransfer.files[0];
@@ -395,7 +402,7 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
   };
 
   const handleClick = () => {
-    if (isInitializing) {
+    if (isInitializing || disabled) {
       setError('Please wait while document processing is initializing...');
       return;
     }
@@ -419,130 +426,132 @@ function DropzoneComponent({ onFileDrop, className }: DropzoneProps) {
   };
 
   return (
-    <>
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileInputChange}
-        accept=".pdf,.docx,.txt"
-        className="hidden"
-      />
-      <Card
-        role="button"
-        tabIndex={0}
-        aria-disabled={isProcessing || isInitializing}
-        aria-busy={isProcessing}
-        className={cn(
-          'relative border-2 border-dashed transition-colors cursor-pointer',
-          isDragging ? 'border-[#FE4A60] bg-[#FFF4DA]' : 'border-gray-900',
-          (isProcessing || isInitializing) && 'opacity-50',
-          className
-        )}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-      >
-        <CardContent className="p-8">
-          <div className="flex flex-col items-center justify-center gap-2">
-            {isInitializing ? (
-              <Loader2 className="h-8 w-8 text-gray-900 animate-spin" />
-            ) : (
-              <Upload
-                className={cn(
-                  'h-8 w-8 text-gray-900',
-                  isProcessing && 'animate-pulse'
-                )}
-              />
-            )}
-
-            {/* Main text directly under the icon */}
-            <div className="text-sm text-gray-900 text-center">
-              <p className="font-medium">
-                {isInitializing
-                  ? 'Initializing document processing...'
-                  : isProcessing
-                    ? 'Processing file...'
-                    : 'Drag and drop your file here'}
-              </p>
-              <p className="text-gray-600">or click to browse</p>
-            </div>
-
-            <div className="flex flex-col items-center gap-1 mt-1">
-              <span className="text-xs text-gray-500">
-                Supported formats: .pdf, .docx, .txt
-              </span>
-              <Badge
-                variant="secondary"
-                className="text-xs bg-gray-100 text-gray-500 border-none px-2 py-0.5 font-normal"
-              >
-                max {MAX_FILE_SIZE_MB}MB
-              </Badge>
-            </div>
-
-            {isProcessing && (
-              <div className="w-full max-w-xs mt-2">
-                <Progress value={processingState.progress} className="h-2" />
-                <div className="flex items-center justify-between mt-1">
-                  <p className="text-xs text-gray-600">
-                    {processingState.currentPage > 0 &&
-                    processingState.totalPages > 0
-                      ? `Processing page ${processingState.currentPage} of ${processingState.totalPages}`
-                      : 'Processing...'}
-                  </p>
-                  {canCancel && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCancel();
-                      }}
-                      className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1 relative z-10 h-auto p-0"
-                    >
-                      <X className="h-3 w-3" />
-                      Cancel
-                    </Button>
-                  )}
-                </div>
-              </div>
-            )}
-            <AnimatePresence>
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Alert variant="destructive" className="mt-2">
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                </motion.div>
-              )}
-              {successMessage && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Alert className="mt-2">
-                    <AlertDescription>{successMessage}</AlertDescription>
-                  </Alert>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </CardContent>
-      </Card>
-      {uploadedFileName && (
-        <div className="mt-2 text-sm text-gray-600 text-center">
-          Uploaded: <span className="font-medium">{uploadedFileName}</span>
-        </div>
+    <Card
+      className={cn(
+        'relative border-2 border-dashed transition-colors duration-200 ease-in-out',
+        isDragging && !disabled
+          ? 'border-brand bg-brand/5'
+          : 'border-border hover:border-brand/50',
+        disabled && 'opacity-50 cursor-not-allowed',
+        className
       )}
-    </>
+    >
+      <CardContent className="p-6">
+        <div
+          className={cn(
+            'flex flex-col items-center justify-center space-y-4 text-center',
+            disabled && 'pointer-events-none'
+          )}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          tabIndex={disabled ? -1 : 0}
+          role="button"
+          aria-label="Upload document"
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.docx,.txt"
+            onChange={handleFileInputChange}
+            className="hidden"
+            disabled={disabled}
+          />
+
+          <div className="flex flex-col items-center space-y-2">
+            <div className="relative">
+              <Upload className="h-8 w-8 text-muted-foreground" />
+              {isProcessing && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Loader2 className="h-6 w-6 animate-spin text-brand" />
+                </div>
+              )}
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-foreground">
+                {isProcessing
+                  ? 'Processing document...'
+                  : 'Drop your document here, or click to browse'}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Supports PDF, DOCX, and TXT files up to {MAX_FILE_SIZE_MB}MB
+              </p>
+            </div>
+          </div>
+
+          {uploadedFileName && !isProcessing && (
+            <div className="flex items-center space-x-2">
+              <Badge variant="secondary" className="text-xs">
+                {uploadedFileName}
+              </Badge>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setUploadedFileName(null);
+                  lastFileRef.current = null;
+                }}
+                disabled={disabled}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          )}
+
+          {isProcessing && (
+            <div className="w-full space-y-2">
+              <Progress value={processingState.progress} className="h-2" />
+              <p className="text-xs text-muted-foreground">
+                {processingState.currentPage > 0 &&
+                  `Processing page ${processingState.currentPage} of ${processingState.totalPages}`}
+              </p>
+              {canCancel && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCancel}
+                  className="mt-2"
+                  disabled={disabled}
+                >
+                  Cancel
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mt-4"
+            >
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            </motion.div>
+          )}
+
+          {successMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mt-4"
+            >
+              <Alert>
+                <AlertDescription>{successMessage}</AlertDescription>
+              </Alert>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </CardContent>
+    </Card>
   );
 }
 

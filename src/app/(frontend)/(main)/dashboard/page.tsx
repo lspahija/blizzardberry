@@ -216,9 +216,8 @@ export default function Dashboard() {
                     className="border-t pt-4 sm:pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-4 py-2"
                   >
                     <div className="flex flex-1 min-w-0 items-start">
-                      <Bot className="h-4 w-4 text-brand/80 mr-3 mt-1" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-lg md:text-lg text-base text-foreground font-semibold mb-1 truncate">
+                        <p className="text-lg md:text-lg text-foreground font-semibold mb-1 truncate">
                           <Link
                             href={`/agents/${agent.id}`}
                             className="hover:underline focus:underline outline-none"

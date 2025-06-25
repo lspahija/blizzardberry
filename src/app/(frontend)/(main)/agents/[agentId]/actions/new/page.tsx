@@ -7,6 +7,8 @@ import DataInputsStep from '@/app/(frontend)/components/DataInputsStep';
 import GeneralStep from '@/app/(frontend)/components/GeneralStep';
 import ExecutionStep from '@/app/(frontend)/components/ExecutionStep';
 import { Loader2 } from 'lucide-react'; // Import a loading icon
+import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -18,6 +20,11 @@ const containerVariants = {
 };
 
 const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
+const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
@@ -43,10 +50,21 @@ function ActionFormContent() {
     setIsEditorInteracted,
     activeTab,
     setActiveTab,
+    isCreatingAction,
+    showSuccess,
     handleNextStep,
     handleBack,
     handleCreateAction,
+    handleDeleteAction,
   } = useActionForm();
+
+  const router = useRouter();
+  const params = useParams();
+  const agentId = params.agentId as string;
+
+  const handleSuccessClose = () => {
+    router.push(`/agents/${agentId}`);
+  };
 
   return (
     <motion.div
@@ -99,6 +117,8 @@ function ActionFormContent() {
           setActiveTab={setActiveTab}
           onCreate={handleCreateAction}
           onBack={handleBack}
+          isCreatingAction={isCreatingAction}
+          showSuccess={showSuccess}
         />
       )}
     </motion.div>

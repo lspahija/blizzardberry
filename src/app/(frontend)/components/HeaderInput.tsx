@@ -18,6 +18,7 @@ interface HeaderInputProps {
   removeHeader: () => void;
   suggestions: string[];
   commonHeaderKeys: string[];
+  disabled?: boolean;
 }
 
 export default function HeaderInput({
@@ -27,6 +28,7 @@ export default function HeaderInput({
   removeHeader,
   suggestions,
   commonHeaderKeys,
+  disabled = false,
 }: HeaderInputProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_50px] gap-4 mt-4 items-end">
@@ -47,6 +49,7 @@ export default function HeaderInput({
           placeholder="Authorization"
           inputClassName="border-[2px] border-border text-foreground"
           matchMode="word"
+          disabled={disabled}
         />
       </div>
       <div>
@@ -65,12 +68,14 @@ export default function HeaderInput({
           placeholder="Bearer {{token}}"
           inputClassName="border-[2px] border-border text-foreground"
           matchMode="word"
+          disabled={disabled}
         />
       </div>
       <div>
         <Button
           className="bg-destructive text-white border-[2px] border-border hover:bg-brand hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-full p-2"
           onClick={removeHeader}
+          disabled={disabled}
         >
           <Trash2 className="h-4 w-4 text-white transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
         </Button>

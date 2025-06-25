@@ -14,6 +14,7 @@ export interface SuggestInputProps {
   placeholder?: string;
   id?: string;
   matchMode?: 'word' | 'full';
+  disabled?: boolean;
 }
 
 export function SuggestInput({
@@ -24,6 +25,7 @@ export function SuggestInput({
   inputClassName,
   onChange,
   matchMode = 'word',
+  disabled = false,
   ...props
 }: SuggestInputProps) {
   const [open, setOpen] = React.useState(false);
@@ -68,7 +70,7 @@ export function SuggestInput({
   }, [suggestions, value, matchMode]);
 
   const handleSelect = (selectedValue: string) => {
-    if (!value) return;
+    if (!value || disabled) return;
 
     let newValue = value;
 
@@ -100,22 +102,26 @@ export function SuggestInput({
           value={value}
           placeholder="Bearer {{token}}"
           onValueChange={(val) => {
-            if (onChange) {
+            if (onChange && !disabled) {
               onChange({
                 target: { value: val },
               } as React.ChangeEvent<HTMLInputElement>);
             }
-            setOpen(true);
+            if (!disabled) {
+              setOpen(true);
+            }
           }}
-          onFocus={() => setOpen(true)}
+          onFocus={() => !disabled && setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 200)}
           className={cn(
             'mt-2 h-9 w-full rounded-md border-2 border-border bg-card px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 text-foreground',
-            inputClassName
+            inputClassName,
+            disabled && 'opacity-50 cursor-not-allowed'
           )}
+          disabled={disabled}
           {...props}
         />
-        {open && filteredSuggestions.length > 0 && (
+        {open && filteredSuggestions.length > 0 && !disabled && (
           <CommandList className="absolute z-50 mt-1 w-full max-h-60 overflow-auto rounded-md border border-border bg-card shadow-md text-sm p-1">
             {filteredSuggestions.map((suggestion, index) => (
               <CommandItem
