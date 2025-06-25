@@ -65,18 +65,20 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
         await page.goto(`/test-pages/${framework.file}`);
         await page.waitForLoadState('networkidle');
 
-        // Wait for initial tests to complete
+        // Wait for agent script to load and initialize
         await page.waitForTimeout(3000);
-
-        // Click test actions button
-        await page.click('button:text("Test Agent Actions")');
-
-        // Wait for test results
-        await page.waitForTimeout(2000);
 
         // Check that the chat widget was created (indicates agent script loaded successfully)
         const chatWidget = page.locator('#chatWidget');
         await expect(chatWidget).toBeAttached();
+
+        // Verify that the agent script consumed the global config and actions
+        const userConfigExists = await page.evaluate(() => (window as any).agentUserConfig);
+        const actionsExist = await page.evaluate(() => (window as any).agentActions);
+        
+        // Both should be undefined after the agent script consumes them
+        expect(userConfigExists).toBeUndefined();
+        expect(actionsExist).toBeUndefined();
       });
 
       test('Console logging works correctly', async ({ page }) => {

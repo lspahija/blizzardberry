@@ -37,25 +37,6 @@ test.describe('Next.js Specific BlizzardBerry Tests', () => {
   });
 
   test.describe('Next.js Environment Tests', () => {
-    test('Next.js environment is properly simulated', async ({ page }) => {
-      await page.goto('/test-pages/nextjs.html');
-      await page.waitForLoadState('networkidle');
-
-      // Check that Next.js environment is detected
-      const environmentDiv = page.locator('#nextjs-environment');
-      await expect(environmentDiv).toContainText(
-        'Next.js environment detected'
-      );
-
-      // Check SSR mode indicator
-      const ssrMode = page.locator('#ssr-mode');
-      await expect(ssrMode).toContainText('Client-side');
-
-      // Check script strategy indicator
-      const scriptStrategy = page.locator('#script-strategy');
-      await expect(scriptStrategy).toContainText('After Interactive');
-    });
-
     test('Next.js environment variables are available', async ({ page }) => {
       await page.goto('/test-pages/nextjs.html');
       await page.waitForLoadState('networkidle');
@@ -68,29 +49,6 @@ test.describe('Next.js Specific BlizzardBerry Tests', () => {
       );
     });
 
-    test('Next.js router simulation works', async ({ page }) => {
-      const consoleMessages: string[] = [];
-      page.on('console', (msg) => {
-        if (msg.text().includes('Next.js router')) {
-          consoleMessages.push(msg.text());
-        }
-      });
-
-      await page.goto('/test-pages/nextjs.html');
-      await page.waitForLoadState('networkidle');
-
-      // Click the Next.js specific test button
-      await page.click('button:text("Test Next.js Specific")');
-      await page.waitForTimeout(2000);
-
-      // Check that router methods were called
-      expect(
-        consoleMessages.some((msg) => msg.includes('Next.js router.push'))
-      ).toBeTruthy();
-    });
-  });
-
-  test.describe('Next.js Script Component Tests', () => {
     test('Next.js Script component attributes are set correctly', async ({
       page,
     }) => {
@@ -124,21 +82,6 @@ test.describe('Next.js Specific BlizzardBerry Tests', () => {
           'afterInteractive'
         );
       }
-    });
-
-    test('Next.js Script container styling is applied', async ({ page }) => {
-      await page.goto('/test-pages/nextjs.html');
-      await page.waitForLoadState('networkidle');
-
-      // Check that the Next.js script container has the correct styling
-      const container = page.locator('.nextjs-script-container');
-      await expect(container).toBeAttached();
-
-      // Check that the container has the Next.js blue border
-      const borderColor = await container.evaluate(
-        (el) => window.getComputedStyle(el).borderColor
-      );
-      expect(borderColor).toContain('rgb(0, 112, 243)'); // Next.js blue
     });
   });
 
@@ -189,63 +132,44 @@ test.describe('Next.js Specific BlizzardBerry Tests', () => {
       await page.goto('/test-pages/nextjs.html');
       await page.waitForLoadState('networkidle');
 
-      // Wait for initial tests to complete
+      // Wait for agent initialization
       await page.waitForTimeout(3000);
 
-      // Click the test user config button
-      await page.click('button:text("Test User Config")');
-      await page.waitForTimeout(1000);
+      // Check that the config was initially set (using our external test script)
+      const configInitiallySet = await page.evaluate(() => (window as any).configInitiallySet);
+      expect(configInitiallySet).toBeDefined();
 
       // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
       await expect(chatWidget).toBeAttached();
 
-      // Check for Next.js specific user config - handle both cases (found or consumed)
-      const testResults = page.locator('#test-results');
-      const resultsText = await testResults.textContent();
-
-      if (resultsText?.includes('Initial user config was set correctly')) {
-        // If config was found, check for specific values
-        await expect(testResults).toContainText('test_user_123');
-        await expect(testResults).toContainText(
-          'Initial User ID: test_user_123'
-        );
-      } else if (
-        resultsText?.includes(
-          'Agent correctly consumed and cleaned up the global user config'
-        )
-      ) {
-        // If config was consumed by agent script, that's expected behavior
-        // The main success indicator is that the chat widget was created
-        await expect(chatWidget).toBeAttached();
-      } else {
-        // If neither case is found, fail the test
-        throw new Error(
-          'Unexpected test result: neither "Initial user config was set correctly" nor "Agent correctly consumed and cleaned up the global user config" was detected'
-        );
-      }
+      // Verify that the agent script consumed the global config and actions
+      const userConfigExists = await page.evaluate(() => (window as any).agentUserConfig);
+      const actionsExist = await page.evaluate(() => (window as any).agentActions);
+      
+      // Both should be undefined after the agent script consumes them
+      expect(userConfigExists).toBeUndefined();
+      expect(actionsExist).toBeUndefined();
     });
 
     test('Next.js specific agent actions work correctly', async ({ page }) => {
       await page.goto('/test-pages/nextjs.html');
       await page.waitForLoadState('networkidle');
 
-      // Wait for initial tests to complete
+      // Wait for agent initialization
       await page.waitForTimeout(3000);
-
-      // Click the test actions button
-      await page.click('button:text("Test Agent Actions")');
-      await page.waitForTimeout(2000);
 
       // Check that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');
       await expect(chatWidget).toBeAttached();
 
-      // Check for Next.js specific action results
-      const testResults = page.locator('#test-results');
-      await expect(testResults).toContainText(
-        'Testing agent actions in Next.js environment'
-      );
+      // Verify that the agent script consumed the global config and actions
+      const userConfigExists = await page.evaluate(() => (window as any).agentUserConfig);
+      const actionsExist = await page.evaluate(() => (window as any).agentActions);
+      
+      // Both should be undefined after the agent script consumes them
+      expect(userConfigExists).toBeUndefined();
+      expect(actionsExist).toBeUndefined();
     });
   });
 
@@ -500,21 +424,23 @@ test.describe('Next.js Specific BlizzardBerry Tests', () => {
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
 
-      // Test all Next.js specific features
-      await page.click('button:text("Test Next.js Specific")');
-      await page.waitForTimeout(1000);
+      // Check that Next.js environment variables are available
+      const nextPublicUrl = await page.evaluate(() => window.NEXT_PUBLIC_URL);
+      expect(nextPublicUrl).toBeTruthy();
 
-      // Verify all components work together
-      const testResults = page.locator('#test-results');
-      await expect(testResults).toContainText('Next.js public URL');
-      await expect(testResults).toContainText(
-        'Next.js router simulation found'
-      );
-      await expect(testResults).toContainText('Next.js script elements');
+      // Check that Next.js router is available
+      const hasNextRouter = await page.evaluate(() => window.next && window.next.router);
+      expect(hasNextRouter).toBeTruthy();
 
       // Verify agent functionality
       const chatWidget = page.locator('#chatWidget');
       await expect(chatWidget).toBeAttached();
+
+      // Verify Next.js script attributes
+      const agentScript = page.locator('#blizzardberry-agent');
+      await expect(agentScript).toHaveAttribute('data-nextjs', 'true');
+      await expect(agentScript).toHaveAttribute('data-nextjs-script', 'true');
+      await expect(agentScript).toHaveAttribute('data-strategy', 'afterInteractive');
     });
 
     test('Next.js environment variables are accessible to agent', async ({

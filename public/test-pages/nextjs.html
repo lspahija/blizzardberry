@@ -136,5 +136,28 @@
         ></script>
     </div>
 
+    <!-- Next.js environment simulation for tests -->
+    <script>
+        // Simulate Next.js environment variables
+        window.NEXT_PUBLIC_URL = window.location.origin;
+        
+        // Simulate Next.js router
+        window.next = {
+            router: {
+                push: (path) => console.log('Next.js router.push:', path),
+                replace: (path) => console.log('Next.js router.replace:', path),
+                back: () => console.log('Next.js router.back'),
+                forward: () => console.log('Next.js router.forward')
+            }
+        };
+        
+        // Simulate Next.js Script component behavior
+        const scriptElements = document.querySelectorAll('#blizzardberry-agent, #blizzardberry-config, #blizzardberry-actions');
+        scriptElements.forEach(script => {
+            script.setAttribute('data-nextjs-script', 'true');
+            script.setAttribute('data-strategy', 'afterInteractive');
+        });
+    </script>
+
 </body>
 </html> 

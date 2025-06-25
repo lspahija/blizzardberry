@@ -51,18 +51,20 @@ test.describe('BlizzardBerry Agent Tests', () => {
     await page.goto('/test-pages/vanilla.html');
     await page.waitForLoadState('networkidle');
 
-    // Wait for initial tests to complete
+    // Wait for agent script to load and initialize
     await page.waitForTimeout(3000);
-
-    // Click the test actions button
-    await page.click('button:text("Test Agent Actions")');
-
-    // Wait for test results
-    await page.waitForTimeout(2000);
 
     // Check that the chat widget was created (indicates agent script loaded successfully)
     const chatWidget = page.locator('#chatWidget');
     await expect(chatWidget).toBeAttached();
+
+    // Verify that the agent script consumed the global config and actions
+    const userConfigExists = await page.evaluate(() => window.agentUserConfig);
+    const actionsExist = await page.evaluate(() => window.agentActions);
+    
+    // Both should be undefined after the agent script consumes them
+    expect(userConfigExists).toBeUndefined();
+    expect(actionsExist).toBeUndefined();
   });
 
   test('Vanilla JavaScript - User configuration is properly set', async ({
@@ -71,14 +73,12 @@ test.describe('BlizzardBerry Agent Tests', () => {
     await page.goto('/test-pages/vanilla.html');
     await page.waitForLoadState('networkidle');
 
-    // Wait for initial tests to complete
+    // Wait for agent script to load and initialize
     await page.waitForTimeout(3000);
 
-    // Click the test user config button
-    await page.click('button:text("Test User Config")');
-
-    // Wait for test results
-    await page.waitForTimeout(1000);
+    // Check that the config was initially set (using our external test script)
+    const configInitiallySet = await page.evaluate(() => (window as any).configInitiallySet);
+    expect(configInitiallySet).toBeDefined();
 
     // Check that the chat widget was created (indicates agent script loaded successfully)
     const chatWidget = page.locator('#chatWidget');
