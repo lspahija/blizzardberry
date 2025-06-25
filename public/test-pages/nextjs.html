@@ -18,35 +18,13 @@
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .test-section {
-            margin: 20px 0;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .status {
+        .nextjs-info {
+            background: #e3f2fd;
+            color: #1565c0;
             padding: 10px;
             border-radius: 5px;
             margin: 10px 0;
-        }
-        .success { background: #d4edda; color: #155724; }
-        .error { background: #f8d7da; color: #721c24; }
-        .info { background: #d1ecf1; color: #0c5460; }
-        button {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        button:hover { background: #0056b3; }
-        #agent-status {
-            font-weight: bold;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
+            border-left: 4px solid #2196f3;
         }
         /* Next.js specific styles */
         .nextjs-script-container {
@@ -68,34 +46,9 @@
     <div class="container">
         <h1>BlizzardBerry Agent Test - Next.js</h1>
         
-        <div class="test-section">
-            <h2>Next.js Environment</h2>
-            <p>This page simulates a Next.js environment with SSR considerations and Next.js Script component behavior.</p>
-            <div id="nextjs-environment">
-                <div class="status info">Next.js environment detected</div>
-                <div class="status info">SSR mode: <span id="ssr-mode">Client-side</span></div>
-                <div class="status info">Script loading strategy: <span id="script-strategy">After Interactive</span></div>
-            </div>
-        </div>
-
-        <div class="test-section">
-            <h2>Agent Status</h2>
-            <div id="agent-status">Checking agent status...</div>
-        </div>
-
-        <div class="test-section">
-            <h2>Test Actions</h2>
-            <button onclick="testAgentActions()">Test Agent Actions</button>
-            <button onclick="testUserConfig()">Test User Config</button>
-            <button onclick="testAgentInitialization()">Test Agent Init</button>
-            <button onclick="testNextJSSpecific()">Test Next.js Specific</button>
-            <button onclick="testCreditScenarios()">Test Credit Scenarios</button>
-            <button onclick="testErrorHandling()">Test Error Handling</button>
-        </div>
-
-        <div class="test-section">
-            <h2>Test Results</h2>
-            <div id="test-results"></div>
+        <div class="nextjs-info">
+            <strong>Next.js Integration Note:</strong> This page demonstrates how BlizzardBerry agent works with Next.js applications. 
+            The agent script is framework-agnostic and uses standard script tags, just like vanilla JavaScript.
         </div>
     </div>
 
@@ -113,6 +66,18 @@
                     company: "Test Corp"
                 }
             };
+        </script>
+
+        <!-- Test script to check config immediately after it's set -->
+        <script>
+            // Check config immediately after the config script runs
+            if (window.agentUserConfig && window.agentUserConfig.userId) {
+                window.configInitiallySet = true;
+                console.log('Config was initially set correctly:', window.agentUserConfig);
+            } else {
+                window.configInitiallySet = false;
+                console.log('Config was not set initially');
+            }
         </script>
 
         <!-- 2. Custom Actions -->
@@ -171,188 +136,5 @@
         ></script>
     </div>
 
-    <script>
-        // Next.js environment simulation
-        function simulateNextJSEnvironment() {
-            // Simulate Next.js environment variables
-            window.NEXT_PUBLIC_URL = window.location.origin;
-            
-            // Simulate Next.js router
-            window.next = {
-                router: {
-                    push: (path) => console.log('Next.js router.push:', path),
-                    replace: (path) => console.log('Next.js router.replace:', path),
-                    back: () => console.log('Next.js router.back'),
-                    forward: () => console.log('Next.js router.forward')
-                }
-            };
-            
-            // Simulate Next.js Script component behavior
-            const scriptElements = document.querySelectorAll('#blizzardberry-agent, #blizzardberry-config, #blizzardberry-actions');
-            scriptElements.forEach(script => {
-                script.setAttribute('data-nextjs-script', 'true');
-                script.setAttribute('data-strategy', 'afterInteractive');
-            });
-            
-            console.log('Next.js environment simulated');
-        }
-
-        // Test functions
-        function addTestResult(message, type = 'info') {
-            const resultsDiv = document.getElementById('test-results');
-            const resultDiv = document.createElement('div');
-            resultDiv.className = `status ${type}`;
-            resultDiv.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
-            resultsDiv.appendChild(resultDiv);
-        }
-
-        function updateAgentStatus(status, type = 'info') {
-            const statusDiv = document.getElementById('agent-status');
-            statusDiv.textContent = status;
-            statusDiv.className = `status ${type}`;
-        }
-
-        function testAgentActions() {
-            addTestResult('Testing agent actions in Next.js environment...', 'info');
-            
-            // Check if agentActions exists (it might be consumed by the agent script)
-            if (window.agentActions) {
-                addTestResult('agentActions object found in Next.js', 'success');
-                
-                // Test Next.js specific actions
-                window.agentActions.updateNextJSState('testKey', 'testValue', window.agentUserConfig)
-                    .then(result => {
-                        addTestResult(`Next.js state update result: ${JSON.stringify(result)}`, 'success');
-                    })
-                    .catch(error => {
-                        addTestResult(`Next.js state update error: ${error.message}`, 'error');
-                    });
-                    
-                window.agentActions.callNextJSAPI('/api/test', { test: true }, window.agentUserConfig)
-                    .then(result => {
-                        addTestResult(`Next.js API call result: ${JSON.stringify(result)}`, 'success');
-                    })
-                    .catch(error => {
-                        addTestResult(`Next.js API call error: ${error.message}`, 'error');
-                    });
-            } else {
-                // agentActions might have been consumed by the agent script
-                addTestResult('agentActions object consumed by agent script (expected behavior)', 'info');
-                
-                // Check if the agent script created a chat widget (indicates it loaded successfully)
-                const chatWidget = document.getElementById('chatWidget');
-                if (chatWidget) {
-                    addTestResult('Agent script loaded and created chat widget in Next.js', 'success');
-                } else {
-                    addTestResult('Agent script may not have loaded properly in Next.js', 'error');
-                }
-            }
-        }
-
-        function testUserConfig() {
-            addTestResult('Testing user configuration...', 'info');
-
-            if (window.agentUserConfig) {
-                addTestResult('Agent did NOT consume the global user config.', 'error');
-            } else {
-                addTestResult('Agent correctly consumed and cleaned up the global user config.', 'success');
-            }
-        }
-
-        function testAgentInitialization() {
-            addTestResult('Testing agent initialization in Next.js...', 'info');
-            
-            // Check if agent script loaded
-            const agentScript = document.getElementById('blizzardberry-agent');
-            if (agentScript) {
-                addTestResult('Agent script element found in Next.js', 'success');
-                addTestResult(`Next.js attribute: ${agentScript.getAttribute('data-nextjs')}`, 'info');
-                addTestResult(`Script strategy: ${agentScript.getAttribute('data-strategy')}`, 'info');
-            } else {
-                addTestResult('Agent script element not found in Next.js', 'error');
-            }
-        }
-
-        function testNextJSSpecific() {
-            addTestResult('Testing Next.js specific features...', 'info');
-            
-            // Test Next.js environment
-            if (window.NEXT_PUBLIC_URL) {
-                addTestResult(`Next.js public URL: ${window.NEXT_PUBLIC_URL}`, 'success');
-            } else {
-                addTestResult('Next.js public URL not found', 'error');
-            }
-            
-            // Test Next.js router simulation
-            if (window.next && window.next.router) {
-                addTestResult('Next.js router simulation found', 'success');
-                // Test router methods
-                window.next.router.push('/test-route');
-                addTestResult('Next.js router.push called successfully', 'info');
-            } else {
-                addTestResult('Next.js router simulation not found', 'error');
-            }
-            
-            // Test Next.js Script component attributes
-            const scripts = document.querySelectorAll('[data-nextjs-script]');
-            if (scripts.length > 0) {
-                addTestResult(`Found ${scripts.length} Next.js script elements`, 'success');
-                scripts.forEach((script, index) => {
-                    addTestResult(`Script ${index + 1} strategy: ${script.getAttribute('data-strategy')}`, 'info');
-                });
-            } else {
-                addTestResult('No Next.js script elements found', 'error');
-            }
-        }
-
-        function testCreditScenarios() {
-            addTestResult('Testing credit scenarios...', 'info');
-            
-            // Test with current user config
-            if (window.agentUserConfig && window.agentUserConfig.userId) {
-                addTestResult('Testing with user that has userId', 'info');
-                // This will test for credits (could succeed or fail depending on DB)
-                testAgentActions();
-            } else {
-                addTestResult('Testing with missing or blank userId', 'info');
-                // This will trigger the "User ID is required" error
-                testAgentActions();
-            }
-        }
-
-        function testErrorHandling() {
-            addTestResult('Testing error handling scenarios...', 'info');
-            
-            // Test with invalid user ID
-            const originalConfig = window.agentUserConfig;
-            window.agentUserConfig = {
-                ...originalConfig,
-                userId: ''
-            };
-            
-            addTestResult('Testing with invalid user ID', 'info');
-            testAgentActions();
-            
-            // Restore original config
-            setTimeout(() => {
-                window.agentUserConfig = originalConfig;
-                addTestResult('Restored original user config', 'info');
-            }, 2000);
-        }
-
-        // Initialize Next.js environment simulation
-        document.addEventListener('DOMContentLoaded', () => {
-            simulateNextJSEnvironment();
-            updateAgentStatus('Next.js environment initialized', 'success');
-            
-            // Run initial tests after a delay
-            setTimeout(() => {
-                addTestResult('Page loaded, running initial tests...', 'info');
-                testAgentInitialization();
-                testUserConfig();
-                testNextJSSpecific();
-            }, 1000);
-        });
-    </script>
 </body>
 </html> 
