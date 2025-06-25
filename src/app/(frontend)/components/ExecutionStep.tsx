@@ -85,6 +85,8 @@ interface ExecutionStepProps {
   setActiveTab: (tab: string) => void;
   onCreate: () => void;
   onBack: () => void;
+  isCreatingAction?: boolean;
+  showSuccess?: boolean;
 }
 
 const commonHeaderKeys = [
@@ -120,6 +122,8 @@ export default function ExecutionStep({
   setActiveTab,
   onCreate,
   onBack,
+  isCreatingAction = false,
+  showSuccess = false,
 }: ExecutionStepProps) {
   const [bodyError, setBodyError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
@@ -130,10 +134,12 @@ export default function ExecutionStep({
   const [copied, setCopied] = useState(false);
 
   const addHeader = () => {
+    if (isCreatingAction) return;
     setHeaders([...headers, { key: '', value: '' }]);
   };
 
   const handleEditorChange = (value: string | undefined) => {
+    if (isCreatingAction) return;
     const cleanedValue = value?.trim() || '';
     if (!isEditorInteracted && cleanedValue !== '') {
       setIsEditorInteracted(true);
@@ -143,21 +149,25 @@ export default function ExecutionStep({
   };
 
   const handleMethodChange = (method: string) => {
+    if (isCreatingAction) return;
     setApiMethod(method);
     setBodyError(null);
   };
 
   const handleUrlChange = (value: string) => {
+    if (isCreatingAction) return;
     setUrlError(null);
     setApiUrl(value);
   };
 
   const handleFunctionNameChange = (value: string) => {
+    if (isCreatingAction) return;
     setFunctionNameError(null);
     setFunctionName(value);
   };
 
   const handleCopy = (text: string) => {
+    if (isCreatingAction) return;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -194,6 +204,8 @@ export default function ExecutionStep({
   };
 
   const handleCreate = () => {
+    if (isCreatingAction) return;
+    
     if (baseAction.executionContext === ExecutionContext.SERVER) {
       if (!apiUrl.trim()) {
         setUrlError('URL is required');
@@ -215,6 +227,55 @@ export default function ExecutionStep({
     }
     onCreate();
   };
+
+  // Show success overlay
+  if (showSuccess) {
+    return (
+      <>
+        {/* Full viewport backdrop blur */}
+        <div 
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[9998]"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 9998
+          }}
+          aria-hidden="true"
+        />
+        {/* Success modal */}
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="relative bg-card border-[3px] border-border rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4"
+            style={{ borderLeftColor: 'var(--color-destructive)' }}
+          >
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg className="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                Action Created Successfully!
+              </h3>
+              <p className="text-muted-foreground mb-6">
+                Your action has been created and is ready to use.
+              </p>
+              <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            </div>
+          </motion.div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
@@ -248,14 +309,20 @@ export default function ExecutionStep({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
+            {isCreatingAction && (
+              <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg z-50 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-12 h-12 border-4 border-destructive border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-foreground font-semibold">Creating Action...</p>
+                  <p className="text-muted-foreground text-sm">Please wait while we save your action</p>
+                </div>
+              </div>
+            )}
+            
             {baseAction.executionContext === ExecutionContext.SERVER ? (
               <>
                 <div>
-                  <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
-                    <Globe className="h-4 w-4 text-[#FE4A60]" />
-                    API Request
-                  </Label>
-                  <p className="text-sm text-gray-600 mt-2 ml-6">
+                  <p className="text-sm text-gray-600 ml-6">
                     The API endpoint that should be called by the AI Agent to
                     retrieve data or to send updates. You can include data
                     inputs (variables) collected from the user in the URL,
@@ -301,6 +368,7 @@ export default function ExecutionStep({
                       <Select
                         value={apiMethod}
                         onValueChange={handleMethodChange}
+                        disabled={isCreatingAction}
                       >
                         <SelectTrigger className="mt-2 border-[2px] border-gray-900 sm:w-[2rem] md:w-[4rem] lg:w-[6rem]">
                           <SelectValue placeholder="Select method" />
@@ -329,6 +397,7 @@ export default function ExecutionStep({
                         placeholder="https://wttr.in/{{city}}?format=j1"
                         inputClassName={`mt-2 border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
                         matchMode="full"
+                        disabled={isCreatingAction}
                       />
                       {urlError && (
                         <p className="text-red-500 text-sm mt-2">{urlError}</p>
@@ -359,12 +428,14 @@ export default function ExecutionStep({
                       }
                       suggestions={getInputNames(dataInputs, true)}
                       commonHeaderKeys={commonHeaderKeys}
+                      disabled={isCreatingAction}
                     />
                   ))}
                   <Button
                     variant="outline"
                     className="mt-4 bg-card text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
                     onClick={addHeader}
+                    disabled={isCreatingAction}
                   >
                     <PlusCircle className="h-4 w-4" />
                     Add Header
@@ -428,6 +499,7 @@ export default function ExecutionStep({
                           folding: false,
                           hideCursorInOverviewRuler: true,
                           guides: { indentation: false },
+                          readOnly: isCreatingAction,
                         }}
                         className="bg-transparent"
                       />
@@ -456,6 +528,7 @@ export default function ExecutionStep({
                       onChange={(e) => handleFunctionNameChange(e.target.value)}
                       placeholder="get_weather"
                       className={`mt-2 w-full ${functionNameError ? 'border-red-500' : 'border-border'}`}
+                      disabled={isCreatingAction}
                     />
                   </div>
                   {functionNameError && (
@@ -492,6 +565,7 @@ export default function ExecutionStep({
                       onValueChange={(value) =>
                         setSelectedFramework(value as Framework)
                       }
+                      disabled={isCreatingAction}
                     >
                       <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
                         <SelectValue placeholder="Select framework" />
@@ -544,6 +618,7 @@ export default function ExecutionStep({
                       )
                     }
                     className="absolute top-12 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-xs sm:text-sm font-semibold hover:bg-secondary/90 flex items-center gap-1 sm:gap-2"
+                    disabled={isCreatingAction}
                   >
                     <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span className="hidden sm:inline">
@@ -584,6 +659,7 @@ export default function ExecutionStep({
                 variant="outline"
                 className="bg-card text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
                 onClick={onBack}
+                disabled={isCreatingAction}
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back
@@ -591,9 +667,19 @@ export default function ExecutionStep({
               <Button
                 className="bg-destructive text-white border-[3px] border-gray-900 hover:bg-[#ff6a7a] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
                 onClick={handleCreate}
+                disabled={isCreatingAction}
               >
-                <Save className="w-4 h-4" />
-                Create Action
+                {isCreatingAction ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    Create Action
+                  </>
+                )}
               </Button>
             </div>
           </CardContent>

@@ -49,10 +49,12 @@ export default function AddDocument({
   };
 
   const addMetadataField = () => {
+    if (isSubmitting) return;
     setMetadataFields([...metadataFields, { key: '', value: '' }]);
   };
 
   const removeMetadataField = (index: number) => {
+    if (isSubmitting) return;
     setMetadataFields(metadataFields.filter((_, i) => i !== index));
   };
 
@@ -61,6 +63,7 @@ export default function AddDocument({
     field: keyof MetadataField,
     value: string
   ) => {
+    if (isSubmitting) return;
     const updatedFields = [...metadataFields];
     updatedFields[index] = { ...updatedFields[index], [field]: value };
     setMetadataFields(updatedFields);
@@ -72,8 +75,58 @@ export default function AddDocument({
   };
 
   const handleFileDrop = (fileText: string) => {
+    if (isSubmitting) return;
     setText(fileText);
   };
+
+  // Show success overlay
+  if (success) {
+    return (
+      <>
+        {/* Full viewport backdrop blur */}
+        <div 
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[9998]"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 9998
+          }}
+          aria-hidden="true"
+        />
+        {/* Success modal */}
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="relative bg-card border-[3px] border-border rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4"
+            style={{ borderLeftColor: 'var(--color-destructive)' }}
+          >
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg className="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                Document Added Successfully!
+              </h3>
+              <p className="text-muted-foreground mb-6">
+                Your document has been added and is ready to use.
+              </p>
+              <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin mx-auto"></div>
+            </div>
+          </motion.div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <motion.div
@@ -90,6 +143,7 @@ export default function AddDocument({
           <Button
             asChild
             className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg hover:bg-secondary/90"
+            disabled={isSubmitting}
           >
             <Link
               href={`/agents/${params.agentId}`}
@@ -110,7 +164,16 @@ export default function AddDocument({
           </span>
         </div>
 
-        <Card className="border-[3px] border-border bg-card mb-12 rounded-lg shadow-xl border-l-8 border-l-brand">
+        <Card className="border-[3px] border-border bg-card mb-12 rounded-lg shadow-xl border-l-8 border-l-brand relative">
+          {isSubmitting && (
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-12 h-12 border-4 border-brand border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-foreground font-semibold">Adding Document...</p>
+                <p className="text-muted-foreground text-sm">Please wait while we process your document</p>
+              </div>
+            </div>
+          )}
           <CardHeader className="flex items-center space-x-2">
             <FileText className="h-7 w-7 text-brand" />
             <CardTitle className="text-2xl font-semibold text-foreground">
@@ -131,7 +194,7 @@ export default function AddDocument({
                   will be given to your agent.
                 </p>
                 <div className="mt-4 space-y-4">
-                  <Dropzone onFileDrop={handleFileDrop} className="w-full" />
+                  <Dropzone onFileDrop={handleFileDrop} className="w-full" disabled={isSubmitting} />
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-border"></div>
@@ -150,6 +213,7 @@ export default function AddDocument({
                     className="mt-2 block w-full rounded-md border-border border-[2px] shadow-sm focus:border-brand focus:ring-brand text-base p-2"
                     rows={10}
                     placeholder="Enter the document text here..."
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -177,6 +241,7 @@ export default function AddDocument({
                         }
                         placeholder="category"
                         className="mt-2 border-[2px] border-border"
+                        disabled={isSubmitting}
                       />
                     </div>
                     <div>
@@ -189,6 +254,7 @@ export default function AddDocument({
                         }
                         placeholder="product_info"
                         className="mt-2 border-[2px] border-border"
+                        disabled={isSubmitting}
                       />
                     </div>
                     <div>
@@ -196,6 +262,7 @@ export default function AddDocument({
                         variant="destructive"
                         className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl p-2 md:p-3 mb-0.2"
                         onClick={() => removeMetadataField(index)}
+                        disabled={isSubmitting}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -207,22 +274,23 @@ export default function AddDocument({
                   variant="outline"
                   className="mt-4 bg-card text-foreground border border-border hover:bg-muted hover:border-border transition-transform duration-200 text-base font-normal px-4 py-2 flex items-center gap-2"
                   onClick={addMetadataField}
+                  disabled={isSubmitting}
                 >
                   <PlusCircle className="mr-2 h-4 w-4" />
                   Add Metadata Field
                 </Button>
               </div>
               {error && <p className="text-destructive">{error}</p>}
-              {success && (
-                <p className="text-green-600">Document added successfully!</p>
-              )}
               <Button
                 type="submit"
                 disabled={isSubmitting}
                 className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/80 transition-transform duration-200 shadow-md text-lg font-semibold w-full"
               >
                 {isSubmitting ? (
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Adding Document...
+                  </>
                 ) : (
                   'Add Document'
                 )}

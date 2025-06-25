@@ -27,6 +27,8 @@ import {
   Globe,
   Type,
   Settings,
+  Code,
+  Info,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -52,7 +54,7 @@ export default function NewAgentPage() {
     websiteDomain?: string;
   }>({});
   const { selectedFramework, setSelectedFramework } = useFramework();
-  const { handleCreateAgent } = useAgents();
+  const { handleCreateAgent, creatingAgent } = useAgents();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -74,6 +76,7 @@ export default function NewAgentPage() {
   };
 
   const handleCopy = () => {
+    if (creatingAgent) return;
     navigator.clipboard.writeText(getAgentScript(selectedFramework, agentId));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -152,29 +155,28 @@ export default function NewAgentPage() {
                 <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
                 <Card className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8 border-l-brand">
                   <CardHeader className="flex items-center space-x-2">
-                    <Bot className="h-7 w-7 text-brand" />
+                    <Globe className="h-7 w-7 text-brand" />
                     <CardTitle className="text-2xl font-semibold text-foreground">
-                      Install Your Agent
+                      Installation Code
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-8">
+                  <CardContent className="space-y-6">
                     <div>
-                      <p className="text-base text-muted-foreground mb-4">
-                        To add your agent to your website, copy the code snippet
-                        below and paste it between the <code>&lt;body&gt;</code>{' '}
-                        tags of your website's HTML.
+                      <Label className="text-foreground text-lg font-semibold flex items-center gap-2">
+                        <Settings className="h-4 w-4 text-brand" />
+                        Framework
+                      </Label>
+                      <p className="text-sm text-muted-foreground mt-2 ml-6">
+                        Select the framework you're using to implement the agent.
                       </p>
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium text-foreground mb-2">
-                          Select Framework
-                        </label>
+                      <div className="mt-2 ml-6">
                         <Select
                           value={selectedFramework}
                           onValueChange={(value) =>
                             setSelectedFramework(value as Framework)
                           }
                         >
-                          <SelectTrigger className="w-[200px]">
+                          <SelectTrigger className="w-[200px] border-[2px] border-border">
                             <SelectValue placeholder="Select framework" />
                           </SelectTrigger>
                           <SelectContent>
@@ -184,9 +186,7 @@ export default function NewAgentPage() {
                             <SelectItem value={Framework.NEXT_JS}>
                               Next.js
                             </SelectItem>
-                            <SelectItem value={Framework.REACT}>
-                              React
-                            </SelectItem>
+                            <SelectItem value={Framework.REACT}>React</SelectItem>
                             <SelectItem value={Framework.VANILLA}>
                               Vanilla JS
                             </SelectItem>
@@ -194,53 +194,52 @@ export default function NewAgentPage() {
                           </SelectContent>
                         </Select>
                       </div>
-                      <div className="relative">
-                        <SyntaxHighlighter
-                          language="html"
-                          style={vscDarkPlus}
-                          customStyle={{
-                            borderRadius: '8px',
-                            padding: '16px',
-                            border: '2px solid var(--color-border)',
-                            backgroundColor: 'var(--color-background-dark)',
-                          }}
-                        >
-                          {agentId
-                            ? getAgentScript(selectedFramework, agentId)
-                            : ''}
-                        </SyntaxHighlighter>
-                        <Button
-                          onClick={handleCopy}
-                          className="absolute top-2 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-xs sm:text-sm font-semibold hover:bg-secondary/90 flex items-center gap-1 sm:gap-2"
-                        >
-                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span className="hidden sm:inline">
-                            {copied ? 'Copied!' : 'Copy Code'}
-                          </span>
-                          <span className="sm:hidden">
-                            {copied ? 'Copied!' : 'Copy'}
-                          </span>
-                        </Button>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        This script loads your agent with the unique ID:{' '}
-                        <code>{agentId}</code>.
-                      </p>
                     </div>
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-foreground border-l-4 border-brand pl-3 mb-2">
-                        Next Steps
-                      </h3>
-                      <ul className="list-disc list-inside text-muted-foreground space-y-2 text-base">
+                    <div className="relative">
+                      <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
+                        <Code className="h-4 w-4 text-brand" />
+                        Installation Code
+                      </Label>
+                      <SyntaxHighlighter
+                        language="html"
+                        style={vscDarkPlus}
+                        customStyle={{
+                          borderRadius: '8px',
+                          padding: '16px',
+                          border: '2px solid var(--color-border)',
+                          backgroundColor: 'var(--color-background-dark)',
+                        }}
+                      >
+                        {getAgentScript(selectedFramework, agentId)}
+                      </SyntaxHighlighter>
+                      <Button
+                        onClick={handleCopy}
+                        className="absolute top-12 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-xs sm:text-sm font-semibold hover:bg-secondary/90 flex items-center gap-1 sm:gap-2"
+                      >
+                        <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span className="hidden sm:inline">
+                          {copied ? 'Copied!' : 'Copy Code'}
+                        </span>
+                        <span className="sm:hidden">
+                          {copied ? 'Copied!' : 'Copy'}
+                        </span>
+                      </Button>
+                    </div>
+                    <div>
+                      <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
+                        <Info className="h-4 w-4 text-brand" />
+                        Installation Instructions
+                      </Label>
+                      <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-6">
+                        <li>Copy the code snippet above</li>
                         <li>
-                          Paste the code snippet in your website's HTML, ideally
-                          just before the closing <code>&lt;/body&gt;</code>{' '}
-                          tag.
+                          Paste it between the <code>&lt;body&gt;</code> tags
+                          of your website's HTML
                         </li>
-                        <li>Save and publish your website changes.</li>
+                        <li>Save and publish your website changes</li>
                         <li>
                           Your agent will appear on your website at{' '}
-                          <code>https://{websiteDomain}</code>.
+                          <code>https://{websiteDomain}</code>
                         </li>
                         <li>
                           Need help? Visit our{' '}
@@ -251,14 +250,15 @@ export default function NewAgentPage() {
                             documentation{' '}
                             <ExternalLink className="inline w-4 h-4" />
                           </Link>
+                          .
                         </li>
                       </ul>
                     </div>
                     <Button
-                      className="w-full bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/90 transition-transform duration-200 shadow-md text-lg font-semibold"
+                      className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/90 transition-transform duration-200 shadow-md text-lg font-semibold w-full"
                       onClick={handleContinue}
                     >
-                      Go to Dashboard
+                      Continue to Dashboard
                     </Button>
                   </CardContent>
                 </Card>
@@ -282,6 +282,15 @@ export default function NewAgentPage() {
               <div className="relative mb-12">
                 <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
                 <Card className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8 border-l-brand">
+                  {creatingAgent && (
+                    <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="w-12 h-12 border-4 border-brand border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                        <p className="text-foreground font-semibold">Creating Agent...</p>
+                        <p className="text-muted-foreground text-sm">Please wait while we set up your agent</p>
+                      </div>
+                    </div>
+                  )}
                   <CardHeader className="flex items-center space-x-2">
                     <Bot className="h-7 w-7 text-brand" />
                     <CardTitle className="text-2xl font-semibold text-foreground">
@@ -315,6 +324,7 @@ export default function NewAgentPage() {
                           }}
                           placeholder="My Customer Service Bot"
                           className={`pl-10 border-[2px] ${errors.name ? 'border-red-500' : 'border-border'}`}
+                          disabled={creatingAgent}
                         />
                         <Type className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                       </div>
@@ -324,6 +334,7 @@ export default function NewAgentPage() {
                         </p>
                       )}
                     </div>
+
                     <div>
                       <Label
                         htmlFor="websiteDomain"
@@ -333,8 +344,7 @@ export default function NewAgentPage() {
                         Website Domain
                       </Label>
                       <p className="text-sm text-muted-foreground mt-1 ml-6">
-                        The domain of the website where this agent will be
-                        installed
+                        The domain where your agent will be installed
                       </p>
                       <div className="relative mt-2">
                         <Input
@@ -351,6 +361,7 @@ export default function NewAgentPage() {
                           }}
                           placeholder="example.com"
                           className={`pl-10 border-[2px] ${errors.websiteDomain ? 'border-red-500' : 'border-border'}`}
+                          disabled={creatingAgent}
                         />
                         <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                       </div>
@@ -360,6 +371,7 @@ export default function NewAgentPage() {
                         </p>
                       )}
                     </div>
+
                     <div>
                       <Label
                         htmlFor="model"
@@ -372,12 +384,13 @@ export default function NewAgentPage() {
                         Select the language model to power your agent
                       </p>
                       <div className="relative mt-2">
-                        <Settings className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
+                        <Settings className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                         <Select
                           value={model}
                           onValueChange={(value) =>
                             setModel(value as AgentModel)
                           }
+                          disabled={creatingAgent}
                         >
                           <SelectTrigger className="pl-10 border-[2px] border-border">
                             <SelectValue placeholder="Select a model" />
@@ -395,9 +408,19 @@ export default function NewAgentPage() {
                     <Button
                       className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/90 transition-transform duration-200 shadow-md text-lg font-semibold w-full"
                       onClick={onCreateAgent}
+                      disabled={creatingAgent}
                     >
-                      <CheckCircle2 className="w-4 h-4 mr-2" />
-                      Create Agent
+                      {creatingAgent ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                          Creating Agent...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 mr-2" />
+                          Create Agent
+                        </>
+                      )}
                     </Button>
                   </CardContent>
                 </Card>

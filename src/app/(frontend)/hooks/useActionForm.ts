@@ -51,8 +51,13 @@ export const useActionForm = () => {
   const [functionName, setFunctionName] = useState('');
   const [isEditorInteracted, setIsEditorInteracted] = useState(false);
   const [activeTab, setActiveTab] = useState('headers');
+  const [isCreatingAction, setIsCreatingAction] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
+    // Don't update step if we're showing success
+    if (showSuccess) return;
+    
     const stepParam = searchParams.get('step');
     let currentStep = 1;
 
@@ -88,9 +93,12 @@ export const useActionForm = () => {
         `/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
       );
     }
-  }, [searchParams, router, agentId, baseAction.executionContext]);
+  }, [searchParams, router, agentId, baseAction.executionContext, showSuccess]);
 
   const updateUrl = (newStep: number) => {
+    // Don't update URL if we're showing success
+    if (showSuccess) return;
+    
     if (newStep > 1) {
       const actionTypeParam =
         baseAction.executionContext === ExecutionContext.SERVER
@@ -106,12 +114,14 @@ export const useActionForm = () => {
   };
 
   const handleNextStep = () => {
+    if (showSuccess) return;
     if (step < 3) {
       updateUrl(step + 1);
     }
   };
 
   const handleBack = () => {
+    if (showSuccess) return;
     if (step > 1) {
       updateUrl(step - 1);
     } else {
@@ -120,6 +130,7 @@ export const useActionForm = () => {
   };
 
   const handleCreateAction = async () => {
+    setIsCreatingAction(true);
     let action: Action;
 
     if (baseAction.executionContext === ExecutionContext.SERVER) {
@@ -137,6 +148,7 @@ export const useActionForm = () => {
         }
       } catch (error) {
         console.error('Invalid JSON in API body:', error);
+        setIsCreatingAction(false);
         return;
       }
 
@@ -200,12 +212,23 @@ export const useActionForm = () => {
 
       if (response.ok) {
         console.log('Action created successfully');
-        router.push(`/agents/${agentId}`);
+        setShowSuccess(true);
+        
+        // Clear browser history without causing page reload
+        window.history.replaceState(null, '', `/agents/${agentId}/actions/new`);
+        window.history.pushState(null, '', `/agents/${agentId}/actions/new`);
+        
+        // Wait a moment to show success state, then redirect
+        setTimeout(() => {
+          router.replace(`/agents/${agentId}`);
+        }, 1500);
       } else {
         console.error('Failed to create action:', response.statusText);
+        setIsCreatingAction(false);
       }
     } catch (error) {
       console.error('Error creating action:', error);
+      setIsCreatingAction(false);
     }
   };
 
@@ -254,6 +277,8 @@ export const useActionForm = () => {
     setIsEditorInteracted,
     activeTab,
     setActiveTab,
+    isCreatingAction,
+    showSuccess,
     handleNextStep,
     handleBack,
     handleCreateAction,
