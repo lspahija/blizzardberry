@@ -102,7 +102,6 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - (Frankie) fix src= in all the snippets in each framework
 - (Frankie) go through all the screens and flows and makes sure everything is polished
 - (Luka) onboard Stripe (complete stripe profile)
-  - map each LLM to credits per token
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) landing page needs to sell the product well!
 - (Luka) finish multi-tenancy config (just need prod configuration)
