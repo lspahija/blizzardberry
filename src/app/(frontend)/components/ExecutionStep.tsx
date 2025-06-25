@@ -40,6 +40,9 @@ import {
   Save,
   ArrowLeft,
   Terminal,
+  Tag,
+  Settings,
+  FileText,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Framework } from '@/app/(frontend)/lib/scriptUtils';
@@ -439,7 +442,7 @@ export default function ExecutionStep({
                     htmlFor="functionName"
                     className="text-gray-900 text-lg font-semibold flex items-center gap-2"
                   >
-                    <Code className="h-4 w-4 text-[#FE4A60]" />
+                    <Tag className="h-4 w-4 text-[#FE4A60]" />
                     Function Name
                   </Label>
                   <p className="text-sm text-gray-600 mt-2 ml-6">
@@ -476,7 +479,7 @@ export default function ExecutionStep({
                 </div>
                 <div className="mb-4">
                   <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
-                    <Code className="h-4 w-4 text-[#FE4A60]" />
+                    <Settings className="h-4 w-4 text-[#FE4A60]" />
                     Framework
                   </Label>
                   <p className="text-sm text-gray-600 mt-2 ml-6">
@@ -511,7 +514,7 @@ export default function ExecutionStep({
                 </div>
                 <div className="relative mt-4 ml-6">
                   <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
-                    <Code className="h-4 w-4 text-[#FE4A60]" />
+                    <FileText className="h-4 w-4 text-[#FE4A60]" />
                     Implementation Example
                   </Label>
                   <SyntaxHighlighter

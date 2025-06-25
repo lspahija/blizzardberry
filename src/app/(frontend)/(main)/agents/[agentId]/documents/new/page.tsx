@@ -122,9 +122,8 @@ export default function AddDocument({
               <div>
                 <Label
                   htmlFor="text"
-                  className="block text-foreground flex items-center gap-2 text-lg font-semibold"
+                  className=" text-foreground flex items-center gap-2 text-lg font-semibold"
                 >
-                  <FileText className="h-4 w-4 text-brand" />
                   Document Content
                 </Label>
                 <p className="text-sm text-muted-foreground mt-1 ml-6">

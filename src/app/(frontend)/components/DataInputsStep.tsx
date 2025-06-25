@@ -62,26 +62,22 @@ export default function DataInputsStep({
           className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8"
           style={{ borderLeftColor: 'var(--color-destructive)' }}
         >
-          <CardHeader className="flex flex-row items-center space-x-2 p-4 md:p-6">
-            <List className="h-5 w-5 md:h-7 md:w-7 text-destructive" />
-            <CardTitle className="text-xl md:text-2xl font-semibold text-foreground">
-              Data Inputs
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6 md:space-y-8 p-4 md:p-6">
-            <div>
-              <label className="text-foreground text-base md:text-lg font-semibold flex items-center gap-2">
-                <List className="h-4 w-4 text-destructive" />
+          <CardHeader className="flex flex-col items-start p-4 md:p-6 pb-0 md:pb-0">
+            <div className="flex flex-row items-center space-x-2">
+              <List className="h-5 w-5 md:h-7 md:w-7 text-destructive" />
+              <CardTitle className="text-xl md:text-2xl font-semibold text-foreground">
                 Data Inputs (Optional)
-              </label>
-              <div className="flex items-center gap-2 mt-2">
-                <p className="text-xs md:text-sm text-muted-foreground ml-2">
-                  List any information the AI Agent needs to perform the action.
-                  The agent can find the data in the chat history, request it
-                  from the user, or retrieve it from the specified user config
-                  if available.
-                </p>
-              </div>
+              </CardTitle>
+            </div>
+            <p className="text-xs md:text-sm text-muted-foreground mt-1">
+              Specify the information the AI Agent needs to perform the action.
+            </p>
+            <p className="text-xs md:text-sm text-muted-foreground">
+              The agent can find this data in chat history, request it from the user, or use user config if available.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-2 md:space-y-4 p-4 md:p-6">
+            <div className="mt-0">
               {dataInputs.map((input, index) => (
                 <DataInputRow
                   key={index}
