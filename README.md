@@ -113,10 +113,8 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
       - [create prod OAuth app](https://github.com/settings/developers)
 - dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 - (Luka) add number of agents to pricing and add yearly pricing option
-- (Luka) make chatbot and button look better
 - (Frankie) store conversations so webapp owners can see what their users are asking and how the agent is responding
 - differentiate enough from Chatbase. We want to be our own thing and that should be people's first impression.
-- add a starting message so the agent introduces itself
 
 ## Launch and Sell! 
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.

@@ -119,6 +119,18 @@
       widget.appendChild(footer);
 
       document.body.appendChild(widget);
+
+      state.messages.push({
+        id: generateId(),
+        role: 'assistant',
+        parts: [
+          {
+            type: 'text',
+            text: "Hello! I'm your AI Agent, here to assist you. Feel free to ask me anything or let me know how I can help!",
+          },
+        ],
+      });
+      updateChatUI();
     } catch (error) {
       console.error('Error creating widget DOM:', error);
     }
