@@ -10,6 +10,7 @@ import { Check, Mail, MessageSquare, X, Send } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/app/(frontend)/components/Navbar';
+import { pricing } from '@/app/api/(main)/stripe/model';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -110,6 +111,14 @@ export default function PricingPage() {
     [clientSecret]
   );
 
+  // Descriptions for each tier
+  const tierDescriptions = {
+    hobby: 'Perfect for side projects',
+    standard: 'Great for growing teams',
+    pro: 'For power users',
+    enterprise: 'For large organizations',
+  };
+
   return (
     <>
       {isLoggedIn && <Navbar />}
@@ -125,104 +134,49 @@ export default function PricingPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-16 px-4">
-          <div className="bg-card p-8 border-[2px] border-border rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-3 text-foreground group-hover:text-secondary transition-colors">
-                Hobby
-              </h2>
-              <p className="text-4xl font-bold mb-2 text-foreground">
-                $35
-                <span className="text-lg font-normal text-muted-foreground">
-                  /month
-                </span>
-              </p>
-              <p className="text-sm text-muted-foreground font-medium">
-                Perfect for side projects
-              </p>
-            </div>
-            <ul className="space-y-4 mb-8 text-muted-foreground">
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                <span>2,000 credits</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                <span>8 actions</span>
-              </li>
-            </ul>
-            <button
-              className="w-full py-3 px-4 bg-secondary text-secondary-foreground border-[2px] border-border rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
-              onClick={() => handleSubscribe('hobby')}
+          {Object.entries(pricing.tiers).map(([key, tier]) => (
+            <div
+              key={key}
+              className="bg-card p-8 border-[2px] border-border rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group"
             >
-              Subscribe
-            </button>
-          </div>
-
-          <div className="bg-card p-8 border-[2px] border-border rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-3 text-foreground group-hover:text-secondary transition-colors">
-                Standard
-              </h2>
-              <p className="text-4xl font-bold mb-2 text-foreground">
-                $150
-                <span className="text-lg font-normal text-muted-foreground">
-                  /month
-                </span>
-              </p>
-              <p className="text-sm text-muted-foreground font-medium">
-                Great for growing teams
-              </p>
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-3 text-foreground group-hover:text-secondary transition-colors">
+                  {tier.name}
+                </h2>
+                <p className="text-4xl font-bold mb-2 text-foreground">
+                  ${tier.price}
+                  <span className="text-lg font-normal text-muted-foreground">
+                    /month
+                  </span>
+                </p>
+                <p className="text-sm text-muted-foreground font-medium">
+                  {tierDescriptions[key as keyof typeof tierDescriptions]}
+                </p>
+              </div>
+              <ul className="space-y-4 mb-8 text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
+                  <span>{tier.credits.toLocaleString()} credits</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
+                  <span>
+                    {tier.agents} agent{tier.agents !== 1 ? 's' : ''}
+                  </span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
+                  <span>{tier.actionsPerAgent} actions per agent</span>
+                </li>
+              </ul>
+              <button
+                className="w-full py-3 px-4 bg-secondary text-secondary-foreground border-[2px] border-border rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
+                onClick={() => handleSubscribe(key)}
+              >
+                Subscribe
+              </button>
             </div>
-            <ul className="space-y-4 mb-8 text-muted-foreground">
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                <span>13,000 credits</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                <span>16 actions</span>
-              </li>
-            </ul>
-            <button
-              className="w-full py-3 px-4 bg-secondary text-secondary-foreground border-[2px] border-border rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
-              onClick={() => handleSubscribe('standard')}
-            >
-              Subscribe
-            </button>
-          </div>
-
-          <div className="bg-card p-8 border-[2px] border-border rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-3 text-foreground group-hover:text-secondary transition-colors">
-                Pro
-              </h2>
-              <p className="text-4xl font-bold mb-2 text-foreground">
-                $500
-                <span className="text-lg font-normal text-muted-foreground">
-                  /month
-                </span>
-              </p>
-              <p className="text-sm text-muted-foreground font-medium">
-                For power users
-              </p>
-            </div>
-            <ul className="space-y-4 mb-8 text-muted-foreground">
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                <span>50,000 credits</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                <span>24 actions</span>
-              </li>
-            </ul>
-            <button
-              className="w-full py-3 px-4 bg-secondary text-secondary-foreground border-[2px] border-border rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
-              onClick={() => handleSubscribe('pro')}
-            >
-              Subscribe
-            </button>
-          </div>
+          ))}
 
           <div className="bg-card p-8 border-[2px] border-border rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
             <div className="mb-6">
@@ -231,7 +185,7 @@ export default function PricingPage() {
               </h2>
               <p className="text-4xl font-bold mb-2 text-foreground">Custom</p>
               <p className="text-sm text-muted-foreground font-medium">
-                For large organizations
+                {tierDescriptions.enterprise}
               </p>
             </div>
             <ul className="space-y-4 mb-8 text-muted-foreground">
@@ -266,13 +220,13 @@ export default function PricingPage() {
           </p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 mb-6">
             <span className="text-3xl md:text-4xl font-bold text-foreground">
-              1,000 credits
+              {pricing.oneTimePurchase.credits.toLocaleString()} credits
             </span>
             <span className="text-lg md:text-xl text-muted-foreground">
               for
             </span>
             <span className="text-3xl md:text-4xl font-bold text-foreground">
-              $12
+              ${pricing.oneTimePurchase.price}
             </span>
           </div>
           <button
