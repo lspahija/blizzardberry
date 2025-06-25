@@ -100,7 +100,18 @@
                 company: "Test Corp"
             }
         };
-        window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
+    </script>
+
+    <!-- Test script to check config immediately after it's set -->
+    <script>
+        // Check config immediately after the config script runs
+        if (window.agentUserConfig && window.agentUserConfig.userId) {
+            window.configInitiallySet = true;
+            console.log('Config was initially set correctly:', window.agentUserConfig);
+        } else {
+            window.configInitiallySet = false;
+            console.log('Config was not set initially');
+        }
     </script>
 
     <!-- 2. Custom Actions -->
@@ -134,7 +145,7 @@
     <!-- 3. Agent Script - Load the BlizzardBerry agent -->
     <script
         id="blizzardberry-agent"
-        src="/agent/agent.js"
+        src="http://localhost:3000/agent/agent.js"
         type="text/javascript"
         data-agent-id="8b5d8bfb-f6b4-45de-9500-aa95c7046487"
     ></script>
@@ -187,13 +198,14 @@
         function testUserConfig() {
             addTestResult('Testing user configuration...', 'info');
             
-            if (window.initialAgentConfigForTest && window.initialAgentConfigForTest.userId) {
-                addTestResult('Initial user config was set correctly.', 'success');
-                addTestResult(`Initial User ID: ${window.initialAgentConfigForTest.userId}`, 'info');
+            // Check if config was initially set (using external test script)
+            if (window.configInitiallySet) {
+                addTestResult('Config was initially set correctly', 'success');
             } else {
-                addTestResult('Initial user config was NOT set.', 'error');
+                addTestResult('Config was not set initially', 'error');
             }
-
+            
+            // Check if agent consumed the config
             if (window.agentUserConfig) {
                 addTestResult('Agent did NOT consume the global user config.', 'error');
             } else {

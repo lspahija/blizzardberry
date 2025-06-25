@@ -102,7 +102,7 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
 
         // Verify all frameworks use the same agent script
         const agentScript = page.locator('#blizzardberry-agent');
-        await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
+        await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
 
         // Verify all frameworks have the same basic structure
         const configScript = page.locator('#blizzardberry-config');

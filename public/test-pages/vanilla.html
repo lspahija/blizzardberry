@@ -76,9 +76,6 @@
 
     <!-- 1. Agent Configuration -->
     <script id="blizzardberry-config" type="text/javascript">
-        // Set the Next.js public URL for the agent script
-        window.NEXT_PUBLIC_URL = window.location.origin;
-        
         window.agentUserConfig = {
             userId: "",
             userHash: "test_hash_456",
@@ -89,12 +86,18 @@
                 company: "Test Corp"
             }
         };
+    </script>
 
-        // Immediately capture the config for testing, before the agent script consumes the original.
-        window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
-        
-        console.log('BlizzardBerry config loaded:', window.agentUserConfig);
-        console.log('Next.js public URL set to:', window.NEXT_PUBLIC_URL);
+    <!-- Test script to check config immediately after it's set -->
+    <script>
+        // Check config immediately after the config script runs
+        if (window.agentUserConfig && window.agentUserConfig.userId) {
+            window.configInitiallySet = true;
+            console.log('Config was initially set correctly:', window.agentUserConfig);
+        } else {
+            window.configInitiallySet = false;
+            console.log('Config was not set initially');
+        }
     </script>
 
     <!-- 2. Custom Actions -->
@@ -139,7 +142,7 @@
     <!-- 3. Agent Script -->
     <script
         id="blizzardberry-agent"
-        src="/agent/agent.js"
+        src="http://localhost:3000/agent/agent.js"
         type="text/javascript"
         data-agent-id="8b5d8bfb-f6b4-45de-9500-aa95c7046487"
     ></script>
@@ -191,16 +194,15 @@
 
         function testUserConfig() {
             addTestResult('Testing user configuration...', 'info');
-            
-            // Check the captured config, which should always exist.
-            if (window.initialAgentConfigForTest && window.initialAgentConfigForTest.userId) {
-                addTestResult('Initial user config was set correctly.', 'success');
-                addTestResult(`Initial User ID: ${window.initialAgentConfigForTest.userId}`, 'info');
-            } else {
-                addTestResult('Initial user config was NOT set.', 'error');
-            }
 
-            // After the agent script loads, it is expected to consume and delete the global config.
+            // Check if config was initially set (using external test script)
+            if (window.configInitiallySet) {
+                addTestResult('Config was initially set correctly', 'success');
+            } else {
+                addTestResult('Config was not set initially', 'error');
+            }
+            
+            // Check if agent consumed the config
             if (window.agentUserConfig) {
                 addTestResult('Agent did NOT consume the global user config.', 'error');
             } else {

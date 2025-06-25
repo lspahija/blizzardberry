@@ -113,7 +113,6 @@
                     company: "Test Corp"
                 }
             };
-            window.initialAgentConfigForTest = window.agentUserConfig ? { ...window.agentUserConfig } : null;
         </script>
 
         <!-- 2. Custom Actions -->
@@ -252,13 +251,6 @@
 
         function testUserConfig() {
             addTestResult('Testing user configuration...', 'info');
-            
-            if (window.initialAgentConfigForTest && window.initialAgentConfigForTest.userId) {
-                addTestResult('Initial user config was set correctly.', 'success');
-                addTestResult(`Initial User ID: ${window.initialAgentConfigForTest.userId}`, 'info');
-            } else {
-                addTestResult('Initial user config was NOT set.', 'error');
-            }
 
             if (window.agentUserConfig) {
                 addTestResult('Agent did NOT consume the global user config.', 'error');

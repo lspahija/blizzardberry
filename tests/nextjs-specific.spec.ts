@@ -168,7 +168,7 @@ test.describe('Next.js Specific BlizzardBerry Tests', () => {
       );
 
       // Verify script source
-      await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
+      await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
     });
 
     test('Chat widget is created in Next.js environment', async ({ page }) => {

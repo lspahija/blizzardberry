@@ -46,7 +46,7 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
         );
 
         // Verify script source
-        await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
+        await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
       });
 
       test('User configuration is properly set', async ({ page }) => {
@@ -94,7 +94,7 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
           'data-agent-id',
           framework.agentId
         );
-        await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
+        await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
       });
 
       test('Error handling for missing dependencies', async ({ page }) => {
@@ -168,7 +168,7 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
 
       // Verify that the agent script loads the same way in both frameworks
       const agentScript = page.locator('#blizzardberry-agent');
-      await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
+      await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
 
       // Verify that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');

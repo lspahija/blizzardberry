@@ -18,8 +18,9 @@ test.describe('Chat Widget Functionality Tests', () => {
       await expect(toggleButton).toBeAttached();
       await expect(toggleButton).toBeVisible();
 
-      // Check that it has the chat emoji
-      await expect(toggleButton).toContainText('💬');
+      // Check that it contains an SVG icon (not text)
+      const hasSvg = await toggleButton.evaluate(el => el.querySelector('svg') !== null);
+      expect(hasSvg).toBe(true);
     });
 
     test('Chat widget is hidden by default', async ({ page }) => {
@@ -112,7 +113,10 @@ test.describe('Chat Widget Functionality Tests', () => {
       const sendButton = page.locator('#chatWidgetSendButton');
       await expect(sendButton).toBeAttached();
       await expect(sendButton).toBeVisible();
-      await expect(sendButton).toContainText('Send');
+      
+      // Check that it contains an SVG icon (not text)
+      const hasSvg = await sendButton.evaluate(el => el.querySelector('svg') !== null);
+      expect(hasSvg).toBe(true);
     });
 
     test('Enter key submits message', async ({ page }) => {
@@ -145,12 +149,15 @@ test.describe('Chat Widget Functionality Tests', () => {
       // Check for header
       const header = page.locator('#chatWidgetHeader');
       await expect(header).toBeAttached();
-      await expect(header).toContainText('Chat');
+      await expect(header).toContainText('AI Agent');
 
       // Check for close button in header
       const closeButton = page.locator('#chatWidgetCloseButton');
       await expect(closeButton).toBeAttached();
-      await expect(closeButton).toContainText('⌄');
+      
+      // Check that it contains an SVG icon (not text)
+      const hasSvg = await closeButton.evaluate(el => el.querySelector('svg') !== null);
+      expect(hasSvg).toBe(true);
 
       // Check for chat body
       const chatBody = page.locator('#chatWidgetBody');
@@ -164,6 +171,94 @@ test.describe('Chat Widget Functionality Tests', () => {
       const footer = page.locator('#chatWidgetFooter');
       await expect(footer).toBeAttached();
       await expect(footer).toContainText('Powered By BlizzardBerry');
+    });
+
+    test('Agent script consumes user config and actions properly', async ({ page }) => {
+      await page.goto('/test-pages/vanilla.html');
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(3000);
+
+      // Check that the agent script consumed the global config and actions
+      const userConfigExists = await page.evaluate(() => window.agentUserConfig);
+      const actionsExist = await page.evaluate(() => window.agentActions);
+      
+      // Both should be undefined/null after the agent script consumes them
+      expect(userConfigExists).toBeUndefined();
+      expect(actionsExist).toBeUndefined();
+
+      // Verify the chat widget was created (indicates agent script loaded successfully)
+      const chatWidget = page.locator('#chatWidget');
+      await expect(chatWidget).toBeAttached();
+    });
+
+    test('Config loading and consumption works correctly', async ({ page }) => {
+      // Create a test page to verify config loading behavior
+      await page.setContent(`
+        <!DOCTYPE html>
+        <html>
+          <head><title>Config Test</title></head>
+          <body>
+            <div id="status">Loading...</div>
+            
+            <script id="blizzardberry-config" type="text/javascript">
+              window.agentUserConfig = {
+                userId: "test_user_123",
+                userHash: "test_hash_456",
+                accountNumber: "1234567890",
+                userMetadata: {
+                  name: "Test User",
+                  email: "test@example.com",
+                  company: "Test Corp"
+                }
+              };
+              
+              // Check config immediately after setting it
+              const statusDiv = document.getElementById('status');
+              if (window.agentUserConfig && window.agentUserConfig.userId) {
+                statusDiv.textContent = 'Config was initially set correctly';
+                statusDiv.style.color = 'green';
+              } else {
+                statusDiv.textContent = 'Config was not set initially';
+                statusDiv.style.color = 'red';
+              }
+            </script>
+            
+            <script id="blizzardberry-actions" type="text/javascript">
+              window.agentActions = {
+                testAction: async (params, userConfig) => {
+                  return { status: 'success', message: 'Test action' };
+                }
+              };
+            </script>
+            
+            <script
+              id="blizzardberry-agent"
+              src="http://localhost:3000/agent/agent.js"
+              type="text/javascript"
+              data-agent-id="test-agent-config"
+            ></script>
+          </body>
+        </html>
+      `);
+
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(3000);
+
+      // Check that the config was initially set
+      const statusDiv = page.locator('#status');
+      await expect(statusDiv).toContainText('Config was initially set correctly');
+
+      // Check that the agent script consumed the global config and actions
+      const userConfigExists = await page.evaluate(() => window.agentUserConfig);
+      const actionsExist = await page.evaluate(() => window.agentActions);
+      
+      // Both should be undefined after the agent script consumes them
+      expect(userConfigExists).toBeUndefined();
+      expect(actionsExist).toBeUndefined();
+
+      // Verify the chat widget was created (indicates agent script loaded successfully)
+      const chatWidget = page.locator('#chatWidget');
+      await expect(chatWidget).toBeAttached();
     });
 
     test('Chat widget styling is applied correctly', async ({ page }) => {

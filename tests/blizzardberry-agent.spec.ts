@@ -42,7 +42,7 @@ test.describe('BlizzardBerry Agent Tests', () => {
       'data-agent-id',
       '8b5d8bfb-f6b4-45de-9500-aa95c7046487'
     );
-    await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
+    await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
   });
 
   test('Vanilla JavaScript - Agent actions work correctly', async ({
@@ -196,11 +196,11 @@ test.describe('BlizzardBerry Agent Tests', () => {
 
     // Check that the agent script is loaded from the correct location
     const agentScript = page.locator('#blizzardberry-agent');
-    await expect(agentScript).toHaveAttribute('src', '/agent/agent.js');
+    await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
 
     // Verify the script is actually loaded (not just the element exists)
     const scriptSrc = await agentScript.getAttribute('src');
-    expect(scriptSrc).toBe('/agent/agent.js');
+    expect(scriptSrc).toBe('http://localhost:3000/agent/agent.js');
   });
 
   test('Vanilla JavaScript - Agent ID is properly configured', async ({
