@@ -218,7 +218,6 @@ export const useActionForm = () => {
         window.history.replaceState(null, '', `/agents/${agentId}/actions/new`);
         window.history.pushState(null, '', `/agents/${agentId}/actions/new`);
         
-        // Wait a moment to show success state, then redirect
         setTimeout(() => {
           router.replace(`/agents/${agentId}`);
         }, 1500);
