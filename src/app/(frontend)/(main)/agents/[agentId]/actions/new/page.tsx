@@ -7,12 +7,8 @@ import DataInputsStep from '@/app/(frontend)/components/DataInputsStep';
 import GeneralStep from '@/app/(frontend)/components/GeneralStep';
 import ExecutionStep from '@/app/(frontend)/components/ExecutionStep';
 import { Loader2 } from 'lucide-react'; // Import a loading icon
-import { Card, CardContent } from '@/app/(frontend)/components/ui/card';
-import { Button } from '@/app/(frontend)/components/ui/button';
-import { Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
-import SuccessOverlay from '@/app/(frontend)/components/ui/success-overlay';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -130,14 +126,8 @@ function ActionFormContent() {
 }
 
 export default function NewActionPage() {
-  const {
-    showSuccess,
-  } = useActionForm();
-
   return (
     <div className="min-h-screen bg-background">
-      {showSuccess && <SuccessOverlay />}
-
       <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-border sticky top-0 bg-background z-50">
         <div className="flex items-center space-x-2">
           <span className="text-xl font-bold text-foreground">
