@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/app/(fronten
 import { Trash2, MessageSquare, Calendar, User, Loader2 } from 'lucide-react';
 
 export default function ChatsPage() {
-  const { chats, loading, error, deleteChat, updateChatTitle } = useChats();
+  const { chats, loading, error, deleteChat } = useChats();
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [chatToDelete, setChatToDelete] = useState<string | null>(null);
@@ -123,10 +123,6 @@ export default function ChatsPage() {
                         </span>
                       </div>
                       
-                      {chat.title && (
-                        <h3 className="font-medium text-gray-900 mb-1">{chat.title}</h3>
-                      )}
-                      
                       <div className="flex items-center gap-4 text-sm text-gray-500">
                         <div className="flex items-center gap-1">
                           <MessageSquare className="h-4 w-4" />
@@ -163,7 +159,7 @@ export default function ChatsPage() {
               <Card className="h-[600px] flex flex-col">
                 <CardHeader className="border-b">
                   <CardTitle className="text-lg">
-                    {chats.find(c => c.id === selectedChat)?.title || 'Conversation'}
+                    Conversation
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-y-auto p-4">

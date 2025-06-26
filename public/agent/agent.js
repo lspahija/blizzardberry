@@ -149,7 +149,6 @@
         100
       );
     } else {
-      // Reset chat state when widget is closed
       state.chatId = null;
       state.messages = [];
       state.actionResults = {};
@@ -283,7 +282,6 @@
       if (!response.ok) throw new Error('Failed to fetch AI response');
       const { text, toolCalls, toolResults, error, message, chatId: returnedChatId } =
         await response.json();
-      // Store chatId if returned from backend
       if (returnedChatId) {
         state.chatId = returnedChatId;
       }

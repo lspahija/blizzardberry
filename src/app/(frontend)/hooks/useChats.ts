@@ -5,7 +5,6 @@ export interface Chat {
   agent_id: string;
   agent_owner_id: string;
   end_user_config: any;
-  title: string | null;
   created_at: string;
   message_count: number;
   last_message_at: string | null;
@@ -61,29 +60,6 @@ export function useChats() {
     }
   };
 
-  const updateChatTitle = async (chatId: string, title: string) => {
-    try {
-      const response = await fetch(`/api/chats/${chatId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ title }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to update chat title');
-      }
-      
-      // Update the chat in the local state
-      setChats(prev => prev.map(chat => 
-        chat.id === chatId ? { ...chat, title } : chat
-      ));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update chat title');
-    }
-  };
-
   useEffect(() => {
     fetchChats();
   }, []);
@@ -94,7 +70,6 @@ export function useChats() {
     error,
     fetchChats,
     deleteChat,
-    updateChatTitle,
   };
 }
 
