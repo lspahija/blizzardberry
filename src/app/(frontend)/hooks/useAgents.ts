@@ -83,7 +83,7 @@ export function useAgents() {
           body: JSON.stringify({ name, websiteDomain, model }),
         });
 
-        if (response.ok) {
+        if (!response.ok) {
           throw new Error('Failed to create agent');
         }
 
