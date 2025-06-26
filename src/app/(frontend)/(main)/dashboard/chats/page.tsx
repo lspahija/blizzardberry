@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useChats, useChatMessages } from '@/app/(frontend)/hooks/useChats';
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/(frontend)/components/ui/card';
 import { Button } from '@/app/(frontend)/components/ui/button';
@@ -63,6 +63,12 @@ export default function ChatsPage() {
            'Unknown User';
   };
 
+  useEffect(() => {
+    if (selectedChat) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [selectedChat]);
+
   if (loading) {
     return (
       <div className="container mx-auto p-6">
@@ -104,7 +110,6 @@ export default function ChatsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Chat List */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Recent Conversations</h2>
             {chats.map((chat) => (
               <Card 
                 key={chat.id} 
