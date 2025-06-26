@@ -1,7 +1,7 @@
 CREATE TABLE chats (
     id             UUID                     DEFAULT gen_random_uuid() PRIMARY KEY,
     agent_id       UUID                     NOT NULL REFERENCES agents (id) ON DELETE CASCADE,
-    agent_owner_id UUID                     NOT NULL REFERENCES next_auth.users (id) ON DELETE CASCADE, -- The user who owns the agent
+    agent_owner_id UUID                     NOT NULL REFERENCES next_auth.users (id) ON DELETE CASCADE,
     end_user_config JSONB DEFAULT '{}',
     created_at     TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
