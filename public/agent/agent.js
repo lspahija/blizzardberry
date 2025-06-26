@@ -143,12 +143,11 @@
     const toggle = document.getElementById('chatWidgetToggle');
     const isHidden = widget.classList.toggle('hidden');
     toggle.classList.toggle('hidden', !isHidden);
-    if (!isHidden) {
+    if (!isHidden)
       setTimeout(
         () => document.getElementById('chatWidgetInputField').focus(),
         100
       );
-    }
   }
 
   // Handle errors
@@ -159,6 +158,17 @@
       role: 'assistant',
       parts: [{ type: 'text', text: messageText }],
     });
+    if (state.chatId) {
+      fetch(`${baseUrl}/api/chats/${state.chatId}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          role: 'assistant',
+          content: messageText,
+          removeLastAssistantMessage: true,
+        }),
+      });
+    }
     updateChatUI();
   }
 

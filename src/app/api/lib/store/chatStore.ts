@@ -171,3 +171,15 @@ export async function getMessagesForChat(
 export async function deleteChat(chatId: string): Promise<void> {
   await sql`DELETE FROM chats WHERE id = ${chatId}`;
 }
+
+export async function deleteLastAssistantMessage(chatId: string) {
+  await sql`
+    DELETE FROM messages
+    WHERE id = (
+      SELECT id FROM messages
+      WHERE chat_id = ${chatId} AND role = 'assistant'
+      ORDER BY sequence_order DESC
+      LIMIT 1
+    )
+  `;
+}
