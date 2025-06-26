@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Document } from '@/app/api/lib/model/document/document';
+import { toast } from 'sonner';
 
 interface MetadataField {
   key: string;
@@ -64,7 +65,7 @@ export const useDocuments = () => {
       setDocuments(documents.filter((doc) => doc.id !== documentId));
     } catch (error) {
       console.error('Error deleting document:', error);
-      alert('Failed to delete document. Please try again.');
+      toast.error('Failed to delete document. Please try again.');
     } finally {
       setDeletingDocumentId(null);
     }
