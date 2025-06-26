@@ -44,6 +44,7 @@
     actionResults: {},
     isProcessing: false,
     loggedThinkMessages: new Set(),
+    chatId: null,
   };
 
   // Create widget DOM
@@ -142,11 +143,18 @@
     const toggle = document.getElementById('chatWidgetToggle');
     const isHidden = widget.classList.toggle('hidden');
     toggle.classList.toggle('hidden', !isHidden);
-    if (!isHidden)
+    if (!isHidden) {
       setTimeout(
         () => document.getElementById('chatWidgetInputField').focus(),
         100
       );
+    } else {
+      // Reset chat state when widget is closed
+      state.chatId = null;
+      state.messages = [];
+      state.actionResults = {};
+      state.loggedThinkMessages = new Set();
+    }
   }
 
   // Handle errors
@@ -257,20 +265,28 @@
     updateChatUI();
 
     try {
+      const body = {
+        messages: state.messages,
+        userConfig,
+        agentId,
+        idempotencyKey: generateId(),
+      };
+      if (state.chatId) {
+        body.chatId = state.chatId;
+      }
       const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: state.messages,
-          userConfig,
-          agentId,
-          idempotencyKey: generateId(),
-        }),
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) throw new Error('Failed to fetch AI response');
-      const { text, toolCalls, toolResults, error, message } =
+      const { text, toolCalls, toolResults, error, message, chatId: returnedChatId } =
         await response.json();
+      // Store chatId if returned from backend
+      if (returnedChatId) {
+        state.chatId = returnedChatId;
+      }
       const parts = [];
 
       // If backend returned an error or message, show it in the chat widget

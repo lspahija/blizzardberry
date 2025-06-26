@@ -33,6 +33,14 @@ import {
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
 
+const navLinks = [
+  { href: '/dashboard', label: 'Dashboard' },
+  { href: '/dashboard/chats', label: 'Chats' },
+  { href: '/usage', label: 'Usage' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/contact', label: 'Contact' },
+];
+
 export function Navbar() {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackType, setFeedbackType] = useState('bug');
@@ -90,13 +98,6 @@ export function Navbar() {
       setIsSubmitting(false);
     }
   };
-
-  const navLinks = [
-    { href: '/dashboard', label: 'Dashboard' },
-    { href: '/usage', label: 'Usage' },
-    { href: '/pricing', label: 'Pricing' },
-    { href: '/contact', label: 'Contact' },
-  ];
 
   return (
     <>
