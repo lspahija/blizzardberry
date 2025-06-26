@@ -148,11 +148,6 @@
         () => document.getElementById('chatWidgetInputField').focus(),
         100
       );
-    } else {
-      state.chatId = null;
-      state.messages = [];
-      state.actionResults = {};
-      state.loggedThinkMessages = new Set();
     }
   }
 
