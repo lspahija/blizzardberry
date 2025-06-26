@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { Agent } from '@/app/api/lib/model/agent/agent';
 import posthog from 'posthog-js';
 import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
 
 interface CreateAgentParams {
   name: string;
@@ -62,7 +63,7 @@ export function useAgents() {
         setAgents(agents.filter((agent) => agent.id !== agentId));
       } catch (error) {
         console.error('Error deleting agent:', error);
-        alert('Failed to delete agent. Please try again.');
+        toast.error('Failed to delete agent. Please try again.');
       } finally {
         setDeletingAgentId(null);
       }
@@ -91,7 +92,7 @@ export function useAgents() {
         return { agentId };
       } catch (error) {
         console.error('Error creating agent:', error);
-        alert('Failed to create agent. Please try again.');
+        toast.error('Failed to create agent. Please try again.');
         throw error;
       } finally {
         setCreatingAgent(false);
@@ -122,7 +123,7 @@ export function useAgents() {
         await fetchAgents(); // Refresh the list
       } catch (error) {
         console.error('Error updating agent:', error);
-        alert('Failed to update agent. Please try again.');
+        toast.error('Failed to update agent. Please try again.');
         throw error;
       } finally {
         setUpdatingAgent(false);

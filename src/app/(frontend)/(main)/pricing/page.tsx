@@ -11,6 +11,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/app/(frontend)/components/Navbar';
 import { pricing } from '@/app/api/(main)/stripe/model';
+import { toast } from 'sonner';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -51,7 +52,7 @@ export default function PricingPage() {
       setCheckoutSessionId(checkoutSessionId);
       setShowCheckout(true);
     } catch (err) {
-      alert('Error initiating subscription: ' + (err as Error).message);
+      toast.error('Error initiating subscription: ' + (err as Error).message);
     }
   };
 
@@ -73,7 +74,7 @@ export default function PricingPage() {
       setCheckoutSessionId(checkoutSessionId);
       setShowCheckout(true);
     } catch (err) {
-      alert('Error initiating credit purchase: ' + (err as Error).message);
+      toast.error('Error initiating credit purchase: ' + (err as Error).message);
     }
   };
 

@@ -95,7 +95,6 @@ export function Navbar() {
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/usage', label: 'Usage' },
     { href: '/pricing', label: 'Pricing' },
-    { href: '/settings', label: 'Settings' },
     { href: '/contact', label: 'Contact' },
   ];
 

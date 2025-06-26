@@ -15,6 +15,7 @@ import {
 } from '@/app/api/lib/model/action/backendAction';
 import { FrontendModel } from '@/app/api/lib/model/action/frontendAction';
 import { Action } from '@/app/api/lib/model/action/baseAction';
+import { toast } from 'sonner';
 
 interface DataInput {
   name: string;
@@ -252,7 +253,7 @@ export const useActionForm = () => {
       router.refresh();
     } catch (error) {
       console.error('Error deleting action:', error);
-      alert('Failed to delete action. Please try again.');
+      toast.error('Failed to delete action. Please try again.');
     }
   };
 
