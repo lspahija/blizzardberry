@@ -102,6 +102,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - (Luka) onboard Stripe (complete stripe profile)
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) landing page needs to sell the product well
+- (Luka) create email addresses
 - (Luka) finish multi-tenancy config (just need prod configuration)
   - Google OAuth
       - [publish app](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7rg&project=ufcalarm-b270d)
