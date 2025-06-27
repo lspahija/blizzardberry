@@ -10,7 +10,7 @@ import { Check, Mail, MessageSquare, X, Send } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/app/(frontend)/components/Navbar';
-import { pricing } from '@/app/api/(main)/stripe/model';
+import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
 
 const stripePromise = loadStripe(
@@ -32,6 +32,9 @@ export default function PricingPage() {
   const [emailAddress, setEmailAddress] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [formStatus, setFormStatus] = useState<string>('');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
+    'monthly'
+  );
 
   const handleSubscribe = async (tier: string) => {
     if (!isLoggedIn) {
@@ -43,7 +46,7 @@ export default function PricingPage() {
       const res = await fetch('/api/stripe/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier }),
+        body: JSON.stringify({ tier, billingCycle }),
       });
       if (!res.ok) throw new Error((await res.json()).error);
       const { clientSecret, checkoutSessionId }: CheckoutResponse =
@@ -74,7 +77,9 @@ export default function PricingPage() {
       setCheckoutSessionId(checkoutSessionId);
       setShowCheckout(true);
     } catch (err) {
-      toast.error('Error initiating credit purchase: ' + (err as Error).message);
+      toast.error(
+        'Error initiating credit purchase: ' + (err as Error).message
+      );
     }
   };
 
@@ -132,6 +137,28 @@ export default function PricingPage() {
             Choose the perfect plan for your needs. All plans include our core
             features with different usage limits.
           </p>
+          <div className="flex justify-center gap-4 mt-6">
+            <button
+              className={`px-4 py-2 rounded-xl border-[2px] border-border font-medium ${
+                billingCycle === 'monthly'
+                  ? 'bg-secondary text-secondary-foreground'
+                  : 'bg-background text-foreground hover:bg-muted'
+              }`}
+              onClick={() => setBillingCycle('monthly')}
+            >
+              Monthly
+            </button>
+            <button
+              className={`px-4 py-2 rounded-xl border-[2px] border-border font-medium ${
+                billingCycle === 'yearly'
+                  ? 'bg-secondary text-secondary-foreground'
+                  : 'bg-background text-foreground hover:bg-muted'
+              }`}
+              onClick={() => setBillingCycle('yearly')}
+            >
+              Yearly (20% off)
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-16 px-4">
@@ -145,9 +172,9 @@ export default function PricingPage() {
                   {tier.name}
                 </h2>
                 <p className="text-4xl font-bold mb-2 text-foreground">
-                  ${tier.price}
+                  ${billingCycle === 'monthly' ? tier.price : tier.yearlyPrice}
                   <span className="text-lg font-normal text-muted-foreground">
-                    /month
+                    {billingCycle === 'monthly' ? '/month' : '/year'}
                   </span>
                 </p>
                 <p className="text-sm text-muted-foreground font-medium">

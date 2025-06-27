@@ -8,6 +8,8 @@ interface PricingItem {
 interface Tier extends PricingItem {
   agents: number;
   actionsPerAgent: number;
+  yearlyPriceId: string;
+  yearlyPrice: number;
 }
 
 interface OneTimePurchase extends PricingItem {}
@@ -21,24 +23,30 @@ export const pricing: Pricing = {
   tiers: {
     hobby: {
       name: 'Hobby',
-      priceId: process.env.HOBBY_PLAN_PRICE_ID!,
+      priceId: process.env.HOBBY_PLAN_MONTHLY_PRICE_ID!,
+      yearlyPriceId: process.env.HOBBY_PLAN_YEARLY_PRICE_ID!,
       price: 35,
+      yearlyPrice: 336, // 20% discount
       credits: 2000,
       agents: 1,
       actionsPerAgent: 8,
     },
     standard: {
       name: 'Standard',
-      priceId: process.env.STANDARD_PLAN_PRICE_ID!,
+      priceId: process.env.STANDARD_PLAN_MONTHLY_PRICE_ID!,
+      yearlyPriceId: process.env.STANDARD_PLAN_YEARLY_PRICE_ID!,
       price: 150,
+      yearlyPrice: 1440, // 20% discount
       credits: 13000,
       agents: 2,
       actionsPerAgent: 16,
     },
     pro: {
       name: 'Pro',
-      priceId: process.env.PRO_PLAN_PRICE_ID!,
+      priceId: process.env.PRO_PLAN_MONTHLY_PRICE_ID!,
+      yearlyPriceId: process.env.PRO_PLAN_YEARLY_PRICE_ID!,
       price: 500,
+      yearlyPrice: 4800, // 20% discount
       credits: 50000,
       agents: 3,
       actionsPerAgent: 24,

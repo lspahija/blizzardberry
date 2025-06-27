@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { pricing } from '@/app/api/(main)/stripe/model';
+import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
