@@ -12,6 +12,10 @@ import { useRouter } from 'next/navigation';
 import { Navbar } from '@/app/(frontend)/components/Navbar';
 import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
+import {
+  AgentModelDisplay,
+  AgentModelList,
+} from '@/app/api/lib/model/agent/agent';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -215,9 +219,27 @@ export default function PricingPage() {
                   <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
                   <span>{tier.actionsPerAgent} actions per agent</span>
                 </li>
+                <li className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
+                  <div className="group/tooltip relative">
+                    <span className="text-muted-foreground hover:text-secondary cursor-pointer transition-colors">
+                      Premium Models
+                    </span>
+                    <div className="absolute left-0 bottom-full mb-2 hidden group-hover/tooltip:block bg-background border-[2px] border-border rounded-lg p-3 text-sm text-muted-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] w-64 z-10">
+                      <p className="font-semibold mb-2">
+                        Premium Models Included:
+                      </p>
+                      <ul className="list-disc pl-4 space-y-1">
+                        {AgentModelList.map((model) => (
+                          <li key={model}>{AgentModelDisplay[model]}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </li>
               </ul>
               <button
-                className="w-full py-3 px-4 bg-secondary text-secondary-foreground border-[2px] border-border rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
+                className="w-full py-3 px-4 bg-secondary text-secondary-foreground border-[2px] border-border rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow studs-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
                 onClick={() => handleSubscribe(key)}
               >
                 Subscribe
@@ -247,6 +269,24 @@ export default function PricingPage() {
               <li className="flex items-center gap-2">
                 <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
                 <span>Dedicated support</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
+                <div className="group/tooltip relative">
+                  <span className="text-muted-foreground hover:text-secondary cursor-pointer transition-colors">
+                    Premium Models
+                  </span>
+                  <div className="absolute left-0 bottom-full mb-2 hidden group-hover/tooltip:block bg-background border-[2px] border-border rounded-lg p-3 text-sm text-muted-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] w-64 z-10">
+                    <p className="font-semibold mb-2">
+                      Premium Models Included:
+                    </p>
+                    <ul className="list-disc pl-4 space-y-1">
+                      {AgentModelList.map((model) => (
+                        <li key={model}>{AgentModelDisplay[model]}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               </li>
             </ul>
             <button
