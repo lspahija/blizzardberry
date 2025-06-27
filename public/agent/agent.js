@@ -44,6 +44,7 @@
     actionResults: {},
     isProcessing: false,
     loggedThinkMessages: new Set(),
+    chatId: null,
   };
 
   // Create widget DOM
@@ -157,6 +158,17 @@
       role: 'assistant',
       parts: [{ type: 'text', text: messageText }],
     });
+    if (state.chatId) {
+      fetch(`${baseUrl}/api/chats/${state.chatId}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          role: 'assistant',
+          content: messageText,
+          removeLastAssistantMessage: true,
+        }),
+      });
+    }
     updateChatUI();
   }
 
@@ -257,20 +269,27 @@
     updateChatUI();
 
     try {
+      const body = {
+        messages: state.messages,
+        userConfig,
+        agentId,
+        idempotencyKey: generateId(),
+      };
+      if (state.chatId) {
+        body.chatId = state.chatId;
+      }
       const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: state.messages,
-          userConfig,
-          agentId,
-          idempotencyKey: generateId(),
-        }),
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) throw new Error('Failed to fetch AI response');
-      const { text, toolCalls, toolResults, error, message } =
+      const { text, toolCalls, toolResults, error, message, chatId: returnedChatId } =
         await response.json();
+      if (returnedChatId) {
+        state.chatId = returnedChatId;
+      }
       const parts = [];
 
       // If backend returned an error or message, show it in the chat widget
