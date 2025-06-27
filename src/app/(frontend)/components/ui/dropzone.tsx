@@ -178,7 +178,11 @@ interface DropzoneProps {
   disabled?: boolean;
 }
 
-function DropzoneComponent({ onFileDrop, className, disabled = false }: DropzoneProps) {
+function DropzoneComponent({
+  onFileDrop,
+  className,
+  disabled = false,
+}: DropzoneProps) {
   const [isDragging, setIsDragging] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [isProcessing, setIsProcessing] = React.useState(false);

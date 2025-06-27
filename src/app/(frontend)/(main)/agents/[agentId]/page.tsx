@@ -715,7 +715,7 @@ function AgentDetails({
                   >
                     <div className="flex-1">
                       <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
-                          Document {idx + 1}
+                        Document {idx + 1}
                       </p>
                       <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                         <span className="font-semibold">Content:</span>{' '}

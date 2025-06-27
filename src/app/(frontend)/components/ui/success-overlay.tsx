@@ -11,15 +11,15 @@ interface SuccessOverlayProps {
 }
 
 export default function SuccessOverlay({
-  title = "Action Created Successfully!",
-  message = "Your action has been created and is ready to use.",
+  title = 'Action Created Successfully!',
+  message = 'Your action has been created and is ready to use.',
   showSpinner = true,
-  icon
+  icon,
 }: SuccessOverlayProps) {
   return (
     <>
       {/* Full viewport backdrop blur */}
-      <div 
+      <div
         className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[9998]"
         style={{
           position: 'fixed',
@@ -29,7 +29,7 @@ export default function SuccessOverlay({
           bottom: 0,
           width: '100vw',
           height: '100vh',
-          zIndex: 9998
+          zIndex: 9998,
         }}
         aria-hidden="true"
       />
@@ -39,7 +39,7 @@ export default function SuccessOverlay({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
           className="relative bg-card border-[3px] border-border rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4"
           style={{ borderLeftColor: 'var(--color-destructive)' }}
         >
@@ -50,9 +50,7 @@ export default function SuccessOverlay({
             <h3 className="text-lg font-semibold text-foreground mb-2">
               {title}
             </h3>
-            <p className="text-muted-foreground mb-6">
-              {message}
-            </p>
+            <p className="text-muted-foreground mb-6">{message}</p>
             {showSpinner && (
               <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
             )}
@@ -61,4 +59,4 @@ export default function SuccessOverlay({
       </div>
     </>
   );
-} 
+}

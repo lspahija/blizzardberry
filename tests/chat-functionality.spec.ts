@@ -19,7 +19,9 @@ test.describe('Chat Widget Functionality Tests', () => {
       await expect(toggleButton).toBeVisible();
 
       // Check that it contains an SVG icon (not text)
-      const hasSvg = await toggleButton.evaluate(el => el.querySelector('svg') !== null);
+      const hasSvg = await toggleButton.evaluate(
+        (el) => el.querySelector('svg') !== null
+      );
       expect(hasSvg).toBe(true);
     });
 
@@ -113,9 +115,11 @@ test.describe('Chat Widget Functionality Tests', () => {
       const sendButton = page.locator('#chatWidgetSendButton');
       await expect(sendButton).toBeAttached();
       await expect(sendButton).toBeVisible();
-      
+
       // Check that it contains an SVG icon (not text)
-      const hasSvg = await sendButton.evaluate(el => el.querySelector('svg') !== null);
+      const hasSvg = await sendButton.evaluate(
+        (el) => el.querySelector('svg') !== null
+      );
       expect(hasSvg).toBe(true);
     });
 
@@ -153,9 +157,11 @@ test.describe('Chat Widget Functionality Tests', () => {
       // Check for close button in header
       const closeButton = page.locator('#chatWidgetCloseButton');
       await expect(closeButton).toBeAttached();
-      
+
       // Check that it contains an SVG icon (not text)
-      const hasSvg = await closeButton.evaluate(el => el.querySelector('svg') !== null);
+      const hasSvg = await closeButton.evaluate(
+        (el) => el.querySelector('svg') !== null
+      );
       expect(hasSvg).toBe(true);
 
       // Check for chat body
@@ -171,15 +177,19 @@ test.describe('Chat Widget Functionality Tests', () => {
       await expect(footer).toBeAttached();
     });
 
-    test('Agent script consumes user config and actions properly', async ({ page }) => {
+    test('Agent script consumes user config and actions properly', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
 
       // Check that the agent script consumed the global config and actions
-      const userConfigExists = await page.evaluate(() => window.agentUserConfig);
+      const userConfigExists = await page.evaluate(
+        () => window.agentUserConfig
+      );
       const actionsExist = await page.evaluate(() => window.agentActions);
-      
+
       // Both should be undefined/null after the agent script consumes them
       expect(userConfigExists).toBeUndefined();
       expect(actionsExist).toBeUndefined();

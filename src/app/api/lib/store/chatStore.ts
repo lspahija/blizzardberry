@@ -54,12 +54,12 @@ export async function findExistingChats(
     LIMIT ${limit}
   `;
 
-  return result.map(row => ({
+  return result.map((row) => ({
     id: row.id,
     agent_id: row.agent_id,
     agent_owner_id: row.agent_owner_id,
     end_user_config: row.end_user_config,
-    created_at: row.created_at
+    created_at: row.created_at,
   }));
 }
 
@@ -101,13 +101,13 @@ export async function getChatHistory(
     LIMIT ${limit}
   `;
 
-  return result.map(row => ({
+  return result.map((row) => ({
     id: row.id,
     chat_id: row.chat_id,
     role: row.role,
     content: row.content,
     created_at: row.created_at,
-    sequence_order: row.sequence_order
+    sequence_order: row.sequence_order,
   }));
 }
 
@@ -136,7 +136,7 @@ export async function getChatsForAgentOwner(
     LIMIT ${limit} OFFSET ${offset}
   `;
 
-  return result.map(row => ({
+  return result.map((row) => ({
     id: row.id,
     agent_id: row.agent_id,
     agent_owner_id: row.agent_owner_id,
@@ -144,7 +144,7 @@ export async function getChatsForAgentOwner(
     created_at: row.created_at,
     message_count: parseInt(row.message_count),
     last_message_at: row.last_message_at,
-    agent_name: row.agent_name || 'Unknown Agent'
+    agent_name: row.agent_name || 'Unknown Agent',
   }));
 }
 
@@ -161,13 +161,13 @@ export async function getMessagesForChat(
     LIMIT ${limit} OFFSET ${offset}
   `;
 
-  return result.map(row => ({
+  return result.map((row) => ({
     id: row.id,
     chat_id: row.chat_id,
     role: row.role,
     content: row.content,
     created_at: row.created_at,
-    sequence_order: row.sequence_order
+    sequence_order: row.sequence_order,
   }));
 }
 

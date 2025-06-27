@@ -51,7 +51,10 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
         );
 
         // Verify script source
-        await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
+        await expect(agentScript).toHaveAttribute(
+          'src',
+          'http://localhost:3000/agent/agent.js'
+        );
       });
 
       test('Agent actions are functional', async ({ page }) => {
@@ -66,9 +69,13 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
         await expect(chatWidget).toBeAttached();
 
         // Verify that the agent script consumed the global config and actions
-        const userConfigExists = await page.evaluate(() => (window as any).agentUserConfig);
-        const actionsExist = await page.evaluate(() => (window as any).agentActions);
-        
+        const userConfigExists = await page.evaluate(
+          () => (window as any).agentUserConfig
+        );
+        const actionsExist = await page.evaluate(
+          () => (window as any).agentActions
+        );
+
         // Both should be undefined after the agent script consumes them
         expect(userConfigExists).toBeUndefined();
         expect(actionsExist).toBeUndefined();
@@ -89,7 +96,10 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
           'data-agent-id',
           framework.agentId
         );
-        await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
+        await expect(agentScript).toHaveAttribute(
+          'src',
+          'http://localhost:3000/agent/agent.js'
+        );
       });
 
       test('Error handling for missing dependencies', async ({ page }) => {
@@ -162,7 +172,10 @@ test.describe('BlizzardBerry Framework Comparison Tests', () => {
 
       // Verify that the agent script loads the same way in both frameworks
       const agentScript = page.locator('#blizzardberry-agent');
-      await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
+      await expect(agentScript).toHaveAttribute(
+        'src',
+        'http://localhost:3000/agent/agent.js'
+      );
 
       // Verify that the chat widget was created (indicates agent script loaded successfully)
       const chatWidget = page.locator('#chatWidget');

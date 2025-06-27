@@ -29,12 +29,12 @@ export function useChats() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch('/api/chats');
       if (!response.ok) {
         throw new Error('Failed to fetch chats');
       }
-      
+
       const data = await response.json();
       setChats(data.chats);
     } catch (err) {
@@ -49,13 +49,13 @@ export function useChats() {
       const response = await fetch(`/api/chats/${chatId}`, {
         method: 'DELETE',
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to delete chat');
       }
-      
+
       // Remove the chat from the local state
-      setChats(prev => prev.filter(chat => chat.id !== chatId));
+      setChats((prev) => prev.filter((chat) => chat.id !== chatId));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete chat');
     }
@@ -81,16 +81,16 @@ export function useChatMessages(chatId: string | null) {
 
   const fetchMessages = async () => {
     if (!chatId) return;
-    
+
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch(`/api/chats/${chatId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch messages');
       }
-      
+
       const data = await response.json();
       setMessages(data.messages);
     } catch (err) {
@@ -114,4 +114,4 @@ export function useChatMessages(chatId: string | null) {
     error,
     fetchMessages,
   };
-} 
+}

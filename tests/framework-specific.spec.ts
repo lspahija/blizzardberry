@@ -37,7 +37,9 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
   });
 
   test.describe('Vanilla JavaScript Specific Features', () => {
-    test('Vanilla JavaScript - Agent loads and initializes correctly', async ({ page }) => {
+    test('Vanilla JavaScript - Agent loads and initializes correctly', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
 
@@ -65,10 +67,15 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
         'data-agent-id',
         '8b5d8bfb-f6b4-45de-9500-aa95c7046487'
       );
-      await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
+      await expect(agentScript).toHaveAttribute(
+        'src',
+        'http://localhost:3000/agent/agent.js'
+      );
     });
 
-    test('Vanilla JavaScript - Agent actions work correctly', async ({ page }) => {
+    test('Vanilla JavaScript - Agent actions work correctly', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
 
@@ -80,15 +87,19 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       await expect(chatWidget).toBeAttached();
 
       // Verify that the agent script consumed the global config and actions
-      const userConfigExists = await page.evaluate(() => window.agentUserConfig);
+      const userConfigExists = await page.evaluate(
+        () => window.agentUserConfig
+      );
       const actionsExist = await page.evaluate(() => window.agentActions);
-      
+
       // Both should be undefined after the agent script consumes them
       expect(userConfigExists).toBeUndefined();
       expect(actionsExist).toBeUndefined();
     });
 
-    test('Vanilla JavaScript - User configuration is properly set', async ({ page }) => {
+    test('Vanilla JavaScript - User configuration is properly set', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
 
@@ -116,7 +127,9 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       );
     });
 
-    test('Vanilla JavaScript - Script loading order is correct', async ({ page }) => {
+    test('Vanilla JavaScript - Script loading order is correct', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/vanilla.html');
       await page.waitForLoadState('networkidle');
 
@@ -137,7 +150,9 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       await expect(chatWidget).toBeAttached();
     });
 
-    test('Vanilla JavaScript - Error handling for missing agent script', async ({ page }) => {
+    test('Vanilla JavaScript - Error handling for missing agent script', async ({
+      page,
+    }) => {
       // Create a test page with a broken agent script URL
       await page.setContent(`
         <!DOCTYPE html>
@@ -195,19 +210,26 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       await expect(statusDiv).toBeVisible();
     });
 
-    test('Vanilla JavaScript - Agent script loads from correct location', async ({ page }) => {
+    test('Vanilla JavaScript - Agent script loads from correct location', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/vanilla.html');
 
       // Check that the agent script is loaded from the correct location
       const agentScript = page.locator('#blizzardberry-agent');
-      await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
+      await expect(agentScript).toHaveAttribute(
+        'src',
+        'http://localhost:3000/agent/agent.js'
+      );
 
       // Verify the script is actually loaded (not just the element exists)
       const scriptSrc = await agentScript.getAttribute('src');
       expect(scriptSrc).toBe('http://localhost:3000/agent/agent.js');
     });
 
-    test('Vanilla JavaScript - Agent ID is properly configured', async ({ page }) => {
+    test('Vanilla JavaScript - Agent ID is properly configured', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/vanilla.html');
 
       // Check that the agent ID is set correctly
@@ -244,9 +266,13 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       await expect(chatWidget).toBeAttached();
 
       // Verify that the agent script consumed the global config and actions
-      const userConfigExists = await page.evaluate(() => (window as any).agentUserConfig);
-      const actionsExist = await page.evaluate(() => (window as any).agentActions);
-      
+      const userConfigExists = await page.evaluate(
+        () => (window as any).agentUserConfig
+      );
+      const actionsExist = await page.evaluate(
+        () => (window as any).agentActions
+      );
+
       // Both should be undefined after the agent script consumes them
       expect(userConfigExists).toBeUndefined();
       expect(actionsExist).toBeUndefined();
@@ -283,9 +309,13 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       await expect(chatWidget).toBeAttached();
 
       // Verify that the agent script consumed the global config and actions
-      const userConfigExists = await page.evaluate(() => (window as any).agentUserConfig);
-      const actionsExist = await page.evaluate(() => (window as any).agentActions);
-      
+      const userConfigExists = await page.evaluate(
+        () => (window as any).agentUserConfig
+      );
+      const actionsExist = await page.evaluate(
+        () => (window as any).agentActions
+      );
+
       // Both should be undefined after the agent script consumes them
       expect(userConfigExists).toBeUndefined();
       expect(actionsExist).toBeUndefined();
@@ -300,7 +330,9 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
   });
 
   test.describe('React Specific Features', () => {
-    test('React agent script loads and creates chat widget', async ({ page }) => {
+    test('React agent script loads and creates chat widget', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/react.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
@@ -320,9 +352,13 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       await expect(chatWidget).toBeAttached();
 
       // Verify that the agent script consumed the global config and actions
-      const userConfigExists = await page.evaluate(() => (window as any).agentUserConfig);
-      const actionsExist = await page.evaluate(() => (window as any).agentActions);
-      
+      const userConfigExists = await page.evaluate(
+        () => (window as any).agentUserConfig
+      );
+      const actionsExist = await page.evaluate(
+        () => (window as any).agentActions
+      );
+
       // Both should be undefined after the agent script consumes them
       expect(userConfigExists).toBeUndefined();
       expect(actionsExist).toBeUndefined();
@@ -349,7 +385,9 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       );
     });
 
-    test('Next.js Script component attributes are set correctly', async ({ page }) => {
+    test('Next.js Script component attributes are set correctly', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/nextjs.html');
       await page.waitForLoadState('networkidle');
 
@@ -357,10 +395,15 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       const agentScript = page.locator('#blizzardberry-agent');
       await expect(agentScript).toHaveAttribute('data-nextjs', 'true');
       await expect(agentScript).toHaveAttribute('data-nextjs-script', 'true');
-      await expect(agentScript).toHaveAttribute('data-strategy', 'afterInteractive');
+      await expect(agentScript).toHaveAttribute(
+        'data-strategy',
+        'afterInteractive'
+      );
     });
 
-    test('Next.js agent script loads and creates chat widget', async ({ page }) => {
+    test('Next.js agent script loads and creates chat widget', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/nextjs.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
@@ -380,9 +423,13 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       await expect(chatWidget).toBeAttached();
 
       // Verify that the agent script consumed the global config and actions
-      const userConfigExists = await page.evaluate(() => (window as any).agentUserConfig);
-      const actionsExist = await page.evaluate(() => (window as any).agentActions);
-      
+      const userConfigExists = await page.evaluate(
+        () => (window as any).agentUserConfig
+      );
+      const actionsExist = await page.evaluate(
+        () => (window as any).agentActions
+      );
+
       // Both should be undefined after the agent script consumes them
       expect(userConfigExists).toBeUndefined();
       expect(actionsExist).toBeUndefined();
@@ -398,7 +445,10 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
     test('Next.js specific actions work correctly', async ({ page }) => {
       const consoleMessages: string[] = [];
       page.on('console', (msg) => {
-        if (msg.text().includes('Next.js state update') || msg.text().includes('Next.js API call')) {
+        if (
+          msg.text().includes('Next.js state update') ||
+          msg.text().includes('Next.js API call')
+        ) {
           consoleMessages.push(msg.text());
         }
       });
@@ -420,15 +470,27 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
         // Trigger Next.js specific actions
         await page.evaluate(() => {
           if (window.agentActions) {
-            window.agentActions.updateNextJSState('testKey', 'testValue', window.agentUserConfig);
-            window.agentActions.callNextJSAPI('/api/test', { test: true }, window.agentUserConfig);
+            window.agentActions.updateNextJSState(
+              'testKey',
+              'testValue',
+              window.agentUserConfig
+            );
+            window.agentActions.callNextJSAPI(
+              '/api/test',
+              { test: true },
+              window.agentUserConfig
+            );
           }
         });
         await page.waitForTimeout(1000);
 
         // Check that Next.js specific actions were called
-        expect(consoleMessages.some(msg => msg.includes('Next.js state update'))).toBeTruthy();
-        expect(consoleMessages.some(msg => msg.includes('Next.js API call'))).toBeTruthy();
+        expect(
+          consoleMessages.some((msg) => msg.includes('Next.js state update'))
+        ).toBeTruthy();
+        expect(
+          consoleMessages.some((msg) => msg.includes('Next.js API call'))
+        ).toBeTruthy();
       } else {
         // If agentActions was consumed, verify the agent script loaded successfully
         const chatWidget = page.locator('#chatWidget');
@@ -436,7 +498,9 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       }
     });
 
-    test('Next.js environment integrates with BlizzardBerry agent seamlessly', async ({ page }) => {
+    test('Next.js environment integrates with BlizzardBerry agent seamlessly', async ({
+      page,
+    }) => {
       await page.goto('/test-pages/nextjs.html');
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(3000);
@@ -446,7 +510,9 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       expect(nextPublicUrl).toBeTruthy();
 
       // Check that Next.js router is available
-      const hasNextRouter = await page.evaluate(() => window.next && window.next.router);
+      const hasNextRouter = await page.evaluate(
+        () => window.next && window.next.router
+      );
       expect(hasNextRouter).toBeTruthy();
 
       // Verify agent functionality
@@ -457,7 +523,10 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
       const agentScript = page.locator('#blizzardberry-agent');
       await expect(agentScript).toHaveAttribute('data-nextjs', 'true');
       await expect(agentScript).toHaveAttribute('data-nextjs-script', 'true');
-      await expect(agentScript).toHaveAttribute('data-strategy', 'afterInteractive');
+      await expect(agentScript).toHaveAttribute(
+        'data-strategy',
+        'afterInteractive'
+      );
     });
   });
 
@@ -477,7 +546,10 @@ test.describe('Framework-Specific BlizzardBerry Tests', () => {
 
         // Verify all frameworks use the same agent script
         const agentScript = page.locator('#blizzardberry-agent');
-        await expect(agentScript).toHaveAttribute('src', 'http://localhost:3000/agent/agent.js');
+        await expect(agentScript).toHaveAttribute(
+          'src',
+          'http://localhost:3000/agent/agent.js'
+        );
 
         // Verify all frameworks have the same basic structure
         const configScript = page.locator('#blizzardberry-config');

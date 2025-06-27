@@ -3,12 +3,35 @@
 import { useState, useEffect } from 'react';
 import { useChats, useChatMessages } from '@/app/(frontend)/hooks/useChats';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
-import { Card, CardContent, CardHeader, CardTitle } from '@/app/(frontend)/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/app/(frontend)/components/ui/card';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import { Badge } from '@/app/(frontend)/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/app/(frontend)/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/(frontend)/components/ui/select';
-import { Trash2, MessageSquare, Calendar, User, Loader2, Filter } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/app/(frontend)/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/app/(frontend)/components/ui/select';
+import {
+  Trash2,
+  MessageSquare,
+  Calendar,
+  User,
+  Loader2,
+  Filter,
+} from 'lucide-react';
 
 export default function ChatsPage() {
   const { chats, loading, error, deleteChat } = useChats();
@@ -19,17 +42,21 @@ export default function ChatsPage() {
   const [deleting, setDeleting] = useState(false);
   const [selectedAgentFilter, setSelectedAgentFilter] = useState<string>('all');
 
-  const { messages: selectedChatMessages, loading: loadingMessages } = useChatMessages(selectedChat);
+  const { messages: selectedChatMessages, loading: loadingMessages } =
+    useChatMessages(selectedChat);
 
-  const filteredChats = chats.filter(chat => {
+  const filteredChats = chats.filter((chat) => {
     if (selectedAgentFilter === 'all') return true;
     return chat.agent_id === selectedAgentFilter;
   });
 
-  const agentChatCounts = agents.reduce((acc, agent) => {
-    acc[agent.id] = chats.filter(chat => chat.agent_id === agent.id).length;
-    return acc;
-  }, {} as Record<string, number>);
+  const agentChatCounts = agents.reduce(
+    (acc, agent) => {
+      acc[agent.id] = chats.filter((chat) => chat.agent_id === agent.id).length;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
   const handleDeleteChat = (chatId: string) => {
     setChatToDelete(chatId);
@@ -63,18 +90,20 @@ export default function ChatsPage() {
     if (!endUserConfig) return 'Anonymous User';
     let config = endUserConfig;
     if (typeof config === 'string') {
-      try { 
+      try {
         config = JSON.parse(config);
       } catch {
         return 'Unknown User';
       }
     }
-    return config.email ||
-           config.name ||
-           config.user_metadata?.name ||
-           config.user_id ||
-           config.userId ||
-           'Unknown User';
+    return (
+      config.email ||
+      config.name ||
+      config.user_metadata?.name ||
+      config.user_id ||
+      config.userId ||
+      'Unknown User'
+    );
   };
 
   useEffect(() => {
@@ -110,7 +139,10 @@ export default function ChatsPage() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-gray-500" />
-            <Select value={selectedAgentFilter} onValueChange={setSelectedAgentFilter}>
+            <Select
+              value={selectedAgentFilter}
+              onValueChange={setSelectedAgentFilter}
+            >
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Filter by agent" />
               </SelectTrigger>
@@ -124,7 +156,9 @@ export default function ChatsPage() {
               </SelectContent>
             </Select>
           </div>
-          <Badge variant="secondary">{filteredChats.length} conversations</Badge>
+          <Badge variant="secondary">
+            {filteredChats.length} conversations
+          </Badge>
         </div>
       </div>
 
@@ -133,13 +167,14 @@ export default function ChatsPage() {
           <CardContent className="flex flex-col items-center justify-center h-64">
             <MessageSquare className="h-12 w-12 text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {selectedAgentFilter === 'all' ? 'No conversations yet' : 'No conversations for this agent'}
+              {selectedAgentFilter === 'all'
+                ? 'No conversations yet'
+                : 'No conversations for this agent'}
             </h3>
             <p className="text-gray-500 text-center">
-              {selectedAgentFilter === 'all' 
+              {selectedAgentFilter === 'all'
                 ? 'When users interact with your agents, their conversations will appear here.'
-                : 'When users interact with this agent, their conversations will appear here.'
-              }
+                : 'When users interact with this agent, their conversations will appear here.'}
             </p>
           </CardContent>
         </Card>
@@ -148,8 +183,8 @@ export default function ChatsPage() {
           {/* Chat List */}
           <div className="space-y-4">
             {filteredChats.map((chat) => (
-              <Card 
-                key={chat.id} 
+              <Card
+                key={chat.id}
                 className={`cursor-pointer transition-all hover:shadow-md ${
                   selectedChat === chat.id ? 'ring-2 ring-blue-500' : ''
                 }`}
@@ -164,7 +199,7 @@ export default function ChatsPage() {
                           {getEndUserInfo(chat.end_user_config)}
                         </span>
                       </div>
-                      
+
                       <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
                         <div className="flex items-center gap-1">
                           <MessageSquare className="h-4 w-4" />
@@ -180,7 +215,7 @@ export default function ChatsPage() {
                         Agent: {chat.agent_name}
                       </div>
                     </div>
-                    
+
                     <Button
                       variant="ghost"
                       size="sm"
@@ -204,9 +239,7 @@ export default function ChatsPage() {
             {selectedChat ? (
               <Card className="h-[600px] flex flex-col">
                 <CardHeader className="border-b">
-                  <CardTitle className="text-lg">
-                    Conversation
-                  </CardTitle>
+                  <CardTitle className="text-lg">Conversation</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-y-auto p-4">
                   {loadingMessages ? (
@@ -219,7 +252,9 @@ export default function ChatsPage() {
                         <div
                           key={message.id}
                           className={`flex ${
-                            message.role === 'user' ? 'justify-end' : 'justify-start'
+                            message.role === 'user'
+                              ? 'justify-end'
+                              : 'justify-start'
                           }`}
                         >
                           <div
@@ -232,7 +267,9 @@ export default function ChatsPage() {
                             <div className="text-sm font-medium mb-1">
                               {message.role === 'user' ? 'User' : 'Assistant'}
                             </div>
-                            <div className="text-sm whitespace-pre-wrap">{message.content}</div>
+                            <div className="text-sm whitespace-pre-wrap">
+                              {message.content}
+                            </div>
                             <div className="text-xs opacity-70 mt-1">
                               {formatDate(message.created_at)}
                             </div>
@@ -247,7 +284,9 @@ export default function ChatsPage() {
               <Card className="h-[600px] flex items-center justify-center">
                 <CardContent className="text-center">
                   <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Select a conversation</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Select a conversation
+                  </h3>
                   <p className="text-gray-500">
                     Choose a conversation from the list to view the messages.
                   </p>
@@ -265,14 +304,27 @@ export default function ChatsPage() {
             <DialogTitle>Delete Conversation</DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            <p>Are you sure you want to delete this conversation? This action cannot be undone.</p>
+            <p>
+              Are you sure you want to delete this conversation? This action
+              cannot be undone.
+            </p>
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)} disabled={deleting}>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={deleting}
+            >
               Cancel
             </Button>
-            <Button variant="destructive" onClick={confirmDelete} disabled={deleting}>
-              {deleting ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : null}
+            <Button
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={deleting}
+            >
+              {deleting ? (
+                <Loader2 className="animate-spin h-4 w-4 mr-2" />
+              ) : null}
               Delete
             </Button>
           </div>
@@ -280,4 +332,4 @@ export default function ChatsPage() {
       </Dialog>
     </div>
   );
-} 
+}

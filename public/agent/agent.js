@@ -285,8 +285,14 @@
       });
 
       if (!response.ok) throw new Error('Failed to fetch AI response');
-      const { text, toolCalls, toolResults, error, message, chatId: returnedChatId } =
-        await response.json();
+      const {
+        text,
+        toolCalls,
+        toolResults,
+        error,
+        message,
+        chatId: returnedChatId,
+      } = await response.json();
       if (returnedChatId) {
         state.chatId = returnedChatId;
       }

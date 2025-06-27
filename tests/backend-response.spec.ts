@@ -387,18 +387,22 @@ test.describe('Backend Response Tests', () => {
       await page.waitForTimeout(5000);
 
       // Verify that an error message is displayed (look for the latest assistant message)
-      const assistantMessages = page.locator('.assistant-message:not(.typing-indicator)');
+      const assistantMessages = page.locator(
+        '.assistant-message:not(.typing-indicator)'
+      );
       const messageCount = await assistantMessages.count();
 
       if (messageCount > 1) {
         // Get the latest assistant message (should be the error response)
         const latestMessage = assistantMessages.last();
         const messageText = await latestMessage.textContent();
-        
+
         if (messageText && messageText.includes('Error')) {
           console.log('✅ Error handling works correctly');
         } else {
-          console.log('ℹ️ Malformed response handled gracefully without error message');
+          console.log(
+            'ℹ️ Malformed response handled gracefully without error message'
+          );
         }
         expect(true).toBe(true);
       } else {

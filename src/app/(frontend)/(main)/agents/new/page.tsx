@@ -167,7 +167,8 @@ export default function NewAgentPage() {
                         Framework
                       </Label>
                       <p className="text-sm text-muted-foreground mt-2 ml-6">
-                        Select the framework you're using to implement the agent.
+                        Select the framework you're using to implement the
+                        agent.
                       </p>
                       <div className="mt-2 ml-6">
                         <Select
@@ -186,7 +187,9 @@ export default function NewAgentPage() {
                             <SelectItem value={Framework.NEXT_JS}>
                               Next.js
                             </SelectItem>
-                            <SelectItem value={Framework.REACT}>React</SelectItem>
+                            <SelectItem value={Framework.REACT}>
+                              React
+                            </SelectItem>
                             <SelectItem value={Framework.VANILLA}>
                               Vanilla JS
                             </SelectItem>
@@ -233,8 +236,8 @@ export default function NewAgentPage() {
                       <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-6">
                         <li>Copy the code snippet above</li>
                         <li>
-                          Paste it between the <code>&lt;body&gt;</code> tags
-                          of your website's HTML
+                          Paste it between the <code>&lt;body&gt;</code> tags of
+                          your website's HTML
                         </li>
                         <li>Save and publish your website changes</li>
                         <li>
@@ -286,8 +289,12 @@ export default function NewAgentPage() {
                     <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
                       <div className="text-center">
                         <div className="w-12 h-12 border-4 border-brand border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                        <p className="text-foreground font-semibold">Creating Agent...</p>
-                        <p className="text-muted-foreground text-sm">Please wait while we set up your agent</p>
+                        <p className="text-foreground font-semibold">
+                          Creating Agent...
+                        </p>
+                        <p className="text-muted-foreground text-sm">
+                          Please wait while we set up your agent
+                        </p>
                       </div>
                     </div>
                   )}

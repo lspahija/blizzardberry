@@ -58,7 +58,7 @@ export const useActionForm = () => {
   useEffect(() => {
     // Don't update step if we're showing success
     if (showSuccess) return;
-    
+
     const stepParam = searchParams.get('step');
     let currentStep = 1;
 
@@ -99,7 +99,7 @@ export const useActionForm = () => {
   const updateUrl = (newStep: number) => {
     // Don't update URL if we're showing success
     if (showSuccess) return;
-    
+
     if (newStep > 1) {
       const actionTypeParam =
         baseAction.executionContext === ExecutionContext.SERVER
@@ -214,11 +214,11 @@ export const useActionForm = () => {
       if (response.ok) {
         console.log('Action created successfully');
         setShowSuccess(true);
-        
+
         // Clear browser history without causing page reload
         window.history.replaceState(null, '', `/agents/${agentId}/actions/new`);
         window.history.pushState(null, '', `/agents/${agentId}/actions/new`);
-        
+
         setTimeout(() => {
           router.replace(`/agents/${agentId}`);
         }, 1500);

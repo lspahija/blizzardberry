@@ -6,7 +6,16 @@ import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from '@stripe/react-stripe-js';
-import { Check, Mail, MessageSquare, X, Send, Star, Zap, Shield, Users, Sparkles } from 'lucide-react';
+import {
+  Check,
+  Mail,
+  MessageSquare,
+  Send,
+  Star,
+  Zap,
+  Shield,
+  Users,
+} from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/app/(frontend)/components/Navbar';
@@ -131,28 +140,60 @@ export default function PricingPage() {
 
   // Feature highlights for each tier (only real features)
   const tierFeatures = {
-    hobby: [
-      'Premium models included',
-      'Support',
-    ],
-    standard: [
-      'Premium models included',
-      'Support',
-    ],
-    pro: [
-      'Premium models included',
-      'Support',
-    ],
-    enterprise: [
-      'Premium models included',
-      'Dedicated support',
-    ]
+    hobby: ['Premium models included', 'Support'],
+    standard: ['Premium models included', 'Support'],
+    pro: ['Premium models included', 'Support'],
+    enterprise: ['Premium models included', 'Dedicated support'],
   };
 
   return (
     <>
+      <style>
+        {`
+  .tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-text {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: text-decoration 0.2s ease;
+}
+
+.tooltip-text:hover {
+  text-decoration: underline;
+}
+
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1f2937; /* Tailwind's gray-800 */
+  color: #ffffff; /* White text */
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  min-width: 200px;
+  max-width: 300px;
+  font-size: 0.875rem; /* Tailwind's text-sm */
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.tooltip-container:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+`}
+      </style>
+
       {isLoggedIn && <Navbar />}
-      
+
       {/* Hero Section */}
       <div className="bg-background">
         <div className="container mx-auto px-4 py-20 max-w-7xl">
@@ -161,9 +202,10 @@ export default function PricingPage() {
               Pricing
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
-              Choose the perfect plan for your AI agent needs. Start free, scale as you grow.
+              Choose the perfect plan for your AI agent needs. Start free, scale
+              as you grow.
             </p>
-            
+
             {/* Billing Toggle */}
             <div className="flex justify-center gap-4 mb-12">
               <button
@@ -185,7 +227,9 @@ export default function PricingPage() {
                 onClick={() => setBillingCycle('yearly')}
               >
                 <span>Yearly</span>
-                <span className="inline-block rounded-full bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 ml-2">Save 20%</span>
+                <span className="inline-block rounded-full bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 ml-2">
+                  Save 20%
+                </span>
               </button>
             </div>
           </div>
@@ -196,40 +240,65 @@ export default function PricingPage() {
               <div
                 key={key}
                 className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch ${
-                  key === 'standard' ? 'border-2 border-secondary shadow-lg' : ''
+                  key === 'standard'
+                    ? 'border-2 border-secondary shadow-lg'
+                    : ''
                 }`}
                 style={{ minHeight: 480 }}
               >
                 {/* -20% badge for yearly */}
                 {billingCycle === 'yearly' && (
-                  <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">-20%</span>
+                  <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
+                    -20%
+                  </span>
                 )}
                 {key === 'standard' && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                    <span className="bg-secondary text-secondary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-border" style={{letterSpacing: 1}}>
+                    <span
+                      className="bg-secondary text-secondary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-border"
+                      style={{ letterSpacing: 1 }}
+                    >
                       Most Popular
                     </span>
                   </div>
                 )}
-                
+
                 <div className="mb-8">
                   <div className="flex items-center gap-2 mb-2">
-                    {key === 'hobby' && <Zap className="h-6 w-6 text-secondary" />}
-                    {key === 'standard' && <Star className="h-6 w-6 text-secondary" />}
-                    {key === 'pro' && <Shield className="h-6 w-6 text-secondary" />}
-                    {key === 'enterprise' && <Users className="h-6 w-6 text-secondary" />}
-                    <h2 className="text-2xl font-bold text-foreground">{tier.name}</h2>
+                    {key === 'hobby' && (
+                      <Zap className="h-6 w-6 text-secondary" />
+                    )}
+                    {key === 'standard' && (
+                      <Star className="h-6 w-6 text-secondary" />
+                    )}
+                    {key === 'pro' && (
+                      <Shield className="h-6 w-6 text-secondary" />
+                    )}
+                    {key === 'enterprise' && (
+                      <Users className="h-6 w-6 text-secondary" />
+                    )}
+                    <h2 className="text-2xl font-bold text-foreground">
+                      {tier.name}
+                    </h2>
                   </div>
                   <div className="mb-2 flex items-end gap-2">
                     {billingCycle === 'yearly' ? (
                       <>
-                        <span className="text-xl font-semibold text-muted-foreground line-through mr-2">${tier.price}</span>
-                        <span className="text-4xl font-bold text-foreground">${(tier.yearlyPrice / 12).toFixed(0)}</span>
+                        <span className="text-xl font-semibold text-muted-foreground line-through mr-2">
+                          ${tier.price}
+                        </span>
+                        <span className="text-4xl font-bold text-foreground">
+                          ${(tier.yearlyPrice / 12).toFixed(0)}
+                        </span>
                       </>
                     ) : (
-                      <span className="text-4xl font-bold text-foreground">${tier.price}</span>
+                      <span className="text-4xl font-bold text-foreground">
+                        ${tier.price}
+                      </span>
                     )}
-                    <span className="text-base text-muted-foreground mb-1 align-bottom">/month</span>
+                    <span className="text-base text-muted-foreground mb-1 align-bottom">
+                      /month
+                    </span>
                   </div>
                   {billingCycle === 'yearly' && (
                     <p className="text-xs text-muted-foreground mt-1">
@@ -244,27 +313,68 @@ export default function PricingPage() {
                 {/* Key Features */}
                 <div className="space-y-3 mb-8">
                   <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                    <span className="text-sm font-medium text-foreground">Credits</span>
-                    <span className="text-base font-bold text-foreground">{tier.credits.toLocaleString()}</span>
+                    <span className="text-sm font-medium text-foreground">
+                      Credits
+                    </span>
+                    <span className="text-base font-bold text-foreground">
+                      {tier.credits.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                    <span className="text-sm font-medium text-foreground">Agents</span>
-                    <span className="text-base font-bold text-foreground">{tier.agents}</span>
+                    <span className="text-sm font-medium text-foreground">
+                      Agents
+                    </span>
+                    <span className="text-base font-bold text-foreground">
+                      {tier.agents}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                    <span className="text-sm font-medium text-foreground">Actions/Agent</span>
-                    <span className="text-base font-bold text-foreground">{tier.actionsPerAgent}</span>
+                    <span className="text-sm font-medium text-foreground">
+                      Actions/Agent
+                    </span>
+                    <span className="text-base font-bold text-foreground">
+                      {tier.actionsPerAgent}
+                    </span>
                   </div>
                 </div>
 
                 {/* Feature List */}
                 <ul className="space-y-2 mb-8">
-                  {tierFeatures[key as keyof typeof tierFeatures].map((feature, index) => (
-                    <li key={index} className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-secondary flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">{feature}</span>
-                    </li>
-                  ))}
+                  {tierFeatures[key as keyof typeof tierFeatures].map(
+                    (feature, index) => (
+                      <li key={index} className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-secondary flex-shrink-0" />
+                        {feature === 'Premium models included' ? (
+                          <div className="tooltip-container">
+                            <span className="text-sm text-muted-foreground tooltip-text">
+                              {feature}
+                            </span>
+                            <div className="tooltip">
+                              <p className="font-semibold mb-2">
+                                Premium Models:
+                              </p>
+                              <ul className="list-disc pl-4 space-y-1">
+                                {AgentModelList.map((model) => (
+                                  <li key={model}>
+                                    {AgentModelDisplay[model]}
+                                  </li>
+                                ))}
+                                {/* To filter specific premium models, modify the above map, e.g.:
+                              {AgentModelList.filter((model) => !model.includes('mini')).map((model) => (
+                                <li key={model}>{AgentModelDisplay[model]}</li>
+                              ))}
+                              */}
+                              </ul>
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">
+                            {feature}
+                          </span>
+                        )}
+                      </li>
+                    )
+                  )}
                 </ul>
 
                 <button
@@ -281,14 +391,21 @@ export default function PricingPage() {
             ))}
 
             {/* Enterprise Card */}
-            <div className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch" style={{ minHeight: 480 }}>
+            <div
+              className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch"
+              style={{ minHeight: 480 }}
+            >
               <div className="mb-8">
                 <div className="flex items-center gap-2 mb-2">
                   <Users className="h-6 w-6 text-secondary" />
-                  <h2 className="text-2xl font-bold text-foreground">Enterprise</h2>
+                  <h2 className="text-2xl font-bold text-foreground">
+                    Enterprise
+                  </h2>
                 </div>
                 <div className="mb-2 flex items-end gap-2">
-                  <span className="text-4xl font-bold text-foreground">Custom</span>
+                  <span className="text-4xl font-bold text-foreground">
+                    Custom
+                  </span>
                 </div>
                 <p className="text-muted-foreground font-medium mt-2">
                   {tierDescriptions.enterprise}
@@ -296,23 +413,58 @@ export default function PricingPage() {
               </div>
               <div className="space-y-3 mb-8">
                 <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                  <span className="text-sm font-medium text-foreground">Credits</span>
-                  <span className="text-base font-bold text-foreground">Unlimited</span>
+                  <span className="text-sm font-medium text-foreground">
+                    Credits
+                  </span>
+                  <span className="text-base font-bold text-foreground">
+                    Unlimited
+                  </span>
                 </div>
                 <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                  <span className="text-sm font-medium text-foreground">Agents</span>
-                  <span className="text-base font-bold text-foreground">Unlimited</span>
+                  <span className="text-sm font-medium text-foreground">
+                    Agents
+                  </span>
+                  <span className="text-base font-bold text-foreground">
+                    Unlimited
+                  </span>
                 </div>
                 <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                  <span className="text-sm font-medium text-foreground">Support</span>
-                  <span className="text-base font-bold text-foreground">24/7</span>
+                  <span className="text-sm font-medium text-foreground">
+                    Support
+                  </span>
+                  <span className="text-base font-bold text-foreground">
+                    24/7
+                  </span>
                 </div>
               </div>
               <ul className="space-y-2 mb-8">
                 {tierFeatures.enterprise.map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
                     <Check className="h-4 w-4 text-secondary flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground">{feature}</span>
+                    {feature === 'Premium models included' ? (
+                      <div className="tooltip-container">
+                        <span className="text-sm text-muted-foreground tooltip-text">
+                          {feature}
+                        </span>
+                        <div className="tooltip">
+                          <p className="font-semibold mb-2">Premium Models:</p>
+                          <ul className="list-disc pl-4 space-y-1">
+                            {AgentModelList.map((model) => (
+                              <li key={model}>{AgentModelDisplay[model]}</li>
+                            ))}
+                            {/* To filter specific premium models, modify the above map, e.g.:
+                            {AgentModelList.filter((model) => !model.includes('mini')).map((model) => (
+                              <li key={model}>{AgentModelDisplay[model]}</li>
+                            ))}
+                            */}
+                          </ul>
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">
+                        {feature}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -332,9 +484,10 @@ export default function PricingPage() {
                 Need More Credits?
               </h2>
               <p className="text-lg md:text-xl mb-8 text-muted-foreground">
-                Buy additional credits anytime. They never expire and are perfect for scaling your AI agents.
+                Buy additional credits anytime. They never expire and are
+                perfect for scaling your AI agents.
               </p>
-              
+
               <div className="bg-background p-6 rounded-xl border border-border mb-8 flex flex-col md:flex-row items-center justify-center gap-4">
                 <div className="text-center md:text-left">
                   <span className="text-4xl md:text-5xl font-bold text-foreground block">
@@ -347,10 +500,12 @@ export default function PricingPage() {
                   <span className="text-4xl md:text-5xl font-bold text-foreground-muted block">
                     ${pricing.oneTimePurchase.price}
                   </span>
-                  <span className="text-lg text-muted-foreground">one-time</span>
+                  <span className="text-lg text-muted-foreground">
+                    one-time
+                  </span>
                 </div>
               </div>
-              
+
               <button
                 className="py-4 px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow"
                 onClick={handleBuyCredits}

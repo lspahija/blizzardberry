@@ -82,12 +82,22 @@ export default function AddDocument({
 
   if (success) {
     return (
-      <SuccessOverlay 
+      <SuccessOverlay
         title="Document Added Successfully!"
         message="Your document has been added and is ready to use."
         icon={
-          <svg className="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          <svg
+            className="h-6 w-6 text-brand"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
           </svg>
         }
       />
@@ -135,8 +145,12 @@ export default function AddDocument({
             <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
               <div className="text-center">
                 <div className="w-12 h-12 border-4 border-brand border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-foreground font-semibold">Adding Document...</p>
-                <p className="text-muted-foreground text-sm">Please wait while we process your document</p>
+                <p className="text-foreground font-semibold">
+                  Adding Document...
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  Please wait while we process your document
+                </p>
               </div>
             </div>
           )}
@@ -160,7 +174,11 @@ export default function AddDocument({
                   will be given to your agent.
                 </p>
                 <div className="mt-4 space-y-4">
-                  <Dropzone onFileDrop={handleFileDrop} className="w-full" disabled={isSubmitting} />
+                  <Dropzone
+                    onFileDrop={handleFileDrop}
+                    className="w-full"
+                    disabled={isSubmitting}
+                  />
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-border"></div>

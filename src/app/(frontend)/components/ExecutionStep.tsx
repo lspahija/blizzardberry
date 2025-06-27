@@ -206,7 +206,7 @@ export default function ExecutionStep({
 
   const handleCreate = () => {
     if (isCreatingAction) return;
-    
+
     if (baseAction.executionContext === ExecutionContext.SERVER) {
       if (!apiUrl.trim()) {
         setUrlError('URL is required');
@@ -269,12 +269,16 @@ export default function ExecutionStep({
               <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg z-50 flex items-center justify-center">
                 <div className="text-center">
                   <div className="w-12 h-12 border-4 border-destructive border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="text-foreground font-semibold">Creating Action...</p>
-                  <p className="text-muted-foreground text-sm">Please wait while we save your action</p>
+                  <p className="text-foreground font-semibold">
+                    Creating Action...
+                  </p>
+                  <p className="text-muted-foreground text-sm">
+                    Please wait while we save your action
+                  </p>
                 </div>
               </div>
             )}
-            
+
             {baseAction.executionContext === ExecutionContext.SERVER ? (
               <>
                 <div>

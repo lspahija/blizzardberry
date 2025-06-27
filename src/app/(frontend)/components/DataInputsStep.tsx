@@ -73,7 +73,8 @@ export default function DataInputsStep({
               Specify the information the AI Agent needs to perform the action.
             </p>
             <p className="text-xs md:text-sm text-muted-foreground">
-              The agent can find this data in chat history, request it from the user, or use user config if available.
+              The agent can find this data in chat history, request it from the
+              user, or use user config if available.
             </p>
           </CardHeader>
           <CardContent className="space-y-2 md:space-y-4 p-4 md:p-6">
