@@ -1,27 +1,9 @@
 // Test script to check which models support function calling
+import { AgentModel } from './src/app/api/lib/model/agent/agent';
+
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
-const models = [
-  'google/gemini-2.0-flash-001',
-  'google/gemini-2.5-pro',
-  'openai/gpt-4o-mini',
-  'openai/gpt-4.1-nano',
-  'openai/gpt-4.1-mini',
-  'openai/gpt-4.1',
-  'openai/gpt-4o',
-  'openai/o4-mini',
-  'openai/o4-mini-high',
-  'anthropic/claude-3.7-sonnet',
-  'anthropic/claude-sonnet-4',
-  'anthropic/claude-opus-4',
-  'x-ai/grok-3-mini',
-  'x-ai/grok-3',
-  'x-ai/grok-3-beta',
-  'meta-llama/llama-4-maverick',
-  'meta-llama/llama-4-scout',
-  'deepseek/deepseek-chat',
-  'qwen/qwen3-30b-a3b',
-];
+const models = Object.values(AgentModel);
 
 async function testModelTools(model) {
   try {
