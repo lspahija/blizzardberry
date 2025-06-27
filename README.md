@@ -100,7 +100,6 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 ## Before Launch
 - (Frankie) store conversations so webapp owners can see what their users are asking and how the agent is responding
 - (Frankie) go through all the screens and flows and makes sure everything is polished
-- (Luka) add other information to pricing page (models, etc. for each tier)
 - (Luka) onboard Stripe (complete stripe profile)
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) landing page needs to sell the product well
