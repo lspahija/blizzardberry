@@ -165,18 +165,37 @@ export default function PricingPage() {
           {Object.entries(pricing.tiers).map(([key, tier]) => (
             <div
               key={key}
-              className="bg-card p-8 border-[2px] border-border rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group"
+              className={`bg-card p-8 border-[2px] border-border rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group relative ${
+                key === 'standard'
+                  ? 'border-secondary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
+                  : ''
+              }`}
             >
+              {key === 'standard' && (
+                <span className="absolute top-2 right-2 bg-secondary text-secondary-foreground text-xs font-semibold px-2 py-1 rounded-full">
+                  Popular
+                </span>
+              )}
               <div className="mb-6">
                 <h2 className="text-2xl font-bold mb-3 text-foreground group-hover:text-secondary transition-colors">
                   {tier.name}
                 </h2>
-                <p className="text-4xl font-bold mb-2 text-foreground">
-                  ${billingCycle === 'monthly' ? tier.price : tier.yearlyPrice}
-                  <span className="text-lg font-normal text-muted-foreground">
-                    {billingCycle === 'monthly' ? '/month' : '/year'}
-                  </span>
-                </p>
+                <div className="flex flex-col items-start">
+                  <p className="text-4xl font-bold mb-2 text-foreground">
+                    $
+                    {billingCycle === 'monthly'
+                      ? tier.price
+                      : (tier.yearlyPrice / 12).toFixed(2)}
+                    <span className="text-lg font-normal text-muted-foreground">
+                      /month
+                    </span>
+                  </p>
+                  {billingCycle === 'yearly' && (
+                    <p className="text-sm text-muted-foreground">
+                      ${tier.yearlyPrice} billed annually
+                    </p>
+                  )}
+                </div>
                 <p className="text-sm text-muted-foreground font-medium">
                   {tierDescriptions[key as keyof typeof tierDescriptions]}
                 </p>
