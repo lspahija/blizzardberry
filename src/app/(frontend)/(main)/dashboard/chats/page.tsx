@@ -2,20 +2,34 @@
 
 import { useState, useEffect } from 'react';
 import { useChats, useChatMessages } from '@/app/(frontend)/hooks/useChats';
+import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/(frontend)/components/ui/card';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import { Badge } from '@/app/(frontend)/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/app/(frontend)/components/ui/dialog';
-import { Trash2, MessageSquare, Calendar, User, Loader2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/(frontend)/components/ui/select';
+import { Trash2, MessageSquare, Calendar, User, Loader2, Filter } from 'lucide-react';
 
 export default function ChatsPage() {
   const { chats, loading, error, deleteChat } = useChats();
+  const { agents, loadingAgents } = useAgents();
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [chatToDelete, setChatToDelete] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [selectedAgentFilter, setSelectedAgentFilter] = useState<string>('all');
 
   const { messages: selectedChatMessages, loading: loadingMessages } = useChatMessages(selectedChat);
+
+  const filteredChats = chats.filter(chat => {
+    if (selectedAgentFilter === 'all') return true;
+    return chat.agent_id === selectedAgentFilter;
+  });
+
+  const agentChatCounts = agents.reduce((acc, agent) => {
+    acc[agent.id] = chats.filter(chat => chat.agent_id === agent.id).length;
+    return acc;
+  }, {} as Record<string, number>);
 
   const handleDeleteChat = (chatId: string) => {
     setChatToDelete(chatId);
@@ -69,7 +83,7 @@ export default function ChatsPage() {
     }
   }, [selectedChat]);
 
-  if (loading) {
+  if (loading || loadingAgents) {
     return (
       <div className="container mx-auto p-6">
         <div className="flex items-center justify-center h-64">
@@ -93,16 +107,39 @@ export default function ChatsPage() {
     <div className="container mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Chat History</h1>
-        <Badge variant="secondary">{chats.length} conversations</Badge>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-gray-500" />
+            <Select value={selectedAgentFilter} onValueChange={setSelectedAgentFilter}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filter by agent" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Agents ({chats.length})</SelectItem>
+                {agents.map((agent) => (
+                  <SelectItem key={agent.id} value={agent.id}>
+                    {agent.name} ({agentChatCounts[agent.id]})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <Badge variant="secondary">{filteredChats.length} conversations</Badge>
+        </div>
       </div>
 
-      {chats.length === 0 ? (
+      {filteredChats.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center h-64">
             <MessageSquare className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No conversations yet</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              {selectedAgentFilter === 'all' ? 'No conversations yet' : 'No conversations for this agent'}
+            </h3>
             <p className="text-gray-500 text-center">
-              When users interact with your agents, their conversations will appear here.
+              {selectedAgentFilter === 'all' 
+                ? 'When users interact with your agents, their conversations will appear here.'
+                : 'When users interact with this agent, their conversations will appear here.'
+              }
             </p>
           </CardContent>
         </Card>
@@ -110,7 +147,7 @@ export default function ChatsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Chat List */}
           <div className="space-y-4">
-            {chats.map((chat) => (
+            {filteredChats.map((chat) => (
               <Card 
                 key={chat.id} 
                 className={`cursor-pointer transition-all hover:shadow-md ${
@@ -128,7 +165,7 @@ export default function ChatsPage() {
                         </span>
                       </div>
                       
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
                         <div className="flex items-center gap-1">
                           <MessageSquare className="h-4 w-4" />
                           <span>{chat.message_count} messages</span>
@@ -137,6 +174,10 @@ export default function ChatsPage() {
                           <Calendar className="h-4 w-4" />
                           <span>{formatDate(chat.created_at)}</span>
                         </div>
+                      </div>
+
+                      <div className="text-xs text-blue-600 font-medium">
+                        Agent: {chat.agent_name}
                       </div>
                     </div>
                     
