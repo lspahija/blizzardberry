@@ -6,7 +6,7 @@ import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from '@stripe/react-stripe-js';
-import { Check, Mail, MessageSquare, X, Send } from 'lucide-react';
+import { Check, Mail, MessageSquare, X, Send, Star, Zap, Shield, Users, Sparkles } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/app/(frontend)/components/Navbar';
@@ -121,309 +121,349 @@ export default function PricingPage() {
     [clientSecret]
   );
 
-  // Descriptions for each tier
+  // Enhanced descriptions for each tier
   const tierDescriptions = {
-    hobby: 'Perfect for side projects',
-    standard: 'Great for growing teams',
-    pro: 'For power users',
-    enterprise: 'For large organizations',
+    hobby: 'Perfect for side projects and individual developers',
+    standard: 'Ideal for growing teams and small businesses',
+    pro: 'Built for power users and established companies',
+    enterprise: 'Custom solutions for large organizations',
+  };
+
+  // Feature highlights for each tier (only real features)
+  const tierFeatures = {
+    hobby: [
+      'Premium models included',
+      'Support',
+    ],
+    standard: [
+      'Premium models included',
+      'Support',
+    ],
+    pro: [
+      'Premium models included',
+      'Support',
+    ],
+    enterprise: [
+      'Premium models included',
+      'Dedicated support',
+    ]
   };
 
   return (
     <>
       {isLoggedIn && <Navbar />}
-      <div className="container mx-auto px-4 py-16 max-w-7xl">
-        <div className="text-center mb-8 md:mb-16">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 text-foreground">
-            Pricing
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-4">
-            Choose the perfect plan for your needs. All plans include our core
-            features with different usage limits.
-          </p>
-          <div className="flex justify-center gap-4 mt-6">
-            <button
-              className={`px-4 py-2 rounded-xl border-[2px] border-border font-medium ${
-                billingCycle === 'monthly'
-                  ? 'bg-secondary text-secondary-foreground'
-                  : 'bg-background text-foreground hover:bg-muted'
-              }`}
-              onClick={() => setBillingCycle('monthly')}
-            >
-              Monthly
-            </button>
-            <button
-              className={`px-4 py-2 rounded-xl border-[2px] border-border font-medium ${
-                billingCycle === 'yearly'
-                  ? 'bg-secondary text-secondary-foreground'
-                  : 'bg-background text-foreground hover:bg-muted'
-              }`}
-              onClick={() => setBillingCycle('yearly')}
-            >
-              Yearly (20% off)
-            </button>
+      
+      {/* Hero Section */}
+      <div className="bg-background">
+        <div className="container mx-auto px-4 py-20 max-w-7xl">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
+              Pricing
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
+              Choose the perfect plan for your AI agent needs. Start free, scale as you grow.
+            </p>
+            
+            {/* Billing Toggle */}
+            <div className="flex justify-center gap-4 mb-12">
+              <button
+                className={`px-6 py-3 rounded-xl border font-semibold transition-all duration-200 ${
+                  billingCycle === 'monthly'
+                    ? 'bg-blue-100 text-foreground border-blue-200 shadow'
+                    : 'bg-background text-foreground border-border hover:bg-muted'
+                }`}
+                onClick={() => setBillingCycle('monthly')}
+              >
+                Monthly
+              </button>
+              <button
+                className={`px-6 py-3 rounded-xl border font-semibold transition-all duration-200 flex items-center gap-2 ${
+                  billingCycle === 'yearly'
+                    ? 'bg-blue-100 text-foreground border-blue-200 shadow'
+                    : 'bg-background text-foreground border-border hover:bg-muted'
+                }`}
+                onClick={() => setBillingCycle('yearly')}
+              >
+                <span>Yearly</span>
+                <span className="inline-block rounded-full bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 ml-2">Save 20%</span>
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-16 px-4">
-          {Object.entries(pricing.tiers).map(([key, tier]) => (
-            <div
-              key={key}
-              className={`bg-card p-8 border-[2px] border-border rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group relative ${
-                key === 'standard'
-                  ? 'border-secondary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
-                  : ''
-              }`}
-            >
-              {key === 'standard' && (
-                <span className="absolute top-2 right-2 bg-secondary text-secondary-foreground text-xs font-semibold px-2 py-1 rounded-full">
-                  Popular
-                </span>
-              )}
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold mb-3 text-foreground group-hover:text-secondary transition-colors">
-                  {tier.name}
-                </h2>
-                <div className="flex flex-col items-start">
-                  <p className="text-4xl font-bold mb-2 text-foreground">
-                    $
-                    {billingCycle === 'monthly'
-                      ? tier.price
-                      : (tier.yearlyPrice / 12).toFixed(2)}
-                    <span className="text-lg font-normal text-muted-foreground">
-                      /month
+          {/* Pricing Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+            {Object.entries(pricing.tiers).map(([key, tier]) => (
+              <div
+                key={key}
+                className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch ${
+                  key === 'standard' ? 'border-2 border-secondary shadow-lg' : ''
+                }`}
+                style={{ minHeight: 480 }}
+              >
+                {/* -20% badge for yearly */}
+                {billingCycle === 'yearly' && (
+                  <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">-20%</span>
+                )}
+                {key === 'standard' && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                    <span className="bg-secondary text-secondary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-border" style={{letterSpacing: 1}}>
+                      Most Popular
                     </span>
-                  </p>
+                  </div>
+                )}
+                
+                <div className="mb-8">
+                  <div className="flex items-center gap-2 mb-2">
+                    {key === 'hobby' && <Zap className="h-6 w-6 text-secondary" />}
+                    {key === 'standard' && <Star className="h-6 w-6 text-secondary" />}
+                    {key === 'pro' && <Shield className="h-6 w-6 text-secondary" />}
+                    {key === 'enterprise' && <Users className="h-6 w-6 text-secondary" />}
+                    <h2 className="text-2xl font-bold text-foreground">{tier.name}</h2>
+                  </div>
+                  <div className="mb-2 flex items-end gap-2">
+                    {billingCycle === 'yearly' ? (
+                      <>
+                        <span className="text-xl font-semibold text-muted-foreground line-through mr-2">${tier.price}</span>
+                        <span className="text-4xl font-bold text-foreground">${(tier.yearlyPrice / 12).toFixed(0)}</span>
+                      </>
+                    ) : (
+                      <span className="text-4xl font-bold text-foreground">${tier.price}</span>
+                    )}
+                    <span className="text-base text-muted-foreground mb-1 align-bottom">/month</span>
+                  </div>
                   {billingCycle === 'yearly' && (
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground mt-1">
                       ${tier.yearlyPrice} billed annually
                     </p>
                   )}
+                  <p className="text-muted-foreground font-medium mt-2">
+                    {tierDescriptions[key as keyof typeof tierDescriptions]}
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground font-medium">
-                  {tierDescriptions[key as keyof typeof tierDescriptions]}
+
+                {/* Key Features */}
+                <div className="space-y-3 mb-8">
+                  <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                    <span className="text-sm font-medium text-foreground">Credits</span>
+                    <span className="text-base font-bold text-foreground">{tier.credits.toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                    <span className="text-sm font-medium text-foreground">Agents</span>
+                    <span className="text-base font-bold text-foreground">{tier.agents}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                    <span className="text-sm font-medium text-foreground">Actions/Agent</span>
+                    <span className="text-base font-bold text-foreground">{tier.actionsPerAgent}</span>
+                  </div>
+                </div>
+
+                {/* Feature List */}
+                <ul className="space-y-2 mb-8">
+                  {tierFeatures[key as keyof typeof tierFeatures].map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-secondary flex-shrink-0" />
+                      <span className="text-sm text-muted-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  className={`mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border ${
+                    key === 'standard'
+                      ? 'bg-secondary text-secondary-foreground border-secondary hover:bg-secondary/90'
+                      : 'bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10'
+                  }`}
+                  onClick={() => handleSubscribe(key)}
+                >
+                  Subscribe
+                </button>
+              </div>
+            ))}
+
+            {/* Enterprise Card */}
+            <div className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch" style={{ minHeight: 480 }}>
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="h-6 w-6 text-secondary" />
+                  <h2 className="text-2xl font-bold text-foreground">Enterprise</h2>
+                </div>
+                <div className="mb-2 flex items-end gap-2">
+                  <span className="text-4xl font-bold text-foreground">Custom</span>
+                </div>
+                <p className="text-muted-foreground font-medium mt-2">
+                  {tierDescriptions.enterprise}
                 </p>
               </div>
-              <ul className="space-y-4 mb-8 text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                  <span>{tier.credits.toLocaleString()} credits</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                  <span>
-                    {tier.agents} agent{tier.agents !== 1 ? 's' : ''}
-                  </span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                  <span>{tier.actionsPerAgent} actions per agent</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                  <div className="group/tooltip relative">
-                    <span className="text-muted-foreground hover:text-secondary cursor-pointer transition-colors">
-                      Premium Models
-                    </span>
-                    <div className="absolute left-0 bottom-full mb-2 hidden group-hover/tooltip:block bg-background border-[2px] border-border rounded-lg p-3 text-sm text-muted-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] w-64 z-10">
-                      <p className="font-semibold mb-2">
-                        Premium Models Included:
-                      </p>
-                      <ul className="list-disc pl-4 space-y-1">
-                        {AgentModelList.map((model) => (
-                          <li key={model}>{AgentModelDisplay[model]}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </li>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                  <span className="text-sm font-medium text-foreground">Credits</span>
+                  <span className="text-base font-bold text-foreground">Unlimited</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                  <span className="text-sm font-medium text-foreground">Agents</span>
+                  <span className="text-base font-bold text-foreground">Unlimited</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                  <span className="text-sm font-medium text-foreground">Support</span>
+                  <span className="text-base font-bold text-foreground">24/7</span>
+                </div>
+              </div>
+              <ul className="space-y-2 mb-8">
+                {tierFeatures.enterprise.map((feature, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-secondary flex-shrink-0" />
+                    <span className="text-sm text-muted-foreground">{feature}</span>
+                  </li>
+                ))}
               </ul>
               <button
-                className="w-full py-3 px-4 bg-secondary text-secondary-foreground border-[2px] border-border rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow studs-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
-                onClick={() => handleSubscribe(key)}
+                className="mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10"
+                onClick={() => setShowEnterpriseForm(true)}
               >
-                Subscribe
+                Contact Sales
               </button>
             </div>
-          ))}
+          </div>
 
-          <div className="bg-card p-8 border-[2px] border-border rounded-xl hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-3 text-foreground group-hover:text-secondary transition-colors">
-                Enterprise
+          {/* Additional Credits Section */}
+          <div className="bg-card p-8 md:p-12 border border-border rounded-2xl text-center mb-16 shadow-sm">
+            <div className="max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+                Need More Credits?
               </h2>
-              <p className="text-4xl font-bold mb-2 text-foreground">Custom</p>
-              <p className="text-sm text-muted-foreground font-medium">
-                {tierDescriptions.enterprise}
+              <p className="text-lg md:text-xl mb-8 text-muted-foreground">
+                Buy additional credits anytime. They never expire and are perfect for scaling your AI agents.
               </p>
-            </div>
-            <ul className="space-y-4 mb-8 text-muted-foreground">
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                <span>Custom credits</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                <span>Unlimited actions</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                <span>Dedicated support</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-secondary group-hover:scale-110 transition-transform" />
-                <div className="group/tooltip relative">
-                  <span className="text-muted-foreground hover:text-secondary cursor-pointer transition-colors">
-                    Premium Models
+              
+              <div className="bg-background p-6 rounded-xl border border-border mb-8 flex flex-col md:flex-row items-center justify-center gap-4">
+                <div className="text-center md:text-left">
+                  <span className="text-4xl md:text-5xl font-bold text-foreground block">
+                    {pricing.oneTimePurchase.credits.toLocaleString()}
                   </span>
-                  <div className="absolute left-0 bottom-full mb-2 hidden group-hover/tooltip:block bg-background border-[2px] border-border rounded-lg p-3 text-sm text-muted-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] w-64 z-10">
-                    <p className="font-semibold mb-2">
-                      Premium Models Included:
-                    </p>
-                    <ul className="list-disc pl-4 space-y-1">
-                      {AgentModelList.map((model) => (
-                        <li key={model}>{AgentModelDisplay[model]}</li>
-                      ))}
-                    </ul>
-                  </div>
+                  <span className="text-lg text-muted-foreground">credits</span>
                 </div>
-              </li>
-            </ul>
-            <button
-              className="w-full py-3 px-4 bg-secondary text-secondary-foreground border-[2px] border-border rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
-              onClick={() => setShowEnterpriseForm(true)}
+                <div className="text-2xl text-muted-foreground">for</div>
+                <div className="text-center md:text-left">
+                  <span className="text-4xl md:text-5xl font-bold text-foreground-muted block">
+                    ${pricing.oneTimePurchase.price}
+                  </span>
+                  <span className="text-lg text-muted-foreground">one-time</span>
+                </div>
+              </div>
+              
+              <button
+                className="py-4 px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow"
+                onClick={handleBuyCredits}
+              >
+                Buy Credits Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Checkout Modal */}
+      {showCheckout && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
+          <div className="bg-card p-8 border border-border rounded-2xl max-w-md w-full shadow-2xl flex flex-col justify-center">
+            <h2 className="text-2xl font-bold mb-6 text-foreground">
+              Complete Your Purchase
+            </h2>
+            <EmbeddedCheckoutProvider
+              stripe={stripePromise}
+              options={{ fetchClientSecret }}
             >
-              Contact Us
+              <div className="max-h-[60vh] overflow-y-auto">
+                <EmbeddedCheckout />
+              </div>
+            </EmbeddedCheckoutProvider>
+            <button
+              className="mt-6 py-3 px-6 bg-background text-foreground border border-border rounded-xl hover:bg-muted transition font-medium mx-auto block"
+              onClick={() => setShowCheckout(false)}
+            >
+              Cancel
             </button>
           </div>
         </div>
+      )}
 
-        <div className="bg-card p-6 md:p-8 border-[2px] border-border rounded-xl max-w-2xl mx-auto text-center hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group">
-          <h2 className="text-xl md:text-2xl font-bold mb-4 text-foreground group-hover:text-secondary transition-colors">
-            Need More Credits?
-          </h2>
-          <p className="text-base md:text-lg mb-6 text-muted-foreground font-medium">
-            Buy additional credits anytime. They never expire!
-          </p>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 mb-6">
-            <span className="text-3xl md:text-4xl font-bold text-foreground">
-              {pricing.oneTimePurchase.credits.toLocaleString()} credits
-            </span>
-            <span className="text-lg md:text-xl text-muted-foreground">
-              for
-            </span>
-            <span className="text-3xl md:text-4xl font-bold text-foreground">
-              ${pricing.oneTimePurchase.price}
-            </span>
-          </div>
-          <button
-            className="py-3 px-8 bg-secondary text-secondary-foreground border-[2px] border-border rounded-xl hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-medium"
-            onClick={handleBuyCredits}
-          >
-            Buy Credits
-          </button>
-        </div>
-
-        {showCheckout && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
-            <div className="bg-card p-8 border-[2px] border-border rounded-xl max-w-lg w-full hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 max-h-[90vh] overflow-y-auto">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">
-                Complete Payment
+      {/* Enterprise Form Modal */}
+      {showEnterpriseForm && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
+          <div className="bg-card p-8 border border-border rounded-2xl shadow-2xl max-w-lg w-full">
+            <div className="flex items-center gap-3 mb-6">
+              <Mail className="h-6 w-6 text-secondary" />
+              <h2 className="text-2xl font-bold text-foreground">
+                Enterprise Inquiry
               </h2>
-              <EmbeddedCheckoutProvider
-                stripe={stripePromise}
-                options={{ fetchClientSecret }}
-              >
-                <EmbeddedCheckout />
-              </EmbeddedCheckoutProvider>
-              <button
-                className="mt-4 py-2 px-6 bg-background text-brand border-[2px] border-brand rounded-xl hover:bg-muted transition font-medium mx-auto block"
-                onClick={() => setShowCheckout(false)}
-              >
-                Cancel
-              </button>
             </div>
-          </div>
-        )}
-
-        {showEnterpriseForm && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
-            <div className="bg-card p-8 border-[3px] border-border border-l-8 border-l-brand rounded-2xl shadow-2xl max-w-lg w-full">
-              <div className="flex items-center gap-2 mb-4">
-                <Mail className="h-6 w-6 text-brand" />
-                <h2 className="text-2xl font-bold text-foreground">
-                  Enterprise Inquiry
-                </h2>
+            <form onSubmit={handleEnterpriseSubmit} className="space-y-6">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="text-foreground text-base font-semibold flex items-center gap-2 mb-3"
+                >
+                  <Mail className="h-4 w-4 text-secondary" />
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={emailAddress}
+                  onChange={(e) => setEmailAddress(e.target.value)}
+                  required
+                  className="w-full p-4 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                  placeholder="your@company.com"
+                />
               </div>
-              <form onSubmit={handleEnterpriseSubmit} className="space-y-6">
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="text-foreground text-base font-semibold flex items-center gap-2 mb-2"
-                  >
-                    <Mail className="h-4 w-4 text-brand" />
-                    Email Address
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    value={emailAddress}
-                    onChange={(e) => setEmailAddress(e.target.value)}
-                    required
-                    className="w-full p-3 border-[2px] border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
-                    placeholder="your@email.com"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="text-foreground text-base font-semibold flex items-center gap-2 mb-2"
-                  >
-                    <MessageSquare className="h-4 w-4 text-brand" />
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    required
-                    className="w-full p-3 border-[2px] border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
-                    rows={4}
-                    placeholder="Tell us about your needs..."
-                  />
-                </div>
-                <div className="flex justify-end gap-3 mt-6">
-                  <button
-                    type="button"
-                    className="border-[2px] border-border text-primary-foreground bg-brand hover:bg-brand/90 rounded-xl flex items-center gap-2 px-3 py-1.5 text-sm font-semibold transition"
-                    onClick={() => {
-                      setShowEnterpriseForm(false);
-                      setEmailAddress('');
-                      setMessage('');
-                      setFormStatus('');
-                    }}
-                  >
-                    <X className="h-3 w-3" />
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-secondary text-secondary-foreground border-[2px] border-border hover:bg-muted rounded-xl flex items-center gap-2 px-3 py-1.5 text-sm font-semibold transition"
-                  >
-                    <Send className="h-3 w-3" />
-                    Send Inquiry
-                  </button>
-                </div>
-              </form>
-              {formStatus && (
-                <p className="mt-4 text-center text-sm font-medium text-muted-foreground">
-                  {formStatus}
-                </p>
-              )}
-            </div>
+              <div>
+                <label
+                  htmlFor="message"
+                  className="text-foreground text-base font-semibold flex items-center gap-2 mb-3"
+                >
+                  <MessageSquare className="h-4 w-4 text-secondary" />
+                  Tell us about your needs
+                </label>
+                <textarea
+                  id="message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                  className="w-full p-4 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                  rows={4}
+                  placeholder="Describe your use case, team size, and specific requirements..."
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  type="button"
+                  className="px-6 py-3 border border-border text-foreground bg-background hover:bg-muted rounded-xl font-semibold transition"
+                  onClick={() => {
+                    setShowEnterpriseForm(false);
+                    setEmailAddress('');
+                    setMessage('');
+                    setFormStatus('');
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-secondary text-secondary-foreground border border-secondary hover:bg-secondary/90 rounded-xl font-semibold transition flex items-center gap-2"
+                >
+                  <Send className="h-4 w-4" />
+                  Send Inquiry
+                </button>
+              </div>
+            </form>
+            {formStatus && (
+              <p className="mt-4 text-center text-sm font-medium text-muted-foreground">
+                {formStatus}
+              </p>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 }
