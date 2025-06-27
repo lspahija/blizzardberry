@@ -15,6 +15,7 @@ import {
   Zap,
   Shield,
   Users,
+  Info,
 } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -151,44 +152,48 @@ export default function PricingPage() {
       <style>
         {`
   .tooltip-container {
-  position: relative;
-  display: inline-block;
-}
+    position: relative;
+    display: inline-block;
+  }
 
-.tooltip-text {
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  transition: text-decoration 0.2s ease;
-}
+  .tooltip-text {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 4px;
+    color: inherit;
+    cursor: pointer;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  }
 
-.tooltip-text:hover {
-  text-decoration: underline;
-}
+  .tooltip-text:hover {
+    text-decoration: underline;
+    text-decoration-style: solid;
+    color: #3b82f6;
+  }
 
-.tooltip {
-  visibility: hidden;
-  opacity: 0;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #1f2937; /* Tailwind's gray-800 */
-  color: #ffffff; /* White text */
-  padding: 12px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  min-width: 200px;
-  max-width: 300px;
-  font-size: 0.875rem; /* Tailwind's text-sm */
-  transition: opacity 0.2s ease, visibility 0.2s ease;
-}
+  .tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #1f2937;
+    color: #ffffff;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    min-width: 200px;
+    max-width: 300px;
+    font-size: 0.875rem;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
 
-.tooltip-container:hover .tooltip {
-  visibility: visible;
-  opacity: 1;
-}
+  .tooltip-container:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
 `}
       </style>
 
@@ -346,8 +351,9 @@ export default function PricingPage() {
                         <Check className="h-4 w-4 text-secondary flex-shrink-0" />
                         {feature === 'Premium models included' ? (
                           <div className="tooltip-container">
-                            <span className="text-sm text-muted-foreground tooltip-text">
+                            <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
                               {feature}
+                              <Info className="h-4 w-4 text-secondary" />
                             </span>
                             <div className="tooltip">
                               <p className="font-semibold mb-2">
@@ -359,11 +365,6 @@ export default function PricingPage() {
                                     {AgentModelDisplay[model]}
                                   </li>
                                 ))}
-                                {/* To filter specific premium models, modify the above map, e.g.:
-                              {AgentModelList.filter((model) => !model.includes('mini')).map((model) => (
-                                <li key={model}>{AgentModelDisplay[model]}</li>
-                              ))}
-                              */}
                               </ul>
                             </div>
                           </div>
@@ -443,8 +444,9 @@ export default function PricingPage() {
                     <Check className="h-4 w-4 text-secondary flex-shrink-0" />
                     {feature === 'Premium models included' ? (
                       <div className="tooltip-container">
-                        <span className="text-sm text-muted-foreground tooltip-text">
+                        <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
                           {feature}
+                          <Info className="h-4 w-4 text-secondary" />
                         </span>
                         <div className="tooltip">
                           <p className="font-semibold mb-2">Premium Models:</p>
@@ -452,11 +454,6 @@ export default function PricingPage() {
                             {AgentModelList.map((model) => (
                               <li key={model}>{AgentModelDisplay[model]}</li>
                             ))}
-                            {/* To filter specific premium models, modify the above map, e.g.:
-                            {AgentModelList.filter((model) => !model.includes('mini')).map((model) => (
-                              <li key={model}>{AgentModelDisplay[model]}</li>
-                            ))}
-                            */}
                           </ul>
                         </div>
                       </div>
