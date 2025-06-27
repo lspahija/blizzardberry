@@ -20,6 +20,7 @@ export interface Message {
 export interface ChatWithMessageCount extends Chat {
   message_count: number;
   last_message_at: Date | null;
+  agent_name: string;
 }
 
 export async function createNewChat(
@@ -124,11 +125,13 @@ export async function getChatsForAgentOwner(
       c.end_user_config,
       c.created_at,
       COUNT(m.id) as message_count,
-      MAX(m.created_at) as last_message_at
+      MAX(m.created_at) as last_message_at,
+      a.name as agent_name
     FROM chats c
     LEFT JOIN messages m ON c.id = m.chat_id
+    LEFT JOIN agents a ON c.agent_id = a.id
     WHERE c.agent_owner_id = ${agentOwnerId}
-    GROUP BY c.id, c.agent_id, c.agent_owner_id, c.end_user_config, c.created_at
+    GROUP BY c.id, c.agent_id, c.agent_owner_id, c.end_user_config, c.created_at, a.name
     ORDER BY c.created_at DESC
     LIMIT ${limit} OFFSET ${offset}
   `;
@@ -140,7 +143,8 @@ export async function getChatsForAgentOwner(
     end_user_config: row.end_user_config,
     created_at: row.created_at,
     message_count: parseInt(row.message_count),
-    last_message_at: row.last_message_at
+    last_message_at: row.last_message_at,
+    agent_name: row.agent_name || 'Unknown Agent'
   }));
 }
 

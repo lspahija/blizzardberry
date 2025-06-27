@@ -8,6 +8,7 @@ export interface Chat {
   created_at: string;
   message_count: number;
   last_message_at: string | null;
+  agent_name: string;
 }
 
 export interface Message {

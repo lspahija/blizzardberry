@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Agent } from '@/app/api/lib/model/agent/agent';
 import posthog from 'posthog-js';
 import { useSession } from 'next-auth/react';
@@ -34,6 +34,10 @@ export function useAgents() {
       setLoadingAgents(false);
     }
   }, []);
+
+  useEffect(() => {
+    fetchAgents();
+  }, [fetchAgents]);
 
   const handleDeleteAgent = useCallback(
     async (agentId: string) => {
