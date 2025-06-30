@@ -52,7 +52,7 @@ export default function UsagePage() {
               asChild
               className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 sm:ml-3 w-full sm:w-auto"
             >
-              <Link href="/pricing" className="flex items-center justify-center">
+              <Link href="/pricing#buy-credits" className="flex items-center justify-center">
                 Buy Credits
               </Link>
             </Button>
