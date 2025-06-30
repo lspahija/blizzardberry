@@ -133,17 +133,17 @@ export default function ChatsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Chat History</h1>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+    <div className="container mx-auto p-2 sm:p-4 md:p-6 max-w-full w-full">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+        <h1 className="text-2xl sm:text-3xl font-bold">Chat History</h1>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <Filter className="h-4 w-4 text-gray-500" />
             <Select
               value={selectedAgentFilter}
               onValueChange={setSelectedAgentFilter}
             >
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-full sm:w-48">
                 <SelectValue placeholder="Filter by agent" />
               </SelectTrigger>
               <SelectContent>
@@ -156,7 +156,7 @@ export default function ChatsPage() {
               </SelectContent>
             </Select>
           </div>
-          <Badge variant="secondary">
+          <Badge variant="secondary" className="w-full sm:w-auto text-center">
             {filteredChats.length} conversations
           </Badge>
         </div>
@@ -179,7 +179,7 @@ export default function ChatsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {/* Chat List */}
           <div className="space-y-4">
             {filteredChats.map((chat) => (
