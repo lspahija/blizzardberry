@@ -412,10 +412,10 @@ function AgentDetails({
                           className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 hover:bg-secondary/90 px-2 py-1 sm:px-3 sm:py-1.5"
                         >
                           <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span className="text-xs sm:text-sm">
+                          <span className="hidden sm:inline text-xs sm:text-sm">
                             {copied ? 'Copied!' : 'Copy Code'}
                           </span>
-                          <span className="sm:hidden">
+                          <span className="inline sm:hidden text-xs">
                             {copied ? 'Copied!' : 'Copy'}
                           </span>
                         </Button>
@@ -548,10 +548,10 @@ function AgentDetails({
                           className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 px-2 py-1 sm:px-3 sm:py-1.5"
                         >
                           <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span className="text-xs sm:text-sm">
+                          <span className="hidden sm:inline text-xs sm:text-sm">
                             {copied ? 'Copied!' : 'Copy Code'}
                           </span>
-                          <span className="sm:hidden">
+                          <span className="inline sm:hidden text-xs">
                             {copied ? 'Copied!' : 'Copy'}
                           </span>
                         </Button>
@@ -618,7 +618,7 @@ function AgentDetails({
                 {actions.map((action, idx) => (
                   <li
                     key={action.id || action.name}
-                    className="border-t pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2 sm:gap-0"
+                    className="border-t pt-2 flex flex-row items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2"
                   >
                     <div className="flex-1">
                       <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
@@ -662,8 +662,8 @@ function AgentDetails({
                     </div>
                     <Button
                       variant="destructive"
-                      size="sm"
-                      className="ml-0 sm:ml-4 rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110 w-full sm:w-auto"
+                      size="icon"
+                      className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
                       onClick={() =>
                         action.id && handleDeleteActionWithLoading(action.id)
                       }
@@ -676,9 +676,6 @@ function AgentDetails({
                         <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
                       )}
                     </Button>
-                    {idx < actions.length - 1 && (
-                      <hr className="my-2 border-border" />
-                    )}
                   </li>
                 ))}
               </ul>
@@ -711,7 +708,7 @@ function AgentDetails({
                 {documents.map((doc, idx) => (
                   <li
                     key={doc.id}
-                    className="border-t pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2 sm:gap-0"
+                    className="border-t pt-2 flex flex-row items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2"
                   >
                     <div className="flex-1">
                       <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
@@ -753,8 +750,8 @@ function AgentDetails({
                     </div>
                     <Button
                       variant="destructive"
-                      size="sm"
-                      className="ml-0 sm:ml-4 rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110 w-full sm:w-auto"
+                      size="icon"
+                      className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
                       onClick={() => doc.id && handleDeleteDocument(doc.id)}
                       disabled={deletingDocumentId === doc.id}
                       title="Delete Document"
@@ -765,9 +762,6 @@ function AgentDetails({
                         <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
                       )}
                     </Button>
-                    {idx < documents.length - 1 && (
-                      <hr className="my-2 border-border" />
-                    )}
                   </li>
                 ))}
               </ul>
