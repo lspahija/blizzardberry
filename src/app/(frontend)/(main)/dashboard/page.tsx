@@ -37,6 +37,7 @@ import {
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { toast } from 'sonner';
+import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -303,32 +304,14 @@ export default function Dashboard() {
           </Card>
         )}
       </div>
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Agent</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p>Are you sure you want to delete this agent? This action cannot be undone.</p>
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleConfirmDelete}
-              disabled={!!deletingAgentId}
-            >
-              {deletingAgentId ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                'Delete'
-              )}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        title="Delete Agent"
+        message="Are you sure you want to delete this agent? This action cannot be undone."
+        isLoading={!!deletingAgentId}
+      />
     </motion.div>
   );
 }

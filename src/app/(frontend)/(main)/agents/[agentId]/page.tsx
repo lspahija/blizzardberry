@@ -53,6 +53,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/app/(frontend)/components/ui/dialog';
+import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
 
 export default function AgentDetailsWrapper({
   params: paramsPromise,
@@ -785,85 +786,34 @@ function AgentDetails({
         )}
         
         {/* Custom Delete Confirmation Dialog for Actions */}
-        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Delete Action</DialogTitle>
-            </DialogHeader>
-            <div className="py-4">
-              <p>
-                Are you sure you want to delete the action{' '}
-                <span className="font-semibold">{actionToDelete?.name}</span>? This action cannot be undone.
-              </p>
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsDeleteDialogOpen(false)}
-                disabled={deletingActionId === actionToDelete?.id}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={async () => {
-                  if (actionToDelete?.id) {
-                    await handleDeleteActionWithLoading(actionToDelete.id);
-                    setIsDeleteDialogOpen(false);
-                    setActionToDelete(null);
-                  }
-                }}
-                disabled={deletingActionId === actionToDelete?.id}
-              >
-                {deletingActionId === actionToDelete?.id ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  'Delete'
-                )}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <DeleteConfirmationDialog
+          isOpen={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          onConfirm={async () => {
+            if (actionToDelete?.id) {
+              await handleDeleteActionWithLoading(actionToDelete.id);
+              setActionToDelete(null);
+            }
+          }}
+          title="Delete Action"
+          message={`Are you sure you want to delete the action "${actionToDelete?.name}"? This action cannot be undone.`}
+          isLoading={!!deletingActionId}
+        />
 
         {/* Custom Delete Confirmation Dialog for Documents */}
-        <Dialog open={isDeleteDocumentDialogOpen} onOpenChange={setIsDeleteDocumentDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Delete Document</DialogTitle>
-            </DialogHeader>
-            <div className="py-4">
-              <p>
-                Are you sure you want to delete <span className="font-semibold">Document {documents.findIndex(d => d.id === documentToDelete?.id) + 1}</span>? This action cannot be undone.
-              </p>
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsDeleteDocumentDialogOpen(false)}
-                disabled={deletingDocumentId === documentToDelete?.id}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={async () => {
-                  if (documentToDelete?.id) {
-                    await handleDeleteDocument(documentToDelete.id);
-                    setIsDeleteDocumentDialogOpen(false);
-                    setDocumentToDelete(null);
-                  }
-                }}
-                disabled={deletingDocumentId === documentToDelete?.id}
-              >
-                {deletingDocumentId === documentToDelete?.id ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  'Delete'
-                )}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <DeleteConfirmationDialog
+          isOpen={isDeleteDocumentDialogOpen}
+          onOpenChange={setIsDeleteDocumentDialogOpen}
+          onConfirm={async () => {
+            if (documentToDelete?.id) {
+              await handleDeleteDocument(documentToDelete.id);
+              setDocumentToDelete(null);
+            }
+          }}
+          title="Delete Document"
+          message={`Are you sure you want to delete Document ${documentToDelete ? documents.findIndex(d => d.id === documentToDelete.id) + 1 : ''}? This action cannot be undone.`}
+          isLoading={!!deletingDocumentId}
+        />
       </div>
     </motion.div>
   );
