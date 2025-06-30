@@ -233,9 +233,6 @@ export const useActionForm = () => {
   };
 
   const handleDeleteAction = async (actionId: string) => {
-    if (!confirm('Are you sure you want to delete this action?')) {
-      return;
-    }
 
     try {
       const response = await fetch(

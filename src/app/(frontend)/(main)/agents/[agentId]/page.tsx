@@ -47,6 +47,12 @@ import {
 } from '@/app/(frontend)/components/ui/select';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { Suspense } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/app/(frontend)/components/ui/dialog';
 
 export default function AgentDetailsWrapper({
   params: paramsPromise,
@@ -89,6 +95,11 @@ function AgentDetails({
     deletingDocumentId,
     handleDeleteDocument,
   } = useDocuments();
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [actionToDelete, setActionToDelete] = useState<Action | null>(null);
+  const [isDeleteDocumentDialogOpen, setIsDeleteDocumentDialogOpen] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<typeof documents[0] | null>(null);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -664,9 +675,10 @@ function AgentDetails({
                       variant="destructive"
                       size="icon"
                       className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
-                      onClick={() =>
-                        action.id && handleDeleteActionWithLoading(action.id)
-                      }
+                      onClick={() => {
+                        setActionToDelete(action);
+                        setIsDeleteDialogOpen(true);
+                      }}
                       disabled={deletingActionId === action.id}
                       title="Delete Action"
                     >
@@ -752,7 +764,10 @@ function AgentDetails({
                       variant="destructive"
                       size="icon"
                       className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
-                      onClick={() => doc.id && handleDeleteDocument(doc.id)}
+                      onClick={() => {
+                        setDocumentToDelete(doc);
+                        setIsDeleteDocumentDialogOpen(true);
+                      }}
                       disabled={deletingDocumentId === doc.id}
                       title="Delete Document"
                     >
@@ -768,6 +783,87 @@ function AgentDetails({
             </CardContent>
           </Card>
         )}
+        
+        {/* Custom Delete Confirmation Dialog for Actions */}
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete Action</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <p>
+                Are you sure you want to delete the action{' '}
+                <span className="font-semibold">{actionToDelete?.name}</span>? This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setIsDeleteDialogOpen(false)}
+                disabled={deletingActionId === actionToDelete?.id}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={async () => {
+                  if (actionToDelete?.id) {
+                    await handleDeleteActionWithLoading(actionToDelete.id);
+                    setIsDeleteDialogOpen(false);
+                    setActionToDelete(null);
+                  }
+                }}
+                disabled={deletingActionId === actionToDelete?.id}
+              >
+                {deletingActionId === actionToDelete?.id ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  'Delete'
+                )}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Custom Delete Confirmation Dialog for Documents */}
+        <Dialog open={isDeleteDocumentDialogOpen} onOpenChange={setIsDeleteDocumentDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete Document</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <p>
+                Are you sure you want to delete <span className="font-semibold">Document {documents.findIndex(d => d.id === documentToDelete?.id) + 1}</span>? This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setIsDeleteDocumentDialogOpen(false)}
+                disabled={deletingDocumentId === documentToDelete?.id}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={async () => {
+                  if (documentToDelete?.id) {
+                    await handleDeleteDocument(documentToDelete.id);
+                    setIsDeleteDocumentDialogOpen(false);
+                    setDocumentToDelete(null);
+                  }
+                }}
+                disabled={deletingDocumentId === documentToDelete?.id}
+              >
+                {deletingDocumentId === documentToDelete?.id ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  'Delete'
+                )}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </motion.div>
   );

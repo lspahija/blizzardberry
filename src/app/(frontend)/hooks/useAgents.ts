@@ -41,14 +41,6 @@ export function useAgents() {
 
   const handleDeleteAgent = useCallback(
     async (agentId: string) => {
-      if (
-        !confirm(
-          'Are you sure you want to delete this agent? This action cannot be undone.'
-        )
-      ) {
-        return;
-      }
-
       posthog.capture('agent_delete_attempt', {
         agent_id: agentId,
         user_email: session?.user?.email,
