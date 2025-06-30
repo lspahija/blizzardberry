@@ -112,7 +112,7 @@ export function Navbar() {
           <span className="hidden sm:block mx-2 text-gray-300 select-none">
             |
           </span>
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -147,7 +147,7 @@ export function Navbar() {
             Sign Out
           </button>
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+            className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <Menu className="h-6 w-6 text-gray-900" />
@@ -157,7 +157,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-50 lg:hidden">
           <div
             className="fixed inset-0 bg-black/20"
             onClick={() => setIsMobileMenuOpen(false)}
