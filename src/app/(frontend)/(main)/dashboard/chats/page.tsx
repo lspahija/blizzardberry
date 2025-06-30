@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useChats, useChatMessages } from '@/app/(frontend)/hooks/useChats';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import {
@@ -41,6 +41,7 @@ export default function ChatsPage() {
   const [chatToDelete, setChatToDelete] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [selectedAgentFilter, setSelectedAgentFilter] = useState<string>('all');
+  const messagesRef = useRef<HTMLDivElement>(null);
 
   const { messages: selectedChatMessages, loading: loadingMessages } =
     useChatMessages(selectedChat);
@@ -104,6 +105,15 @@ export default function ChatsPage() {
       config.userId ||
       'Unknown User'
     );
+  };
+
+  const handleSelectChat = (chatId: string) => {
+    setSelectedChat(chatId);
+    if (window.innerWidth < 1024 && messagesRef.current) {
+      setTimeout(() => {
+        messagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
   };
 
   useEffect(() => {
@@ -188,7 +198,7 @@ export default function ChatsPage() {
                 className={`cursor-pointer transition-all hover:shadow-md ${
                   selectedChat === chat.id ? 'ring-2 ring-blue-500' : ''
                 }`}
-                onClick={() => setSelectedChat(chat.id)}
+                onClick={() => handleSelectChat(chat.id)}
               >
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
@@ -234,12 +244,11 @@ export default function ChatsPage() {
           </div>
 
           {/* Chat Messages */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Messages</h2>
+          <div className="space-y-0 pt-0" ref={messagesRef}>
             {selectedChat ? (
-              <Card className="h-[600px] flex flex-col">
-                <CardHeader className="border-b">
-                  <CardTitle className="text-lg">Conversation</CardTitle>
+              <Card className="h-[600px] flex flex-col mt-0">
+                <CardHeader className="border-b py-2">
+                  <CardTitle className="text-lg mt-0 mb-1">Messages</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-y-auto p-4">
                   {loadingMessages ? (
@@ -281,7 +290,7 @@ export default function ChatsPage() {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="h-[600px] flex items-center justify-center">
+              <Card className="h-[600px] flex items-center justify-center mt-0">
                 <CardContent className="text-center">
                   <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">
