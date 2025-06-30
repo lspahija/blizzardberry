@@ -785,7 +785,6 @@ function AgentDetails({
           </Card>
         )}
         
-        {/* Custom Delete Confirmation Dialog for Actions */}
         <DeleteConfirmationDialog
           isOpen={isDeleteDialogOpen}
           onOpenChange={setIsDeleteDialogOpen}
@@ -800,7 +799,6 @@ function AgentDetails({
           isLoading={!!deletingActionId}
         />
 
-        {/* Custom Delete Confirmation Dialog for Documents */}
         <DeleteConfirmationDialog
           isOpen={isDeleteDocumentDialogOpen}
           onOpenChange={setIsDeleteDocumentDialogOpen}
