@@ -39,11 +39,11 @@ export default function DataInputRow({
   descriptionIcon,
 }: DataInputRowProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr_70px_70px] gap-4 md:gap-2 mt-4 items-start md:items-center p-4 md:p-0 bg-card md:bg-transparent rounded-xl md:rounded-none border-[2px] md:border-0 border-border">
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr_1.8fr_70px] gap-y-3 md:gap-y-2 gap-x-1 md:gap-x-2 mt-4 items-start md:items-center p-3 md:p-0 bg-card md:bg-transparent rounded-xl md:rounded-none border-[2px] md:border-0 border-border">
       <div>
         <Label
           htmlFor={`inputName${index}`}
-          className="flex items-center gap-2 text-sm md:text-base text-foreground"
+          className="flex items-center gap-2 text-sm md:text-base text-foreground mb-2 md:mb-1"
         >
           {nameIcon}
           Name
@@ -57,26 +57,45 @@ export default function DataInputRow({
         />
       </div>
       <div>
-        <Label
-          htmlFor={`inputType${index}`}
-          className="flex items-center gap-2 text-sm md:text-base text-foreground"
-        >
-          {typeIcon}
-          Type
-        </Label>
-        <Select
-          value={input.type}
-          onValueChange={(value) => updateDataInput('type', value)}
-        >
-          <SelectTrigger className="mt-2 border-[2px] border-border text-sm md:text-base text-foreground">
-            <SelectValue placeholder="Select type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Text">Text</SelectItem>
-            <SelectItem value="Number">Number</SelectItem>
-            <SelectItem value="Boolean">Boolean</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-end gap-2">
+          <div>
+            <Label
+              htmlFor={`inputType${index}`}
+              className="flex items-center gap-2 text-sm md:text-base text-foreground"
+            >
+              {typeIcon}
+              Type
+            </Label>
+            <Select
+              value={input.type}
+              onValueChange={(value) => updateDataInput('type', value)}
+            >
+              <SelectTrigger className="mt-2 border-[2px] border-border text-sm md:text-base text-foreground">
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Text">Text</SelectItem>
+                <SelectItem value="Number">Number</SelectItem>
+                <SelectItem value="Boolean">Boolean</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col items-center">
+            <Label
+              htmlFor={`inputArray${index}`}
+              className="text-xs md:text-sm whitespace-nowrap text-foreground mb-1"
+            >
+              Array
+            </Label>
+            <input
+              id={`inputArray${index}`}
+              type="checkbox"
+              checked={input.isArray}
+              onChange={(e) => updateDataInput('isArray', e.target.checked)}
+              className="border-[2px] border-border w-4 h-4 md:w-5 md:h-5 mb-2"
+            />
+          </div>
+        </div>
       </div>
       <div>
         <Label
@@ -94,25 +113,10 @@ export default function DataInputRow({
           className="mt-2 border-[2px] border-border text-sm md:text-base text-foreground"
         />
       </div>
-      <div className="flex flex-row md:flex-col items-center gap-4 md:gap-1 mt-2.5">
-        <Label
-          htmlFor={`inputArray${index}`}
-          className="mb-0 text-sm md:text-base whitespace-nowrap text-foreground"
-        >
-          Array
-        </Label>
-        <input
-          id={`inputArray${index}`}
-          type="checkbox"
-          checked={input.isArray}
-          onChange={(e) => updateDataInput('isArray', e.target.checked)}
-          className="border-[2px] border-border w-4 h-4 md:w-5 md:h-5"
-        />
-      </div>
       <div className="flex items-center justify-end md:justify-center h-full mr-2 mt-2 md:mt-6">
         <Button
           variant="destructive"
-          className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl p-2 md:p-3 mt-2"
+          className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl p-2 md:p-3 -mt-3 md:mt-2 lg:mt-2"
           onClick={removeDataInput}
         >
           <Trash2 className="w-4 h-4" />

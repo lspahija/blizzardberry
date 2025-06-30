@@ -10,7 +10,6 @@ import { motion } from 'framer-motion';
 import { Save, List, Info, PlusCircle, Zap, Tag } from 'lucide-react';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import DataInputRow from '@/app/(frontend)/components/DataInputRow';
-import { Label } from '@/app/(frontend)/components/ui/label';
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },

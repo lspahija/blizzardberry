@@ -45,9 +45,6 @@ export const useDocuments = () => {
   }, [agentId]);
 
   const handleDeleteDocument = async (documentId: string) => {
-    if (!confirm('Are you sure you want to delete this document?')) {
-      return;
-    }
 
     setDeletingDocumentId(documentId);
     try {

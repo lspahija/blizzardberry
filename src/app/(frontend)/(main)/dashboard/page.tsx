@@ -37,6 +37,7 @@ import {
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { toast } from 'sonner';
+import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -54,6 +55,8 @@ export default function Dashboard() {
   );
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [agentToDelete, setAgentToDelete] = useState<string | null>(null);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -131,6 +134,19 @@ export default function Dashboard() {
       toast.error('Failed to submit feedback. Please try again.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleOpenDeleteDialog = (agentId: string) => {
+    setAgentToDelete(agentId);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (agentToDelete) {
+      await handleDeleteAgent(agentToDelete);
+      setIsDeleteDialogOpen(false);
+      setAgentToDelete(null);
     }
   };
 
@@ -271,16 +287,11 @@ export default function Dashboard() {
                       </Button>
                       <Button
                         variant="destructive"
-                        onClick={() => agent.id && handleDeleteAgent(agent.id)}
-                        disabled={deletingAgentId === agent.id}
+                        onClick={() => handleOpenDeleteDialog(agent.id)}
                         className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
                         title="Delete Agent"
                       >
-                        {deletingAgentId === agent.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                        )}
+                        <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
                       </Button>
                     </div>
                     {idx < agents.length - 1 && (
@@ -293,6 +304,14 @@ export default function Dashboard() {
           </Card>
         )}
       </div>
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        title="Delete Agent"
+        message="Are you sure you want to delete this agent? This action cannot be undone."
+        isLoading={!!deletingAgentId}
+      />
     </motion.div>
   );
 }

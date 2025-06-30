@@ -316,7 +316,7 @@ export default function ExecutionStep({
                       </div>
                     </div>
                   )}
-                  <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-6 mt-6 ml-6">
+                  <div className="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-4 md:gap-6 mt-6 ml-0 md:ml-6 items-center">
                     <div>
                       <Label
                         htmlFor="apiMethod"
@@ -330,7 +330,7 @@ export default function ExecutionStep({
                         onValueChange={handleMethodChange}
                         disabled={isCreatingAction}
                       >
-                        <SelectTrigger className="mt-2 border-[2px] border-gray-900 sm:w-[2rem] md:w-[4rem] lg:w-[6rem]">
+                        <SelectTrigger className="mt-2 border-[2px] border-gray-900 max-w-xs w-full">
                           <SelectValue placeholder="Select method" />
                         </SelectTrigger>
                         <SelectContent>

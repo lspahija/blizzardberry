@@ -13,15 +13,15 @@ import { Button } from '@/app/(frontend)/components/ui/button';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import {
   Mail,
-  MessageSquare,
   Send,
   Calendar,
-  MapPin,
-  Phone,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Navbar } from '@/app/(frontend)/components/Navbar';
+import { useAuth } from '@/app/context/AuthContext';
 
 export default function ContactPage() {
+  const { isLoggedIn } = useAuth();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [formStatus, setFormStatus] = useState('');
@@ -71,6 +71,8 @@ export default function ContactPage() {
   };
 
   return (
+    <>
+     {isLoggedIn && <Navbar/>}
     <motion.div
       className="container mx-auto max-w-6xl py-16 px-4"
       variants={containerVariants}
@@ -192,5 +194,6 @@ export default function ContactPage() {
         </motion.div>
       </div>
     </motion.div>
+    </>
   );
 }

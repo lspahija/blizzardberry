@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useChats, useChatMessages } from '@/app/(frontend)/hooks/useChats';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import {
@@ -41,6 +41,7 @@ export default function ChatsPage() {
   const [chatToDelete, setChatToDelete] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [selectedAgentFilter, setSelectedAgentFilter] = useState<string>('all');
+  const messagesRef = useRef<HTMLDivElement>(null);
 
   const { messages: selectedChatMessages, loading: loadingMessages } =
     useChatMessages(selectedChat);
@@ -106,6 +107,15 @@ export default function ChatsPage() {
     );
   };
 
+  const handleSelectChat = (chatId: string) => {
+    setSelectedChat(chatId);
+    if (window.innerWidth < 1024 && messagesRef.current) {
+      setTimeout(() => {
+        messagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  };
+
   useEffect(() => {
     if (selectedChat) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -133,17 +143,17 @@ export default function ChatsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Chat History</h1>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+    <div className="container mx-auto p-2 sm:p-4 md:p-6 max-w-full w-full">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+        <h1 className="text-2xl sm:text-3xl font-bold">Chat History</h1>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <Filter className="h-4 w-4 text-gray-500" />
             <Select
               value={selectedAgentFilter}
               onValueChange={setSelectedAgentFilter}
             >
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-full sm:w-48">
                 <SelectValue placeholder="Filter by agent" />
               </SelectTrigger>
               <SelectContent>
@@ -156,7 +166,7 @@ export default function ChatsPage() {
               </SelectContent>
             </Select>
           </div>
-          <Badge variant="secondary">
+          <Badge variant="secondary" className="w-full sm:w-auto text-center">
             {filteredChats.length} conversations
           </Badge>
         </div>
@@ -179,7 +189,7 @@ export default function ChatsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {/* Chat List */}
           <div className="space-y-4">
             {filteredChats.map((chat) => (
@@ -188,7 +198,7 @@ export default function ChatsPage() {
                 className={`cursor-pointer transition-all hover:shadow-md ${
                   selectedChat === chat.id ? 'ring-2 ring-blue-500' : ''
                 }`}
-                onClick={() => setSelectedChat(chat.id)}
+                onClick={() => handleSelectChat(chat.id)}
               >
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
@@ -234,12 +244,11 @@ export default function ChatsPage() {
           </div>
 
           {/* Chat Messages */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Messages</h2>
+          <div className="space-y-0 pt-0" ref={messagesRef}>
             {selectedChat ? (
-              <Card className="h-[600px] flex flex-col">
-                <CardHeader className="border-b">
-                  <CardTitle className="text-lg">Conversation</CardTitle>
+              <Card className="h-[600px] flex flex-col mt-0">
+                <CardHeader className="border-b py-2">
+                  <CardTitle className="text-lg mt-0 mb-1">Messages</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-y-auto p-4">
                   {loadingMessages ? (
@@ -281,7 +290,7 @@ export default function ChatsPage() {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="h-[600px] flex items-center justify-center">
+              <Card className="h-[600px] flex items-center justify-center mt-0">
                 <CardContent className="text-center">
                   <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">
