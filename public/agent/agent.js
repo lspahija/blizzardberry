@@ -47,8 +47,21 @@
     chatId: null,
   };
 
+  let suggestedPrompts = [];
+
+  async function fetchSuggestedPrompts() {
+    try {
+      const res = await fetch(`${baseUrl}/api/agents/${agentId}/prompts`);
+      if (!res.ok) return;
+      const data = await res.json();
+      suggestedPrompts = (data.prompts || []).map((p) => p.content).filter(Boolean);
+    } catch (e) {
+      suggestedPrompts = [];
+    }
+  }
+
   // Create widget DOM
-  function createWidgetDOM() {
+  async function createWidgetDOM() {
     try {
       const toggle = document.createElement('div');
       toggle.id = 'chatWidgetToggle';
@@ -82,6 +95,8 @@
       body.id = 'chatWidgetBody';
       widget.appendChild(body);
 
+      await fetchSuggestedPrompts();
+
       const inputArea = document.createElement('div');
       inputArea.id = 'chatWidgetInput';
       inputArea.innerHTML = `
@@ -108,6 +123,22 @@
             handleSubmit();
           }
         });
+
+      if (suggestedPrompts.length > 0) {
+        const promptBar = document.createElement('div');
+        promptBar.id = 'chatWidgetPromptBar';
+        suggestedPrompts.forEach((prompt) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = truncatePrompt(prompt, 10);
+          btn.title = prompt;
+          btn.className = 'chat-widget-prompt-btn';
+          btn.addEventListener('click', () => sendPromptImmediately(prompt));
+          promptBar.appendChild(btn);
+        });
+        widget.appendChild(promptBar);
+      }
+
       widget.appendChild(inputArea);
 
       const footer = document.createElement('div');
@@ -141,11 +172,12 @@
   function toggleChatWidget() {
     const widget = document.getElementById('chatWidget');
     const toggle = document.getElementById('chatWidgetToggle');
+    if (!widget || !toggle) return;
     const isHidden = widget.classList.toggle('hidden');
     toggle.classList.toggle('hidden', !isHidden);
     if (!isHidden)
       setTimeout(
-        () => document.getElementById('chatWidgetInputField').focus(),
+        () => document.getElementById('chatWidgetInputField')?.focus(),
         100
       );
   }
@@ -253,18 +285,25 @@
     return await response.json();
   }
 
-  // Handle user input submission
   async function handleSubmit() {
     const input = document.getElementById('chatWidgetInputField');
     const text = input.value.trim();
     if (!text || state.isProcessing) return;
+    await processChatMessage(text);
+  }
 
+  async function processChatMessage(messageText) {
     state.messages.push({
       id: generateId(),
       role: 'user',
-      parts: [{ type: 'text', text }],
+      parts: [{ type: 'text', text: messageText }],
     });
-    input.value = '';
+    const promptBar = document.getElementById('chatWidgetPromptBar');
+    if (promptBar) promptBar.style.display = 'none';
+    
+    const input = document.getElementById('chatWidgetInputField');
+    if (input) input.value = '';
+    
     state.isProcessing = true;
     updateChatUI();
 
@@ -413,6 +452,19 @@
 
     chatBody.innerHTML = html;
     chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  async function sendPromptImmediately(promptText) {
+    if (!promptText || state.isProcessing) return;
+    await processChatMessage(promptText);
+  }
+
+  function truncatePrompt(prompt, wordLimit = 10) {
+    const words = prompt.split(/\s+/);
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(' ') + '...';
+    }
+    return prompt;
   }
 
   // Initialize

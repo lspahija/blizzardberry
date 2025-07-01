@@ -71,11 +71,11 @@ export default function ExampleLayout({
             };
           `}
         </Script>
-        <Script
+        <Script 
           id="blizzardberry-agent"
-          src="http://localhost:3000/agent/agent.js"
+          src="http://localhost:3000/agent/agent.js" 
           strategy="afterInteractive"
-          data-agent-id="54bab7ed-66d6-425e-b463-a341c2ce25b5"
+          data-agent-id="7edd420f-4dbb-4efb-b382-d1f9165d54a5"
         />
         <Script id="BlizzardBerry-actions" strategy="afterInteractive">
           {`

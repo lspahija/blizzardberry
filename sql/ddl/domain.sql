@@ -31,6 +31,15 @@ CREATE TABLE actions
 
 CREATE INDEX actions_agent_id_idx ON actions (agent_id);
 
+CREATE TABLE prompts
+(
+    id          UUID              DEFAULT gen_random_uuid() PRIMARY KEY,
+    content     TEXT              NOT NULL,
+    agent_id    UUID              NOT NULL REFERENCES agents (id) ON DELETE CASCADE,
+    created_at  TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+CREATE INDEX prompts_agent_id_idx ON prompts (agent_id);
 
 -- TODO: create required indexes for the following tables
 -- 1. Generic event store -------------------------------------------
