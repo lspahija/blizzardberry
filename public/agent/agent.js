@@ -285,21 +285,25 @@
     return await response.json();
   }
 
-  // Handle user input submission
   async function handleSubmit() {
     const input = document.getElementById('chatWidgetInputField');
     const text = input.value.trim();
     if (!text || state.isProcessing) return;
+    await processChatMessage(text);
+  }
 
+  async function processChatMessage(messageText) {
     state.messages.push({
       id: generateId(),
       role: 'user',
-      parts: [{ type: 'text', text }],
+      parts: [{ type: 'text', text: messageText }],
     });
-    // Hide prompt bar after first user message
     const promptBar = document.getElementById('chatWidgetPromptBar');
     if (promptBar) promptBar.style.display = 'none';
-    input.value = '';
+    
+    const input = document.getElementById('chatWidgetInputField');
+    if (input) input.value = '';
+    
     state.isProcessing = true;
     updateChatUI();
 
@@ -451,106 +455,8 @@
   }
 
   async function sendPromptImmediately(promptText) {
-    const input = document.getElementById('chatWidgetInputField');
     if (!promptText || state.isProcessing) return;
-    state.messages.push({
-      id: generateId(),
-      role: 'user',
-      parts: [{ type: 'text', text: promptText }],
-    });
-    // Hide prompt bar after first user message
-    const promptBar = document.getElementById('chatWidgetPromptBar');
-    if (promptBar) promptBar.style.display = 'none';
-    input.value = '';
-    state.isProcessing = true;
-    updateChatUI();
-    try {
-      const body = {
-        messages: state.messages,
-        userConfig,
-        agentId,
-        idempotencyKey: generateId(),
-      };
-      if (state.chatId) {
-        body.chatId = state.chatId;
-      }
-      const response = await fetch(`${baseUrl}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      if (!response.ok) throw new Error('Failed to fetch AI response');
-      const {
-        text,
-        toolCalls,
-        toolResults,
-        error,
-        message,
-        chatId: returnedChatId,
-      } = await response.json();
-      if (returnedChatId) {
-        state.chatId = returnedChatId;
-      }
-      const parts = [];
-      if (error || message) {
-        handleError(null, error || message);
-        return;
-      }
-      if (text && (!toolResults || toolResults.length === 0)) {
-        parts.push({ type: 'text', text });
-      }
-      if (toolCalls?.length) {
-        toolCalls.forEach((toolCall) => {
-          const toolResult = toolResults?.find(
-            (tr) => tr.toolCallId === toolCall.toolCallId
-          );
-          parts.push({
-            type: 'tool-invocation',
-            toolInvocation: {
-              toolCallId: toolCall.toolCallId,
-              toolName: toolCall.toolName,
-              args: toolCall.args,
-              state: toolResult ? 'result' : 'partial',
-              result: toolResult ? toolResult.result : undefined,
-            },
-          });
-        });
-      }
-      let hasToolExecution = false;
-      const aiMessage = {
-        id: generateId(),
-        role: 'assistant',
-        parts,
-      };
-      const toolInvocations = parts.filter(
-        (part) =>
-          part.type === 'tool-invocation' &&
-          part.toolInvocation.state === 'result' &&
-          part.toolInvocation.result &&
-          part.toolInvocation.toolName.startsWith('ACTION_')
-      );
-      if (toolInvocations.length > 0) {
-        hasToolExecution = true;
-        toolInvocations.forEach((part, index) => {
-          executeAction(
-            {
-              ...part.toolInvocation.result,
-              toolName: part.toolInvocation.toolName,
-            },
-            aiMessage.id,
-            index
-          );
-        });
-      } else if (parts.length > 0) {
-        state.messages.push(aiMessage);
-      }
-      if (!hasToolExecution) {
-        state.isProcessing = false;
-        updateChatUI();
-      }
-    } catch (error) {
-      handleError(error, 'Error: Failed to get response');
-    }
+    await processChatMessage(promptText);
   }
 
   function truncatePrompt(prompt, wordLimit = 10) {
