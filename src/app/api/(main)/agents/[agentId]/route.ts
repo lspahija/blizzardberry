@@ -7,6 +7,7 @@ import {
   getAgentByUserId,
   updateAgent,
 } from '@/app/api/lib/store/agentStore';
+import { updatePrompts } from '@/app/api/lib/store/promptStore';
 
 export async function GET(
   _: Request,
@@ -64,7 +65,7 @@ export async function PUT(
     if (authResponse) return authResponse;
 
     const body = await request.json();
-    const { name, websiteDomain, model } = body;
+    const { name, websiteDomain, model, prompts } = body;
 
     if (!name || !websiteDomain || !model) {
       return NextResponse.json(
@@ -78,6 +79,10 @@ export async function PUT(
       website_domain: websiteDomain,
       model,
     });
+
+    if (Array.isArray(prompts)) {
+      await updatePrompts(agentId, prompts);
+    }
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

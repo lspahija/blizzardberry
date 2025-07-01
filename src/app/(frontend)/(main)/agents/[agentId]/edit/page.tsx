@@ -21,13 +21,15 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import { use } from 'react';
-import { Bot, Globe, Type, Settings, Loader2 } from 'lucide-react';
+import { Bot, Globe, Type, Settings, Loader2, Trash2, Plus, MessageSquare } from 'lucide-react';
 import { Info } from 'lucide-react';
 import {
   AgentModel,
   AgentModelDisplay,
   AgentModelList,
 } from '@/app/api/lib/model/agent/agent';
+import { Textarea } from '@/app/(frontend)/components/ui/textarea';
+import SuccessOverlay from '@/app/(frontend)/components/ui/success-overlay';
 
 export default function EditAgentPage({
   params,
@@ -41,6 +43,9 @@ export default function EditAgentPage({
   const [isLoading, setIsLoading] = useState(true);
   const { handleUpdateAgent } = useAgents();
   const { agentId } = use(params);
+  const [prompts, setPrompts] = useState<string[]>([]);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -78,16 +83,49 @@ export default function EditAgentPage({
         setIsLoading(false);
       }
     };
-
+    const fetchPrompts = async () => {
+      try {
+        const response = await fetch(`/api/agents/${agentId}/prompts`);
+        if (!response.ok) return;
+        const data = await response.json();
+        let promptContents = data.prompts?.map((p: any) => p.content) || [];
+        if (promptContents.length === 0) promptContents = [''];
+        setPrompts(promptContents);
+      } catch (e) {
+        setPrompts(['']);
+      }
+    };
     fetchAgent();
+    fetchPrompts();
   }, [agentId]);
+
+  const addPrompt = () => {
+    if (prompts.length < 4) setPrompts([...prompts, '']);
+  };
+  const removePrompt = (index: number) => {
+    if (prompts.length > 1) setPrompts(prompts.filter((_, i) => i !== index));
+  };
+  const updatePrompt = (index: number, value: string) => {
+    const newPrompts = [...prompts];
+    newPrompts[index] = value;
+    setPrompts(newPrompts);
+  };
 
   const onUpdateAgent = async () => {
     try {
-      await handleUpdateAgent(agentId, { name, websiteDomain, model });
-      router.push('/dashboard');
+      setIsSubmitting(true);
+      const filteredPrompts = prompts.filter(p => p.trim());
+      const updatePayload: any = { name, websiteDomain, model };
+      if (prompts.length > 0 && filteredPrompts.length > 0) {
+        updatePayload.prompts = filteredPrompts;
+      }
+      await handleUpdateAgent(agentId, updatePayload);
+      setShowSuccess(true);
+      setTimeout(() => router.push('/dashboard'), 1800);
     } catch (error) {
       console.error('Error updating agent:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -96,6 +134,20 @@ export default function EditAgentPage({
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-foreground" />
       </div>
+    );
+  }
+
+  if (showSuccess) {
+    return (
+      <SuccessOverlay
+        title="Agent Updated Successfully!"
+        message="Your agent has been updated and changes are live."
+        icon={
+          <svg className="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        }
+      />
     );
   }
 
@@ -142,6 +194,15 @@ export default function EditAgentPage({
           <div className="relative mb-12">
             <div className="absolute inset-0 bg-foreground rounded-lg translate-x-1 translate-y-1"></div>
             <Card className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8 border-l-destructive">
+              {isSubmitting && (
+                <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-destructive border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-foreground font-semibold">Updating Agent...</p>
+                    <p className="text-muted-foreground text-sm">Please wait while we update your agent</p>
+                  </div>
+                </div>
+              )}
               <CardHeader className="flex items-center space-x-2">
                 <Bot className="h-7 w-7 text-destructive" />
                 <CardTitle className="text-2xl font-semibold text-foreground">
@@ -205,7 +266,7 @@ export default function EditAgentPage({
                     The AI model that powers your agent
                   </p>
                   <div className="relative mt-2">
-                    <Settings className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
+                    <Settings className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                     <Select
                       value={model}
                       onValueChange={(value) => setModel(value as AgentModel)}
@@ -223,16 +284,74 @@ export default function EditAgentPage({
                     </Select>
                   </div>
                 </div>
+                <div>
+                  <Label className="text-foreground flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4 text-brand" />
+                    Suggested Prompts (Optional)
+                  </Label>
+                  <p className="text-sm text-muted-foreground mt-1 ml-6">
+                    These are example prompts users can choose from or use as inspiration when interacting with your agent.
+                  </p>
+                  <div className="mt-4 ml-6 space-y-4">
+                    {prompts.map((prompt, index) => (
+                      <div key={index} className="flex gap-2 items-center">
+                        <div className="flex-1">
+                          <Textarea
+                            value={prompt}
+                            onChange={(e) => updatePrompt(index, e.target.value)}
+                            placeholder="Enter a prompt for your agent..."
+                            className="border-[2px] border-border resize-none"
+                            rows={3}
+                          />
+                        </div>
+                        {prompts.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            onClick={() => removePrompt(index)}
+                            className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
+                            tabIndex={-1}
+                          >
+                            <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={addPrompt}
+                      className="border-[2px] border-border hover:bg-secondary"
+                      disabled={prompts.length >= 4}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Another Prompt
+                    </Button>
+                    {prompts.length >= 4 && (
+                      <p className="text-sm text-muted-foreground mt-2">Maximum 4 prompts allowed.</p>
+                    )}
+                  </div>
+                </div>
                 <div className="flex gap-4">
                   <Button
                     className="flex-1 bg-destructive text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-destructive/80 transition-transform duration-200 shadow-md text-lg font-semibold"
                     onClick={onUpdateAgent}
+                    disabled={isSubmitting}
                   >
-                    Save Changes
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                        Updating...
+                      </>
+                    ) : (
+                      'Save Changes'
+                    )}
                   </Button>
                   <Button
                     className="flex-1 bg-accent text-accent-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-accent/80 transition-transform duration-200 shadow-md text-lg font-semibold"
                     onClick={() => router.push('/dashboard')}
+                    disabled={isSubmitting}
                   >
                     Cancel
                   </Button>

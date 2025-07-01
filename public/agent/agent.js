@@ -47,8 +47,21 @@
     chatId: null,
   };
 
+  let suggestedPrompts = [];
+
+  async function fetchSuggestedPrompts() {
+    try {
+      const res = await fetch(`${baseUrl}/api/agents/${agentId}/prompts`);
+      if (!res.ok) return;
+      const data = await res.json();
+      suggestedPrompts = (data.prompts || []).map((p) => p.content).filter(Boolean);
+    } catch (e) {
+      suggestedPrompts = [];
+    }
+  }
+
   // Create widget DOM
-  function createWidgetDOM() {
+  async function createWidgetDOM() {
     try {
       const toggle = document.createElement('div');
       toggle.id = 'chatWidgetToggle';
@@ -82,6 +95,9 @@
       body.id = 'chatWidgetBody';
       widget.appendChild(body);
 
+      // Fetch prompts before rendering widget
+      await fetchSuggestedPrompts();
+
       const inputArea = document.createElement('div');
       inputArea.id = 'chatWidgetInput';
       inputArea.innerHTML = `
@@ -108,6 +124,22 @@
             handleSubmit();
           }
         });
+
+      if (suggestedPrompts.length > 0) {
+        const promptBar = document.createElement('div');
+        promptBar.id = 'chatWidgetPromptBar';
+        suggestedPrompts.forEach((prompt) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = truncatePrompt(prompt, 10);
+          btn.title = prompt;
+          btn.className = 'chat-widget-prompt-btn';
+          btn.addEventListener('click', () => sendPromptImmediately(prompt));
+          promptBar.appendChild(btn);
+        });
+        widget.appendChild(promptBar);
+      }
+
       widget.appendChild(inputArea);
 
       const footer = document.createElement('div');
@@ -264,6 +296,9 @@
       role: 'user',
       parts: [{ type: 'text', text }],
     });
+    // Hide prompt bar after first user message
+    const promptBar = document.getElementById('chatWidgetPromptBar');
+    if (promptBar) promptBar.style.display = 'none';
     input.value = '';
     state.isProcessing = true;
     updateChatUI();
@@ -415,9 +450,120 @@
     chatBody.scrollTop = chatBody.scrollHeight;
   }
 
+  async function sendPromptImmediately(promptText) {
+    const input = document.getElementById('chatWidgetInputField');
+    if (!promptText || state.isProcessing) return;
+    state.messages.push({
+      id: generateId(),
+      role: 'user',
+      parts: [{ type: 'text', text: promptText }],
+    });
+    // Hide prompt bar after first user message
+    const promptBar = document.getElementById('chatWidgetPromptBar');
+    if (promptBar) promptBar.style.display = 'none';
+    input.value = '';
+    state.isProcessing = true;
+    updateChatUI();
+    try {
+      const body = {
+        messages: state.messages,
+        userConfig,
+        agentId,
+        idempotencyKey: generateId(),
+      };
+      if (state.chatId) {
+        body.chatId = state.chatId;
+      }
+      const response = await fetch(`${baseUrl}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) throw new Error('Failed to fetch AI response');
+      const {
+        text,
+        toolCalls,
+        toolResults,
+        error,
+        message,
+        chatId: returnedChatId,
+      } = await response.json();
+      if (returnedChatId) {
+        state.chatId = returnedChatId;
+      }
+      const parts = [];
+      if (error || message) {
+        handleError(null, error || message);
+        return;
+      }
+      if (text && (!toolResults || toolResults.length === 0)) {
+        parts.push({ type: 'text', text });
+      }
+      if (toolCalls?.length) {
+        toolCalls.forEach((toolCall) => {
+          const toolResult = toolResults?.find(
+            (tr) => tr.toolCallId === toolCall.toolCallId
+          );
+          parts.push({
+            type: 'tool-invocation',
+            toolInvocation: {
+              toolCallId: toolCall.toolCallId,
+              toolName: toolCall.toolName,
+              args: toolCall.args,
+              state: toolResult ? 'result' : 'partial',
+              result: toolResult ? toolResult.result : undefined,
+            },
+          });
+        });
+      }
+      let hasToolExecution = false;
+      const aiMessage = {
+        id: generateId(),
+        role: 'assistant',
+        parts,
+      };
+      const toolInvocations = parts.filter(
+        (part) =>
+          part.type === 'tool-invocation' &&
+          part.toolInvocation.state === 'result' &&
+          part.toolInvocation.result &&
+          part.toolInvocation.toolName.startsWith('ACTION_')
+      );
+      if (toolInvocations.length > 0) {
+        hasToolExecution = true;
+        toolInvocations.forEach((part, index) => {
+          executeAction(
+            {
+              ...part.toolInvocation.result,
+              toolName: part.toolInvocation.toolName,
+            },
+            aiMessage.id,
+            index
+          );
+        });
+      } else if (parts.length > 0) {
+        state.messages.push(aiMessage);
+      }
+      if (!hasToolExecution) {
+        state.isProcessing = false;
+        updateChatUI();
+      }
+    } catch (error) {
+      handleError(error, 'Error: Failed to get response');
+    }
+  }
+
+  function truncatePrompt(prompt, wordLimit = 10) {
+    const words = prompt.split(/\s+/);
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(' ') + '...';
+    }
+    return prompt;
+  }
+
   // Initialize
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', createWidgetDOM);
+    document.addEventListener('DOMContentLoaded', () => createWidgetDOM());
   } else {
     createWidgetDOM();
   }
