@@ -95,7 +95,6 @@
       body.id = 'chatWidgetBody';
       widget.appendChild(body);
 
-      // Fetch prompts before rendering widget
       await fetchSuggestedPrompts();
 
       const inputArea = document.createElement('div');
@@ -563,7 +562,7 @@
 
   // Initialize
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => createWidgetDOM());
+    document.addEventListener('DOMContentLoaded', createWidgetDOM);
   } else {
     createWidgetDOM();
   }

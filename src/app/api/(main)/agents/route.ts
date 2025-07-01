@@ -22,7 +22,6 @@ export async function POST(req: Request) {
 
     const data = await createAgent(name, websiteDomain, session.user.id, model);
 
-    // Create prompts if provided
     if (prompts && Array.isArray(prompts)) {
       for (const promptContent of prompts) {
         if (typeof promptContent === 'string' && promptContent.trim()) {

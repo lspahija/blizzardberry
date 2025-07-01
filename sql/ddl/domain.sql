@@ -31,8 +31,6 @@ CREATE TABLE actions
 
 CREATE INDEX actions_agent_id_idx ON actions (agent_id);
 
--- prompts
-
 CREATE TABLE prompts
 (
     id          UUID              DEFAULT gen_random_uuid() PRIMARY KEY,
