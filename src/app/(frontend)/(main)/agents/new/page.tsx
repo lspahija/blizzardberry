@@ -456,12 +456,18 @@ export default function NewAgentPage() {
                                 disabled={creatingAgent}
                               />
                             </div>
-                            {prompts.length > 1 && (
+                            {(prompts.length > 1 || (index === 0 && prompt.trim())) && (
                               <Button
                                 type="button"
                                 variant="destructive"
                                 size="icon"
-                                onClick={() => removePrompt(index)}
+                                onClick={() => {
+                                  if (index === 0 && prompts.length === 1) {
+                                    updatePrompt(0, '');
+                                  } else {
+                                    removePrompt(index);
+                                  }
+                                }}
                                 className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
                                 disabled={creatingAgent}
                                 tabIndex={-1}
