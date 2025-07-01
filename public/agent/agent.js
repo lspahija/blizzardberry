@@ -172,11 +172,12 @@
   function toggleChatWidget() {
     const widget = document.getElementById('chatWidget');
     const toggle = document.getElementById('chatWidgetToggle');
+    if (!widget || !toggle) return;
     const isHidden = widget.classList.toggle('hidden');
     toggle.classList.toggle('hidden', !isHidden);
     if (!isHidden)
       setTimeout(
-        () => document.getElementById('chatWidgetInputField').focus(),
+        () => document.getElementById('chatWidgetInputField')?.focus(),
         100
       );
   }
