@@ -98,15 +98,16 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 # Things to be done
 
 ## Before Launch
-- (Frankie) go through all the screens and flows and makes sure everything is polished
 - (Luka) onboard Stripe (complete stripe profile)
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
-- (Luka) landing page needs to sell the product well
 - (Luka) Fix OAuth redirect URLs and test
   - [Google](https://console.cloud.google.com/auth/clients?inv=1&invt=Ab1jrg&project=blizzardberry)
   - [GitHub](https://github.com/settings/applications/3059039)
-- dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
-- differentiate enough from Chatbase. We want to be our own thing and that should be people's first impression.
+- (Luka) add validations to ensure user can't create more agents and actions than their tier allows (API validation and in UI take them to pricing page if they try to create more than allowed)
+- (Frane) improve design of landing page
+- (Frane) add prompt suggestions
+- (Frane) add free tier
+- (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 
 ## Launch and Sell! 
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
