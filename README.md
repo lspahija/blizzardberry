@@ -102,11 +102,9 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - (Luka) onboard Stripe (complete stripe profile)
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) landing page needs to sell the product well
-- (Luka) create email addresses
-- (Luka) finish multi-tenancy config (just need prod configuration)
-  - Google OAuth
-      - [publish app](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7rg&project=ufcalarm-b270d)
-      - [create new client](https://console.cloud.google.com/auth/clients?inv=1&invt=Abx7tQ&project=ufcalarm-b270d)
+- (Luka) Fix OAuth redirect URLs and test
+  - [Google](https://console.cloud.google.com/auth/clients?inv=1&invt=Ab1jrg&project=blizzardberry)
+  - [GitHub](https://github.com/settings/applications/3059039)
 - dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 - differentiate enough from Chatbase. We want to be our own thing and that should be people's first impression.
 
