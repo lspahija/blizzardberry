@@ -435,16 +435,6 @@ export class AppComponent implements OnInit {
                   Get Started
                 </Link>
               </Button>
-              <Button
-                variant="outline"
-                asChild
-                className="border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-3 rounded-lg"
-              >
-                <Link href="/example-saas">
-                  <Globe className="mr-2 h-5 w-5" />
-                  View Demo
-                </Link>
-              </Button>
             </div>
           </motion.div>
         </div>
@@ -991,16 +981,6 @@ export class AppComponent implements OnInit {
                 <Link href="/dashboard">
                   <Play className="mr-2 h-5 w-5" />
                   Create Your First Agent
-                </Link>
-              </Button>
-              <Button
-                variant="outline"
-                asChild
-                className="border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-8 py-3 rounded-lg"
-              >
-                <Link href="/example-saas">
-                  <Star className="mr-2 h-5 w-5" />
-                  View Live Demo
                 </Link>
               </Button>
             </div>
