@@ -10,22 +10,22 @@ import {
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { 
-  Code, 
-  Rocket, 
-  Zap, 
-  Menu, 
-  X, 
-  Bot, 
-  FileText, 
-  MessageSquare, 
-  Users, 
-  Shield, 
-  Clock, 
+import {
+  Code,
+  Rocket,
+  Zap,
+  Menu,
+  X,
+  Bot,
+  FileText,
+  MessageSquare,
+  Users,
+  Shield,
+  Clock,
   CheckCircle2,
   Play,
   Settings,
-  Globe
+  Globe,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -249,9 +249,9 @@ export default function LandingPage() {
             className="text-xl text-muted-foreground mb-8 max-w-2xl z-10"
             variants={itemVariants}
           >
-            Our AI Agent doesn't just find answers in your documentation—it takes
-            action. Let your users manage their accounts, navigate your app, and
-            complete workflows—all through a simple conversation.
+            Our AI Agent doesn't just find answers in your documentation—it
+            takes action. Let your users manage their accounts, navigate your
+            app, and complete workflows—all through a simple conversation.
           </motion.p>
           <motion.div
             className="flex flex-col sm:flex-row items-center gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-8 sm:px-0"
@@ -273,9 +273,7 @@ export default function LandingPage() {
               className="bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-8 py-3 rounded-lg hover:bg-background/90 w-full sm:w-auto"
               asChild
             >
-              <Link href="/contact">
-                Talk With Us
-              </Link>
+              <Link href="/contact">Talk With Us</Link>
             </Button>
           </motion.div>
         </div>
@@ -303,17 +301,17 @@ export default function LandingPage() {
               {
                 icon: Zap,
                 title: 'From Intent to Action, Instantly',
-                text: 'Connect your app\'s key functions to the agent. When a user says, "Upgrade my account" or "Add a teammate," our agent securely executes the command through your existing APIs.',
+                text: 'Connect your app\'s key functions to the agent. When a user says, "Upgrade my account" or "Add a teammate," our agent securely executes the command through your existing APIs. It\'s the most direct path from user request to conversion.',
               },
               {
                 icon: Code,
                 title: 'Learns Your App in Minutes',
-                text: 'No need to manually build complex conversation flows. Simply point the agent to your documentation or knowledge base. It instantly becomes an expert on your product.',
+                text: 'No need to manually build complex conversation flows. Simply point the agent to your documentation or knowledge base. It instantly becomes an expert on your product, ready to answer user questions with precision. Embed with a single code snippet.',
               },
               {
                 icon: Rocket,
                 title: 'Drive Adoption, Not Just Support Tickets',
-                text: 'Empower users to solve their own problems and discover features 24/7. Our agent reduces support load while actively guiding users to success.',
+                text: 'Empower users to solve their own problems and discover features 24/7. Our agent reduces support load while actively guiding users to success. Turn your user assistance from a cost center into a powerful engine for engagement and retention.',
               },
             ].map((item, index) => (
               <motion.div

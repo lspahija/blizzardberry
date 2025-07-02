@@ -21,7 +21,16 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import { use } from 'react';
-import { Bot, Globe, Type, Settings, Loader2, Trash2, Plus, MessageSquare } from 'lucide-react';
+import {
+  Bot,
+  Globe,
+  Type,
+  Settings,
+  Loader2,
+  Trash2,
+  Plus,
+  MessageSquare,
+} from 'lucide-react';
 import { Info } from 'lucide-react';
 import {
   AgentModel,
@@ -114,7 +123,7 @@ export default function EditAgentPage({
   const onUpdateAgent = async () => {
     try {
       setIsSubmitting(true);
-      const filteredPrompts = prompts.filter(p => p.trim());
+      const filteredPrompts = prompts.filter((p) => p.trim());
       const updatePayload: any = { name, websiteDomain, model };
       if (prompts.length > 0 && filteredPrompts.length > 0) {
         updatePayload.prompts = filteredPrompts;
@@ -143,8 +152,18 @@ export default function EditAgentPage({
         title="Agent Updated Successfully!"
         message="Your agent has been updated and changes are live."
         icon={
-          <svg className="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          <svg
+            className="h-6 w-6 text-brand"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
           </svg>
         }
       />
@@ -198,8 +217,12 @@ export default function EditAgentPage({
                 <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
                   <div className="text-center">
                     <div className="w-12 h-12 border-4 border-destructive border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-foreground font-semibold">Updating Agent...</p>
-                    <p className="text-muted-foreground text-sm">Please wait while we update your agent</p>
+                    <p className="text-foreground font-semibold">
+                      Updating Agent...
+                    </p>
+                    <p className="text-muted-foreground text-sm">
+                      Please wait while we update your agent
+                    </p>
                   </div>
                 </div>
               )}
@@ -290,7 +313,8 @@ export default function EditAgentPage({
                     Suggested Prompts (Optional)
                   </Label>
                   <p className="text-sm text-muted-foreground mt-1 ml-6">
-                    These are example prompts users can choose from or use as inspiration when interacting with your agent.
+                    These are example prompts users can choose from or use as
+                    inspiration when interacting with your agent.
                   </p>
                   <div className="mt-4 ml-6 space-y-4">
                     {prompts.map((prompt, index) => (
@@ -298,13 +322,16 @@ export default function EditAgentPage({
                         <div className="flex-1">
                           <Textarea
                             value={prompt}
-                            onChange={(e) => updatePrompt(index, e.target.value)}
+                            onChange={(e) =>
+                              updatePrompt(index, e.target.value)
+                            }
                             placeholder="Enter a prompt for your agent..."
                             className="border-[2px] border-border resize-none"
                             rows={3}
                           />
                         </div>
-                        {(prompts.length > 1 || (index === 0 && prompt.trim())) && (
+                        {(prompts.length > 1 ||
+                          (index === 0 && prompt.trim())) && (
                           <Button
                             type="button"
                             variant="destructive"
@@ -335,7 +362,9 @@ export default function EditAgentPage({
                       Add Another Prompt
                     </Button>
                     {prompts.length >= 4 && (
-                      <p className="text-sm text-muted-foreground mt-2">Maximum 4 prompts allowed.</p>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Maximum 4 prompts allowed.
+                      </p>
                     )}
                   </div>
                 </div>

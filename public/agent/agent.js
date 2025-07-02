@@ -54,7 +54,9 @@
       const res = await fetch(`${baseUrl}/api/agents/${agentId}/prompts`);
       if (!res.ok) return;
       const data = await res.json();
-      suggestedPrompts = (data.prompts || []).map((p) => p.content).filter(Boolean);
+      suggestedPrompts = (data.prompts || [])
+        .map((p) => p.content)
+        .filter(Boolean);
     } catch (e) {
       suggestedPrompts = [];
     }
@@ -300,10 +302,10 @@
     });
     const promptBar = document.getElementById('chatWidgetPromptBar');
     if (promptBar) promptBar.style.display = 'none';
-    
+
     const input = document.getElementById('chatWidgetInputField');
     if (input) input.value = '';
-    
+
     state.isProcessing = true;
     updateChatUI();
 

@@ -233,7 +233,6 @@ export const useActionForm = () => {
   };
 
   const handleDeleteAction = async (actionId: string) => {
-
     try {
       const response = await fetch(
         `/api/agents/${agentId}/actions/${actionId}`,
