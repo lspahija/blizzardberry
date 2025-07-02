@@ -131,7 +131,8 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - create SDKs (analogues to agent.js) for non-js frontends i.e. desktop and mobile apps written in go, java, etc.
 - add logging, tracing, monitoring so if anything goes wrong anywhere, we can see it - make sure all exceptions users experience are sent to us somehow and reproducing the exception is as easy as possible
 - look through Chatbase's features and add relevant ones. e.g. they have a UI letting their users test the agents they created and see if the actions they onboarded work correctly. https://www.chatbase.co/docs/user-guides/agent/playground
-- change Google OAuth user support email to a blizzardberry.com email [here](https://console.cloud.google.com/auth/branding?inv=1&invt=Ab1jrg&project=blizzardberry) [here's how to add another email](https://stackoverflow.com/questions/23105894/how-to-change-google-consent-screen-email)
+- change Google OAuth user [support email](https://console.cloud.google.com/auth/branding?inv=1&invt=Ab1jrg&project=blizzardberry) to a blizzardberry.com email [here's how to add another email](https://stackoverflow.com/questions/23105894/how-to-change-google-consent-screen-email)
+- wrap sql queries in a transaction where necessary so that if one query fails, the whole transaction is rolled back
 
 ## Longer Term Goals (buy maybe pull them in earlier)
 - make the agent better by using SOTA orchestration techniques - https://www.anthropic.com/engineering/built-multi-agent-research-system
