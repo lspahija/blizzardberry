@@ -42,11 +42,6 @@ export default function ExampleLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Block layout in production
-  if (process.env.NODE_ENV === 'production') {
-    return null;
-  }
-
   return (
     <>
       <style>{customStyles}</style>
@@ -71,9 +66,9 @@ export default function ExampleLayout({
             };
           `}
         </Script>
-        <Script 
+        <Script
           id="blizzardberry-agent"
-          src="http://localhost:3000/agent/agent.js" 
+          src="http://localhost:3000/agent/agent.js"
           strategy="afterInteractive"
           data-agent-id="7edd420f-4dbb-4efb-b382-d1f9165d54a5"
         />
