@@ -99,8 +99,11 @@ function AgentDetails({
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [actionToDelete, setActionToDelete] = useState<Action | null>(null);
-  const [isDeleteDocumentDialogOpen, setIsDeleteDocumentDialogOpen] = useState(false);
-  const [documentToDelete, setDocumentToDelete] = useState<typeof documents[0] | null>(null);
+  const [isDeleteDocumentDialogOpen, setIsDeleteDocumentDialogOpen] =
+    useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<
+    (typeof documents)[0] | null
+  >(null);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -288,7 +291,7 @@ function AgentDetails({
             title="Show installation code for this agent"
           >
             <Code className="h-5 w-5" />
-            Agent Code
+            Embed Your Agent
           </Button>
           {clientActions.length > 0 && (
             <Button
@@ -784,7 +787,7 @@ function AgentDetails({
             </CardContent>
           </Card>
         )}
-        
+
         <DeleteConfirmationDialog
           isOpen={isDeleteDialogOpen}
           onOpenChange={setIsDeleteDialogOpen}
@@ -809,7 +812,7 @@ function AgentDetails({
             }
           }}
           title="Delete Document"
-          message={`Are you sure you want to delete Document ${documentToDelete ? documents.findIndex(d => d.id === documentToDelete.id) + 1 : ''}? This action cannot be undone.`}
+          message={`Are you sure you want to delete Document ${documentToDelete ? documents.findIndex((d) => d.id === documentToDelete.id) + 1 : ''}? This action cannot be undone.`}
           isLoading={!!deletingDocumentId}
         />
       </div>
