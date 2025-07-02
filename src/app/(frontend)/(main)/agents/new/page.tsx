@@ -130,7 +130,7 @@ export default function NewAgentPage() {
         name,
         websiteDomain,
         model,
-        prompts: prompts.filter(p => p.trim()),
+        prompts: prompts.filter((p) => p.trim()),
       });
       setAgentId(newAgentId);
     } catch (error) {
@@ -441,7 +441,8 @@ export default function NewAgentPage() {
                         Suggested Prompts (Optional)
                       </Label>
                       <p className="text-sm text-muted-foreground mt-1 ml-6">
-                        These are example prompts users can choose from or use as inspiration when interacting with your agent.
+                        These are example prompts users can choose from or use
+                        as inspiration when interacting with your agent.
                       </p>
                       <div className="mt-4 ml-6 space-y-4">
                         {prompts.map((prompt, index) => (
@@ -449,14 +450,17 @@ export default function NewAgentPage() {
                             <div className="flex-1">
                               <Textarea
                                 value={prompt}
-                                onChange={(e) => updatePrompt(index, e.target.value)}
+                                onChange={(e) =>
+                                  updatePrompt(index, e.target.value)
+                                }
                                 placeholder="Enter a prompt for your agent..."
                                 className="border-[2px] border-border resize-none"
                                 rows={3}
                                 disabled={creatingAgent}
                               />
                             </div>
-                            {(prompts.length > 1 || (index === 0 && prompt.trim())) && (
+                            {(prompts.length > 1 ||
+                              (index === 0 && prompt.trim())) && (
                               <Button
                                 type="button"
                                 variant="destructive"
@@ -488,7 +492,9 @@ export default function NewAgentPage() {
                           Add Another Prompt
                         </Button>
                         {prompts.length >= 4 && (
-                          <p className="text-sm text-muted-foreground mt-2">Maximum 4 prompts allowed.</p>
+                          <p className="text-sm text-muted-foreground mt-2">
+                            Maximum 4 prompts allowed.
+                          </p>
                         )}
                       </div>
                     </div>

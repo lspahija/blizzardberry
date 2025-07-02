@@ -60,9 +60,12 @@ export function usePrompts(agentId: string) {
     async (promptId: string) => {
       setDeletingPromptId(promptId);
       try {
-        const response = await fetch(`/api/agents/${agentId}/prompts/${promptId}`, {
-          method: 'DELETE',
-        });
+        const response = await fetch(
+          `/api/agents/${agentId}/prompts/${promptId}`,
+          {
+            method: 'DELETE',
+          }
+        );
 
         if (!response.ok) {
           throw new Error('Failed to delete prompt');
@@ -89,4 +92,4 @@ export function usePrompts(agentId: string) {
     handleCreatePrompt,
     handleDeletePrompt,
   };
-} 
+}

@@ -45,7 +45,6 @@ export const useDocuments = () => {
   }, [agentId]);
 
   const handleDeleteDocument = async (documentId: string) => {
-
     setDeletingDocumentId(documentId);
     try {
       const response = await fetch(

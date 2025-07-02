@@ -3,4 +3,4 @@ export interface Prompt {
   content: string;
   agentId: string;
   createdAt: string;
-} 
+}
