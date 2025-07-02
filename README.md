@@ -108,6 +108,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - (Frane) add prompt suggestions
 - (Frane) add free tier
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
+- blizzardberry.com/example-saas doesn't work
 
 ## Launch and Sell! 
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
