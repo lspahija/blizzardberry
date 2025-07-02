@@ -103,7 +103,6 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - (Luka) add validations to ensure user can't create more agents and actions than their tier allows (API validation and in UI take them to pricing page if they try to create more than allowed)
 - (Luka) add free tier
 - (Frane) improve design of landing page
-- (Frane) add prompt suggestions
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 
 ## Launch and Sell! 
