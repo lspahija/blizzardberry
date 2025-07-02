@@ -100,9 +100,6 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 ## Before Launch
 - (Luka) onboard Stripe (complete stripe profile)
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
-- (Luka) Fix OAuth redirect URLs and test
-  - [Google](https://console.cloud.google.com/auth/clients?inv=1&invt=Ab1jrg&project=blizzardberry)
-  - [GitHub](https://github.com/settings/applications/3059039)
 - (Luka) add validations to ensure user can't create more agents and actions than their tier allows (API validation and in UI take them to pricing page if they try to create more than allowed)
 - (Frane) improve design of landing page
 - (Frane) add prompt suggestions
@@ -135,6 +132,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - create SDKs (analogues to agent.js) for non-js frontends i.e. desktop and mobile apps written in go, java, etc.
 - add logging, tracing, monitoring so if anything goes wrong anywhere, we can see it - make sure all exceptions users experience are sent to us somehow and reproducing the exception is as easy as possible
 - look through Chatbase's features and add relevant ones. e.g. they have a UI letting their users test the agents they created and see if the actions they onboarded work correctly. https://www.chatbase.co/docs/user-guides/agent/playground
+- change Google OAuth user support email to a blizzardberry.com email [here](https://console.cloud.google.com/auth/branding?inv=1&invt=Ab1jrg&project=blizzardberry) [here's how to add another email](https://stackoverflow.com/questions/23105894/how-to-change-google-consent-screen-email)
 
 ## Longer Term Goals (buy maybe pull them in earlier)
 - make the agent better by using SOTA orchestration techniques - https://www.anthropic.com/engineering/built-multi-agent-research-system
