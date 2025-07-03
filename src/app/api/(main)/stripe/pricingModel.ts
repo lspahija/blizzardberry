@@ -1,6 +1,6 @@
 interface PricingItem {
   name: string;
-  priceId: string;
+  priceId: string | null;
   price: number;
   credits: number;
 }
@@ -8,7 +8,7 @@ interface PricingItem {
 interface Tier extends PricingItem {
   agents: number;
   actionsPerAgent: number;
-  yearlyPriceId: string;
+  yearlyPriceId: string | null;
   yearlyPrice: number;
 }
 
@@ -21,6 +21,16 @@ interface Pricing {
 
 export const pricing: Pricing = {
   tiers: {
+    free: {
+      name: 'Free',
+      priceId: null,
+      yearlyPriceId: null,
+      price: 0,
+      yearlyPrice: 0,
+      credits: 100,
+      agents: 1,
+      actionsPerAgent: 2,
+    },
     hobby: {
       name: 'Hobby',
       priceId: process.env.HOBBY_PLAN_MONTHLY_PRICE_ID!,

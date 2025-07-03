@@ -14,6 +14,7 @@ import {
   Star,
   Zap,
   Shield,
+  Shovel,
   Users,
   Info,
 } from 'lucide-react';
@@ -133,6 +134,7 @@ export default function PricingPage() {
 
   // Enhanced descriptions for each tier
   const tierDescriptions = {
+    free: 'Great for trying things out',
     hobby: 'Perfect for side projects and individual developers',
     standard: 'Ideal for growing teams and small businesses',
     pro: 'Built for power users and established companies',
@@ -141,6 +143,7 @@ export default function PricingPage() {
 
   // Feature highlights for each tier (only real features)
   const tierFeatures = {
+    free: [],
     hobby: ['Premium models included', 'Support'],
     standard: ['Premium models included', 'Support'],
     pro: ['Premium models included', 'Support'],
@@ -270,6 +273,9 @@ export default function PricingPage() {
 
                 <div className="mb-8">
                   <div className="flex items-center gap-2 mb-2">
+                    {key === 'free' && (
+                      <Shovel className="h-6 w-6 text-secondary" />
+                    )}
                     {key === 'hobby' && (
                       <Zap className="h-6 w-6 text-secondary" />
                     )}
