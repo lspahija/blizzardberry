@@ -12,6 +12,7 @@ import {
   Menu,
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import {
@@ -103,10 +104,19 @@ export function Navbar() {
     <>
       <nav className="bg-card border-b-[3px] border-border px-4 sm:px-6 py-3 flex items-center justify-between rounded-b-2xl shadow-md mb-8 sticky top-0 z-40">
         <div className="flex items-center gap-4">
+          
           <Link
             href="/"
             className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight select-none hover:underline focus:underline outline-none flex items-center"
           >
+            <Image
+              src="/image/logo.png"
+              alt="BlizzardBerry Logo"
+              width={60}
+              height={60}
+              className="object-contain"
+              unoptimized={true}
+            />
             Blizzard<span className="text-[#FE4A60]">Berry</span>
           </Link>
           <span className="hidden sm:block mx-2 text-gray-300 select-none">
