@@ -1,6 +1,10 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { addCredit } from '@/app/api/lib/store/creditStore';
+import {
+  insertSubscription,
+  updateSubscription,
+} from '@/app/api/lib/store/subscriptionStore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -22,9 +26,22 @@ export async function POST(req: Request) {
     );
   }
 
+  // if (event.type === 'customer.subscription.created') {
+  //   const sub = event.data.object as Stripe.Subscription;
+  //   await insertSubscription(
+  //     sub.metadata.user_id,
+  //     sub.id,
+  //     sub.metadata.pricingName
+  //   );
+  // }
+  //
+  // if (event.type === 'customer.subscription.updated') {
+  //   const sub = event.data.object as Stripe.Subscription;
+  //   await updateSubscription(sub.id, sub.metadata.pricingName);
+  // }
+
   if (event.type === 'invoice.payment_succeeded') {
     const invoice = event.data.object as Stripe.Invoice;
-
     if (
       invoice.billing_reason === 'subscription_create' ||
       invoice.billing_reason === 'subscription_cycle'
@@ -33,14 +50,13 @@ export async function POST(req: Request) {
         invoice.lines.data[0].parent?.subscription_item_details?.subscription,
         { expand: ['items.data.price'] }
       );
-
       const userId = sub.metadata.user_id;
       const credits = parseInt(sub.metadata.credits);
       const tierName = sub.metadata.pricingName;
       const renewAt = new Date(sub.items.data[0]?.current_period_end * 1000);
 
       console.log(
-        `subscription created or cycled: userId: ${userId}, tierName: ${tierName} credits: ${credits}, renewAt: ${renewAt}`
+        `subscription created or cycled: userId: ${userId}, tierName: ${tierName}, credits: ${credits}, renewAt: ${renewAt}`
       );
 
       await addCredit(userId, credits, invoice.id, renewAt);

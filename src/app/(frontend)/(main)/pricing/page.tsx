@@ -37,6 +37,7 @@ interface CheckoutResponse {
   checkoutSessionId: string;
 }
 
+// TODO: use Gemini CLI to make cards look good (currently enterprise has been pushed down to a new row)
 export default function PricingPage() {
   const router = useRouter();
   const { isLoggedIn } = useAuth();

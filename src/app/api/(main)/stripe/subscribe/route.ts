@@ -18,6 +18,8 @@ export async function POST(req: Request) {
   if (!tierDetails)
     return NextResponse.json({ error: 'Invalid tier' }, { status: 400 });
 
+  // TODO: if it's free tier, don't send to stripe, but rather just handle subscription creation here (insert into db, etc.)
+
   const checkoutSession = await stripe.checkout.sessions.create({
     customer_email: session.user.email,
     payment_method_types: ['card'],
