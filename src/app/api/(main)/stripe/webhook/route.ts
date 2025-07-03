@@ -26,31 +26,6 @@ export async function POST(req: Request) {
     );
   }
 
-  // if (event.type === 'customer.subscription.created') {
-  //   const sub = event.data.object as Stripe.Subscription;
-  //   await insertSubscription(
-  //     sub.metadata.user_id,
-  //     sub.id,
-  //     sub.metadata.pricingName
-  //   );
-  // }
-  //
-  // if (event.type === 'customer.subscription.updated') {
-  //   const sub = event.data.object as Stripe.Subscription;
-  //   await updateSubscription(sub.id, sub.metadata.pricingName);
-  // }
-
-  if (invoice.billing_reason === 'subscription_create') {
-    await insertSubscription(
-      sub.metadata.user_id,
-      sub.id,
-      sub.metadata.pricingName,
-      event.id
-    );
-  } else {
-    await updateSubscription(sub.id, sub.metadata.pricingName, event.id);
-  }
-
   if (event.type === 'invoice.payment_succeeded') {
     const invoice = event.data.object as Stripe.Invoice;
     if (
