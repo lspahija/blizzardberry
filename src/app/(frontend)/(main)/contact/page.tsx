@@ -209,7 +209,7 @@ export default function ContactPage() {
               href="mailto:frane@blizzardberry.com" 
               className="text-brand hover:underline font-medium"
             >
-              frane@blizzardberry.com
+              support@blizzardberry.com
             </a>
           </p>
         </div>
