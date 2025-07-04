@@ -2,7 +2,6 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/app/(frontend)/components/ui/button';
-import { Input } from '@/app/(frontend)/components/ui/input';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -17,27 +16,13 @@ import {
   PlusCircle,
   Trash2,
   Settings,
-  MessageSquare,
   Bot,
-  Send,
-  Info,
-  Mail,
-  Tag,
-  X,
 } from 'lucide-react';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import posthog from 'posthog-js';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/app/(frontend)/components/ui/dialog';
-import { Textarea } from '@/app/(frontend)/components/ui/textarea';
-import { Label } from '@/app/(frontend)/components/ui/label';
 import { toast } from 'sonner';
 import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
+import Script from 'next/script';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -159,6 +144,7 @@ export default function Dashboard() {
   }
 
   return (
+    <div>
     <motion.div
       className="min-h-screen flex flex-col bg-background p-4"
       variants={containerVariants}
@@ -313,5 +299,53 @@ export default function Dashboard() {
         isLoading={!!deletingAgentId}
       />
     </motion.div>
+    <Script id="BlizzardBerry-config" strategy="afterInteractive">
+          {`
+            window.agentUserConfig = {
+              user_id: "${session.user.id}",
+              user_metadata: {
+                name: "${session.user.name}",
+                email: "${session.user.email}",
+              }
+            };
+          `}
+    </Script>
+    <Script 
+          id="blizzardberry-agent"
+          src="http://localhost:3000/agent/agent.js" 
+          strategy="afterInteractive"
+          data-agent-id="f452cd58-23aa-4a6c-87d0-e68fb7384c73"
+        />
+    <Script id="BlizzardBerry-actions" strategy="afterInteractive">
+            {`
+                window.agentActions = {
+                  openDocs: async (params) => {
+                    window.location.href = '/docs';
+                    return { success: true, message: 'Opening documentation page...' };
+                  },
+
+                  openPricing: async (params) => {
+                    window.location.href = '/pricing';
+                    return { success: true, message: 'Opening pricing page...' };
+                  },
+
+                  openContact: async (params) => {
+                    window.location.href = '/contact';
+                    return { success: true, message: 'Opening contact page...' };
+                  },
+
+                  openLogin: async (params) => {
+                    window.location.href = '/login';
+                    return { success: true, message: 'Opening login page...' };
+                  },
+
+                  openDashboard: async (params) => {
+                    window.location.href = '/dashboard';
+                    return { success: true, message: 'Opening dashboard...' };
+                  }
+                };
+            `}
+      </Script>
+    </div>
   );
 }

@@ -63,7 +63,14 @@ export async function getToolsFromActions(agentId: string) {
       action.executionContext === ExecutionContext.SERVER
         ? 'ACTION_SERVER_'
         : 'ACTION_CLIENT_';
-    const actionName = `${prefix}${action.name}`;
+    
+    const baseName = action.executionContext === ExecutionContext.SERVER 
+      ? action.name 
+      : (action as any).executionModel.functionName;
+    
+    const sanitizedName = baseName.replace(/\s+/g, '_');
+    
+    const actionName = `${prefix}${sanitizedName}`;
 
     if (action.executionContext === ExecutionContext.SERVER) {
       tools[actionName] = tool({

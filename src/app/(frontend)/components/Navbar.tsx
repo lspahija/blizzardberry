@@ -104,7 +104,6 @@ export function Navbar() {
     <>
       <nav className="bg-card border-b-[3px] border-border px-4 sm:px-6 py-3 flex items-center justify-between rounded-b-2xl shadow-md mb-8 sticky top-0 z-40">
         <div className="flex items-center gap-4">
-          
           <Link
             href="/"
             className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight select-none hover:underline focus:underline outline-none flex items-center"
