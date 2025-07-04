@@ -12,8 +12,8 @@ CREATE TYPE subscription_status AS ENUM (
 CREATE TABLE subscriptions
 (
     id                     UUID                 DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id                UUID        NOT NULL REFERENCES next_auth.users (id) ON DELETE CASCADE,
-    stripe_subscription_id TEXT        NOT NULL UNIQUE,
+    user_id                UUID        NOT NULL UNIQUE REFERENCES next_auth.users (id) ON DELETE CASCADE,
+    stripe_subscription_id TEXT,
     tier                   TEXT        NOT NULL,
     created_at             TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at             TIMESTAMPTZ NOT NULL DEFAULT now()

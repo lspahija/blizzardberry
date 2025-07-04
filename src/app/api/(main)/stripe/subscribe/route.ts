@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import { pricing } from '@/app/api/(main)/stripe/pricingModel';
+import { insertSubscription } from '@/app/api/lib/store/subscriptionStore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -12,13 +13,21 @@ export async function POST(req: Request) {
   }
 
   const { tier } = (await req.json()) as { tier: string };
-
   const tierDetails = pricing.tiers[tier];
 
   if (!tierDetails)
     return NextResponse.json({ error: 'Invalid tier' }, { status: 400 });
 
-  // TODO: if it's free tier, don't send to stripe, but rather just handle subscription creation here (insert into db, etc.)
+  if (tierDetails.name === 'free') {
+    await insertSubscription(
+      session.user.id,
+      null,
+      tierDetails.name,
+      `manual_${Date.now()}` // TODO: change idempotency key and
+    );
+    // TODO: add credits
+    return NextResponse.json({ message: 'Free tier activated.' });
+  }
 
   const checkoutSession = await stripe.checkout.sessions.create({
     customer_email: session.user.email,
@@ -30,12 +39,7 @@ export async function POST(req: Request) {
         credits: tierDetails.credits,
       },
     },
-    line_items: [
-      {
-        price: tierDetails.priceId,
-        quantity: 1,
-      },
-    ],
+    line_items: [{ price: tierDetails.priceId, quantity: 1 }],
     mode: 'subscription',
     ui_mode: 'embedded',
     return_url: `${process.env.NEXT_PUBLIC_URL}/return?session_id={CHECKOUT_SESSION_ID}`,

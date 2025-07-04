@@ -1,10 +1,6 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { addCredit } from '@/app/api/lib/store/creditStore';
-import {
-  insertSubscription,
-  updateSubscription,
-} from '@/app/api/lib/store/subscriptionStore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -25,6 +21,16 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
+
+  /**
+   * TODO: log all of these events and see what is useful
+   * 'customer.subscription.created', 'customer.subscription.updated', 'customer.subscription.deleted', 'invoice.payment_succeeded', 'checkout.session.completed'
+   *  Upsert subscriptions table when user subscribes to new tier
+   *  just increase user's credits and modify their subscription expiration to be a month from now
+   *  Expire or delete subscriptions table record when subscription expires e.g. if it's deleted or not renewed
+   *  How do we normally renew it?
+   *  how does Chatbase's screen look for switching to a higher subscription tier?
+   */
 
   if (event.type === 'invoice.payment_succeeded') {
     const invoice = event.data.object as Stripe.Invoice;
