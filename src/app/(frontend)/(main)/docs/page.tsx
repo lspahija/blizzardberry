@@ -30,15 +30,18 @@ import {
   Globe,
   Shield,
   Clock,
-  Star,
 } from 'lucide-react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useState } from 'react';
+import { useAuth } from '@/app/context/AuthContext';
+import { Navbar } from '@/app/(frontend)/components/Navbar';
+import { LandingNavbar } from '@/app/(frontend)/components/LandingNavbar';
 
 export default function DocsPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [selectedFramework, setSelectedFramework] = useState('vanilla');
+  const { isLoggedIn } = useAuth();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -406,6 +409,8 @@ export class AppComponent implements OnInit {
   };
 
   return (
+    <>
+    {isLoggedIn ? <Navbar /> : <LandingNavbar />}
     <div className="min-h-screen bg-background">
       {/* Header */}
       <motion.div
@@ -988,5 +993,6 @@ export class AppComponent implements OnInit {
         </div>
       </motion.section>
     </div>
+    </>
   );
 }

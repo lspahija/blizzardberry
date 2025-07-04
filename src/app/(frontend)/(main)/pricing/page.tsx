@@ -20,6 +20,7 @@ import {
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/app/(frontend)/components/Navbar';
+import { LandingNavbar } from '@/app/(frontend)/components/LandingNavbar';
 import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
 import {
@@ -197,7 +198,7 @@ export default function PricingPage() {
 `}
       </style>
 
-      {isLoggedIn && <Navbar />}
+      {isLoggedIn ? <Navbar /> : <LandingNavbar />}
 
       {/* Hero Section */}
       <div className="bg-background">

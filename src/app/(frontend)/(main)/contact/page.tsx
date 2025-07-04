@@ -15,6 +15,7 @@ import { Mail, Send, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Navbar } from '@/app/(frontend)/components/Navbar';
 import { useAuth } from '@/app/context/AuthContext';
+import { LandingNavbar } from '@/app/(frontend)/components/LandingNavbar';
 
 export default function ContactPage() {
   const { isLoggedIn } = useAuth();
@@ -68,7 +69,7 @@ export default function ContactPage() {
 
   return (
     <>
-      {isLoggedIn && <Navbar />}
+      {isLoggedIn ? <Navbar /> : <LandingNavbar />}
       <motion.div
         className="container mx-auto max-w-6xl py-16 px-4"
         variants={containerVariants}
