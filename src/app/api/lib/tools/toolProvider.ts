@@ -12,6 +12,7 @@ import {
   Body,
 } from '@/app/api/lib/model/action/backendAction';
 import { similaritySearch } from '../store/documentStore';
+import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 
 export function createSearchKnowledgeBaseTool(agentId: string): Tool {
   return tool({
@@ -59,39 +60,29 @@ export async function getToolsFromActions(agentId: string) {
     const parameterSchema = createParameterSchema(
       action.executionModel.parameters || []
     );
+
     const prefix =
       action.executionContext === ExecutionContext.SERVER
         ? 'ACTION_SERVER_'
         : 'ACTION_CLIENT_';
-    
-    const baseName = action.executionContext === ExecutionContext.SERVER 
-      ? action.name 
-      : (action as any).executionModel.functionName;
-    
-    const sanitizedName = baseName.replace(/\s+/g, '_');
-    
+
+    const sanitizedName = action.name.replace(/\s+/g, '_');
     const actionName = `${prefix}${sanitizedName}`;
 
-    if (action.executionContext === ExecutionContext.SERVER) {
-      tools[actionName] = tool({
-        description: action.description,
-        parameters: parameterSchema,
-        execute: async (params: Record<string, any>) =>
-          substituteRequestModel(
-            (action as BackendAction).executionModel.request,
-            params
-          ),
-      });
-    } else {
-      tools[actionName] = tool({
-        description: action.description,
-        parameters: parameterSchema,
-        execute: async (params) => ({
-          functionName: actionName,
-          params,
-        }),
-      });
-    }
+    const executeFunction: (params: any) => Promise<any> =
+      action.executionContext === ExecutionContext.SERVER
+        ? async (params) =>
+            substituteRequestModel(action.executionModel.request, params)
+        : async (params) => ({
+            functionName: action.executionModel.functionName,
+            params,
+          });
+
+    tools[actionName] = tool({
+      description: action.description,
+      parameters: parameterSchema,
+      execute: executeFunction,
+    });
   }
 
   return tools;
