@@ -272,7 +272,8 @@
     transform: scale(0.98);
 }
 
-.hidden {
+#chatWidget.hidden,
+#chatWidgetToggle.hidden {
     display: none !important;
 }
 
