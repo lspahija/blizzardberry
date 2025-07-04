@@ -62,6 +62,18 @@
     }
   }
 
+  async function saveMessageToDB(message) {
+    if (!state.chatId) return;
+    await fetch(`${baseUrl}/api/chats/${state.chatId}/messages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        role: message.role,
+        content: message.parts[0].text,
+      }),
+    });
+  }
+
   // Create widget DOM
   async function createWidgetDOM() {
     try {
@@ -185,24 +197,13 @@
   }
 
   // Handle errors
-  function handleError(error, messageText) {
+  async function handleError(error, messageText) {
     state.isProcessing = false;
     state.messages.push({
       id: generateId(),
       role: 'assistant',
       parts: [{ type: 'text', text: messageText }],
     });
-    if (state.chatId) {
-      fetch(`${baseUrl}/api/chats/${state.chatId}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          role: 'assistant',
-          content: messageText,
-          removeLastAssistantMessage: true,
-        }),
-      });
-    }
     updateChatUI();
   }
 
@@ -226,6 +227,7 @@
           },
         ],
       });
+      await saveMessageToDB(state.messages[state.messages.length - 1]);
       updateChatUI();
 
       const actionResultMessage = {
@@ -264,6 +266,8 @@
         messages: [...state.messages, actionResultMessage],
         agentId,
         idempotencyKey: generateId(),
+        chatId: state.chatId,
+        interpretOnly: true,
       }),
     });
 
