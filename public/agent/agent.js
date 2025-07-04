@@ -278,7 +278,8 @@
   }
 
   async function executeClientAction(actionModel) {
-    const action = actions[actionModel.functionName];
+    const functionName = actionModel.functionName.replace('ACTION_CLIENT_', '');
+    const action = actions[functionName];
     return await action(actionModel.params);
   }
 

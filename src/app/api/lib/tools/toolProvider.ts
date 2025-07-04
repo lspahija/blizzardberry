@@ -74,7 +74,7 @@ export async function getToolsFromActions(agentId: string) {
         ? async (params) =>
             substituteRequestModel(action.executionModel.request, params)
         : async (params) => ({
-            functionName: action.executionModel.functionName,
+            functionName: prefix + action.executionModel.functionName,
             params,
           });
 
