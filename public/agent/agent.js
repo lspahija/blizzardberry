@@ -197,13 +197,14 @@
   }
 
   // Handle errors
-  function handleError(error, messageText) {
+  async function handleError(error, messageText) {
     state.isProcessing = false;
     state.messages.push({
       id: generateId(),
       role: 'assistant',
       parts: [{ type: 'text', text: messageText }],
     });
+    await saveMessageToDB(state.messages[state.messages.length - 1]);
     updateChatUI();
   }
 
