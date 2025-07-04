@@ -197,7 +197,7 @@
   }
 
   // Handle errors
-  async function handleError(error, messageText) {
+  function handleError(error, messageText) {
     state.isProcessing = false;
     state.messages.push({
       id: generateId(),
