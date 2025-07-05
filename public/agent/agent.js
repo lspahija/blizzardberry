@@ -211,7 +211,7 @@
   async function executeAction(actionModel, messageId, partIndex) {
     const key = `${messageId}-${partIndex}`;
     try {
-      state.actionResults[key] = actionModel.functionName?.startsWith(
+      state.actionResults[key] = actionModel.toolName.startsWith(
         'ACTION_CLIENT_'
       )
         ? await executeClientAction(actionModel)
@@ -224,7 +224,7 @@
         parts: [
           {
             type: 'text',
-            text: `✅ ${actionModel.toolName?.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action'} successfully executed.`,
+            text: `✅ ${actionModel.toolName.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action'} successfully executed.`,
           },
         ],
       });
