@@ -38,6 +38,7 @@ interface CheckoutResponse {
 }
 
 // TODO: use Gemini CLI to make cards look good (currently enterprise has been pushed down to a new row)
+// TODO: If user is signed in, show them an upgrade page instead of a pricing page. Protect the pricing page to only show it to users not signed in
 export default function PricingPage() {
   const router = useRouter();
   const { isLoggedIn } = useAuth();

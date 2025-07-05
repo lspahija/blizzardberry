@@ -22,6 +22,8 @@ export async function POST(req: Request) {
     );
   }
 
+  console.log(JSON.stringify(event));
+
   /**
    * TODO: log all of these events and see what is useful
    * 'customer.subscription.created', 'customer.subscription.updated', 'customer.subscription.deleted', 'invoice.payment_succeeded', 'checkout.session.completed'

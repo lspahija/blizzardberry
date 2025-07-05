@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       session.user.id,
       null,
       tierDetails.name,
-      `manual_${Date.now()}` // TODO: change idempotency key and
+      `manual_${Date.now()}` // TODO: change idempotency key
     );
     // TODO: add credits
     return NextResponse.json({ message: 'Free tier activated.' });
