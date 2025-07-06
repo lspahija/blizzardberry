@@ -3,6 +3,7 @@ export type Subscription = {
   userId: string;
   stripeSubscriptionId: string;
   tier: string;
+  expiresAt: Date;
   createdAt: Date;
   updatedAt: Date;
 };

@@ -1,6 +1,7 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { addCredit } from '@/app/api/lib/store/creditStore';
+import { upsertSubscription } from '@/app/api/lib/store/subscriptionStore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -27,7 +28,7 @@ export async function POST(req: Request) {
   /**
    * TODO: log all of these events and see what is useful
    * 'customer.subscription.created', 'customer.subscription.updated', 'customer.subscription.deleted', 'invoice.payment_succeeded', 'checkout.session.completed'
-   *  Upsert subscriptions table when user subscribes to new tier
+   *  Upsert subscriptions table when user subscribes to new tier or modifies
    *  just increase user's credits and modify their subscription expiration to be a month from now
    *  Expire or delete subscriptions table record when subscription expires e.g. if it's deleted or not renewed
    *  How do we normally renew it?
@@ -37,8 +38,11 @@ export async function POST(req: Request) {
   if (event.type === 'invoice.payment_succeeded') {
     const invoice = event.data.object as Stripe.Invoice;
     if (
-      invoice.billing_reason === 'subscription_create' ||
-      invoice.billing_reason === 'subscription_cycle'
+      [
+        'subscription_create',
+        'subscription_cycle',
+        'subscription_update',
+      ].includes(invoice.billing_reason)
     ) {
       const sub = await stripe.subscriptions.retrieve(
         invoice.lines.data[0].parent?.subscription_item_details?.subscription,
@@ -54,6 +58,7 @@ export async function POST(req: Request) {
       );
 
       await addCredit(userId, credits, invoice.id, renewAt);
+      await upsertSubscription(userId, sub.id, tierName, renewAt);
     }
   }
 

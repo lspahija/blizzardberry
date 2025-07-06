@@ -25,3 +25,5 @@ drop table if exists credit_batches;
 insert into credit_batches(user_id, quantity_remaining)
 values ('83d476b1-1777-4b1d-8f07-28d7df584f25', 1000000)
 
+
+drop table subscriptions;

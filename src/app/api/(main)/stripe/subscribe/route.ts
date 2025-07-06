@@ -2,7 +2,8 @@ import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import { pricing } from '@/app/api/(main)/stripe/pricingModel';
-import { insertSubscription } from '@/app/api/lib/store/subscriptionStore';
+import { upsertSubscription } from '@/app/api/lib/store/subscriptionStore';
+import { addCredit } from '@/app/api/lib/store/creditStore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -18,14 +19,16 @@ export async function POST(req: Request) {
   if (!tierDetails)
     return NextResponse.json({ error: 'Invalid tier' }, { status: 400 });
 
+  const userId = session.user.id;
+
   if (tierDetails.name === 'free') {
-    await insertSubscription(
-      session.user.id,
-      null,
-      tierDetails.name,
-      `manual_${Date.now()}` // TODO: change idempotency key
+    await addCredit(
+      userId,
+      tierDetails.credits,
+      `${userId}_${tierDetails.name}`,
+      null
     );
-    // TODO: add credits
+    await upsertSubscription(userId, null, tierDetails.name, null);
     return NextResponse.json({ message: 'Free tier activated.' });
   }
 

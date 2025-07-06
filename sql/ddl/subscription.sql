@@ -15,6 +15,7 @@ CREATE TABLE subscriptions
     user_id                UUID        NOT NULL UNIQUE REFERENCES next_auth.users (id) ON DELETE CASCADE,
     stripe_subscription_id TEXT,
     tier                   TEXT        NOT NULL,
+    expires_at             TIMESTAMPTZ,
     created_at             TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at             TIMESTAMPTZ NOT NULL DEFAULT now()
 );
