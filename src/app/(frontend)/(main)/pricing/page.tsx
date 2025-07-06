@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { signOut, useSession } from 'next-auth/react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   EmbeddedCheckoutProvider,
@@ -39,7 +40,9 @@ interface CheckoutResponse {
 
 // TODO: use Gemini CLI to make cards look good (currently enterprise has been pushed down to a new row)
 // TODO: If user is signed in, show them an upgrade page instead of a pricing page. Protect the pricing page to only show it to users not signed in
+// TODO: currently if user is not logged in and want to subscribe to a non-free tier, they're redirected to login page which then redirects them to dashboard which lowers conversions because they need to navigate back. this is bad.
 export default function PricingPage() {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const { isLoggedIn } = useAuth();
   const [showCheckout, setShowCheckout] = useState<boolean>(false);
