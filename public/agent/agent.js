@@ -62,6 +62,18 @@
     }
   }
 
+  async function saveMessageToDB(message) {
+    if (!state.chatId) return;
+    await fetch(`${baseUrl}/api/chats/${state.chatId}/messages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        role: message.role,
+        content: message.parts[0].text,
+      }),
+    });
+  }
+
   // Create widget DOM
   async function createWidgetDOM() {
     try {
@@ -185,31 +197,21 @@
   }
 
   // Handle errors
-  function handleError(error, messageText) {
+  async function handleError(error, messageText) {
     state.isProcessing = false;
     state.messages.push({
       id: generateId(),
       role: 'assistant',
       parts: [{ type: 'text', text: messageText }],
     });
-    if (state.chatId) {
-      fetch(`${baseUrl}/api/chats/${state.chatId}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          role: 'assistant',
-          content: messageText,
-          removeLastAssistantMessage: true,
-        }),
-      });
-    }
+    await saveMessageToDB(state.messages[state.messages.length - 1]);
     updateChatUI();
   }
 
   async function executeAction(actionModel, messageId, partIndex) {
     const key = `${messageId}-${partIndex}`;
     try {
-      state.actionResults[key] = actionModel.functionName?.startsWith(
+      state.actionResults[key] = actionModel.toolName.startsWith(
         'ACTION_CLIENT_'
       )
         ? await executeClientAction(actionModel)
@@ -222,10 +224,11 @@
         parts: [
           {
             type: 'text',
-            text: `✅ ${actionModel.toolName?.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action'} successfully executed. Result: ${JSON.stringify(state.actionResults[key])}`,
+            text: `✅ ${actionModel.toolName.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action'} successfully executed.`,
           },
         ],
       });
+      await saveMessageToDB(state.messages[state.messages.length - 1]);
       updateChatUI();
 
       const actionResultMessage = {
@@ -257,12 +260,13 @@
   }
 
   async function interpretActionResult(actionResultMessage) {
-    const chatResponse = await fetch(`${baseUrl}/api/chat`, {
+    const chatResponse = await fetch(`${baseUrl}/api/chat/interpret`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messages: [...state.messages, actionResultMessage],
         agentId,
+        chatId: state.chatId,
         idempotencyKey: generateId(),
       }),
     });

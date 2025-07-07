@@ -197,7 +197,7 @@ export default function PricingPage() {
 `}
       </style>
 
-      {isLoggedIn && <Navbar />}
+      <Navbar />
 
       {/* Hero Section */}
       <div className="bg-background">

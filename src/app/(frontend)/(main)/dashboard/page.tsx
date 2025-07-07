@@ -2,7 +2,6 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/app/(frontend)/components/ui/button';
-import { Input } from '@/app/(frontend)/components/ui/input';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -17,25 +16,10 @@ import {
   PlusCircle,
   Trash2,
   Settings,
-  MessageSquare,
   Bot,
-  Send,
-  Info,
-  Mail,
-  Tag,
-  X,
 } from 'lucide-react';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import posthog from 'posthog-js';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/app/(frontend)/components/ui/dialog';
-import { Textarea } from '@/app/(frontend)/components/ui/textarea';
-import { Label } from '@/app/(frontend)/components/ui/label';
 import { toast } from 'sonner';
 import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
 
@@ -159,6 +143,7 @@ export default function Dashboard() {
   }
 
   return (
+    <div>
     <motion.div
       className="min-h-screen flex flex-col bg-background p-4"
       variants={containerVariants}
@@ -313,5 +298,6 @@ export default function Dashboard() {
         isLoading={!!deletingAgentId}
       />
     </motion.div>
+    </div>
   );
 }

@@ -30,11 +30,11 @@ import {
   Globe,
   Shield,
   Clock,
-  Star,
 } from 'lucide-react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useState } from 'react';
+import { Navbar } from '@/app/(frontend)/components/Navbar';
 
 export default function DocsPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
@@ -406,6 +406,8 @@ export class AppComponent implements OnInit {
   };
 
   return (
+    <>
+          <Navbar />
     <div className="min-h-screen bg-background">
       {/* Header */}
       <motion.div
@@ -988,5 +990,6 @@ export class AppComponent implements OnInit {
         </div>
       </motion.section>
     </div>
+    </>
   );
 }
