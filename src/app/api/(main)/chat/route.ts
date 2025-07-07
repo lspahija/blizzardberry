@@ -3,7 +3,7 @@ import { createNewChat, addMessage } from '@/app/api/lib/store/chatStore';
 import { getAgent } from '@/app/api/lib/store/agentStore';
 
 export async function POST(req: Request) {
-  const { messages, userConfig, agentId, idempotencyKey, chatId, interpretOnly } =
+  const { messages, userConfig, agentId, idempotencyKey, chatId } =
     await req.json();
 
   try {
@@ -21,15 +21,13 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!interpretOnly) {
-      const lastMessage = messages[messages.length - 1];
-      if (lastMessage && lastMessage.role === 'user') {
-        await addMessage(
-          usedChatId,
-          'user',
-          lastMessage.parts?.[0]?.text || lastMessage.content || ''
-        );
-      }
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage && lastMessage.role === 'user') {
+      await addMessage(
+        usedChatId,
+        'user',
+        lastMessage.parts?.[0]?.text || lastMessage.content || ''
+      );
     }
 
     const llmResponse = await callLLM(

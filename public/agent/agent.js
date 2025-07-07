@@ -260,15 +260,14 @@
   }
 
   async function interpretActionResult(actionResultMessage) {
-    const chatResponse = await fetch(`${baseUrl}/api/chat`, {
+    const chatResponse = await fetch(`${baseUrl}/api/chat/interpret`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messages: [...state.messages, actionResultMessage],
         agentId,
-        idempotencyKey: generateId(),
         chatId: state.chatId,
-        interpretOnly: true,
+        idempotencyKey: generateId(),
       }),
     });
 
