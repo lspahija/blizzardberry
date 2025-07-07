@@ -190,7 +190,7 @@ export default function ContactPage() {
       </motion.div>
 
       {/* Contact Info Section */}
-      <motion.div 
+      <motion.div
         className="container mx-auto max-w-6xl py-8 px-4 border-t border-border"
         variants={itemVariants}
         initial="hidden"
@@ -202,8 +202,8 @@ export default function ContactPage() {
           </h3>
           <p className="text-muted-foreground">
             Email us directly at:{' '}
-            <a 
-              href="mailto:frane@blizzardberry.com" 
+            <a
+              href="mailto:support@blizzardberry.com"
               className="text-brand hover:underline font-medium"
             >
               support@blizzardberry.com
