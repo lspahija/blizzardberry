@@ -107,10 +107,7 @@ function createParameterSchema(parameters: Parameter[]): z.ZodObject<any> {
         baseSchema = z.string();
     }
 
-    const innerSchema =
-      baseSchema instanceof ZodAny ? z.string() : baseSchema;
-
-    const finalSchema = param.isArray ? z.array(innerSchema) : baseSchema;
+    const finalSchema = param.isArray ? z.array(baseSchema) : baseSchema;
 
     schemaFields[param.name] = finalSchema.optional();
   }
