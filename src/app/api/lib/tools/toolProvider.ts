@@ -1,5 +1,5 @@
 import { tool, Tool } from 'ai';
-import { z } from 'zod';
+import { z, ZodAny } from 'zod';
 import { getActions } from '@/app/api/lib/store/actionStore';
 import {
   ExecutionContext,
@@ -104,10 +104,14 @@ function createParameterSchema(parameters: Parameter[]): z.ZodObject<any> {
         baseSchema = z.boolean();
         break;
       default:
-        baseSchema = z.any();
+        baseSchema = z.string();
     }
 
-    const finalSchema = param.isArray ? z.array(baseSchema) : baseSchema;
+    const innerSchema =
+      baseSchema instanceof ZodAny ? z.string() : baseSchema;
+
+    const finalSchema = param.isArray ? z.array(innerSchema) : baseSchema;
+
     schemaFields[param.name] = finalSchema.optional();
   }
 

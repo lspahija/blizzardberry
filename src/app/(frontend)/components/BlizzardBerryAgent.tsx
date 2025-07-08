@@ -28,7 +28,7 @@ export function BlizzardBerryAgent() {
         id="blizzardberry-agent"
         src="http://localhost:3000/agent/agent.js" 
         strategy="afterInteractive"
-        data-agent-id="f452cd58-23aa-4a6c-87d0-e68fb7384c73"
+        data-agent-id="102d8bea-18a5-4543-b802-d150d2f21e6d"
       />
       <Script id="BlizzardBerry-actions" strategy="afterInteractive">
         {`
