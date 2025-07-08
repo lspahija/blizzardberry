@@ -257,6 +257,13 @@ export default function ExecutionStep({
     return <SuccessOverlay />;
   }
 
+  const urlSuggestions = [
+    "https://",
+    "https://api.example.com/",
+    "https://yourdomain.com/api/",
+    // ...add more if you want
+  ];
+
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
       <div
@@ -378,7 +385,7 @@ export default function ExecutionStep({
                           id="apiUrl"
                           value={apiUrl}
                           onChange={(e) => handleUrlChange(e.target.value)}
-                          suggestions={getInputNames(dataInputs, true)}
+                          suggestions={urlSuggestions.concat(getInputNames(dataInputs, true))}
                           placeholder="https://wttr.in/{{city}}?format=j1"
                           inputClassName={`mt-2 border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
                           matchMode="full"
