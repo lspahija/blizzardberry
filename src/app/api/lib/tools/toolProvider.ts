@@ -1,5 +1,5 @@
 import { tool, Tool } from 'ai';
-import { z, ZodAny } from 'zod';
+import { z } from 'zod';
 import { getActions } from '@/app/api/lib/store/actionStore';
 import {
   ExecutionContext,
@@ -7,12 +7,10 @@ import {
   ParameterType,
 } from '@/app/api/lib/model/action/baseAction';
 import {
-  BackendAction,
   HttpRequest,
   Body,
 } from '@/app/api/lib/model/action/backendAction';
 import { similaritySearch } from '../store/documentStore';
-import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 
 export function createSearchKnowledgeBaseTool(agentId: string): Tool {
   return tool({
