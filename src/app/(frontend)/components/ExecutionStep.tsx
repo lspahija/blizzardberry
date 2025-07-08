@@ -97,6 +97,23 @@ const commonHeaderKeys = [
   'X-API-Key',
 ];
 
+const commonHeaderValues = [
+  "application/json",
+  "application/x-www-form-urlencoded",
+  "Bearer",
+  "Basic",
+  "multipart/form-data",
+  "text/plain",
+  "application/xml",
+  "*/*",
+  "no-cache",
+  "max-age=0",
+  "gzip, deflate, br",
+  "en-US,en;q=0.9",
+  "X-Requested-With",
+  "XMLHttpRequest",
+];
+
 const placeholderJSON = `{
   "foo": "someStaticValue",
   "bar": "{{variableValue}}",
@@ -212,6 +229,13 @@ export default function ExecutionStep({
         setUrlError('URL is required');
         return;
       }
+      
+      const trimmedUrl = apiUrl.trim();
+      if (!trimmedUrl.startsWith('http://') && !trimmedUrl.startsWith('https://')) {
+        setUrlError('URL must start with http:// or https://');
+        return;
+      }
+      
       if (apiMethod === 'PUT' && !apiBody.trim()) {
         setBodyError('Body is required for PUT requests');
         return;
@@ -232,6 +256,13 @@ export default function ExecutionStep({
   if (showSuccess) {
     return <SuccessOverlay />;
   }
+
+  const urlSuggestions = [
+    "https://",
+    "https://api.example.com/",
+    "https://yourdomain.com/api/",
+    // ...add more if you want
+  ];
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
@@ -349,19 +380,23 @@ export default function ExecutionStep({
                         <Globe className="h-4 w-4 text-[#FE4A60]" />
                         HTTPS URL
                       </Label>
-                      <SuggestInput
-                        id="apiUrl"
-                        value={apiUrl}
-                        onChange={(e) => handleUrlChange(e.target.value)}
-                        suggestions={getInputNames(dataInputs, true)}
-                        placeholder="https://wttr.in/{{city}}?format=j1"
-                        inputClassName={`mt-2 border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
-                        matchMode="full"
-                        disabled={isCreatingAction}
-                      />
-                      {urlError && (
-                        <p className="text-red-500 text-sm mt-2">{urlError}</p>
-                      )}
+                      <div className="relative">
+                        <SuggestInput
+                          id="apiUrl"
+                          value={apiUrl}
+                          onChange={(e) => handleUrlChange(e.target.value)}
+                          suggestions={urlSuggestions.concat(getInputNames(dataInputs, true))}
+                          placeholder="https://wttr.in/{{city}}?format=j1"
+                          inputClassName={`mt-2 border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
+                          matchMode="full"
+                          disabled={isCreatingAction}
+                        />
+                        {urlError && (
+                          <p className="absolute left-0 mt-1 text-red-500 text-sm">
+                            {urlError}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -388,6 +423,7 @@ export default function ExecutionStep({
                       }
                       suggestions={getInputNames(dataInputs, true)}
                       commonHeaderKeys={commonHeaderKeys}
+                      commonHeaderValues={commonHeaderValues}
                       disabled={isCreatingAction}
                     />
                   ))}

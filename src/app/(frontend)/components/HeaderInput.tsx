@@ -18,6 +18,7 @@ interface HeaderInputProps {
   removeHeader: () => void;
   suggestions: string[];
   commonHeaderKeys: string[];
+  commonHeaderValues: string[];
   disabled?: boolean;
 }
 
@@ -28,6 +29,7 @@ export default function HeaderInput({
   removeHeader,
   suggestions,
   commonHeaderKeys,
+  commonHeaderValues,
   disabled = false,
 }: HeaderInputProps) {
   return (
@@ -64,7 +66,8 @@ export default function HeaderInput({
           id={`headerValue${index}`}
           value={header.value}
           onChange={(e) => updateHeader('value', e.target.value)}
-          suggestions={suggestions}
+          onSelect={(val) => updateHeader('value', val)}
+          suggestions={commonHeaderValues.concat(suggestions)}
           placeholder="Bearer {{token}}"
           inputClassName="border-[2px] border-border text-foreground"
           matchMode="word"

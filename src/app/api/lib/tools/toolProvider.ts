@@ -7,12 +7,10 @@ import {
   ParameterType,
 } from '@/app/api/lib/model/action/baseAction';
 import {
-  BackendAction,
   HttpRequest,
   Body,
 } from '@/app/api/lib/model/action/backendAction';
 import { similaritySearch } from '../store/documentStore';
-import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 
 export function createSearchKnowledgeBaseTool(agentId: string): Tool {
   return tool({
@@ -104,7 +102,7 @@ function createParameterSchema(parameters: Parameter[]): z.ZodObject<any> {
         baseSchema = z.boolean();
         break;
       default:
-        baseSchema = z.any();
+        baseSchema = z.string();
     }
 
     const finalSchema = param.isArray ? z.array(baseSchema) : baseSchema;
