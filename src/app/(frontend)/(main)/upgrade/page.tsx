@@ -103,7 +103,7 @@ export default function UpgradePage() {
     }
 
     try {
-      const res = await fetch('/api/stripe/subscribe', {
+      const res = await fetch('/api/stripe/modify-subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tier, billingCycle }),
