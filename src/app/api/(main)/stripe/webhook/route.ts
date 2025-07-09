@@ -23,8 +23,6 @@ export async function POST(req: Request) {
     );
   }
 
-  console.log(JSON.stringify(event));
-
   /**
    * TODO: log all of these events and see what is useful
    * 'customer.subscription.created', 'customer.subscription.updated', 'customer.subscription.deleted', 'invoice.payment_succeeded', 'checkout.session.completed'
@@ -52,13 +50,20 @@ export async function POST(req: Request) {
       const credits = parseInt(sub.metadata.credits);
       const tierName = sub.metadata.pricingName;
       const renewAt = new Date(sub.items.data[0]?.current_period_end * 1000);
+      const subscriptionItemId = sub.items.data[0].id;
 
       console.log(
-        `subscription created or cycled: userId: ${userId}, tierName: ${tierName}, credits: ${credits}, renewAt: ${renewAt}`
+        `subscription created, cycled or updated for: userId: ${userId}, tierName: ${tierName}, credits: ${credits}, renewAt: ${renewAt}`
       );
 
       await addCredit(userId, credits, invoice.id, renewAt);
-      await upsertSubscription(userId, sub.id, tierName, renewAt);
+      await upsertSubscription(
+        userId,
+        sub.id,
+        subscriptionItemId,
+        tierName,
+        renewAt
+      );
     }
   }
 

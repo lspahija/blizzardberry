@@ -5,6 +5,7 @@ import { Subscription } from '@/app/api/lib/model/subscription/subscription';
 export const upsertSubscription = async (
   userId: string,
   stripeSubscriptionId: string,
+  stripeSubscriptionItemId: string,
   tier: string,
   expiresAt: Date
 ) => {
@@ -13,6 +14,7 @@ export const upsertSubscription = async (
   let eventId: number;
   const data = {
     stripeSubscriptionId,
+    stripeSubscriptionItemId,
     tier,
   };
 
@@ -28,11 +30,12 @@ export const upsertSubscription = async (
     if (!event) return;
 
     await sql`
-      INSERT INTO subscriptions (user_id, stripe_subscription_id, tier, expires_at)
-      VALUES (${userId}, ${stripeSubscriptionId}, ${tier}, ${expiresAt})
+      INSERT INTO subscriptions (user_id, stripe_subscription_id, stripe_subscription_item_id, tier, expires_at)
+      VALUES (${userId}, ${stripeSubscriptionId}, ${stripeSubscriptionItemId}, ${tier}, ${expiresAt})
       ON CONFLICT (user_id)
         DO UPDATE SET
                     stripe_subscription_id = EXCLUDED.stripe_subscription_id,
+                    stripe_subscription_item_id = EXCLUDED.stripe_subscription_item_id,
                     tier = EXCLUDED.tier,
                     updated_at = now(),
                     expires_at = EXCLUDED.expires_at
@@ -55,6 +58,7 @@ export const getSubscription = async (
       id,
       user_id,
       stripe_subscription_id,
+      stripe_subscription_item_id,
       tier,
       created_at,
       updated_at
@@ -69,6 +73,7 @@ export const getSubscription = async (
     id: subscription.id,
     userId: subscription.user_id,
     stripeSubscriptionId: subscription.stripe_subscription_id,
+    stripeSubscriptionItemId: subscription.stripe_subscription_item_id,
     tier: subscription.tier,
     expiresAt: subscription.expires_at,
     createdAt: subscription.created_at,

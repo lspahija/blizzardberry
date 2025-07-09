@@ -27,7 +27,7 @@ async function activateFreeTier(
     `${userId}_${tierDetails.name}`,
     expiresAt
   );
-  await upsertSubscription(userId, null, tierDetails.name, null);
+  await upsertSubscription(userId, null, null, tierDetails.name, null);
   return NextResponse.json({ message: 'Free tier activated.' });
 }
 
@@ -63,11 +63,11 @@ async function updateExistingStripeSubscription(
   tierDetails: (typeof pricing.tiers)[string]
 ) {
   const updatedSubscription = await stripe.subscriptions.update(
-    subscription.id,
+    subscription.stripeSubscriptionId,
     {
       items: [
         {
-          id: subscription.stripeSubscriptionId,
+          id: subscription.stripeSubscriptionItemId,
           price: tierDetails.priceId,
         },
       ],
@@ -105,7 +105,7 @@ export async function POST(req: Request) {
     return updateExistingStripeSubscription(userId, subscription, tierDetails);
   }
 
-  if (tierDetails.name === 'free') {
+  if (tierDetails.name.toLowerCase() === 'free') {
     return activateFreeTier(userId, tierDetails);
   }
   return createNewStripeSubscription(
