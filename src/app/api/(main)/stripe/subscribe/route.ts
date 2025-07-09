@@ -10,55 +10,58 @@ import { addCredit } from '@/app/api/lib/store/creditStore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+interface RequestBody {
+  tier: string;
+}
 
-  const { tier } = (await req.json()) as { tier: string };
-  const tierDetails = pricing.tiers[tier];
+async function activateFreeTier(
+  userId: string,
+  tierDetails: (typeof pricing.tiers)[string]
+) {
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
 
-  if (!tierDetails)
-    return NextResponse.json({ error: 'Invalid tier' }, { status: 400 });
+  await addCredit(
+    userId,
+    tierDetails.credits,
+    `${userId}_${tierDetails.name}`,
+    expiresAt
+  );
+  await upsertSubscription(userId, null, tierDetails.name, null);
+  return NextResponse.json({ message: 'Free tier activated.' });
+}
 
-  const userId = session.user.id;
-
-  const subscription = await getSubscription(userId);
-
-  if (!subscription) {
-    if (tierDetails.name === 'free') {
-      await addCredit(
-        userId,
-        tierDetails.credits,
-        `${userId}_${tierDetails.name}`,
-        null
-      );
-      await upsertSubscription(userId, null, tierDetails.name, null);
-      return NextResponse.json({ message: 'Free tier activated.' });
-    }
-    const checkoutSession = await stripe.checkout.sessions.create({
-      customer_email: session.user.email,
-      payment_method_types: ['card'],
-      subscription_data: {
-        metadata: {
-          user_id: session.user.id,
-          pricingName: tierDetails.name,
-          credits: tierDetails.credits,
-        },
+async function createNewStripeSubscription(
+  user: { id: string; email: string },
+  tierDetails: (typeof pricing.tiers)[string]
+) {
+  const checkoutSession = await stripe.checkout.sessions.create({
+    customer_email: user.email,
+    payment_method_types: ['card'],
+    subscription_data: {
+      metadata: {
+        user_id: user.id,
+        pricingName: tierDetails.name,
+        credits: tierDetails.credits,
       },
-      line_items: [{ price: tierDetails.priceId, quantity: 1 }],
-      mode: 'subscription',
-      ui_mode: 'embedded',
-      return_url: `${process.env.NEXT_PUBLIC_URL}/return?session_id={CHECKOUT_SESSION_ID}`,
-    });
+    },
+    line_items: [{ price: tierDetails.priceId, quantity: 1 }],
+    mode: 'subscription',
+    ui_mode: 'embedded',
+    return_url: `${process.env.NEXT_PUBLIC_URL}/return?session_id={CHECKOUT_SESSION_ID}`,
+  });
 
-    return NextResponse.json({
-      clientSecret: checkoutSession.client_secret,
-      checkoutSessionId: checkoutSession.id,
-    });
-  }
+  return NextResponse.json({
+    clientSecret: checkoutSession.client_secret,
+    checkoutSessionId: checkoutSession.id,
+  });
+}
 
+async function updateExistingStripeSubscription(
+  userId: string,
+  subscription: NonNullable<Awaited<ReturnType<typeof getSubscription>>>,
+  tierDetails: (typeof pricing.tiers)[string]
+) {
   const updatedSubscription = await stripe.subscriptions.update(
     subscription.id,
     {
@@ -77,18 +80,36 @@ export async function POST(req: Request) {
     }
   );
 
-  const expiresAt = new Date(
-    updatedSubscription.items.data[0]?.current_period_end * 1000
-  );
-
-  await upsertSubscription(
-    userId,
-    subscription.id,
-    tierDetails.name,
-    expiresAt
-  );
-
   return NextResponse.json({
     updatedSubscriptionId: updatedSubscription.id,
   });
+}
+
+export async function POST(req: Request) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const { tier } = (await req.json()) as RequestBody;
+  const tierDetails = pricing.tiers[tier];
+
+  if (!tierDetails) {
+    return NextResponse.json({ error: 'Invalid tier' }, { status: 400 });
+  }
+
+  const userId = session.user.id;
+  const subscription = await getSubscription(userId);
+
+  if (subscription.stripeSubscriptionId) {
+    return updateExistingStripeSubscription(userId, subscription, tierDetails);
+  }
+
+  if (tierDetails.name === 'free') {
+    return activateFreeTier(userId, tierDetails);
+  }
+  return createNewStripeSubscription(
+    { id: userId, email: session.user.email },
+    tierDetails
+  );
 }
