@@ -103,8 +103,14 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - (Luka) add validations to ensure user can't create more agents and actions than their tier allows (API validation and in UI take them to pricing page if they try to create more than allowed)
 - (Luka) add free tier
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
+- agent needs to be able to call minified js functions - how does chatbase achieve this?
+- agent needs to be able to list available actions/things it can do if someone asks (maybe there should also be a button for this?)
+- agent needs to be able to explain who it is and what it can do if someone asks
 
-## Launch and Sell! 
+## Launch and Sell!
+- https://www.reddit.com/r/SaaS/comments/1700b0w/frustrated_a_similar_tool_took_off_to_180k_mrr
+- https://www.reddit.com/r/SaaS/comments/1700b0w/comment/k3isvie/
+- Work with AI consultants to sell this. Give them commission. Partner with them. Allow AI consultants to white label our tech and sell it as their own solution
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
 - find a CRM that makes selling and tracking our numbers fun! it should be a fun game to see the numbers go up. - use HubSpot
 - sell companies on the idea that they replace their customer support team. We save them money: https://youtu.be/K4s6Cgicw_A?si=MT1kzLH3p4m7CVyS&t=809
@@ -138,6 +144,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - allow user to use voice, the ideal is that they just talk to computer - https://x.com/LinusEkenstam/status/1926890672188952774
 - make the actions MCP-compatible? i.e. turn the actions into an MCP server so that any MCP client can call them.
 - make onboarding a new app as simple as possible
+    - have users embed a temporary widget that tracks all function calls and network calls and then they manually perform actions on their website that we record and we use a powerful LLM to convert those into actions that fit our schema: https://grok.com/share/bGVnYWN5_6fb8db59-c81c-4da7-9401-c23bc06499d2
     - automatically pull docs from website during RAG onboarding?
     - maybe let user just pass in their OpenAPI spec and the app will automatically generate an agent for them
     - maybe use AI to scan the app's codebase - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
@@ -163,9 +170,11 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - Minimizing onboarding friction will likely be done with AI/agents.
 
 
-# Competition
-- https://www.chatbase.co/
+# Competition - revenue
+- https://www.chatbase.co/ - $5M+/year
   - [custom actions](https://www.chatbase.co/docs/user-guides/agent/actions/custom-action)
+- https://www.intercom.com/ - [$343M/year ](https://sacra.com/research/intercom-at-343m/)
+- https://crisp.chat/en/livechat/
 
 # Design
 The website design is based on this: https://gitingest.com/
