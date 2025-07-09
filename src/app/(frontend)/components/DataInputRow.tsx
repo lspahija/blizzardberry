@@ -77,25 +77,27 @@ export default function DataInputRow({
                 <SelectItem value="Text">Text</SelectItem>
                 <SelectItem value="Number">Number</SelectItem>
                 <SelectItem value="Boolean">Boolean</SelectItem>
-                <SelectItem value="Json">Json</SelectItem>
+                <SelectItem value="Json">JSON</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <div className="flex flex-col items-center">
-            <Label
-              htmlFor={`inputArray${index}`}
-              className="text-xs md:text-sm whitespace-nowrap text-foreground mb-1"
-            >
-              Array
-            </Label>
-            <input
-              id={`inputArray${index}`}
-              type="checkbox"
-              checked={input.isArray}
-              onChange={(e) => updateDataInput('isArray', e.target.checked)}
-              className="border-[2px] border-border w-4 h-4 md:w-5 md:h-5 mb-2"
-            />
-          </div>
+          {input.type !== 'Json' && (
+            <div className="flex flex-col items-center">
+              <Label
+                htmlFor={`inputArray${index}`}
+                className="text-xs md:text-sm whitespace-nowrap text-foreground mb-1"
+              >
+                Array
+              </Label>
+              <input
+                id={`inputArray${index}`}
+                type="checkbox"
+                checked={input.isArray}
+                onChange={(e) => updateDataInput('isArray', e.target.checked)}
+                className="border-[2px] border-border w-4 h-4 md:w-5 md:h-5 mb-2"
+              />
+            </div>
+          )}
         </div>
       </div>
       <div>
