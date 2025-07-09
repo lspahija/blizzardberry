@@ -188,7 +188,9 @@ export default function UpgradePage() {
       );
     }
 
-    const currentTierIndex = tierOrder.indexOf(userSubscription.tier);
+    const currentTierIndex = tierOrder.indexOf(
+      userSubscription.tier.toLowerCase()
+    );
     return Object.entries(pricing.tiers).filter(([key]) => {
       const tierIndex = tierOrder.indexOf(key);
       return tierIndex > currentTierIndex && key !== 'enterprise';
