@@ -32,4 +32,5 @@ export enum ParameterType {
   String = 'string',
   Number = 'number',
   Boolean = 'boolean',
+  Json = 'json',
 }

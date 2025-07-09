@@ -77,6 +77,7 @@ export default function DataInputRow({
                 <SelectItem value="Text">Text</SelectItem>
                 <SelectItem value="Number">Number</SelectItem>
                 <SelectItem value="Boolean">Boolean</SelectItem>
+                <SelectItem value="Json">Json</SelectItem>
               </SelectContent>
             </Select>
           </div>
