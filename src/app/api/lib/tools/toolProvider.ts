@@ -102,10 +102,10 @@ function createParameterSchema(parameters: Parameter[]): z.ZodObject<any> {
         baseSchema = z.boolean();
         break;
       case ParameterType.Json:
-        baseSchema = z.record(z.any());
+        baseSchema = z.record(z.unknown());
         break;
       default:
-        baseSchema = z.string();
+        baseSchema = z.unknown();
     }
 
     const finalSchema = param.isArray ? z.array(baseSchema) : baseSchema;
