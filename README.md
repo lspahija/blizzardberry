@@ -110,6 +110,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 ## Launch and Sell!
 - https://www.reddit.com/r/SaaS/comments/1700b0w/frustrated_a_similar_tool_took_off_to_180k_mrr
 - https://www.reddit.com/r/SaaS/comments/1700b0w/comment/k3isvie/
+- <img width="744" alt="Screenshot 2025-07-09 at 00 06 20" src="https://github.com/user-attachments/assets/13c320e9-c096-4183-91a0-42da2d4e61f7" />
 - Work with AI consultants to sell this. Give them commission. Partner with them. Allow AI consultants to white label our tech and sell it as their own solution
 - [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
 - find a CRM that makes selling and tracking our numbers fun! it should be a fun game to see the numbers go up. - use HubSpot
