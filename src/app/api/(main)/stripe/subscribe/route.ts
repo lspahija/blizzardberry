@@ -28,7 +28,7 @@ async function activateFreeTier(
     `${userId}_${tierDetails.name}`,
     expiresAt
   );
-  await upsertSubscription(userId, null, null, null, tierDetails.name, null);
+  await upsertSubscription(userId, null, null, tierDetails.name, null);
   return NextResponse.json({ message: 'Free tier activated.' });
 }
 
@@ -63,32 +63,24 @@ async function updateExistingStripeSubscription(
   subscription: Subscription,
   tierDetails: (typeof pricing.tiers)[string]
 ) {
-  const checkoutSession = await stripe.checkout.sessions.create({
-    customer: subscription.stripeCustomerId,
-    payment_method_types: ['card'],
-    subscription_data: {
-      proration_behavior: 'none',
-      metadata: {
-        user_id: userId,
-        pricingName: tierDetails.name,
-        credits: tierDetails.credits.toString(),
+  await stripe.subscriptions.update(subscription.stripeSubscriptionId, {
+    items: [
+      {
+        id: subscription.stripeSubscriptionItemId,
+        price: tierDetails.priceId, // Set the new price
       },
+    ],
+    proration_behavior: 'none',
+    metadata: {
+      user_id: userId,
+      pricingName: tierDetails.name,
+      credits: tierDetails.credits,
     },
-    line_items: [{ price: tierDetails.priceId, quantity: 1 }],
-    mode: 'subscription',
-    ui_mode: 'embedded',
-    return_url: `${process.env.NEXT_PUBLIC_URL}/return?session_id={CHECKOUT_SESSION_ID}`,
   });
 
-  if (!checkoutSession.client_secret) {
-    throw new Error(
-      'Failed to create checkout session: No client secret returned'
-    );
-  }
-
   return NextResponse.json({
-    clientSecret: checkoutSession.client_secret,
-    checkoutSessionId: checkoutSession.id,
+    success: true,
+    message: 'Subscription updated successfully.',
   });
 }
 
@@ -100,6 +92,8 @@ export async function POST(req: Request) {
 
   const { tier } = (await req.json()) as RequestBody;
   const tierDetails = pricing.tiers[tier];
+
+  // TODO: get the correct priceId depending on billing cycle (monthly or yearly)
 
   if (!tierDetails) {
     return NextResponse.json({ error: 'Invalid tier' }, { status: 400 });

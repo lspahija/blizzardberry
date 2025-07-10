@@ -27,6 +27,8 @@ values ('83d476b1-1777-4b1d-8f07-28d7df584f25', 1000000);
 
 
 drop table subscriptions;
+delete from domain_events;
+delete from subscriptions;
 
 
 select * from subscriptions;

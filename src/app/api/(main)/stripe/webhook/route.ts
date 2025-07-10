@@ -23,24 +23,18 @@ export async function POST(req: Request) {
     );
   }
 
+  console.log(JSON.stringify(event));
+
   /**
-   * TODO: log all of these events and see what is useful
-   * 'customer.subscription.created', 'customer.subscription.updated', 'customer.subscription.deleted', 'invoice.payment_succeeded', 'checkout.session.completed'
-   *  Upsert subscriptions table when user subscribes to new tier or modifies
-   *  just increase user's credits and modify their subscription expiration to be a month from now
-   *  Expire or delete subscriptions table record when subscription expires e.g. if it's deleted or not renewed
-   *  How do we normally renew it?
-   *  how does Chatbase's screen look for switching to a higher subscription tier?
+   *  TODO: Expire or delete subscriptions table record when subscription expires e.g. if it's deleted or not renewed
    */
 
   if (event.type === 'invoice.payment_succeeded') {
     const invoice = event.data.object as Stripe.Invoice;
     if (
-      [
-        'subscription_create',
-        'subscription_cycle',
-        'subscription_update',
-      ].includes(invoice.billing_reason)
+      ['subscription_create', 'subscription_cycle'].includes(
+        invoice.billing_reason
+      )
     ) {
       const sub = await stripe.subscriptions.retrieve(
         invoice.lines.data[0].parent?.subscription_item_details?.subscription,
@@ -53,19 +47,40 @@ export async function POST(req: Request) {
       const subscriptionItemId = sub.items.data[0].id;
 
       console.log(
-        `subscription created, cycled or updated for: userId: ${userId}, tierName: ${tierName}, credits: ${credits}, renewAt: ${renewAt}`
+        `handling ${event.type} with billing reason ${invoice.billing_reason} for userId: ${userId}, tierName: ${tierName}, credits: ${credits}, renewAt: ${renewAt}`
       );
 
-      await addCredit(userId, credits, invoice.id, renewAt);
+      await addCredit(userId, credits, event.id, renewAt);
       await upsertSubscription(
         userId,
-        (sub.customer as Stripe.Customer).id,
         sub.id,
         subscriptionItemId,
         tierName,
         renewAt
       );
     }
+  }
+
+  if (event.type === 'customer.subscription.updated') {
+    const sub = event.data.object as Stripe.Subscription;
+    const userId = sub.metadata.user_id;
+    const credits = parseInt(sub.metadata.credits);
+    const tierName = sub.metadata.pricingName;
+    const renewAt = new Date(sub.items.data[0]?.current_period_end * 1000);
+    const subscriptionItemId = sub.items.data[0].id;
+
+    console.log(
+      `handling ${event.type} for userId: ${userId}, tierName: ${tierName}, credits: ${credits}, renewAt: ${renewAt}`
+    );
+
+    await addCredit(userId, credits, event.id, renewAt);
+    await upsertSubscription(
+      userId,
+      sub.id,
+      subscriptionItemId,
+      tierName,
+      renewAt
+    );
   }
 
   if (event.type === 'checkout.session.completed') {
@@ -75,9 +90,10 @@ export async function POST(req: Request) {
       checkoutSession.mode === 'payment' &&
       checkoutSession.payment_status === 'paid'
     ) {
-      const userId = checkoutSession.metadata.user_id;
-      const pricingName = checkoutSession.metadata.pricingName;
-      const credits = parseInt(checkoutSession.metadata.credits);
+      const metadata = checkoutSession.metadata;
+      const userId = metadata.user_id;
+      const pricingName = metadata.pricingName;
+      const credits = parseInt(metadata.credits);
 
       console.log(
         `one time credit purchase paid: userId: ${userId}, pricingName: ${pricingName}, credits: ${credits}`

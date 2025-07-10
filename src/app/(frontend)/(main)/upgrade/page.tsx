@@ -102,20 +102,41 @@ export default function UpgradePage() {
       return;
     }
 
+    const toastId = toast.loading('Processing your request...');
+
     try {
       const res = await fetch('/api/stripe/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tier, billingCycle }),
       });
-      if (!res.ok) throw new Error((await res.json()).error);
-      const { clientSecret, checkoutSessionId }: CheckoutResponse =
-        await res.json();
-      setClientSecret(clientSecret);
-      setCheckoutSessionId(checkoutSessionId);
-      setShowCheckout(true);
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to update subscription.');
+      }
+
+      const responseData = await res.json();
+
+      // If a clientSecret is returned, it's a NEW subscription.
+      // Show the embedded checkout.
+      if (responseData.clientSecret) {
+        setClientSecret(responseData.clientSecret);
+        setShowCheckout(true);
+        toast.dismiss(toastId);
+      }
+      // If no clientSecret, it was a successful UPDATE.
+      else if (responseData.success) {
+        toast.success('Your plan has been upgraded successfully!', {
+          id: toastId,
+        });
+        // Optionally, refresh the page or user data to show the new plan
+        window.location.reload();
+      }
     } catch (err) {
-      toast.error('Error initiating subscription: ' + (err as Error).message);
+      toast.error('Error: ' + (err as Error).message, {
+        id: toastId,
+      });
     }
   };
 
