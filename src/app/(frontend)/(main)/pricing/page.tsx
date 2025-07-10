@@ -114,7 +114,6 @@ export default function PricingPage() {
       setCheckoutSessionId(data.checkoutSessionId || '');
       setShowCheckout(true);
     } catch (err) {
-      // Error handling is already done in the hook
     } finally {
       setCheckoutLoading(false);
     }
@@ -140,7 +139,6 @@ export default function PricingPage() {
       setCheckoutSessionId(data.checkoutSessionId || '');
       setShowCheckout(true);
     } catch (err) {
-      // Error handling is already done in the hook
     } finally {
       setCheckoutLoading(false);
     }
