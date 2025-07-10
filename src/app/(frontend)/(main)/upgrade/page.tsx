@@ -10,6 +10,7 @@ import {
 import {
   Check,
   Info,
+  Loader2,
   Mail,
   MessageSquare,
   Send,
@@ -28,15 +29,11 @@ import {
   AgentModelDisplay,
   AgentModelList,
 } from '@/app/api/lib/model/agent/agent';
+import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
-
-interface CheckoutResponse {
-  clientSecret: string;
-  checkoutSessionId: string;
-}
 
 interface Subscription {
   id: string;
@@ -52,10 +49,12 @@ export default function UpgradePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { isLoggedIn } = useAuth();
+  const { subscribe, buyCredits, isLoading } = useStripeSubscription();
   const [showCheckout, setShowCheckout] = useState<boolean>(false);
   const [clientSecret, setClientSecret] = useState<string>('');
   const [checkoutSessionId, setCheckoutSessionId] = useState<string>('');
   const [showEnterpriseForm, setShowEnterpriseForm] = useState<boolean>(false);
+  const [checkoutLoading, setCheckoutLoading] = useState<boolean>(false);
   const [emailAddress, setEmailAddress] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [formStatus, setFormStatus] = useState<string>('');
@@ -102,41 +101,26 @@ export default function UpgradePage() {
       return;
     }
 
-    const toastId = toast.loading('Processing your request...');
+    setCheckoutLoading(true);
 
     try {
-      const res = await fetch('/api/stripe/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier, billingCycle }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Failed to update subscription.');
-      }
-
-      const responseData = await res.json();
+      const data = await subscribe({ tier, billingCycle });
 
       // If a clientSecret is returned, it's a NEW subscription.
       // Show the embedded checkout.
-      if (responseData.clientSecret) {
-        setClientSecret(responseData.clientSecret);
+      if (data.clientSecret) {
+        setClientSecret(data.clientSecret);
         setShowCheckout(true);
-        toast.dismiss(toastId);
       }
       // If no clientSecret, it was a successful UPDATE.
-      else if (responseData.success) {
-        toast.success('Your plan has been upgraded successfully!', {
-          id: toastId,
-        });
-        // Optionally, refresh the page or user data to show the new plan
+      else if (data.success) {
+        toast.success('Your plan has been upgraded successfully!');
         window.location.reload();
       }
     } catch (err) {
-      toast.error('Error: ' + (err as Error).message, {
-        id: toastId,
-      });
+      toast.error('Error: ' + (err as Error).message);
+    } finally {
+      setCheckoutLoading(false);
     }
   };
 
@@ -146,21 +130,15 @@ export default function UpgradePage() {
       return;
     }
 
+    setCheckoutLoading(true);
     try {
-      const res = await fetch('/api/stripe/buy-credits', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (!res.ok) throw new Error((await res.json()).error);
-      const { clientSecret, checkoutSessionId }: CheckoutResponse =
-        await res.json();
-      setClientSecret(clientSecret);
-      setCheckoutSessionId(checkoutSessionId);
+      const data = await buyCredits();
+      setClientSecret(data.clientSecret);
+      setCheckoutSessionId(data.checkoutSessionId || '');
       setShowCheckout(true);
     } catch (err) {
-      toast.error(
-        'Error initiating credit purchase: ' + (err as Error).message
-      );
+    } finally {
+      setCheckoutLoading(false);
     }
   };
 
@@ -201,11 +179,11 @@ export default function UpgradePage() {
   // Define tier order for non-enterprise tiers
   const tierOrder = ['free', 'hobby', 'standard', 'pro'];
 
-  // Filter tiers to show only those more expensive than the current tier (excluding enterprise)
+  // Filter tiers to show only those more expensive than the current tier (excluding enterprise and free)
   const getAvailableTiers = () => {
     if (!userSubscription || !userSubscription.tier) {
       return Object.entries(pricing.tiers).filter(
-        ([key]) => key !== 'enterprise'
+        ([key]) => key !== 'enterprise' && key !== 'free'
       );
     }
 
@@ -214,7 +192,7 @@ export default function UpgradePage() {
     );
     return Object.entries(pricing.tiers).filter(([key]) => {
       const tierIndex = tierOrder.indexOf(key);
-      return tierIndex > currentTierIndex && key !== 'enterprise';
+      return tierIndex > currentTierIndex && key !== 'enterprise' && key !== 'free';
     });
   };
 
@@ -477,10 +455,18 @@ export default function UpgradePage() {
                       key === 'standard'
                         ? 'bg-secondary text-secondary-foreground border-secondary hover:bg-secondary/90'
                         : 'bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10'
-                    }`}
+                    } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
                     onClick={() => handleSubscribe(key)}
+                    disabled={isLoading}
                   >
-                    Subscribe
+                    {isLoading ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Processing...
+                      </div>
+                    ) : (
+                      'Upgrade'
+                    )}
                   </button>
                 </div>
               ))}
@@ -607,10 +593,18 @@ export default function UpgradePage() {
                 </div>
 
                 <button
-                  className="py-4 px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow"
+                  className={`py-4 px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
                   onClick={handleBuyCredits}
+                  disabled={isLoading}
                 >
-                  Buy Credits Now
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Processing...
+                    </div>
+                  ) : (
+                    'Buy Credits Now'
+                  )}
                 </button>
               </div>
             </div>
@@ -717,6 +711,20 @@ export default function UpgradePage() {
                 {formStatus}
               </p>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Checkout Loading Overlay */}
+      {checkoutLoading && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center z-[200]">
+          <div className="bg-card p-8 rounded-2xl border border-border shadow-2xl flex flex-col items-center gap-4">
+            <Loader2 className="h-12 w-12 text-secondary animate-spin" />
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                Preparing your checkout...
+              </h3>
+            </div>
           </div>
         </div>
       )}
