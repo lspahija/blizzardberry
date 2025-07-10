@@ -3,7 +3,8 @@
 import { Button } from '@/app/(frontend)/components/ui/button';
 import { motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import posthog from 'posthog-js';
 
@@ -13,6 +14,26 @@ export default function LoginPage() {
   const [isResendLoading, setIsResendLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const searchParams = useSearchParams();
+
+  const intent = searchParams.get('intent');
+  const intentData = searchParams.get('data');
+  
+  const redirectTo = intent ? '/continue-subscription' : '/dashboard';
+  
+  useEffect(() => {
+    if (intent && intentData) {
+      try {
+        const parsedData = JSON.parse(intentData);
+        sessionStorage.setItem('subscriptionIntent', JSON.stringify({
+          intent,
+          data: parsedData
+        }));
+      } catch (error) {
+        console.error('Failed to parse subscription intent:', error);
+      }
+    }
+  }, [intent, intentData]);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -43,7 +64,7 @@ export default function LoginPage() {
     setError('');
     try {
       posthog.capture('github_sign_in_attempt');
-      await signIn('github', { redirectTo: '/dashboard' });
+      await signIn('github', { redirectTo });
     } catch (error) {
       setIsGitHubLoading(false);
       setError('Failed to sign in with GitHub. Please try again.');
@@ -56,7 +77,7 @@ export default function LoginPage() {
     setError('');
     try {
       posthog.capture('google_sign_in_attempt');
-      await signIn('google', { redirectTo: '/dashboard' });
+      await signIn('google', { redirectTo });
     } catch (error) {
       setIsGoogleLoading(false);
       setError('Failed to sign in with Google. Please try again.');
@@ -74,7 +95,7 @@ export default function LoginPage() {
     setIsResendLoading(true);
     try {
       posthog.capture('resend_sign_in_attempt', { email });
-      await signIn('resend', { email, redirectTo: '/dashboard' });
+      await signIn('resend', { email, redirectTo });
     } catch (error) {
       setIsResendLoading(false);
       setError('Failed to send sign-in email. Please try again.');

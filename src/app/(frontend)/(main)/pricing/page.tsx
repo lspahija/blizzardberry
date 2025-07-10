@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { signOut, useSession } from 'next-auth/react';
+import { useState, useCallback, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from '@stripe/react-stripe-js';
+import { useSearchParams } from 'next/navigation';
 import {
   Check,
   Mail,
@@ -42,6 +43,7 @@ export default function PricingPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { isLoggedIn } = useAuth();
+  const searchParams = useSearchParams();
   const [showCheckout, setShowCheckout] = useState<boolean>(false);
   const [clientSecret, setClientSecret] = useState<string>('');
   const [checkoutSessionId, setCheckoutSessionId] = useState<string>('');
@@ -53,9 +55,64 @@ export default function PricingPage() {
     'monthly'
   );
 
+  useEffect(() => {
+    const shouldShowCheckout = searchParams.get('checkout') === 'true';
+    const checkoutClientSecret = searchParams.get('clientSecret');
+    const billingCycleParam = searchParams.get('billingCycle') as 'monthly' | 'yearly';
+    
+    if (shouldShowCheckout && checkoutClientSecret && isLoggedIn) {
+      setClientSecret(checkoutClientSecret);
+      setShowCheckout(true);
+      
+      if (billingCycleParam) {
+        setBillingCycle(billingCycleParam);
+      }
+      
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('checkout');
+      newUrl.searchParams.delete('clientSecret');
+      newUrl.searchParams.delete('tier');
+      newUrl.searchParams.delete('billingCycle');
+      newUrl.searchParams.delete('action');
+      window.history.replaceState({}, '', newUrl.toString());
+    }
+  }, [searchParams, isLoggedIn]);
+
   const handleSubscribe = async (tier: string) => {
+    if (tier === 'free') {
+      if (!isLoggedIn) {
+        router.push('/login');
+        return;
+      }
+      
+      try {
+        const res = await fetch('/api/stripe/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tier: 'free', billingCycle }),
+        });
+        if (!res.ok) throw new Error((await res.json()).error);
+        
+        toast.success('Free tier activated! Redirecting to dashboard...');
+        setTimeout(() => router.push('/dashboard'), 1000);
+        return;
+      } catch (err) {
+        toast.error('Error activating free tier: ' + (err as Error).message);
+        return;
+      }
+    }
+
     if (!isLoggedIn) {
-      router.push('/login');
+      const subscriptionIntent = {
+        tier,
+        billingCycle,
+        returnUrl: '/pricing'
+      };
+      const params = new URLSearchParams({
+        intent: 'subscription',
+        data: JSON.stringify(subscriptionIntent)
+      });
+      router.push(`/login?${params.toString()}`);
       return;
     }
 
@@ -78,7 +135,15 @@ export default function PricingPage() {
 
   const handleBuyCredits = async () => {
     if (!isLoggedIn) {
-      router.push('/login');
+      const creditIntent = {
+        action: 'buy-credits',
+        returnUrl: '/pricing'
+      };
+      const params = new URLSearchParams({
+        intent: 'credits',
+        data: JSON.stringify(creditIntent)
+      });
+      router.push(`/login?${params.toString()}`);
       return;
     }
 
