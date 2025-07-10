@@ -14,7 +14,6 @@ interface SubscriptionIntent {
     tier?: string;
     billingCycle?: 'monthly' | 'yearly';
     action?: string;
-    returnUrl: string;
   };
 }
 
@@ -71,7 +70,7 @@ export default function ContinueSubscriptionPage() {
           sessionStorage.removeItem('subscriptionIntent');
           
           if (data.clientSecret) {
-            const returnUrl = new URL(intent.data.returnUrl, window.location.origin);
+            const returnUrl = new URL('/pricing', window.location.origin);
             returnUrl.searchParams.set('checkout', 'true');
             returnUrl.searchParams.set('clientSecret', data.clientSecret);
             returnUrl.searchParams.set('tier', intent.data.tier);
@@ -84,7 +83,7 @@ export default function ContinueSubscriptionPage() {
             setStatus('success');
             setMessage('Your subscription has been updated successfully!');
             toast.success('Subscription updated successfully!');
-            setTimeout(() => router.push(intent.data.returnUrl), 2000);
+            setTimeout(() => router.push('/pricing'), 2000);
           }
 
         } else if (intent.intent === 'credits') {
@@ -103,7 +102,7 @@ export default function ContinueSubscriptionPage() {
           
           sessionStorage.removeItem('subscriptionIntent');
           
-          const returnUrl = new URL(intent.data.returnUrl, window.location.origin);
+          const returnUrl = new URL('/pricing', window.location.origin);
           returnUrl.searchParams.set('checkout', 'true');
           returnUrl.searchParams.set('clientSecret', data.clientSecret);
           returnUrl.searchParams.set('action', 'buy-credits');
@@ -122,13 +121,7 @@ export default function ContinueSubscriptionPage() {
         sessionStorage.removeItem('subscriptionIntent');
         
         setTimeout(() => {
-          try {
-            const intentStr = sessionStorage.getItem('subscriptionIntent');
-            const intent = intentStr ? JSON.parse(intentStr) : null;
-            router.push(intent?.data?.returnUrl || '/dashboard');
-          } catch {
-            router.push('/dashboard');
-          }
+          router.push('/pricing');
         }, 3000);
       }
     };

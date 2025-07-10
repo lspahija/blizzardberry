@@ -106,7 +106,6 @@ export default function PricingPage() {
       const subscriptionIntent = {
         tier,
         billingCycle,
-        returnUrl: '/pricing'
       };
       const params = new URLSearchParams({
         intent: 'subscription',
@@ -137,7 +136,6 @@ export default function PricingPage() {
     if (!isLoggedIn) {
       const creditIntent = {
         action: 'buy-credits',
-        returnUrl: '/pricing'
       };
       const params = new URLSearchParams({
         intent: 'credits',
