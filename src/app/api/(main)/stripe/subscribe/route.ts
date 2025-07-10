@@ -7,6 +7,7 @@ import {
   upsertSubscription,
 } from '@/app/api/lib/store/subscriptionStore';
 import { addCredit } from '@/app/api/lib/store/creditStore';
+import { Subscription } from '@/app/api/lib/model/subscription/subscription';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -27,7 +28,7 @@ async function activateFreeTier(
     `${userId}_${tierDetails.name}`,
     expiresAt
   );
-  await upsertSubscription(userId, null, null, tierDetails.name, null);
+  await upsertSubscription(userId, null, null, null, tierDetails.name, null);
   return NextResponse.json({ message: 'Free tier activated.' });
 }
 
@@ -59,29 +60,35 @@ async function createNewStripeSubscription(
 
 async function updateExistingStripeSubscription(
   userId: string,
-  subscription: NonNullable<Awaited<ReturnType<typeof getSubscription>>>,
+  subscription: Subscription,
   tierDetails: (typeof pricing.tiers)[string]
 ) {
-  const updatedSubscription = await stripe.subscriptions.update(
-    subscription.stripeSubscriptionId,
-    {
-      items: [
-        {
-          id: subscription.stripeSubscriptionItemId,
-          price: tierDetails.priceId,
-        },
-      ],
+  const checkoutSession = await stripe.checkout.sessions.create({
+    customer: subscription.stripeCustomerId,
+    payment_method_types: ['card'],
+    subscription_data: {
       proration_behavior: 'none',
       metadata: {
         user_id: userId,
         pricingName: tierDetails.name,
-        credits: tierDetails.credits,
+        credits: tierDetails.credits.toString(),
       },
-    }
-  );
+    },
+    line_items: [{ price: tierDetails.priceId, quantity: 1 }],
+    mode: 'subscription',
+    ui_mode: 'embedded',
+    return_url: `${process.env.NEXT_PUBLIC_URL}/return?session_id={CHECKOUT_SESSION_ID}`,
+  });
+
+  if (!checkoutSession.client_secret) {
+    throw new Error(
+      'Failed to create checkout session: No client secret returned'
+    );
+  }
 
   return NextResponse.json({
-    updatedSubscriptionId: updatedSubscription.id,
+    clientSecret: checkoutSession.client_secret,
+    checkoutSessionId: checkoutSession.id,
   });
 }
 

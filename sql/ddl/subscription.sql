@@ -13,6 +13,7 @@ CREATE TABLE subscriptions
 (
     id                          UUID                 DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id                     UUID        NOT NULL UNIQUE REFERENCES next_auth.users (id) ON DELETE CASCADE,
+    stripe_customer_id          TEXT,
     stripe_subscription_id      TEXT,
     stripe_subscription_item_id TEXT,
     tier                        TEXT        NOT NULL,

@@ -31,7 +31,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const subscription = await getSubscription(user.id);
         if (!subscription) {
           await addCredit(user.id, 100, `${user.id}_free`, null);
-          await upsertSubscription(user.id, null, null, 'free', null);
+          await upsertSubscription(user.id, null, null, null, 'free', null);
 
           posthog.capture('new_user_created', {
             userId: user.id,

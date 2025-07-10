@@ -1,6 +1,7 @@
 export type Subscription = {
   id: string;
   userId: string;
+  stripeCustomerId: string;
   stripeSubscriptionId: string;
   stripeSubscriptionItemId: string;
   tier: string;

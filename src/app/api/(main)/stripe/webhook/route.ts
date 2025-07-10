@@ -59,6 +59,7 @@ export async function POST(req: Request) {
       await addCredit(userId, credits, invoice.id, renewAt);
       await upsertSubscription(
         userId,
+        (sub.customer as Stripe.Customer).id,
         sub.id,
         subscriptionItemId,
         tierName,
