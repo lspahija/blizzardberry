@@ -1,18 +1,20 @@
-interface PricingItem {
+interface Tier {
+  name: string;
+  agents: number;
+  actionsPerAgent: number;
+  monthlyPriceId: string | null;
+  monthlyPrice: number;
+  yearlyPriceId: string | null;
+  yearlyPrice: number;
+  credits: number;
+}
+
+interface OneTimePurchase {
   name: string;
   priceId: string | null;
   price: number;
   credits: number;
 }
-
-interface Tier extends PricingItem {
-  agents: number;
-  actionsPerAgent: number;
-  yearlyPriceId: string | null;
-  yearlyPrice: number;
-}
-
-interface OneTimePurchase extends PricingItem {}
 
 interface Pricing {
   tiers: Record<string, Tier>;
@@ -23,9 +25,9 @@ export const pricing: Pricing = {
   tiers: {
     free: {
       name: 'Free',
-      priceId: null,
+      monthlyPriceId: null,
       yearlyPriceId: null,
-      price: 0,
+      monthlyPrice: 0,
       yearlyPrice: 0,
       credits: 100,
       agents: 1,
@@ -33,9 +35,9 @@ export const pricing: Pricing = {
     },
     hobby: {
       name: 'Hobby',
-      priceId: process.env.HOBBY_PLAN_MONTHLY_PRICE_ID!,
+      monthlyPriceId: process.env.HOBBY_PLAN_MONTHLY_PRICE_ID!,
       yearlyPriceId: process.env.HOBBY_PLAN_YEARLY_PRICE_ID!,
-      price: 35,
+      monthlyPrice: 35,
       yearlyPrice: 336, // 20% discount
       credits: 2000,
       agents: 1,
@@ -43,9 +45,9 @@ export const pricing: Pricing = {
     },
     standard: {
       name: 'Standard',
-      priceId: process.env.STANDARD_PLAN_MONTHLY_PRICE_ID!,
+      monthlyPriceId: process.env.STANDARD_PLAN_MONTHLY_PRICE_ID!,
       yearlyPriceId: process.env.STANDARD_PLAN_YEARLY_PRICE_ID!,
-      price: 150,
+      monthlyPrice: 150,
       yearlyPrice: 1440, // 20% discount
       credits: 13000,
       agents: 2,
@@ -53,9 +55,9 @@ export const pricing: Pricing = {
     },
     pro: {
       name: 'Pro',
-      priceId: process.env.PRO_PLAN_MONTHLY_PRICE_ID!,
+      monthlyPriceId: process.env.PRO_PLAN_MONTHLY_PRICE_ID!,
       yearlyPriceId: process.env.PRO_PLAN_YEARLY_PRICE_ID!,
-      price: 500,
+      monthlyPrice: 500,
       yearlyPrice: 4800, // 20% discount
       credits: 50000,
       agents: 3,

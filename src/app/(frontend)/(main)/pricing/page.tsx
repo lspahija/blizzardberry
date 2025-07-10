@@ -301,7 +301,7 @@ export default function PricingPage() {
                     {billingCycle === 'yearly' ? (
                       <>
                         <span className="text-xl font-semibold text-muted-foreground line-through mr-2">
-                          ${tier.price}
+                          ${tier.monthlyPrice}
                         </span>
                         <span className="text-4xl font-bold text-foreground">
                           ${(tier.yearlyPrice / 12).toFixed(0)}
@@ -309,7 +309,7 @@ export default function PricingPage() {
                       </>
                     ) : (
                       <span className="text-4xl font-bold text-foreground">
-                        ${tier.price}
+                        ${tier.monthlyPrice}
                       </span>
                     )}
                     <span className="text-base text-muted-foreground mb-1 align-bottom">

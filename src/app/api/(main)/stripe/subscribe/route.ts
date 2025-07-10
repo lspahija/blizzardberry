@@ -13,6 +13,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 interface RequestBody {
   tier: string;
+  billingCycle: 'monthly' | 'yearly';
 }
 
 async function activateFreeTier(
@@ -34,7 +35,8 @@ async function activateFreeTier(
 
 async function createNewStripeSubscription(
   user: { id: string; email: string },
-  tierDetails: (typeof pricing.tiers)[string]
+  tierDetails: (typeof pricing.tiers)[string],
+  priceId: string
 ) {
   const checkoutSession = await stripe.checkout.sessions.create({
     customer_email: user.email,
@@ -46,7 +48,7 @@ async function createNewStripeSubscription(
         credits: tierDetails.credits,
       },
     },
-    line_items: [{ price: tierDetails.priceId, quantity: 1 }],
+    line_items: [{ price: priceId, quantity: 1 }],
     mode: 'subscription',
     ui_mode: 'embedded',
     return_url: `${process.env.NEXT_PUBLIC_URL}/return?session_id={CHECKOUT_SESSION_ID}`,
@@ -61,13 +63,14 @@ async function createNewStripeSubscription(
 async function updateExistingStripeSubscription(
   userId: string,
   subscription: Subscription,
-  tierDetails: (typeof pricing.tiers)[string]
+  tierDetails: (typeof pricing.tiers)[string],
+  priceId: string
 ) {
   await stripe.subscriptions.update(subscription.stripeSubscriptionId, {
     items: [
       {
         id: subscription.stripeSubscriptionItemId,
-        price: tierDetails.priceId, // Set the new price
+        price: priceId,
       },
     ],
     proration_behavior: 'none',
@@ -90,10 +93,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { tier } = (await req.json()) as RequestBody;
+  const { tier, billingCycle } = (await req.json()) as RequestBody;
   const tierDetails = pricing.tiers[tier];
-
-  // TODO: get the correct priceId depending on billing cycle (monthly or yearly)
+  const priceId =
+    billingCycle === 'monthly'
+      ? tierDetails.monthlyPriceId
+      : tierDetails.yearlyPriceId;
 
   if (!tierDetails) {
     return NextResponse.json({ error: 'Invalid tier' }, { status: 400 });
@@ -103,7 +108,12 @@ export async function POST(req: Request) {
   const subscription = await getSubscription(userId);
 
   if (subscription.stripeSubscriptionId) {
-    return updateExistingStripeSubscription(userId, subscription, tierDetails);
+    return updateExistingStripeSubscription(
+      userId,
+      subscription,
+      tierDetails,
+      priceId
+    );
   }
 
   if (tierDetails.name.toLowerCase() === 'free') {
@@ -111,6 +121,7 @@ export async function POST(req: Request) {
   }
   return createNewStripeSubscription(
     { id: userId, email: session.user.email },
-    tierDetails
+    tierDetails,
+    priceId
   );
 }
