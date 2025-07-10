@@ -23,12 +23,6 @@ export async function POST(req: Request) {
     );
   }
 
-  console.log(JSON.stringify(event));
-
-  /**
-   *  TODO: Expire or delete subscriptions table record when subscription expires e.g. if it's deleted or not renewed
-   */
-
   if (event.type === 'invoice.payment_succeeded') {
     const invoice = event.data.object as Stripe.Invoice;
     if (

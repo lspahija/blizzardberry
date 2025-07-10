@@ -38,8 +38,6 @@ interface CheckoutResponse {
   checkoutSessionId: string;
 }
 
-// TODO: use Gemini CLI to make cards look good (currently enterprise has been pushed down to a new row)
-// TODO: currently if user is not logged in and want to subscribe to a non-free tier, they're redirected to login page which then redirects them to dashboard which lowers conversions because they need to navigate back. this is bad.
 export default function PricingPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
