@@ -3,6 +3,9 @@ import { auth } from '@/lib/auth/auth';
 import { Agent, AgentModelList } from '@/app/api/lib/model/agent/agent';
 import { createAgent, getAgents } from '@/app/api/lib/store/agentStore';
 import { createPrompt } from '@/app/api/lib/store/promptStore';
+import { getSubscription } from '@/app/api/lib/store/subscriptionStore';
+import { pricing } from '@/app/api/(main)/stripe/pricingModel';
+import { getActions } from '@/app/api/lib/store/actionStore';
 
 export async function POST(req: Request) {
   try {
@@ -19,6 +22,9 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    const validationResponse = await maxAgentsReached(session.user.id);
+    if (validationResponse) return validationResponse;
 
     const data = await createAgent(name, websiteDomain, session.user.id, model);
 
@@ -64,6 +70,20 @@ export async function GET(_: Request) {
     return NextResponse.json(
       { error: 'Failed to process request' },
       { status: 500 }
+    );
+  }
+}
+
+async function maxAgentsReached(userId: string) {
+  const sub = await getSubscription(userId);
+  const maxAgents = pricing.tiers[sub.tier.toLowerCase()].agents;
+
+  const existingAgents = await getAgents(userId);
+
+  if (existingAgents.length >= maxAgents) {
+    return NextResponse.json(
+      { error: 'Agent limit reached for this subscription tier' },
+      { status: 403 }
     );
   }
 }

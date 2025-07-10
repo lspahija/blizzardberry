@@ -3,6 +3,8 @@ import { Action } from '@/app/api/lib/model/action/baseAction';
 import { auth } from '@/lib/auth/auth';
 import { agentAuth } from '@/app/api/lib/auth/agentAuth';
 import { createAction, getActions } from '@/app/api/lib/store/actionStore';
+import { getSubscription } from '@/app/api/lib/store/subscriptionStore';
+import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 
 export async function GET(
   _: Request,
@@ -46,6 +48,9 @@ export async function POST(
     const authResponse = await agentAuth(session.user.id, agentId);
     if (authResponse) return authResponse;
 
+    const validationResponse = await maxActionReached(session.user.id, agentId);
+    if (validationResponse) return validationResponse;
+
     const action: Action = await req.json();
 
     await createAction(
@@ -62,6 +67,20 @@ export async function POST(
     return NextResponse.json(
       { error: 'Failed to process action' },
       { status: 500 }
+    );
+  }
+}
+
+async function maxActionReached(userId: string, agentId: string) {
+  const sub = await getSubscription(userId);
+  const maxActions = pricing.tiers[sub.tier.toLowerCase()].actionsPerAgent;
+
+  const existingActions = await getActions(agentId);
+
+  if (existingActions.length >= maxActions) {
+    return NextResponse.json(
+      { error: 'Action limit reached for this subscription tier' },
+      { status: 403 }
     );
   }
 }
