@@ -106,7 +106,6 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - agent needs to be able to list available actions/things it can do if someone asks (maybe there should also be a button for this?)
 - agent needs to be able to explain who it is and what it can do if someone asks
 - make cards look good on pricing page and upgrade page (currently enterprise has been pushed down to a new row and cards go to left)
-- currently if user is not logged in and want to subscribe to a non-free tier, they're redirected to login page which then redirects them to dashboard which lowers conversions because they need to navigate back to pricing page/upgrade page and choose subscribe again. this is bad.
 
 ## Launch and Sell!
 - https://www.reddit.com/r/SaaS/comments/1700b0w/frustrated_a_similar_tool_took_off_to_180k_mrr
