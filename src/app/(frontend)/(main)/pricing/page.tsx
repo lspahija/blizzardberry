@@ -10,15 +10,16 @@ import {
 import { useSearchParams } from 'next/navigation';
 import {
   Check,
+  Info,
+  Loader2,
   Mail,
   MessageSquare,
   Send,
-  Star,
-  Zap,
   Shield,
   Shovel,
+  Star,
   Users,
-  Info,
+  Zap,
 } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -29,25 +30,23 @@ import {
   AgentModelDisplay,
   AgentModelList,
 } from '@/app/api/lib/model/agent/agent';
+import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
-
-interface CheckoutResponse {
-  clientSecret: string;
-  checkoutSessionId: string;
-}
 
 export default function PricingPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { isLoggedIn } = useAuth();
   const searchParams = useSearchParams();
+  const { subscribe, buyCredits, isLoading } = useStripeSubscription();
   const [showCheckout, setShowCheckout] = useState<boolean>(false);
   const [clientSecret, setClientSecret] = useState<string>('');
   const [checkoutSessionId, setCheckoutSessionId] = useState<string>('');
   const [showEnterpriseForm, setShowEnterpriseForm] = useState<boolean>(false);
+  const [checkoutLoading, setCheckoutLoading] = useState<boolean>(false);
   const [emailAddress, setEmailAddress] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [formStatus, setFormStatus] = useState<string>('');
@@ -86,18 +85,11 @@ export default function PricingPage() {
       }
       
       try {
-        const res = await fetch('/api/stripe/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tier: 'free', billingCycle }),
-        });
-        if (!res.ok) throw new Error((await res.json()).error);
-        
+        const data = await subscribe({ tier: 'free', billingCycle });
         toast.success('Free tier activated! Redirecting to dashboard...');
         setTimeout(() => router.push('/dashboard'), 1000);
         return;
       } catch (err) {
-        toast.error('Error activating free tier: ' + (err as Error).message);
         return;
       }
     }
@@ -115,20 +107,16 @@ export default function PricingPage() {
       return;
     }
 
+    setCheckoutLoading(true);
     try {
-      const res = await fetch('/api/stripe/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier, billingCycle }),
-      });
-      if (!res.ok) throw new Error((await res.json()).error);
-      const { clientSecret, checkoutSessionId }: CheckoutResponse =
-        await res.json();
-      setClientSecret(clientSecret);
-      setCheckoutSessionId(checkoutSessionId);
+      const data = await subscribe({ tier, billingCycle });
+      setClientSecret(data.clientSecret);
+      setCheckoutSessionId(data.checkoutSessionId || '');
       setShowCheckout(true);
     } catch (err) {
-      toast.error('Error initiating subscription: ' + (err as Error).message);
+      // Error handling is already done in the hook
+    } finally {
+      setCheckoutLoading(false);
     }
   };
 
@@ -145,21 +133,16 @@ export default function PricingPage() {
       return;
     }
 
+    setCheckoutLoading(true);
     try {
-      const res = await fetch('/api/stripe/buy-credits', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (!res.ok) throw new Error((await res.json()).error);
-      const { clientSecret, checkoutSessionId }: CheckoutResponse =
-        await res.json();
-      setClientSecret(clientSecret);
-      setCheckoutSessionId(checkoutSessionId);
+      const data = await buyCredits();
+      setClientSecret(data.clientSecret);
+      setCheckoutSessionId(data.checkoutSessionId || '');
       setShowCheckout(true);
     } catch (err) {
-      toast.error(
-        'Error initiating credit purchase: ' + (err as Error).message
-      );
+      // Error handling is already done in the hook
+    } finally {
+      setCheckoutLoading(false);
     }
   };
 
@@ -309,7 +292,9 @@ export default function PricingPage() {
 
           {/* Pricing Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-            {Object.entries(pricing.tiers).map(([key, tier]) => (
+            {Object.entries(pricing.tiers)
+              .filter(([key]) => !isLoggedIn || key !== 'free')
+              .map(([key, tier]) => (
               <div
                 key={key}
                 className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch ${
@@ -454,10 +439,18 @@ export default function PricingPage() {
                     key === 'standard'
                       ? 'bg-secondary text-secondary-foreground border-secondary hover:bg-secondary/90'
                       : 'bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10'
-                  }`}
+                  } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
                   onClick={() => handleSubscribe(key)}
+                  disabled={isLoading}
                 >
-                  Subscribe
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Processing...
+                    </div>
+                  ) : (
+                    'Subscribe'
+                  )}
                 </button>
               </div>
             ))}
@@ -578,10 +571,18 @@ export default function PricingPage() {
               </div>
 
               <button
-                className="py-4 px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow"
+                className={`py-4 px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
                 onClick={handleBuyCredits}
+                disabled={isLoading}
               >
-                Buy Credits Now
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Processing...
+                  </div>
+                ) : (
+                  'Buy Credits Now'
+                )}
               </button>
             </div>
           </div>
@@ -687,6 +688,20 @@ export default function PricingPage() {
                 {formStatus}
               </p>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Checkout Loading Overlay */}
+      {checkoutLoading && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center z-[200]">
+          <div className="bg-card p-8 rounded-2xl border border-border shadow-2xl flex flex-col items-center gap-4">
+            <Loader2 className="h-12 w-12 text-secondary animate-spin" />
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                Preparing your checkout...
+              </h3>
+            </div>
           </div>
         </div>
       )}

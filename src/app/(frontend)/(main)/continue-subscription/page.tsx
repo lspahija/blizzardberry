@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { motion } from 'framer-motion';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
 
 interface SubscriptionIntent {
   intent: 'subscription' | 'credits';
@@ -21,6 +22,7 @@ export default function ContinueSubscriptionPage() {
   const { isLoggedIn } = useAuth();
   const { status: sessionStatus } = useSession();
   const router = useRouter();
+  const { subscribe, buyCredits } = useStripeSubscription();
   const [status, setStatus] = useState<'loading' | 'processing' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Continuing your subscription...');
 
@@ -52,20 +54,10 @@ export default function ContinueSubscriptionPage() {
         if (intent.intent === 'subscription' && intent.data.tier) {
           setMessage('Processing your subscription...');
           
-          const response = await fetch('/api/stripe/subscribe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              tier: intent.data.tier,
-              billingCycle: intent.data.billingCycle || 'monthly'
-            }),
+          const data = await subscribe({
+            tier: intent.data.tier,
+            billingCycle: intent.data.billingCycle || 'monthly'
           });
-
-          if (!response.ok) {
-            throw new Error((await response.json()).error);
-          }
-
-          const data = await response.json();
           
           sessionStorage.removeItem('subscriptionIntent');
           
@@ -89,16 +81,7 @@ export default function ContinueSubscriptionPage() {
         } else if (intent.intent === 'credits') {
           setMessage('Processing your credit purchase...');
           
-          const response = await fetch('/api/stripe/buy-credits', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-          });
-
-          if (!response.ok) {
-            throw new Error((await response.json()).error);
-          }
-
-          const data = await response.json();
+          const data = await buyCredits();
           
           sessionStorage.removeItem('subscriptionIntent');
           
