@@ -12,11 +12,17 @@ export async function addCredit(
   const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;
   const roundedQty = Math.ceil(qty);
 
+  const data = {
+    qty: roundedQty,
+    expiresAt: expiresAt || null,
+    source: 'purchase',
+  };
+
   await sql.begin(async (sql) => {
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
-              ${sql.json({ qty: roundedQty, expiresAt: expiresAt || null, source: 'purchase' })})
+              ${sql.json(data)})
       RETURNING id`;
     eventId = event.id;
 
@@ -29,11 +35,7 @@ export async function addCredit(
     id: eventId,
     type: eventType,
     user_id: userId,
-    event_data: {
-      qty: roundedQty,
-      expiresAt: expiresAt || null,
-      source: 'purchase',
-    },
+    event_data: data,
   });
 }
 
@@ -46,6 +48,7 @@ export async function holdCredit(
   const holdIds: number[] = [];
   let eventId: number;
   const roundedMaxProbe = Math.ceil(maxProbe);
+  const data = { holdIds, maxProbe: roundedMaxProbe, ref };
 
   await sql.begin(async (sql) => {
     const batches = await sql`
@@ -82,10 +85,11 @@ export async function holdCredit(
 
     const eventType = 'CREDIT_HOLD_CREATED';
     const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;
+
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
-              ${sql.json({ holdIds, maxProbe: roundedMaxProbe, ref })})
+              ${sql.json(data)})
       RETURNING id`;
     eventId = event.id;
   });
@@ -94,7 +98,7 @@ export async function holdCredit(
     id: eventId,
     type: 'CREDIT_HOLD_CREATED',
     user_id: userId,
-    event_data: { holdIds, maxProbe: roundedMaxProbe, ref },
+    event_data: data,
   });
 
   return holdIds;
@@ -109,6 +113,8 @@ export async function captureCredit(
 ) {
   let eventId: number;
   const roundedActualUsed = Math.ceil(actualUsed);
+  const eventType = 'CREDIT_HOLD_CAPTURED';
+  const data = { holdIds, actualUsed: roundedActualUsed, ref };
 
   await sql.begin(async (sql) => {
     const holds = await sql`
@@ -140,22 +146,21 @@ export async function captureCredit(
     }
     if (need > 0) throw new Error('Used > authorised');
 
-    const eventType = 'CREDIT_HOLD_CAPTURED';
     const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;
 
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
-              ${sql.json({ holdIds, actualUsed: roundedActualUsed, ref })})
+              ${sql.json(data)})
       RETURNING id`;
     eventId = event.id;
   });
 
   await handle({
     id: eventId,
-    type: 'CREDIT_HOLD_CAPTURED',
+    type: eventType,
     user_id: userId,
-    event_data: { holdIds, actualUsed: roundedActualUsed, ref },
+    event_data: data,
   });
 }
 
@@ -165,6 +170,7 @@ export async function releaseExpiredHolds() {
     user_id: string;
     event_data: { holdId: number; quantity: number };
   }[] = [];
+  const eventType = 'CREDIT_HOLD_EXPIRED';
 
   await sql.begin(async (sql) => {
     const expired = await sql`
@@ -185,19 +191,19 @@ export async function releaseExpiredHolds() {
         SET state = 'EXPIRED'
         WHERE id = ${e.id}`;
 
-      const eventType = 'CREDIT_HOLD_EXPIRED';
       const idempotencyKey = `${e.id}_${eventType}`;
+      const data = { holdId: e.id, quantity: Math.floor(e.quantity_held) };
 
       const [event] = await sql`
         INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
         VALUES (${e.user_id}, ${idempotencyKey}, ${eventType},
-                ${sql.json({ holdId: e.id, quantity: Math.floor(e.quantity_held) })})
+                ${sql.json(data)})
         RETURNING id`;
 
       events.push({
         id: event.id,
         user_id: e.user_id,
-        event_data: { holdId: e.id, quantity: Math.floor(e.quantity_held) },
+        event_data: data,
       });
     }
   });
@@ -205,7 +211,7 @@ export async function releaseExpiredHolds() {
   for (const event of events) {
     await handle({
       id: event.id,
-      type: 'CREDIT_HOLD_EXPIRED',
+      type: eventType,
       user_id: event.user_id,
       event_data: event.event_data,
     });
@@ -221,6 +227,8 @@ export async function removeCredit(
 ) {
   let eventId: number;
   const roundedQty = Math.ceil(qty);
+  const eventType = 'CREDIT_REMOVED';
+  const data = { batchId, qty: roundedQty, reason };
 
   await sql.begin(async (sql) => {
     await sql`
@@ -228,22 +236,21 @@ export async function removeCredit(
       SET quantity_remaining = quantity_remaining - ${roundedQty}
       WHERE id = ${batchId} AND user_id = ${userId}`;
 
-    const eventType = 'CREDIT_REMOVED';
     const idempotencyKeyWithType = `${idempotencyKey}_${eventType}`;
 
     const [event] = await sql`
       INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
       VALUES (${userId}, ${idempotencyKeyWithType}, ${eventType},
-              ${sql.json({ batchId, qty: roundedQty, reason })})
+              ${sql.json(data)})
       RETURNING id`;
     eventId = event.id;
   });
 
   await handle({
     id: eventId,
-    type: 'CREDIT_REMOVED',
+    type: eventType,
     user_id: userId,
-    event_data: { batchId, qty: roundedQty, reason },
+    event_data: data,
   });
 }
 
@@ -253,6 +260,7 @@ export async function expireBatches() {
     user_id: string;
     event_data: { batchId: number; qty: number };
   }[] = [];
+  const eventType = 'CREDIT_EXPIRED';
 
   await sql.begin(async (sql) => {
     const dying = await sql`
@@ -268,19 +276,19 @@ export async function expireBatches() {
         SET quantity_remaining = 0
         WHERE id = ${d.id}`;
 
-      const eventType = 'CREDIT_EXPIRED';
       const idempotencyKey = `${d.id}_${eventType}`;
+      const data = { batchId: d.id, qty: Math.floor(d.quantity_remaining) };
 
       const [event] = await sql`
         INSERT INTO domain_events (user_id, idempotency_key, type, event_data)
         VALUES (${d.user_id}, ${idempotencyKey}, ${eventType},
-                ${sql.json({ batchId: d.id, qty: Math.floor(d.quantity_remaining) })})
+                ${sql.json(data)})
         RETURNING id`;
 
       events.push({
         id: event.id,
         user_id: d.user_id,
-        event_data: { batchId: d.id, qty: Math.floor(d.quantity_remaining) },
+        event_data: data,
       });
     }
   });
@@ -288,7 +296,7 @@ export async function expireBatches() {
   for (const event of events) {
     await handle({
       id: event.id,
-      type: 'CREDIT_EXPIRED',
+      type: eventType,
       user_id: event.user_id,
       event_data: event.event_data,
     });

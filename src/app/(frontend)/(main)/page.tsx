@@ -388,7 +388,7 @@ export default function LandingPage() {
                 <CardContent>
                   <p className="text-muted-foreground">
                     Instant responses and real-time interactions. Your agent
-                    responds immediately to user queries and actions.
+                    responds immediately to user queries.
                   </p>
                 </CardContent>
               </Card>
@@ -511,7 +511,7 @@ export default function LandingPage() {
               >
                 <Link href="/login">
                   <Play className="mr-2 h-5 w-5" />
-                  Create Your First Agent
+                  Create an Agent
                 </Link>
               </Button>
             </div>

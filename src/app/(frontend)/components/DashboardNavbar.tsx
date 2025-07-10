@@ -38,7 +38,7 @@ const navLinks = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/dashboard/chats', label: 'Chats' },
   { href: '/usage', label: 'Usage' },
-  { href: '/pricing', label: 'Pricing' },
+  { href: '/upgrade', label: 'Upgrade' },
   { href: '/contact', label: 'Contact' },
 ];
 

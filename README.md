@@ -100,12 +100,14 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 ## Before Launch
 - (Luka) onboard Stripe (complete stripe profile and create products in prod and copy priceIds into .env.production and vercel env)
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
-- (Luka) add validations to ensure user can't create more agents and actions than their tier allows (API validation and in UI take them to pricing page if they try to create more than allowed)
+- (Luka) add validations to ensure user can't create more agents and actions than their tier allows (in UI take them to pricing page if they try to create more than allowed)
 - (Luka) add free tier
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 - agent needs to be able to call minified js functions - how does chatbase achieve this?
 - agent needs to be able to list available actions/things it can do if someone asks (maybe there should also be a button for this?)
 - agent needs to be able to explain who it is and what it can do if someone asks
+- make cards look good on pricing page and upgrade page (currently enterprise has been pushed down to a new row and cards go to left)
+- currently if user is not logged in and want to subscribe to a non-free tier, they're redirected to login page which then redirects them to dashboard which lowers conversions because they need to navigate back to pricing page/upgrade page and choose subscribe again. this is bad.
 
 ## Launch and Sell!
 - https://www.reddit.com/r/SaaS/comments/1700b0w/frustrated_a_similar_tool_took_off_to_180k_mrr
@@ -121,6 +123,13 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - work with [Pieter Levels](https://x.com/levelsio) or other big guys on X and have them push this as their own
 - scour X for the best strategies and threads [like this](https://x.com/johnrushx/status/1927026143196020750)
 - make little tools that go viral and use them to drive traffic to the main product - e.g. a tool that converts any image to super bright HDR
+- list on app markets
+  - Shopify
+  - Webflow
+  - Wix
+  - Woo commerce
+  - Squarespace
+  - Bigcommerce - not doing as well
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
@@ -138,6 +147,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - look through Chatbase's features and add relevant ones. e.g. they have a UI letting their users test the agents they created and see if the actions they onboarded work correctly. https://www.chatbase.co/docs/user-guides/agent/playground
 - change Google OAuth user [support email](https://console.cloud.google.com/auth/branding?inv=1&invt=Ab1jrg&project=blizzardberry) to a blizzardberry.com email [here's how to add another email](https://stackoverflow.com/questions/23105894/how-to-change-google-consent-screen-email)
 - wrap sql queries in a transaction where necessary so that if one query fails, the whole transaction is rolled back
+- if user downgrades tier or their tier expires, disable agents or actions that are over the limit of their current tier
 
 ## Longer Term Goals (buy maybe pull them in earlier)
 - make the agent better by using SOTA orchestration techniques - https://www.anthropic.com/engineering/built-multi-agent-research-system

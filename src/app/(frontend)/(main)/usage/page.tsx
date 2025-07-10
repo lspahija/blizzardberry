@@ -40,11 +40,7 @@ export default function UsagePage() {
             {loading ? '...' : credits}
           </div>
           <div className="text-sm sm:text-base text-muted-foreground">
-            {loading
-              ? 'Loading your credits...'
-              : error
-                ? error
-                : `You have ${credits} credits available.`}
+            {loading ? 'Loading your credits...' : error}
           </div>
           <div className="text-sm sm:text-base text-muted-foreground mt-4 sm:mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-0">
             <span>Would you like to buy more credits?</span>
