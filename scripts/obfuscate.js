@@ -4,23 +4,18 @@ const JavaScriptObfuscator = require('javascript-obfuscator');
 const fs = require('fs/promises');
 const path = require('path');
 
-// --- Configuration ---
-// 👉 Your script's filename in the /public folder
-const scriptFilename = 'your-script.js';
-// ---------------------
+const scriptFilename = 'agent.js';
 
-// Path to the script inside the Next.js build output
-// path.join needs to go up one level from /scripts to the project root
 const scriptPath = path.join(
   __dirname,
   '..',
   '.next',
   'server',
   'public',
+  'agent',
   scriptFilename
 );
 
-// Obfuscation options
 const obfuscationOptions = {
   compact: true,
   controlFlowFlattening: true,
