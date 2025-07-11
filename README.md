@@ -148,7 +148,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 - if user downgrades tier or their tier expires, disable agents or actions that are over the limit of their current tier
 
 ## Longer Term Goals (buy maybe pull them in earlier)
-- make the agent better by using SOTA orchestration techniques - https://www.anthropic.com/engineering/built-multi-agent-research-system
+- create a global repository of actions (maybe wrapped in an MCP server) that any LLM can be pointed to and use any of those actions
 - make the system prompt auto-improve for each app or even each end user. As the user tells the agent what they want, the system prompt is updated to include that information. This way, the agent can learn and adapt to the user's needs over time. https://youtu.be/WJoZK9sMwvw?si=CTOwYwskX38WDzOO
 - allow user to use voice, the ideal is that they just talk to computer - https://x.com/LinusEkenstam/status/1926890672188952774
 - make the actions MCP-compatible? i.e. turn the actions into an MCP server so that any MCP client can call them.
@@ -188,26 +188,16 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 # Design
 The website design is based on this: https://gitingest.com/
 
+this looks good: https://bland.com/
+
 
 # Notes
 
 ### auth magic link email
 [Dealing with resend issues](https://www.reddit.com/r/Supabase/comments/1d8lz8d/emails_with_resend_still_going_to_spam/) Postmark seems best but no free tier
 
-### Frankie's tips to optimize RAG:
-
-Try to include some metadata about the document when ingesting it. For example, the document’s name, which could just be the filename if no explicit title is available.
-
-If you're dealing with raw text, you might extract the first few words or lines as a fallback title.
-
-It would be ideal, to use an LLM to preprocess the document and extract key metadata into a JSON structure (e.g. title, type, summary, source). This becomes really useful later when you want to filter or rank results during search.
-
-I see that you have a metadata key obviously, just didn’t go through the other files to see what’s in it, I just saw that in your similarity_search there is no filter parameter.
-Which could be useful when you have a lot of chunks and a variety of content.
-
-
 # Ideas
-- tool fetching can maybe be made more accurate by inserting a RAG step (e.g. embed the tool information). how does the lib currently fetch under the hood? maybe it already does this?
+- tool fetching can maybe be made more accurate by inserting a RAG step (e.g. embed the tool information)
 
 # Development Notes
 
