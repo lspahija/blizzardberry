@@ -102,7 +102,6 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) add validations to ensure user can't create more agents and actions than their tier allows (in UI take them to pricing page if they try to create more than allowed)
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
-- agent needs to be able to call minified js functions - how does chatbase achieve this?
 - agent needs to be able to list available actions/things it can do if someone asks (maybe there should also be a button for this?)
 - agent needs to be able to explain who it is and what it can do if someone asks
 - make cards look good on pricing page and upgrade page (currently enterprise has been pushed down to a new row and cards go to left)
