@@ -149,6 +149,9 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 
 ## Longer Term Goals (buy maybe pull them in earlier)
 - create a global repository of actions (maybe wrapped in an MCP server) that any LLM can be pointed to and use any of those actions
+  - https://smithery.ai/
+  - https://mcp.so/
+  - https://himcp.ai/
 - make the system prompt auto-improve for each app or even each end user. As the user tells the agent what they want, the system prompt is updated to include that information. This way, the agent can learn and adapt to the user's needs over time. https://youtu.be/WJoZK9sMwvw?si=CTOwYwskX38WDzOO
 - allow user to use voice, the ideal is that they just talk to computer - https://x.com/LinusEkenstam/status/1926890672188952774
 - make the actions MCP-compatible? i.e. turn the actions into an MCP server so that any MCP client can call them.
