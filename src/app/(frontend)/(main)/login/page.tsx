@@ -18,17 +18,20 @@ export default function LoginPage() {
 
   const intent = searchParams.get('intent');
   const intentData = searchParams.get('data');
-  
+
   const redirectTo = intent ? '/continue-subscription' : '/dashboard';
-  
+
   useEffect(() => {
     if (intent && intentData) {
       try {
         const parsedData = JSON.parse(intentData);
-        sessionStorage.setItem('subscriptionIntent', JSON.stringify({
-          intent,
-          data: parsedData
-        }));
+        sessionStorage.setItem(
+          'subscriptionIntent',
+          JSON.stringify({
+            intent,
+            data: parsedData,
+          })
+        );
       } catch (error) {
         console.error('Failed to parse subscription intent:', error);
       }

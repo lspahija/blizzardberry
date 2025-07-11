@@ -6,10 +6,7 @@ import {
   Parameter,
   ParameterType,
 } from '@/app/api/lib/model/action/baseAction';
-import {
-  HttpRequest,
-  Body,
-} from '@/app/api/lib/model/action/backendAction';
+import { HttpRequest, Body } from '@/app/api/lib/model/action/backendAction';
 import { similaritySearch } from '../store/documentStore';
 
 export function createSearchKnowledgeBaseTool(agentId: string): Tool {

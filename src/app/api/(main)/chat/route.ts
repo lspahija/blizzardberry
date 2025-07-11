@@ -37,7 +37,8 @@ export async function POST(req: Request) {
       idempotencyKey
     );
 
-    const isToolCall = llmResponse.toolCalls && llmResponse.toolCalls.length > 0;
+    const isToolCall =
+      llmResponse.toolCalls && llmResponse.toolCalls.length > 0;
 
     if (llmResponse.text && !isToolCall) {
       await addMessage(usedChatId, 'assistant', llmResponse.text);

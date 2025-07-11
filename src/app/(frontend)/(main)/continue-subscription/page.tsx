@@ -23,7 +23,9 @@ export default function ContinueSubscriptionPage() {
   const { status: sessionStatus } = useSession();
   const router = useRouter();
   const { subscribe, buyCredits } = useStripeSubscription();
-  const [status, setStatus] = useState<'loading' | 'processing' | 'success' | 'error'>('loading');
+  const [status, setStatus] = useState<
+    'loading' | 'processing' | 'success' | 'error'
+  >('loading');
   const [message, setMessage] = useState('Continuing your subscription...');
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function ContinueSubscriptionPage() {
       if (sessionStatus === 'loading') {
         return;
       }
-      
+
       if (!isLoggedIn) {
         setStatus('error');
         setMessage('Please log in to continue your subscription.');
@@ -53,21 +55,24 @@ export default function ContinueSubscriptionPage() {
 
         if (intent.intent === 'subscription' && intent.data.tier) {
           setMessage('Processing your subscription...');
-          
+
           const data = await subscribe({
             tier: intent.data.tier,
-            billingCycle: intent.data.billingCycle || 'monthly'
+            billingCycle: intent.data.billingCycle || 'monthly',
           });
-          
+
           sessionStorage.removeItem('subscriptionIntent');
-          
+
           if (data.clientSecret) {
             const returnUrl = new URL('/pricing', window.location.origin);
             returnUrl.searchParams.set('checkout', 'true');
             returnUrl.searchParams.set('clientSecret', data.clientSecret);
             returnUrl.searchParams.set('tier', intent.data.tier);
-            returnUrl.searchParams.set('billingCycle', intent.data.billingCycle || 'monthly');
-            
+            returnUrl.searchParams.set(
+              'billingCycle',
+              intent.data.billingCycle || 'monthly'
+            );
+
             setStatus('success');
             setMessage('Redirecting to complete your subscription...');
             setTimeout(() => router.push(returnUrl.toString()), 1000);
@@ -77,32 +82,34 @@ export default function ContinueSubscriptionPage() {
             toast.success('Subscription updated successfully!');
             setTimeout(() => router.push('/pricing'), 2000);
           }
-
         } else if (intent.intent === 'credits') {
           setMessage('Processing your credit purchase...');
-          
+
           const data = await buyCredits();
-          
+
           sessionStorage.removeItem('subscriptionIntent');
-          
+
           const returnUrl = new URL('/pricing', window.location.origin);
           returnUrl.searchParams.set('checkout', 'true');
           returnUrl.searchParams.set('clientSecret', data.clientSecret);
           returnUrl.searchParams.set('action', 'buy-credits');
-          
+
           setStatus('success');
           setMessage('Redirecting to complete your purchase...');
           setTimeout(() => router.push(returnUrl.toString()), 1000);
         }
-
       } catch (error) {
         console.error('Error continuing subscription:', error);
         setStatus('error');
-        setMessage('Failed to continue subscription: ' + (error as Error).message);
-        toast.error('Failed to continue subscription: ' + (error as Error).message);
-        
+        setMessage(
+          'Failed to continue subscription: ' + (error as Error).message
+        );
+        toast.error(
+          'Failed to continue subscription: ' + (error as Error).message
+        );
+
         sessionStorage.removeItem('subscriptionIntent');
-        
+
         setTimeout(() => {
           router.push('/pricing');
         }, 3000);
@@ -110,7 +117,7 @@ export default function ContinueSubscriptionPage() {
     };
 
     const timer = setTimeout(handleSubscriptionContinuation, 500);
-    
+
     return () => clearTimeout(timer);
   }, [isLoggedIn, sessionStatus, router]);
 
@@ -155,21 +162,17 @@ export default function ContinueSubscriptionPage() {
         initial="hidden"
         animate="visible"
       >
-        <div className="mb-6 flex justify-center">
-          {getIcon()}
-        </div>
-        
+        <div className="mb-6 flex justify-center">{getIcon()}</div>
+
         <h1 className={`text-2xl font-bold mb-4 ${getStatusColor()}`}>
           {status === 'loading' && 'Setting up your subscription...'}
           {status === 'processing' && 'Processing...'}
           {status === 'success' && 'Almost there!'}
           {status === 'error' && 'Something went wrong'}
         </h1>
-        
-        <p className="text-lg text-muted-foreground mb-8">
-          {message}
-        </p>
-        
+
+        <p className="text-lg text-muted-foreground mb-8">{message}</p>
+
         {status === 'loading' || status === 'processing' ? (
           <div className="text-sm text-muted-foreground">
             Please wait while we process your request...
@@ -178,4 +181,4 @@ export default function ContinueSubscriptionPage() {
       </motion.div>
     </div>
   );
-} 
+}

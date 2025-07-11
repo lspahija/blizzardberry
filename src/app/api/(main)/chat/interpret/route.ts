@@ -3,7 +3,8 @@ import { getAgent } from '@/app/api/lib/store/agentStore';
 import { addMessage } from '@/app/api/lib/store/chatStore';
 
 export async function POST(req: Request) {
-  const { messages, userConfig, agentId, chatId, idempotencyKey } = await req.json();
+  const { messages, userConfig, agentId, chatId, idempotencyKey } =
+    await req.json();
 
   try {
     const agent = await getAgent(agentId);
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
       agentId,
       idempotencyKey
     );
-    
+
     if (llmResponse.text) {
       await addMessage(chatId, 'assistant', llmResponse.text);
     }
@@ -30,4 +31,4 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
-} 
+}

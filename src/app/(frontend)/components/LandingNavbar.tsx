@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/app/(frontend)/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from '@/app/(frontend)/components/ui/button';
+import { Menu, X } from 'lucide-react';
 
 export function LandingNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     if (isMenuOpen) {
-      document.body.classList.add("overflow-hidden");
+      document.body.classList.add('overflow-hidden');
     } else {
-      document.body.classList.remove("overflow-hidden");
+      document.body.classList.remove('overflow-hidden');
     }
     return () => {
-      document.body.classList.remove("overflow-hidden");
+      document.body.classList.remove('overflow-hidden');
     };
   }, [isMenuOpen]);
 
@@ -140,4 +140,4 @@ export function LandingNavbar() {
       )}
     </>
   );
-} 
+}

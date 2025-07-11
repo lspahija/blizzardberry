@@ -98,20 +98,20 @@ const commonHeaderKeys = [
 ];
 
 const commonHeaderValues = [
-  "application/json",
-  "application/x-www-form-urlencoded",
-  "Bearer",
-  "Basic",
-  "multipart/form-data",
-  "text/plain",
-  "application/xml",
-  "*/*",
-  "no-cache",
-  "max-age=0",
-  "gzip, deflate, br",
-  "en-US,en;q=0.9",
-  "X-Requested-With",
-  "XMLHttpRequest",
+  'application/json',
+  'application/x-www-form-urlencoded',
+  'Bearer',
+  'Basic',
+  'multipart/form-data',
+  'text/plain',
+  'application/xml',
+  '*/*',
+  'no-cache',
+  'max-age=0',
+  'gzip, deflate, br',
+  'en-US,en;q=0.9',
+  'X-Requested-With',
+  'XMLHttpRequest',
 ];
 
 const placeholderJSON = `{
@@ -229,13 +229,16 @@ export default function ExecutionStep({
         setUrlError('URL is required');
         return;
       }
-      
+
       const trimmedUrl = apiUrl.trim();
-      if (!trimmedUrl.startsWith('http://') && !trimmedUrl.startsWith('https://')) {
+      if (
+        !trimmedUrl.startsWith('http://') &&
+        !trimmedUrl.startsWith('https://')
+      ) {
         setUrlError('URL must start with http:// or https://');
         return;
       }
-      
+
       if (apiMethod === 'PUT' && !apiBody.trim()) {
         setBodyError('Body is required for PUT requests');
         return;
@@ -258,9 +261,9 @@ export default function ExecutionStep({
   }
 
   const urlSuggestions = [
-    "https://",
-    "https://api.example.com/",
-    "https://yourdomain.com/api/",
+    'https://',
+    'https://api.example.com/',
+    'https://yourdomain.com/api/',
     // ...add more if you want
   ];
 
@@ -385,7 +388,9 @@ export default function ExecutionStep({
                           id="apiUrl"
                           value={apiUrl}
                           onChange={(e) => handleUrlChange(e.target.value)}
-                          suggestions={urlSuggestions.concat(getInputNames(dataInputs, true))}
+                          suggestions={urlSuggestions.concat(
+                            getInputNames(dataInputs, true)
+                          )}
                           placeholder="https://wttr.in/{{city}}?format=j1"
                           inputClassName={`mt-2 border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
                           matchMode="full"

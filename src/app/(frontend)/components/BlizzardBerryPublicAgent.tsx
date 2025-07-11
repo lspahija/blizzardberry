@@ -13,9 +13,9 @@ export function BlizzardBerryPublicAgent() {
 
   return (
     <>
-      <Script 
+      <Script
         id="blizzardberry-public-agent"
-        src="http://localhost:3000/agent/agent.js" 
+        src="/agent/agent.js"
         strategy="afterInteractive"
         data-agent-id="f452cd58-23aa-4a6c-87d0-e68fb7384c73"
       />
@@ -51,4 +51,4 @@ export function BlizzardBerryPublicAgent() {
       </Script>
     </>
   );
-} 
+}

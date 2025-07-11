@@ -24,9 +24,9 @@ export function BlizzardBerryAgent() {
           };
         `}
       </Script>
-      <Script 
+      <Script
         id="blizzardberry-agent"
-        src="http://localhost:3000/agent/agent.js" 
+        src="/agent/agent.js"
         strategy="afterInteractive"
         data-agent-id="102d8bea-18a5-4543-b802-d150d2f21e6d"
       />
@@ -62,4 +62,4 @@ export function BlizzardBerryAgent() {
       </Script>
     </>
   );
-} 
+}

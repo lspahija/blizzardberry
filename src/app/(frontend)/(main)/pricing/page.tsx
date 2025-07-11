@@ -57,16 +57,18 @@ export default function PricingPage() {
   useEffect(() => {
     const shouldShowCheckout = searchParams.get('checkout') === 'true';
     const checkoutClientSecret = searchParams.get('clientSecret');
-    const billingCycleParam = searchParams.get('billingCycle') as 'monthly' | 'yearly';
-    
+    const billingCycleParam = searchParams.get('billingCycle') as
+      | 'monthly'
+      | 'yearly';
+
     if (shouldShowCheckout && checkoutClientSecret && isLoggedIn) {
       setClientSecret(checkoutClientSecret);
       setShowCheckout(true);
-      
+
       if (billingCycleParam) {
         setBillingCycle(billingCycleParam);
       }
-      
+
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.delete('checkout');
       newUrl.searchParams.delete('clientSecret');
@@ -83,7 +85,7 @@ export default function PricingPage() {
         router.push('/login');
         return;
       }
-      
+
       try {
         const data = await subscribe({ tier: 'free', billingCycle });
         toast.success('Free tier activated! Redirecting to dashboard...');
@@ -101,7 +103,7 @@ export default function PricingPage() {
       };
       const params = new URLSearchParams({
         intent: 'subscription',
-        data: JSON.stringify(subscriptionIntent)
+        data: JSON.stringify(subscriptionIntent),
       });
       router.push(`/login?${params.toString()}`);
       return;
@@ -126,7 +128,7 @@ export default function PricingPage() {
       };
       const params = new URLSearchParams({
         intent: 'credits',
-        data: JSON.stringify(creditIntent)
+        data: JSON.stringify(creditIntent),
       });
       router.push(`/login?${params.toString()}`);
       return;
@@ -250,7 +252,9 @@ export default function PricingPage() {
 
       {/* Hero Section */}
       <div className="bg-background">
-        <div className={`container mx-auto px-4 py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}>
+        <div
+          className={`container mx-auto px-4 py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}
+        >
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
               Pricing
@@ -263,30 +267,30 @@ export default function PricingPage() {
             {/* Billing Toggle */}
             {status !== 'loading' && (
               <div className="flex justify-center gap-4 mb-12">
-              <button
-                className={`px-6 py-3 rounded-xl border font-semibold transition-all duration-200 ${
-                  billingCycle === 'monthly'
-                    ? 'bg-blue-100 text-foreground border-blue-200 shadow'
-                    : 'bg-background text-foreground border-border hover:bg-muted'
-                }`}
-                onClick={() => setBillingCycle('monthly')}
-              >
-                Monthly
-              </button>
-              <button
-                className={`px-6 py-3 rounded-xl border font-semibold transition-all duration-200 flex items-center gap-2 ${
-                  billingCycle === 'yearly'
-                    ? 'bg-blue-100 text-foreground border-blue-200 shadow'
-                    : 'bg-background text-foreground border-border hover:bg-muted'
-                }`}
-                onClick={() => setBillingCycle('yearly')}
-              >
-                <span>Yearly</span>
-                <span className="inline-block rounded-full bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 ml-2">
-                  Save 20%
-                </span>
-              </button>
-            </div>
+                <button
+                  className={`px-6 py-3 rounded-xl border font-semibold transition-all duration-200 ${
+                    billingCycle === 'monthly'
+                      ? 'bg-blue-100 text-foreground border-blue-200 shadow'
+                      : 'bg-background text-foreground border-border hover:bg-muted'
+                  }`}
+                  onClick={() => setBillingCycle('monthly')}
+                >
+                  Monthly
+                </button>
+                <button
+                  className={`px-6 py-3 rounded-xl border font-semibold transition-all duration-200 flex items-center gap-2 ${
+                    billingCycle === 'yearly'
+                      ? 'bg-blue-100 text-foreground border-blue-200 shadow'
+                      : 'bg-background text-foreground border-border hover:bg-muted'
+                  }`}
+                  onClick={() => setBillingCycle('yearly')}
+                >
+                  <span>Yearly</span>
+                  <span className="inline-block rounded-full bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 ml-2">
+                    Save 20%
+                  </span>
+                </button>
+              </div>
             )}
           </div>
 
@@ -296,98 +300,206 @@ export default function PricingPage() {
               Loading pricing options...
             </div>
           ) : (
-            <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 pt-6 ${
-              !isLoggedIn 
-                ? 'xl:grid-cols-5 xl:gap-6' 
-                : 'lg:grid-cols-4 lg:gap-8'
-            }`}>
+            <div
+              className={`grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 pt-6 ${
+                !isLoggedIn
+                  ? 'xl:grid-cols-5 xl:gap-6'
+                  : 'lg:grid-cols-4 lg:gap-8'
+              }`}
+            >
               {Object.entries(pricing.tiers)
                 .filter(([key]) => !isLoggedIn || key !== 'free')
                 .map(([key, tier]) => (
-              <div
-                key={key}
-                className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch ${
-                  key === 'standard'
-                    ? 'border-2 border-secondary shadow-lg'
-                    : ''
-                }`}
-                style={{ minHeight: 480 }}
-              >
-                {/* -20% badge for yearly */}
-                {billingCycle === 'yearly' && (
-                  <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
-                    -20%
-                  </span>
-                )}
-                {key === 'standard' && (
-                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-10">
-                    <span
-                      className="bg-secondary text-secondary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-border whitespace-nowrap"
-                      style={{ letterSpacing: 1 }}
-                    >
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-
-                <div className="mb-8">
-                  <div className="flex items-center gap-2 mb-2">
-                    {key === 'free' && (
-                      <Shovel className="h-6 w-6 text-secondary" />
-                    )}
-                    {key === 'hobby' && (
-                      <Zap className="h-6 w-6 text-secondary" />
+                  <div
+                    key={key}
+                    className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch ${
+                      key === 'standard'
+                        ? 'border-2 border-secondary shadow-lg'
+                        : ''
+                    }`}
+                    style={{ minHeight: 480 }}
+                  >
+                    {/* -20% badge for yearly */}
+                    {billingCycle === 'yearly' && (
+                      <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
+                        -20%
+                      </span>
                     )}
                     {key === 'standard' && (
-                      <Star className="h-6 w-6 text-secondary" />
+                      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-10">
+                        <span
+                          className="bg-secondary text-secondary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-border whitespace-nowrap"
+                          style={{ letterSpacing: 1 }}
+                        >
+                          Most Popular
+                        </span>
+                      </div>
                     )}
-                    {key === 'pro' && (
-                      <Shield className="h-6 w-6 text-secondary" />
-                    )}
-                    {key === 'enterprise' && (
-                      <Users className="h-6 w-6 text-secondary" />
-                    )}
+
+                    <div className="mb-8">
+                      <div className="flex items-center gap-2 mb-2">
+                        {key === 'free' && (
+                          <Shovel className="h-6 w-6 text-secondary" />
+                        )}
+                        {key === 'hobby' && (
+                          <Zap className="h-6 w-6 text-secondary" />
+                        )}
+                        {key === 'standard' && (
+                          <Star className="h-6 w-6 text-secondary" />
+                        )}
+                        {key === 'pro' && (
+                          <Shield className="h-6 w-6 text-secondary" />
+                        )}
+                        {key === 'enterprise' && (
+                          <Users className="h-6 w-6 text-secondary" />
+                        )}
+                        <h2 className="text-2xl font-bold text-foreground">
+                          {tier.name}
+                        </h2>
+                      </div>
+                      <div className="mb-2 flex items-end gap-2">
+                        {billingCycle === 'yearly' ? (
+                          <>
+                            <span className="text-xl font-semibold text-muted-foreground line-through mr-2">
+                              ${tier.monthlyPrice}
+                            </span>
+                            <span className="text-4xl font-bold text-foreground">
+                              ${(tier.yearlyPrice / 12).toFixed(0)}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-4xl font-bold text-foreground">
+                            ${tier.monthlyPrice}
+                          </span>
+                        )}
+                        <span className="text-base text-muted-foreground mb-1 align-bottom">
+                          /month
+                        </span>
+                      </div>
+                      {billingCycle === 'yearly' && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          ${tier.yearlyPrice} billed annually
+                        </p>
+                      )}
+                      <p className="text-muted-foreground font-medium mt-2">
+                        {tierDescriptions[key as keyof typeof tierDescriptions]}
+                      </p>
+                    </div>
+
+                    {/* Key Features */}
+                    <div className="space-y-3 mb-8">
+                      <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                        <span className="text-sm font-medium text-foreground">
+                          Credits
+                        </span>
+                        <span className="text-base font-bold text-foreground">
+                          {tier.credits.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                        <span className="text-sm font-medium text-foreground">
+                          Agents
+                        </span>
+                        <span className="text-base font-bold text-foreground">
+                          {tier.agents}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                        <span className="text-sm font-medium text-foreground">
+                          Actions/Agent
+                        </span>
+                        <span className="text-base font-bold text-foreground">
+                          {tier.actionsPerAgent}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Feature List */}
+                    <ul className="space-y-2 mb-8">
+                      {tierFeatures[key as keyof typeof tierFeatures].map(
+                        (feature, index) => (
+                          <li key={index} className="flex items-center gap-2">
+                            <Check className="h-4 w-4 text-secondary flex-shrink-0" />
+                            {feature === 'Premium models included' ? (
+                              <div className="tooltip-container">
+                                <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
+                                  {feature}
+                                  <Info className="h-4 w-4 text-secondary" />
+                                </span>
+                                <div className="tooltip">
+                                  <p className="font-semibold mb-2">
+                                    Premium Models:
+                                  </p>
+                                  <ul className="list-disc pl-4 space-y-1">
+                                    {AgentModelList.map((model) => (
+                                      <li key={model}>
+                                        {AgentModelDisplay[model]}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            ) : (
+                              <span className="text-sm text-muted-foreground">
+                                {feature}
+                              </span>
+                            )}
+                          </li>
+                        )
+                      )}
+                    </ul>
+
+                    <button
+                      className={`mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border ${
+                        key === 'standard'
+                          ? 'bg-secondary text-secondary-foreground border-secondary hover:bg-secondary/90'
+                          : 'bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10'
+                      } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                      onClick={() => handleSubscribe(key)}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Processing...
+                        </div>
+                      ) : key === 'free' ? (
+                        'Get Started'
+                      ) : (
+                        'Subscribe'
+                      )}
+                    </button>
+                  </div>
+                ))}
+
+              {/* Enterprise Card */}
+              <div
+                className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch"
+                style={{ minHeight: 480 }}
+              >
+                <div className="mb-8">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Users className="h-6 w-6 text-secondary" />
                     <h2 className="text-2xl font-bold text-foreground">
-                      {tier.name}
+                      Enterprise
                     </h2>
                   </div>
                   <div className="mb-2 flex items-end gap-2">
-                    {billingCycle === 'yearly' ? (
-                      <>
-                        <span className="text-xl font-semibold text-muted-foreground line-through mr-2">
-                          ${tier.monthlyPrice}
-                        </span>
-                        <span className="text-4xl font-bold text-foreground">
-                          ${(tier.yearlyPrice / 12).toFixed(0)}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="text-4xl font-bold text-foreground">
-                        ${tier.monthlyPrice}
-                      </span>
-                    )}
-                    <span className="text-base text-muted-foreground mb-1 align-bottom">
-                      /month
+                    <span className="text-4xl font-bold text-foreground">
+                      Custom
                     </span>
                   </div>
-                  {billingCycle === 'yearly' && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      ${tier.yearlyPrice} billed annually
-                    </p>
-                  )}
                   <p className="text-muted-foreground font-medium mt-2">
-                    {tierDescriptions[key as keyof typeof tierDescriptions]}
+                    {tierDescriptions.enterprise}
                   </p>
                 </div>
-
-                {/* Key Features */}
                 <div className="space-y-3 mb-8">
                   <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
                     <span className="text-sm font-medium text-foreground">
                       Credits
                     </span>
                     <span className="text-base font-bold text-foreground">
-                      {tier.credits.toLocaleString()}
+                      Unlimited
                     </span>
                   </div>
                   <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
@@ -395,61 +507,95 @@ export default function PricingPage() {
                       Agents
                     </span>
                     <span className="text-base font-bold text-foreground">
-                      {tier.agents}
+                      Unlimited
                     </span>
                   </div>
                   <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
                     <span className="text-sm font-medium text-foreground">
-                      Actions/Agent
+                      Support
                     </span>
                     <span className="text-base font-bold text-foreground">
-                      {tier.actionsPerAgent}
+                      24/7
+                    </span>
+                  </div>
+                </div>
+                <ul className="space-y-2 mb-8">
+                  {tierFeatures.enterprise.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-secondary flex-shrink-0" />
+                      {feature === 'Premium models included' ? (
+                        <div className="tooltip-container">
+                          <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
+                            {feature}
+                            <Info className="h-4 w-4 text-secondary" />
+                          </span>
+                          <div className="tooltip">
+                            <p className="font-semibold mb-2">
+                              Premium Models:
+                            </p>
+                            <ul className="list-disc pl-4 space-y-1">
+                              {AgentModelList.map((model) => (
+                                <li key={model}>{AgentModelDisplay[model]}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">
+                          {feature}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  className="mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10"
+                  onClick={() => setShowEnterpriseForm(true)}
+                >
+                  Contact Sales
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Additional Credits Section */}
+          {status !== 'loading' && (
+            <div className="bg-card p-8 md:p-12 border border-border rounded-2xl text-center mb-16 shadow-sm">
+              <div className="max-w-2xl mx-auto">
+                <h2
+                  id="buy-credits"
+                  className="text-3xl md:text-4xl font-bold mb-4 text-foreground"
+                >
+                  Need More Credits?
+                </h2>
+                <p className="text-lg md:text-xl mb-8 text-muted-foreground">
+                  Buy additional credits anytime. They never expire and are
+                  perfect for scaling your AI agents.
+                </p>
+
+                <div className="bg-background p-6 rounded-xl border border-border mb-8 flex flex-col md:flex-row items-center justify-center gap-4">
+                  <div className="text-center md:text-left">
+                    <span className="text-4xl md:text-5xl font-bold text-foreground block">
+                      {pricing.oneTimePurchase.credits.toLocaleString()}
+                    </span>
+                    <span className="text-lg text-muted-foreground">
+                      credits
+                    </span>
+                  </div>
+                  <div className="text-2xl text-muted-foreground">for</div>
+                  <div className="text-center md:text-left">
+                    <span className="text-4xl md:text-5xl font-bold text-foreground-muted block">
+                      ${pricing.oneTimePurchase.price}
+                    </span>
+                    <span className="text-lg text-muted-foreground">
+                      one-time
                     </span>
                   </div>
                 </div>
 
-                {/* Feature List */}
-                <ul className="space-y-2 mb-8">
-                  {tierFeatures[key as keyof typeof tierFeatures].map(
-                    (feature, index) => (
-                      <li key={index} className="flex items-center gap-2">
-                        <Check className="h-4 w-4 text-secondary flex-shrink-0" />
-                        {feature === 'Premium models included' ? (
-                          <div className="tooltip-container">
-                            <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
-                              {feature}
-                              <Info className="h-4 w-4 text-secondary" />
-                            </span>
-                            <div className="tooltip">
-                              <p className="font-semibold mb-2">
-                                Premium Models:
-                              </p>
-                              <ul className="list-disc pl-4 space-y-1">
-                                {AgentModelList.map((model) => (
-                                  <li key={model}>
-                                    {AgentModelDisplay[model]}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="text-sm text-muted-foreground">
-                            {feature}
-                          </span>
-                        )}
-                      </li>
-                    )
-                  )}
-                </ul>
-
                 <button
-                  className={`mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border ${
-                    key === 'standard'
-                      ? 'bg-secondary text-secondary-foreground border-secondary hover:bg-secondary/90'
-                      : 'bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10'
-                  } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
-                  onClick={() => handleSubscribe(key)}
+                  className={`py-4 px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                  onClick={handleBuyCredits}
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -458,145 +604,11 @@ export default function PricingPage() {
                       Processing...
                     </div>
                   ) : (
-                    key === 'free' ? 'Get Started' : 'Subscribe'
+                    'Buy Credits Now'
                   )}
                 </button>
               </div>
-            ))}
-
-            {/* Enterprise Card */}
-            <div
-              className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch"
-              style={{ minHeight: 480 }}
-            >
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-6 w-6 text-secondary" />
-                  <h2 className="text-2xl font-bold text-foreground">
-                    Enterprise
-                  </h2>
-                </div>
-                <div className="mb-2 flex items-end gap-2">
-                  <span className="text-4xl font-bold text-foreground">
-                    Custom
-                  </span>
-                </div>
-                <p className="text-muted-foreground font-medium mt-2">
-                  {tierDescriptions.enterprise}
-                </p>
-              </div>
-              <div className="space-y-3 mb-8">
-                <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                  <span className="text-sm font-medium text-foreground">
-                    Credits
-                  </span>
-                  <span className="text-base font-bold text-foreground">
-                    Unlimited
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                  <span className="text-sm font-medium text-foreground">
-                    Agents
-                  </span>
-                  <span className="text-base font-bold text-foreground">
-                    Unlimited
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                  <span className="text-sm font-medium text-foreground">
-                    Support
-                  </span>
-                  <span className="text-base font-bold text-foreground">
-                    24/7
-                  </span>
-                </div>
-              </div>
-              <ul className="space-y-2 mb-8">
-                {tierFeatures.enterprise.map((feature, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-secondary flex-shrink-0" />
-                    {feature === 'Premium models included' ? (
-                      <div className="tooltip-container">
-                        <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
-                          {feature}
-                          <Info className="h-4 w-4 text-secondary" />
-                        </span>
-                        <div className="tooltip">
-                          <p className="font-semibold mb-2">Premium Models:</p>
-                          <ul className="list-disc pl-4 space-y-1">
-                            {AgentModelList.map((model) => (
-                              <li key={model}>{AgentModelDisplay[model]}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    ) : (
-                      <span className="text-sm text-muted-foreground">
-                        {feature}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-              <button
-                className="mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10"
-                onClick={() => setShowEnterpriseForm(true)}
-              >
-                Contact Sales
-              </button>
             </div>
-          </div>
-          )}
-
-          {/* Additional Credits Section */}
-          {status !== 'loading' && (
-            <div className="bg-card p-8 md:p-12 border border-border rounded-2xl text-center mb-16 shadow-sm">
-            <div className="max-w-2xl mx-auto">
-              <h2
-                id="buy-credits"
-                className="text-3xl md:text-4xl font-bold mb-4 text-foreground"
-              >
-                Need More Credits?
-              </h2>
-              <p className="text-lg md:text-xl mb-8 text-muted-foreground">
-                Buy additional credits anytime. They never expire and are
-                perfect for scaling your AI agents.
-              </p>
-
-              <div className="bg-background p-6 rounded-xl border border-border mb-8 flex flex-col md:flex-row items-center justify-center gap-4">
-                <div className="text-center md:text-left">
-                  <span className="text-4xl md:text-5xl font-bold text-foreground block">
-                    {pricing.oneTimePurchase.credits.toLocaleString()}
-                  </span>
-                  <span className="text-lg text-muted-foreground">credits</span>
-                </div>
-                <div className="text-2xl text-muted-foreground">for</div>
-                <div className="text-center md:text-left">
-                  <span className="text-4xl md:text-5xl font-bold text-foreground-muted block">
-                    ${pricing.oneTimePurchase.price}
-                  </span>
-                  <span className="text-lg text-muted-foreground">
-                    one-time
-                  </span>
-                </div>
-              </div>
-
-              <button
-                className={`py-4 px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
-                onClick={handleBuyCredits}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Processing...
-                  </div>
-                ) : (
-                  'Buy Credits Now'
-                )}
-              </button>
-            </div>
-          </div>
           )}
         </div>
       </div>

@@ -21,7 +21,9 @@ interface UseStripeSubscriptionReturn {
 export function useStripeSubscription(): UseStripeSubscriptionReturn {
   const [isLoading, setIsLoading] = useState(false);
 
-  const subscribe = async (params: SubscribeParams): Promise<CheckoutResponse> => {
+  const subscribe = async (
+    params: SubscribeParams
+  ): Promise<CheckoutResponse> => {
     setIsLoading(true);
     try {
       const response = await fetch('/api/stripe/subscribe', {
@@ -38,7 +40,8 @@ export function useStripeSubscription(): UseStripeSubscriptionReturn {
       const data = await response.json();
       return data;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       toast.error(`Error processing subscription: ${errorMessage}`);
       throw error;
     } finally {
@@ -62,7 +65,8 @@ export function useStripeSubscription(): UseStripeSubscriptionReturn {
       const data = await response.json();
       return data;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       toast.error(`Error processing credit purchase: ${errorMessage}`);
       throw error;
     } finally {
@@ -75,4 +79,4 @@ export function useStripeSubscription(): UseStripeSubscriptionReturn {
     subscribe,
     buyCredits,
   };
-} 
+}
