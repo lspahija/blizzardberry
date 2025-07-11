@@ -131,7 +131,6 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
 - add set up and teardown code to integration tests (e.g. create a user and agent. add credits to the user. delete the user and agent after the test)
 - let users configure the agent's starting message
-- minify and obfuscate agent.js code
 - support teams i.e. each user is part of a team and can manage the team's agents
 - let the end user see all actions that the agent can perform. Make the actions searchable. Expose the thinking tokens if the user chooses to see them.
 - make agent design super customizable so app owners can make it look like their app

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build && node scripts/obfuscate.js",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx}\"",
@@ -42,6 +42,7 @@
     "cmdk": "^1.1.1",
     "cohere-ai": "^7.17.1",
     "framer-motion": "^12.17.0",
+    "javascript-obfuscator": "^4.1.1",
     "js-yaml": "^4.1.0",
     "lucide-react": "^0.514.0",
     "mammoth": "^1.9.1",
