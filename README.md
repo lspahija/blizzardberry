@@ -148,6 +148,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 
 ## Longer Term Goals (buy maybe pull them in earlier)
 - create a global repository of actions (maybe wrapped in an MCP server) that any LLM can be pointed to and use any of those actions
+  - https://viasocket.com/mcp/aiagent
   - https://smithery.ai/
   - https://mcp.so/
   - https://himcp.ai/
