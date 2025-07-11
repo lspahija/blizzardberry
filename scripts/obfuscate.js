@@ -4,16 +4,21 @@ const JavaScriptObfuscator = require('javascript-obfuscator');
 const fs = require('fs/promises');
 const path = require('path');
 
-const scriptFilename = 'agent.js';
-
+const scriptFilename = 'agent.src.js';
+const outputFilename = 'agent.js';
 const scriptPath = path.join(
   __dirname,
   '..',
-  '.next',
-  'server',
   'public',
   'agent',
   scriptFilename
+);
+const outputPath = path.join(
+  __dirname,
+  '..',
+  'public',
+  'agent',
+  outputFilename
 );
 
 const obfuscationOptions = {
@@ -41,7 +46,9 @@ const obfuscationOptions = {
 };
 
 async function obfuscateScript() {
-  console.log(`\nStarting obfuscation for: ${scriptFilename}`);
+  console.log(`\nStarting obfuscation: ${scriptFilename} -> ${outputFilename}`);
+  console.log('Source path:', scriptPath);
+  console.log('Output path:', outputPath);
 
   try {
     await fs.access(scriptPath);
@@ -50,11 +57,13 @@ async function obfuscateScript() {
       originalCode,
       obfuscationOptions
     );
-    await fs.writeFile(scriptPath, obfuscationResult.getObfuscatedCode());
+    await fs.writeFile(outputPath, obfuscationResult.getObfuscatedCode());
     console.log('Script obfuscated successfully! ✨');
   } catch (error) {
     if (error.code === 'ENOENT') {
-      console.error(`Error: Could not find the script at: ${scriptPath}`);
+      console.error(
+        `Error: Could not find the source script at: ${scriptPath}`
+      );
     } else {
       console.error('An error occurred during obfuscation:', error);
     }
