@@ -315,11 +315,11 @@ export default function UpgradePage() {
               Loading subscription details...
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+            <div className="flex flex-wrap justify-center gap-6 mb-20">
               {availableTiers.map(([key, tier]) => (
                 <div
                   key={key}
-                  className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch ${
+                  className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch flex-1 max-w-sm ${
                     key === 'standard'
                       ? 'border-2 border-secondary shadow-lg'
                       : ''
@@ -473,7 +473,7 @@ export default function UpgradePage() {
 
               {/* Enterprise Card */}
               <div
-                className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch"
+                className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch flex-1 max-w-sm"
                 style={{ minHeight: 480 }}
               >
                 <div className="mb-8">

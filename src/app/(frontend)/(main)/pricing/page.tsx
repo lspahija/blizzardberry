@@ -250,7 +250,7 @@ export default function PricingPage() {
 
       {/* Hero Section */}
       <div className="bg-background">
-        <div className="container mx-auto px-4 py-20 max-w-7xl">
+        <div className={`container mx-auto px-4 py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}>
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
               Pricing
@@ -261,7 +261,8 @@ export default function PricingPage() {
             </p>
 
             {/* Billing Toggle */}
-            <div className="flex justify-center gap-4 mb-12">
+            {status !== 'loading' && (
+              <div className="flex justify-center gap-4 mb-12">
               <button
                 className={`px-6 py-3 rounded-xl border font-semibold transition-all duration-200 ${
                   billingCycle === 'monthly'
@@ -286,13 +287,23 @@ export default function PricingPage() {
                 </span>
               </button>
             </div>
+            )}
           </div>
 
           {/* Pricing Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-            {Object.entries(pricing.tiers)
-              .filter(([key]) => !isLoggedIn || key !== 'free')
-              .map(([key, tier]) => (
+          {status === 'loading' ? (
+            <div className="text-center text-muted-foreground mb-20">
+              Loading pricing options...
+            </div>
+          ) : (
+            <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 pt-6 ${
+              !isLoggedIn 
+                ? 'xl:grid-cols-5 xl:gap-6' 
+                : 'lg:grid-cols-4 lg:gap-8'
+            }`}>
+              {Object.entries(pricing.tiers)
+                .filter(([key]) => !isLoggedIn || key !== 'free')
+                .map(([key, tier]) => (
               <div
                 key={key}
                 className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch ${
@@ -309,9 +320,9 @@ export default function PricingPage() {
                   </span>
                 )}
                 {key === 'standard' && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-10">
                     <span
-                      className="bg-secondary text-secondary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-border"
+                      className="bg-secondary text-secondary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-border whitespace-nowrap"
                       style={{ letterSpacing: 1 }}
                     >
                       Most Popular
@@ -447,7 +458,7 @@ export default function PricingPage() {
                       Processing...
                     </div>
                   ) : (
-                    'Subscribe'
+                    key === 'free' ? 'Get Started' : 'Subscribe'
                   )}
                 </button>
               </div>
@@ -535,9 +546,11 @@ export default function PricingPage() {
               </button>
             </div>
           </div>
+          )}
 
           {/* Additional Credits Section */}
-          <div className="bg-card p-8 md:p-12 border border-border rounded-2xl text-center mb-16 shadow-sm">
+          {status !== 'loading' && (
+            <div className="bg-card p-8 md:p-12 border border-border rounded-2xl text-center mb-16 shadow-sm">
             <div className="max-w-2xl mx-auto">
               <h2
                 id="buy-credits"
@@ -584,6 +597,7 @@ export default function PricingPage() {
               </button>
             </div>
           </div>
+          )}
         </div>
       </div>
 
