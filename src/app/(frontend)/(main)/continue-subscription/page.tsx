@@ -64,7 +64,7 @@ export default function ContinueSubscriptionPage() {
           sessionStorage.removeItem('subscriptionIntent');
 
           if (data.clientSecret) {
-            const returnUrl = new URL('/pricing', window.location.origin);
+            const returnUrl = new URL('/upgrade', window.location.origin);
             returnUrl.searchParams.set('checkout', 'true');
             returnUrl.searchParams.set('clientSecret', data.clientSecret);
             returnUrl.searchParams.set('tier', intent.data.tier);
@@ -80,7 +80,7 @@ export default function ContinueSubscriptionPage() {
             setStatus('success');
             setMessage('Your subscription has been updated successfully!');
             toast.success('Subscription updated successfully!');
-            setTimeout(() => router.push('/pricing'), 2000);
+            setTimeout(() => router.push('/upgrade'), 2000);
           }
         } else if (intent.intent === 'credits') {
           setMessage('Processing your credit purchase...');
@@ -88,8 +88,8 @@ export default function ContinueSubscriptionPage() {
           const data = await buyCredits();
 
           sessionStorage.removeItem('subscriptionIntent');
-
-          const returnUrl = new URL('/pricing', window.location.origin);
+          
+          const returnUrl = new URL('/upgrade', window.location.origin);
           returnUrl.searchParams.set('checkout', 'true');
           returnUrl.searchParams.set('clientSecret', data.clientSecret);
           returnUrl.searchParams.set('action', 'buy-credits');
@@ -109,9 +109,9 @@ export default function ContinueSubscriptionPage() {
         );
 
         sessionStorage.removeItem('subscriptionIntent');
-
+        
         setTimeout(() => {
-          router.push('/pricing');
+          router.push('/upgrade');
         }, 3000);
       }
     };
