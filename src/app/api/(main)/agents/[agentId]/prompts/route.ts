@@ -16,9 +16,6 @@ export async function GET(
 
     const { agentId } = await params;
 
-    const authResponse = await agentAuth(session.user.id, agentId);
-    if (authResponse) return authResponse;
-
     const data = await getPrompts(agentId);
 
     const prompts: Prompt[] = data.map((d) => ({
