@@ -75,10 +75,8 @@
     });
   }
 
-  // Create widget DOM
   async function createWidgetDOM() {
     try {
-      // Create toggle button immediately for better UX
       const toggle = document.createElement('div');
       toggle.id = 'chatWidgetToggle';
       toggle.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
@@ -281,7 +279,6 @@
     checkWidgetReady();
   }
 
-  // Handle errors
   async function handleError(error, messageText) {
     state.isProcessing = false;
     state.messages.push({
