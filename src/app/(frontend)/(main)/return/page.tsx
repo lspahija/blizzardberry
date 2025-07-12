@@ -27,7 +27,7 @@ function ReturnPageContent() {
         setStatus('error');
         setMessage('No payment session found.');
         toast.error('No payment session found.');
-        setTimeout(() => router.push('/pricing'), 2000);
+        setTimeout(() => router.push('/upgrade'), 2000);
         return;
       }
 
@@ -49,7 +49,7 @@ function ReturnPageContent() {
           setStatus('error');
           setMessage('Payment failed or was canceled. Please try again.');
           toast.error('Payment failed or was canceled.');
-          setTimeout(() => router.push('/pricing'), 2000);
+          setTimeout(() => router.push('/upgrade'), 2000);
         } else {
           throw new Error('Unexpected payment status.');
         }
@@ -58,7 +58,7 @@ function ReturnPageContent() {
         setStatus('error');
         setMessage('Failed to verify payment: ' + (error as Error).message);
         toast.error('Failed to verify payment: ' + (error as Error).message);
-        setTimeout(() => router.push('/pricing'), 3000);
+        setTimeout(() => router.push('/upgrade'), 3000);
       }
     };
 

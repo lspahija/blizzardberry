@@ -7,6 +7,7 @@ import {
   EmbeddedCheckout,
   EmbeddedCheckoutProvider,
 } from '@stripe/react-stripe-js';
+import { useSearchParams } from 'next/navigation';
 import {
   Check,
   Info,
@@ -49,6 +50,7 @@ export default function UpgradePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { isLoggedIn } = useAuth();
+  const searchParams = useSearchParams();
   const { subscribe, buyCredits, isLoading } = useStripeSubscription();
   const [showCheckout, setShowCheckout] = useState<boolean>(false);
   const [clientSecret, setClientSecret] = useState<string>('');
@@ -65,11 +67,16 @@ export default function UpgradePage() {
     null
   );
   const [loadingSubscription, setLoadingSubscription] = useState<boolean>(true);
+  const [subscriptionFetched, setSubscriptionFetched] = useState<boolean>(false);
 
   // Fetch user's current subscription
   useEffect(() => {
     const fetchSubscription = async () => {
+      if (status === 'loading') {
+        return;
+      }
       if (!isLoggedIn || status !== 'authenticated') {
+        setSubscriptionFetched(true);
         setLoadingSubscription(false);
         return;
       }
@@ -89,11 +96,53 @@ export default function UpgradePage() {
         toast.error('Error fetching subscription: ' + (err as Error).message);
       } finally {
         setLoadingSubscription(false);
+        setSubscriptionFetched(true);
       }
     };
 
     fetchSubscription();
   }, [isLoggedIn, status]);
+
+  useEffect(() => {
+    const shouldShowCheckout = searchParams.get('checkout') === 'true';
+    const checkoutClientSecret = searchParams.get('clientSecret');
+    const billingCycleParam = searchParams.get('billingCycle') as 'monthly' | 'yearly';
+    const tierParam = searchParams.get('tier');
+    const actionParam = searchParams.get('action');
+    
+    console.log('Upgrade page useEffect:', {
+      shouldShowCheckout,
+      checkoutClientSecret: checkoutClientSecret ? 'present' : 'missing',
+      billingCycleParam,
+      tierParam,
+      actionParam,
+      isLoggedIn,
+      sessionStatus: status,
+      searchParamsString: searchParams.toString()
+    });
+    
+    if (status === 'loading') {
+      return;
+    }
+    
+    if (shouldShowCheckout && checkoutClientSecret && (isLoggedIn || status === 'authenticated')) {
+      console.log('Setting up checkout with clientSecret:', checkoutClientSecret);
+      setClientSecret(checkoutClientSecret);
+      setShowCheckout(true);
+      
+      if (billingCycleParam) {
+        setBillingCycle(billingCycleParam);
+      }
+      
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('checkout');
+      newUrl.searchParams.delete('clientSecret');
+      newUrl.searchParams.delete('tier');
+      newUrl.searchParams.delete('billingCycle');
+      newUrl.searchParams.delete('action');
+      window.history.replaceState({}, '', newUrl.toString());
+    }
+  }, [searchParams, isLoggedIn, status]);
 
   const handleSubscribe = async (tier: string) => {
     if (!isLoggedIn) {
@@ -177,6 +226,15 @@ export default function UpgradePage() {
 
   // Filter tiers to show only those more expensive than the current tier (excluding enterprise and free)
   const getAvailableTiers = () => {
+    if (!subscriptionFetched) {
+      return [];
+    }
+    const shouldShowCheckout = searchParams.get('checkout') === 'true';
+    const checkoutClientSecret = searchParams.get('clientSecret');
+    if (shouldShowCheckout && checkoutClientSecret) {
+      return [];
+    }
+
     if (!userSubscription || !userSubscription.tier) {
       return Object.entries(pricing.tiers).filter(
         ([key]) => key !== 'enterprise' && key !== 'free'

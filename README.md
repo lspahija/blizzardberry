@@ -129,6 +129,8 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
+- send widget exceptions to slack channel
+- go through all tests and try to reduce the number of tests 200+ sounds way too much
 - add set up and teardown code to integration tests (e.g. create a user and agent. add credits to the user. delete the user and agent after the test)
 - let users configure the agent's starting message
 - support teams i.e. each user is part of a team and can manage the team's agents
