@@ -411,6 +411,12 @@
     }
   }
 
+  function convertBoldFormatting(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
+  }
+
   // Render message part
   function renderMessagePart(part, messageId) {
     if (part.type === 'text') {
@@ -421,9 +427,9 @@
         if (!state.loggedThinkMessages.has(messageId)) {
           state.loggedThinkMessages.add(messageId);
         }
-        return `<div class="text-part">${thinkMatch[2].trim()}</div>`;
+        return `<div class="text-part">${convertBoldFormatting(thinkMatch[2].trim())}</div>`;
       }
-      return `<div class="text-part">${part.text}</div>`;
+      return `<div class="text-part">${convertBoldFormatting(part.text)}</div>`;
     }
     if (part.type === 'tool-invocation') {
       return '';
