@@ -144,7 +144,7 @@
         suggestedPrompts.forEach((prompt) => {
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.textContent = truncatePrompt(prompt, 10);
+          btn.textContent = truncatePrompt(prompt,15);
           btn.title = prompt;
           btn.className = 'chat-widget-prompt-btn';
           btn.addEventListener('click', () => sendPromptImmediately(prompt));
@@ -471,7 +471,7 @@
     await processChatMessage(promptText);
   }
 
-  function truncatePrompt(prompt, wordLimit = 10) {
+  function truncatePrompt(prompt, wordLimit = 15) {
     const words = prompt.split(/\s+/);
     if (words.length > wordLimit) {
       return words.slice(0, wordLimit).join(' ') + '...';
