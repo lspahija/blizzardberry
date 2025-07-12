@@ -45,6 +45,7 @@
     isProcessing: false,
     loggedThinkMessages: new Set(),
     chatId: null,
+    isWidgetReady: false,
   };
 
   let suggestedPrompts = [];
@@ -77,6 +78,7 @@
   // Create widget DOM
   async function createWidgetDOM() {
     try {
+      // Create toggle button immediately for better UX
       const toggle = document.createElement('div');
       toggle.id = 'chatWidgetToggle';
       toggle.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
@@ -176,24 +178,107 @@
           },
         ],
       });
-      updateChatUI();
+      
+      state.isWidgetReady = true;
+      const currentWidget = document.getElementById('chatWidget');
+      if (currentWidget && !currentWidget.classList.contains('hidden')) {
+        updateChatUI();
+      }
     } catch (error) {
       console.error('Error creating widget DOM:', error);
     }
   }
 
-  // Toggle widget visibility
   function toggleChatWidget() {
     const widget = document.getElementById('chatWidget');
     const toggle = document.getElementById('chatWidgetToggle');
-    if (!widget || !toggle) return;
+    
+    if (!widget) {
+      createLoadingWidget();
+      return;
+    }
+    
+    if (!toggle) return;
+    
     const isHidden = widget.classList.toggle('hidden');
     toggle.classList.toggle('hidden', !isHidden);
-    if (!isHidden)
-      setTimeout(
-        () => document.getElementById('chatWidgetInputField')?.focus(),
-        100
-      );
+    
+    if (!isHidden) {
+      if (state.isWidgetReady) {
+        updateChatUI();
+        setTimeout(
+          () => document.getElementById('chatWidgetInputField')?.focus(),
+          100
+        );
+      }
+    }
+  }
+
+  function createLoadingWidget() {
+    if (document.getElementById('chatWidgetLoading')) {
+      return;
+    }
+
+    const toggle = document.getElementById('chatWidgetToggle');
+    if (!toggle) return;
+
+    toggle.classList.add('hidden');
+
+    const loadingWidget = document.createElement('div');
+    loadingWidget.id = 'chatWidgetLoading';
+    loadingWidget.classList.add('chat-widget-loading');
+    loadingWidget.innerHTML = `
+      <div class="chat-widget-loading-header">
+        <div>AI Agent</div>
+        <button id="chatWidgetLoadingCloseButton">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
+      </div>
+      <div class="chat-widget-loading-body">
+        <div class="chat-widget-loading-content">
+          <div class="loading-spinner">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="loading-text">Loading AI Agent...</div>
+        </div>
+      </div>
+    `;
+
+    loadingWidget
+      .querySelector('#chatWidgetLoadingCloseButton')
+      .addEventListener('click', () => {
+        loadingWidget.remove();
+        toggle.classList.remove('hidden');
+      });
+
+    document.body.appendChild(loadingWidget);
+
+    let checkCount = 0;
+    const maxChecks = 100;
+    
+    const checkWidgetReady = () => {
+      const realWidget = document.getElementById('chatWidget');
+      if (realWidget && state.isWidgetReady) {
+        loadingWidget.remove();
+        realWidget.classList.remove('hidden');
+        updateChatUI();
+        setTimeout(
+          () => document.getElementById('chatWidgetInputField')?.focus(),
+          100
+        );
+      } else if (checkCount < maxChecks) {
+        checkCount++;
+        setTimeout(checkWidgetReady, 100);
+      } else {
+        console.error('Widget initialization timeout');
+        loadingWidget.remove();
+        toggle.classList.remove('hidden');
+      }
+    };
+
+    checkWidgetReady();
   }
 
   // Handle errors

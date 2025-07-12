@@ -511,6 +511,127 @@
 
 @media (max-height: 550px) {
   #chatWidgetPromptBar {
-    display: none !important;
+    display: none;
   }
+}
+
+/* Loading Widget Styles */
+.chat-widget-loading {
+    width: 380px;
+    height: 720px;
+    max-height: 90vh;
+    border: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: #f8fafc;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    animation: fadeIn 0.3s ease;
+}
+
+.chat-widget-loading-header {
+    padding: 18px 20px;
+    background: #000000;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.chat-widget-loading-header button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.chat-widget-loading-header button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-widget-loading-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc;
+}
+
+.chat-widget-loading-content {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.loading-spinner span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #000000;
+    animation: loadingBounce 1.4s ease-in-out infinite both;
+}
+
+.loading-spinner span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.loading-spinner span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+.loading-spinner span:nth-child(3) {
+    animation-delay: 0s;
+}
+
+@keyframes loadingBounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.loading-text {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Mobile responsive for loading widget */
+@media (max-width: 480px) {
+    .chat-widget-loading {
+        width: calc(100vw - 40px);
+        height: calc(100vh - 120px);
+        max-height: 80vh;
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+    }
 }
