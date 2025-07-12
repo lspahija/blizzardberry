@@ -21,7 +21,6 @@ e.g. it must be easy to:
 ## Before Launch
 - (Luka) onboard Stripe (complete stripe profile and create products in prod and copy priceIds into .env.production and vercel env)
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
-- (Luka) add validations to ensure user can't create more agents and actions than their tier allows (in UI take them to pricing page if they try to create more than allowed)
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 - prompt suggestion buttons don't look good
 

@@ -81,6 +81,16 @@ export function useAgents() {
         });
 
         if (!response.ok) {
+          const errorData = await response.json();
+          if (
+            response.status === 403 &&
+            errorData.error === 'Agent limit reached for this subscription tier'
+          ) {
+            toast.error(
+              'You have reached the maximum number of agents allowed for your subscription tier. Please upgrade your plan to create more agents.'
+            );
+            throw new Error('Agent limit reached');
+          }
           throw new Error('Failed to create agent');
         }
 
@@ -89,7 +99,9 @@ export function useAgents() {
         return { agentId };
       } catch (error) {
         console.error('Error creating agent:', error);
-        toast.error('Failed to create agent. Please try again.');
+        if (error.message !== 'Agent limit reached') {
+          toast.error('Failed to create agent. Please try again.');
+        }
         throw error;
       } finally {
         setCreatingAgent(false);

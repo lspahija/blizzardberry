@@ -149,6 +149,7 @@ export const useActionForm = () => {
         }
       } catch (error) {
         console.error('Invalid JSON in API body:', error);
+        toast.error('Invalid JSON in API body. Please check and try again.');
         setIsCreatingAction(false);
         return;
       }
@@ -211,23 +212,37 @@ export const useActionForm = () => {
         body: JSON.stringify(action),
       });
 
-      if (response.ok) {
-        console.log('Action created successfully');
-        setShowSuccess(true);
-
-        // Clear browser history without causing page reload
-        window.history.replaceState(null, '', `/agents/${agentId}/actions/new`);
-        window.history.pushState(null, '', `/agents/${agentId}/actions/new`);
-
-        setTimeout(() => {
-          router.replace(`/agents/${agentId}`);
-        }, 1500);
-      } else {
-        console.error('Failed to create action:', response.statusText);
-        setIsCreatingAction(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (
+          response.status === 403 &&
+          errorData.error === 'Action limit reached for this subscription tier'
+        ) {
+          toast.error(
+            'You have reached the maximum number of actions allowed for your subscription tier. Please upgrade your plan to create more actions.'
+          );
+          throw new Error('Action limit reached');
+        }
+        throw new Error('Failed to create action');
       }
+
+      console.log('Action created successfully');
+      setShowSuccess(true);
+
+      // Clear browser history without causing page reload
+      window.history.replaceState(null, '', `/agents/${agentId}/actions/new`);
+      window.history.pushState(null, '', `/agents/${agentId}/actions/new`);
+
+      setTimeout(() => {
+        router.replace(`/agents/${agentId}`);
+      }, 1500);
     } catch (error) {
       console.error('Error creating action:', error);
+      if (error.message !== 'Action limit reached') {
+        toast.error('Failed to create action. Please try again.');
+      }
+      throw error;
+    } finally {
       setIsCreatingAction(false);
     }
   };
