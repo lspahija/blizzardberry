@@ -102,8 +102,6 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Luka) add validations to ensure user can't create more agents and actions than their tier allows (in UI take them to pricing page if they try to create more than allowed)
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
-- agent needs to be able to list available actions/things it can do if someone asks (maybe there should also be a button for this?)
-- agent needs to be able to explain who it is and what it can do if someone asks
 
 ## Launch and Sell!
 - https://www.reddit.com/r/SaaS/comments/1700b0w/frustrated_a_similar_tool_took_off_to_180k_mrr
@@ -130,6 +128,7 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
 - send widget exceptions to slack channel
+- show user buttons with prompt suggestions, including maybe prompt to list all actions
 - go through all tests and try to reduce the number of tests 200+ sounds way too much
 - add set up and teardown code to integration tests (e.g. create a user and agent. add credits to the user. delete the user and agent after the test)
 - let users configure the agent's starting message
