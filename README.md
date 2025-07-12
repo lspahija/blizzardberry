@@ -16,85 +16,6 @@ e.g. it must be easy to:
 - create new SDKs for different languages so an agent can be added to any app
 - onboard new apps with minimal friction
 
-# Running the Project Locally
-
-This guide outlines the steps to set up and run the project locally. The project uses [git-crypt](https://github.com/AGWA/git-crypt) to encrypt sensitive files (e.g., `.env*`).
-
-## Setup Instructions
-
-### 1. Clone the Repository
-Clone the project repository to your local machine.
-
-### 2. Configure git-crypt
-To access encrypted files, follow these steps:
-
-1. **Export Your Public Key**  
-   Run the following command, replacing `<your-email>` with your email address:
-   ```bash
-   gpg --armor --export <your-email> > your-name-public-key.asc
-   ```
-
-2. **Share Your Public Key**  
-   Send the generated `your-name-public-key.asc` file and your email to a team member with repository access.
-
-3. **Import Their Public Key**  
-   The team member will import your public key into their GPG keyring:
-   ```bash
-   gpg --import their-public-key.asc
-   ```
-
-4. **Add Your GPG User**  
-   The team member will add you to git-crypt with:
-   ```bash
-   git-crypt add-gpg-user <their-email>
-   ```
-
-### 3. Install git-crypt
-For macOS, install git-crypt using Homebrew:
-```bash
-brew install git-crypt
-```
-For other platforms, refer to the [git-crypt documentation](https://github.com/AGWA/git-crypt).
-
-### 4. Unlock the Repository
-Unlock the encrypted files:
-```bash
-git-crypt unlock
-```
-Now you can pull and push to the repository without issues. If you add new sensitive files, ensure they are listed in `.gitattributes` for encryption.
-
-### 5. Install pnpm
-Install pnpm globally:
-```bash
-npm install -g pnpm
-```
-
-### 6. Install Dependencies
-Navigate to the project directory and install dependencies:
-```bash
-pnpm install
-```
-
-### 7. Run the Development Server
-Start the development server:
-```bash
-pnpm dev
-```
-
-### 8. Access the Application
-Open your browser and visit:
-[http://localhost:3000](http://localhost:3000) to see the landing page.
-
-### [See Development Notes](#Development-Notes)
-
-# Use Agent
-
-See an example SaaS app with integrated agent at http://localhost:3000/example-saas
-
-# Deploy
-
-Currently deployed to Vercel at https://blizzardberry.com/. App deploys automatically on every push to the `main` branch.
-
 # Things to be done
 
 ## Before Launch
@@ -192,7 +113,6 @@ The website design is based on this: https://gitingest.com/
 
 this looks good: https://bland.com/
 
-
 # Notes
 
 ### auth magic link email
@@ -200,6 +120,86 @@ this looks good: https://bland.com/
 
 # Ideas
 - tool fetching can maybe be made more accurate by inserting a RAG step (e.g. embed the tool information)
+
+# Running the Project Locally
+
+This guide outlines the steps to set up and run the project locally. The project uses [git-crypt](https://github.com/AGWA/git-crypt) to encrypt sensitive files (e.g., `.env*`).
+
+## Setup Instructions
+
+### 1. Clone the Repository
+Clone the project repository to your local machine.
+
+### 2. Configure git-crypt
+To access encrypted files, follow these steps:
+
+1. **Export Your Public Key**  
+   Run the following command, replacing `<your-email>` with your email address:
+   ```bash
+   gpg --armor --export <your-email> > your-name-public-key.asc
+   ```
+
+2. **Share Your Public Key**  
+   Send the generated `your-name-public-key.asc` file and your email to a team member with repository access.
+
+3. **Import Their Public Key**  
+   The team member will import your public key into their GPG keyring:
+   ```bash
+   gpg --import their-public-key.asc
+   ```
+
+4. **Add Your GPG User**  
+   The team member will add you to git-crypt with:
+   ```bash
+   git-crypt add-gpg-user <their-email>
+   ```
+
+### 3. Install git-crypt
+For macOS, install git-crypt using Homebrew:
+```bash
+brew install git-crypt
+```
+For other platforms, refer to the [git-crypt documentation](https://github.com/AGWA/git-crypt).
+
+### 4. Unlock the Repository
+Unlock the encrypted files:
+```bash
+git-crypt unlock
+```
+Now you can pull and push to the repository without issues. If you add new sensitive files, ensure they are listed in `.gitattributes` for encryption.
+
+### 5. Install pnpm
+Install pnpm globally:
+```bash
+npm install -g pnpm
+```
+
+### 6. Install Dependencies
+Navigate to the project directory and install dependencies:
+```bash
+pnpm install
+```
+
+### 7. Run the Development Server
+Start the development server:
+```bash
+pnpm dev
+```
+
+### 8. Access the Application
+Open your browser and visit:
+[http://localhost:3000](http://localhost:3000) to see the landing page.
+
+### [See Development Notes](#Development-Notes)
+
+# Use Agent
+
+See an example SaaS app with integrated agent at http://localhost:3000/example-saas
+
+# Deploy
+
+Currently deployed to Vercel at https://blizzardberry.com/. App deploys automatically on every push to the `main` branch.
+
 
 # Development Notes
 
