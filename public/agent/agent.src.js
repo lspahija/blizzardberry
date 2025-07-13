@@ -45,6 +45,7 @@
     isProcessing: false,
     loggedThinkMessages: new Set(),
     chatId: null,
+    isWidgetReady: false,
   };
 
   let suggestedPrompts = [];
@@ -74,7 +75,6 @@
     });
   }
 
-  // Create widget DOM
   async function createWidgetDOM() {
     try {
       const toggle = document.createElement('div');
@@ -144,7 +144,7 @@
         suggestedPrompts.forEach((prompt) => {
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.textContent = truncatePrompt(prompt, 10);
+          btn.textContent = truncatePrompt(prompt,15);
           btn.title = prompt;
           btn.className = 'chat-widget-prompt-btn';
           btn.addEventListener('click', () => sendPromptImmediately(prompt));
@@ -176,27 +176,107 @@
           },
         ],
       });
-      updateChatUI();
+      
+      state.isWidgetReady = true;
+      const currentWidget = document.getElementById('chatWidget');
+      if (currentWidget && !currentWidget.classList.contains('hidden')) {
+        updateChatUI();
+      }
     } catch (error) {
       console.error('Error creating widget DOM:', error);
     }
   }
 
-  // Toggle widget visibility
   function toggleChatWidget() {
     const widget = document.getElementById('chatWidget');
     const toggle = document.getElementById('chatWidgetToggle');
-    if (!widget || !toggle) return;
+    
+    if (!widget) {
+      createLoadingWidget();
+      return;
+    }
+    
+    if (!toggle) return;
+    
     const isHidden = widget.classList.toggle('hidden');
     toggle.classList.toggle('hidden', !isHidden);
-    if (!isHidden)
+    
+    if (!isHidden && state.isWidgetReady) {
+      updateChatUI();
       setTimeout(
         () => document.getElementById('chatWidgetInputField')?.focus(),
         100
       );
+    }
   }
 
-  // Handle errors
+  function createLoadingWidget() {
+    if (document.getElementById('chatWidgetLoading')) {
+      return;
+    }
+
+    const toggle = document.getElementById('chatWidgetToggle');
+    if (!toggle) return;
+
+    toggle.classList.add('hidden');
+
+    const loadingWidget = document.createElement('div');
+    loadingWidget.id = 'chatWidgetLoading';
+    loadingWidget.classList.add('chat-widget-loading');
+    loadingWidget.innerHTML = `
+      <div class="chat-widget-loading-header">
+        <div>AI Agent</div>
+        <button id="chatWidgetLoadingCloseButton">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
+      </div>
+      <div class="chat-widget-loading-body">
+        <div class="chat-widget-loading-content">
+          <div class="loading-spinner">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="loading-text">Loading AI Agent...</div>
+        </div>
+      </div>
+    `;
+
+    loadingWidget
+      .querySelector('#chatWidgetLoadingCloseButton')
+      .addEventListener('click', () => {
+        loadingWidget.remove();
+        toggle.classList.remove('hidden');
+      });
+
+    document.body.appendChild(loadingWidget);
+
+    let checkCount = 0;
+    const maxChecks = 100;
+    
+    const checkWidgetReady = () => {
+      const realWidget = document.getElementById('chatWidget');
+      if (realWidget && state.isWidgetReady) {
+        loadingWidget.remove();
+        realWidget.classList.remove('hidden');
+        updateChatUI();
+        setTimeout(
+          () => document.getElementById('chatWidgetInputField')?.focus(),
+          100
+        );
+      } else if (checkCount < maxChecks) {
+        checkCount++;
+        setTimeout(checkWidgetReady, 100);
+      } else {
+        console.error('Widget initialization timeout');
+        loadingWidget.remove();
+        toggle.classList.remove('hidden');
+      }
+    };
+
+    checkWidgetReady();
+  }
+
   async function handleError(error, messageText) {
     state.isProcessing = false;
     state.messages.push({
@@ -471,7 +551,7 @@
     await processChatMessage(promptText);
   }
 
-  function truncatePrompt(prompt, wordLimit = 10) {
+  function truncatePrompt(prompt, wordLimit = 15) {
     const words = prompt.split(/\s+/);
     if (words.length > wordLimit) {
       return words.slice(0, wordLimit).join(' ') + '...';

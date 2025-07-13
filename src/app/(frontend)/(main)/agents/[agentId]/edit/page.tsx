@@ -125,9 +125,7 @@ export default function EditAgentPage({
       setIsSubmitting(true);
       const filteredPrompts = prompts.filter((p) => p.trim());
       const updatePayload: any = { name, websiteDomain, model };
-      if (prompts.length > 0 && filteredPrompts.length > 0) {
-        updatePayload.prompts = filteredPrompts;
-      }
+      updatePayload.prompts = filteredPrompts;
       await handleUpdateAgent(agentId, updatePayload);
       setShowSuccess(true);
       setTimeout(() => router.push('/dashboard'), 1800);
