@@ -201,14 +201,12 @@
     const isHidden = widget.classList.toggle('hidden');
     toggle.classList.toggle('hidden', !isHidden);
     
-    if (!isHidden) {
-      if (state.isWidgetReady) {
-        updateChatUI();
-        setTimeout(
-          () => document.getElementById('chatWidgetInputField')?.focus(),
-          100
-        );
-      }
+    if (!isHidden && state.isWidgetReady) {
+      updateChatUI();
+      setTimeout(
+        () => document.getElementById('chatWidgetInputField')?.focus(),
+        100
+      );
     }
   }
 
