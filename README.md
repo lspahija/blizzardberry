@@ -22,7 +22,6 @@ e.g. it must be easy to:
 - (Luka) onboard Stripe (complete stripe profile and create products in prod and copy priceIds into .env.production and vercel env)
   - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
-- prompt suggestion buttons don't look good
 
 ## Launch and Sell!
 - https://www.reddit.com/r/SaaS/comments/1700b0w/frustrated_a_similar_tool_took_off_to_180k_mrr
