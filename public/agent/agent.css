@@ -346,12 +346,17 @@
 }
 
 /* Support for mobile devices */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     #chatWidget {
-        width: calc(100% - 32px);
-        height: 640px;
-        bottom: 16px;
-        right: 16px;
+        width: 100vw;
+        height: 100vh;
+        max-height: 100vh;
+        bottom: 0;
+        right: 0;
+        border-radius: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
     }
 
     .message {
@@ -419,7 +424,7 @@
     -webkit-backdrop-filter: blur(10px);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .chat-widget-prompt-btn {
         padding: 9px 10px;
         font-size: 12px;
@@ -625,13 +630,15 @@
 }
 
 /* Mobile responsive for loading widget */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .chat-widget-loading {
-        width: calc(100vw - 40px);
-        height: calc(100vh - 120px);
-        max-height: 80vh;
-        bottom: 10px;
-        right: 10px;
-        left: 10px;
+        width: 100vw;
+        height: 100vh;
+        max-height: 100vh;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        top: 0;
+        border-radius: 0;
     }
 }
