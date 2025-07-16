@@ -328,7 +328,7 @@ export default function ExecutionStep({
                         <List className="h-4 w-4 text-[#FE4A60]" />
                         Available Variables
                       </Label>
-                      <div className="mt-2 max-h-[100px] overflow-y-auto">
+                      <div className="mt-2">
                         <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-2">
                           {dataInputs
                             .filter((input) => input.name)
