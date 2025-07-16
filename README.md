@@ -20,7 +20,7 @@ e.g. it must be easy to:
 
 ## Before Launch
 - (Luka) onboard Stripe (complete stripe profile and create products in prod and copy priceIds into .env.production and vercel env)
-  - [chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
+  - 
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 
 ## Launch and Sell!
@@ -112,6 +112,9 @@ The website design is based on this: https://gitingest.com/
 this looks good: https://bland.com/
 
 # Notes
+
+### pricing analysis
+[chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
 
 ### auth magic link email
 [Dealing with resend issues](https://www.reddit.com/r/Supabase/comments/1d8lz8d/emails_with_resend_still_going_to_spam/) Postmark seems best but no free tier
