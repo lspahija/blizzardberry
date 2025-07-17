@@ -30,5 +30,8 @@ drop table subscriptions;
 delete from domain_events;
 delete from subscriptions;
 
+select * from subscriptions;
+
+
 
 select * from subscriptions;

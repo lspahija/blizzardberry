@@ -8,7 +8,7 @@ import { BlizzardBerryPublicAgent } from '@/app/(frontend)/components/BlizzardBe
 
 export const metadata: Metadata = {
   title: 'BlizzardBerry',
-  description: 'Building the Future of UX',
+  description: 'The Future of UX is Here',
 };
 
 export default function FrontendLayout({
