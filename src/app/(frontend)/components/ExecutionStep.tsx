@@ -210,15 +210,6 @@ export default function ExecutionStep({
         };
         return {
           suggestions: [
-            // Suggestions without curly braces
-            ...getInputNames(dataInputs, false).map((name) => ({
-              label: name,
-              kind: monaco.languages.CompletionItemKind.Variable,
-              documentation: `Variable - plain`,
-              insertText: `"${name}"`,
-              range,
-            })),
-            // Suggestions with curly braces
             ...getInputNames(dataInputs, false).map((name) => ({
               label: `{{${name}}}`,
               kind: monaco.languages.CompletionItemKind.Variable,
