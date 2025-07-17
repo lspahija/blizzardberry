@@ -23,6 +23,8 @@ e.g. it must be easy to:
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 - make design look great on all pages, including mobile. e.g. the text doesn't currently look great on landing page on mobile
 - change env variable values in Vercel to those in .env.prod and pay for vercel plan to get enable cron and make sure everything works in prod  
+- there shouldn't be separate view and edit button for agents. you should just be able to click the agent and see all its info and edit it if you want
+- why can't I edit actions?
 
 ## Launch and Sell!
 - https://www.reddit.com/r/SaaS/comments/1700b0w/frustrated_a_similar_tool_took_off_to_180k_mrr
