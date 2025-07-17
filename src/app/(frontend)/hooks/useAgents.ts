@@ -161,7 +161,7 @@ export function useAgents() {
         }
 
         const result = await response.json();
-        await fetchAgents(); // Refresh the list
+        await fetchAgents();
         
         return result;
       } catch (error) {

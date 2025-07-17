@@ -167,17 +167,15 @@ function substituteRequestModel(
   if (body) {
     substitutedBody = {};
     for (const [key, value] of Object.entries(body)) {
-      let substitutedValue;
       if (typeof value === 'string') {
-        substitutedValue = substitutePlaceholders(value, params);
+        substitutedBody[key] = substitutePlaceholders(value, params);
       } else if (Array.isArray(value)) {
-        substitutedValue = value.map((item) =>
+        substitutedBody[key] = value.map((item) =>
           typeof item === 'string' ? substitutePlaceholders(item, params) : item
         );
       } else {
-        substitutedValue = value;
+        substitutedBody[key] = value;
       }
-      substitutedBody[key] = substitutedValue;
     }
     
     const filteredBody = filterPlaceholderValues(substitutedBody);
