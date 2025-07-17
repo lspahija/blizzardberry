@@ -209,13 +209,24 @@ export default function ExecutionStep({
           endColumn: word.endColumn,
         };
         return {
-          suggestions: getInputNames(dataInputs, true).map((name) => ({
-            label: name,
-            kind: monaco.languages.CompletionItemKind.Variable,
-            documentation: `Variable`,
-            insertText: `"${name}"`,
-            range,
-          })),
+          suggestions: [
+            // Suggestions without curly braces
+            ...getInputNames(dataInputs, false).map((name) => ({
+              label: name,
+              kind: monaco.languages.CompletionItemKind.Variable,
+              documentation: `Variable - plain`,
+              insertText: `"${name}"`,
+              range,
+            })),
+            // Suggestions with curly braces
+            ...getInputNames(dataInputs, false).map((name) => ({
+              label: `{{${name}}}`,
+              kind: monaco.languages.CompletionItemKind.Variable,
+              documentation: `Variable with template syntax`,
+              insertText: `"{{${name}}}"`,
+              range,
+            })),
+          ],
         };
       },
     });
@@ -502,6 +513,7 @@ export default function ExecutionStep({
                           hideCursorInOverviewRuler: true,
                           guides: { indentation: false },
                           readOnly: isCreatingAction,
+                          fixedOverflowWidgets: true,
                         }}
                         className="bg-transparent"
                       />
