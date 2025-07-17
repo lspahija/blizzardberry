@@ -33,6 +33,7 @@ import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
+import { usePrompts } from '@/app/(frontend)/hooks/usePrompts';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import { getRegisterMultipleToolsExample } from '@/app/(frontend)/lib/actionUtils';
 import { Framework, getAgentScript } from '@/app/(frontend)/lib/scriptUtils';
@@ -47,12 +48,6 @@ import {
 } from '@/app/(frontend)/components/ui/select';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { Suspense } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/app/(frontend)/components/ui/dialog';
 import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
 
 export default function AgentDetailsWrapper({
@@ -96,6 +91,12 @@ function AgentDetails({
     deletingDocumentId,
     handleDeleteDocument,
   } = useDocuments();
+  const {
+    prompts,
+    loadingPrompts,
+    deletingPromptId,
+    handleDeletePrompt,
+  } = usePrompts(params.agentId);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [actionToDelete, setActionToDelete] = useState<Action | null>(null);
@@ -103,6 +104,10 @@ function AgentDetails({
     useState(false);
   const [documentToDelete, setDocumentToDelete] = useState<
     (typeof documents)[0] | null
+  >(null);
+  const [isDeletePromptDialogOpen, setIsDeletePromptDialogOpen] = useState(false);
+  const [promptToDelete, setPromptToDelete] = useState<
+    (typeof prompts)[0] | null
   >(null);
 
   const containerVariants = {
@@ -257,6 +262,41 @@ function AgentDetails({
             <p className="text-muted-foreground mb-2 text-sm sm:text-base">
               <span className="font-semibold">Model:</span> {agent.model}
             </p>
+            {prompts.length > 0 && (
+              <div className="mt-4">
+                <p className="text-muted-foreground mb-2 text-sm sm:text-base">
+                  <span className="font-semibold">Suggested Prompts:</span>
+                </p>
+                <div className="space-y-2">
+                  {prompts.map((prompt, idx) => (
+                    <div key={prompt.id} className="flex items-start justify-between group p-2 bg-muted/30 rounded-md border border-border/50">
+                      <div className="flex-1 pr-2">
+                        <p className="text-xs text-foreground leading-relaxed whitespace-pre-wrap">
+                          {prompt.content}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-5 w-5 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                        onClick={() => {
+                          setPromptToDelete(prompt);
+                          setIsDeletePromptDialogOpen(true);
+                        }}
+                        disabled={deletingPromptId === prompt.id}
+                        title="Delete Prompt"
+                      >
+                        {deletingPromptId === prompt.id ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-3 w-3" />
+                        )}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -814,6 +854,20 @@ function AgentDetails({
           title="Delete Document"
           message={`Are you sure you want to delete Document ${documentToDelete ? documents.findIndex((d) => d.id === documentToDelete.id) + 1 : ''}? This action cannot be undone.`}
           isLoading={!!deletingDocumentId}
+        />
+
+        <DeleteConfirmationDialog
+          isOpen={isDeletePromptDialogOpen}
+          onOpenChange={setIsDeletePromptDialogOpen}
+          onConfirm={async () => {
+            if (promptToDelete?.id) {
+              await handleDeletePrompt(promptToDelete.id);
+              setPromptToDelete(null);
+            }
+          }}
+          title="Delete Prompt"
+          message={`Are you sure you want to delete this prompt? This action cannot be undone.`}
+          isLoading={!!deletingPromptId}
         />
       </div>
     </motion.div>
