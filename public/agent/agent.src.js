@@ -22,12 +22,27 @@
     }
   }
 
+  function ensureMobileViewport() {
+    // Check if viewport meta tag exists, if not create one
+    let viewport = document.querySelector('meta[name="viewport"]');
+    if (!viewport) {
+      viewport = document.createElement('meta');
+      viewport.name = 'viewport';
+      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+      document.head.appendChild(viewport);
+    } else {
+      // Update existing viewport to prevent zooming
+      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+    }
+  }
+
   // --- Initialization Logic ---
   const agentScript = document.currentScript;
 
   const baseUrl = new URL(agentScript.src).origin;
   initializeAgentId(agentScript);
   injectStyles(agentScript);
+  ensureMobileViewport();
 
   const userConfig = window.agentUserConfig;
   const actions = window.agentActions;
