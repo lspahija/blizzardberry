@@ -93,7 +93,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 24px;
     margin-right: 12px;
-    font-size: 14px;
+    font-size: 16px; /* Increased to prevent zoom on mobile */
     outline: none;
     transition: all 0.2s ease;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -103,6 +103,9 @@
     overflow-y: auto; /* Enable vertical scrollbar if needed */
     line-height: 1.5;
     font-family: inherit;
+    -webkit-appearance: none; /* Remove default iOS styling */
+    -moz-appearance: none;
+    appearance: none;
 }
 
 #chatWidgetInputField:focus {

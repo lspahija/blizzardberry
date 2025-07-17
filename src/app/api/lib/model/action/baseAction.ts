@@ -26,6 +26,7 @@ export interface Parameter {
   description: string;
   type: ParameterType;
   isArray: boolean;
+  required: boolean;
 }
 
 export enum ParameterType {

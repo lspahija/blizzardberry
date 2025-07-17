@@ -54,18 +54,24 @@ export async function deleteAgent(agentId: string) {
 
 export async function updateAgent(
   agentId: string,
-  data: {
+  data: Partial<{
     name: string;
     website_domain: string;
     model: string;
-  }
+  }>
 ) {
-  const { name, website_domain, model } = data;
+  const updateData: any = {};
+  if (data.name !== undefined) updateData.name = data.name;
+  if (data.website_domain !== undefined) updateData.website_domain = data.website_domain;
+  if (data.model !== undefined) updateData.model = data.model;
+
+  if (Object.keys(updateData).length === 0) {
+    return null;
+  }
+
   const result = await sql`
     UPDATE agents
-    SET name = ${name},
-        website_domain = ${website_domain},
-        model = ${model}
+    SET ${sql(updateData)}
     WHERE id = ${agentId}
     RETURNING *
   `;
