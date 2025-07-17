@@ -67,7 +67,8 @@ export default function UpgradePage() {
     null
   );
   const [loadingSubscription, setLoadingSubscription] = useState<boolean>(true);
-  const [subscriptionFetched, setSubscriptionFetched] = useState<boolean>(false);
+  const [subscriptionFetched, setSubscriptionFetched] =
+    useState<boolean>(false);
 
   // Fetch user's current subscription
   useEffect(() => {
@@ -106,10 +107,12 @@ export default function UpgradePage() {
   useEffect(() => {
     const shouldShowCheckout = searchParams.get('checkout') === 'true';
     const checkoutClientSecret = searchParams.get('clientSecret');
-    const billingCycleParam = searchParams.get('billingCycle') as 'monthly' | 'yearly';
+    const billingCycleParam = searchParams.get('billingCycle') as
+      | 'monthly'
+      | 'yearly';
     const tierParam = searchParams.get('tier');
     const actionParam = searchParams.get('action');
-    
+
     console.log('Upgrade page useEffect:', {
       shouldShowCheckout,
       checkoutClientSecret: checkoutClientSecret ? 'present' : 'missing',
@@ -118,22 +121,29 @@ export default function UpgradePage() {
       actionParam,
       isLoggedIn,
       sessionStatus: status,
-      searchParamsString: searchParams.toString()
+      searchParamsString: searchParams.toString(),
     });
-    
+
     if (status === 'loading') {
       return;
     }
-    
-    if (shouldShowCheckout && checkoutClientSecret && (isLoggedIn || status === 'authenticated')) {
-      console.log('Setting up checkout with clientSecret:', checkoutClientSecret);
+
+    if (
+      shouldShowCheckout &&
+      checkoutClientSecret &&
+      (isLoggedIn || status === 'authenticated')
+    ) {
+      console.log(
+        'Setting up checkout with clientSecret:',
+        checkoutClientSecret
+      );
       setClientSecret(checkoutClientSecret);
       setShowCheckout(true);
-      
+
       if (billingCycleParam) {
         setBillingCycle(billingCycleParam);
       }
-      
+
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.delete('checkout');
       newUrl.searchParams.delete('clientSecret');
@@ -662,25 +672,23 @@ export default function UpgradePage() {
       </div>
 
       {showCheckout && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
-          <div className="bg-card p-8 border border-border rounded-2xl max-w-md w-full shadow-2xl flex flex-col justify-center">
-            <h2 className="text-2xl font-bold mb-6 text-foreground">
+        <div
+          className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 sm:p-6 z-[100] backdrop-blur-sm"
+          onClick={() => setShowCheckout(false)} // Close on backdrop click
+        >
+          <div
+            className="bg-card border border-border rounded-2xl max-w-lg w-full shadow-2xl p-4 sm:p-6"
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+          >
+            <h2 className="text-2xl font-bold mb-6 text-foreground text-center">
               Complete Your Purchase
             </h2>
             <EmbeddedCheckoutProvider
               stripe={stripePromise}
               options={{ fetchClientSecret }}
             >
-              <div className="max-h-[60vh] overflow-y-auto">
-                <EmbeddedCheckout />
-              </div>
+              <EmbeddedCheckout />
             </EmbeddedCheckoutProvider>
-            <button
-              className="mt-6 py-3 px-6 bg-background text-foreground border border-border rounded-xl hover:bg-muted transition font-medium mx-auto block"
-              onClick={() => setShowCheckout(false)}
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}
