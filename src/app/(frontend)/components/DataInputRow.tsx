@@ -17,6 +17,7 @@ interface DataInput {
   type: string;
   description: string;
   isArray: boolean;
+  required: boolean;
 }
 
 interface DataInputRowProps {
@@ -93,6 +94,21 @@ export default function DataInputRow({
               type="checkbox"
               checked={input.isArray}
               onChange={(e) => updateDataInput('isArray', e.target.checked)}
+              className="border-[2px] border-border w-4 h-4 md:w-5 md:h-5 mb-2"
+            />
+          </div>
+          <div className="flex flex-col items-center">
+            <Label
+              htmlFor={`inputRequired${index}`}
+              className="text-xs md:text-sm whitespace-nowrap text-foreground mb-1"
+            >
+              Required
+            </Label>
+            <input
+              id={`inputRequired${index}`}
+              type="checkbox"
+              checked={input.required}
+              onChange={(e) => updateDataInput('required', e.target.checked)}
               className="border-[2px] border-border w-4 h-4 md:w-5 md:h-5 mb-2"
             />
           </div>

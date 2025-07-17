@@ -94,6 +94,58 @@ export async function PUT(
   }
 }
 
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ agentId: string }> }
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { agentId } = await params;
+    const authResponse = await agentAuth(session.user.id, agentId);
+    if (authResponse) return authResponse;
+
+    const body = await request.json();
+    const { name, websiteDomain, model, prompts } = body;
+
+    const updateData: any = {};
+    
+    if (name !== undefined) {
+      updateData.name = name;
+    }
+    
+    if (websiteDomain !== undefined) {
+      updateData.website_domain = websiteDomain;
+    }
+    
+    if (model !== undefined) {
+      updateData.model = model;
+    }
+
+    if (Object.keys(updateData).length > 0) {
+      await updateAgent(agentId, updateData);
+    }
+
+    if (Array.isArray(prompts)) {
+      await updatePrompts(agentId, prompts);
+    }
+
+    return NextResponse.json({ 
+      success: true,
+      updatedFields: Object.keys(body).filter(key => body[key] !== undefined)
+    }, { status: 200 });
+  } catch (error) {
+    console.error('Error updating agent:', error);
+    return NextResponse.json(
+      { error: 'Failed to update agent' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(
   _: Request,
   { params }: { params: Promise<{ agentId: string }> }

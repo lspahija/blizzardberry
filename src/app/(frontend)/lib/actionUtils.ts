@@ -5,6 +5,7 @@ interface DataInput {
   type: string;
   description: string;
   isArray: boolean;
+  required: boolean;
 }
 
 export const getInputNames = (dataInputs: DataInput[], withBraces = false) => {

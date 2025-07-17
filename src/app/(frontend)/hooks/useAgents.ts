@@ -141,6 +141,40 @@ export function useAgents() {
     [fetchAgents]
   );
 
+  const handlePatchAgent = useCallback(
+    async (
+      agentId: string,
+      updates: Partial<UpdateAgentParams>
+    ) => {
+      setUpdatingAgent(true);
+      try {
+        const response = await fetch(`/api/agents/${agentId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updates),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update agent');
+        }
+
+        const result = await response.json();
+        await fetchAgents(); // Refresh the list
+        
+        return result;
+      } catch (error) {
+        console.error('Error updating agent:', error);
+        toast.error('Failed to update agent. Please try again.');
+        throw error;
+      } finally {
+        setUpdatingAgent(false);
+      }
+    },
+    [fetchAgents]
+  );
+
   return {
     agents,
     loadingAgents,
@@ -151,5 +185,6 @@ export function useAgents() {
     handleDeleteAgent,
     handleCreateAgent,
     handleUpdateAgent,
+    handlePatchAgent,
   };
 }

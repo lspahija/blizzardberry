@@ -21,6 +21,7 @@ interface DataInput {
   type: string;
   description: string;
   isArray: boolean;
+  required: boolean;
 }
 
 interface DataInputsStepProps {
@@ -39,7 +40,7 @@ export default function DataInputsStep({
   const addDataInput = () => {
     setDataInputs([
       ...dataInputs,
-      { name: '', type: 'Text', description: '', isArray: false },
+      { name: '', type: 'Text', description: '', isArray: false, required: true },
     ]);
   };
 

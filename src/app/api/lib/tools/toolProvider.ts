@@ -68,10 +68,13 @@ export async function getToolsFromActions(agentId: string) {
       action.executionContext === ExecutionContext.SERVER
         ? async (params) =>
             substituteRequestModel(action.executionModel.request, params)
-        : async (params) => ({
-            functionName: action.executionModel.functionName,
-            params,
-          });
+        : async (params) => {
+            const filteredParams = filterPlaceholderValues(params);
+            return {
+              functionName: action.executionModel.functionName,
+              params: filteredParams,
+            };
+          };
 
     tools[actionName] = tool({
       description: action.description,
@@ -124,6 +127,26 @@ function substitutePlaceholders(
   return result;
 }
 
+function filterPlaceholderValues(params: Record<string, any>): Record<string, any> {
+  const filteredParams: Record<string, any> = {};
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null || value === '') {
+      continue;
+    }
+    
+    if (typeof value === 'string' && value.match(/^{{.*}}$/)) {
+      continue;
+    }
+    
+    if (Array.isArray(value) && value.length === 0) {
+      continue;
+    }
+    
+    filteredParams[key] = value;
+  }
+  return filteredParams;
+}
+
 function substituteRequestModel(
   request: HttpRequest,
   params: Record<string, any>
@@ -144,16 +167,21 @@ function substituteRequestModel(
   if (body) {
     substitutedBody = {};
     for (const [key, value] of Object.entries(body)) {
+      let substitutedValue;
       if (typeof value === 'string') {
-        substitutedBody[key] = substitutePlaceholders(value, params);
+        substitutedValue = substitutePlaceholders(value, params);
       } else if (Array.isArray(value)) {
-        substitutedBody[key] = value.map((item) =>
+        substitutedValue = value.map((item) =>
           typeof item === 'string' ? substitutePlaceholders(item, params) : item
         );
       } else {
-        substitutedBody[key] = value;
+        substitutedValue = value;
       }
+      substitutedBody[key] = substitutedValue;
     }
+    
+    const filteredBody = filterPlaceholderValues(substitutedBody);
+    substitutedBody = Object.keys(filteredBody).length > 0 ? filteredBody : undefined;
   }
 
   return {
