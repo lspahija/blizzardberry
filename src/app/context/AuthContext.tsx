@@ -5,6 +5,7 @@ import { useSession, signOut } from 'next-auth/react';
 
 interface AuthContextType {
   isLoggedIn: boolean;
+  status: 'loading' | 'authenticated' | 'unauthenticated';
   logout: () => Promise<void>;
 }
 
@@ -19,7 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, status, logout }}>
       {children}
     </AuthContext.Provider>
   );
