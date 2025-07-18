@@ -14,8 +14,6 @@ import {
   Code,
   Rocket,
   Zap,
-  Menu,
-  X,
   FileText,
   MessageSquare,
   Users,
@@ -27,8 +25,6 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Script from 'next/script';
-import { Navbar } from '@/app/(frontend)/components/Navbar';
-
 // Reusable component for the drop-shadow effect on buttons and cards
 const ShadowWrapper = ({ children }: { children: React.ReactNode }) => (
   <div className="relative">
@@ -72,9 +68,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Navbar */}
-      <Navbar />
-
       {isMenuOpen && (
         <div className="md:hidden bg-background/95 backdrop-blur-sm px-4 py-6 space-y-4 fixed top-[75px] left-0 right-0 bottom-0 z-40">
           <Link

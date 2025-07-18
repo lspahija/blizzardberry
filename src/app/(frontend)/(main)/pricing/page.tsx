@@ -23,7 +23,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { Navbar } from '@/app/(frontend)/components/Navbar';
 import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
 import {
@@ -247,9 +246,6 @@ export default function PricingPage() {
   }
 `}
       </style>
-
-      <Navbar />
-
       {/* Hero Section */}
       <div className="bg-background">
         <div

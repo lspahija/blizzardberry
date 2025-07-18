@@ -170,15 +170,6 @@ export default function EditAgentPage({
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-border sticky top-0 bg-background z-50">
-        <div className="flex items-center space-x-2">
-          <span className="text-xl font-bold text-foreground">
-            <span className="text-foreground">Blizzard</span>
-            <span className="text-brand">Berry</span>
-          </span>
-        </div>
-      </nav>
-
       <motion.div
         className="max-w-4xl mx-auto px-4 py-16 relative z-10"
         variants={containerVariants}

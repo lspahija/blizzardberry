@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import { AuthProvider } from '@/app/context/AuthContext';
 import { BlizzardBerryAgent } from '@/app/(frontend)/components/BlizzardBerryAgent';
 import { BlizzardBerryPublicAgent } from '@/app/(frontend)/components/BlizzardBerryPublicAgent';
+import { Navbar } from '@/app/(frontend)/components/Navbar';
 
 export const metadata: Metadata = {
   title: 'BlizzardBerry',
@@ -21,6 +22,7 @@ export default function FrontendLayout({
       <SessionProvider>
         <AuthProvider>
           <FrameworkProvider>
+            <Navbar />
             {children}
             <BlizzardBerryAgent />
             <BlizzardBerryPublicAgent />

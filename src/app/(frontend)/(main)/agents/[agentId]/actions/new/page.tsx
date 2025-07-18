@@ -128,15 +128,6 @@ function ActionFormContent() {
 export default function NewActionPage() {
   return (
     <div className="min-h-screen bg-background">
-      <nav className="flex justify-between items-center p-4 max-w-4xl mx-auto border-b-[3px] border-border sticky top-0 bg-background z-50">
-        <div className="flex items-center space-x-2">
-          <span className="text-xl font-bold text-foreground">
-            <span className="text-foreground">Blizzard</span>
-            <span className="text-brand">Berry</span>
-          </span>
-        </div>
-      </nav>
-
       <Suspense
         fallback={
           <div className="flex items-center justify-center min-h-[50vh]">
