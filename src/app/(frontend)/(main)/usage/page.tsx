@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/app/(frontend)/components/ui/button';
-import { Navbar } from '@/app/(frontend)/components/Navbar';
 
 export default function UsagePage() {
   const [credits, setCredits] = useState<number | null>(null);
@@ -27,7 +26,6 @@ export default function UsagePage() {
 
   return (
     <>
-      <Navbar />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 mt-6 sm:mt-12">
         <h1 className="text-3xl sm:text-4xl font-extrabold mb-6 sm:mb-8 text-foreground">
           Your Usage

@@ -23,7 +23,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { Navbar } from '@/app/(frontend)/components/Navbar';
 import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
 import {
@@ -344,9 +343,6 @@ export default function UpgradePage() {
   }
 `}
       </style>
-
-      <Navbar />
-
       <div className="bg-background">
         <div className="container mx-auto px-4 py-20 max-w-7xl">
           <div className="text-center mb-16">
