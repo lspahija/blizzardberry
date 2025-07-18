@@ -85,17 +85,6 @@ export default function UserConfig() {
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground">
             User Configuration
           </h1>
-          <Button
-            asChild
-            className="bg-accent text-accent-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md text-lg font-semibold px-6 py-2 rounded-lg w-full sm:w-auto hover:bg-accent/90"
-          >
-            <Link
-              href="/dashboard"
-              className="flex items-center justify-center"
-            >
-              Back to Dashboard
-            </Link>
-          </Button>
         </div>
 
         {/* Info/tip box */}

@@ -227,17 +227,6 @@ function AgentDetails({
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
             {agent.name}
           </h1>
-          <Button
-            asChild
-            className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full md:w-auto hover:bg-secondary/90"
-          >
-            <Link
-              href="/dashboard"
-              className="flex items-center justify-center"
-            >
-              Back to Dashboard
-            </Link>
-          </Button>
         </div>
 
         <Card
