@@ -13,13 +13,8 @@ export function Navbar() {
     setIsClient(true);
   }, []);
 
-  // On the server, always render the landing navbar to avoid hydration mismatch
-  if (!isClient) {
-    return <LandingNavbar />;
-  }
-
-  // Show loading state while authentication is being determined
-  if (status === 'loading') {
+  // Show loading skeleton during initial render and while authentication is being determined
+  if (!isClient || status === 'loading') {
     return (
       <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur border-b border-border shadow-md flex justify-between items-center p-4 pb-2">
         <div className="flex items-center">
