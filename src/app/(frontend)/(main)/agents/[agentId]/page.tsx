@@ -341,7 +341,26 @@ function AgentDetails({
             ) : (
               agent.name
             )}
+            {isEditing ? (
+              <Input
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-transparent border-none p-0 focus:ring-0 focus:border-none"
+                placeholder="Agent Name"
+              />
+            ) : (
+              agent.name
+            )}
           </h1>
+          {!isEditing && (
+            <Button
+              onClick={startEditing}
+              className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
+            >
+              <Edit className="h-4 w-4" />
+              Edit Agent
+            </Button>
+          )}
           {!isEditing && (
             <Button
               onClick={startEditing}
@@ -387,7 +406,103 @@ function AgentDetails({
                 </Button>
               </div>
             )}
+          <CardHeader className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Bot className="h-6 w-6 text-destructive" />
+              <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
+                Agent Details
+              </CardTitle>
+            </div>
+            {isEditing && (
+              <div className="flex gap-2">
+                <Button
+                  onClick={saveChanges}
+                  disabled={isSaving}
+                  className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
+                >
+                  {isSaving ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4" />
+                  )}
+                  Save
+                </Button>
+                <Button
+                  onClick={cancelEditing}
+                  disabled={isSaving}
+                  variant="outline"
+                  className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2"
+                >
+                  Cancel
+                </Button>
+              </div>
+            )}
           </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                <Globe className="h-4 w-4 text-destructive" />
+                Domain:
+              </Label>
+              {isEditing ? (
+                <Input
+                  value={editWebsiteDomain}
+                  onChange={(e) => setEditWebsiteDomain(e.target.value)}
+                  placeholder="example.com"
+                  className="mt-1 border-[2px] border-border"
+                />
+              ) : (
+                <p className="text-muted-foreground text-sm sm:text-base ml-6">
+                  {agent.websiteDomain}
+                </p>
+              )}
+            </div>
+            
+            <div>
+              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                <Settings className="h-4 w-4 text-destructive" />
+                Model:
+              </Label>
+              {isEditing ? (
+                <Select
+                  value={editModel}
+                  onValueChange={(value) => setEditModel(value as AgentModel)}
+                >
+                  <SelectTrigger className="mt-1 border-[2px] border-border">
+                    <SelectValue placeholder="Select a model" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {AgentModelList.map((modelValue) => (
+                      <SelectItem key={modelValue} value={modelValue}>
+                        {AgentModelDisplay[modelValue]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <p className="text-muted-foreground text-sm sm:text-base ml-6">
+                  {AgentModelDisplay[agent.model as AgentModel] || agent.model}
+                </p>
+              )}
+            </div>
+            
+            <div>
+              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                Created:
+              </Label>
+              <p className="text-muted-foreground text-sm sm:text-base ml-6">
+                {new Date(agent.createdAt).toLocaleString()}
+              </p>
+            </div>
+
+            {isEditing && (
+              <div>
+                <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                  <MessageSquare className="h-4 w-4 text-brand" />
+                  Suggested Prompts (Optional)
+                </Label>
+                <p className="text-sm text-muted-foreground mt-1 ml-6">
+                  These are example prompts users can choose from or use as inspiration when interacting with your agent.
           <CardContent className="space-y-4">
             <div>
               <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
