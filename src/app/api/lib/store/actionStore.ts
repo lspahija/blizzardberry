@@ -12,14 +12,30 @@ export const getActions = async (agentId: string): Promise<Action[]> => {
     WHERE agent_id = ${agentId}
   `;
 
-  return actions.map((d: any) => ({
-    id: d.id,
-    name: d.name,
-    description: d.description,
-    executionContext: d.execution_context,
-    executionModel: JSON.parse(d.execution_model),
-    agentId: d.agent_id,
-  }));
+  return actions.map((d: any) => {
+    try {
+      return {
+        id: d.id,
+        name: d.name,
+        description: d.description,
+        executionContext: d.execution_context,
+        executionModel: JSON.parse(d.execution_model),
+        agentId: d.agent_id,
+      };
+    } catch (error) {
+      console.error(`Error parsing execution_model for action ${d.id}:`, error);
+      console.error('Raw execution_model:', d.execution_model);
+      // Return a minimal action object to prevent the entire list from failing
+      return {
+        id: d.id,
+        name: d.name || 'Corrupted Action',
+        description: d.description || 'This action has corrupted data',
+        executionContext: d.execution_context,
+        executionModel: {},
+        agentId: d.agent_id,
+      };
+    }
+  });
 };
 
 export const getAction = async (
@@ -35,14 +51,20 @@ export const getAction = async (
 
   if (!action) return null;
 
-  return {
-    id: action.id,
-    name: action.name,
-    description: action.description,
-    executionContext: action.execution_context,
-    executionModel: JSON.parse(action.execution_model),
-    agentId: action.agent_id,
-  };
+  try {
+    return {
+      id: action.id,
+      name: action.name,
+      description: action.description,
+      executionContext: action.execution_context,
+      executionModel: JSON.parse(action.execution_model),
+      agentId: action.agent_id,
+    };
+  } catch (error) {
+    console.error(`Error parsing execution_model for action ${action.id}:`, error);
+    console.error('Raw execution_model:', action.execution_model);
+    throw new Error('Action data is corrupted');
+  }
 };
 
 export const createAction = async (
@@ -66,4 +88,38 @@ export const deleteAction = async (
     DELETE FROM actions
     WHERE id = ${id} AND agent_id = ${agentId}
   `;
+};
+
+export const updateAction = async (
+  id: string,
+  agentId: string,
+  data: Partial<{
+    name: string;
+    description: string;
+    execution_context: ExecutionContext;
+    execution_model: ExecutionModel;
+  }>
+): Promise<void> => {
+  const updateData: any = {};
+  if (data.name !== undefined) updateData.name = data.name;
+  if (data.description !== undefined) updateData.description = data.description;
+  if (data.execution_context !== undefined) updateData.execution_context = data.execution_context;
+
+  // Handle execution_model separately to ensure proper JSONB casting
+  if (data.execution_model !== undefined) {
+    await sql`
+      UPDATE actions
+      SET name = ${updateData.name || undefined},
+          description = ${updateData.description || undefined},
+          execution_context = ${updateData.execution_context || undefined},
+          execution_model = ${JSON.stringify(data.execution_model)}::jsonb
+      WHERE id = ${id} AND agent_id = ${agentId}
+    `;
+  } else if (Object.keys(updateData).length > 0) {
+    await sql`
+      UPDATE actions
+      SET ${sql(updateData)}
+      WHERE id = ${id} AND agent_id = ${agentId}
+    `;
+  }
 };

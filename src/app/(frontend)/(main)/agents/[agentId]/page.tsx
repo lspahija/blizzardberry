@@ -28,6 +28,7 @@ import {
   Settings,
   MessageSquare,
   Plus,
+  Pencil,
 } from 'lucide-react';
 import {
   Action,
@@ -35,6 +36,7 @@ import {
 } from '@/app/api/lib/model/action/baseAction';
 import { Agent } from '@/app/api/lib/model/agent/agent';
 import { use } from 'react';
+import { useRouter } from 'next/navigation';
 import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
@@ -89,6 +91,7 @@ function AgentDetails({
   params: Promise<{ agentId: string }>;
 }) {
   const params = use(paramsPromise);
+  const router = useRouter();
   const [agent, setAgent] = useState<Agent | null>(null);
   const [actions, setActions] = useState<Action[]>([]);
   const [loadingAgent, setLoadingAgent] = useState(true);
@@ -939,23 +942,36 @@ function AgentDetails({
                           : 'None'}
                       </p>
                     </div>
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
-                      onClick={() => {
-                        setActionToDelete(action);
-                        setIsDeleteDialogOpen(true);
-                      }}
-                      disabled={deletingActionId === action.id}
-                      title="Delete Action"
-                    >
-                      {deletingActionId === action.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                      )}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded-full p-2 hover:bg-secondary/80 transition group-hover:scale-110"
+                        onClick={() => {
+                          router.push(`/agents/${params.agentId}/actions/${action.id}/edit`);
+                        }}
+                        title="Edit Action"
+                      >
+                        <Pencil className="h-4 w-4 transition-transform duration-200 group-hover:scale-125" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        className="rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
+                        onClick={() => {
+                          setActionToDelete(action);
+                          setIsDeleteDialogOpen(true);
+                        }}
+                        disabled={deletingActionId === action.id}
+                        title="Delete Action"
+                      >
+                        {deletingActionId === action.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
+                        )}
+                      </Button>
+                    </div>
                   </li>
                 ))}
               </ul>

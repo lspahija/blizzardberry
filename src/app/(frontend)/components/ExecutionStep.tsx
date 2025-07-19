@@ -60,6 +60,7 @@ interface DataInput {
   type: string;
   description: string;
   isArray: boolean;
+  required: boolean;
 }
 
 interface Header {
@@ -88,6 +89,7 @@ interface ExecutionStepProps {
   onBack: () => void;
   isCreatingAction?: boolean;
   showSuccess?: boolean;
+  isEditing?: boolean;
 }
 
 const commonHeaderKeys = [
@@ -142,6 +144,7 @@ export default function ExecutionStep({
   onBack,
   isCreatingAction = false,
   showSuccess = false,
+  isEditing = false,
 }: ExecutionStepProps) {
   const [bodyError, setBodyError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
@@ -306,7 +309,7 @@ export default function ExecutionStep({
                 <div className="text-center">
                   <div className="w-12 h-12 border-4 border-destructive border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                   <p className="text-foreground font-semibold">
-                    Creating Action...
+                    {isEditing ? 'Updating Action...' : 'Creating Action...'}
                   </p>
                   <p className="text-muted-foreground text-sm">
                     Please wait while we save your action
@@ -677,12 +680,12 @@ export default function ExecutionStep({
                 {isCreatingAction ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Creating...
+                    {isEditing ? 'Updating...' : 'Creating...'}
                   </>
                 ) : (
                   <>
                     <Save className="w-4 h-4" />
-                    Create Action
+                    {isEditing ? 'Update Action' : 'Create Action'}
                   </>
                 )}
               </Button>
