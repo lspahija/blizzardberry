@@ -12,16 +12,14 @@ export const getActions = async (agentId: string): Promise<Action[]> => {
     WHERE agent_id = ${agentId}
   `;
 
-  return actions.map((d: any) => {
-    return {
-      id: d.id,
-      name: d.name,
-      description: d.description,
-      executionContext: d.execution_context,
-      executionModel: JSON.parse(d.execution_model),
-      agentId: d.agent_id,
-    };
-  });
+  return actions.map((d: any) => ({
+    id: d.id,
+    name: d.name,
+    description: d.description,
+    executionContext: d.execution_context,
+    executionModel: JSON.parse(d.execution_model),
+    agentId: d.agent_id,
+  }));
 };
 
 export const getAction = async (
@@ -37,20 +35,14 @@ export const getAction = async (
 
   if (!action) return null;
 
-  try {
-    return {
-      id: action.id,
-      name: action.name,
-      description: action.description,
-      executionContext: action.execution_context,
-      executionModel: JSON.parse(action.execution_model),
-      agentId: action.agent_id,
-    };
-  } catch (error) {
-    console.error(`Error parsing execution_model for action ${action.id}:`, error);
-    console.error('Raw execution_model:', action.execution_model);
-    throw new Error('Action data is corrupted');
-  }
+  return {
+    id: action.id,
+    name: action.name,
+    description: action.description,
+    executionContext: action.execution_context,
+    executionModel: JSON.parse(action.execution_model),
+    agentId: action.agent_id,
+  };
 };
 
 export const createAction = async (
