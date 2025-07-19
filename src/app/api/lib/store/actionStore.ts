@@ -13,28 +13,14 @@ export const getActions = async (agentId: string): Promise<Action[]> => {
   `;
 
   return actions.map((d: any) => {
-    try {
-      return {
-        id: d.id,
-        name: d.name,
-        description: d.description,
-        executionContext: d.execution_context,
-        executionModel: JSON.parse(d.execution_model),
-        agentId: d.agent_id,
-      };
-    } catch (error) {
-      console.error(`Error parsing execution_model for action ${d.id}:`, error);
-      console.error('Raw execution_model:', d.execution_model);
-      // Return a minimal action object to prevent the entire list from failing
-      return {
-        id: d.id,
-        name: d.name || 'Corrupted Action',
-        description: d.description || 'This action has corrupted data',
-        executionContext: d.execution_context,
-        executionModel: {},
-        agentId: d.agent_id,
-      };
-    }
+    return {
+      id: d.id,
+      name: d.name,
+      description: d.description,
+      executionContext: d.execution_context,
+      executionModel: JSON.parse(d.execution_model),
+      agentId: d.agent_id,
+    };
   });
 };
 
@@ -100,26 +86,20 @@ export const updateAction = async (
     execution_model: ExecutionModel;
   }>
 ): Promise<void> => {
-  const updateData: any = {};
+  const updateData: Record<string, any> = {};
+
   if (data.name !== undefined) updateData.name = data.name;
   if (data.description !== undefined) updateData.description = data.description;
   if (data.execution_context !== undefined) updateData.execution_context = data.execution_context;
+  if (data.execution_model !== undefined) updateData.execution_model = JSON.stringify(data.execution_model);
 
-  // Handle execution_model separately to ensure proper JSONB casting
-  if (data.execution_model !== undefined) {
-    await sql`
-      UPDATE actions
-      SET name = ${updateData.name || undefined},
-          description = ${updateData.description || undefined},
-          execution_context = ${updateData.execution_context || undefined},
-          execution_model = ${JSON.stringify(data.execution_model)}::jsonb
-      WHERE id = ${id} AND agent_id = ${agentId}
-    `;
-  } else if (Object.keys(updateData).length > 0) {
-    await sql`
-      UPDATE actions
-      SET ${sql(updateData)}
-      WHERE id = ${id} AND agent_id = ${agentId}
-    `;
+  if (Object.keys(updateData).length === 0) {
+    return;
   }
+
+  await sql`
+    UPDATE actions
+    SET ${sql(updateData)}
+    WHERE id = ${id} AND agent_id = ${agentId}
+  `;
 };
