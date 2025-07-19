@@ -22,6 +22,12 @@ import {
   Zap,
   Info,
   Code,
+  Edit,
+  Save,
+  Globe,
+  Settings,
+  MessageSquare,
+  Plus,
 } from 'lucide-react';
 import {
   Action,
@@ -47,8 +53,17 @@ import {
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
 import { Label } from '@/app/(frontend)/components/ui/label';
+import { Input } from '@/app/(frontend)/components/ui/input';
+import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { Suspense } from 'react';
 import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
+import { useAgents } from '@/app/(frontend)/hooks/useAgents';
+import { toast } from 'sonner';
+import {
+  AgentModel,
+  AgentModelDisplay,
+  AgentModelList,
+} from '@/app/api/lib/model/agent/agent';
 
 export default function AgentDetailsWrapper({
   params: paramsPromise,
@@ -84,6 +99,14 @@ function AgentDetails({
   const [copied, setCopied] = useState(false);
   const { selectedFramework, setSelectedFramework } = useFramework();
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editWebsiteDomain, setEditWebsiteDomain] = useState('');
+  const [editModel, setEditModel] = useState<AgentModel>(AgentModel.GEMINI_2_0_FLASH);
+  const [editPrompts, setEditPrompts] = useState<string[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const { handleUpdateAgent } = useAgents();
   const { handleDeleteAction } = useActionForm();
   const {
     documents,
@@ -129,6 +152,10 @@ function AgentDetails({
         }
         const data = await response.json();
         setAgent(data.agent || null);
+        // Initialize edit state
+        setEditName(data.agent?.name || '');
+        setEditWebsiteDomain(data.agent?.websiteDomain || '');
+        setEditModel(data.agent?.model as AgentModel || AgentModel.GEMINI_2_0_FLASH);
       } catch (error) {
         console.error('Error fetching agent:', error);
       } finally {
@@ -137,6 +164,22 @@ function AgentDetails({
     }
 
     fetchAgent();
+  }, [params.agentId]);
+
+  useEffect(() => {
+    async function fetchPrompts() {
+      try {
+        const response = await fetch(`/api/agents/${params.agentId}/prompts`);
+        if (!response.ok) return;
+        const data = await response.json();
+        let promptContents = data.prompts?.map((p: any) => p.content) || [];
+        if (promptContents.length === 0) promptContents = [''];
+        setEditPrompts(promptContents);
+      } catch (e) {
+        setEditPrompts(['']);
+      }
+    }
+    fetchPrompts();
   }, [params.agentId]);
 
   // Fetch actions for the agent
@@ -182,6 +225,66 @@ function AgentDetails({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const startEditing = () => {
+    setIsEditing(true);
+  };
+
+  const cancelEditing = () => {
+    setIsEditing(false);
+    // Reset to original values
+    if (agent) {
+      setEditName(agent.name);
+      setEditWebsiteDomain(agent.websiteDomain);
+      setEditModel(agent.model as AgentModel);
+    }
+  };
+
+  const saveChanges = async () => {
+    if (!agent) return;
+    
+    try {
+      setIsSaving(true);
+      const filteredPrompts = editPrompts.filter((p) => p.trim());
+      const updatePayload: any = { 
+        name: editName, 
+        websiteDomain: editWebsiteDomain, 
+        model: editModel 
+      };
+      updatePayload.prompts = filteredPrompts;
+      
+      await handleUpdateAgent(agent.id, updatePayload);
+      
+      setAgent({
+        ...agent,
+        name: editName,
+        websiteDomain: editWebsiteDomain,
+        model: editModel,
+      });
+      
+      setIsEditing(false);
+      toast.success('Agent updated successfully!');
+    } catch (error) {
+      console.error('Error updating agent:', error);
+      toast.error('Failed to update agent. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const addPrompt = () => {
+    if (editPrompts.length < 4) setEditPrompts([...editPrompts, '']);
+  };
+
+  const removePrompt = (index: number) => {
+    if (editPrompts.length > 1) setEditPrompts(editPrompts.filter((_, i) => i !== index));
+  };
+
+  const updatePrompt = (index: number, value: string) => {
+    const newPrompts = [...editPrompts];
+    newPrompts[index] = value;
+    setEditPrompts(newPrompts);
+  };
+
   useEffect(() => {
     if (showClientActions || showAgentCode) {
       document.body.style.overflow = 'hidden';
@@ -225,62 +328,192 @@ function AgentDetails({
       <div className="max-w-4xl mx-auto w-full">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
-            {agent.name}
+            {isEditing ? (
+              <Input
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-transparent border-none p-0 focus:ring-0 focus:border-none"
+                placeholder="Agent Name"
+              />
+            ) : (
+              agent.name
+            )}
           </h1>
+          {!isEditing && (
+            <Button
+              onClick={startEditing}
+              className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
+            >
+              <Edit className="h-4 w-4" />
+              Edit Agent
+            </Button>
+          )}
         </div>
-
         <Card
           className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8"
           style={{ borderLeftColor: 'var(--color-destructive)' }}
         >
-          <CardHeader className="flex items-center space-x-2">
-            <Bot className="h-6 w-6 text-destructive" />
-            <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
-              Agent Details
-            </CardTitle>
+          <CardHeader className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Bot className="h-6 w-6 text-destructive" />
+              <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
+                Agent Details
+              </CardTitle>
+            </div>
+            {isEditing && (
+              <div className="flex gap-2">
+                <Button
+                  onClick={saveChanges}
+                  disabled={isSaving}
+                  className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
+                >
+                  {isSaving ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4" />
+                  )}
+                  Save
+                </Button>
+                <Button
+                  onClick={cancelEditing}
+                  disabled={isSaving}
+                  variant="outline"
+                  className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2"
+                >
+                  Cancel
+                </Button>
+              </div>
+            )}
           </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-2 text-sm sm:text-base">
-              <span className="font-semibold">Domain:</span>{' '}
-              {agent.websiteDomain}
-            </p>
-            <p className="text-muted-foreground mb-2 text-sm sm:text-base">
-              <span className="font-semibold">Created:</span>{' '}
-              {new Date(agent.createdAt).toLocaleString()}
-            </p>
-            <p className="text-muted-foreground mb-2 text-sm sm:text-base">
-              <span className="font-semibold">Model:</span> {agent.model}
-            </p>
-            {prompts.length > 0 && (
-              <div className="mt-4">
-                <p className="text-muted-foreground mb-2 text-sm sm:text-base">
-                  <span className="font-semibold">Suggested Prompts:</span>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                <Globe className="h-4 w-4 text-destructive" />
+                Domain:
+              </Label>
+              {isEditing ? (
+                <Input
+                  value={editWebsiteDomain}
+                  onChange={(e) => setEditWebsiteDomain(e.target.value)}
+                  placeholder="example.com"
+                  className="mt-1 border-[2px] border-border"
+                />
+              ) : (
+                <p className="text-muted-foreground text-sm sm:text-base ml-6">
+                  {agent.websiteDomain}
                 </p>
-                <div className="space-y-2">
-                  {prompts.map((prompt, idx) => (
-                    <div key={prompt.id} className="flex items-start justify-between group p-2 bg-muted/30 rounded-md border border-border/50">
-                      <div className="flex-1 pr-2">
-                        <p className="text-xs text-foreground leading-relaxed whitespace-pre-wrap">
-                          {prompt.content}
-                        </p>
+              )}
+            </div>
+            
+            <div>
+              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                <Settings className="h-4 w-4 text-destructive" />
+                Model:
+              </Label>
+              {isEditing ? (
+                <Select
+                  value={editModel}
+                  onValueChange={(value) => setEditModel(value as AgentModel)}
+                >
+                  <SelectTrigger className="mt-1 border-[2px] border-border">
+                    <SelectValue placeholder="Select a model" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {AgentModelList.map((modelValue) => (
+                      <SelectItem key={modelValue} value={modelValue}>
+                        {AgentModelDisplay[modelValue]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <p className="text-muted-foreground text-sm sm:text-base ml-6">
+                  {AgentModelDisplay[agent.model as AgentModel] || agent.model}
+                </p>
+              )}
+            </div>
+            
+            <div>
+              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                Created:
+              </Label>
+              <p className="text-muted-foreground text-sm sm:text-base ml-6">
+                {new Date(agent.createdAt).toLocaleString()}
+              </p>
+            </div>
+
+            {isEditing && (
+              <div>
+                <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                  <MessageSquare className="h-4 w-4 text-brand" />
+                  Suggested Prompts (Optional)
+                </Label>
+                <p className="text-sm text-muted-foreground mt-1 ml-6">
+                  These are example prompts users can choose from or use as inspiration when interacting with your agent.
+                </p>
+                <div className="mt-4 ml-6 space-y-4">
+                  {editPrompts.map((prompt, index) => (
+                    <div key={index} className="flex gap-2 items-center">
+                      <div className="flex-1">
+                        <Textarea
+                          value={prompt}
+                          onChange={(e) => updatePrompt(index, e.target.value)}
+                          placeholder="Enter a prompt for your agent..."
+                          className="border-[2px] border-border resize-none"
+                          rows={3}
+                        />
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-5 w-5 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-                        onClick={() => {
-                          setPromptToDelete(prompt);
-                          setIsDeletePromptDialogOpen(true);
-                        }}
-                        disabled={deletingPromptId === prompt.id}
-                        title="Delete Prompt"
-                      >
-                        {deletingPromptId === prompt.id ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
-                        ) : (
-                          <Trash2 className="h-3 w-3" />
-                        )}
-                      </Button>
+                      {(editPrompts.length > 1 || (index === 0 && prompt.trim())) && (
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => {
+                            if (index === 0 && editPrompts.length === 1) {
+                              updatePrompt(0, '');
+                            } else {
+                              removePrompt(index);
+                            }
+                          }}
+                          className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
+                          tabIndex={-1}
+                        >
+                          <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={addPrompt}
+                    className="border-[2px] border-border hover:bg-secondary"
+                    disabled={editPrompts.length >= 4}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Another Prompt
+                  </Button>
+                  {editPrompts.length >= 4 && (
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Maximum 4 prompts allowed.
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {!isEditing && prompts.length > 0 && (
+              <div className="mt-4">
+                <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                  <MessageSquare className="h-4 w-4 text-brand" />
+                  Suggested Prompts:
+                </Label>
+                <div className="space-y-2 mt-2">
+                  {prompts.map((prompt, idx) => (
+                    <div key={prompt.id} className="p-2 bg-muted/30 rounded-md border border-border/50 ml-6">
+                      <p className="text-xs text-foreground leading-relaxed whitespace-pre-wrap">
+                        {prompt.content}
+                      </p>
                     </div>
                   ))}
                 </div>

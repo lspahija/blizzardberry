@@ -11,7 +11,7 @@ import {
   CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, PlusCircle, Trash2, Settings, Bot } from 'lucide-react';
+import { Loader2, PlusCircle, Trash2, Bot } from 'lucide-react';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import posthog from 'posthog-js';
 import { toast } from 'sonner';
@@ -250,18 +250,6 @@ export default function Dashboard() {
                             className="flex-1 sm:flex-none"
                           >
                             View
-                          </Link>
-                        </Button>
-                        <Button
-                          asChild
-                          className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 hover:bg-secondary/90 flex-1 sm:flex-none"
-                        >
-                          <Link
-                            href={`/agents/${agent.id}/edit`}
-                            className="flex items-center gap-2 justify-center"
-                          >
-                            <Settings className="h-4 w-4 transition-transform group-hover:rotate-45" />
-                            <span>Edit</span>
                           </Link>
                         </Button>
                         <Button
