@@ -30,7 +30,7 @@ interface Header {
   value: string;
 }
 
-export const useActionForm = () => {
+export const useActionForm = (isEditing = false) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { agentId } = useParams();
@@ -71,35 +71,46 @@ export const useActionForm = () => {
     }
     setStep(currentStep);
 
-    const typeParam = searchParams.get('type');
-    if (typeParam) {
-      const newExecutionContext =
-        typeParam === 'server'
-          ? ExecutionContext.SERVER
-          : ExecutionContext.CLIENT;
-      setBaseAction((prev) => ({
-        ...prev,
-        executionContext: newExecutionContext,
-      }));
-      const actionTypeParam =
-        newExecutionContext === ExecutionContext.SERVER ? 'server' : 'client';
-      router.replace(
-        `/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
-      );
-    } else if (stepParam) {
-      const actionTypeParam =
-        baseAction.executionContext === ExecutionContext.SERVER
-          ? 'server'
-          : 'client';
-      router.replace(
-        `/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
-      );
+    // Only handle URL updates for new action creation, not editing
+    if (!isEditing) {
+      const typeParam = searchParams.get('type');
+      if (typeParam) {
+        const newExecutionContext =
+          typeParam === 'server'
+            ? ExecutionContext.SERVER
+            : ExecutionContext.CLIENT;
+        
+        setBaseAction((prev) => ({
+          ...prev,
+          executionContext: newExecutionContext,
+        }));
+        
+        const actionTypeParam =
+          newExecutionContext === ExecutionContext.SERVER ? 'server' : 'client';
+        router.replace(
+          `/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
+        );
+      } else if (stepParam) {
+        const actionTypeParam =
+          baseAction.executionContext === ExecutionContext.SERVER
+            ? 'server'
+            : 'client';
+        router.replace(
+          `/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
+        );
+      }
     }
-  }, [searchParams, router, agentId, baseAction.executionContext, showSuccess]);
+  }, [searchParams, router, agentId, baseAction.executionContext, showSuccess, isEditing]);
 
   const updateUrl = (newStep: number) => {
     // Don't update URL if we're showing success
     if (showSuccess) return;
+
+    // For edit mode, just update the step without changing the URL
+    if (isEditing) {
+      setStep(newStep);
+      return;
+    }
 
     if (newStep > 1) {
       const actionTypeParam =
@@ -127,7 +138,11 @@ export const useActionForm = () => {
     if (step > 1) {
       updateUrl(step - 1);
     } else {
-      router.push(`/agents/${agentId}`);
+      if (isEditing) {
+        router.push(`/agents/${agentId}`);
+      } else {
+        router.push(`/agents/${agentId}`);
+      }
     }
   };
 
@@ -271,6 +286,31 @@ export const useActionForm = () => {
     }
   };
 
+  const handleUpdateAction = async (actionId: string, action: Action) => {
+    try {
+      const response = await fetch(
+        `/api/agents/${agentId}/actions/${actionId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(action),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to update action');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating action:', error);
+      toast.error('Failed to update action. Please try again.');
+      throw error;
+    }
+  };
+
   return {
     step,
     baseAction,
@@ -297,5 +337,6 @@ export const useActionForm = () => {
     handleBack,
     handleCreateAction,
     handleDeleteAction,
+    handleUpdateAction,
   };
 };

@@ -67,3 +67,31 @@ export const deleteAction = async (
     WHERE id = ${id} AND agent_id = ${agentId}
   `;
 };
+
+export const updateAction = async (
+  id: string,
+  agentId: string,
+  data: Partial<{
+    name: string;
+    description: string;
+    execution_context: ExecutionContext;
+    execution_model: ExecutionModel;
+  }>
+): Promise<void> => {
+  const updateData: Record<string, any> = {};
+
+  if (data.name !== undefined) updateData.name = data.name;
+  if (data.description !== undefined) updateData.description = data.description;
+  if (data.execution_context !== undefined) updateData.execution_context = data.execution_context;
+  if (data.execution_model !== undefined) updateData.execution_model = JSON.stringify(data.execution_model);
+
+  if (Object.keys(updateData).length === 0) {
+    return;
+  }
+
+  await sql`
+    UPDATE actions
+    SET ${sql(updateData)}
+    WHERE id = ${id} AND agent_id = ${agentId}
+  `;
+};
