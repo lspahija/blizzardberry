@@ -19,10 +19,9 @@ e.g. it must be easy to:
 # Things to be done
 
 ## Before Launch
-- (Luka) make sure logs go somewhere
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 - make design look great on all pages, including mobile. e.g. the text doesn't currently look great on landing page on mobile
-- change env variable values in Vercel to those in .env.prod and pay for vercel plan to get enable cron and make sure everything works in prod  
+- change env variable values in Vercel to those in .env.prod and pay for vercel plan to get enable cron and make sure everything works in prod
 
 ## Launch and Sell!
 - https://www.reddit.com/r/SaaS/comments/1700b0w/frustrated_a_similar_tool_took_off_to_180k_mrr
@@ -48,6 +47,7 @@ e.g. it must be easy to:
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
+- make logs go somewhere - https://github.com/pinojs/pino - https://grok.com/share/bGVnYWN5_e5e7e725-b103-4d06-a367-c9a5a54b87e8
 - send widget exceptions to slack channel
 - go through all tests and try to reduce the number of tests 200+ sounds way too much
 - add set up and teardown code to integration tests (e.g. create a user and agent. add credits to the user. delete the user and agent after the test)
