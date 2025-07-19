@@ -252,7 +252,6 @@ export default function Dashboard() {
                             View
                           </Link>
                         </Button>
-
                         <Button
                           variant="destructive"
                           onClick={() => handleOpenDeleteDialog(agent.id)}

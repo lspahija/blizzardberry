@@ -225,7 +225,6 @@ function AgentDetails({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Edit functionality
   const startEditing = () => {
     setIsEditing(true);
   };
@@ -255,7 +254,6 @@ function AgentDetails({
       
       await handleUpdateAgent(agent.id, updatePayload);
       
-      // Update local agent state
       setAgent({
         ...agent,
         name: editName,
@@ -351,7 +349,6 @@ function AgentDetails({
             </Button>
           )}
         </div>
-
         <Card
           className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8"
           style={{ borderLeftColor: 'var(--color-destructive)' }}
