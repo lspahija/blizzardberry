@@ -663,7 +663,6 @@ function AgentDetails({
                                 type: param.type,
                                 description: param.description || '',
                                 isArray: param.isArray || false,
-                                required: param.required || true,
                               })),
                             })),
                             selectedFramework
@@ -682,7 +681,6 @@ function AgentDetails({
                                     type: param.type,
                                     description: param.description || '',
                                     isArray: param.isArray || false,
-                                    required: param.required || true,
                                   })),
                                 })),
                                 selectedFramework

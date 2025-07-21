@@ -130,7 +130,7 @@ function substitutePlaceholders(
 function filterPlaceholderValues(params: Record<string, any>): Record<string, any> {
   const filteredParams: Record<string, any> = {};
   for (const [key, value] of Object.entries(params)) {
-    if (value === undefined || value === null || value === '') {
+    if (value === undefined) {
       continue;
     }
     

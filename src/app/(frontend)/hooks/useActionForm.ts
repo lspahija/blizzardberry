@@ -22,7 +22,6 @@ interface DataInput {
   type: string;
   description: string;
   isArray: boolean;
-  required: boolean;
 }
 
 interface Header {
@@ -44,7 +43,7 @@ export const useActionForm = (isEditing = false) => {
     agentId: agentId as string,
   });
   const [dataInputs, setDataInputs] = useState<DataInput[]>([
-    { name: '', type: 'Text', description: '', isArray: false, required: true },
+    { name: '', type: 'Text', description: '', isArray: false },
   ]);
   const [apiUrl, setApiUrl] = useState('');
   const [apiMethod, setApiMethod] = useState('GET');
@@ -177,7 +176,6 @@ export const useActionForm = (isEditing = false) => {
           description: input.description,
           type: input.type.toLowerCase() as ParameterType,
           isArray: input.isArray,
-          required: input.required,
         }));
 
       const requestModel: HttpRequest = {
@@ -206,7 +204,6 @@ export const useActionForm = (isEditing = false) => {
           description: input.description,
           type: input.type.toLowerCase() as ParameterType,
           isArray: input.isArray,
-          required: input.required,
         }));
 
       const frontendModel: FrontendModel = {

@@ -60,7 +60,6 @@ interface DataInput {
   type: string;
   description: string;
   isArray: boolean;
-  required: boolean;
 }
 
 interface Header {
