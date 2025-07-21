@@ -101,14 +101,13 @@ function ActionEditContent() {
           const parameters = backendAction.executionModel.parameters || [];
           
           if (parameters.length === 0) {
-            setDataInputs([{ name: '', type: 'Text', description: '', isArray: false, required: true }]);
+            setDataInputs([{ name: '', type: 'Text', description: '', isArray: false}]);
           } else {
             setDataInputs(parameters.map(param => ({
               name: param.name,
               type: param.type.charAt(0).toUpperCase() + param.type.slice(1),
               description: param.description || '',
               isArray: param.isArray || false,
-              required: param.required !== false,
             })));
           }
 
@@ -137,14 +136,13 @@ function ActionEditContent() {
           const parameters = frontendAction.executionModel.parameters || [];
           
           if (parameters.length === 0) {
-            setDataInputs([{ name: '', type: 'Text', description: '', isArray: false, required: true }]);
+            setDataInputs([{ name: '', type: 'Text', description: '', isArray: false}]);
           } else {
             setDataInputs(parameters.map(param => ({
               name: param.name,
               type: param.type.charAt(0).toUpperCase() + param.type.slice(1),
               description: param.description || '',
               isArray: param.isArray || false,
-              required: param.required !== false,
             })));
           }
 
@@ -196,7 +194,6 @@ function ActionEditContent() {
           description: input.description,
           type: input.type.toLowerCase() as ParameterType,
           isArray: input.isArray,
-          required: input.required,
         }));
 
       const requestModel = {
@@ -224,7 +221,6 @@ function ActionEditContent() {
           description: input.description,
           type: input.type.toLowerCase() as ParameterType,
           isArray: input.isArray,
-          required: input.required,
         }));
 
       const frontendModel: FrontendModel = {
