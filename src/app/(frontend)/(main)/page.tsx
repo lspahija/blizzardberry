@@ -28,7 +28,7 @@ import Script from 'next/script';
 // Reusable component for the drop-shadow effect on buttons and cards
 const ShadowWrapper = ({ children }: { children: React.ReactNode }) => (
   <div className="relative">
-    <div className="absolute inset-0 rounded-lg bg-shadow/40 translate-x-1 translate-y-1 transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"></div>
+    <div className="absolute inset-0 rounded-lg bg-black/40 translate-x-1 translate-y-1 transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"></div>
     {children}
   </div>
 );
@@ -119,7 +119,7 @@ export default function LandingPage() {
         initial="hidden"
         animate="visible"
       >
-        <div className="relative flex flex-col items-center justify-center text-center pt-16 pb-24 max-w-4xl mx-auto px-4">
+        <div className="relative flex flex-col items-center justify-center text-center pt-16 pb-24 max-w-4xl mx-auto px-2">
           <svg
             className="hidden lg:block absolute h-auto w-16 lg:w-20 flex-shrink-0 p-2 left-0 translate-y-20 lg:-translate-y-20 -translate-x-4 lg:-translate-x-8 xl:-translate-x-12"
             viewBox="0 0 91 98"
@@ -140,7 +140,7 @@ export default function LandingPage() {
           </svg>
 
           <motion.h1
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-4 z-10"
+            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 z-10"
             variants={itemVariants}
           >
             Give Your Users an
@@ -168,7 +168,7 @@ export default function LandingPage() {
           </svg>
 
           <motion.p
-            className="text-xl text-muted-foreground mb-8 max-w-2xl z-10"
+            className="text-2xl text-muted-foreground mb-10 max-w-2xl z-10"
             variants={itemVariants}
           >
             Our AI Agent doesn't just find answers in your documentation—it
@@ -176,27 +176,33 @@ export default function LandingPage() {
             app, and complete workflows—all through a simple conversation.
           </motion.p>
           <motion.div
-            className="flex flex-col sm:flex-row items-center gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-8 sm:px-0"
+            className="flex flex-col sm:flex-row items-center gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-4 sm:px-0"
             variants={itemVariants}
           >
-            <Button
-              size="lg"
-              className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-8 py-3 rounded-lg hover:bg-brand/90 w-full sm:w-auto"
-              asChild
-            >
-              <Link href="/login">
-                <Play className="mr-2 h-5 w-5" />
-                Get Started Now
-              </Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="bg-background text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-8 py-3 rounded-lg hover:bg-background/90 w-full sm:w-auto"
-              asChild
-            >
-              <Link href="/contact">Talk With Us</Link>
-            </Button>
+            <div className="relative group w-full sm:w-auto">
+              <div className="absolute inset-0 rounded bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+              <Button
+                size="lg"
+                className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-xl px-12 py-5"
+                asChild
+              >
+                <Link href="/login">
+                  <Play className="mr-2 h-5 w-5" />
+                  Get Started Now
+                </Link>
+              </Button>
+            </div>
+            <div className="relative group w-full sm:w-auto">
+              <div className="absolute inset-0 rounded bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+              <Button
+                size="lg"
+                variant="outline"
+                className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full sm:w-auto text-xl px-12 py-5"
+                asChild
+              >
+                <Link href="/contact">Talk With Us</Link>
+              </Button>
+            </div>
           </motion.div>
         </div>
       </motion.div>
@@ -209,16 +215,16 @@ export default function LandingPage() {
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-6xl mx-auto px-4">
-          <motion.div className="text-center mb-12" variants={itemVariants}>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+        <div className="max-w-6xl mx-auto px-2">
+          <motion.div className="text-center mb-14" variants={itemVariants}>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               More Than a Chatbot. An Agent Working for Your Users
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-xl text-muted-foreground">
               Transform how users interact with your website
             </p>
           </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10">
             {[
               {
                 icon: Zap,
@@ -244,15 +250,15 @@ export default function LandingPage() {
                 viewport={{ once: true, amount: 0.5 }}
                 className="group"
               >
-                <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl h-full">
+                <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                   <CardHeader className="pb-4">
-                    <item.icon className="w-8 h-8 text-brand mb-3" />
-                    <CardTitle className="text-xl font-semibold leading-tight">
+                    <item.icon className="w-10 h-10 text-brand mb-4" />
+                    <CardTitle className="text-2xl font-semibold leading-tight">
                       {item.title}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex-1">
-                    <p className="text-base text-muted-foreground leading-relaxed">
+                    <p className="text-lg text-muted-foreground leading-relaxed">
                       {item.text}
                     </p>
                   </CardContent>
@@ -271,27 +277,27 @@ export default function LandingPage() {
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-6xl mx-auto px-4">
-          <motion.div className="text-center mb-12" variants={itemVariants}>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+        <div className="max-w-6xl mx-auto px-2">
+          <motion.div className="text-center mb-14" variants={itemVariants}>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               Powerful Features
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-xl text-muted-foreground">
               Everything you need to create intelligent AI agents
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl h-full">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Zap className="h-6 w-6 text-brand" />
-                    <CardTitle>Custom Actions</CardTitle>
+                  <div className="flex items-center space-x-3">
+                    <Zap className="h-7 w-7 text-brand" />
+                    <CardTitle className="text-xl">Custom Actions</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
+                  <p className="text-lg text-muted-foreground">
                     Create client-side and server-side actions that your agent
                     can execute. From form submissions to API calls, your agent
                     can perform any task.
@@ -301,7 +307,7 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl h-full">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <FileText className="h-6 w-6 text-brand" />
@@ -319,7 +325,7 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl h-full">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <MessageSquare className="h-6 w-6 text-brand" />
@@ -336,7 +342,7 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl h-full">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Users className="h-6 w-6 text-brand" />
@@ -353,7 +359,7 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl h-full">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Shield className="h-6 w-6 text-brand" />
@@ -371,7 +377,7 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl h-full">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Clock className="h-6 w-6 text-brand" />
@@ -398,19 +404,19 @@ export default function LandingPage() {
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-6xl mx-auto px-4">
-          <motion.div className="text-center mb-12" variants={itemVariants}>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+        <div className="max-w-6xl mx-auto px-2">
+          <motion.div className="text-center mb-14" variants={itemVariants}>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               Popular Use Cases
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-xl text-muted-foreground">
               See how others are using BlizzardBerry to enhance their websites
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <MessageSquare className="h-6 w-6 text-brand" />
@@ -444,7 +450,7 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Globe className="h-6 w-6 text-brand" />
@@ -488,25 +494,29 @@ export default function LandingPage() {
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        <div className="max-w-4xl mx-auto px-2 text-center">
           <motion.div variants={itemVariants}>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-8">
               Ready to Transform Your Webapp?
             </h2>
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="text-xl text-muted-foreground mb-10">
               Create your first AI agent in minutes and transform how users
               interact with your website.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                asChild
-                className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-8 py-3 rounded-lg hover:bg-brand/90"
-              >
-                <Link href="/login">
-                  <Play className="mr-2 h-5 w-5" />
-                  Create an Agent
-                </Link>
-              </Button>
+              <div className="relative group w-full sm:w-auto">
+                <div className="absolute inset-0 rounded bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                <Button
+                  asChild
+                  size="lg"
+                  className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-xl px-12 py-5"
+                >
+                  <Link href="/login">
+                    <Play className="mr-2 h-5 w-5" />
+                    Create an Agent
+                  </Link>
+                </Button>
+              </div>
             </div>
           </motion.div>
         </div>

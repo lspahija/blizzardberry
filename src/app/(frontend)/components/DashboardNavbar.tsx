@@ -40,6 +40,9 @@ const navLinks = [
   { href: '/usage', label: 'Usage' },
   { href: '/upgrade', label: 'Upgrade' },
   { href: '/contact', label: 'Contact' },
+  { href: '/docs', label: 'Docs' },
+  { type: 'button', label: 'Feedback', onClick: 'feedback' },
+  { type: 'button', label: 'Sign Out', onClick: 'signout' },
 ];
 
 export function DashboardNavbar() {
@@ -102,65 +105,74 @@ export function DashboardNavbar() {
 
   return (
     <>
-      <nav className="bg-card border-b-[3px] border-border px-4 sm:px-6 py-3 flex items-center justify-between rounded-b-2xl shadow-md mb-8 sticky top-0 z-40">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight select-none hover:underline focus:underline outline-none flex items-center"
-          >
-            <Image
-              src="/image/logo.png"
-              alt="BlizzardBerry Logo"
-              width={60}
-              height={60}
-              className="object-contain"
-              unoptimized={true}
-            />
-            Blizzard<span className="text-[#FE4A60]">Berry</span>
-          </Link>
-          <span className="hidden sm:block mx-2 text-gray-300 select-none">
-            |
-          </span>
-          <div className="hidden lg:flex items-center gap-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
-              >
-                {link.label}
-              </Link>
-            ))}
+      <nav className="bg-card border-b-[3px] border-border px-4 sm:px-6 py-5 sticky top-0 z-40 mb-12 rounded-b-2xl shadow-md">
+        <div className="max-w-5xl mx-auto w-full flex flex-row items-center justify-center">
+          {/* Left: Logo/Title, flush left */}
+          <div className="flex items-center flex-shrink-0 mr-8">
+            <Link
+              href="/"
+              className="text-2xl font-bold text-gray-900 tracking-tight select-none hover:underline focus:underline outline-none flex items-center"
+            >
+              <Image
+                src="/image/logo.png"
+                alt="BlizzardBerry Logo"
+                width={60}
+                height={60}
+                className="object-contain"
+                unoptimized={true}
+              />
+              <span className="ml-3 text-2xl font-bold">
+                Blizzard<span className="text-[#FE4A60]">Berry</span>
+              </span>
+            </Link>
           </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Link
-            href="/docs"
-            className="hidden sm:flex text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-[#FE4A60]"
-          >
-            Docs
-          </Link>
-          <button
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-muted hover:bg-muted rounded-lg transition"
-            onClick={() => setIsFeedbackOpen(true)}
-          >
-            <MessageSquare className="h-4 w-4" />
-            Feedback
-          </button>
-          <button
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-muted hover:bg-muted rounded-lg transition"
-            onClick={() => signOut({ redirectTo: '/' })}
-          >
-            <LogOut className="h-4 w-4" />
-            Sign Out
-          </button>
-          <button
-            className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <Menu className="h-6 w-6 text-gray-900" />
-          </button>
+          {/* Right: Nav Links and Actions, with gap from logo/title */}
+          <div className="hidden xl:flex items-center gap-6">
+            {navLinks.map((link) => {
+              if (link.type === 'button' && link.onClick === 'feedback') {
+                return (
+                  <button
+                    key="feedback"
+                    className="text-base font-semibold px-4 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900 flex items-center gap-2"
+                    onClick={() => setIsFeedbackOpen(true)}
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    Feedback
+                  </button>
+                );
+              }
+              if (link.type === 'button' && link.onClick === 'signout') {
+                return (
+                  <button
+                    key="signout"
+                    className="text-base font-semibold px-4 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900 flex items-center gap-2 whitespace-nowrap"
+                    onClick={() => signOut({ redirectTo: '/' })}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </button>
+                );
+              }
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`text-base font-semibold px-4 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors ${link.label === 'Docs' ? 'text-[#FE4A60]' : 'text-gray-900'}`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
+          {/* Hamburger menu always on the right, visible under xl (1280px) */}
+          <div className="flex xl:hidden items-center ml-auto">
+            <button
+              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Menu className="h-6 w-6 text-gray-900" />
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -192,12 +204,6 @@ export function DashboardNavbar() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href="/docs"
-                className="block text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-[#FE4A60]"
-              >
-                Docs
-              </Link>
               <button
                 className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
                 onClick={() => {
