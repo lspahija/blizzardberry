@@ -102,65 +102,67 @@ export function DashboardNavbar() {
 
   return (
     <>
-      <nav className="bg-card border-b-[3px] border-border px-4 sm:px-6 py-3 flex items-center justify-between rounded-b-2xl shadow-md mb-8 sticky top-0 z-40">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight select-none hover:underline focus:underline outline-none flex items-center"
-          >
-            <Image
-              src="/image/logo.png"
-              alt="BlizzardBerry Logo"
-              width={60}
-              height={60}
-              className="object-contain"
-              unoptimized={true}
-            />
-            Blizzard<span className="text-[#FE4A60]">Berry</span>
-          </Link>
-          <span className="hidden sm:block mx-2 text-gray-300 select-none">
-            |
-          </span>
-          <div className="hidden lg:flex items-center gap-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
-              >
-                {link.label}
-              </Link>
-            ))}
+      <nav className="bg-card border-b-[3px] border-border px-4 sm:px-6 py-3 sticky top-0 z-40 mb-8 rounded-b-2xl shadow-md">
+        <div className="max-w-5xl mx-auto w-full flex justify-between items-center">
+          <div className="flex items-center gap-4 ml-2">
+            <Link
+              href="/"
+              className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight select-none hover:underline focus:underline outline-none flex items-center"
+            >
+              <Image
+                src="/image/logo.png"
+                alt="BlizzardBerry Logo"
+                width={60}
+                height={60}
+                className="object-contain"
+                unoptimized={true}
+              />
+              Blizzard<span className="text-[#FE4A60]">Berry</span>
+            </Link>
+            <span className="hidden sm:block mx-2 text-gray-300 select-none">
+              |
+            </span>
+            <div className="hidden lg:flex items-center gap-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <Link
-            href="/docs"
-            className="hidden sm:flex text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-[#FE4A60]"
-          >
-            Docs
-          </Link>
-          <button
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-muted hover:bg-muted rounded-lg transition"
-            onClick={() => setIsFeedbackOpen(true)}
-          >
-            <MessageSquare className="h-4 w-4" />
-            Feedback
-          </button>
-          <button
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-muted hover:bg-muted rounded-lg transition"
-            onClick={() => signOut({ redirectTo: '/' })}
-          >
-            <LogOut className="h-4 w-4" />
-            Sign Out
-          </button>
-          <button
-            className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <Menu className="h-6 w-6 text-gray-900" />
-          </button>
+          <div className="flex items-center gap-2 mr-2">
+            <Link
+              href="/docs"
+              className="hidden sm:flex text-sm sm:text-base font-semibold px-3 py-1.5 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-[#FE4A60]"
+            >
+              Docs
+            </Link>
+            <button
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-muted hover:bg-muted rounded-lg transition whitespace-nowrap"
+              onClick={() => setIsFeedbackOpen(true)}
+            >
+              <MessageSquare className="h-4 w-4" />
+              Feedback
+            </button>
+            <button
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base font-semibold text-gray-900 border-[2px] border-transparent hover:border-muted hover:bg-muted rounded-lg transition whitespace-nowrap"
+              onClick={() => signOut({ redirectTo: '/' })}
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </button>
+            <button
+              className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Menu className="h-6 w-6 text-gray-900" />
+            </button>
+          </div>
         </div>
       </nav>
 
