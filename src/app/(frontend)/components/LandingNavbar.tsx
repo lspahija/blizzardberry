@@ -22,9 +22,9 @@ export function LandingNavbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur border-b border-border shadow-md p-4 pb-2">
-        <div className="max-w-5xl mx-auto w-full flex justify-between items-center">
-          <div className="flex items-center ml-8">
+      <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur border-b border-border shadow-md px-8 sm:px-16 py-4 pb-2 pl-8 pr-8 sm:pl-16 sm:pr-16">
+        <div className="max-w-7xl mx-auto w-full flex flex-row items-center justify-between">
+          <div className="flex items-center flex-shrink-0 min-w-[160px]">
             <Link href="/" className="flex items-center">
               <Image
                 src="/image/logo.png"
@@ -40,7 +40,7 @@ export function LandingNavbar() {
               </span>
             </Link>
           </div>
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden lg:flex items-center gap-10 flex-1 justify-center">
             <Link
               href="/docs"
               className="text-foreground hover:-translate-y-0.5 transition-transform"
@@ -60,7 +60,7 @@ export function LandingNavbar() {
               Contact
             </Link>
           </div>
-          <div className="hidden md:flex space-x-3 mr-8">
+          <div className="hidden lg:flex items-center gap-6 min-w-[160px] justify-end">
             <div className="relative group">
               <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
               <Button
@@ -81,7 +81,7 @@ export function LandingNavbar() {
               </Button>
             </div>
           </div>
-          <div className="md:hidden">
+          <div className="flex lg:hidden items-center">
             <Button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               variant="ghost"
@@ -98,7 +98,7 @@ export function LandingNavbar() {
       </nav>
 
       {isMenuOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-sm px-4 py-6 space-y-4 fixed top-[75px] left-0 right-0 bottom-0 z-40">
+        <div className="lg:hidden bg-background/95 backdrop-blur-sm px-4 py-6 space-y-4 fixed top-[75px] left-0 right-0 bottom-0 z-40">
           <Link
             href="/docs"
             className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
