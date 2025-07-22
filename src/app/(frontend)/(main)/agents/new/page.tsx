@@ -243,7 +243,7 @@ export default function NewAgentPage() {
                     </div>
                     <div>
                       <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
-                        <Info className="h-4 w-4 text-brand" />
+                        <Info className="h-4 w-4 text-accent" />
                         Installation Instructions
                       </Label>
                       <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-6">
@@ -261,7 +261,7 @@ export default function NewAgentPage() {
                           Need help? Visit our{' '}
                           <Link
                             href="/docs"
-                            className="text-brand hover:underline"
+                            className="text-accent hover:underline"
                           >
                             documentation{' '}
                             <ExternalLink className="inline w-4 h-4" />

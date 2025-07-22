@@ -275,9 +275,9 @@ export default function ExecutionStep({
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
       <div
         className="mb-12 flex items-center bg-muted border-l-4 p-4 rounded-lg shadow-md"
-        style={{ borderLeftColor: 'var(--color-destructive)' }}
+        style={{ borderLeftColor: 'var(--color-accent)' }}
       >
-        <Info className="h-6 w-6 text-destructive mr-3" />
+        <Info className="h-6 w-6 text-accent mr-3" />
         <span className="text-foreground text-base">
           {baseAction.executionContext === ExecutionContext.SERVER
             ? 'Configure the API endpoint that the AI Agent will call to retrieve or update data.'
