@@ -47,6 +47,7 @@ e.g. it must be easy to:
 
 ## After Launch (while also selling) 
 #### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
+- maintain agent conversation between pages
 - make logs go somewhere - https://github.com/pinojs/pino - https://grok.com/share/bGVnYWN5_e5e7e725-b103-4d06-a367-c9a5a54b87e8
 - send widget exceptions to slack channel
 - go through all tests and try to reduce the number of tests 200+ sounds way too much
