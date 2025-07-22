@@ -208,23 +208,23 @@ export default function Dashboard() {
                   {agents.map((agent, idx) => (
                     <li
                       key={agent.id}
-                      className="border-t pt-4 sm:pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-4 py-2"
+                      className="border-t pt-4 sm:pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-4 py-2 cursor-pointer"
                     >
-                      <div className="flex flex-1 min-w-0 items-start">
+                      <Link
+                        href={`/agents/${agent.id}`}
+                        className="flex flex-1 min-w-0 items-start focus:outline-none"
+                        onClick={() =>
+                          posthog.capture('agent_view_clicked', {
+                            agent_id: agent.id,
+                            user_email: session?.user?.email,
+                          })
+                        }
+                        tabIndex={0}
+                        style={{ textDecoration: 'none' }}
+                      >
                         <div className="flex-1 min-w-0">
                           <p className="text-lg md:text-lg text-foreground font-semibold mb-1 truncate">
-                            <Link
-                              href={`/agents/${agent.id}`}
-                              className="hover:underline focus:underline outline-none"
-                              onClick={() =>
-                                posthog.capture('agent_view_clicked', {
-                                  agent_id: agent.id,
-                                  user_email: session?.user?.email,
-                                })
-                              }
-                            >
-                              {agent.name}
-                            </Link>
+                            {agent.name}
                           </p>
                           <p className="text-sm text-muted-foreground mb-1 truncate">
                             <span className="font-semibold">Domain:</span>{' '}
@@ -239,22 +239,15 @@ export default function Dashboard() {
                             {agent.model}
                           </p>
                         </div>
-                      </div>
+                      </Link>
                       <div className="flex gap-2 w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
                         <Button
-                          asChild
-                          className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 hover:bg-secondary/90 flex-1 sm:flex-none"
-                        >
-                          <Link
-                            href={`/agents/${agent.id}`}
-                            className="flex-1 sm:flex-none"
-                          >
-                            View
-                          </Link>
-                        </Button>
-                        <Button
                           variant="destructive"
-                          onClick={() => handleOpenDeleteDialog(agent.id)}
+                          onClick={e => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            handleOpenDeleteDialog(agent.id);
+                          }}
                           className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
                           title="Delete Agent"
                         >
