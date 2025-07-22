@@ -178,7 +178,7 @@ export function DashboardNavbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div className="fixed inset-0 z-50 xl:hidden">
           <div
             className="fixed inset-0 bg-black/20"
             onClick={() => setIsMobileMenuOpen(false)}
@@ -194,31 +194,43 @@ export function DashboardNavbar() {
               </button>
             </div>
             <div className="space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <button
-                className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  setIsFeedbackOpen(true);
-                }}
-              >
-                Feedback
-              </button>
-              <button
-                className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
-                onClick={() => signOut({ redirectTo: '/' })}
-              >
-                Sign Out
-              </button>
+              {navLinks.map((link) => {
+                if (link.type === 'button' && link.onClick === 'feedback') {
+                  return (
+                    <button
+                      key="feedback"
+                      className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        setIsFeedbackOpen(true);
+                      }}
+                    >
+                      Feedback
+                    </button>
+                  );
+                }
+                if (link.type === 'button' && link.onClick === 'signout') {
+                  return (
+                    <button
+                      key="signout"
+                      className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
+                      onClick={() => signOut({ redirectTo: '/' })}
+                    >
+                      Sign Out
+                    </button>
+                  );
+                }
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="block text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>
