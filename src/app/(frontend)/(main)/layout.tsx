@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
-import { SessionProvider } from 'next-auth/react';
 import { FrameworkProvider } from '@/app/(frontend)/contexts/useFramework';
 import { Suspense } from 'react';
-import { AuthProvider } from '@/app/context/AuthContext';
 import { BlizzardBerryAgent } from '@/app/(frontend)/components/BlizzardBerryAgent';
 import { BlizzardBerryPublicAgent } from '@/app/(frontend)/components/BlizzardBerryPublicAgent';
 import { Navbar } from '@/app/(frontend)/components/Navbar';
@@ -19,16 +17,12 @@ export default function FrontendLayout({
 }>) {
   return (
     <Suspense fallback={null}>
-      <SessionProvider>
-        <AuthProvider>
-          <FrameworkProvider>
-            <Navbar />
-            {children}
-            <BlizzardBerryAgent />
-            <BlizzardBerryPublicAgent />
-          </FrameworkProvider>
-        </AuthProvider>
-      </SessionProvider>
+      <FrameworkProvider>
+        <Navbar />
+        {children}
+        <BlizzardBerryAgent />
+        <BlizzardBerryPublicAgent />
+      </FrameworkProvider>
     </Suspense>
   );
 }
