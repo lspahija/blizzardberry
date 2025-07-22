@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from '@/app/(frontend)/components/ui/card';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import Link from 'next/link';
 import {
   Code,
@@ -24,14 +23,6 @@ import {
   Globe,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import Script from 'next/script';
-// Reusable component for the drop-shadow effect on buttons and cards
-const ShadowWrapper = ({ children }: { children: React.ReactNode }) => (
-  <div className="relative">
-    <div className="absolute inset-0 rounded-lg bg-black/40 translate-x-1 translate-y-1 transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"></div>
-    {children}
-  </div>
-);
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -207,13 +198,12 @@ export default function LandingPage() {
         </div>
       </motion.div>
 
-      {/* Value Proposition Section */}
       <motion.section
         className="py-16 bg-muted/30"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.3 }} // Reduced amount to trigger earlier
       >
         <div className="max-w-6xl mx-auto px-2">
           <motion.div className="text-center mb-14" variants={itemVariants}>
@@ -248,6 +238,8 @@ export default function LandingPage() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.5 }}
+                style={{ willChange: 'transform, opacity' }} // Optimize rendering
+                transition={{ duration: 0.3 }} // Faster animation
                 className="group"
               >
                 <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
