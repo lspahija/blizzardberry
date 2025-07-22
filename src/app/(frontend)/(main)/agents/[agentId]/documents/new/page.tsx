@@ -132,8 +132,8 @@ export default function AddDocument({
         </div>
 
         {/* Info/tip box */}
-        <div className="mb-12 flex items-center bg-muted border-l-4 border-brand p-4 rounded-lg shadow-md">
-          <Info className="h-6 w-6 text-brand mr-3" />
+        <div className="mb-12 flex items-center bg-muted border-l-4 border-accent p-4 rounded-lg shadow-md">
+          <Info className="h-6 w-6 text-accent mr-3" />
           <span className="text-foreground text-base">
             Upload or paste your document content below. You can also add
             optional metadata to provide more context for your agent.

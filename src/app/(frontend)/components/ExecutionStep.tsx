@@ -275,32 +275,41 @@ export default function ExecutionStep({
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
       <div
         className="mb-12 flex items-center bg-muted border-l-4 p-4 rounded-lg shadow-md"
-        style={{ borderLeftColor: 'var(--color-destructive)' }}
+        style={{ borderLeftColor: 'var(--color-accent)' }}
       >
-        <Info className="h-6 w-6 text-destructive mr-3" />
+        <Info className="h-6 w-6 text-accent mr-3" />
         <span className="text-foreground text-base">
           {baseAction.executionContext === ExecutionContext.SERVER
             ? 'Configure the API endpoint that the AI Agent will call to retrieve or update data.'
             : 'Configure the client-side function that will be executed in your application.'}
         </span>
       </div>
-      <div className="relative mb-12">
+      <div className="relative mb-12 ml-0">
         <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
         <Card
-          className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8"
+          className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8 ml-0"
           style={{ borderLeftColor: 'var(--color-destructive)' }}
         >
-          <CardHeader className="flex flex-row items-center space-x-2">
-            {baseAction.executionContext === ExecutionContext.SERVER ? (
-              <Globe className="h-7 w-7 text-[#FE4A60]" />
-            ) : (
-              <Code className="h-7 w-7 text-[#FE4A60]" />
-            )}
-            <CardTitle className="text-2xl font-semibold text-gray-900">
-              {baseAction.executionContext === ExecutionContext.SERVER
-                ? 'API Request'
-                : 'Client Action Configuration'}
-            </CardTitle>
+          <CardHeader>
+            <div>
+              <div className="flex items-center gap-2">
+                {baseAction.executionContext === ExecutionContext.SERVER ? (
+                  <Globe className="h-7 w-7 text-[#FE4A60]" />
+                ) : (
+                  <Code className="h-7 w-7 text-[#FE4A60]" />
+                )}
+                <CardTitle className="text-2xl font-semibold text-gray-900">
+                  {baseAction.executionContext === ExecutionContext.SERVER
+                    ? 'API Request'
+                    : 'Client Action Configuration'}
+                </CardTitle>
+              </div>
+              {baseAction.executionContext === ExecutionContext.SERVER && (
+                <p className="text-sm text-gray-600 mt-2">
+                  The API endpoint that should be called by the AI Agent to retrieve data or to send updates. You can include data inputs (variables) collected from the user in the URL, headers, and request body.
+                </p>
+              )}
+            </div>
           </CardHeader>
           <CardContent className="space-y-8">
             {isCreatingAction && (
@@ -319,94 +328,87 @@ export default function ExecutionStep({
 
             {baseAction.executionContext === ExecutionContext.SERVER ? (
               <>
-                <div>
-                  <p className="text-sm text-gray-600 ml-6">
-                    The API endpoint that should be called by the AI Agent to
-                    retrieve data or to send updates. You can include data
-                    inputs (variables) collected from the user in the URL,
-                    headers, and request body.
-                  </p>
-                  {dataInputs.filter((input) => input.name).length > 0 && (
-                    <div className="mt-6 ml-6">
-                      <Label className="text-gray-900 text-base font-medium flex items-center gap-2">
-                        <List className="h-4 w-4 text-[#FE4A60]" />
-                        Available Variables
-                      </Label>
-                      <div className="mt-2">
-                        <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-2">
-                          {dataInputs
-                            .filter((input) => input.name)
-                            .map((input, index) => (
-                              <div
-                                key={index}
-                                className={cn(
-                                  'bg-[#FFFDF8] px-3 py-2 border-[2px] border-gray-900 rounded-lg shadow-sm'
-                                )}
-                              >
-                                <div className="font-mono text-sm text-gray-900">{`{{${input.name}}}`}</div>
-                                <div className="text-xs text-gray-500 font-medium">
-                                  {input.type}
-                                  {input.isArray ? '[]' : ''}
-                                </div>
+                {dataInputs.filter((input) => input.name).length > 0 && (
+                  <div className="mt-6">
+                    <Label className="text-gray-900 text-base font-medium flex items-center gap-2">
+                      <List className="h-4 w-4 text-[#FE4A60]" />
+                      Available Variables
+                    </Label>
+                    <div className="mt-2">
+                      <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-2">
+                        {dataInputs
+                          .filter((input) => input.name)
+                          .map((input, index) => (
+                            <div
+                              key={index}
+                              className={cn(
+                                'bg-[#FFFDF8] px-3 py-2 border-[2px] border-gray-900 rounded-lg shadow-sm'
+                              )}
+                            >
+                              <div className="font-mono text-sm text-gray-900">{`{{${input.name}}}`}</div>
+                              <div className="text-xs text-gray-500 font-medium">
+                                {input.type}
+                                {input.isArray ? '[]' : ''}
                               </div>
-                            ))}
-                        </div>
+                            </div>
+                          ))}
                       </div>
                     </div>
-                  )}
-                  <div className="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-4 md:gap-6 mt-6 ml-0 md:ml-6 items-center">
-                    <div>
-                      <Label
-                        htmlFor="apiMethod"
-                        className="text-base font-medium flex items-center gap-2"
-                      >
-                        <Terminal className="h-4 w-4 text-[#FE4A60]" />
-                        Method
-                      </Label>
-                      <Select
-                        value={apiMethod}
-                        onValueChange={handleMethodChange}
-                        disabled={isCreatingAction}
-                      >
-                        <SelectTrigger className="mt-2 border-[2px] border-gray-900 max-w-xs w-full">
-                          <SelectValue placeholder="Select method" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="GET">GET</SelectItem>
-                          <SelectItem value="POST">POST</SelectItem>
-                          <SelectItem value="PUT">PUT</SelectItem>
-                          <SelectItem value="PATCH">PATCH</SelectItem>
-                          <SelectItem value="DELETE">DELETE</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label
-                        htmlFor="apiUrl"
-                        className="text-base font-medium flex items-center gap-2"
-                      >
-                        <Globe className="h-4 w-4 text-[#FE4A60]" />
-                        HTTPS URL
-                      </Label>
-                      <div className="relative">
-                        <SuggestInput
-                          id="apiUrl"
-                          value={apiUrl}
-                          onChange={(e) => handleUrlChange(e.target.value)}
-                          suggestions={urlSuggestions.concat(
-                            getInputNames(dataInputs, true)
-                          )}
-                          placeholder="https://wttr.in/{{city}}?format=j1"
-                          inputClassName={`mt-2 border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
-                          matchMode="full"
-                          disabled={isCreatingAction}
-                        />
-                        {urlError && (
-                          <p className="absolute left-0 mt-1 text-red-500 text-sm">
-                            {urlError}
-                          </p>
+                  </div>
+                )}
+                {/* Method and URL row, left-aligned */}
+                <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-6 items-center">
+                  <div className="w-full md:w-[120px]">
+                    <Label
+                      htmlFor="apiMethod"
+                      className="text-base font-medium flex items-center gap-2"
+                    >
+                      <Terminal className="h-4 w-4 text-[#FE4A60]" />
+                      Method
+                    </Label>
+                    <Select
+                      value={apiMethod}
+                      onValueChange={handleMethodChange}
+                      disabled={isCreatingAction}
+                    >
+                      <SelectTrigger className="mt-2 border-[2px] border-gray-900 w-full">
+                        <SelectValue placeholder="Select method" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="GET">GET</SelectItem>
+                        <SelectItem value="POST">POST</SelectItem>
+                        <SelectItem value="PUT">PUT</SelectItem>
+                        <SelectItem value="PATCH">PATCH</SelectItem>
+                        <SelectItem value="DELETE">DELETE</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex-1 w-full">
+                    <Label
+                      htmlFor="apiUrl"
+                      className="text-base font-medium flex items-center gap-2"
+                    >
+                      <Globe className="h-4 w-4 text-[#FE4A60]" />
+                      HTTPS URL
+                    </Label>
+                    <div className="relative">
+                      <SuggestInput
+                        id="apiUrl"
+                        value={apiUrl}
+                        onChange={(e) => handleUrlChange(e.target.value)}
+                        suggestions={urlSuggestions.concat(
+                          getInputNames(dataInputs, true)
                         )}
-                      </div>
+                        placeholder="https://wttr.in/{{city}}?format=j1"
+                        inputClassName={`mt-2 border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
+                        matchMode="full"
+                        disabled={isCreatingAction}
+                      />
+                      {urlError && (
+                        <p className="absolute left-0 mt-1 text-red-500 text-sm">
+                          {urlError}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -524,7 +526,7 @@ export default function ExecutionStep({
                     <Tag className="h-4 w-4 text-[#FE4A60]" />
                     Function Name
                   </Label>
-                  <p className="text-sm text-gray-600 mt-2 ml-6">
+                  <p className="text-sm text-gray-600 mt-2">
                     The name of the client-side function to be executed. You
                     will implement this in your app using the SDK.
                   </p>
