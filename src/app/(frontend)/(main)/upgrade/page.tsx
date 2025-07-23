@@ -382,13 +382,13 @@ export default function UpgradePage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 mb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-20 justify-items-center">
             {availableTiers.map(([key, tier]) => (
               <div
                 key={key}
-                className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch flex-1 max-w-sm ${
+                className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm ${
                   key === 'standard'
-                    ? 'border-2 border-secondary shadow-lg'
+                    ? 'border-2 border-secondary shadow-lg pt-8 sm:pt-10 md:pt-8'
                     : ''
                 }`}
                 style={{ minHeight: 480 }}
@@ -399,10 +399,10 @@ export default function UpgradePage() {
                   </span>
                 )}
                 {key === 'standard' && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <div className="absolute -top-1 sm:-top-2 md:-top-4 left-1/2 transform -translate-x-1/2 z-10">
                     <span
-                      className="bg-secondary text-secondary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-border"
-                      style={{ letterSpacing: 1 }}
+                      className="bg-secondary text-secondary-foreground text-xs font-bold px-2 sm:px-3 py-1 rounded-full shadow border border-border"
+                      style={{ letterSpacing: 0.5 }}
                     >
                       Most Popular
                     </span>
@@ -536,7 +536,7 @@ export default function UpgradePage() {
             ))}
 
             <div
-              className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch flex-1 max-w-sm"
+              className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm"
               style={{ minHeight: 480 }}
             >
               <div className="mb-8">
