@@ -8,6 +8,7 @@ import { Menu, X } from 'lucide-react';
 
 export function LandingNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -19,6 +20,18 @@ export function LandingNavbar() {
       document.body.classList.remove('overflow-hidden');
     };
   }, [isMenuOpen]);
+
+  const handleMenuClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsMenuOpen(false);
+      setIsClosing(false);
+    }, 200);
+  };
+
+  const handleNavigation = () => {
+    handleMenuClose();
+  };
 
   return (
     <>
@@ -97,26 +110,38 @@ export function LandingNavbar() {
         </div>
       </nav>
 
-      {isMenuOpen && (
-        <div className="lg:hidden bg-background/95 backdrop-blur-sm px-4 py-6 space-y-4 fixed top-[75px] left-0 right-0 bottom-0 z-40">
+      {/* Mobile menu overlay with smooth transitions */}
+      <div 
+        className={`lg:hidden fixed inset-0 z-40 transition-opacity duration-200 ${
+          isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={handleMenuClose}
+      >
+        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+        <div 
+          className={`absolute top-[75px] left-0 right-0 bottom-0 bg-background/95 backdrop-blur-sm px-4 py-6 space-y-4 transition-transform duration-200 ${
+            isMenuOpen && !isClosing ? 'translate-x-0' : 'translate-x-full'
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
           <Link
             href="/docs"
             className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={handleNavigation}
           >
             Docs
           </Link>
           <Link
             href="/pricing"
             className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={handleNavigation}
           >
             Pricing
           </Link>
           <Link
             href="/contact"
             className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={handleNavigation}
           >
             Contact
           </Link>
@@ -128,7 +153,7 @@ export function LandingNavbar() {
                 className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full"
                 asChild
               >
-                <Link href="/login" onClick={() => setIsMenuOpen(false)}>Sign In</Link>
+                <Link href="/login" onClick={handleNavigation}>Sign In</Link>
               </Button>
             </div>
             <div className="relative group">
@@ -137,12 +162,12 @@ export function LandingNavbar() {
                 className="relative bg-secondary text-secondary-foreground border-[3px] border-border hover:bg-secondary/90 w-full"
                 asChild
               >
-                <Link href="/login" onClick={() => setIsMenuOpen(false)}>Try For Free</Link>
+                <Link href="/login" onClick={handleNavigation}>Try For Free</Link>
               </Button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
