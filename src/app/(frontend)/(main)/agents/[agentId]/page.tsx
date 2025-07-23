@@ -122,6 +122,7 @@ function AgentDetails({
     loadingPrompts,
     deletingPromptId,
     handleDeletePrompt,
+    fetchPrompts,
   } = usePrompts(params.agentId);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -257,12 +258,26 @@ function AgentDetails({
       
       await handleUpdateAgent(agent.id, updatePayload);
       
-      setAgent({
-        ...agent,
-        name: editName,
-        websiteDomain: editWebsiteDomain,
-        model: editModel,
-      });
+      // Fetch updated agent data to ensure UI reflects the latest state
+      try {
+        const response = await fetch(`/api/agents/${params.agentId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setAgent(data.agent || null);
+        }
+      } catch (fetchError) {
+        console.error('Error fetching updated agent:', fetchError);
+        // Fallback to local state update if fetch fails
+        setAgent({
+          ...agent,
+          name: editName,
+          websiteDomain: editWebsiteDomain,
+          model: editModel,
+        });
+      }
+      
+      // Fetch updated prompts to ensure UI reflects the latest state
+      await fetchPrompts();
       
       setIsEditing(false);
       toast.success('Agent updated successfully!');

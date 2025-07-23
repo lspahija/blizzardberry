@@ -382,7 +382,7 @@ export default function UpgradePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-20 justify-items-center">
+          <div className="flex flex-wrap justify-center gap-6 mb-20">
             {availableTiers.map(([key, tier]) => (
               <div
                 key={key}
@@ -391,7 +391,7 @@ export default function UpgradePage() {
                     ? 'border-2 border-secondary shadow-lg pt-8 sm:pt-10 md:pt-8'
                     : ''
                 }`}
-                style={{ minHeight: 480 }}
+                style={{ minHeight: 480, minWidth: '280px' }}
               >
                 {billingCycle === 'yearly' && (
                   <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
@@ -537,7 +537,7 @@ export default function UpgradePage() {
 
             <div
               className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm"
-              style={{ minHeight: 480 }}
+              style={{ minHeight: 480, minWidth: '280px' }}
             >
               <div className="mb-8">
                 <div className="flex items-center gap-2 mb-2">

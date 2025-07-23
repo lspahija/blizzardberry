@@ -102,18 +102,21 @@ export function LandingNavbar() {
           <Link
             href="/docs"
             className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
+            onClick={() => setIsMenuOpen(false)}
           >
             Docs
           </Link>
           <Link
             href="/pricing"
             className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
+            onClick={() => setIsMenuOpen(false)}
           >
             Pricing
           </Link>
           <Link
             href="/contact"
             className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
+            onClick={() => setIsMenuOpen(false)}
           >
             Contact
           </Link>
@@ -125,7 +128,7 @@ export function LandingNavbar() {
                 className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full"
                 asChild
               >
-                <Link href="/login">Sign In</Link>
+                <Link href="/login" onClick={() => setIsMenuOpen(false)}>Sign In</Link>
               </Button>
             </div>
             <div className="relative group">
@@ -134,7 +137,7 @@ export function LandingNavbar() {
                 className="relative bg-secondary text-secondary-foreground border-[3px] border-border hover:bg-secondary/90 w-full"
                 asChild
               >
-                <Link href="/login">Try For Free</Link>
+                <Link href="/login" onClick={() => setIsMenuOpen(false)}>Try For Free</Link>
               </Button>
             </div>
           </div>

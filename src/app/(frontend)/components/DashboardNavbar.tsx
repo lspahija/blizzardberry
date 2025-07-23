@@ -214,7 +214,10 @@ export function DashboardNavbar() {
                     <button
                       key="signout"
                       className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
-                      onClick={() => signOut({ redirectTo: '/' })}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        signOut({ redirectTo: '/' });
+                      }}
                     >
                       Sign Out
                     </button>
