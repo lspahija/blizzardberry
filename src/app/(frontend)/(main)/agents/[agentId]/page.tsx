@@ -258,7 +258,6 @@ function AgentDetails({
       
       await handleUpdateAgent(agent.id, updatePayload);
       
-      // Fetch updated agent data to ensure UI reflects the latest state
       try {
         const response = await fetch(`/api/agents/${params.agentId}`);
         if (response.ok) {
@@ -267,7 +266,6 @@ function AgentDetails({
         }
       } catch (fetchError) {
         console.error('Error fetching updated agent:', fetchError);
-        // Fallback to local state update if fetch fails
         setAgent({
           ...agent,
           name: editName,
@@ -276,7 +274,6 @@ function AgentDetails({
         });
       }
       
-      // Fetch updated prompts to ensure UI reflects the latest state
       await fetchPrompts();
       
       setIsEditing(false);
