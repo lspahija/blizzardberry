@@ -249,7 +249,7 @@ export default function PricingPage() {
       {/* Hero Section */}
       <div className="bg-background">
         <div
-          className={`container mx-auto px-4 py-12 sm:py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}
+          className={`container mx-auto px-2 md:px-4 xl:px-8 py-12 sm:py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}
         >
           <div className="text-center mb-12 sm:mb-16">
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
@@ -296,18 +296,20 @@ export default function PricingPage() {
               Loading pricing options...
             </div>
           ) : (
-            <div className="flex flex-wrap justify-center gap-6 mb-16 sm:mb-20 pt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 [@media(min-width:1400px)]:grid-cols-5 gap-6 mb-16 sm:mb-20 pt-6">
               {Object.entries(pricing.tiers)
                 .filter(([key]) => !isLoggedIn || key !== 'free')
-                .map(([key, tier]) => (
+                .map(([key, tier], idx, arr) => (
                   <div
                     key={key}
-                    className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm ${
+                    className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full 2xl:min-w-[360px] 2xl:max-w-[440px] ${
                       key === 'standard'
                         ? 'border-2 border-secondary shadow-lg pt-8 sm:pt-10 md:pt-8'
                         : ''
+                    } ${
+                      arr.length === 5 && (idx === 3 ? 'lg:col-start-2' : idx === 4 ? 'lg:col-start-3' : '')
                     }`}
-                    style={{ minHeight: 480, minWidth: '280px' }}
+                    style={{ minHeight: 480, minWidth: '0' }}
                   >
                     {/* -20% badge for yearly */}
                     {billingCycle === 'yearly' && (
@@ -349,22 +351,29 @@ export default function PricingPage() {
                       </div>
                       <div className="mb-2 flex items-end gap-2">
                         {billingCycle === 'yearly' ? (
-                          <>
+                          <div className="flex flex-row items-end gap-0.5">
                             <span className="text-lg sm:text-xl font-semibold text-muted-foreground line-through mr-2">
                               ${tier.monthlyPrice}
                             </span>
-                            <span className="text-3xl sm:text-4xl font-bold text-foreground">
-                              ${(tier.yearlyPrice / 12).toFixed(0)}
+                            <span className="flex flex-row items-end gap-0.5">
+                              <span className="text-3xl sm:text-4xl font-bold text-foreground">
+                                ${(tier.yearlyPrice / 12).toFixed(0)}
+                              </span>
+                              <span className="text-sm sm:text-base text-muted-foreground mb-1 align-bottom mr-1">
+                                /month
+                              </span>
                             </span>
-                          </>
+                          </div>
                         ) : (
-                          <span className="text-3xl sm:text-4xl font-bold text-foreground">
-                            ${tier.monthlyPrice}
-                          </span>
+                          <div className="flex flex-row items-end gap-0.5">
+                            <span className="text-3xl sm:text-4xl font-bold text-foreground">
+                              ${tier.monthlyPrice}
+                            </span>
+                            <span className="text-sm sm:text-base text-muted-foreground mb-1 align-bottom mr-1">
+                              /month
+                            </span>
+                          </div>
                         )}
-                        <span className="text-sm sm:text-base text-muted-foreground mb-1 align-bottom">
-                          /month
-                        </span>
                       </div>
                       {billingCycle === 'yearly' && (
                         <p className="text-xs text-muted-foreground mt-1">
@@ -464,8 +473,10 @@ export default function PricingPage() {
 
               {/* Enterprise Card */}
               <div
-                className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm"
-                style={{ minHeight: 480, minWidth: '280px' }}
+                className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full 2xl:min-w-[360px] 2xl:max-w-[440px] ${
+                  Object.entries(pricing.tiers).filter(([key]) => !isLoggedIn || key !== 'free').length === 5 ? 'lg:col-start-3' : ''
+                }`}
+                style={{ minHeight: 480, minWidth: '0' }}
               >
                 <div className="mb-6 sm:mb-8">
                   <div className="flex items-center gap-2 mb-2">

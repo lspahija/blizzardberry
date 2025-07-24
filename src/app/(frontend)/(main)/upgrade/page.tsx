@@ -382,16 +382,17 @@ export default function UpgradePage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 mb-20">
+          {/* Pricing Cards - Responsive Grid Layout */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-20">
             {availableTiers.map(([key, tier]) => (
               <div
                 key={key}
-                className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm ${
+                className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full ${
                   key === 'standard'
                     ? 'border-2 border-secondary shadow-lg pt-8 sm:pt-10 md:pt-8'
                     : ''
                 }`}
-                style={{ minHeight: 480, minWidth: '280px' }}
+                style={{ minHeight: 480 }}
               >
                 {billingCycle === 'yearly' && (
                   <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
@@ -534,10 +535,10 @@ export default function UpgradePage() {
                 </button>
               </div>
             ))}
-
+            {/* Enterprise Card - Now in the same grid */}
             <div
-              className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm"
-              style={{ minHeight: 480, minWidth: '280px' }}
+              className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full"
+              style={{ minHeight: 480 }}
             >
               <div className="mb-8">
                 <div className="flex items-center gap-2 mb-2">
