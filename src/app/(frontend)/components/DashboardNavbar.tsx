@@ -55,6 +55,7 @@ export function DashboardNavbar() {
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -66,6 +67,18 @@ export function DashboardNavbar() {
       document.body.classList.remove('overflow-hidden');
     };
   }, [isMobileMenuOpen]);
+
+  const handleMenuClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsMobileMenuOpen(false);
+      setIsClosing(false);
+    }, 200);
+  };
+
+  const handleNavigation = () => {
+    handleMenuClose();
+  };
 
   const handleFeedbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,65 +189,73 @@ export function DashboardNavbar() {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 xl:hidden">
-          <div
-            className="fixed inset-0 bg-black/20"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-          <div className="fixed right-0 top-0 h-full w-[280px] bg-[#FFFDF8] border-l-[3px] border-gray-900 p-6 overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Menu</h2>
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 rounded-lg hover:bg-muted transition-colors"
-              >
-                <X className="h-6 w-6 text-gray-900" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              {navLinks.map((link) => {
-                if (link.type === 'button' && link.onClick === 'feedback') {
-                  return (
-                    <button
-                      key="feedback"
-                      className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false);
-                        setIsFeedbackOpen(true);
-                      }}
-                    >
-                      Feedback
-                    </button>
-                  );
-                }
-                if (link.type === 'button' && link.onClick === 'signout') {
-                  return (
-                    <button
-                      key="signout"
-                      className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
-                      onClick={() => signOut({ redirectTo: '/' })}
-                    >
-                      Sign Out
-                    </button>
-                  );
-                }
+      {/* Mobile Menu with smooth transitions */}
+      <div 
+        className={`xl:hidden fixed inset-0 z-50 transition-opacity duration-200 ${
+          isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={handleMenuClose}
+      >
+        <div className="fixed inset-0 bg-black/20" />
+        <div 
+          className={`fixed right-0 top-0 h-full w-[280px] bg-[#FFFDF8] border-l-[3px] border-gray-900 p-6 overflow-y-auto transition-transform duration-200 ${
+            isMobileMenuOpen && !isClosing ? 'translate-x-0' : 'translate-x-full'
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-900">Menu</h2>
+            <button
+              onClick={handleMenuClose}
+              className="p-2 rounded-lg hover:bg-muted transition-colors"
+            >
+              <X className="h-6 w-6 text-gray-900" />
+            </button>
+          </div>
+          <div className="space-y-4">
+            {navLinks.map((link) => {
+              if (link.type === 'button' && link.onClick === 'feedback') {
                 return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="block text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                  <button
+                    key="feedback"
+                    className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
+                    onClick={() => {
+                      handleMenuClose();
+                      setIsFeedbackOpen(true);
+                    }}
                   >
-                    {link.label}
-                  </Link>
+                    Feedback
+                  </button>
                 );
-              })}
-            </div>
+              }
+              if (link.type === 'button' && link.onClick === 'signout') {
+                return (
+                  <button
+                    key="signout"
+                    className="w-full text-left text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
+                    onClick={() => {
+                      handleMenuClose();
+                      signOut({ redirectTo: '/' });
+                    }}
+                  >
+                    Sign Out
+                  </button>
+                );
+              }
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block text-base font-semibold px-3 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
+                  onClick={handleNavigation}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
         </div>
-      )}
+      </div>
 
       <Dialog open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen}>
         <DialogContent

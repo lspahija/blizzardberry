@@ -110,7 +110,7 @@ export default function LandingPage() {
         initial="hidden"
         animate="visible"
       >
-        <div className="relative flex flex-col items-center justify-center text-center pt-16 pb-24 max-w-4xl mx-auto px-2">
+        <div className="relative flex flex-col items-center justify-center text-center pt-16 pb-24 max-w-4xl mx-auto px-6 sm:px-8 lg:px-2">
           <svg
             className="hidden lg:block absolute h-auto w-16 lg:w-20 flex-shrink-0 p-2 left-0 translate-y-20 lg:-translate-y-20 -translate-x-4 lg:-translate-x-8 xl:-translate-x-12"
             viewBox="0 0 91 98"
@@ -131,7 +131,7 @@ export default function LandingPage() {
           </svg>
 
           <motion.h1
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 z-10"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tighter mb-6 z-10 leading-tight"
             variants={itemVariants}
           >
             Give Your Users an
@@ -159,7 +159,7 @@ export default function LandingPage() {
           </svg>
 
           <motion.p
-            className="text-2xl text-muted-foreground mb-10 max-w-2xl z-10"
+            className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 max-w-2xl z-10 leading-relaxed"
             variants={itemVariants}
           >
             Our AI Agent doesn't just find answers in your documentation—it
@@ -171,24 +171,24 @@ export default function LandingPage() {
             variants={itemVariants}
           >
             <div className="relative group w-full sm:w-auto">
-              <div className="absolute inset-0 rounded bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+              <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
               <Button
                 size="lg"
-                className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-xl px-12 py-5"
+                className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
                 asChild
               >
                 <Link href="/login">
-                  <Play className="mr-2 h-5 w-5" />
+                  <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Get Started Now
                 </Link>
               </Button>
             </div>
             <div className="relative group w-full sm:w-auto">
-              <div className="absolute inset-0 rounded bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+              <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
               <Button
                 size="lg"
                 variant="outline"
-                className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full sm:w-auto text-xl px-12 py-5"
+                className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
                 asChild
               >
                 <Link href="/contact">Talk With Us</Link>
@@ -199,22 +199,22 @@ export default function LandingPage() {
       </motion.div>
 
       <motion.section
-        className="py-16 bg-muted/30"
+        className="py-12 sm:py-16 bg-muted/30"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }} // Reduced amount to trigger earlier
       >
-        <div className="max-w-6xl mx-auto px-2">
-          <motion.div className="text-center mb-14" variants={itemVariants}>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
+          <motion.div className="text-center mb-10 sm:mb-14" variants={itemVariants}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
               More Than a Chatbot. An Agent Working for Your Users
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-lg sm:text-xl text-muted-foreground">
               Transform how users interact with your website
             </p>
           </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
             {[
               {
                 icon: Zap,
@@ -242,15 +242,15 @@ export default function LandingPage() {
                 transition={{ duration: 0.3 }} // Faster animation
                 className="group"
               >
-                <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+                <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                   <CardHeader className="pb-4">
-                    <item.icon className="w-10 h-10 text-brand mb-4" />
-                    <CardTitle className="text-2xl font-semibold leading-tight">
+                    <item.icon className="w-8 h-8 sm:w-10 sm:h-10 text-brand mb-3 sm:mb-4" />
+                    <CardTitle className="text-xl sm:text-2xl font-semibold leading-tight">
                       {item.title}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex-1">
-                    <p className="text-lg text-muted-foreground leading-relaxed">
+                    <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
                       {item.text}
                     </p>
                   </CardContent>
@@ -263,33 +263,33 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <motion.section
-        className="py-16"
+        className="py-12 sm:py-16"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-6xl mx-auto px-2">
-          <motion.div className="text-center mb-14" variants={itemVariants}>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
+          <motion.div className="text-center mb-10 sm:mb-14" variants={itemVariants}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
               Powerful Features
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-lg sm:text-xl text-muted-foreground">
               Everything you need to create intelligent AI agents
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
-                    <Zap className="h-7 w-7 text-brand" />
-                    <CardTitle className="text-xl">Custom Actions</CardTitle>
+                    <Zap className="h-6 w-6 sm:h-7 sm:w-7 text-brand" />
+                    <CardTitle className="text-lg sm:text-xl">Custom Actions</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg text-muted-foreground">
+                  <p className="text-base sm:text-lg text-muted-foreground">
                     Create client-side and server-side actions that your agent
                     can execute. From form submissions to API calls, your agent
                     can perform any task.
@@ -299,15 +299,15 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
-                    <FileText className="h-6 w-6 text-brand" />
-                    <CardTitle>Knowledge Base</CardTitle>
+                    <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
+                    <CardTitle className="text-lg sm:text-xl">Knowledge Base</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
+                  <p className="text-base sm:text-lg text-muted-foreground">
                     Upload documents, FAQs, and knowledge articles. Your agent
                     will use this information to provide accurate answers and
                     support.
@@ -317,15 +317,15 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
-                    <MessageSquare className="h-6 w-6 text-brand" />
-                    <CardTitle>Natural Language</CardTitle>
+                    <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
+                    <CardTitle className="text-lg sm:text-xl">Natural Language</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
+                  <p className="text-base sm:text-lg text-muted-foreground">
                     Users can interact with your agent using natural language.
                     No need to learn specific commands or syntax.
                   </p>
@@ -334,15 +334,15 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
-                    <Users className="h-6 w-6 text-brand" />
-                    <CardTitle>User Context</CardTitle>
+                    <Users className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
+                    <CardTitle className="text-lg sm:text-xl">User Context</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
+                  <p className="text-base sm:text-lg text-muted-foreground">
                     Pass user information and preferences to your agent. Provide
                     personalized experiences based on user data.
                   </p>
@@ -351,15 +351,15 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
-                    <Shield className="h-6 w-6 text-brand" />
-                    <CardTitle>Secure & Private</CardTitle>
+                    <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
+                    <CardTitle className="text-lg sm:text-xl">Secure & Private</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
+                  <p className="text-base sm:text-lg text-muted-foreground">
                     All communications are encrypted. Your data stays private
                     and secure. No sensitive information is stored
                     unnecessarily.
@@ -369,15 +369,15 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
-                    <Clock className="h-6 w-6 text-brand" />
-                    <CardTitle>Real-time</CardTitle>
+                    <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
+                    <CardTitle className="text-lg sm:text-xl">Real-time</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
+                  <p className="text-base sm:text-lg text-muted-foreground">
                     Instant responses and real-time interactions. Your agent
                     responds immediately to user queries.
                   </p>
@@ -390,51 +390,51 @@ export default function LandingPage() {
 
       {/* Use Cases Section */}
       <motion.section
-        className="py-16 bg-muted/30"
+        className="py-12 sm:py-16 bg-muted/30"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-6xl mx-auto px-2">
-          <motion.div className="text-center mb-14" variants={itemVariants}>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
+          <motion.div className="text-center mb-10 sm:mb-14" variants={itemVariants}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
               Popular Use Cases
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-lg sm:text-xl text-muted-foreground">
               See how others are using BlizzardBerry to enhance their websites
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
-                    <MessageSquare className="h-6 w-6 text-brand" />
-                    <CardTitle className="text-xl">Customer Support</CardTitle>
+                    <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
+                    <CardTitle className="text-lg sm:text-xl">Customer Support</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-base sm:text-lg text-muted-foreground mb-4">
                     Provide instant customer support with AI agents that can:
                   </p>
                   <ul className="space-y-2 text-muted-foreground">
                     <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand" />
-                      <span>Answer common questions</span>
+                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Answer common questions</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand" />
-                      <span>Create support tickets</span>
+                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Create support tickets</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand" />
-                      <span>Schedule appointments</span>
+                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Schedule appointments</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand" />
-                      <span>Process refunds</span>
+                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Process refunds</span>
                     </li>
                   </ul>
                 </CardContent>
@@ -442,33 +442,33 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-2xl">
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
-                    <Globe className="h-6 w-6 text-brand" />
-                    <CardTitle className="text-xl">E-commerce</CardTitle>
+                    <Globe className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
+                    <CardTitle className="text-lg sm:text-xl">E-commerce</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-base sm:text-lg text-muted-foreground mb-4">
                     Enhance your online store with AI agents that can:
                   </p>
                   <ul className="space-y-2 text-muted-foreground">
                     <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand" />
-                      <span>Search and recommend products</span>
+                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Search and recommend products</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand" />
-                      <span>Add items to cart</span>
+                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Add items to cart</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand" />
-                      <span>Process orders</span>
+                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Process orders</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand" />
-                      <span>Track shipments</span>
+                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Track shipments</span>
                     </li>
                   </ul>
                 </CardContent>
@@ -480,31 +480,31 @@ export default function LandingPage() {
 
       {/* CTA Section */}
       <motion.section
-        className="py-16"
+        className="py-12 sm:py-16"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-4xl mx-auto px-2 text-center">
+        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-2 text-center">
           <motion.div variants={itemVariants}>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 sm:mb-8 leading-tight">
               Ready to Transform Your Webapp?
             </h2>
-            <p className="text-xl text-muted-foreground mb-10">
+            <p className="text-lg sm:text-xl text-muted-foreground mb-8 sm:mb-10">
               Create your first AI agent in minutes and transform how users
               interact with your website.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <div className="relative group w-full sm:w-auto">
-                <div className="absolute inset-0 rounded bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
                 <Button
                   asChild
                   size="lg"
-                  className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-xl px-12 py-5"
+                  className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
                 >
                   <Link href="/login">
-                    <Play className="mr-2 h-5 w-5" />
+                    <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                     Create an Agent
                   </Link>
                 </Button>

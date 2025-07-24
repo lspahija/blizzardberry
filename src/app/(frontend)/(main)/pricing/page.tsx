@@ -249,22 +249,22 @@ export default function PricingPage() {
       {/* Hero Section */}
       <div className="bg-background">
         <div
-          className={`container mx-auto px-4 py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}
+          className={`container mx-auto px-4 py-12 sm:py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}
         >
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
+          <div className="text-center mb-12 sm:mb-16">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
               Pricing
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
+            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-6 sm:mb-8">
               Choose the perfect plan for your AI agent needs. Start free, scale
               as you grow.
             </p>
 
             {/* Billing Toggle */}
             {status !== 'loading' && (
-              <div className="flex justify-center gap-4 mb-12">
+              <div className="flex justify-center gap-3 sm:gap-4 mb-8 sm:mb-12">
                 <button
-                  className={`px-6 py-3 rounded-xl border font-semibold transition-all duration-200 ${
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border font-semibold transition-all duration-200 text-sm sm:text-base ${
                     billingCycle === 'monthly'
                       ? 'bg-blue-100 text-foreground border-blue-200 shadow'
                       : 'bg-background text-foreground border-border hover:bg-muted'
@@ -274,7 +274,7 @@ export default function PricingPage() {
                   Monthly
                 </button>
                 <button
-                  className={`px-6 py-3 rounded-xl border font-semibold transition-all duration-200 flex items-center gap-2 ${
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border font-semibold transition-all duration-200 flex items-center gap-2 text-sm sm:text-base ${
                     billingCycle === 'yearly'
                       ? 'bg-blue-100 text-foreground border-blue-200 shadow'
                       : 'bg-background text-foreground border-border hover:bg-muted'
@@ -292,37 +292,31 @@ export default function PricingPage() {
 
           {/* Pricing Cards */}
           {status === 'loading' ? (
-            <div className="text-center text-muted-foreground mb-20">
+            <div className="text-center text-muted-foreground mb-16 sm:mb-20">
               Loading pricing options...
             </div>
           ) : (
-            <div
-              className={`grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 pt-6 ${
-                !isLoggedIn
-                  ? 'xl:grid-cols-5 xl:gap-6'
-                  : 'lg:grid-cols-4 lg:gap-8'
-              }`}
-            >
+            <div className="flex flex-wrap justify-center gap-6 mb-16 sm:mb-20 pt-6">
               {Object.entries(pricing.tiers)
                 .filter(([key]) => !isLoggedIn || key !== 'free')
                 .map(([key, tier]) => (
                   <div
                     key={key}
-                    className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch ${
+                    className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm ${
                       key === 'standard'
-                        ? 'border-2 border-secondary shadow-lg'
+                        ? 'border-2 border-secondary shadow-lg pt-8 sm:pt-10 md:pt-8'
                         : ''
                     }`}
-                    style={{ minHeight: 480 }}
+                    style={{ minHeight: 480, minWidth: '280px' }}
                   >
                     {/* -20% badge for yearly */}
                     {billingCycle === 'yearly' && (
-                      <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
+                      <span className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
                         -20%
                       </span>
                     )}
                     {key === 'standard' && (
-                      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-10">
+                      <div className="absolute -top-4 sm:-top-6 left-1/2 transform -translate-x-1/2 z-10">
                         <span
                           className="bg-secondary text-secondary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-border whitespace-nowrap"
                           style={{ letterSpacing: 1 }}
@@ -332,43 +326,43 @@ export default function PricingPage() {
                       </div>
                     )}
 
-                    <div className="mb-8">
+                    <div className="mb-6 sm:mb-8">
                       <div className="flex items-center gap-2 mb-2">
                         {key === 'free' && (
-                          <Shovel className="h-6 w-6 text-secondary" />
+                          <Shovel className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
                         )}
                         {key === 'hobby' && (
-                          <Zap className="h-6 w-6 text-secondary" />
+                          <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
                         )}
                         {key === 'standard' && (
-                          <Star className="h-6 w-6 text-secondary" />
+                          <Star className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
                         )}
                         {key === 'pro' && (
-                          <Shield className="h-6 w-6 text-secondary" />
+                          <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
                         )}
                         {key === 'enterprise' && (
-                          <Users className="h-6 w-6 text-secondary" />
+                          <Users className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
                         )}
-                        <h2 className="text-2xl font-bold text-foreground">
+                        <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                           {tier.name}
                         </h2>
                       </div>
                       <div className="mb-2 flex items-end gap-2">
                         {billingCycle === 'yearly' ? (
                           <>
-                            <span className="text-xl font-semibold text-muted-foreground line-through mr-2">
+                            <span className="text-lg sm:text-xl font-semibold text-muted-foreground line-through mr-2">
                               ${tier.monthlyPrice}
                             </span>
-                            <span className="text-4xl font-bold text-foreground">
+                            <span className="text-3xl sm:text-4xl font-bold text-foreground">
                               ${(tier.yearlyPrice / 12).toFixed(0)}
                             </span>
                           </>
                         ) : (
-                          <span className="text-4xl font-bold text-foreground">
+                          <span className="text-3xl sm:text-4xl font-bold text-foreground">
                             ${tier.monthlyPrice}
                           </span>
                         )}
-                        <span className="text-base text-muted-foreground mb-1 align-bottom">
+                        <span className="text-sm sm:text-base text-muted-foreground mb-1 align-bottom">
                           /month
                         </span>
                       </div>
@@ -377,50 +371,50 @@ export default function PricingPage() {
                           ${tier.yearlyPrice} billed annually
                         </p>
                       )}
-                      <p className="text-muted-foreground font-medium mt-2">
+                      <p className="text-sm sm:text-base text-muted-foreground font-medium mt-2">
                         {tierDescriptions[key as keyof typeof tierDescriptions]}
                       </p>
                     </div>
 
                     {/* Key Features */}
-                    <div className="space-y-3 mb-8">
-                      <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                        <span className="text-sm font-medium text-foreground">
+                    <div className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                      <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                        <span className="text-xs sm:text-sm font-medium text-foreground">
                           Credits
                         </span>
-                        <span className="text-base font-bold text-foreground">
+                        <span className="text-sm sm:text-base font-bold text-foreground">
                           {tier.credits.toLocaleString()}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                        <span className="text-sm font-medium text-foreground">
+                      <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                        <span className="text-xs sm:text-sm font-medium text-foreground">
                           Agents
                         </span>
-                        <span className="text-base font-bold text-foreground">
+                        <span className="text-sm sm:text-base font-bold text-foreground">
                           {tier.agents}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                        <span className="text-sm font-medium text-foreground">
+                      <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                        <span className="text-xs sm:text-sm font-medium text-foreground">
                           Actions/Agent
                         </span>
-                        <span className="text-base font-bold text-foreground">
+                        <span className="text-sm sm:text-base font-bold text-foreground">
                           {tier.actionsPerAgent}
                         </span>
                       </div>
                     </div>
 
                     {/* Feature List */}
-                    <ul className="space-y-2 mb-8">
+                    <ul className="space-y-2 mb-6 sm:mb-8">
                       {tierFeatures[key as keyof typeof tierFeatures].map(
                         (feature, index) => (
                           <li key={index} className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-secondary flex-shrink-0" />
+                            <Check className="h-3 w-3 sm:h-4 sm:w-4 text-secondary flex-shrink-0" />
                             {feature === 'Premium models included' ? (
                               <div className="tooltip-container">
-                                <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
+                                <span className="text-xs sm:text-sm text-muted-foreground tooltip-text flex items-center gap-1">
                                   {feature}
-                                  <Info className="h-4 w-4 text-secondary" />
+                                  <Info className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
                                 </span>
                                 <div className="tooltip">
                                   <p className="font-semibold mb-2">
@@ -436,7 +430,7 @@ export default function PricingPage() {
                                 </div>
                               </div>
                             ) : (
-                              <span className="text-sm text-muted-foreground">
+                              <span className="text-xs sm:text-sm text-muted-foreground">
                                 {feature}
                               </span>
                             )}
@@ -446,7 +440,7 @@ export default function PricingPage() {
                     </ul>
 
                     <button
-                      className={`mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border ${
+                      className={`mt-auto w-full py-2 sm:py-3 px-4 sm:px-6 rounded-xl font-semibold transition-all duration-200 border text-sm sm:text-base ${
                         key === 'standard'
                           ? 'bg-secondary text-secondary-foreground border-secondary hover:bg-secondary/90'
                           : 'bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10'
@@ -456,7 +450,7 @@ export default function PricingPage() {
                     >
                       {isLoading ? (
                         <div className="flex items-center justify-center gap-2">
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
                           Processing...
                         </div>
                       ) : key === 'free' ? (
@@ -470,60 +464,60 @@ export default function PricingPage() {
 
               {/* Enterprise Card */}
               <div
-                className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch"
-                style={{ minHeight: 480 }}
+                className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm"
+                style={{ minHeight: 480, minWidth: '280px' }}
               >
-                <div className="mb-8">
+                <div className="mb-6 sm:mb-8">
                   <div className="flex items-center gap-2 mb-2">
-                    <Users className="h-6 w-6 text-secondary" />
-                    <h2 className="text-2xl font-bold text-foreground">
+                    <Users className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
+                    <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                       Enterprise
                     </h2>
                   </div>
                   <div className="mb-2 flex items-end gap-2">
-                    <span className="text-4xl font-bold text-foreground">
+                    <span className="text-3xl sm:text-4xl font-bold text-foreground">
                       Custom
                     </span>
                   </div>
-                  <p className="text-muted-foreground font-medium mt-2">
+                  <p className="text-sm sm:text-base text-muted-foreground font-medium mt-2">
                     {tierDescriptions.enterprise}
                   </p>
                 </div>
-                <div className="space-y-3 mb-8">
-                  <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                    <span className="text-sm font-medium text-foreground">
+                <div className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                  <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                    <span className="text-xs sm:text-sm font-medium text-foreground">
                       Credits
                     </span>
-                    <span className="text-base font-bold text-foreground">
+                    <span className="text-sm sm:text-base font-bold text-foreground">
                       Unlimited
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                    <span className="text-sm font-medium text-foreground">
+                  <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                    <span className="text-xs sm:text-sm font-medium text-foreground">
                       Agents
                     </span>
-                    <span className="text-base font-bold text-foreground">
+                    <span className="text-sm sm:text-base font-bold text-foreground">
                       Unlimited
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                    <span className="text-sm font-medium text-foreground">
+                  <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                    <span className="text-xs sm:text-sm font-medium text-foreground">
                       Support
                     </span>
-                    <span className="text-base font-bold text-foreground">
+                    <span className="text-sm sm:text-base font-bold text-foreground">
                       24/7
                     </span>
                   </div>
                 </div>
-                <ul className="space-y-2 mb-8">
+                <ul className="space-y-2 mb-6 sm:mb-8">
                   {tierFeatures.enterprise.map((feature, index) => (
                     <li key={index} className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-secondary flex-shrink-0" />
+                      <Check className="h-3 w-3 sm:h-4 sm:w-4 text-secondary flex-shrink-0" />
                       {feature === 'Premium models included' ? (
                         <div className="tooltip-container">
-                          <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
+                          <span className="text-xs sm:text-sm text-muted-foreground tooltip-text flex items-center gap-1">
                             {feature}
-                            <Info className="h-4 w-4 text-secondary" />
+                            <Info className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
                           </span>
                           <div className="tooltip">
                             <p className="font-semibold mb-2">
@@ -537,7 +531,7 @@ export default function PricingPage() {
                           </div>
                         </div>
                       ) : (
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-xs sm:text-sm text-muted-foreground">
                           {feature}
                         </span>
                       )}
@@ -545,7 +539,7 @@ export default function PricingPage() {
                   ))}
                 </ul>
                 <button
-                  className="mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10"
+                  className="mt-auto w-full py-2 sm:py-3 px-4 sm:px-6 rounded-xl font-semibold transition-all duration-200 border bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10 text-sm sm:text-base"
                   onClick={() => setShowEnterpriseForm(true)}
                 >
                   Contact Sales
@@ -556,47 +550,47 @@ export default function PricingPage() {
 
           {/* Additional Credits Section */}
           {status !== 'loading' && (
-            <div className="bg-card p-8 md:p-12 border border-border rounded-2xl text-center mb-16 shadow-sm">
+            <div className="bg-card p-6 sm:p-8 md:p-12 border border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-sm">
               <div className="max-w-2xl mx-auto">
                 <h2
                   id="buy-credits"
-                  className="text-3xl md:text-4xl font-bold mb-4 text-foreground"
+                  className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-foreground"
                 >
                   Need More Credits?
                 </h2>
-                <p className="text-lg md:text-xl mb-8 text-muted-foreground">
+                <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-muted-foreground">
                   Buy additional credits anytime. They never expire and are
                   perfect for scaling your AI agents.
                 </p>
 
-                <div className="bg-background p-6 rounded-xl border border-border mb-8 flex flex-col md:flex-row items-center justify-center gap-4">
+                <div className="bg-background p-4 sm:p-6 rounded-xl border border-border mb-6 sm:mb-8 flex flex-col md:flex-row items-center justify-center gap-4">
                   <div className="text-center md:text-left">
-                    <span className="text-4xl md:text-5xl font-bold text-foreground block">
+                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground block">
                       {pricing.oneTimePurchase.credits.toLocaleString()}
                     </span>
-                    <span className="text-lg text-muted-foreground">
+                    <span className="text-base sm:text-lg text-muted-foreground">
                       credits
                     </span>
                   </div>
-                  <div className="text-2xl text-muted-foreground">for</div>
+                  <div className="text-xl sm:text-2xl text-muted-foreground">for</div>
                   <div className="text-center md:text-left">
-                    <span className="text-4xl md:text-5xl font-bold text-foreground-muted block">
+                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground-muted block">
                       ${pricing.oneTimePurchase.price}
                     </span>
-                    <span className="text-lg text-muted-foreground">
+                    <span className="text-base sm:text-lg text-muted-foreground">
                       one-time
                     </span>
                   </div>
                 </div>
 
                 <button
-                  className={`py-4 px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                  className={`py-3 sm:py-4 px-6 sm:px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow text-sm sm:text-base ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
                   onClick={handleBuyCredits}
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
                       Processing...
                     </div>
                   ) : (

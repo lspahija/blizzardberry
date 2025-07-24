@@ -139,21 +139,21 @@ export default function Dashboard() {
   return (
     <div>
       <motion.div
-        className="min-h-screen flex flex-col bg-background p-4"
+        className="min-h-screen flex flex-col bg-background p-4 sm:p-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <div className="max-w-4xl mx-auto w-full">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
+          <div className="flex justify-between items-center mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight leading-tight">
               Welcome, {session.user?.name}!
             </h1>
           </div>
-          <div className="mb-6 flex flex-col sm:flex-row gap-2">
+          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Button
               asChild
-              className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 w-full sm:w-auto"
+              className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 w-full sm:w-auto"
               onClick={() =>
                 posthog.capture('create_agent_clicked', {
                   user_email: session?.user?.email,
@@ -164,13 +164,13 @@ export default function Dashboard() {
                 href="/agents/new"
                 className="flex items-center justify-center"
               >
-                <PlusCircle className="mr-2 h-5 w-5" />
+                <PlusCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Create New Agent
               </Link>
             </Button>
             <Button
               asChild
-              className="bg-secondary text-secondary-foreground border-[3px] border-border transition-all duration-200 text-base font-semibold px-6 py-2 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90 w-full sm:w-auto"
+              className="bg-secondary text-secondary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90 w-full sm:w-auto"
               onClick={() =>
                 posthog.capture('user_config_clicked', {
                   user_email: session?.user?.email,
@@ -188,74 +188,74 @@ export default function Dashboard() {
 
           {loadingAgents ? (
             <div className="flex justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-foreground" />
+              <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-foreground" />
             </div>
           ) : agents.length === 0 ? (
-            <p className="text-muted-foreground text-lg mb-4 flex items-center justify-center">
-              <Bot className="h-6 w-6 mr-2 text-brand" />
+            <p className="text-base sm:text-lg text-muted-foreground mb-4 flex items-center justify-center text-center">
+              <Bot className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-brand" />
               No agents found. Create one to get started!
             </p>
           ) : (
             <Card className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8 border-l-brand">
-              <CardHeader className="flex items-center space-x-2">
-                <Bot className="h-6 w-6 text-brand" />
-                <CardTitle className="text-2xl font-bold text-foreground">
+              <CardHeader className="flex items-center space-x-2 pb-4">
+                <Bot className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
+                <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
                   Your Agents
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <ul className="space-y-4">
+              <CardContent className="pt-0">
+                <ul className="space-y-3 sm:space-y-4">
                   {agents.map((agent, idx) => (
                     <li
                       key={agent.id}
-                      className="border-t pt-4 sm:pt-2 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-4 py-2 cursor-pointer"
+                      className="border-t pt-3 sm:pt-4 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-3 sm:px-4 py-3 sm:py-2 relative"
                     >
                       <Link
                         href={`/agents/${agent.id}`}
-                        className="flex flex-1 min-w-0 items-start focus:outline-none"
+                        className="flex flex-1 min-w-0 items-start cursor-pointer"
                         onClick={() =>
                           posthog.capture('agent_view_clicked', {
                             agent_id: agent.id,
                             user_email: session?.user?.email,
                           })
                         }
-                        tabIndex={0}
-                        style={{ textDecoration: 'none' }}
                       >
                         <div className="flex-1 min-w-0">
-                          <p className="text-lg md:text-lg text-foreground font-semibold mb-1 truncate">
+                          <p className="text-base sm:text-lg text-foreground font-semibold mb-1 sm:mb-2 truncate hover:underline">
                             {agent.name}
                           </p>
-                          <p className="text-sm text-muted-foreground mb-1 truncate">
-                            <span className="font-semibold">Domain:</span>{' '}
-                            {agent.websiteDomain}
-                          </p>
-                          <p className="text-sm text-muted-foreground mb-1">
-                            <span className="font-semibold">Created:</span>{' '}
-                            {new Date(agent.createdAt).toLocaleString()}
-                          </p>
-                          <p className="text-sm text-muted-foreground mb-1 truncate">
-                            <span className="font-semibold">Model:</span>{' '}
-                            {agent.model}
-                          </p>
+                          <div className="space-y-1 sm:space-y-2">
+                            <p className="text-xs sm:text-sm text-muted-foreground truncate">
+                              <span className="font-semibold">Domain:</span>{' '}
+                              {agent.websiteDomain}
+                            </p>
+                            <p className="text-xs sm:text-sm text-muted-foreground">
+                              <span className="font-semibold">Created:</span>{' '}
+                              {new Date(agent.createdAt).toLocaleString()}
+                            </p>
+                            <p className="text-xs sm:text-sm text-muted-foreground truncate">
+                              <span className="font-semibold">Model:</span>{' '}
+                              {agent.model}
+                            </p>
+                          </div>
                         </div>
                       </Link>
-                      <div className="flex gap-2 w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
+                      <div className="flex gap-2 w-full sm:w-auto mt-3 sm:mt-0 sm:ml-4">
                         <Button
                           variant="destructive"
-                          onClick={e => {
-                            e.stopPropagation();
+                          onClick={(e) => {
                             e.preventDefault();
+                            e.stopPropagation();
                             handleOpenDeleteDialog(agent.id);
                           }}
-                          className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2"
+                          className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2 flex-shrink-0"
                           title="Delete Agent"
                         >
                           <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
                         </Button>
                       </div>
                       {idx < agents.length - 1 && (
-                        <hr className="my-2 border-border" />
+                        <hr className="my-2 sm:my-3 border-border" />
                       )}
                     </li>
                   ))}
