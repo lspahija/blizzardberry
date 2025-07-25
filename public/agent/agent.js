@@ -323,7 +323,7 @@
       await persistMessage(state.messages[state.messages.length - 1]);
       updateChatUI();
 
-      return `Tool execution result: ${JSON.stringify(actionResult)}`;
+      return `ACTION_RESULT: ${JSON.stringify(actionResult)}`;
 
       // state.isProcessing = true;
       // updateChatUI();
@@ -416,9 +416,8 @@
             )
         );
 
-        console.log(actionResults);
+        actionResults.forEach((result) => processChatMessage(result));
       }
-      // await processChatMessage(actionResults[0]);
 
       if (text && (!toolResults || toolResults.length === 0)) {
         state.messages.push({
