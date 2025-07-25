@@ -14,42 +14,40 @@ export function BlizzardBerryPublicAgent() {
   return (
     <>
       <Script
-        id="blizzardberry-agent"
-        src="http://localhost:3000/agent/agent.js"
+        id="blizzardberry-public-agent"
+        src="/agent/agent.js"
         strategy="afterInteractive"
-        data-agent-id="7b593b84-7f96-41ed-a167-c4c8be7e6972"
+        data-agent-id="f452cd58-23aa-4a6c-87d0-e68fb7384c73"
       />
-      <Script id="blizzardberry-actions" strategy="afterInteractive">
+      <Script id="BlizzardBerry-public-actions" strategy="afterInteractive">
         {`
-        window.agentActions = {
-    tell_cool: async (userConfig) => {
-        try {
-            console.log('you are cool');
-            return {
-                status: 'success',
-            };
-        } catch (error) {
-            return {
-                status: 'error',
-                error: error.message || 'Failed to execute action'
-            };
-        }
-    },
-    tell_ok: async (userConfig) => {
-    try {
-      console.log('you are ok');
-      return { 
-        status: 'success'
-      };
-    } catch (error) {
-      return { 
-        status: 'error', 
-        error: error.message || 'Failed to execute action' 
-      };
-    }
-  }
-};
-      `}
+          window.agentActions = {
+            openDocs: async (params) => {
+              window.location.href = '/docs';
+              return { success: true, message: 'Opening documentation page...' };
+            },
+
+            openPricing: async (params) => {
+              window.location.href = '/pricing';
+              return { success: true, message: 'Opening pricing page...' };
+            },
+
+            openContact: async (params) => {
+              window.location.href = '/contact';
+              return { success: true, message: 'Opening contact page...' };
+            },
+
+            openLogin: async (params) => {
+              window.location.href = '/login';
+              return { success: true, message: 'Opening login page...' };
+            },
+
+            openDashboard: async (params) => {
+              window.location.href = '/dashboard';
+              return { success: true, message: 'Opening dashboard...' };
+            }
+          };
+        `}
       </Script>
     </>
   );
