@@ -44,5 +44,3 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-
-/public/agent/agent.js
