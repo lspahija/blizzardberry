@@ -75,6 +75,7 @@
         .map((p) => p.content)
         .filter(Boolean);
     } catch (e) {
+      console.error('Error fetching suggested prompts:', e);
       suggestedPrompts = [];
     }
   }
@@ -324,38 +325,9 @@
       updateChatUI();
 
       return `ACTION_RESULT: ${JSON.stringify(actionResult)}`;
-
-      // state.isProcessing = true;
-      // updateChatUI();
-
-      // const interpretation = await interpretActionResult(actionResultMessage);
-      //
-      // // Append the AI's interpretation of the action result
-      // state.messages.push({
-      //   id: generateId(),
-      //   role: 'assistant',
-      //   parts: [{ type: 'text', text: interpretation }],
-      // });
     } catch (error) {
       await handleError('Error: Failed to execute action. ' + error.message);
     }
-  }
-
-  async function interpretActionResult(actionResultMessage) {
-    const chatResponse = await fetch(`${baseUrl}/api/chat/interpret`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [...state.messages, actionResultMessage],
-        agentId,
-        chatId: state.chatId,
-        idempotencyKey: generateId(),
-      }),
-    });
-
-    if (!chatResponse.ok) throw new Error('Failed to fetch AI response');
-    const { text } = await chatResponse.json();
-    return text;
   }
 
   async function executeClientAction(actionModel) {
@@ -472,7 +444,6 @@
       .replace(/\n/g, '<br>');
   }
 
-  // Render message part
   function renderMessagePart(part, messageId) {
     if (part.type === 'text') {
       const thinkMatch = part.text.match(
@@ -496,6 +467,7 @@
   function updateChatUI() {
     const chatBody = document.getElementById('chatWidgetBody');
     let html = state.messages
+      .filter((message) => !message.parts[0].text.startsWith('ACTION_RESULT:'))
       .map(
         (message) => `
       <div class="message-container ${message.role === 'user' ? 'user-container' : 'assistant-container'}">
