@@ -28,11 +28,13 @@
     if (!viewport) {
       viewport = document.createElement('meta');
       viewport.name = 'viewport';
-      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+      viewport.content =
+        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
       document.head.appendChild(viewport);
     } else {
       // Update existing viewport to prevent zooming
-      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+      viewport.content =
+        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
     }
   }
 
@@ -56,7 +58,6 @@
 
   const state = {
     messages: [],
-    actionResults: {},
     isProcessing: false,
     loggedThinkMessages: new Set(),
     chatId: null,
@@ -74,11 +75,12 @@
         .map((p) => p.content)
         .filter(Boolean);
     } catch (e) {
+      console.error('Error fetching suggested prompts:', e);
       suggestedPrompts = [];
     }
   }
 
-  async function saveMessageToDB(message) {
+  async function persistMessage(message) {
     if (!state.chatId) return;
     await fetch(`${baseUrl}/api/chats/${state.chatId}/messages`, {
       method: 'POST',
@@ -159,7 +161,7 @@
         suggestedPrompts.forEach((prompt) => {
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.textContent = truncatePrompt(prompt,15);
+          btn.textContent = truncatePrompt(prompt, 15);
           btn.title = prompt;
           btn.className = 'chat-widget-prompt-btn';
           btn.addEventListener('click', () => sendPromptImmediately(prompt));
@@ -191,7 +193,7 @@
           },
         ],
       });
-      
+
       state.isWidgetReady = true;
       const currentWidget = document.getElementById('chatWidget');
       if (currentWidget && !currentWidget.classList.contains('hidden')) {
@@ -205,17 +207,17 @@
   function toggleChatWidget() {
     const widget = document.getElementById('chatWidget');
     const toggle = document.getElementById('chatWidgetToggle');
-    
+
     if (!widget) {
       createLoadingWidget();
       return;
     }
-    
+
     if (!toggle) return;
-    
+
     const isHidden = widget.classList.toggle('hidden');
     toggle.classList.toggle('hidden', !isHidden);
-    
+
     if (!isHidden && state.isWidgetReady) {
       updateChatUI();
       setTimeout(
@@ -268,7 +270,7 @@
 
     let checkCount = 0;
     const maxChecks = 100;
-    
+
     const checkWidgetReady = () => {
       const realWidget = document.getElementById('chatWidget');
       if (realWidget && state.isWidgetReady) {
@@ -292,27 +294,23 @@
     checkWidgetReady();
   }
 
-  async function handleError(error, messageText) {
+  async function handleError(messageText) {
     state.isProcessing = false;
     state.messages.push({
       id: generateId(),
       role: 'assistant',
       parts: [{ type: 'text', text: messageText }],
     });
-    await saveMessageToDB(state.messages[state.messages.length - 1]);
+    await persistMessage(state.messages[state.messages.length - 1]);
     updateChatUI();
   }
 
-  async function executeAction(actionModel, messageId, partIndex) {
-    const key = `${messageId}-${partIndex}`;
+  async function executeAction(actionModel) {
     try {
-      state.actionResults[key] = actionModel.toolName.startsWith(
-        'ACTION_CLIENT_'
-      )
+      const actionResult = actionModel.toolName.startsWith('ACTION_CLIENT_')
         ? await executeClientAction(actionModel)
         : await executeServerAction(actionModel);
 
-      // Add the action result to the messages array as part of the text content
       state.messages.push({
         id: generateId(),
         role: 'assistant',
@@ -323,52 +321,13 @@
           },
         ],
       });
-      await saveMessageToDB(state.messages[state.messages.length - 1]);
+      await persistMessage(state.messages[state.messages.length - 1]);
       updateChatUI();
 
-      const actionResultMessage = {
-        role: 'user',
-        content: `Tool execution result: ${JSON.stringify(state.actionResults[key])}`,
-      };
-
-      state.isProcessing = true;
-      updateChatUI();
-
-      const interpretation = await interpretActionResult(actionResultMessage);
-
-      // Append the AI's interpretation of the action result
-      state.messages.push({
-        id: generateId(),
-        role: 'assistant',
-        parts: [{ type: 'text', text: interpretation }],
-      });
+      return `ACTION_RESULT: ${JSON.stringify(actionResult)}`;
     } catch (error) {
-      state.actionResults[key] = {
-        error: 'Failed to execute action',
-        details: error.message || 'Unknown error',
-      };
-      handleError(error, 'Error: Failed to execute action');
-      return;
+      await handleError('Error: Failed to execute action. ' + error.message);
     }
-    state.isProcessing = false;
-    updateChatUI();
-  }
-
-  async function interpretActionResult(actionResultMessage) {
-    const chatResponse = await fetch(`${baseUrl}/api/chat/interpret`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [...state.messages, actionResultMessage],
-        agentId,
-        chatId: state.chatId,
-        idempotencyKey: generateId(),
-      }),
-    });
-
-    if (!chatResponse.ok) throw new Error('Failed to fetch AI response');
-    const { text } = await chatResponse.json();
-    return text;
   }
 
   async function executeClientAction(actionModel) {
@@ -409,101 +368,74 @@
     updateChatUI();
 
     try {
-      const body = {
-        messages: state.messages,
-        userConfig,
-        agentId,
-        idempotencyKey: generateId(),
-      };
-      if (state.chatId) {
-        body.chatId = state.chatId;
-      }
-      const response = await fetch(`${baseUrl}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-
-      if (!response.ok) throw new Error('Failed to fetch AI response');
-      const {
-        text,
-        toolCalls,
-        toolResults,
-        error,
-        message,
-        chatId: returnedChatId,
-      } = await response.json();
-      if (returnedChatId) {
-        state.chatId = returnedChatId;
-      }
-      const parts = [];
+      const { text, toolResults, error, message } = await callLLM();
 
       // If backend returned an error or message, show it in the chat widget
       if (error || message) {
-        handleError(null, error || message);
+        await handleError(error || message);
         return;
       }
 
+      if (toolResults?.length > 0) {
+        const actionResults = await Promise.all(
+          toolResults
+            .filter((toolResult) => toolResult.toolName.startsWith('ACTION_'))
+            .map((toolResult) =>
+              executeAction({
+                ...toolResult.result,
+                toolName: toolResult.toolName,
+              })
+            )
+        );
+
+        actionResults.forEach((result) => processChatMessage(result));
+      }
+
       if (text && (!toolResults || toolResults.length === 0)) {
-        parts.push({ type: 'text', text });
-      }
-
-      if (toolCalls?.length) {
-        toolCalls.forEach((toolCall) => {
-          const toolResult = toolResults?.find(
-            (tr) => tr.toolCallId === toolCall.toolCallId
-          );
-          parts.push({
-            type: 'tool-invocation',
-            toolInvocation: {
-              toolCallId: toolCall.toolCallId,
-              toolName: toolCall.toolName,
-              args: toolCall.args,
-              state: toolResult ? 'result' : 'partial',
-              result: toolResult ? toolResult.result : undefined,
-            },
-          });
+        state.messages.push({
+          id: generateId(),
+          role: 'assistant',
+          parts: [{ type: 'text', text }],
         });
       }
 
-      let hasToolExecution = false;
-      const aiMessage = {
-        id: generateId(),
-        role: 'assistant',
-        parts,
-      };
-
-      const toolInvocations = parts.filter(
-        (part) =>
-          part.type === 'tool-invocation' &&
-          part.toolInvocation.state === 'result' &&
-          part.toolInvocation.result &&
-          part.toolInvocation.toolName.startsWith('ACTION_')
-      );
-
-      if (toolInvocations.length > 0) {
-        hasToolExecution = true;
-        toolInvocations.forEach((part, index) => {
-          executeAction(
-            {
-              ...part.toolInvocation.result,
-              toolName: part.toolInvocation.toolName,
-            },
-            aiMessage.id,
-            index
-          );
-        });
-      } else if (parts.length > 0) {
-        state.messages.push(aiMessage);
-      }
-
-      if (!hasToolExecution) {
-        state.isProcessing = false;
-        updateChatUI();
-      }
+      state.isProcessing = false;
+      updateChatUI();
     } catch (error) {
-      handleError(error, 'Error: Failed to get response');
+      await handleError('Error: Failed to get response. ' + error.message);
     }
+  }
+
+  async function callLLM() {
+    const body = {
+      messages: state.messages,
+      userConfig,
+      agentId,
+      idempotencyKey: generateId(),
+    };
+    if (state.chatId) {
+      body.chatId = state.chatId;
+    }
+    const response = await fetch(`${baseUrl}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch AI response');
+    const res = ({
+      text,
+      toolResults,
+      error,
+      message,
+      chatId: returnedChatId,
+    } = await response.json());
+
+    if (returnedChatId) {
+      state.chatId = returnedChatId;
+    }
+
+    return res;
   }
 
   function convertBoldFormatting(text) {
@@ -512,7 +444,6 @@
       .replace(/\n/g, '<br>');
   }
 
-  // Render message part
   function renderMessagePart(part, messageId) {
     if (part.type === 'text') {
       const thinkMatch = part.text.match(
@@ -536,6 +467,7 @@
   function updateChatUI() {
     const chatBody = document.getElementById('chatWidgetBody');
     let html = state.messages
+      .filter((message) => !message.parts[0].text.startsWith('ACTION_RESULT:'))
       .map(
         (message) => `
       <div class="message-container ${message.role === 'user' ? 'user-container' : 'assistant-container'}">

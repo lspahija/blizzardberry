@@ -18,6 +18,108 @@ e.g. it must be easy to:
 
 # Things to be done
 
+## small things to fix:
+- after you create an agent, it's not obvious how to create an action or actually do anything
+- when you're creating an action, you get example code to copy paste before you finalize creation of the action. this is bad.
+- the next.js new action example code snippet doesn't work and can't be copy-pasted as-is. it's missing braces and backticks
+- the action example code is confusing. i'm having to think about how to use it. it should be obvious how to use it.
+- why return anything from a client side action? the code snippet says i can return something but what do i get by doing that?
+- we ask the users for a function name, but we don't need to. also, it's confusing. this is our current description: "The name of the client-side function to be executed. You will implement this in your app using the SDK." We can generate a function name for them based on the action name. it seems we actually do this in one place but not in the other.
+- action names with apostrophes (any maybe other special characters) don't work. e.g. "Get user's name" doesn't work. It should be "GetUserName" or something like that. they result in this:
+
+StreamText Error: {
+"error": {
+"name": "AI_APICallError",
+"url": "https://openrouter.ai/api/v1/chat/completions",
+"requestBodyValues": {
+"model": "google/gemini-2.0-flash-001",
+"temperature": 0,
+"messages": [
+{
+"role": "system",
+"content": "\nYou are the in-app assistant. Your job is to let users control this web app through natural-language chat.\n\n— Tools —\n• If the user requests an in-app action, call the matching tool.  \n• Ask only for information you truly need to use that tool.  \n• If no tool fits, tell the user you can't perform that action.\n• Only execute the tool if you have all the parameters. Don't execute a tool with default values - make sure you have the actual values for all parameters.\n• Never send a default value for a parameter, send the actual value, and if not provided yet, ask the user for the value.\n\n— Request Methods —\n• For PATCH requests, only include fields the user wants to update; do not require all fields.\n• For POST or PUT requests, wait until the user has provided all required fields before executing the request.\n\n— Listing your capabilities —\n• If the user asks “What can you do?”, “List your commands,” “Help,” or similar, reply with a concise, bulleted list of all available tools/actions and a one-line description of each.  \n  Example format:  \n    These are the actions you can use:\n    **Create item** — add a new item to your list.\n    **Update item** — edit an existing item.\n    **Delete item** — remove an item (requires confirmation).\n• Do not show the action_client_ or action_server_ prefix when showing the tool names in the response when listing available tools.\n• Do not show the tool search_knowledge_base in the response when listing available tools.\n\n— Knowledge —\n• For questions about the app, first check the current chat.  \n• If the answer isn't there, use the search_knowledge_base tool, then respond.  \n• For questions unrelated to the web app, answer directly without hitting the knowledge base.\n\n— Clarification & safety —\n• If unsure, ask a brief clarifying question instead of guessing.  \n• Never execute destructive or irreversible actions without explicit confirmation.\n\n— Identity —\n• If the user asks “Who are you?” or “What can you do?”, reply that you are the web app’s natural-language assistant, that you have the ability to search the web app's knowledge base, and include the capability list described above.\n"
+},
+{
+"role": "assistant",
+"content": "Hello! I'm your AI Agent, here to assist you. Feel free to ask me anything or let me know how I can help!"
+},
+{
+"role": "user",
+"content": "what can you do?"
+}
+],
+"tools": [
+{
+"type": "function",
+"function": {
+"name": "ACTION_CLIENT_tell_me_i'm_cool",
+"description": "tell me i'm cool",
+"parameters": {
+"type": "object",
+"properties": {},
+"additionalProperties": false,
+"$schema": "http://json-schema.org/draft-07/schema#"
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "ACTION_CLIENT_tell_me_i'm_ok",
+"description": "tell me i'm ok",
+"parameters": {
+"type": "object",
+"properties": {},
+"additionalProperties": false,
+"$schema": "http://json-schema.org/draft-07/schema#"
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "search_knowledge_base",
+"description": "Search the knowledge base for information to answer user questions about the application",
+"parameters": {
+"type": "object",
+"properties": {
+"query": {
+"type": "string",
+"description": "The search query to find relevant information"
+}
+},
+"required": [
+"query"
+],
+"additionalProperties": false,
+"$schema": "http://json-schema.org/draft-07/schema#"
+}
+}
+}
+],
+"tool_choice": "auto",
+"stream": true
+},
+"statusCode": 400,
+"responseHeaders": {
+"access-control-allow-origin": "*",
+"cf-ray": "964b8275894196e0-BEG",
+"connection": "keep-alive",
+"content-type": "application/json",
+"date": "Fri, 25 Jul 2025 12:02:40 GMT",
+"permissions-policy": "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")",
+"referrer-policy": "no-referrer, strict-origin-when-cross-origin",
+"server": "cloudflare",
+"transfer-encoding": "chunked",
+"vary": "Accept-Encoding",
+"x-content-type-options": "nosniff"
+},
+"responseBody": "{\"error\":{\"message\":\"Provider returned error\",\"code\":400,\"metadata\":{\"raw\":\"{\\n  \\\"error\\\": {\\n    \\\"code\\\": 400,\\n    \\\"message\\\": \\\"The GenerateContentRequest proto is invalid:\\\\n  * tools[0].function_declarations[0].name: [FIELD_INVALID] Invalid function name. Must start with a letter or an underscore. Must be a-z, A-Z, 0-9, or contain underscores, dots and dashes, with a maximum length of 64.\\\",\\n    \\\"status\\\": \\\"INVALID_ARGUMENT\\\"\\n  }\\n}\\n\",\"provider_name\":\"Google\"}},\"user_id\":\"user_2wEF55wbhrP3dEfBrw0KuTW7soB\"}",
+"isRetryable": false
+}
+}
+
+
 ## Before Launch
 - (Frane) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
 - make design look great on all pages, including mobile. e.g. the text doesn't currently look great on landing page on mobile
