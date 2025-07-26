@@ -25,7 +25,6 @@ export interface ShapeData {
   height: number;
   rotation: number;
   description: string;
-  props: any;
 }
 
 // Types for creating shapes
@@ -314,9 +313,9 @@ export default function ExampleWithLLMIntegration() {
             };
         }
     },
-    get_ingredients: async (userConfig) => {
+    get_shapes: async (userConfig) => {
     try {
-      return ["flour", "sugar", "eggs", "butter", "baking powder"];
+      return handleGetShapes();
     } catch (error) {
       return { 
         status: 'error', 
