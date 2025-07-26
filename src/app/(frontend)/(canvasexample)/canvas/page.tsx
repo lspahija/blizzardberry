@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
 import {
   createShapeId,
   Editor,
@@ -238,6 +238,7 @@ export default function ExampleWithLLMIntegration() {
       console.log('Current shapes:', shapes);
       return shapes;
     }
+    return [];
   };
 
   const handleCreateRectangle = () => {
@@ -263,8 +264,18 @@ export default function ExampleWithLLMIntegration() {
     }
   };
 
-  // In a real implementation, these functions would be exposed to your LLM
-  // through your backend API or integration layer
+  // Make handleGetShapes available globally
+  useEffect(() => {
+    // Attach handleGetShapes to window for the script to access
+    (window as any).tldrawActions = {
+      getShapes: handleGetShapes,
+    };
+
+    // Cleanup on unmount
+    return () => {
+      delete (window as any).tldrawActions;
+    };
+  }, []); // Empty dependency array ensures this runs once on mount
 
   return (
     <>
@@ -300,31 +311,31 @@ export default function ExampleWithLLMIntegration() {
         />
         <Script id="blizzardberry-actions" strategy="afterInteractive">
           {`
-        window.agentActions = {
-    bake_cake: async (userConfig) => {
-        try {
-            return { 
-           status: 'success'
-        };
-        } catch (error) {
-            return {
-                status: 'error',
-                error: error.message || 'Failed to execute action'
+            window.agentActions = {
+              bake_cake: async (userConfig) => {
+                try {
+                  return { 
+                    status: 'success'
+                  };
+                } catch (error) {
+                  return {
+                    status: 'error',
+                    error: error.message || 'Failed to execute action'
+                  };
+                }
+              },
+              get_shapes: async (userConfig) => {
+                try {
+                  return window.tldrawActions.getShapes();
+                } catch (error) {
+                  return { 
+                    status: 'error', 
+                    error: error.message || 'Failed to execute action' 
+                  };
+                }
+              }
             };
-        }
-    },
-    get_shapes: async (userConfig) => {
-    try {
-      return handleGetShapes();
-    } catch (error) {
-      return { 
-        status: 'error', 
-        error: error.message || 'Failed to execute action' 
-      };
-    }
-  }
-};
-      `}
+          `}
         </Script>
       </>
     </>
