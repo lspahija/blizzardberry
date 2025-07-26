@@ -82,16 +82,16 @@ export const getActionsScript = (
         .map((i) => i.name)
         .join(', ');
       const params = [argList, 'userConfig'].filter(Boolean).join(', ');
+      const commentText = argList
+        ? argList
+            .split(', ')
+            .map((n) => `use ${n}`)
+            .join(', ')
+        : 'no arguments';
+      
       return `  ${functionName || 'your_action'}: async (${params}) => {
     try {
-      // ${
-        argList
-          ? argList
-              .split(', ')
-              .map((n) => `use ${n}`)
-              .join(', ')
-          : 'no arguments'
-      }
+      // ${commentText}
       // userConfig - exposes the user config if you specified one
       return { 
         status: 'success',
@@ -110,8 +110,16 @@ export const getActionsScript = (
     .join(',\n');
 
   const content = `window.agentActions = {\n  ${functionsCode}\n};`;
-  return getScriptTag(framework, {
-    id: 'blizzardberry-actions',
-    content,
-  });
+  
+  if (framework === Framework.NEXT_JS) {
+    return `<Script id="blizzardberry-actions" strategy="afterInteractive">
+  {\`
+    ${content}
+  \`}
+</Script>`;
+  } else {
+    return `<script id="blizzardberry-actions" type="text/javascript">
+  ${content}
+</script>`;
+  }
 };
