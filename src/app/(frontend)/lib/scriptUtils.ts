@@ -1,3 +1,5 @@
+import { toCamelCase } from "./actionUtils";
+
 export enum Framework {
   NEXT_JS = 'next.js',
   REACT = 'react',
@@ -18,7 +20,7 @@ export const getScriptTag = (framework: Framework, config: ScriptConfig) => {
     case Framework.NEXT_JS:
       return `<Script id="${id}" strategy="afterInteractive">
 ${content ? `  {\`
-    ${content}
+${content}
   \`}` : ''}
 </Script>`;
     case Framework.REACT:
@@ -79,41 +81,37 @@ export const getActionsScript = (
 ) => {
   const functionsCode = actions
     .map(({ functionName, dataInputs }) => {
-      const argList = dataInputs
+      const functionNameCamelCase = toCamelCase(functionName);
+      const params = dataInputs
         .filter((i) => i.name)
         .map((i) => i.name)
         .join(', ');
-      const params = [argList, 'userConfig'].filter(Boolean).join(', ');
-      const commentText = argList
-        ? argList
-            .split(', ')
-            .map((n) => `use ${n}`)
-            .join(', ')
-        : 'no arguments';
       
-      return `  ${functionName || 'your_action'}: async (${params}) => {
-    try {
-      // ${commentText}
-      // userConfig - exposes the user config if you specified one
-      return { 
-        status: 'success',
-        data: {
-          // any object you want to return
-        }
-      };
-    } catch (error) {
-      return { 
-        status: 'error', 
-        error: error.message || 'Failed to execute action' 
-      };
-    }
+      if (framework === Framework.NEXT_JS) {
+        return `    ${functionNameCamelCase}: async (userConfig${params ? `, ${params}` : ''}) => {
+      // Your custom action logic here
+      return { status: 'success', results: [] };
   }`;
+      } else {
+        return `    ${functionNameCamelCase}: async (userConfig${params ? `, ${params}` : ''}) => {
+      // Your custom action logic here
+      return { status: 'success', results: [] };
+    }`;
+      }
     })
     .join(',\n');
 
-    const content = `window.agentActions = {\n  ${functionsCode}\n};`;
-    return getScriptTag(framework, {
-      id: 'blizzardberry-actions',
-      content,
-    });
+    if (framework === Framework.NEXT_JS) {
+      const content = `  window.agentActions = {\n${functionsCode}\n  };`;
+      return getScriptTag(framework, {
+        id: 'blizzardberry-actions',
+        content,
+      });
+    } else {
+      const content = `window.agentActions = {\n${functionsCode}\n};`;
+      return getScriptTag(framework, {
+        id: 'blizzardberry-actions',
+        content,
+      });
+    }
 };
