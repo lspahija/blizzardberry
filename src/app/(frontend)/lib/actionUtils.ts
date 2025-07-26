@@ -34,12 +34,15 @@ export const getRegisterMultipleToolsExample = (
   return getActionsScript(framework, actions);
 };
 
-// Converts a string to camelCase (e.g., "Get Weather" -> "getWeather")
 export function toCamelCase(str: string): string {
   return str
-    .replace(/[^a-zA-Z0-9 ]/g, ' ')
+    .replace(/[^a-zA-Z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
     .replace(/(?:^|\s)([a-zA-Z])/g, (match, p1, offset) =>
       offset === 0 ? p1.toLowerCase() : p1.toUpperCase()
     )
-    .replace(/\s+/g, '');
+    .replace(/\s+/g, '')
+    .replace(/^[^a-zA-Z]/, '')
+    .replace(/^$/, 'customAction');
 }
