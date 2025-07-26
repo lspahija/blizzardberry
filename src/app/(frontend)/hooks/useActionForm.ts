@@ -16,6 +16,7 @@ import {
 import { FrontendModel } from '@/app/api/lib/model/action/frontendAction';
 import { Action } from '@/app/api/lib/model/action/baseAction';
 import { toast } from 'sonner';
+import { toCamelCase } from '../lib/actionUtils';
 
 interface DataInput {
   name: string;
@@ -49,7 +50,6 @@ export const useActionForm = (isEditing = false) => {
   const [apiMethod, setApiMethod] = useState('GET');
   const [headers, setHeaders] = useState<Header[]>([{ key: '', value: '' }]);
   const [apiBody, setApiBody] = useState('');
-  const [functionName, setFunctionName] = useState('');
   const [isEditorInteracted, setIsEditorInteracted] = useState(false);
   const [activeTab, setActiveTab] = useState('headers');
   const [isCreatingAction, setIsCreatingAction] = useState(false);
@@ -207,7 +207,7 @@ export const useActionForm = (isEditing = false) => {
         }));
 
       const frontendModel: FrontendModel = {
-        functionName,
+        functionName: toCamelCase(baseAction.name || 'customAction'),
         parameters: frontendParameters,
       };
 
@@ -322,8 +322,6 @@ export const useActionForm = (isEditing = false) => {
     setHeaders,
     apiBody,
     setApiBody,
-    functionName,
-    setFunctionName,
     isEditorInteracted,
     setIsEditorInteracted,
     activeTab,
@@ -334,6 +332,5 @@ export const useActionForm = (isEditing = false) => {
     handleBack,
     handleCreateAction,
     handleDeleteAction,
-    handleUpdateAction,
   };
 };

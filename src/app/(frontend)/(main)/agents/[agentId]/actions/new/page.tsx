@@ -44,8 +44,6 @@ function ActionFormContent() {
     setHeaders,
     apiBody,
     setApiBody,
-    functionName,
-    setFunctionName,
     isEditorInteracted,
     setIsEditorInteracted,
     activeTab,
@@ -109,8 +107,6 @@ function ActionFormContent() {
           setHeaders={setHeaders}
           apiBody={apiBody}
           setApiBody={setApiBody}
-          functionName={functionName}
-          setFunctionName={setFunctionName}
           isEditorInteracted={isEditorInteracted}
           setIsEditorInteracted={setIsEditorInteracted}
           activeTab={activeTab}

@@ -24,7 +24,7 @@ import {
   BaseAction,
   ExecutionContext,
 } from '@/app/api/lib/model/action/baseAction';
-import { getInputNames, getRegisterToolsExample } from '../lib/actionUtils';
+import { getInputNames, getRegisterToolsExample, toCamelCase } from '../lib/actionUtils';
 import HeaderInput from '@/app/(frontend)/components/HeaderInput';
 import ArgsList from '@/app/(frontend)/components/ArgsList';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -78,8 +78,6 @@ interface ExecutionStepProps {
   setHeaders: (headers: Header[]) => void;
   apiBody: string;
   setApiBody: (body: string) => void;
-  functionName: string;
-  setFunctionName: (name: string) => void;
   isEditorInteracted: boolean;
   setIsEditorInteracted: (interacted: boolean) => void;
   activeTab: string;
@@ -133,8 +131,6 @@ export default function ExecutionStep({
   setHeaders,
   apiBody,
   setApiBody,
-  functionName,
-  setFunctionName,
   isEditorInteracted,
   setIsEditorInteracted,
   activeTab,
@@ -147,11 +143,11 @@ export default function ExecutionStep({
 }: ExecutionStepProps) {
   const [bodyError, setBodyError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
-  const [functionNameError, setFunctionNameError] = useState<string | null>(
-    null
-  );
   const { selectedFramework, setSelectedFramework } = useFramework();
   const [copied, setCopied] = useState(false);
+
+  // Generate function name from action name (camelCase)
+  const generatedFunctionName = toCamelCase(baseAction.name || 'customAction');
 
   const addHeader = () => {
     if (isCreatingAction) return;
@@ -178,12 +174,6 @@ export default function ExecutionStep({
     if (isCreatingAction) return;
     setUrlError(null);
     setApiUrl(value);
-  };
-
-  const handleFunctionNameChange = (value: string) => {
-    if (isCreatingAction) return;
-    setFunctionNameError(null);
-    setFunctionName(value);
   };
 
   const handleCopy = (text: string) => {
@@ -249,11 +239,6 @@ export default function ExecutionStep({
       }
       if (apiMethod === 'GET' && apiBody.trim()) {
         setBodyError('GET requests cannot have a body');
-        return;
-      }
-    } else {
-      if (!functionName.trim()) {
-        setFunctionNameError('Function name is required');
         return;
       }
     }
@@ -519,34 +504,6 @@ export default function ExecutionStep({
             ) : (
               <div className="space-y-8">
                 <div>
-                  <Label
-                    htmlFor="functionName"
-                    className="text-gray-900 text-lg font-semibold flex items-center gap-2"
-                  >
-                    <Tag className="h-4 w-4 text-[#FE4A60]" />
-                    Function Name
-                  </Label>
-                  <p className="text-sm text-gray-600 mt-2">
-                    The name of the client-side function to be executed. You
-                    will implement this in your app using the SDK.
-                  </p>
-                  <div className="w-full md:ml-6 md:mr-6 md:max-w-screen-sm">
-                    <Input
-                      id="functionName"
-                      value={functionName}
-                      onChange={(e) => handleFunctionNameChange(e.target.value)}
-                      placeholder="get_weather"
-                      className={`mt-2 w-full ${functionNameError ? 'border-red-500' : 'border-border'}`}
-                      disabled={isCreatingAction}
-                    />
-                  </div>
-                  {functionNameError && (
-                    <p className="text-red-500 text-sm mt-2 ml-6">
-                      {functionNameError}
-                    </p>
-                  )}
-                </div>
-                <div>
                   <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
                     <List className="h-4 w-4 text-[#FE4A60]" />
                     Arguments (Data Inputs)
@@ -611,7 +568,7 @@ export default function ExecutionStep({
                     }}
                   >
                     {getRegisterToolsExample(
-                      functionName,
+                      generatedFunctionName,
                       dataInputs,
                       selectedFramework
                     )}
@@ -620,7 +577,7 @@ export default function ExecutionStep({
                     onClick={() =>
                       handleCopy(
                         getRegisterToolsExample(
-                          functionName,
+                          generatedFunctionName,
                           dataInputs,
                           selectedFramework
                         )
