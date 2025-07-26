@@ -164,7 +164,10 @@
           btn.textContent = truncatePrompt(prompt, 15);
           btn.title = prompt;
           btn.className = 'chat-widget-prompt-btn';
-          btn.addEventListener('click', () => sendPromptImmediately(prompt));
+          btn.addEventListener(
+            'click',
+            async () => await processChatMessage(prompt)
+          );
           promptBar.appendChild(btn);
         });
         widget.appendChild(promptBar);
@@ -492,11 +495,6 @@
 
     chatBody.innerHTML = html;
     chatBody.scrollTop = chatBody.scrollHeight;
-  }
-
-  async function sendPromptImmediately(promptText) {
-    if (!promptText || state.isProcessing) return;
-    await processChatMessage(promptText);
   }
 
   function truncatePrompt(prompt, wordLimit = 15) {
