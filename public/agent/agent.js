@@ -322,7 +322,6 @@
         ],
       });
       await persistMessage(state.messages[state.messages.length - 1]);
-      updateChatUI();
 
       return `ACTION_RESULT: ${JSON.stringify(actionResult)}`;
     } catch (error) {
@@ -388,7 +387,9 @@
             )
         );
 
-        actionResults.forEach((result) => processChatMessage(result));
+        for (const result of actionResults) {
+          await processChatMessage(result);
+        }
       }
 
       if (text && (!toolResults || toolResults.length === 0)) {
