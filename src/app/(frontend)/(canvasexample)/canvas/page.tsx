@@ -1,26 +1,16 @@
 'use client';
 
-import { useRef, useImperativeHandle, forwardRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import {
-  Tldraw,
-  Editor,
-  TLShapeId,
   createShapeId,
-  TLGeoShape,
-  TLDrawShape,
-  TLTextShape,
-  TLArrowShape,
-  TLLineShape,
+  Editor,
+  Tldraw,
   TLFrameShape,
-  TLGroupShape,
-  TLImageShape,
-  TLVideoShape,
-  TLBookmarkShape,
-  TLEmbedShape,
+  TLGeoShape,
   TLNoteShape,
-  TLHighlightShape,
-  Vec,
   TLShape,
+  TLShapeId,
+  TLTextShape,
 } from 'tldraw';
 import 'tldraw/tldraw.css';
 
@@ -170,80 +160,6 @@ const TldrawWithAPI = forwardRef<TldrawAPI>((props, ref) => {
               },
             };
             break;
-          case 'text':
-            shapeData = {
-              ...shapeData,
-              props: {
-                text: options.text || 'New text',
-                color: options.color || 'black',
-                size: options.size || 'm',
-                autoSize: true,
-              },
-            };
-            break;
-          case 'note':
-            shapeData = {
-              ...shapeData,
-              props: {
-                text: options.text || 'New note',
-                color: options.color || 'yellow',
-                size: options.size || 'm',
-              },
-            };
-            break;
-          case 'frame':
-            shapeData = {
-              ...shapeData,
-              props: {
-                w: defaultWidth,
-                h: defaultHeight,
-                name: options.text || 'Frame',
-              },
-            };
-            break;
-          case 'draw':
-            // For draw shapes, we'll create a simple line
-            const points = [
-              { x: 0, y: 0, z: 0.5 },
-              { x: defaultWidth, y: defaultHeight, z: 0.5 },
-            ];
-            shapeData = {
-              ...shapeData,
-              props: {
-                segments: [
-                  {
-                    type: 'free',
-                    points: points,
-                  },
-                ],
-                color: options.color || 'black',
-                size: options.size || 'm',
-                isComplete: true,
-                isClosed: false,
-              },
-            };
-            break;
-          case 'arrow':
-          case 'line':
-            // For arrows and lines, create start and end points
-            shapeData = {
-              ...shapeData,
-              props: {
-                start: {
-                  type: 'point',
-                  x: 0,
-                  y: 0,
-                },
-                end: {
-                  type: 'point',
-                  x: defaultWidth,
-                  y: defaultHeight,
-                },
-                color: options.color || 'black',
-                size: options.size || 'm',
-              },
-            };
-            break;
         }
 
         try {
@@ -340,20 +256,6 @@ export default function ExampleWithLLMIntegration() {
     }
   };
 
-  const handleCreateText = () => {
-    if (tldrawRef.current) {
-      const shapeId = tldrawRef.current.createShape({
-        type: 'text',
-        x: 300,
-        y: 200,
-        text: 'Hello from LLM!',
-        color: 'red',
-        size: 'l',
-      });
-      console.log('Created text with ID:', shapeId);
-    }
-  };
-
   const handleDeleteAll = () => {
     if (tldrawRef.current) {
       tldrawRef.current.deleteAllShapes();
@@ -386,7 +288,6 @@ export default function ExampleWithLLMIntegration() {
       >
         <button onClick={handleGetShapes}>Get Shapes (console)</button>
         <button onClick={handleCreateRectangle}>Create Rectangle</button>
-        <button onClick={handleCreateText}>Create Text</button>
         <button onClick={handleDeleteAll}>Delete All</button>
       </div>
     </>
