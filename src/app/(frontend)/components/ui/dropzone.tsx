@@ -502,6 +502,7 @@ function DropzoneComponent({
                   e.stopPropagation();
                   setUploadedFileName(null);
                   lastFileRef.current = null;
+                  onFileDrop('');
                 }}
                 disabled={disabled}
               >

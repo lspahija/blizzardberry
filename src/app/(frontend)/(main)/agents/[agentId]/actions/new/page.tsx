@@ -71,21 +71,7 @@ function ActionFormContent() {
     router.push(`/agents/${agentId}`);
   };
 
-  // Debug logging
-  console.log('ActionFormContent render:', {
-    createdClientAction: !!createdClientAction,
-    executionContext: baseAction.executionContext,
-    step,
-    showSuccess,
-    isCreatingAction
-  });
-
-  if (showSuccess && createdClientAction && baseAction.executionContext === ExecutionContext.CLIENT) {
-    console.log('Preventing SuccessOverlay for client action');
-  }
-
   if (createdClientAction && baseAction.executionContext === ExecutionContext.CLIENT) {
-    console.log('Showing ClientActionImplementation');
     return (
       <motion.div
         className="max-w-4xl mx-auto px-4 py-16"
