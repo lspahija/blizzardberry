@@ -215,6 +215,7 @@ function DropzoneComponent({
     if (typeof window !== 'undefined') {
       import('pdfjs-dist').then((module) => {
         const { getDocument, GlobalWorkerOptions } = module;
+        // Use the updated worker file that matches the installed version
         GlobalWorkerOptions.workerSrc = '/pdf/pdf.worker.js';
         setPdfjs({ getDocument });
       });
@@ -262,9 +263,13 @@ function DropzoneComponent({
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await withRetry(
-        () => pdfjs.getDocument({ data: arrayBuffer }).promise
-      );
+      // Create a completely new ArrayBuffer copy to prevent detachment issues
+      const uint8Array = new Uint8Array(arrayBuffer);
+      const arrayBufferCopy = new ArrayBuffer(uint8Array.length);
+      new Uint8Array(arrayBufferCopy).set(uint8Array);
+      
+      // Load PDF without retry to avoid ArrayBuffer detachment issues
+      const pdf = await pdfjs.getDocument({ data: arrayBufferCopy }).promise;
       let fullText = '';
       let hasText = false;
 
@@ -466,10 +471,10 @@ function DropzoneComponent({
 
           <div className="flex flex-col items-center space-y-2">
             <div className="relative">
-              <Upload className="h-8 w-8 text-muted-foreground" />
+              {!isProcessing && <Upload className="h-8 w-8 text-muted-foreground" />}
               {isProcessing && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="h-6 w-6 animate-spin text-brand" />
+                <div className="flex items-center justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-brand" />
                 </div>
               )}
             </div>

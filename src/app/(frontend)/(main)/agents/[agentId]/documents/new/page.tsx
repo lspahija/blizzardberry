@@ -37,6 +37,7 @@ export default function AddDocument({
 }) {
   const params = use(paramsPromise);
   const [text, setText] = useState('');
+  const [fileContent, setFileContent] = useState('');
   const [metadataFields, setMetadataFields] = useState<MetadataField[]>([]);
   const { handleCreateDocument, isSubmitting, error, success } = useDocuments();
 
@@ -72,12 +73,13 @@ export default function AddDocument({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await handleCreateDocument(text, metadataFields);
+    const combinedText = fileContent || text;
+    await handleCreateDocument(combinedText, metadataFields);
   };
 
   const handleFileDrop = (fileText: string) => {
     if (isSubmitting) return;
-    setText(fileText);
+    setFileContent(fileText);
   };
 
   if (success) {
@@ -191,12 +193,12 @@ export default function AddDocument({
                   </div>
                   <Textarea
                     id="text"
-                    value={text}
+                    value={fileContent ? '' : text}
                     onChange={(e) => setText(e.target.value)}
-                    required
+                    required={!fileContent}
                     className="mt-2 block w-full rounded-md border-border border-[2px] shadow-sm focus:border-brand focus:ring-brand text-base p-2"
                     rows={10}
-                    placeholder="Enter the document text here..."
+                    placeholder={fileContent ? 'Document content loaded from file' : 'Enter the document text here...'}
                     disabled={isSubmitting}
                   />
                 </div>
