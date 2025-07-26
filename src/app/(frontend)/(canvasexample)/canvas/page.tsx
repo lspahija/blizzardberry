@@ -13,6 +13,7 @@ import {
   TLTextShape,
 } from 'tldraw';
 import 'tldraw/tldraw.css';
+import Script from 'next/script';
 
 // Types for shape data that LLM will receive
 export interface ShapeData {
@@ -290,6 +291,43 @@ export default function ExampleWithLLMIntegration() {
         <button onClick={handleCreateRectangle}>Create Rectangle</button>
         <button onClick={handleDeleteAll}>Delete All</button>
       </div>
+
+      <>
+        <Script
+          id="blizzardberry-agent"
+          src="http://localhost:3000/agent/agent.js"
+          strategy="afterInteractive"
+          data-agent-id="7b593b84-7f96-41ed-a167-c4c8be7e6972"
+        />
+        <Script id="blizzardberry-actions" strategy="afterInteractive">
+          {`
+        window.agentActions = {
+    bake_cake: async (userConfig) => {
+        try {
+            return { 
+           status: 'success'
+        };
+        } catch (error) {
+            return {
+                status: 'error',
+                error: error.message || 'Failed to execute action'
+            };
+        }
+    },
+    get_ingredients: async (userConfig) => {
+    try {
+      return ["flour", "sugar", "eggs", "butter", "baking powder"];
+    } catch (error) {
+      return { 
+        status: 'error', 
+        error: error.message || 'Failed to execute action' 
+      };
+    }
+  }
+};
+      `}
+        </Script>
+      </>
     </>
   );
 }
