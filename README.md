@@ -19,8 +19,6 @@ e.g. it must be easy to:
 # Things to be done
 
 ## small things to fix:
-- in the example code we currently tell people that we give them each param separately, but really they're all part of a single params object. if they copy paste our example code, it won't work
-
 
 
 ## Before Launch
