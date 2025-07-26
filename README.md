@@ -26,6 +26,7 @@ e.g. it must be easy to:
 - the action example code is confusing. i'm having to think about how to use it. it should be obvious how to use it.
 - why return anything from a client side action? the code snippet says i can return something but what do i get by doing that?
 - we ask the users for a function name, but we don't need to. also, it's confusing. this is our current description: "The name of the client-side function to be executed. You will implement this in your app using the SDK." We can generate a function name for them based on the action name. it seems we actually do this in one place but not in the other.
+- navigation generally seems kind of slow or at least the user doesn't get the required feeback i.e. some spinner. i often click a button on our dashboard and i'm not sure if it worked or not.
 - action names with apostrophes (any maybe other special characters) don't work. e.g. "Get user's name" doesn't work. It should be "GetUserName" or something like that. they result in this:
 
 StreamText Error: {
