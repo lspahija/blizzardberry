@@ -557,11 +557,12 @@ export default function ExecutionStep({
                     <FileText className="h-4 w-4 text-[#FE4A60]" />
                     Implementation Example
                   </Label>
-                  
+                  <p className="text-sm text-gray-600 mb-4">
+                    💡 <strong>Why agentUserConfig?</strong> It provides user information to agents for personalized experiences.
+                  </p>
                   <p className="text-sm text-gray-600 mb-4">
                     💡 <strong>Why return values?</strong> The AI agent uses your return value to provide helpful responses to users and confirm actions were executed.
                   </p>
-                  
                   <SyntaxHighlighter
                     language="javascript"
                     style={vscDarkPlus}

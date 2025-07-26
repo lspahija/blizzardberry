@@ -651,7 +651,7 @@ function AgentDetails({
                         </div>
                       </div>
                       <p className="text-sm text-gray-600 mb-4">
-                        💡 <strong>Why userConfig?</strong> Provides user information to agents for personalized experiences.
+                        💡 <strong>Why agentUserConfig?</strong> It provides user information to agents for personalized experiences.
                       </p>
                       <p className="text-sm text-gray-600 mb-4">
                         💡 <strong>Why return values?</strong> The AI agent uses your return value to provide helpful responses to users and confirm actions were executed.
