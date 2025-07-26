@@ -47,8 +47,6 @@ function ActionEditContent() {
     setHeaders,
     apiBody,
     setApiBody,
-    functionName,
-    setFunctionName,
     isEditorInteracted,
     setIsEditorInteracted,
     activeTab,
@@ -146,7 +144,6 @@ function ActionEditContent() {
             })));
           }
 
-          setFunctionName(frontendAction.executionModel.functionName);
         }
         
         console.log('Form data populated successfully');
@@ -161,7 +158,7 @@ function ActionEditContent() {
     }
 
     fetchAction();
-  }, [agentId, actionId, setBaseAction, setDataInputs, setApiUrl, setApiMethod, setHeaders, setApiBody, setFunctionName, router, isInitialized]);
+  }, [agentId, actionId, setBaseAction, setDataInputs, setApiUrl, setApiMethod, setHeaders, setApiBody, router, isInitialized]);
 
   const handleUpdateAction = async () => {
     setIsUpdatingAction(true);
@@ -224,7 +221,7 @@ function ActionEditContent() {
         }));
 
       const frontendModel: FrontendModel = {
-        functionName,
+        functionName: baseAction.name,
         parameters: frontendParameters,
       };
 
@@ -316,8 +313,6 @@ function ActionEditContent() {
           setHeaders={setHeaders}
           apiBody={apiBody}
           setApiBody={setApiBody}
-          functionName={functionName}
-          setFunctionName={setFunctionName}
           isEditorInteracted={isEditorInteracted}
           setIsEditorInteracted={setIsEditorInteracted}
           activeTab={activeTab}
