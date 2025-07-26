@@ -126,14 +126,6 @@ export function DashboardNavbar() {
               href="/"
               className="text-2xl font-bold text-gray-900 tracking-tight select-none hover:underline focus:underline outline-none flex items-center"
             >
-              <Image
-                src="/image/logo.png"
-                alt="BlizzardBerry Logo"
-                width={60}
-                height={60}
-                className="object-contain"
-                unoptimized={true}
-              />
               <span className="ml-3 text-2xl font-bold">
                 Blizzard<span className="text-[#FE4A60]">Berry</span>
               </span>
@@ -190,16 +182,20 @@ export function DashboardNavbar() {
       </nav>
 
       {/* Mobile Menu with smooth transitions */}
-      <div 
+      <div
         className={`xl:hidden fixed inset-0 z-50 transition-opacity duration-200 ${
-          isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          isMobileMenuOpen
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none'
         }`}
         onClick={handleMenuClose}
       >
         <div className="fixed inset-0 bg-black/20" />
-        <div 
+        <div
           className={`fixed right-0 top-0 h-full w-[280px] bg-[#FFFDF8] border-l-[3px] border-gray-900 p-6 overflow-y-auto transition-transform duration-200 ${
-            isMobileMenuOpen && !isClosing ? 'translate-x-0' : 'translate-x-full'
+            isMobileMenuOpen && !isClosing
+              ? 'translate-x-0'
+              : 'translate-x-full'
           }`}
           onClick={(e) => e.stopPropagation()}
         >

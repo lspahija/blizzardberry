@@ -39,14 +39,6 @@ export function LandingNavbar() {
         <div className="max-w-7xl mx-auto w-full flex flex-row items-center justify-between">
           <div className="flex items-center flex-shrink-0 min-w-[160px]">
             <Link href="/" className="flex items-center">
-              <Image
-                src="/image/logo.png"
-                alt="BlizzardBerry Logo"
-                width={60}
-                height={60}
-                className="object-contain"
-                unoptimized={true}
-              />
               <span className="text-2xl font-bold">
                 <span>Blizzard</span>
                 <span className="text-brand">Berry</span>
@@ -111,14 +103,16 @@ export function LandingNavbar() {
       </nav>
 
       {/* Mobile menu overlay with smooth transitions */}
-      <div 
+      <div
         className={`lg:hidden fixed inset-0 z-40 transition-opacity duration-200 ${
-          isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          isMenuOpen
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none'
         }`}
         onClick={handleMenuClose}
       >
         <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
-        <div 
+        <div
           className={`absolute top-[75px] left-0 right-0 bottom-0 bg-background/95 backdrop-blur-sm px-4 py-6 space-y-4 transition-transform duration-200 ${
             isMenuOpen && !isClosing ? 'translate-x-0' : 'translate-x-full'
           }`}
@@ -153,7 +147,9 @@ export function LandingNavbar() {
                 className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full"
                 asChild
               >
-                <Link href="/login" onClick={handleNavigation}>Sign In</Link>
+                <Link href="/login" onClick={handleNavigation}>
+                  Sign In
+                </Link>
               </Button>
             </div>
             <div className="relative group">
@@ -162,7 +158,9 @@ export function LandingNavbar() {
                 className="relative bg-secondary text-secondary-foreground border-[3px] border-border hover:bg-secondary/90 w-full"
                 asChild
               >
-                <Link href="/login" onClick={handleNavigation}>Try For Free</Link>
+                <Link href="/login" onClick={handleNavigation}>
+                  Try For Free
+                </Link>
               </Button>
             </div>
           </div>
