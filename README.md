@@ -20,7 +20,6 @@ e.g. it must be easy to:
 
 ## small things to fix:
 - after you create an agent, it's not obvious how to create an action or actually do anything
-- after you create an agent, it says "Need help? Visit our documentation." but the word "documentation" is in a super light font and barely legible
 - when you're creating an action, you get example code to copy paste before you finalize creation of the action. this is bad.
 - the next.js new action example code snippet doesn't work and can't be copy-pasted as-is. it's missing braces and backticks
 - the action example code is confusing. i'm having to think about how to use it. it should be obvious how to use it.

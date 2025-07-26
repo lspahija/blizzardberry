@@ -729,7 +729,7 @@ function AgentDetails({
                           Need help? Visit our{' '}
                           <Link
                             href="/docs"
-                            className="text-[#FE4A60] hover:underline"
+                            className="text-destructive hover:underline"
                           >
                             documentation{' '}
                             <ExternalLink className="inline w-4 h-4" />
