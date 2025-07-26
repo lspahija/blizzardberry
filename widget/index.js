@@ -1,60 +1,8 @@
+import { initialize } from './initialization';
+import { generateId } from './util';
+
 (function () {
-  let agentId = null;
-
-  function initializeAgentId(script) {
-    if (script && script.dataset && script.dataset.agentId) {
-      agentId = script.dataset.agentId;
-    } else {
-      console.error(
-        'Could not find agent ID. Make sure the script tag has the data-agent-id attribute.'
-      );
-    }
-  }
-
-  function injectStyles(script) {
-    if (script && script.src) {
-      const css = document.createElement('link');
-      css.rel = 'stylesheet';
-      css.href = script.src.replace(/\.js$/, '.css');
-      document.head.appendChild(css);
-    } else {
-      console.error('Could not find script src for CSS injection');
-    }
-  }
-
-  function ensureMobileViewport() {
-    // Check if viewport meta tag exists, if not create one
-    let viewport = document.querySelector('meta[name="viewport"]');
-    if (!viewport) {
-      viewport = document.createElement('meta');
-      viewport.name = 'viewport';
-      viewport.content =
-        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-      document.head.appendChild(viewport);
-    } else {
-      // Update existing viewport to prevent zooming
-      viewport.content =
-        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-    }
-  }
-
-  // --- Initialization Logic ---
-  const agentScript = document.currentScript;
-
-  const baseUrl = new URL(agentScript.src).origin;
-  initializeAgentId(agentScript);
-  injectStyles(agentScript);
-  ensureMobileViewport();
-
-  const userConfig = window.agentUserConfig;
-  const actions = window.agentActions;
-  delete window.agentUserConfig;
-  delete window.agentActions;
-
-  console.log('BlizzardBerry Agent initialized:', { agentId, baseUrl });
-
-  let counter = 0;
-  const generateId = () => `${agentId}-${Date.now()}-${counter++}`;
+  const { baseUrl, agentId, userConfig, actions } = initialize();
 
   const state = {
     messages: [],
@@ -187,7 +135,7 @@
       document.body.appendChild(widget);
 
       state.messages.push({
-        id: generateId(),
+        id: generateId(agentId),
         role: 'assistant',
         parts: [
           {
