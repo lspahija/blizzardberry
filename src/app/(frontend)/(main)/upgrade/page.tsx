@@ -330,7 +330,7 @@ export default function UpgradePage() {
     padding: 12px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    z-index: 20;
     min-width: 200px;
     max-width: 300px;
     font-size: 0.875rem;
@@ -383,84 +383,188 @@ export default function UpgradePage() {
           </div>
 
           {/* Pricing Cards - Responsive Grid Layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-20">
-            {availableTiers.map(([key, tier]) => (
+          <div className="flex justify-center mb-20">
+            <div className="flex flex-wrap justify-center gap-6 max-w-7xl w-full">
+              {availableTiers.map(([key, tier]) => (
+                <div
+                  key={key}
+                  className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm ${
+                    key === 'standard'
+                      ? 'border-2 border-secondary shadow-lg pt-8 sm:pt-10 md:pt-8'
+                      : ''
+                  }`}
+                  style={{ minHeight: 480 }}
+                >
+                  {billingCycle === 'yearly' && (
+                    <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
+                      -20%
+                    </span>
+                  )}
+                  {key === 'standard' && (
+                    <div className="absolute -top-1 sm:-top-2 md:-top-4 left-1/2 transform -translate-x-1/2 z-10">
+                      <span
+                        className="bg-secondary text-secondary-foreground text-xs font-bold px-2 sm:px-3 py-1 rounded-full shadow border border-border"
+                        style={{ letterSpacing: 0.5 }}
+                      >
+                        Most Popular
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-2">
+                      {key === 'hobby' && (
+                        <Zap className="h-6 w-6 text-secondary" />
+                      )}
+                      {key === 'standard' && (
+                        <Star className="h-6 w-6 text-secondary" />
+                      )}
+                      {key === 'pro' && (
+                        <Shield className="h-6 w-6 text-secondary" />
+                      )}
+                      <h2 className="text-2xl font-bold text-foreground">
+                        {tier.name}
+                      </h2>
+                    </div>
+                    <div className="mb-2 flex items-end gap-2">
+                      {billingCycle === 'yearly' ? (
+                        <>
+                          <span className="text-xl font-semibold text-muted-foreground line-through mr-2">
+                            ${tier.monthlyPrice}
+                          </span>
+                          <span className="text-4xl font-bold text-foreground">
+                            ${(tier.yearlyPrice / 12).toFixed(0)}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-4xl font-bold text-foreground">
+                          ${tier.monthlyPrice}
+                        </span>
+                      )}
+                      <span className="text-base text-muted-foreground mb-1 align-bottom">
+                        /month
+                      </span>
+                    </div>
+                    {billingCycle === 'yearly' && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        ${tier.yearlyPrice} billed annually
+                      </p>
+                    )}
+                    <p className="text-muted-foreground font-medium mt-2">
+                      {tierDescriptions[key as keyof typeof tierDescriptions]}
+                    </p>
+                  </div>
+
+                  <div className="space-y-3 mb-8">
+                    <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                      <span className="text-sm font-medium text-foreground">
+                        Credits
+                      </span>
+                      <span className="text-base font-bold text-foreground">
+                        {tier.credits.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                      <span className="text-sm font-medium text-foreground">
+                        Agents
+                      </span>
+                      <span className="text-base font-bold text-foreground">
+                        {tier.agents}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
+                      <span className="text-sm font-medium text-foreground">
+                        Actions/Agent
+                      </span>
+                      <span className="text-base font-bold text-foreground">
+                        {tier.actionsPerAgent}
+                      </span>
+                    </div>
+                  </div>
+
+                  <ul className="space-y-2 mb-8">
+                    {tierFeatures[key as keyof typeof tierFeatures].map(
+                      (feature, index) => (
+                        <li key={index} className="flex items-center gap-2">
+                          <Check className="h-4 w-4 text-secondary flex-shrink-0" />
+                          {feature === 'Premium models included' ? (
+                            <div className="tooltip-container">
+                              <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
+                                {feature}
+                                <Info className="h-4 w-4 text-secondary" />
+                              </span>
+                              <div className="tooltip">
+                                <p className="font-semibold mb-2">
+                                  Premium Models:
+                                </p>
+                                <ul className="list-disc pl-4 space-y-1">
+                                  {AgentModelList.map((model) => (
+                                    <li key={model}>
+                                      {AgentModelDisplay[model]}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">
+                              {feature}
+                            </span>
+                          )}
+                        </li>
+                      )
+                    )}
+                  </ul>
+
+                  <button
+                    className={`mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border ${
+                      key === 'standard'
+                        ? 'bg-secondary text-secondary-foreground border-secondary hover:bg-secondary/90'
+                        : 'bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10'
+                    } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                    onClick={() => handleSubscribe(key)}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Processing...
+                      </div>
+                    ) : (
+                      'Upgrade'
+                    )}
+                  </button>
+                </div>
+              ))}
+              
+              {/* Enterprise Card - Always included */}
               <div
-                key={key}
-                className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full ${
-                  key === 'standard'
-                    ? 'border-2 border-secondary shadow-lg pt-8 sm:pt-10 md:pt-8'
-                    : ''
-                }`}
+                className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm"
                 style={{ minHeight: 480 }}
               >
-                {billingCycle === 'yearly' && (
-                  <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
-                    -20%
-                  </span>
-                )}
-                {key === 'standard' && (
-                  <div className="absolute -top-1 sm:-top-2 md:-top-4 left-1/2 transform -translate-x-1/2 z-10">
-                    <span
-                      className="bg-secondary text-secondary-foreground text-xs font-bold px-2 sm:px-3 py-1 rounded-full shadow border border-border"
-                      style={{ letterSpacing: 0.5 }}
-                    >
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-
                 <div className="mb-8">
                   <div className="flex items-center gap-2 mb-2">
-                    {key === 'hobby' && (
-                      <Zap className="h-6 w-6 text-secondary" />
-                    )}
-                    {key === 'standard' && (
-                      <Star className="h-6 w-6 text-secondary" />
-                    )}
-                    {key === 'pro' && (
-                      <Shield className="h-6 w-6 text-secondary" />
-                    )}
+                    <Users className="h-6 w-6 text-secondary" />
                     <h2 className="text-2xl font-bold text-foreground">
-                      {tier.name}
+                      Enterprise
                     </h2>
                   </div>
                   <div className="mb-2 flex items-end gap-2">
-                    {billingCycle === 'yearly' ? (
-                      <>
-                        <span className="text-xl font-semibold text-muted-foreground line-through mr-2">
-                          ${tier.monthlyPrice}
-                        </span>
-                        <span className="text-4xl font-bold text-foreground">
-                          ${(tier.yearlyPrice / 12).toFixed(0)}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="text-4xl font-bold text-foreground">
-                        ${tier.monthlyPrice}
-                      </span>
-                    )}
-                    <span className="text-base text-muted-foreground mb-1 align-bottom">
-                      /month
+                    <span className="text-4xl font-bold text-foreground">
+                      Custom
                     </span>
                   </div>
-                  {billingCycle === 'yearly' && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      ${tier.yearlyPrice} billed annually
-                    </p>
-                  )}
                   <p className="text-muted-foreground font-medium mt-2">
-                    {tierDescriptions[key as keyof typeof tierDescriptions]}
+                    {tierDescriptions.enterprise}
                   </p>
                 </div>
-
                 <div className="space-y-3 mb-8">
                   <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
                     <span className="text-sm font-medium text-foreground">
                       Credits
                     </span>
                     <span className="text-base font-bold text-foreground">
-                      {tier.credits.toLocaleString()}
+                      Unlimited
                     </span>
                   </div>
                   <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
@@ -468,153 +572,52 @@ export default function UpgradePage() {
                       Agents
                     </span>
                     <span className="text-base font-bold text-foreground">
-                      {tier.agents}
+                      Unlimited
                     </span>
                   </div>
                   <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
                     <span className="text-sm font-medium text-foreground">
-                      Actions/Agent
+                      Support
                     </span>
                     <span className="text-base font-bold text-foreground">
-                      {tier.actionsPerAgent}
+                      24/7
                     </span>
                   </div>
                 </div>
-
                 <ul className="space-y-2 mb-8">
-                  {tierFeatures[key as keyof typeof tierFeatures].map(
-                    (feature, index) => (
-                      <li key={index} className="flex items-center gap-2">
-                        <Check className="h-4 w-4 text-secondary flex-shrink-0" />
-                        {feature === 'Premium models included' ? (
-                          <div className="tooltip-container">
-                            <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
-                              {feature}
-                              <Info className="h-4 w-4 text-secondary" />
-                            </span>
-                            <div className="tooltip">
-                              <p className="font-semibold mb-2">
-                                Premium Models:
-                              </p>
-                              <ul className="list-disc pl-4 space-y-1">
-                                {AgentModelList.map((model) => (
-                                  <li key={model}>
-                                    {AgentModelDisplay[model]}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="text-sm text-muted-foreground">
+                  {tierFeatures.enterprise.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-secondary flex-shrink-0" />
+                      {feature === 'Premium models included' ? (
+                        <div className="tooltip-container">
+                          <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
                             {feature}
+                            <Info className="h-4 w-4 text-secondary" />
                           </span>
-                        )}
-                      </li>
-                    )
-                  )}
+                          <div className="tooltip">
+                            <p className="font-semibold mb-2">Premium Models:</p>
+                            <ul className="list-disc pl-4 space-y-1">
+                              {AgentModelList.map((model) => (
+                                <li key={model}>{AgentModelDisplay[model]}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">
+                          {feature}
+                        </span>
+                      )}
+                    </li>
+                  ))}
                 </ul>
-
                 <button
-                  className={`mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border ${
-                    key === 'standard'
-                      ? 'bg-secondary text-secondary-foreground border-secondary hover:bg-secondary/90'
-                      : 'bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10'
-                  } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
-                  onClick={() => handleSubscribe(key)}
-                  disabled={isLoading}
+                  className="mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10"
+                  onClick={() => setShowEnterpriseForm(true)}
                 >
-                  {isLoading ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Processing...
-                    </div>
-                  ) : (
-                    'Upgrade'
-                  )}
+                  Contact Sales
                 </button>
               </div>
-            ))}
-            {/* Enterprise Card - Now in the same grid */}
-            <div
-              className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full"
-              style={{ minHeight: 480 }}
-            >
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-6 w-6 text-secondary" />
-                  <h2 className="text-2xl font-bold text-foreground">
-                    Enterprise
-                  </h2>
-                </div>
-                <div className="mb-2 flex items-end gap-2">
-                  <span className="text-4xl font-bold text-foreground">
-                    Custom
-                  </span>
-                </div>
-                <p className="text-muted-foreground font-medium mt-2">
-                  {tierDescriptions.enterprise}
-                </p>
-              </div>
-              <div className="space-y-3 mb-8">
-                <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                  <span className="text-sm font-medium text-foreground">
-                    Credits
-                  </span>
-                  <span className="text-base font-bold text-foreground">
-                    Unlimited
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                  <span className="text-sm font-medium text-foreground">
-                    Agents
-                  </span>
-                  <span className="text-base font-bold text-foreground">
-                    Unlimited
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                  <span className="text-sm font-medium text-foreground">
-                    Support
-                  </span>
-                  <span className="text-base font-bold text-foreground">
-                    24/7
-                  </span>
-                </div>
-              </div>
-              <ul className="space-y-2 mb-8">
-                {tierFeatures.enterprise.map((feature, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-secondary flex-shrink-0" />
-                    {feature === 'Premium models included' ? (
-                      <div className="tooltip-container">
-                        <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
-                          {feature}
-                          <Info className="h-4 w-4 text-secondary" />
-                        </span>
-                        <div className="tooltip">
-                          <p className="font-semibold mb-2">Premium Models:</p>
-                          <ul className="list-disc pl-4 space-y-1">
-                            {AgentModelList.map((model) => (
-                              <li key={model}>{AgentModelDisplay[model]}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    ) : (
-                      <span className="text-sm text-muted-foreground">
-                        {feature}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-              <button
-                className="mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10"
-                onClick={() => setShowEnterpriseForm(true)}
-              >
-                Contact Sales
-              </button>
             </div>
           </div>
 
