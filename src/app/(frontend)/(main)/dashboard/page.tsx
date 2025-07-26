@@ -16,9 +16,11 @@ import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import posthog from 'posthog-js';
 import { toast } from 'sonner';
 import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
+import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const {
     agents,
     loadingAgents,
@@ -35,6 +37,9 @@ export default function Dashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [agentToDelete, setAgentToDelete] = useState<string | null>(null);
+  const [isCreatingAgent, setIsCreatingAgent] = useState(false);
+  const [isNavigatingToUserConfig, setIsNavigatingToUserConfig] = useState(false);
+  const [navigatingToAgentId, setNavigatingToAgentId] = useState<string | null>(null);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -128,6 +133,34 @@ export default function Dashboard() {
     }
   };
 
+  const handleCreateAgent = async () => {
+    setIsCreatingAgent(true);
+    posthog.capture('create_agent_clicked', {
+      user_email: session?.user?.email,
+    });
+    
+    router.push('/agents/new');
+  };
+
+  const handleNavigateToUserConfig = async () => {
+    setIsNavigatingToUserConfig(true);
+    posthog.capture('user_config_clicked', {
+      user_email: session?.user?.email,
+    });
+    
+    router.push('/user-config');
+  };
+
+  const handleNavigateToAgent = async (agentId: string) => {
+    setNavigatingToAgentId(agentId);
+    posthog.capture('agent_view_clicked', {
+      agent_id: agentId,
+      user_email: session?.user?.email,
+    });
+    
+    router.push(`/agents/${agentId}`);
+  };
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -152,37 +185,35 @@ export default function Dashboard() {
           </div>
           <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Button
-              asChild
               className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 w-full sm:w-auto"
-              onClick={() =>
-                posthog.capture('create_agent_clicked', {
-                  user_email: session?.user?.email,
-                })
-              }
+              onClick={handleCreateAgent}
+              disabled={isCreatingAgent}
             >
-              <Link
-                href="/agents/new"
-                className="flex items-center justify-center"
-              >
-                <PlusCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                Create New Agent
-              </Link>
+              {isCreatingAgent ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <PlusCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  Create New Agent
+                </>
+              )}
             </Button>
             <Button
-              asChild
               className="bg-secondary text-secondary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90 w-full sm:w-auto"
-              onClick={() =>
-                posthog.capture('user_config_clicked', {
-                  user_email: session?.user?.email,
-                })
-              }
+              onClick={handleNavigateToUserConfig}
+              disabled={isNavigatingToUserConfig}
             >
-              <Link
-                href="/user-config"
-                className="flex items-center justify-center"
-              >
-                User Configuration
-              </Link>
+              {isNavigatingToUserConfig ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                'User Configuration'
+              )}
             </Button>
           </div>
 
@@ -210,15 +241,11 @@ export default function Dashboard() {
                       key={agent.id}
                       className="border-t pt-3 sm:pt-4 flex flex-col sm:flex-row sm:items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-3 sm:px-4 py-3 sm:py-2 relative"
                     >
-                      <Link
-                        href={`/agents/${agent.id}`}
-                        className="flex flex-1 min-w-0 items-start cursor-pointer"
-                        onClick={() =>
-                          posthog.capture('agent_view_clicked', {
-                            agent_id: agent.id,
-                            user_email: session?.user?.email,
-                          })
-                        }
+                      <Button
+                        variant="ghost"
+                        className="flex flex-1 min-w-0 items-center cursor-pointer p-0 h-auto text-left hover:bg-transparent"
+                        onClick={() => handleNavigateToAgent(agent.id)}
+                        disabled={navigatingToAgentId === agent.id}
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-base sm:text-lg text-foreground font-semibold mb-1 sm:mb-2 truncate hover:underline">
@@ -239,7 +266,12 @@ export default function Dashboard() {
                             </p>
                           </div>
                         </div>
-                      </Link>
+                        {navigatingToAgentId === agent.id && (
+                          <div className="flex items-center justify-center ml-4">
+                            <Loader2 className="h-5 w-5 animate-spin text-brand" />
+                          </div>
+                        )}
+                      </Button>
                       <div className="flex gap-2 w-full sm:w-auto mt-3 sm:mt-0 sm:ml-4">
                         <Button
                           variant="destructive"
@@ -250,8 +282,13 @@ export default function Dashboard() {
                           }}
                           className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-full p-2 flex-shrink-0"
                           title="Delete Agent"
+                          disabled={deletingAgentId === agent.id}
                         >
-                          <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
+                          {deletingAgentId === agent.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
+                          )}
                         </Button>
                       </div>
                       {idx < agents.length - 1 && (
