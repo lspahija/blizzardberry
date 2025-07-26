@@ -241,14 +241,14 @@ export default function ExampleWithLLMIntegration() {
     return [];
   };
 
-  const handleCreateRectangle = () => {
+  const handleCreateRectangle = (xCoordinate, yCoordinate, width, height) => {
     if (tldrawRef.current) {
       const shapeId = tldrawRef.current.createShape({
         type: 'geo',
-        x: 100,
-        y: 100,
-        width: 200,
-        height: 150,
+        x: xCoordinate,
+        y: yCoordinate,
+        width: width,
+        height: height,
         geo: 'rectangle',
         color: 'blue',
         fill: 'solid',
@@ -269,6 +269,7 @@ export default function ExampleWithLLMIntegration() {
     // Attach handleGetShapes to window for the script to access
     (window as any).tldrawActions = {
       getShapes: handleGetShapes,
+      createRectangle: handleCreateRectangle,
     };
 
     // Cleanup on unmount
@@ -298,7 +299,9 @@ export default function ExampleWithLLMIntegration() {
         }}
       >
         <button onClick={handleGetShapes}>Get Shapes (console)</button>
-        <button onClick={handleCreateRectangle}>Create Rectangle</button>
+        <button onClick={() => handleCreateRectangle(100, 100, 200, 150)}>
+          Create Rectangle
+        </button>
         <button onClick={handleDeleteAll}>Delete All</button>
       </div>
 
@@ -312,15 +315,16 @@ export default function ExampleWithLLMIntegration() {
         <Script id="blizzardberry-actions" strategy="afterInteractive">
           {`
             window.agentActions = {
-              bake_cake: async (userConfig) => {
+              create_rectangle: async (params, userConfig) => {
                 try {
+                  window.tldrawActions.createRectangle(params.xCoordinate, params.yCoordinate, params.width, params.height);
                   return { 
                     status: 'success'
                   };
                 } catch (error) {
-                  return {
-                    status: 'error',
-                    error: error.message || 'Failed to execute action'
+                  return { 
+                    status: 'error', 
+                    error: error.message || 'Failed to execute action' 
                   };
                 }
               },
