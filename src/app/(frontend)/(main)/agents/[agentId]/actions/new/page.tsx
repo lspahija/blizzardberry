@@ -6,9 +6,11 @@ import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import DataInputsStep from '@/app/(frontend)/components/DataInputsStep';
 import GeneralStep from '@/app/(frontend)/components/GeneralStep';
 import ExecutionStep from '@/app/(frontend)/components/ExecutionStep';
+import ClientActionImplementation from '@/app/(frontend)/components/ClientActionImplementation';
 import { Loader2 } from 'lucide-react'; // Import a loading icon
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
+import { ExecutionContext } from '@/app/api/lib/model/action/baseAction';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -50,6 +52,7 @@ function ActionFormContent() {
     setActiveTab,
     isCreatingAction,
     showSuccess,
+    createdClientAction,
     handleNextStep,
     handleBack,
     handleCreateAction,
@@ -63,6 +66,48 @@ function ActionFormContent() {
   const handleSuccessClose = () => {
     router.push(`/agents/${agentId}`);
   };
+
+  const handleContinueToAgent = () => {
+    router.push(`/agents/${agentId}`);
+  };
+
+  // Debug logging
+  console.log('ActionFormContent render:', {
+    createdClientAction: !!createdClientAction,
+    executionContext: baseAction.executionContext,
+    step,
+    showSuccess,
+    isCreatingAction
+  });
+
+  if (showSuccess && createdClientAction && baseAction.executionContext === ExecutionContext.CLIENT) {
+    console.log('Preventing SuccessOverlay for client action');
+  }
+
+  if (createdClientAction && baseAction.executionContext === ExecutionContext.CLIENT) {
+    console.log('Showing ClientActionImplementation');
+    return (
+      <motion.div
+        className="max-w-4xl mx-auto px-4 py-16"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.h1
+          className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-12 text-center"
+          variants={itemVariants}
+        >
+          Action Created Successfully!
+        </motion.h1>
+
+        <ClientActionImplementation
+          action={createdClientAction}
+          dataInputs={dataInputs}
+          onContinue={handleContinueToAgent}
+        />
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -92,10 +137,13 @@ function ActionFormContent() {
           setDataInputs={setDataInputs}
           onNext={handleNextStep}
           onBack={handleBack}
+          isClientAction={baseAction.executionContext === ExecutionContext.CLIENT}
+          onCreateAction={handleCreateAction}
+          isCreatingAction={isCreatingAction}
         />
       )}
 
-      {step === 3 && (
+      {step === 3 && baseAction.executionContext === ExecutionContext.SERVER && (
         <ExecutionStep
           baseAction={baseAction}
           dataInputs={dataInputs}

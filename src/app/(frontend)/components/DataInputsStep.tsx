@@ -28,6 +28,9 @@ interface DataInputsStepProps {
   setDataInputs: (inputs: DataInput[]) => void;
   onNext: () => void;
   onBack: () => void;
+  isClientAction?: boolean;
+  onCreateAction?: () => void;
+  isCreatingAction?: boolean;
 }
 
 export default function DataInputsStep({
@@ -35,12 +38,23 @@ export default function DataInputsStep({
   setDataInputs,
   onNext,
   onBack,
+  isClientAction = false,
+  onCreateAction,
+  isCreatingAction = false,
 }: DataInputsStepProps) {
   const addDataInput = () => {
     setDataInputs([
       ...dataInputs,
       { name: '', type: 'Text', description: '', isArray: false },
     ]);
+  };
+
+  const handleNextOrCreate = () => {
+    if (isClientAction && onCreateAction) {
+      onCreateAction();
+    } else {
+      onNext();
+    }
   };
 
   return (
@@ -115,15 +129,26 @@ export default function DataInputsStep({
                 variant="outline"
                 className="bg-card text-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 text-base md:text-lg font-semibold w-full sm:w-auto"
                 onClick={onBack}
+                disabled={isCreatingAction}
               >
                 Back
               </Button>
               <Button
                 className="bg-destructive text-white border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand transition-transform duration-200 shadow-md text-base md:text-lg font-semibold w-full sm:w-auto"
-                onClick={onNext}
+                onClick={handleNextOrCreate}
+                disabled={isCreatingAction}
               >
-                <Save className="w-4 h-4 mr-2" />
-                Save and Continue
+                {isCreatingAction ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    {isClientAction ? 'Create Action' : 'Save and Continue'}
+                  </>
+                )}
               </Button>
             </div>
           </CardContent>

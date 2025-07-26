@@ -298,10 +298,12 @@ function ActionEditContent() {
           setDataInputs={setDataInputs}
           onNext={handleNextStep}
           onBack={handleBack}
+          isClientAction={baseAction.executionContext === ExecutionContext.CLIENT}
+          isCreatingAction={isUpdatingAction}
         />
       )}
 
-      {step === 3 && (
+      {step === 3 && baseAction.executionContext === ExecutionContext.SERVER && (
         <ExecutionStep
           baseAction={baseAction}
           dataInputs={dataInputs}

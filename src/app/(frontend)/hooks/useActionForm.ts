@@ -54,6 +54,11 @@ export const useActionForm = (isEditing = false) => {
   const [activeTab, setActiveTab] = useState('headers');
   const [isCreatingAction, setIsCreatingAction] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [createdClientAction, setCreatedClientAction] = useState<Action | null>(null);
+
+  useEffect(() => {
+    console.log('createdClientAction state changed:', createdClientAction);
+  }, [createdClientAction]);
 
   useEffect(() => {
     // Don't update step if we're showing success
@@ -127,6 +132,15 @@ export const useActionForm = (isEditing = false) => {
 
   const handleNextStep = () => {
     if (showSuccess) return;
+    
+    if (baseAction.executionContext === ExecutionContext.CLIENT && step === 2) {
+      return; 
+    }
+    
+    if (isEditing && baseAction.executionContext === ExecutionContext.CLIENT && step === 2) {
+      return;
+    }
+    
     if (step < 3) {
       updateUrl(step + 1);
     }
@@ -241,16 +255,44 @@ export const useActionForm = (isEditing = false) => {
         throw new Error('Failed to create action');
       }
 
+      const createdAction = await response.json();
       console.log('Action created successfully');
-      setShowSuccess(true);
+      console.log('Response data:', createdAction);
 
-      // Clear browser history without causing page reload
-      window.history.replaceState(null, '', `/agents/${agentId}/actions/new`);
-      window.history.pushState(null, '', `/agents/${agentId}/actions/new`);
+      if (baseAction.executionContext === ExecutionContext.CLIENT) {
+        const clientAction: Action = {
+          ...baseAction,
+          id: createdAction.actionId || null,
+          executionContext: ExecutionContext.CLIENT,
+          executionModel: {
+            functionName: toCamelCase(baseAction.name || 'customAction'),
+            parameters: dataInputs
+              .filter((input) => input.name)
+              .map((input) => ({
+                name: input.name,
+                description: input.description,
+                type: input.type.toLowerCase() as ParameterType,
+                isArray: input.isArray,
+              })),
+          },
+        };
+        
+        console.log('Setting createdClientAction:', clientAction);
+        setCreatedClientAction(clientAction);
+        window.history.replaceState(null, '', `/agents/${agentId}/actions/new?type=client&step=2`);
+        
+        setTimeout(() => {
+          setCreatedClientAction(clientAction);
+        }, 100);
+      } else {
+        setShowSuccess(true);
+        window.history.replaceState(null, '', `/agents/${agentId}/actions/new`);
+        window.history.pushState(null, '', `/agents/${agentId}/actions/new`);
 
-      setTimeout(() => {
-        router.replace(`/agents/${agentId}`);
-      }, 1500);
+        setTimeout(() => {
+          router.replace(`/agents/${agentId}`);
+        }, 1500);
+      }
     } catch (error) {
       console.error('Error creating action:', error);
       if (error.message !== 'Action limit reached') {
@@ -328,6 +370,7 @@ export const useActionForm = (isEditing = false) => {
     setActiveTab,
     isCreatingAction,
     showSuccess,
+    createdClientAction,
     handleNextStep,
     handleBack,
     handleCreateAction,

@@ -24,11 +24,8 @@ import {
   BaseAction,
   ExecutionContext,
 } from '@/app/api/lib/model/action/baseAction';
-import { getInputNames, getRegisterToolsExample, toCamelCase } from '../lib/actionUtils';
+import { getInputNames } from '../lib/actionUtils';
 import HeaderInput from '@/app/(frontend)/components/HeaderInput';
-import ArgsList from '@/app/(frontend)/components/ArgsList';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
   Copy,
   ExternalLink,
@@ -45,9 +42,6 @@ import {
   FileText,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Framework } from '@/app/(frontend)/lib/scriptUtils';
-import { useFramework } from '@/app/(frontend)/contexts/useFramework';
-import Link from 'next/link';
 import SuccessOverlay from '@/app/(frontend)/components/ui/success-overlay';
 
 const cardVariants = {
@@ -143,11 +137,6 @@ export default function ExecutionStep({
 }: ExecutionStepProps) {
   const [bodyError, setBodyError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
-  const { selectedFramework, setSelectedFramework } = useFramework();
-  const [copied, setCopied] = useState(false);
-
-  // Generate function name from action name (camelCase)
-  const generatedFunctionName = toCamelCase(baseAction.name || 'customAction');
 
   const addHeader = () => {
     if (isCreatingAction) return;
@@ -174,13 +163,6 @@ export default function ExecutionStep({
     if (isCreatingAction) return;
     setUrlError(null);
     setApiUrl(value);
-  };
-
-  const handleCopy = (text: string) => {
-    if (isCreatingAction) return;
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleEditorWillMount = (monaco) => {
@@ -218,30 +200,29 @@ export default function ExecutionStep({
   const handleCreate = () => {
     if (isCreatingAction) return;
 
-    if (baseAction.executionContext === ExecutionContext.SERVER) {
-      if (!apiUrl.trim()) {
-        setUrlError('URL is required');
-        return;
-      }
-
-      const trimmedUrl = apiUrl.trim();
-      if (
-        !trimmedUrl.startsWith('http://') &&
-        !trimmedUrl.startsWith('https://')
-      ) {
-        setUrlError('URL must start with http:// or https://');
-        return;
-      }
-
-      if ((apiMethod === 'PUT' || apiMethod === 'PATCH') && !apiBody.trim()) {
-        setBodyError(`Body is required for ${apiMethod} requests`);
-        return;
-      }
-      if (apiMethod === 'GET' && apiBody.trim()) {
-        setBodyError('GET requests cannot have a body');
-        return;
-      }
+    if (!apiUrl.trim()) {
+      setUrlError('URL is required');
+      return;
     }
+
+    const trimmedUrl = apiUrl.trim();
+    if (
+      !trimmedUrl.startsWith('http://') &&
+      !trimmedUrl.startsWith('https://')
+    ) {
+      setUrlError('URL must start with http:// or https://');
+      return;
+    }
+
+    if ((apiMethod === 'PUT' || apiMethod === 'PATCH') && !apiBody.trim()) {
+      setBodyError(`Body is required for ${apiMethod} requests`);
+      return;
+    }
+    if (apiMethod === 'GET' && apiBody.trim()) {
+      setBodyError('GET requests cannot have a body');
+      return;
+    }
+    
     onCreate();
   };
 
@@ -264,9 +245,7 @@ export default function ExecutionStep({
       >
         <Info className="h-6 w-6 text-accent mr-3" />
         <span className="text-foreground text-base">
-          {baseAction.executionContext === ExecutionContext.SERVER
-            ? 'Configure the API endpoint that the AI Agent will call to retrieve or update data.'
-            : 'Configure the client-side function that will be executed in your application.'}
+          Configure the API endpoint that the AI Agent will call to retrieve or update data.
         </span>
       </div>
       <div className="relative mb-12 ml-0">
@@ -278,22 +257,14 @@ export default function ExecutionStep({
           <CardHeader>
             <div>
               <div className="flex items-center gap-2">
-                {baseAction.executionContext === ExecutionContext.SERVER ? (
-                  <Globe className="h-7 w-7 text-[#FE4A60]" />
-                ) : (
-                  <Code className="h-7 w-7 text-[#FE4A60]" />
-                )}
+                <Globe className="h-7 w-7 text-[#FE4A60]" />
                 <CardTitle className="text-2xl font-semibold text-gray-900">
-                  {baseAction.executionContext === ExecutionContext.SERVER
-                    ? 'API Request'
-                    : 'Client Action Configuration'}
+                  API Request
                 </CardTitle>
               </div>
-              {baseAction.executionContext === ExecutionContext.SERVER && (
-                <p className="text-sm text-gray-600 mt-2">
-                  The API endpoint that should be called by the AI Agent to retrieve data or to send updates. You can include data inputs (variables) collected from the user in the URL, headers, and request body.
-                </p>
-              )}
+              <p className="text-sm text-gray-600 mt-2">
+                The API endpoint that should be called by the AI Agent to retrieve data or to send updates. You can include data inputs (variables) collected from the user in the URL, headers, and request body.
+              </p>
             </div>
           </CardHeader>
           <CardContent className="space-y-8">
@@ -311,324 +282,197 @@ export default function ExecutionStep({
               </div>
             )}
 
-            {baseAction.executionContext === ExecutionContext.SERVER ? (
-              <>
-                {dataInputs.filter((input) => input.name).length > 0 && (
-                  <div className="mt-6">
-                    <Label className="text-gray-900 text-base font-medium flex items-center gap-2">
-                      <List className="h-4 w-4 text-[#FE4A60]" />
-                      Available Variables
-                    </Label>
-                    <div className="mt-2">
-                      <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-2">
-                        {dataInputs
-                          .filter((input) => input.name)
-                          .map((input, index) => (
-                            <div
-                              key={index}
-                              className={cn(
-                                'bg-[#FFFDF8] px-3 py-2 border-[2px] border-gray-900 rounded-lg shadow-sm'
-                              )}
-                            >
-                              <div className="font-mono text-sm text-gray-900">{`{{${input.name}}}`}</div>
-                              <div className="text-xs text-gray-500 font-medium">
-                                {input.type}
-                                {input.isArray ? '[]' : ''}
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {/* Method and URL row, left-aligned */}
-                <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-6 items-center">
-                  <div className="w-full md:w-[120px]">
-                    <Label
-                      htmlFor="apiMethod"
-                      className="text-base font-medium flex items-center gap-2"
-                    >
-                      <Terminal className="h-4 w-4 text-[#FE4A60]" />
-                      Method
-                    </Label>
-                    <Select
-                      value={apiMethod}
-                      onValueChange={handleMethodChange}
-                      disabled={isCreatingAction}
-                    >
-                      <SelectTrigger className="mt-2 border-[2px] border-gray-900 w-full">
-                        <SelectValue placeholder="Select method" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="GET">GET</SelectItem>
-                        <SelectItem value="POST">POST</SelectItem>
-                        <SelectItem value="PUT">PUT</SelectItem>
-                        <SelectItem value="PATCH">PATCH</SelectItem>
-                        <SelectItem value="DELETE">DELETE</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex-1 w-full">
-                    <Label
-                      htmlFor="apiUrl"
-                      className="text-base font-medium flex items-center gap-2"
-                    >
-                      <Globe className="h-4 w-4 text-[#FE4A60]" />
-                      HTTPS URL
-                    </Label>
-                    <div className="relative">
-                      <SuggestInput
-                        id="apiUrl"
-                        value={apiUrl}
-                        onChange={(e) => handleUrlChange(e.target.value)}
-                        suggestions={urlSuggestions.concat(
-                          getInputNames(dataInputs, true)
-                        )}
-                        placeholder="https://wttr.in/{{city}}?format=j1"
-                        inputClassName={`mt-2 border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
-                        matchMode="full"
-                        disabled={isCreatingAction}
-                      />
-                      {urlError && (
-                        <p className="absolute left-0 mt-1 text-red-500 text-sm">
-                          {urlError}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-8">
-                  <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
-                    <List className="h-4 w-4 text-[#FE4A60]" />
-                    Headers
-                  </Label>
-                  {headers.map((header, index) => (
-                    <HeaderInput
-                      key={index}
-                      header={header}
-                      index={index}
-                      updateHeader={(field, value) => {
-                        const updatedHeaders = [...headers];
-                        updatedHeaders[index] = {
-                          ...updatedHeaders[index],
-                          [field]: value,
-                        };
-                        setHeaders(updatedHeaders);
-                      }}
-                      removeHeader={() =>
-                        setHeaders(headers.filter((_, i) => i !== index))
-                      }
-                      suggestions={getInputNames(dataInputs, true)}
-                      commonHeaderKeys={commonHeaderKeys}
-                      commonHeaderValues={commonHeaderValues}
-                      disabled={isCreatingAction}
-                    />
-                  ))}
-                  <Button
-                    variant="outline"
-                    className="mt-4 bg-card text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
-                    onClick={addHeader}
-                    disabled={isCreatingAction}
-                  >
-                    <PlusCircle className="h-4 w-4" />
-                    Add Header
-                  </Button>
-                </div>
-                <div className="mt-8">
-                  <Label
-                    htmlFor="apiBody"
-                    className="text-gray-900 text-lg font-semibold flex items-center gap-2"
-                  >
-                    <Code className="h-4 w-4 text-[#FE4A60]" />
-                    Body
-                  </Label>
-                  {bodyError && (
-                    <div className="mt-4 p-4 bg-red-50 border-[2px] border-red-200 rounded-lg">
-                      <p className="text-red-500 text-sm">{bodyError}</p>
-                    </div>
-                  )}
-                  <div
-                    className="mt-2 border-[2px] border-border rounded-lg overflow-hidden"
-                    style={{ backgroundColor: 'var(--color-muted)' }}
-                  >
-                    <div className="relative">
-                      {!apiBody?.trim() && (
-                        <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
-                          {placeholderJSON}
+            {dataInputs.filter((input) => input.name).length > 0 && (
+              <div className="mt-6">
+                <Label className="text-gray-900 text-base font-medium flex items-center gap-2">
+                  <List className="h-4 w-4 text-[#FE4A60]" />
+                  Available Variables
+                </Label>
+                <div className="mt-2">
+                  <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-2">
+                    {dataInputs
+                      .filter((input) => input.name)
+                      .map((input, index) => (
+                        <div
+                          key={index}
+                          className={cn(
+                            'bg-[#FFFDF8] px-3 py-2 border-[2px] border-gray-900 rounded-lg shadow-sm'
+                          )}
+                        >
+                          <div className="font-mono text-sm text-gray-900">{`{{${input.name}}}`}</div>
+                          <div className="text-xs text-gray-500 font-medium">
+                            {input.type}
+                            {input.isArray ? '[]' : ''}
+                          </div>
                         </div>
-                      )}
-                      <Editor
-                        height="200px"
-                        defaultLanguage="json"
-                        value={apiBody}
-                        onChange={handleEditorChange}
-                        beforeMount={handleEditorWillMount}
-                        onMount={(editor) => {
-                          editor.updateOptions({
-                            lineNumbers: () => '',
-                            glyphMargin: false,
-                            lineDecorationsWidth: 0,
-                            lineNumbersMinChars: 0,
-                            suggest: {
-                              showWords: false,
-                              preview: true,
-                              showProperties: false,
-                            },
-                          });
-                          requestAnimationFrame(() => editor.layout());
-                        }}
-                        theme="customTheme"
-                        options={{
-                          fontSize: 14,
-                          minimap: { enabled: false },
-                          scrollBeyondLastLine: false,
-                          wordWrap: 'on',
-                          renderLineHighlight: 'none',
-                          scrollbar: {
-                            verticalScrollbarSize: 8,
-                            horizontalScrollbarSize: 8,
-                          },
-                          padding: { top: 12, bottom: 12, left: 12 } as any,
-                          folding: false,
-                          hideCursorInOverviewRuler: true,
-                          guides: { indentation: false },
-                          readOnly: isCreatingAction,
-                          fixedOverflowWidgets: true,
-                        }}
-                        className="bg-transparent"
-                      />
-                    </div>
+                      ))}
                   </div>
                 </div>
-              </>
-            ) : (
-              <div className="space-y-8">
-                <div>
-                  <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
-                    <List className="h-4 w-4 text-[#FE4A60]" />
-                    Arguments (Data Inputs)
-                  </Label>
-                  <p className="text-sm text-gray-600 mt-2 ml-6">
-                    The agent will collect these from the user and pass them as{' '}
-                    <code>args</code> to your function.
-                  </p>
-                  <div className="mt-4 ml-6">
-                    <ArgsList dataInputs={dataInputs} />
-                  </div>
-                </div>
-                <div className="mb-4">
-                  <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
-                    <Settings className="h-4 w-4 text-[#FE4A60]" />
-                    Framework
-                  </Label>
-                  <p className="text-sm text-gray-600 mt-2 ml-6">
-                    Select the framework you're using to implement the
-                    client-side function.
-                  </p>
-                  <div className="mt-2 ml-6">
-                    <Select
-                      value={selectedFramework}
-                      onValueChange={(value) =>
-                        setSelectedFramework(value as Framework)
-                      }
-                      disabled={isCreatingAction}
-                    >
-                      <SelectTrigger className="w-[200px] border-[2px] border-gray-900">
-                        <SelectValue placeholder="Select framework" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value={Framework.ANGULAR}>
-                          Angular
-                        </SelectItem>
-                        <SelectItem value={Framework.NEXT_JS}>
-                          Next.js
-                        </SelectItem>
-                        <SelectItem value={Framework.REACT}>React</SelectItem>
-                        <SelectItem value={Framework.VANILLA}>
-                          Vanilla JS
-                        </SelectItem>
-                        <SelectItem value={Framework.VUE}>Vue</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="relative mt-4">
-                  <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
-                    <FileText className="h-4 w-4 text-[#FE4A60]" />
-                    Implementation Example
-                  </Label>
-                  <p className="text-sm text-gray-600 mb-4">
-                    💡 <strong>Why agentUserConfig?</strong> It provides user information to agents for personalized experiences.
-                  </p>
-                  <p className="text-sm text-gray-600 mb-4">
-                    💡 <strong>Why return values?</strong> The AI agent uses your return value to provide helpful responses to users and confirm actions were executed.
-                  </p>
-                  <SyntaxHighlighter
-                    language="javascript"
-                    style={vscDarkPlus}
-                    customStyle={{
-                      borderRadius: '8px',
-                      padding: '16px',
-                      border: '2px solid var(--color-border)',
-                      backgroundColor: 'var(--color-background-dark)',
-                    }}
-                  >
-                    {getRegisterToolsExample(
-                      generatedFunctionName,
-                      dataInputs,
-                      selectedFramework
-                    )}
-                  </SyntaxHighlighter>
-                  <Button
-                    onClick={() =>
-                      handleCopy(
-                        getRegisterToolsExample(
-                          generatedFunctionName,
-                          dataInputs,
-                          selectedFramework
-                        )
-                      )
-                    }
-                    className="absolute top-22 right-4 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-xs sm:text-sm font-semibold hover:bg-secondary/90 flex items-center gap-1 sm:gap-2"
-                    disabled={isCreatingAction}
-                  >
-                    <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                    <span className="hidden sm:inline">
-                      {copied ? 'Copied!' : 'Copy Code'}
-                    </span>
-                    <span className="sm:hidden">
-                      {copied ? 'Copied!' : 'Copy'}
-                    </span>
-                  </Button>
-                </div>
-                <ul className="list-disc list-inside text-gray-600 space-y-2 mt-4 text-sm">
-                  <li>
-                    Implement your function into your app like the example above
-                  </li>
-                  <li>
-                    {selectedFramework === Framework.NEXT_JS ? (
-                      <>Add the code to your layout.tsx or page component</>
-                    ) : (
-                      <>Add the code between the <code>&lt;body&gt;</code> tags of your website's HTML</>
-                    )}
-                  </li>
-                  <li>
-                    The code will be available to your agent as a client-side
-                    action
-                  </li>
-                  <li>
-                    Need help? Visit our{' '}
-                    <Link
-                      href="/docs"
-                      className="text-destructive hover:underline"
-                    >
-                      documentation <ExternalLink className="inline w-4 h-4" />
-                    </Link>
-                    .
-                  </li>
-                </ul>
               </div>
             )}
+            
+            {/* Method and URL row, left-aligned */}
+            <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-6 items-center">
+              <div className="w-full md:w-[120px]">
+                <Label
+                  htmlFor="apiMethod"
+                  className="text-base font-medium flex items-center gap-2"
+                >
+                  <Terminal className="h-4 w-4 text-[#FE4A60]" />
+                  Method
+                </Label>
+                <Select
+                  value={apiMethod}
+                  onValueChange={handleMethodChange}
+                  disabled={isCreatingAction}
+                >
+                  <SelectTrigger className="mt-2 border-[2px] border-gray-900 w-full">
+                    <SelectValue placeholder="Select method" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="GET">GET</SelectItem>
+                    <SelectItem value="POST">POST</SelectItem>
+                    <SelectItem value="PUT">PUT</SelectItem>
+                    <SelectItem value="PATCH">PATCH</SelectItem>
+                    <SelectItem value="DELETE">DELETE</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex-1 w-full">
+                <Label
+                  htmlFor="apiUrl"
+                  className="text-base font-medium flex items-center gap-2"
+                >
+                  <Globe className="h-4 w-4 text-[#FE4A60]" />
+                  HTTPS URL
+                </Label>
+                <div className="relative">
+                  <SuggestInput
+                    id="apiUrl"
+                    value={apiUrl}
+                    onChange={(e) => handleUrlChange(e.target.value)}
+                    suggestions={urlSuggestions.concat(
+                      getInputNames(dataInputs, true)
+                    )}
+                    placeholder="https://wttr.in/{{city}}?format=j1"
+                    inputClassName={`mt-2 border-[2px] ${urlError ? 'border-red-500' : 'border-gray-900'}`}
+                    matchMode="full"
+                    disabled={isCreatingAction}
+                  />
+                  {urlError && (
+                    <p className="absolute left-0 mt-1 text-red-500 text-sm">
+                      {urlError}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-8">
+              <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
+                <List className="h-4 w-4 text-[#FE4A60]" />
+                Headers
+              </Label>
+              {headers.map((header, index) => (
+                <HeaderInput
+                  key={index}
+                  header={header}
+                  index={index}
+                  updateHeader={(field, value) => {
+                    const updatedHeaders = [...headers];
+                    updatedHeaders[index] = {
+                      ...updatedHeaders[index],
+                      [field]: value,
+                    };
+                    setHeaders(updatedHeaders);
+                  }}
+                  removeHeader={() =>
+                    setHeaders(headers.filter((_, i) => i !== index))
+                  }
+                  suggestions={getInputNames(dataInputs, true)}
+                  commonHeaderKeys={commonHeaderKeys}
+                  commonHeaderValues={commonHeaderValues}
+                  disabled={isCreatingAction}
+                />
+              ))}
+              <Button
+                variant="outline"
+                className="mt-4 bg-card text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
+                onClick={addHeader}
+                disabled={isCreatingAction}
+              >
+                <PlusCircle className="h-4 w-4" />
+                Add Header
+              </Button>
+            </div>
+            
+            <div className="mt-8">
+              <Label
+                htmlFor="apiBody"
+                className="text-gray-900 text-lg font-semibold flex items-center gap-2"
+              >
+                <Code className="h-4 w-4 text-[#FE4A60]" />
+                Body
+              </Label>
+              {bodyError && (
+                <div className="mt-4 p-4 bg-red-50 border-[2px] border-red-200 rounded-lg">
+                  <p className="text-red-500 text-sm">{bodyError}</p>
+                </div>
+              )}
+              <div
+                className="mt-2 border-[2px] border-border rounded-lg overflow-hidden"
+                style={{ backgroundColor: 'var(--color-muted)' }}
+              >
+                <div className="relative">
+                  {!apiBody?.trim() && (
+                    <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
+                      {placeholderJSON}
+                    </div>
+                  )}
+                  <Editor
+                    height="200px"
+                    defaultLanguage="json"
+                    value={apiBody}
+                    onChange={handleEditorChange}
+                    beforeMount={handleEditorWillMount}
+                    onMount={(editor) => {
+                      editor.updateOptions({
+                        lineNumbers: () => '',
+                        glyphMargin: false,
+                        lineDecorationsWidth: 0,
+                        lineNumbersMinChars: 0,
+                        suggest: {
+                          showWords: false,
+                          preview: true,
+                          showProperties: false,
+                        },
+                      });
+                      requestAnimationFrame(() => editor.layout());
+                    }}
+                    theme="customTheme"
+                    options={{
+                      fontSize: 14,
+                      minimap: { enabled: false },
+                      scrollBeyondLastLine: false,
+                      wordWrap: 'on',
+                      renderLineHighlight: 'none',
+                      scrollbar: {
+                        verticalScrollbarSize: 8,
+                        horizontalScrollbarSize: 8,
+                      },
+                      padding: { top: 12, bottom: 12, left: 12 } as any,
+                      folding: false,
+                      hideCursorInOverviewRuler: true,
+                      guides: { indentation: false },
+                      readOnly: isCreatingAction,
+                      fixedOverflowWidgets: true,
+                    }}
+                    className="bg-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+            
             <div className="flex space-x-4">
               <Button
                 variant="outline"
