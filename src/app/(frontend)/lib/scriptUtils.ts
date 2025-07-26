@@ -88,13 +88,15 @@ export const getActionsScript = (
         .join(', ');
       
       if (framework === Framework.NEXT_JS) {
-        return `    ${functionNameCamelCase}: async (agentUserConfig${params ? `, ${params}` : ''}) => {
+        return `    ${functionNameCamelCase}: async (agentUserConfig, params) => {
       // Your custom action logic here
+      // Access parameters from params object: params.${params.split(', ')[0] || 'exampleParam'}
       return { status: 'success', results: [] };
   }`;
       } else {
-        return `    ${functionNameCamelCase}: async (agentUserConfig${params ? `, ${params}` : ''}) => {
+        return `    ${functionNameCamelCase}: async (agentUserConfig, params) => {
       // Your custom action logic here
+      // Access parameters from params object: params.${params.split(', ')[0] || 'exampleParam'}
       return { status: 'success', results: [] };
     }`;
       }
