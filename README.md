@@ -21,7 +21,6 @@ e.g. it must be easy to:
 ## small things to fix:
 - after you create an agent, it's not obvious how to create an action or actually do anything
 - when you're creating an action, you get example code to copy paste before you finalize creation of the action. this is bad.
-- why return anything from a client side action? the code snippet says i can return something but what do i get by doing that?
 - navigation generally seems kind of slow or at least the user doesn't get the required feeback i.e. some spinner. i often click a button on our dashboard and i'm not sure if it worked or not.
 - in the example code we currently tell people that we give them each param separately, but really they're all part of a single params object. if they copy paste our example code, it won't work
 - action names with apostrophes (any maybe other special characters) don't work. e.g. "Get user's name" doesn't work. It should be "GetUserName" or something like that. they result in this:

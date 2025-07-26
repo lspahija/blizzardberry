@@ -119,11 +119,11 @@ export default function UserConfig() {
                       <Code className="h-4 w-4 text-destructive" />
                       Framework
                     </Label>
-                    <p className="text-sm text-muted-foreground mt-2 ml-6">
+                    <p className="text-sm text-muted-foreground mt-2">
                       Select the framework you're using to implement the user
                       configuration.
                     </p>
-                    <div className="mt-2 ml-6">
+                    <div className="mt-2">
                       <Select
                         value={selectedFramework}
                         onValueChange={(value) =>
@@ -187,8 +187,11 @@ export default function UserConfig() {
                   </h3>
                   <ul className="list-disc list-inside text-muted-foreground space-y-2 text-base">
                     <li>
-                      Add this script to your website's HTML, ideally just
-                      before the closing <code>&lt;/body&gt;</code> tag
+                      {selectedFramework === Framework.NEXT_JS ? (
+                        <>Add this script to your layout.tsx or page component</>
+                      ) : (
+                        <>Add this script to your website's HTML, ideally just before the closing <code>&lt;/body&gt;</code> tag</>
+                      )}
                     </li>
                     <li>Update the values with your actual user information</li>
                     <li>

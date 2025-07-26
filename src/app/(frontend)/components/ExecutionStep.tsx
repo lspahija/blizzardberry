@@ -552,11 +552,16 @@ export default function ExecutionStep({
                     </Select>
                   </div>
                 </div>
-                <div className="relative mt-4 ml-6">
+                <div className="relative mt-4">
                   <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
                     <FileText className="h-4 w-4 text-[#FE4A60]" />
                     Implementation Example
                   </Label>
+                  
+                  <p className="text-sm text-gray-600 mb-4">
+                    💡 <strong>Why return values?</strong> The AI agent uses your return value to provide helpful responses to users and confirm actions were executed.
+                  </p>
+                  
                   <SyntaxHighlighter
                     language="javascript"
                     style={vscDarkPlus}
@@ -583,7 +588,7 @@ export default function ExecutionStep({
                         )
                       )
                     }
-                    className="absolute top-12 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-xs sm:text-sm font-semibold hover:bg-secondary/90 flex items-center gap-1 sm:gap-2"
+                    className="absolute top-22 right-4 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-xs sm:text-sm font-semibold hover:bg-secondary/90 flex items-center gap-1 sm:gap-2"
                     disabled={isCreatingAction}
                   >
                     <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -600,8 +605,11 @@ export default function ExecutionStep({
                     Implement your function into your app like the example above
                   </li>
                   <li>
-                    Add the code between the <code>&lt;body&gt;</code> tags of
-                    your website's HTML
+                    {selectedFramework === Framework.NEXT_JS ? (
+                      <>Add the code to your layout.tsx or page component</>
+                    ) : (
+                      <>Add the code between the <code>&lt;body&gt;</code> tags of your website's HTML</>
+                    )}
                   </li>
                   <li>
                     The code will be available to your agent as a client-side

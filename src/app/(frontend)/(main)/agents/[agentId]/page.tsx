@@ -650,6 +650,12 @@ function AgentDetails({
                           </Select>
                         </div>
                       </div>
+                      <p className="text-sm text-gray-600 mb-4">
+                        💡 <strong>Why userConfig?</strong> Provides user information to agents for personalized experiences.
+                      </p>
+                      <p className="text-sm text-gray-600 mb-4">
+                        💡 <strong>Why return values?</strong> The AI agent uses your return value to provide helpful responses to users and confirm actions were executed.
+                      </p>
                       <div className="relative">
                         <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
                           <Code className="h-4 w-4 text-destructive" />
