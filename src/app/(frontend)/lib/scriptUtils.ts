@@ -17,7 +17,9 @@ export const getScriptTag = (framework: Framework, config: ScriptConfig) => {
   switch (framework) {
     case Framework.NEXT_JS:
       return `<Script id="${id}" strategy="afterInteractive">
-${content ? `  ${content}` : ''}
+${content ? `  {\`
+    ${content}
+  \`}` : ''}
 </Script>`;
     case Framework.REACT:
     case Framework.VUE:
@@ -109,17 +111,9 @@ export const getActionsScript = (
     })
     .join(',\n');
 
-  const content = `window.agentActions = {\n  ${functionsCode}\n};`;
-  
-  if (framework === Framework.NEXT_JS) {
-    return `<Script id="blizzardberry-actions" strategy="afterInteractive">
-  {\`
-    ${content}
-  \`}
-</Script>`;
-  } else {
-    return `<script id="blizzardberry-actions" type="text/javascript">
-  ${content}
-</script>`;
-  }
+    const content = `window.agentActions = {\n  ${functionsCode}\n};`;
+    return getScriptTag(framework, {
+      id: 'blizzardberry-actions',
+      content,
+    });
 };
