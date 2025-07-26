@@ -277,7 +277,6 @@ export const useActionForm = (isEditing = false) => {
           },
         };
         
-        console.log('Setting createdClientAction:', clientAction);
         setCreatedClientAction(clientAction);
         window.history.replaceState(null, '', `/agents/${agentId}/actions/new?type=client&step=2`);
         

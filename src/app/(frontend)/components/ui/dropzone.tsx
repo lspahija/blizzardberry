@@ -215,7 +215,6 @@ function DropzoneComponent({
     if (typeof window !== 'undefined') {
       import('pdfjs-dist').then((module) => {
         const { getDocument, GlobalWorkerOptions } = module;
-        // Use the updated worker file that matches the installed version
         GlobalWorkerOptions.workerSrc = '/pdf/pdf.worker.js';
         setPdfjs({ getDocument });
       });
@@ -263,13 +262,9 @@ function DropzoneComponent({
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      // Create a completely new ArrayBuffer copy to prevent detachment issues
-      const uint8Array = new Uint8Array(arrayBuffer);
-      const arrayBufferCopy = new ArrayBuffer(uint8Array.length);
-      new Uint8Array(arrayBufferCopy).set(uint8Array);
-      
-      // Load PDF without retry to avoid ArrayBuffer detachment issues
-      const pdf = await pdfjs.getDocument({ data: arrayBufferCopy }).promise;
+      const pdf = await withRetry(
+        () => pdfjs.getDocument({ data: arrayBuffer }).promise
+      );
       let fullText = '';
       let hasText = false;
 

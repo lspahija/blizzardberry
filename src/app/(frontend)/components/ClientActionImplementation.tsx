@@ -57,7 +57,6 @@ export default function ClientActionImplementation({
   const { selectedFramework, setSelectedFramework } = useFramework();
   const [copied, setCopied] = useState(false);
 
-  // Generate function name from action name (camelCase)
   const generatedFunctionName = toCamelCase(action.name || 'customAction');
 
   const handleCopy = (text: string) => {
