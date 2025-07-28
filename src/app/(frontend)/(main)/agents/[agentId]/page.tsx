@@ -136,6 +136,9 @@ function AgentDetails({
   const [promptToDelete, setPromptToDelete] = useState<
     (typeof prompts)[0] | null
   >(null);
+  const [isNavigatingToNewAction, setIsNavigatingToNewAction] = useState(false);
+  const [isNavigatingToNewDocument, setIsNavigatingToNewDocument] = useState(false);
+  const [isNavigatingToEditAction, setIsNavigatingToEditAction] = useState<string | null>(null);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -332,6 +335,21 @@ function AgentDetails({
       </div>
     );
   }
+
+  const handleNavigateToNewAction = async () => {
+    setIsNavigatingToNewAction(true);
+    router.push(`/agents/${params.agentId}/actions/new`);
+  };
+
+  const handleNavigateToNewDocument = async () => {
+    setIsNavigatingToNewDocument(true);
+    router.push(`/agents/${params.agentId}/documents/new`);
+  };
+
+  const handleNavigateToEditAction = async (actionId: string) => {
+    setIsNavigatingToEditAction(actionId);
+    router.push(`/agents/${params.agentId}/actions/${actionId}/edit`);
+  };
 
   return (
     <motion.div
@@ -539,28 +557,38 @@ function AgentDetails({
 
         <div className="mb-6 flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
           <Button
-            asChild
             className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto hover:bg-brand/90"
+            onClick={handleNavigateToNewAction}
+            disabled={isNavigatingToNewAction}
           >
-            <Link
-              href={`/agents/${params.agentId}/actions/new`}
-              className="flex items-center justify-center"
-            >
-              <PlusCircle className="mr-2 h-5 w-5" />
-              Create New Action
-            </Link>
+            {isNavigatingToNewAction ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Loading...
+              </>
+            ) : (
+              <>
+                <PlusCircle className="mr-2 h-5 w-5" />
+                Create New Action
+              </>
+            )}
           </Button>
           <Button
-            asChild
             className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto hover:bg-brand/90"
+            onClick={handleNavigateToNewDocument}
+            disabled={isNavigatingToNewDocument}
           >
-            <Link
-              href={`/agents/${params.agentId}/documents/new`}
-              className="flex items-center justify-center"
-            >
-              <PlusCircle className="mr-2 h-5 w-5" />
-              Add New Document
-            </Link>
+            {isNavigatingToNewDocument ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Loading...
+              </>
+            ) : (
+              <>
+                <PlusCircle className="mr-2 h-5 w-5" />
+                Add New Document
+              </>
+            )}
           </Button>
           <Button
             className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center hover:bg-secondary/90"
@@ -650,6 +678,12 @@ function AgentDetails({
                           </Select>
                         </div>
                       </div>
+                      <p className="text-sm text-gray-600 mb-4">
+                        💡 <strong>Why agentUserConfig?</strong> It provides user information to agents for personalized experiences.
+                      </p>
+                      <p className="text-sm text-gray-600 mb-4">
+                        💡 <strong>Why return values?</strong> The AI agent uses your return value to provide helpful responses to users and confirm actions were executed.
+                      </p>
                       <div className="relative">
                         <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
                           <Code className="h-4 w-4 text-destructive" />
@@ -957,12 +991,15 @@ function AgentDetails({
                         variant="outline"
                         size="icon"
                         className="rounded-full p-2 hover:bg-secondary/80 transition group-hover:scale-110"
-                        onClick={() => {
-                          router.push(`/agents/${params.agentId}/actions/${action.id}/edit`);
-                        }}
+                        onClick={() => handleNavigateToEditAction(action.id)}
+                        disabled={isNavigatingToEditAction === action.id}
                         title="Edit Action"
                       >
-                        <Pencil className="h-4 w-4 transition-transform duration-200 group-hover:scale-125" />
+                        {isNavigatingToEditAction === action.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Pencil className="h-4 w-4 transition-transform duration-200 group-hover:scale-125" />
+                        )}
                       </Button>
                       <Button
                         variant="destructive"

@@ -233,7 +233,7 @@ export default function PricingPage() {
     padding: 12px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    z-index: 20;
     min-width: 200px;
     max-width: 300px;
     font-size: 0.875rem;
@@ -249,7 +249,7 @@ export default function PricingPage() {
       {/* Hero Section */}
       <div className="bg-background">
         <div
-          className={`container mx-auto px-2 md:px-4 xl:px-8 py-12 sm:py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}
+          className={`container mx-auto px-6 sm:px-8 md:px-2 lg:px-2 xl:px-8 py-12 sm:py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}
         >
           <div className="text-center mb-12 sm:mb-16">
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
@@ -302,7 +302,7 @@ export default function PricingPage() {
                 .map(([key, tier], idx, arr) => (
                   <div
                     key={key}
-                    className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full 2xl:min-w-[360px] 2xl:max-w-[440px] ${
+                    className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm lg:max-w-none mx-auto lg:mx-0 2xl:min-w-[360px] 2xl:max-w-[440px] ${
                       key === 'standard'
                         ? 'border-2 border-secondary shadow-lg pt-8 sm:pt-10 md:pt-8'
                         : ''
@@ -473,7 +473,7 @@ export default function PricingPage() {
 
               {/* Enterprise Card */}
               <div
-                className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full 2xl:min-w-[360px] 2xl:max-w-[440px] ${
+                className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm lg:max-w-none mx-auto lg:mx-0 2xl:min-w-[360px] 2xl:max-w-[440px] ${
                   Object.entries(pricing.tiers).filter(([key]) => !isLoggedIn || key !== 'free').length === 5 ? 'lg:col-start-3' : ''
                 }`}
                 style={{ minHeight: 480, minWidth: '0' }}

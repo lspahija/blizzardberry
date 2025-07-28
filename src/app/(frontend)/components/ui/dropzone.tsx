@@ -466,10 +466,10 @@ function DropzoneComponent({
 
           <div className="flex flex-col items-center space-y-2">
             <div className="relative">
-              <Upload className="h-8 w-8 text-muted-foreground" />
+              {!isProcessing && <Upload className="h-8 w-8 text-muted-foreground" />}
               {isProcessing && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="h-6 w-6 animate-spin text-brand" />
+                <div className="flex items-center justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-brand" />
                 </div>
               )}
             </div>
@@ -497,6 +497,7 @@ function DropzoneComponent({
                   e.stopPropagation();
                   setUploadedFileName(null);
                   lastFileRef.current = null;
+                  onFileDrop('');
                 }}
                 disabled={disabled}
               >

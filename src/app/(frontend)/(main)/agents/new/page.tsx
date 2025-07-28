@@ -33,6 +33,8 @@ import {
   Plus,
   Trash2,
   MessageSquare,
+  Zap,
+  FileText,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -88,7 +90,7 @@ export default function NewAgentPage() {
   };
 
   const handleContinue = () => {
-    router.push('/dashboard');
+    router.push(`/agents/${agentId}`);
   };
 
   const addPrompt = () => {
@@ -155,7 +157,7 @@ export default function NewAgentPage() {
               </h1>
               <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
                 Your agent is ready to be added to your website. Follow the
-                steps below to install it.
+                steps below to install it, then configure it with actions and documents.
               </p>
             </motion.div>
 
@@ -270,11 +272,35 @@ export default function NewAgentPage() {
                         </li>
                       </ul>
                     </div>
+
+                    <div className="space-y-4">
+                      <Label className="text-foreground text-lg font-semibold flex items-center gap-2">
+                        <Settings className="h-4 w-4 text-brand" />
+                        What's Next?
+                      </Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border border-border">
+                          <Zap className="h-5 w-5 text-brand mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold text-foreground text-sm mb-1">Actions</p>
+                            <p className="text-xs text-muted-foreground">Create custom actions your agent can perform, like form submissions or API calls.</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border border-border">
+                          <FileText className="h-5 w-5 text-brand mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold text-foreground text-sm mb-1">Documents</p>
+                            <p className="text-xs text-muted-foreground">Add knowledge files to help your agent answer questions and provide better support.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     <Button
                       className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/90 transition-transform duration-200 shadow-md text-lg font-semibold w-full"
                       onClick={handleContinue}
                     >
-                      Continue to Dashboard
+                      Configure Your Agent
                     </Button>
                   </CardContent>
                 </Card>

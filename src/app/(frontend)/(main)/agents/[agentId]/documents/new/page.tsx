@@ -37,6 +37,7 @@ export default function AddDocument({
 }) {
   const params = use(paramsPromise);
   const [text, setText] = useState('');
+  const [fileContent, setFileContent] = useState('');
   const [metadataFields, setMetadataFields] = useState<MetadataField[]>([]);
   const { handleCreateDocument, isSubmitting, error, success } = useDocuments();
 
@@ -72,12 +73,13 @@ export default function AddDocument({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await handleCreateDocument(text, metadataFields);
+    const combinedText = fileContent || text;
+    await handleCreateDocument(combinedText, metadataFields);
   };
 
   const handleFileDrop = (fileText: string) => {
     if (isSubmitting) return;
-    setText(fileText);
+    setFileContent(fileText);
   };
 
   if (success) {
@@ -189,16 +191,32 @@ export default function AddDocument({
                       </span>
                     </div>
                   </div>
-                  <Textarea
-                    id="text"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    required
-                    className="mt-2 block w-full rounded-md border-border border-[2px] shadow-sm focus:border-brand focus:ring-brand text-base p-2"
-                    rows={10}
-                    placeholder="Enter the document text here..."
-                    disabled={isSubmitting}
-                  />
+                  <div className="relative">
+                    <Textarea
+                      id="text"
+                      value={fileContent ? '' : text}
+                      onChange={(e) => setText(e.target.value)}
+                      required={!fileContent}
+                      className={`mt-2 block w-full rounded-md border-[2px] shadow-sm text-base p-2 transition-all duration-200 ${
+                        fileContent 
+                          ? 'border-muted bg-muted/50 text-muted-foreground cursor-not-allowed opacity-60' 
+                          : 'border-border focus:border-brand focus:ring-brand'
+                      }`}
+                      rows={10}
+                      placeholder={fileContent ? 'Document content loaded from file' : 'Enter the document text here...'}
+                      disabled={isSubmitting || !!fileContent}
+                    />
+                    {fileContent && (
+                      <div className="absolute inset-0 bg-muted/20 rounded-md flex items-center justify-center pointer-events-none">
+                        <div className="bg-background/90 backdrop-blur-sm px-4 py-2 rounded-lg border border-border shadow-lg">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <FileText className="h-4 w-4" />
+                            <span className="font-medium">File uploaded - text input disabled</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               <div>

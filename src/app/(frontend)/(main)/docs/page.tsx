@@ -59,7 +59,7 @@ export default function DocsPage() {
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  const installationCode = `<!-- 1. Agent Configuration - Set up user context and metadata -->
+  const standardCode = `<!-- 1. Agent Configuration - Set up user context and metadata -->
 <script id="blizzardberry-config" type="text/javascript">
   window.agentUserConfig = {
     userId: "user_123",
@@ -85,13 +85,13 @@ export default function DocsPage() {
 <script id="blizzardberry-actions" type="text/javascript">
   window.agentActions = {
     // Example: Submit a contact form
-    submitContactForm: async (name, email, message, userConfig) => {
+    submitContactForm: async (agentUserConfig, name, email, message) => {
       // Your custom action logic here
       return { status: 'success', message: 'Form submitted' };
     },
     
     // Example: Search products
-    searchProducts: async (query, userConfig) => {
+    searchProducts: async (agentUserConfig, query) => {
       // Your custom action logic here
       return { status: 'success', results: [] };
     }
@@ -135,13 +135,13 @@ export default function Layout({ children }) {
           {\`
             window.agentActions = {
               // Example: Submit a contact form
-              submitContactForm: async (name, email, message, userConfig) => {
+              submitContactForm: async (agentUserConfig, name, email, message) => {
                 // Your custom action logic here
                 return { status: 'success', message: 'Form submitted' };
               },
               
               // Example: Search products
-              searchProducts: async (query, userConfig) => {
+              searchProducts: async (agentUserConfig, query) => {
                 // Your custom action logic here
                 return { status: 'success', results: [] };
               }
@@ -153,235 +153,27 @@ export default function Layout({ children }) {
   );
 }`;
 
-  const reactCode = `// Add this to your main App component or layout
-// The agent script is framework-agnostic and works with any JavaScript framework
-
-// Option 1: Add scripts to your HTML template
-<!-- 1. Agent Configuration - Set up user context and metadata -->
-<script id="blizzardberry-config" type="text/javascript">
-  window.agentUserConfig = {
-    userId: "user_123",
-    userHash: "hash_456",
-    accountNumber: "1234567890",
-    userMetadata: {
-      name: "John Doe",
-      email: "john@example.com",
-      company: "Example Corp"
-    }
-  };
-</script>
-
-<!-- 2. Agent Script - Load the BlizzardBerry agent -->
-<script
-  id="blizzardberry-agent"
-  src="https://blizzardberry.com/agent/agent.js"
-  type="text/javascript"
-  data-agent-id="your-agent-id"
-></script>
-
-<!-- 3. Custom Actions - Define what your agent can do -->
-<script id="blizzardberry-actions" type="text/javascript">
-  window.agentActions = {
-    // Example: Submit a contact form
-    submitContactForm: async (name, email, message, userConfig) => {
-      // Your custom action logic here
-      return { status: 'success', message: 'Form submitted' };
-    },
-    
-    // Example: Search products
-    searchProducts: async (query, userConfig) => {
-      // Your custom action logic here
-      return { status: 'success', results: [] };
-    }
-  };
-</script>
-
-// Option 2: Load dynamically in useEffect (if needed)
-import { useEffect } from 'react';
-
-export default function App() {
-  useEffect(() => {
-    // Only load if not already loaded
-    if (!window.agentUserConfig) {
-      window.agentUserConfig = {
-        userId: "user_123",
-        userHash: "hash_456",
-        accountNumber: "1234567890",
-        userMetadata: {
-          name: "John Doe",
-          email: "john@example.com",
-          company: "Example Corp"
-        }
-      };
-    }
-  }, []);
-
-  return <div>Your app content</div>;
-}`;
-
-  const vueCode = `<!-- Add this to your index.html or main template -->
-<!-- The agent script is framework-agnostic and works with any JavaScript framework -->
-
-<!-- 1. Agent Configuration - Set up user context and metadata -->
-<script id="blizzardberry-config" type="text/javascript">
-  window.agentUserConfig = {
-    userId: "user_123",
-    userHash: "hash_456",
-    accountNumber: "1234567890",
-    userMetadata: {
-      name: "John Doe",
-      email: "john@example.com",
-      company: "Example Corp"
-    }
-  };
-</script>
-
-<!-- 2. Agent Script - Load the BlizzardBerry agent -->
-<script
-  id="blizzardberry-agent"
-  src="https://blizzardberry.com/agent/agent.js"
-  type="text/javascript"
-  data-agent-id="your-agent-id"
-></script>
-
-<!-- 3. Custom Actions - Define what your agent can do -->
-<script id="blizzardberry-actions" type="text/javascript">
-  window.agentActions = {
-    // Example: Submit a contact form
-    submitContactForm: async (name, email, message, userConfig) => {
-      // Your custom action logic here
-      return { status: 'success', message: 'Form submitted' };
-    },
-    
-    // Example: Search products
-    searchProducts: async (query, userConfig) => {
-      // Your custom action logic here
-      return { status: 'success', results: [] };
-    }
-  };
-</script>
-
-<!-- Or load dynamically in your Vue component (if needed) -->
-<template>
-  <div id="app">
-    <!-- Your Vue app content -->
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'App',
-  mounted() {
-    // Only load if not already loaded
-    if (!window.agentUserConfig) {
-      window.agentUserConfig = {
-        userId: "user_123",
-        userHash: "hash_456",
-        accountNumber: "1234567890",
-        userMetadata: {
-          name: "John Doe",
-          email: "john@example.com",
-          company: "Example Corp"
-        }
-      };
-    }
-  }
-}
-</script>`;
-
-  const angularCode = `<!-- Add this to your index.html -->
-<!-- The agent script is framework-agnostic and works with any JavaScript framework -->
-
-<!-- 1. Agent Configuration - Set up user context and metadata -->
-<script id="blizzardberry-config" type="text/javascript">
-  window.agentUserConfig = {
-    userId: "user_123",
-    userHash: "hash_456",
-    accountNumber: "1234567890",
-    userMetadata: {
-      name: "John Doe",
-      email: "john@example.com",
-      company: "Example Corp"
-    }
-  };
-</script>
-
-<!-- 2. Agent Script - Load the BlizzardBerry agent -->
-<script
-  id="blizzardberry-agent"
-  src="https://blizzardberry.com/agent/agent.js"
-  type="text/javascript"
-  data-agent-id="your-agent-id"
-></script>
-
-<!-- 3. Custom Actions - Define what your agent can do -->
-<script id="blizzardberry-actions" type="text/javascript">
-  window.agentActions = {
-    // Example: Submit a contact form
-    submitContactForm: async (name, email, message, userConfig) => {
-      // Your custom action logic here
-      return { status: 'success', message: 'Form submitted' };
-    },
-    
-    // Example: Search products
-    searchProducts: async (query, userConfig) => {
-      // Your custom action logic here
-      return { status: 'success', results: [] };
-    }
-  };
-</script>
-
-<!-- Or load dynamically in your Angular component (if needed) -->
-import { Component, OnInit } from '@angular/core';
-
-@Component({
-  selector: 'app-root',
-  template: '<div>Your Angular app content</div>'
-})
-export class AppComponent implements OnInit {
-  ngOnInit() {
-    // Only load if not already loaded
-    if (!(window as any).agentUserConfig) {
-      (window as any).agentUserConfig = {
-        userId: "user_123",
-        userHash: "hash_456",
-        accountNumber: "1234567890",
-        userMetadata: {
-          name: "John Doe",
-          email: "john@example.com",
-          company: "Example Corp"
-        }
-      };
-    }
-  }
-}`;
-
   const getCodeForFramework = (framework: string) => {
     switch (framework) {
-      case 'vanilla':
-        return installationCode;
       case 'nextjs':
         return nextJsCode;
+      case 'vanilla':
       case 'react':
-        return reactCode;
       case 'vue':
-        return vueCode;
       case 'angular':
-        return angularCode;
       default:
-        return installationCode;
+        return standardCode;
     }
   };
 
   const getLanguageForFramework = (framework: string) => {
     switch (framework) {
-      case 'vanilla':
-        return 'html';
       case 'nextjs':
+        return 'jsx';
+      case 'vanilla':
       case 'react':
       case 'vue':
       case 'angular':
-        return 'jsx';
       default:
         return 'html';
     }
@@ -389,16 +181,12 @@ export class AppComponent implements OnInit {
 
   const getFrameworkDescription = (framework: string) => {
     switch (framework) {
-      case 'vanilla':
-        return 'Works with any HTML website or JavaScript framework';
       case 'nextjs':
         return 'Optimized for Next.js applications with proper script loading';
+      case 'vanilla':
       case 'react':
-        return 'Add scripts to HTML template or load dynamically in useEffect';
       case 'vue':
-        return 'Add scripts to index.html or load dynamically in mounted hook';
       case 'angular':
-        return 'Add scripts to index.html or load dynamically in ngOnInit';
       default:
         return 'Works with any HTML website or JavaScript framework';
     }
@@ -654,11 +442,17 @@ export class AppComponent implements OnInit {
                           3
                         </span>
                         <span>
-                          Paste the code before the closing{' '}
-                          <code className="bg-muted px-1 rounded">
-                            &lt;/body&gt;
-                          </code>{' '}
-                          tag
+                          {selectedFramework === 'nextjs' ? (
+                            <>Paste the code in your layout.tsx or page component</>
+                          ) : (
+                            <>
+                              Paste the code before the closing{' '}
+                              <code className="bg-muted px-1 rounded">
+                                &lt;/body&gt;
+                              </code>{' '}
+                              tag
+                            </>
+                          )}
                         </span>
                       </li>
                       <li className="flex items-start space-x-3">
@@ -670,8 +464,48 @@ export class AppComponent implements OnInit {
                     </ol>
                   </CardContent>
                 </Card>
+                <div className="mt-8 pt-2"></div>
+                <motion.div variants={itemVariants}>
+                <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
+                  <CardHeader>
+                    <div className="flex items-center space-x-2">
+                      <Users className="h-6 w-6 text-brand" />
+                      <CardTitle className="text-xl">User Context</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground mb-4">
+                      💡 <strong>Why agentUserConfig?</strong> The agentUserConfig contains user information that are passed to the agent, allowing you to provide personalized experiences.
+                    </p>
+                    <p className="text-muted-foreground">
+                      When you configure your agent, you can pass user-specific data like user ID, preferences, account information, and metadata. This information is automatically available to your agent, enabling personalized responses and functionality.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+              <div className="mt-8 pt-2"></div>
+              <motion.div variants={itemVariants}>
+                <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
+                  <CardHeader>
+                    <div className="flex items-center space-x-2">
+                      <MessageSquare className="h-6 w-6 text-brand" />
+                      <CardTitle className="text-xl">Action Responses</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground mb-4">
+                      💡 <strong>Why return values?</strong> The AI agent uses your return value to provide helpful responses to users and confirm actions were executed.
+                    </p>
+                    <p className="text-muted-foreground">
+                      When your custom actions execute, they should return information about what happened. The AI agent uses this return value to provide meaningful responses to users, confirm actions were successful, or handle errors gracefully.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
               </motion.div>
             </div>
+
+
           </div>
         </motion.section>
 
