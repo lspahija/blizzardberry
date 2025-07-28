@@ -1,9 +1,10 @@
 import { generateId } from './util';
 import { state, setSuggestedPrompts } from './state';
+import { config } from './config';
 
-export async function fetchSuggestedPrompts(baseUrl, agentId) {
+export async function fetchSuggestedPrompts() {
   try {
-    const res = await fetch(`${baseUrl}/api/agents/${agentId}/prompts`);
+    const res = await fetch(`${config.baseUrl}/api/agents/${config.agentId}/prompts`);
     if (!res.ok) return;
     const data = await res.json();
     const prompts = (data.prompts || [])
@@ -16,9 +17,9 @@ export async function fetchSuggestedPrompts(baseUrl, agentId) {
   }
 }
 
-export async function persistMessage(baseUrl, message) {
+export async function persistMessage(message) {
   if (!state.chatId) return;
-  await fetch(`${baseUrl}/api/chats/${state.chatId}/messages`, {
+  await fetch(`${config.baseUrl}/api/chats/${state.chatId}/messages`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -28,17 +29,17 @@ export async function persistMessage(baseUrl, message) {
   });
 }
 
-export async function callLLM(baseUrl, userConfig, agentId) {
+export async function callLLM() {
   const body = {
     messages: state.messages,
-    userConfig,
-    agentId,
+    userConfig: config.userConfig,
+    agentId: config.agentId,
     idempotencyKey: generateId(),
   };
   if (state.chatId) {
     body.chatId = state.chatId;
   }
-  const response = await fetch(`${baseUrl}/api/chat`, {
+  const response = await fetch(`${config.baseUrl}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

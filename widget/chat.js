@@ -4,15 +4,6 @@ import { callLLM, persistMessage } from './api';
 import { executeAction } from './actions';
 import { updateChatUI } from './ui';
 
-let baseUrl, userConfig, agentId, actions;
-
-export function initializeChat(config) {
-  baseUrl = config.baseUrl;
-  userConfig = config.userConfig;
-  agentId = config.agentId;
-  actions = config.actions;
-}
-
 export async function handleError(messageText) {
   state.isProcessing = false;
   state.messages.push({
@@ -20,7 +11,7 @@ export async function handleError(messageText) {
     role: 'assistant',
     parts: [{ type: 'text', text: messageText }],
   });
-  await persistMessage(baseUrl, state.messages[state.messages.length - 1]);
+  await persistMessage(state.messages[state.messages.length - 1]);
   updateChatUI();
 }
 
@@ -47,7 +38,7 @@ export async function processChatMessage(messageText) {
   updateChatUI();
 
   try {
-    const { text, toolResults, error, message } = await callLLM(baseUrl, userConfig, agentId);
+    const { text, toolResults, error, message } = await callLLM();
 
     if (error || message) {
       await handleError(error || message);
@@ -62,7 +53,7 @@ export async function processChatMessage(messageText) {
             executeAction({
               ...toolResult.result,
               toolName: toolResult.toolName,
-            }, actions, baseUrl)
+            })
           )
       );
 

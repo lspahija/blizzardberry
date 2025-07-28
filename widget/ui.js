@@ -1,10 +1,5 @@
 import { state } from './state';
-
-export function convertBoldFormatting(text) {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n/g, '<br>');
-}
+import { convertBoldFormatting, getElementById } from './util';
 
 export function renderMessagePart(part, messageId) {
   if (part.type === 'text') {
@@ -26,7 +21,7 @@ export function renderMessagePart(part, messageId) {
 }
 
 export function updateChatUI() {
-  const chatBody = document.getElementById('chatWidgetBody');
+  const chatBody = getElementById('chatWidgetBody');
   let html = state.messages
     .filter((message) => !message.parts[0].text.startsWith('ACTION_RESULT:'))
     .map(

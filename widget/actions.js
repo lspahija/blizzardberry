@@ -1,11 +1,12 @@
 import { generateId } from './util';
 import { state } from './state';
 import { persistMessage } from './api';
+import { config } from './config';
 
-export async function executeAction(actionModel, actions, baseUrl) {
+export async function executeAction(actionModel) {
   try {
     const actionResult = actionModel.toolName.startsWith('ACTION_CLIENT_')
-      ? await executeClientAction(actionModel, actions)
+      ? await executeClientAction(actionModel)
       : await executeServerAction(actionModel);
 
     state.messages.push({
@@ -18,7 +19,7 @@ export async function executeAction(actionModel, actions, baseUrl) {
         },
       ],
     });
-    await persistMessage(baseUrl, state.messages[state.messages.length - 1]);
+    await persistMessage(state.messages[state.messages.length - 1]);
 
     return `ACTION_RESULT: ${JSON.stringify(actionResult)}`;
   } catch (error) {
@@ -26,9 +27,9 @@ export async function executeAction(actionModel, actions, baseUrl) {
   }
 }
 
-async function executeClientAction(actionModel, actions) {
+async function executeClientAction(actionModel) {
   const functionName = actionModel.functionName.replace('ACTION_CLIENT_', '');
-  const action = actions[functionName];
+  const action = config.actions[functionName];
   return await action(actionModel.params);
 }
 

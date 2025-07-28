@@ -1,15 +1,13 @@
-import { initialize } from './initialization';
+import './config';
+import { initializeStyles } from './styles';
 import { createWidgetDOM } from './dom';
-import { initializeChat } from './chat';
 
 (function () {
-  const { baseUrl, agentId, userConfig, actions } = initialize();
-
-  initializeChat({ baseUrl, userConfig, agentId, actions });
+  initializeStyles();
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => createWidgetDOM(baseUrl, agentId));
+    document.addEventListener('DOMContentLoaded', createWidgetDOM);
   } else {
-    createWidgetDOM(baseUrl, agentId);
+    createWidgetDOM();
   }
 })();
