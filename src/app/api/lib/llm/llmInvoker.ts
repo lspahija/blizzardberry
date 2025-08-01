@@ -54,7 +54,7 @@ export async function callLLM(
           idempotencyKey
         );
 
-        // console.log('Stream completed:', JSON.stringify(event, null, 2));
+        console.log('onFinish:', JSON.stringify(event, null, 2));
       },
     });
 

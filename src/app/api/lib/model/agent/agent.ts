@@ -9,6 +9,7 @@ export interface Agent {
 
 export enum AgentModel {
   GEMINI_2_0_FLASH = 'google/gemini-2.0-flash-001',
+  GEMINI_2_5_FLASH = 'google/gemini-2.5-flash',
   GEMINI_2_5_PRO = 'google/gemini-2.5-pro',
   GPT_4O_MINI = 'openai/gpt-4o-mini',
   CHATGPT_4O = 'openai/gpt-4o',
@@ -33,6 +34,7 @@ export enum AgentModel {
 
 export const AgentModelDisplay: Record<AgentModel, string> = {
   [AgentModel.GEMINI_2_0_FLASH]: 'Gemini 2.0 Flash',
+  [AgentModel.GEMINI_2_5_FLASH]: 'Gemini 2.5 Flash',
   [AgentModel.GEMINI_2_5_PRO]: 'Gemini 2.5 Pro',
   [AgentModel.GPT_4O_MINI]: 'OpenAI GPT 4o Mini',
   [AgentModel.CHATGPT_4O]: 'OpenAI GPT 4o',
