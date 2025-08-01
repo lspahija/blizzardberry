@@ -28,6 +28,7 @@ export enum AgentModel {
   DEEPSEEK_V3 = 'deepseek/deepseek-chat',
   DEEPSEEK_R1 = 'deepseek/deepseek-r1-0528',
   QWEN_3_30B = 'qwen/qwen3-30b-a3b',
+  KIMI_K2 = 'moonshotai/kimi-k2',
 }
 
 export const AgentModelDisplay: Record<AgentModel, string> = {
@@ -51,6 +52,7 @@ export const AgentModelDisplay: Record<AgentModel, string> = {
   [AgentModel.DEEPSEEK_V3]: 'DeepSeek V3',
   [AgentModel.DEEPSEEK_R1]: 'DeepSeek R1',
   [AgentModel.QWEN_3_30B]: 'Qwen 3 30B A3B',
+  [AgentModel.KIMI_K2]: 'Kimi K2',
 };
 
 export const AgentModelList = Object.values(AgentModel);
