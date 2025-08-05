@@ -4,6 +4,8 @@ export const state = {
   loggedThinkMessages: new Set(),
   chatId: null,
   isWidgetReady: false,
+  unreadMessages: 0,
+  isWidgetOpen: false,
 };
 
 export let suggestedPrompts = [];

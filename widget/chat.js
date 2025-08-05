@@ -3,6 +3,7 @@ import { state } from './state';
 import { callLLM, persistMessage } from './api';
 import { executeAction } from './actions';
 import { updateChatUI } from './ui';
+import { updateNotificationBadge } from './dom';
 
 export async function handleError(messageText) {
   state.isProcessing = false;
@@ -11,6 +12,12 @@ export async function handleError(messageText) {
     role: 'assistant',
     parts: [{ type: 'text', text: messageText }],
   });
+  
+  if (!state.isWidgetOpen) {
+    state.unreadMessages++;
+    updateNotificationBadge();
+  }
+  
   await persistMessage(state.messages[state.messages.length - 1]);
   updateChatUI();
 }
@@ -68,6 +75,11 @@ export async function processChatMessage(messageText) {
         role: 'assistant',
         parts: [{ type: 'text', text }],
       });
+      
+      if (!state.isWidgetOpen) {
+        state.unreadMessages++;
+        updateNotificationBadge();
+      }
     }
 
     state.isProcessing = false;
