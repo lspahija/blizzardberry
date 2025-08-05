@@ -22,7 +22,9 @@ e.g. it must be easy to:
 
 
 ## Before Launch
-- (Luka) dogfood the product. Our app needs to have an agent integrated, and it needs to work well. Anybody that visits the site gets an instant useful demo!
+- (Luka, Nikolas) create a short demo video similar to the one chatbase has on their landing page.
+   - Maybe create an action with name and description e.g. "provide revenue numbers" and then show zoomed in dashboard with that action being used
+- (Luka) make the agent on our landing page more useful if possible
 - make design look great on all pages, including mobile. e.g. the text doesn't currently look great on landing page on mobile
 - change env variable values in Vercel to those in .env.prod and pay for vercel plan to get enable cron and make sure everything works in prod
 
