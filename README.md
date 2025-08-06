@@ -25,6 +25,9 @@ this looks good: https://bland.com/
 https://basecamp.com/
 https://www.hey.com/
 
+# Running the Project Locally
+
+This guide outlines the steps to set up and run the project locally. The project uses [git-crypt](https://github.com/AGWA/git-crypt) to encrypt sensitive files (e.g., `.env*`).
 
 ## Setup Instructions
 
