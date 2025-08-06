@@ -126,6 +126,14 @@ export function DashboardNavbar() {
               href="/"
               className="text-2xl font-bold text-gray-900 tracking-tight select-none hover:underline focus:underline outline-none flex items-center"
             >
+              <Image
+                src="/image/logo.png"
+                alt="BlizzardBerry Logo"
+                width={60}
+                height={60}
+                className="object-contain"
+                unoptimized={true}
+              />
               <span className="ml-3 text-2xl font-bold">
                 Blizzard<span className="text-[#FE4A60]">Berry</span>
               </span>

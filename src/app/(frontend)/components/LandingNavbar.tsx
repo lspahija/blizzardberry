@@ -39,6 +39,14 @@ export function LandingNavbar() {
         <div className="max-w-7xl mx-auto w-full flex flex-row items-center justify-between">
           <div className="flex items-center flex-shrink-0 min-w-[160px]">
             <Link href="/" className="flex items-center">
+              <Image
+                src="/image/logo.png"
+                alt="BlizzardBerry Logo"
+                width={60}
+                height={60}
+                className="object-contain"
+                unoptimized={true}
+              />
               <span className="text-2xl font-bold">
                 <span>Blizzard</span>
                 <span className="text-brand">Berry</span>
