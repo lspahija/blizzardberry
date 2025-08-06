@@ -16,126 +16,15 @@ e.g. it must be easy to:
 - create new SDKs for different languages so an agent can be added to any app
 - onboard new apps with minimal friction
 
-# Things to be done
-
-## small things to fix:
-
-
-## Before Launch
-- (Luka, Nikolas) create a short demo video similar to the one chatbase has on their landing page.
-   - Maybe create an action with name and description e.g. "provide revenue numbers" and then show zoomed in dashboard with that action being used
-- (Luka) make the agent on our landing page more useful if possible
-- (Luka) make things faster if possible after clicking something on our website
-- make design look great on all pages, including mobile. e.g. the text doesn't currently look great on landing page on mobile
-- change env variable values in Vercel to those in .env.prod and pay for vercel plan to get enable cron and make sure everything works in prod
-
-## Launch and Sell!
-- https://www.reddit.com/r/SaaS/comments/1700b0w/frustrated_a_similar_tool_took_off_to_180k_mrr
-- https://www.reddit.com/r/SaaS/comments/1700b0w/comment/k3isvie/
-- <img width="744" alt="Screenshot 2025-07-09 at 00 06 20" src="https://github.com/user-attachments/assets/13c320e9-c096-4183-91a0-42da2d4e61f7" />
-- Work with AI consultants to sell this. Give them commission. Partner with them. Allow AI consultants to white label our tech and sell it as their own solution
-- [What YC says about selling](https://youtu.be/hyYCn_kAngI?si=1Adt1_ASb7dK8N_v) this is a must-watch and implement. Use a CRM and contact a lot of companies. Everyone's conversion rate is low. If you don't contact enough companies, you don't get any sales and you falsely conclude that the product is bad.
-- find a CRM that makes selling and tracking our numbers fun! it should be a fun game to see the numbers go up. - use HubSpot
-- sell companies on the idea that they replace their customer support team. We save them money: https://youtu.be/K4s6Cgicw_A?si=MT1kzLH3p4m7CVyS&t=809
-- use latest AI video models (Google's Veo 3) to create great marketing videos. Use good taste to make excellent stuff. 
-- [post on HN](https://x.com/marc_louvion/status/1924846419967672829?s=46)
-- [affiliate program](https://x.com/marc_louvion/status/1922271980260331772?s=46)
-- work with [Pieter Levels](https://x.com/levelsio) or other big guys on X and have them push this as their own
-- scour X for the best strategies and threads [like this](https://x.com/johnrushx/status/1927026143196020750)
-- make little tools that go viral and use them to drive traffic to the main product - e.g. a tool that converts any image to super bright HDR
-- list on app markets
-  - Shopify
-  - Webflow
-  - Wix
-  - Woo commerce
-  - Squarespace
-  - Bigcommerce - not doing as well
-
-## After Launch (while also selling) 
-#### Note: do not work on these feature unless you're also selling. If you're not selling, stop working on these and start selling.
-- maintain agent conversation between pages
-- make logs go somewhere - https://github.com/pinojs/pino - https://grok.com/share/bGVnYWN5_e5e7e725-b103-4d06-a367-c9a5a54b87e8
-- send widget exceptions to slack channel
-- go through all tests and try to reduce the number of tests 200+ sounds way too much
-- add set up and teardown code to integration tests (e.g. create a user and agent. add credits to the user. delete the user and agent after the test)
-- let users configure the agent's starting message
-- support teams i.e. each user is part of a team and can manage the team's agents
-- let the end user see all actions that the agent can perform. Make the actions searchable. Expose the thinking tokens if the user chooses to see them.
-- make agent design super customizable so app owners can make it look like their app
-- add automated end-to-end test suite so we can introduce new features without breaking existing functionality. Use Playwright for this. [Grok thread](https://grok.com/share/bGVnYWN5_82a58179-e019-4507-a75b-59c398539835)
-- [optimize RAG pipeline](#frankies-tips-to-optimize-rag) - I think current best is knowledge graph RAG with [late chunking](https://jina.ai/news/late-chunking-in-long-context-embedding-models/)
-- stream LLM responses to the frontend. (maybe by getting vanilla js version of useChat working?) (ai-sdk currently only support react, vue, svelte and solid)
-- create SDKs (analogues to agent.js) for non-js frontends i.e. desktop and mobile apps written in go, java, etc.
-- add logging, tracing, monitoring so if anything goes wrong anywhere, we can see it - make sure all exceptions users experience are sent to us somehow and reproducing the exception is as easy as possible
-- look through Chatbase's features and add relevant ones. e.g. they have a UI letting their users test the agents they created and see if the actions they onboarded work correctly. https://www.chatbase.co/docs/user-guides/agent/playground
-- change Google OAuth user [support email](https://console.cloud.google.com/auth/branding?inv=1&invt=Ab1jrg&project=blizzardberry) to a blizzardberry.com email [here's how to add another email](https://stackoverflow.com/questions/23105894/how-to-change-google-consent-screen-email)
-- wrap sql queries in a transaction where necessary so that if one query fails, the whole transaction is rolled back
-- if user downgrades tier or their tier expires, disable agents or actions that are over the limit of their current tier
-
-## Longer Term Goals (buy maybe pull them in earlier)
-- create a global repository of actions (maybe wrapped in an MCP server) that any LLM can be pointed to and use any of those actions
-  - https://viasocket.com/mcp/aiagent - these guys basically built what we want, but we might be able to make it cleaner/better UX and more understandable
-  - https://smithery.ai/
-  - https://mcp.so/
-  - https://himcp.ai/
-- make the system prompt auto-improve for each app or even each end user. As the user tells the agent what they want, the system prompt is updated to include that information. This way, the agent can learn and adapt to the user's needs over time. https://youtu.be/WJoZK9sMwvw?si=CTOwYwskX38WDzOO
-- allow user to use voice, the ideal is that they just talk to computer - https://x.com/LinusEkenstam/status/1926890672188952774
-- make the actions MCP-compatible? i.e. turn the actions into an MCP server so that any MCP client can call them.
-- make onboarding a new app as simple as possible
-    - have users embed a temporary widget that tracks all function calls and network calls and then they manually perform actions on their website that we record and we use a powerful LLM to convert those into actions that fit our schema: https://grok.com/share/bGVnYWN5_6fb8db59-c81c-4da7-9401-c23bc06499d2
-    - automatically pull docs from website during RAG onboarding?
-    - maybe let user just pass in their OpenAPI spec and the app will automatically generate an agent for them
-    - maybe use AI to scan the app's codebase - PostHog has an "AI setup wizard" that you can install like this: `npx @posthog/wizard@latest --region us`. This gives it access to your code.
-    - Google has a [Chrome extension](https://chromewebstore.google.com/detail/project-mariner-companion/kadmollpgjhjcclemeliidekkajnjaih) where you can teach the AI how to perform tasks. Maybe you can create an extension that records HTTP requests and functions called on each click and turns them into actions.
-    - maybe use some tool to autodiscover website endpoints/capabilities
-    - have the widget keep track of all actions the user manually performs and then have an LLM interpret them on the backend and turn them into actions or documentation that can be used in RAG
-    - brainstorm what the ideal frictionless onboarding would look like. Ideally the webapp owner doesn't have to do anything. We offer them an agent that just works.
-
-# Strategy
-- start off selling but think about what it takes to win big
-- freemium model. generous free tier to win big market share and then make money on small portion of power users: https://youtu.be/K4s6Cgicw_A?si=eChQZbm-Vz8pIqt1&t=667 (this might require getting inference costs low. finding the cheapest models)
-- what does open sourcing the codebase entirely or partially do? (look into case studies for when this has worked and when it hasn't. i think it only makes sense in certain cases)
-- get advice from silicon valley investors and founders. they have a lot of experience with this
-- raise money from the best silicon valley VCs so they have skin in the game and help us with their experience and network and drive
-- the goal is to get someone on our team that’s super successful in what we’re doing. somebody that’s already done similar things and scaled to unicorn valuation
-- maybe consider selling to IOT smart home companies and users, they are early adopters and already think in the terms of actions
-
-### Why not just General Agents?
-- AGI isn't here yet. General agents can't figure out how to achieve everything the user wants on a website.
-- Even when AGI gets here, the agent won't have instant knowledge of the app's capabilities (actions).
-- This project needs to provide the agent instant access to all of the app's capabilities.
-- This means a lot of our competitive advantage will be in reducing onboarding friction to a minimum.
-- Minimizing onboarding friction will likely be done with AI/agents.
-
-
-# Competition - revenue
-- https://www.chatbase.co/ - $5M+/year
-  - [custom actions](https://www.chatbase.co/docs/user-guides/agent/actions/custom-action)
-- https://www.intercom.com/ - [$343M/year ](https://sacra.com/research/intercom-at-343m/)
-- https://crisp.chat/en/livechat/
 
 # Design
+
 The website design is based on this: https://gitingest.com/
 
 this looks good: https://bland.com/
 
-https://basecamp.com/
-https://www.hey.com/
+https://basecamp.com/https://www.hey.com/
 
-# Notes
-
-### pricing analysis
-[chatbase pricing analysis spreadsheet](https://docs.google.com/spreadsheets/d/193l-fsgNFZP5GE8UICOLsglPw4NgGHayMAQI_f-bZu8/edit?usp=sharing)
-
-### auth magic link email
-[Dealing with resend issues](https://www.reddit.com/r/Supabase/comments/1d8lz8d/emails_with_resend_still_going_to_spam/) Postmark seems best but no free tier
-
-# Ideas
-- tool fetching can maybe be made more accurate by inserting a RAG step (e.g. embed the tool information)
-
-# Running the Project Locally
-
-This guide outlines the steps to set up and run the project locally. The project uses [git-crypt](https://github.com/AGWA/git-crypt) to encrypt sensitive files (e.g., `.env*`).
 
 ## Setup Instructions
 
@@ -244,9 +133,3 @@ This project uses [shadcn/ui](https://ui.shadcn.com/) components
 3. Enable **Developer Mode** in LM Studio.
 4. Start the LM Studio server to serve the model at `http://localhost:1234/v1`.
 5. Set the `MODEL_PROVIDER` environment variable to `lmstudio`.
-
-## Agreement
-66.6% - 33.3% split of the project between Luka and Frankie.
-1 year cliff, 4 year vesting
-Luka is CEO and single board member
-Frankie needs to launch the product by July 4, 2025, or he forfeits his shares.
