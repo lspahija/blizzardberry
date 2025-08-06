@@ -18,7 +18,6 @@ e.g. it must be easy to:
 
 
 # Design
-
 The website design is based on this: https://gitingest.com/
 
 this looks good: https://bland.com/
