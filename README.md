@@ -23,7 +23,8 @@ The website design is based on this: https://gitingest.com/
 
 this looks good: https://bland.com/
 
-https://basecamp.com/https://www.hey.com/
+https://basecamp.com/
+https://www.hey.com/
 
 
 ## Setup Instructions
