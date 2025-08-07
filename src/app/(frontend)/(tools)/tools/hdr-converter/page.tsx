@@ -65,10 +65,10 @@ export default function HDRConverterPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
 
-  // HDR adjustment controls - default to much more brilliant settings
-  const [brightness, setBrightness] = useState(2.5); // Multiply factor
-  const [gamma, setGamma] = useState(0.7); // Pow factor
-  const [saturation, setSaturation] = useState(150); // Saturation percentage
+  // HDR adjustment controls - default to impressive HDR settings
+  const [brightness, setBrightness] = useState(4.0); // Multiply factor
+  const [gamma, setGamma] = useState(0.5); // Pow factor
+  const [saturation, setSaturation] = useState(200); // Saturation percentage
 
   const handleFileSelect = useCallback(async (file: File) => {
     if (file && file.type.startsWith('image/')) {
@@ -252,8 +252,7 @@ export default function HDRConverterPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">HDR Image Converter</h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Drop an image and get an ultra-bright HDR version instantly for Mac
-          displays
+          Adds new HDR life into boring old images
         </p>
       </div>
 
@@ -426,7 +425,7 @@ export default function HDRConverterPage() {
                 Download HDR Image
               </Button>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Your HDR image will display ultra-bright on Mac HDR displays!
+                HDR images display ultra-bright on HDR screens. Try Chrome on your phone if it looks the same.
               </p>
             </div>
           </Card>
