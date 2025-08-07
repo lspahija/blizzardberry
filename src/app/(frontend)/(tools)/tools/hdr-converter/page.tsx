@@ -34,7 +34,7 @@ async function initializeMagick() {
     } = await import('@imagemagick/magick-wasm');
 
     // Get WASM bytes from public folder
-    const wasmResponse = await fetch('/magick.wasm');
+    const wasmResponse = await fetch('/hdr/magick.wasm');
     const wasmBytes = new Uint8Array(await wasmResponse.arrayBuffer());
 
     // Initialize ImageMagick with WASM bytes
@@ -42,7 +42,7 @@ async function initializeMagick() {
 
     // Load and cache ICC profile - essential for HDR
     if (!profileBytes) {
-      const profileResponse = await fetch('/profiles/2020_profile.icc');
+      const profileResponse = await fetch('/hdr/2020_profile.icc');
       profileBytes = new Uint8Array(await profileResponse.arrayBuffer());
     }
 
@@ -213,14 +213,31 @@ export default function HDRConverterPage() {
         img.colorSpace = ColorSpace.sRGB;
 
         // Apply saturation control - enhanced color saturation
-        if (saturationValue !== 150) { // Only apply if different from default 150%
+        if (saturationValue !== 150) {
+          // Only apply if different from default 150%
           const saturationFactor = saturationValue / 150.0;
           // Use a simple RGB enhancement approach for vibrancy
           // This multiplies color differences from gray to enhance saturation
-          img.evaluate(Channels.Red, EvaluateOperator.Multiply, 0.5 + (saturationFactor * 0.5));
-          img.evaluate(Channels.Green, EvaluateOperator.Multiply, 0.5 + (saturationFactor * 0.5));  
-          img.evaluate(Channels.Blue, EvaluateOperator.Multiply, 0.5 + (saturationFactor * 0.5));
-          img.evaluate(Channels.All, EvaluateOperator.Add, saturationFactor * 0.2);
+          img.evaluate(
+            Channels.Red,
+            EvaluateOperator.Multiply,
+            0.5 + saturationFactor * 0.5
+          );
+          img.evaluate(
+            Channels.Green,
+            EvaluateOperator.Multiply,
+            0.5 + saturationFactor * 0.5
+          );
+          img.evaluate(
+            Channels.Blue,
+            EvaluateOperator.Multiply,
+            0.5 + saturationFactor * 0.5
+          );
+          img.evaluate(
+            Channels.All,
+            EvaluateOperator.Add,
+            saturationFactor * 0.2
+          );
         }
 
         // Equivalent to: -depth 16
@@ -257,57 +274,7 @@ export default function HDRConverterPage() {
       </div>
 
       <div className="grid gap-6">
-        {/* File Upload Area */}
-        <Card className="p-6">
-          <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-              isDragOver
-                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20'
-                : 'border-gray-300 dark:border-gray-600'
-            }`}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-          >
-            <div className="mb-4">
-              <svg
-                className="w-12 h-12 mx-auto text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                />
-              </svg>
-            </div>
-            <p className="text-lg mb-2">
-              Drop your image here or click to browse
-            </p>
-            <p className="text-sm text-gray-500 mb-4">
-              Supports JPG, PNG, WEBP, and other common image formats
-            </p>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileInput}
-              className="hidden"
-              id="file-input"
-            />
-            <label
-              htmlFor="file-input"
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer"
-            >
-              Choose File
-            </label>
-          </div>
-        </Card>
-
-        {/* HDR Result Section */}
-        {hdrImageUrl && (
+        {hdrImageUrl ? (
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4">
               ✨ HDR Conversion Complete!
@@ -325,14 +292,38 @@ export default function HDRConverterPage() {
                 />
               </div>
 
-              {/* HDR Result */}
+              {/* HDR Result - Clickable and Draggable */}
               <div>
-                <h4 className="text-md font-medium mb-2">HDR Enhanced</h4>
-                <img
-                  src={hdrImageUrl}
-                  alt="HDR Enhanced"
-                  className="w-full h-auto rounded-lg shadow-md"
-                  style={{ maxHeight: '300px', objectFit: 'contain' }}
+                <h4 className="text-md font-medium mb-2">HDR Enhanced - Click or drag to replace</h4>
+                <div
+                  className={`relative cursor-pointer transition-all duration-200 ${
+                    isDragOver
+                      ? 'ring-2 ring-blue-500 ring-opacity-50'
+                      : 'hover:ring-2 hover:ring-gray-300'
+                  }`}
+                  onClick={() => document.getElementById('file-input')?.click()}
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                >
+                  <img
+                    src={hdrImageUrl}
+                    alt="HDR Enhanced"
+                    className="w-full h-auto rounded-lg shadow-md"
+                    style={{ maxHeight: '300px', objectFit: 'contain' }}
+                  />
+                  {isDragOver && (
+                    <div className="absolute inset-0 bg-blue-50 dark:bg-blue-950/20 rounded-lg flex items-center justify-center">
+                      <p className="text-blue-600 font-medium">Drop new image here</p>
+                    </div>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileInput}
+                  className="hidden"
+                  id="file-input"
                 />
               </div>
             </div>
@@ -425,8 +416,57 @@ export default function HDRConverterPage() {
                 Download HDR Image
               </Button>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                HDR images display ultra-bright on HDR screens. Try Chrome on your phone if it looks the same.
+                HDR images display ultra-bright on HDR screens. Try Chrome on
+                your phone if it looks the same.
               </p>
+            </div>
+          </Card>
+        ) : (
+          <Card className="p-6">
+            <div
+              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                isDragOver
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20'
+                  : 'border-gray-300 dark:border-gray-600'
+              }`}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+            >
+              <div className="mb-4">
+                <svg
+                  className="w-12 h-12 mx-auto text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  />
+                </svg>
+              </div>
+              <p className="text-lg mb-2">
+                Drop your image here or click to browse
+              </p>
+              <p className="text-sm text-gray-500 mb-4">
+                Supports JPG, PNG, WEBP, and other common image formats
+              </p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileInput}
+                className="hidden"
+                id="file-input"
+              />
+              <label
+                htmlFor="file-input"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer"
+              >
+                Choose File
+              </label>
             </div>
           </Card>
         )}
