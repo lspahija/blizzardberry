@@ -74,14 +74,22 @@ export default function HDRConverterPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isSliderActive, setIsSliderActive] = useState(false);
 
   // HDR adjustment controls - default to more impressive values
   const [brightness, setBrightness] = useState(3.5); // Multiply factor
   const [gamma, setGamma] = useState(0.5); // Pow factor
   const [saturation, setSaturation] = useState(140); // Saturation percentage (100 = normal)
 
-  // Debounce timer for HDR conversion
+  // Advanced debouncing with requestAnimationFrame for smooth sliders
+  const rafId = useRef<number | null>(null);
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+  const isProcessingRef = useRef<boolean>(false);
+  const pendingValuesRef = useRef<{
+    brightness: number;
+    gamma: number;
+    saturation: number;
+  } | null>(null);
 
   // Convert with specific settings
   const convertToHDRWithSettings = useCallback(
@@ -91,6 +99,7 @@ export default function HDRConverterPage() {
       gammaValue: number,
       saturationValue: number
     ) => {
+      isProcessingRef.current = true;
       setIsProcessing(true);
 
       try {
@@ -158,7 +167,16 @@ export default function HDRConverterPage() {
         console.error('Error converting image:', error);
         alert('Failed to convert image to HDR');
       } finally {
+        isProcessingRef.current = false;
         setIsProcessing(false);
+        
+        // Process any pending values that came in while we were processing
+        if (pendingValuesRef.current) {
+          const pending = pendingValuesRef.current;
+          pendingValuesRef.current = null;
+          // Schedule the next processing
+          scheduleProcessing(pending.brightness, pending.gamma, pending.saturation);
+        }
       }
     },
     []
@@ -236,36 +254,75 @@ export default function HDRConverterPage() {
     }
   };
 
-  // Smooth debounced HDR processing
-  const processHDR = useCallback(async () => {
+  // Industry-standard smooth debouncing with requestAnimationFrame
+  const scheduleProcessing = useCallback((
+    brightnessValue: number,
+    gammaValue: number,
+    saturationValue: number
+  ) => {
     if (!selectedFile) return;
 
-    // Cancel any existing processing
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
+    // If we're already processing, store the pending values
+    if (isProcessingRef.current) {
+      pendingValuesRef.current = {
+        brightness: brightnessValue,
+        gamma: gammaValue,
+        saturation: saturationValue
+      };
+      return;
     }
 
-    // Debounce the actual processing
-    debounceTimer.current = setTimeout(() => {
-      void convertToHDRWithSettings(
-        selectedFile,
-        brightness,
-        gamma,
-        saturation
-      );
-    }, 300);
-  }, [selectedFile, brightness, gamma, saturation, convertToHDRWithSettings]);
+    // Cancel any pending RAF or timeout
+    if (rafId.current) {
+      cancelAnimationFrame(rafId.current);
+      rafId.current = null;
+    }
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+      debounceTimer.current = null;
+    }
+
+    // Schedule immediate visual feedback with RAF
+    rafId.current = requestAnimationFrame(() => {
+      rafId.current = null;
+      
+      // Provide immediate visual feedback that slider is active
+      setIsSliderActive(true);
+      
+      // Then debounce the actual heavy processing
+      debounceTimer.current = setTimeout(() => {
+        debounceTimer.current = null;
+        setIsSliderActive(false);
+        void convertToHDRWithSettings(
+          selectedFile,
+          brightnessValue,
+          gammaValue,
+          saturationValue
+        );
+      }, 150); // Reduced from 300ms for more responsive feel
+    });
+  }, [selectedFile, convertToHDRWithSettings]);
+
+  // Smooth debounced HDR processing
+  const processHDR = useCallback(async () => {
+    scheduleProcessing(brightness, gamma, saturation);
+  }, [brightness, gamma, saturation, scheduleProcessing]);
 
   // Auto-process when slider values change
   useEffect(() => {
     void processHDR();
   }, [processHDR]);
 
-  // Cleanup timer on unmount
+  // Cleanup timers and RAF on unmount
   useEffect(() => {
     return () => {
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+        rafId.current = null;
+      }
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current);
+        debounceTimer.current = null;
       }
     };
   }, []);
@@ -436,9 +493,17 @@ export default function HDRConverterPage() {
 
               {/* HDR Controls */}
               <div className="mb-8 space-y-6">
-                <div className="flex items-center space-x-3">
-                  <Zap className="h-5 w-5 text-brand" />
-                  <h3 className="text-lg font-semibold">Adjust HDR Settings</h3>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <Zap className="h-5 w-5 text-brand" />
+                    <h3 className="text-lg font-semibold">Adjust HDR Settings</h3>
+                  </div>
+                  {(isSliderActive || isProcessing) && (
+                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                      <div className="animate-spin w-4 h-4 border-2 border-brand border-t-transparent rounded-full"></div>
+                      <span>{isSliderActive ? 'Adjusting...' : 'Processing...'}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6">
@@ -463,7 +528,7 @@ export default function HDRConverterPage() {
                       onChange={(e) =>
                         setBrightness(parseFloat(e.target.value))
                       }
-                      className="w-full mt-2"
+                      className="w-full mt-2 slider-smooth transition-all duration-75 ease-out"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
                       <div className="text-center">
@@ -496,7 +561,7 @@ export default function HDRConverterPage() {
                       step="0.05"
                       value={gamma}
                       onChange={(e) => setGamma(parseFloat(e.target.value))}
-                      className="w-full mt-2"
+                      className="w-full mt-2 slider-smooth transition-all duration-75 ease-out"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
                       <div className="text-center">
@@ -529,7 +594,7 @@ export default function HDRConverterPage() {
                       step="10"
                       value={saturation}
                       onChange={(e) => setSaturation(parseInt(e.target.value))}
-                      className="w-full mt-2"
+                      className="w-full mt-2 slider-smooth transition-all duration-75 ease-out"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
                       <div className="text-center">
