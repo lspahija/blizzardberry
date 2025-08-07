@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { Button } from '../../../components/ui/button';
 import { Card } from '../../../components/ui/card';
-import { Progress } from '../../../components/ui/progress';
+import { Label } from '../../../components/ui/label';
 
 // Cache ImageMagick initialization
 let magickInitPromise: Promise<{
@@ -63,8 +63,11 @@ export default function HDRConverterPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [hdrImageUrl, setHdrImageUrl] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [isDragOver, setIsDragOver] = useState(false);
+  
+  // HDR adjustment controls - default to much more brilliant settings
+  const [brightness, setBrightness] = useState(2.5); // Multiply factor
+  const [gamma, setGamma] = useState(0.7); // Pow factor
 
   const handleFileSelect = useCallback(async (file: File) => {
     if (file && file.type.startsWith('image/')) {
@@ -73,7 +76,7 @@ export default function HDRConverterPage() {
       setPreviewUrl(url);
       setHdrImageUrl(null);
 
-      // Automatically convert to HDR
+      // Automatically convert to HDR with initial settings
       await convertToHDR(file);
     }
   }, []);
@@ -111,12 +114,42 @@ export default function HDRConverterPage() {
   );
 
   const convertToHDR = async (file: File) => {
+    // Use the current brightness and gamma settings
+    await convertToHDRWithSettings(file, brightness, gamma);
+  };
+
+  const downloadHDRImage = () => {
+    if (hdrImageUrl) {
+      const a = document.createElement('a');
+      a.href = hdrImageUrl;
+      a.download = `${selectedFile?.name?.replace(/\.[^/.]+$/, '') || 'image'}_hdr.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  };
+
+  // Handle slider changes and reconvert
+  const handleSliderChange = useCallback(async (newBrightness?: number, newGamma?: number) => {
+    if (!selectedFile || isProcessing) return;
+    
+    if (newBrightness !== undefined) setBrightness(newBrightness);
+    if (newGamma !== undefined) setGamma(newGamma);
+    
+    // Use the new values or current state
+    const brightnessValue = newBrightness ?? brightness;
+    const gammaValue = newGamma ?? gamma;
+    
+    // Reconvert with new settings
+    await convertToHDRWithSettings(selectedFile, brightnessValue, gammaValue);
+  }, [selectedFile, brightness, gamma, isProcessing]);
+
+  // Convert with specific settings
+  const convertToHDRWithSettings = async (file: File, brightnessValue: number, gammaValue: number) => {
     setIsProcessing(true);
-    setProgress(0);
 
     try {
       // Use cached initialization (only slow on first use)
-      setProgress(20);
       const {
         ImageMagick,
         MagickFormat,
@@ -125,26 +158,22 @@ export default function HDRConverterPage() {
         Channels,
       } = await initializeMagick();
 
-      setProgress(60);
-
       // Get image file as buffer
       const arrayBuffer = await file.arrayBuffer();
       const inputBuffer = new Uint8Array(arrayBuffer);
 
-      setProgress(80);
-
-      // Complete HDR processing - only skip ICC profile (slowest operation)
+      // HDR processing with custom settings
       let resultBuffer: Uint8Array = new Uint8Array();
 
-      ImageMagick.read(inputBuffer, (img) => {
+      ImageMagick.read(inputBuffer, (img: any) => {
         // Equivalent to: -colorspace RGB
         img.colorSpace = ColorSpace.RGB;
 
-        // Equivalent to: -evaluate Multiply 1.5
-        img.evaluate(Channels.All, EvaluateOperator.Multiply, 1.5);
+        // Equivalent to: -evaluate Multiply {brightnessValue}
+        img.evaluate(Channels.All, EvaluateOperator.Multiply, brightnessValue);
 
-        // Equivalent to: -evaluate Pow 0.9
-        img.evaluate(Channels.All, EvaluateOperator.Pow, 0.9);
+        // Equivalent to: -evaluate Pow {gammaValue}
+        img.evaluate(Channels.All, EvaluateOperator.Pow, gammaValue);
 
         // Equivalent to: -colorspace sRGB
         img.colorSpace = ColorSpace.sRGB;
@@ -156,7 +185,7 @@ export default function HDRConverterPage() {
         img.setProfile({ name: 'icc', data: profileBytes! });
 
         // Output as PNG for quality
-        img.write(MagickFormat.Png, (data) => {
+        img.write(MagickFormat.Png, (data: any) => {
           resultBuffer = data;
         });
       });
@@ -165,23 +194,11 @@ export default function HDRConverterPage() {
       const blob = new Blob([resultBuffer], { type: 'image/png' });
       const url = URL.createObjectURL(blob);
       setHdrImageUrl(url);
-      setProgress(100);
     } catch (error) {
       console.error('Error converting image:', error);
       alert('Failed to convert image to HDR');
     } finally {
       setIsProcessing(false);
-    }
-  };
-
-  const downloadHDRImage = () => {
-    if (hdrImageUrl) {
-      const a = document.createElement('a');
-      a.href = hdrImageUrl;
-      a.download = `${selectedFile?.name?.replace(/\.[^/.]+$/, '') || 'image'}_hdr.png`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
     }
   };
 
@@ -245,34 +262,6 @@ export default function HDRConverterPage() {
           </div>
         </Card>
 
-        {/* Processing Status */}
-        {isProcessing && (
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Converting to HDR...</h3>
-            <Progress value={progress} className="w-full mb-2" />
-            <p className="text-sm text-center">
-              Processing your image for ultra-bright display
-            </p>
-          </Card>
-        )}
-
-        {/* Preview Section */}
-        {previewUrl && !isProcessing && !hdrImageUrl && (
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Original Image</h3>
-            <div className="mb-4">
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
-                style={{ maxHeight: '400px' }}
-              />
-            </div>
-            <p className="text-sm text-center text-gray-600 dark:text-gray-400">
-              Converting to HDR automatically...
-            </p>
-          </Card>
-        )}
 
         {/* HDR Result Section */}
         {hdrImageUrl && (
@@ -302,6 +291,57 @@ export default function HDRConverterPage() {
                   className="w-full h-auto rounded-lg shadow-md"
                   style={{ maxHeight: '300px', objectFit: 'contain' }}
                 />
+              </div>
+            </div>
+
+            {/* HDR Controls */}
+            <div className="mb-6 space-y-4">
+              <h4 className="text-md font-medium">Adjust HDR Intensity</h4>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Brightness Control */}
+                <div>
+                  <Label htmlFor="brightness" className="text-sm font-medium">
+                    Brightness: {brightness.toFixed(1)}x
+                  </Label>
+                  <input
+                    id="brightness"
+                    type="range"
+                    min="1.0"
+                    max="3.0"
+                    step="0.1"
+                    value={brightness}
+                    onChange={(e) => handleSliderChange(parseFloat(e.target.value), undefined)}
+                    className="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    disabled={isProcessing}
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>Subtle</span>
+                    <span>Ultra Bright</span>
+                  </div>
+                </div>
+                
+                {/* Gamma Control */}
+                <div>
+                  <Label htmlFor="gamma" className="text-sm font-medium">
+                    Gamma: {gamma.toFixed(2)}
+                  </Label>
+                  <input
+                    id="gamma"
+                    type="range"
+                    min="0.5"
+                    max="1.2"
+                    step="0.05"
+                    value={gamma}
+                    onChange={(e) => handleSliderChange(undefined, parseFloat(e.target.value))}
+                    className="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    disabled={isProcessing}
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>Dramatic</span>
+                    <span>Natural</span>
+                  </div>
+                </div>
               </div>
             </div>
 
