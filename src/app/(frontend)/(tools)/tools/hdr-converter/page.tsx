@@ -313,26 +313,26 @@ export default function HDRConverterPage() {
             <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl p-6">
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 {/* Original Image */}
-                <div>
-                  <div className="flex items-center mb-3">
+                <div
+                  className="cursor-pointer"
+                  onClick={() => document.getElementById('file-input')?.click()}
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                >
+                  <div className="flex items-center mb-4">
                     <h3 className="text-lg font-semibold text-foreground">
                       Original
                     </h3>
                   </div>
-                  <div
-                    className={`cursor-pointer transition-all duration-200 border-2 border-dashed rounded-lg p-4 space-y-3 ${
-                      isDragOver
-                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20'
-                        : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                    }`}
-                    onClick={() =>
-                      document.getElementById('file-input')?.click()
-                    }
-                    onDrop={handleDrop}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                  >
-                    <div className="relative">
+                  <div className="space-y-4">
+                    <div
+                      className={`relative border-2 border-dashed rounded-lg p-4 transition-all duration-200 ${
+                        isDragOver
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20'
+                          : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+                      }`}
+                    >
                       <img
                         src={previewUrl || undefined}
                         alt="Original"
@@ -348,7 +348,7 @@ export default function HDRConverterPage() {
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground text-center">
-                      Click to upload or drag and drop
+                      Click to upload or drag & drop
                     </p>
                   </div>
                   <input
@@ -362,34 +362,36 @@ export default function HDRConverterPage() {
 
                 {/* HDR Result */}
                 <div>
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-foreground">
                       HDR Enhanced
                     </h3>
                   </div>
-                  <div
-                    className={`${!hdrImageUrl ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
-                    style={{ minHeight: '200px' }}
-                  >
-                    {hdrImageUrl ? (
-                      <img
-                        src={hdrImageUrl}
-                        alt="HDR Enhanced"
-                        className="w-full h-auto rounded-lg shadow-md"
-                        style={{ maxHeight: '300px', objectFit: 'contain' }}
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center h-full min-h-[200px] text-muted-foreground border-2 border-dashed border-muted rounded-lg">
-                        {isProcessing ? (
-                          <div className="text-center">
-                            <div className="animate-spin w-8 h-8 border-2 border-brand border-t-transparent rounded-full mx-auto mb-2"></div>
-                            <p>Converting to HDR...</p>
-                          </div>
-                        ) : (
-                          'HDR result will appear here'
-                        )}
-                      </div>
-                    )}
+                  <div className="space-y-4">
+                    <div className="border-2 border-solid border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                      {hdrImageUrl ? (
+                        <img
+                          src={hdrImageUrl}
+                          alt="HDR Enhanced"
+                          className="w-full h-auto rounded-lg shadow-md"
+                          style={{ maxHeight: '280px', objectFit: 'contain' }}
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full min-h-[280px] text-muted-foreground">
+                          {isProcessing ? (
+                            <div className="text-center">
+                              <div className="animate-spin w-8 h-8 border-2 border-brand border-t-transparent rounded-full mx-auto mb-2"></div>
+                              <p>Converting to HDR...</p>
+                            </div>
+                          ) : (
+                            <p>HDR result will appear here</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground text-center opacity-50">
+                      Enhanced image appears here
+                    </p>
                   </div>
                 </div>
               </div>
