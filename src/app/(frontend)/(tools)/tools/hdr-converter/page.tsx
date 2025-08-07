@@ -64,10 +64,11 @@ export default function HDRConverterPage() {
   const [hdrImageUrl, setHdrImageUrl] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
-  
+
   // HDR adjustment controls - default to much more brilliant settings
   const [brightness, setBrightness] = useState(2.5); // Multiply factor
   const [gamma, setGamma] = useState(0.7); // Pow factor
+  const [saturation, setSaturation] = useState(150); // Saturation percentage
 
   const handleFileSelect = useCallback(async (file: File) => {
     if (file && file.type.startsWith('image/')) {
@@ -114,8 +115,8 @@ export default function HDRConverterPage() {
   );
 
   const convertToHDR = async (file: File) => {
-    // Use the current brightness and gamma settings
-    await convertToHDRWithSettings(file, brightness, gamma);
+    // Use the current brightness, gamma, and saturation settings
+    await convertToHDRWithSettings(file, brightness, gamma, saturation);
   };
 
   const downloadHDRImage = () => {
@@ -133,25 +134,35 @@ export default function HDRConverterPage() {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Handle slider changes with debouncing
-  const handleSliderChange = useCallback((newBrightness?: number, newGamma?: number) => {
-    if (!selectedFile || isProcessing) return;
-    
-    // Update state immediately for smooth UI
-    if (newBrightness !== undefined) setBrightness(newBrightness);
-    if (newGamma !== undefined) setGamma(newGamma);
-    
-    // Clear previous timer
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
-    
-    // Set new timer to trigger conversion after user stops dragging
-    debounceTimer.current = setTimeout(async () => {
-      const brightnessValue = newBrightness ?? brightness;
-      const gammaValue = newGamma ?? gamma;
-      await convertToHDRWithSettings(selectedFile, brightnessValue, gammaValue);
-    }, 300); // 300ms delay
-  }, [selectedFile, brightness, gamma, isProcessing]);
+  const handleSliderChange = useCallback(
+    (newBrightness?: number, newGamma?: number, newSaturation?: number) => {
+      if (!selectedFile || isProcessing) return;
+
+      // Update state immediately for smooth UI
+      if (newBrightness !== undefined) setBrightness(newBrightness);
+      if (newGamma !== undefined) setGamma(newGamma);
+      if (newSaturation !== undefined) setSaturation(newSaturation);
+
+      // Clear previous timer
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+
+      // Set new timer to trigger conversion after user stops dragging
+      debounceTimer.current = setTimeout(async () => {
+        const brightnessValue = newBrightness ?? brightness;
+        const gammaValue = newGamma ?? gamma;
+        const saturationValue = newSaturation ?? saturation;
+        await convertToHDRWithSettings(
+          selectedFile,
+          brightnessValue,
+          gammaValue,
+          saturationValue
+        );
+      }, 300); // 300ms delay
+    },
+    [selectedFile, brightness, gamma, saturation, isProcessing]
+  );
 
   // Cleanup timer on unmount
   useEffect(() => {
@@ -163,7 +174,12 @@ export default function HDRConverterPage() {
   }, []);
 
   // Convert with specific settings
-  const convertToHDRWithSettings = async (file: File, brightnessValue: number, gammaValue: number) => {
+  const convertToHDRWithSettings = async (
+    file: File,
+    brightnessValue: number,
+    gammaValue: number,
+    saturationValue: number
+  ) => {
     setIsProcessing(true);
 
     try {
@@ -195,6 +211,17 @@ export default function HDRConverterPage() {
 
         // Equivalent to: -colorspace sRGB
         img.colorSpace = ColorSpace.sRGB;
+
+        // Apply saturation control - enhanced color saturation
+        if (saturationValue !== 150) { // Only apply if different from default 150%
+          const saturationFactor = saturationValue / 150.0;
+          // Use a simple RGB enhancement approach for vibrancy
+          // This multiplies color differences from gray to enhance saturation
+          img.evaluate(Channels.Red, EvaluateOperator.Multiply, 0.5 + (saturationFactor * 0.5));
+          img.evaluate(Channels.Green, EvaluateOperator.Multiply, 0.5 + (saturationFactor * 0.5));  
+          img.evaluate(Channels.Blue, EvaluateOperator.Multiply, 0.5 + (saturationFactor * 0.5));
+          img.evaluate(Channels.All, EvaluateOperator.Add, saturationFactor * 0.2);
+        }
 
         // Equivalent to: -depth 16
         img.depth = 16;
@@ -280,7 +307,6 @@ export default function HDRConverterPage() {
           </div>
         </Card>
 
-
         {/* HDR Result Section */}
         {hdrImageUrl && (
           <Card className="p-6">
@@ -315,8 +341,8 @@ export default function HDRConverterPage() {
             {/* HDR Controls */}
             <div className="mb-6 space-y-4">
               <h4 className="text-md font-medium">🚀 Unleash HDR Power</h4>
-              
-              <div className="grid md:grid-cols-2 gap-6">
+
+              <div className="grid md:grid-cols-3 gap-4">
                 {/* Brightness Control */}
                 <div>
                   <Label htmlFor="brightness" className="text-sm font-medium">
@@ -326,19 +352,21 @@ export default function HDRConverterPage() {
                     id="brightness"
                     type="range"
                     min="0.5"
-                    max="10.0"
+                    max="7.0"
                     step="0.1"
                     value={brightness}
-                    onChange={(e) => handleSliderChange(parseFloat(e.target.value), undefined)}
+                    onChange={(e) =>
+                      handleSliderChange(parseFloat(e.target.value), undefined)
+                    }
                     className="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                     disabled={isProcessing}
                   />
                   <div className="flex justify-between text-xs text-gray-500 mt-1">
                     <span>Dark (0.5x)</span>
-                    <span>🌟 EXTREME (10x)</span>
+                    <span>🌟 ULTRA BRIGHT (7x)</span>
                   </div>
                 </div>
-                
+
                 {/* Gamma Control */}
                 <div>
                   <Label htmlFor="gamma" className="text-sm font-medium">
@@ -351,13 +379,43 @@ export default function HDRConverterPage() {
                     max="2.0"
                     step="0.05"
                     value={gamma}
-                    onChange={(e) => handleSliderChange(undefined, parseFloat(e.target.value))}
+                    onChange={(e) =>
+                      handleSliderChange(undefined, parseFloat(e.target.value))
+                    }
                     className="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                     disabled={isProcessing}
                   />
                   <div className="flex justify-between text-xs text-gray-500 mt-1">
                     <span>🔥 INSANE (0.1)</span>
                     <span>Flat (2.0)</span>
+                  </div>
+                </div>
+
+                {/* Saturation Control */}
+                <div>
+                  <Label htmlFor="saturation" className="text-sm font-medium">
+                    Saturation: {saturation}%
+                  </Label>
+                  <input
+                    id="saturation"
+                    type="range"
+                    min="50"
+                    max="300"
+                    step="10"
+                    value={saturation}
+                    onChange={(e) =>
+                      handleSliderChange(
+                        undefined,
+                        undefined,
+                        parseInt(e.target.value)
+                      )
+                    }
+                    className="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    disabled={isProcessing}
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>Muted (50%)</span>
+                    <span>🌈 VIBRANT (300%)</span>
                   </div>
                 </div>
               </div>
