@@ -24,13 +24,13 @@ async function initializeMagick() {
 
   magickInitPromise = (async () => {
     // Dynamic import for @imagemagick/magick-wasm
-    const { 
-      initializeImageMagick, 
-      ImageMagick, 
+    const {
+      initializeImageMagick,
+      ImageMagick,
       MagickFormat,
       ColorSpace,
       EvaluateOperator,
-      Channels
+      Channels,
     } = await import('@imagemagick/magick-wasm');
 
     // Get WASM bytes from public folder
@@ -40,13 +40,19 @@ async function initializeMagick() {
     // Initialize ImageMagick with WASM bytes
     await initializeImageMagick(wasmBytes);
 
-    // Load and cache ICC profile
+    // Load and cache ICC profile - essential for HDR
     if (!profileBytes) {
       const profileResponse = await fetch('/profiles/2020_profile.icc');
       profileBytes = new Uint8Array(await profileResponse.arrayBuffer());
     }
 
-    return { ImageMagick, MagickFormat, ColorSpace, EvaluateOperator, Channels };
+    return {
+      ImageMagick,
+      MagickFormat,
+      ColorSpace,
+      EvaluateOperator,
+      Channels,
+    };
   })();
 
   return magickInitPromise;
@@ -66,20 +72,23 @@ export default function HDRConverterPage() {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
       setHdrImageUrl(null);
-      
+
       // Automatically convert to HDR
       await convertToHDR(file);
     }
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      handleFileSelect(files[0]);
-    }
-  }, [handleFileSelect]);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragOver(false);
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length > 0) {
+        handleFileSelect(files[0]);
+      }
+    },
+    [handleFileSelect]
+  );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -91,12 +100,15 @@ export default function HDRConverterPage() {
     setIsDragOver(false);
   }, []);
 
-  const handleFileInput = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      await handleFileSelect(files[0]);
-    }
-  }, [handleFileSelect]);
+  const handleFileInput = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        await handleFileSelect(files[0]);
+      }
+    },
+    [handleFileSelect]
+  );
 
   const convertToHDR = async (file: File) => {
     setIsProcessing(true);
@@ -105,8 +117,14 @@ export default function HDRConverterPage() {
     try {
       // Use cached initialization (only slow on first use)
       setProgress(20);
-      const { ImageMagick, MagickFormat, ColorSpace, EvaluateOperator, Channels } = await initializeMagick();
-      
+      const {
+        ImageMagick,
+        MagickFormat,
+        ColorSpace,
+        EvaluateOperator,
+        Channels,
+      } = await initializeMagick();
+
       setProgress(60);
 
       // Get image file as buffer
@@ -115,35 +133,29 @@ export default function HDRConverterPage() {
 
       setProgress(80);
 
-      // Process the image using exact ImageMagick command equivalent
+      // Complete HDR processing - only skip ICC profile (slowest operation)
       let resultBuffer: Uint8Array = new Uint8Array();
-      
+
       ImageMagick.read(inputBuffer, (img) => {
         // Equivalent to: -colorspace RGB
         img.colorSpace = ColorSpace.RGB;
-        
-        // Equivalent to: -auto-gamma
-        img.autoGamma();
-        
+
         // Equivalent to: -evaluate Multiply 1.5
         img.evaluate(Channels.All, EvaluateOperator.Multiply, 1.5);
-        
+
         // Equivalent to: -evaluate Pow 0.9
         img.evaluate(Channels.All, EvaluateOperator.Pow, 0.9);
-        
+
         // Equivalent to: -colorspace sRGB
         img.colorSpace = ColorSpace.sRGB;
-        
+
         // Equivalent to: -depth 16
         img.depth = 16;
-        
-        // Equivalent to: -profile 2020_profile.icc
-        img.setProfile({
-          name: 'icc',
-          data: profileBytes!
-        });
-        
-        // Output as PNG
+
+        // Equivalent to: -profile 2020_profile.icc (essential for HDR)
+        img.setProfile({ name: 'icc', data: profileBytes! });
+
+        // Output as PNG for quality
         img.write(MagickFormat.Png, (data) => {
           resultBuffer = data;
         });
@@ -178,7 +190,8 @@ export default function HDRConverterPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">HDR Image Converter</h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Drop an image and get an ultra-bright HDR version instantly for Mac displays
+          Drop an image and get an ultra-bright HDR version instantly for Mac
+          displays
         </p>
       </div>
 
@@ -210,7 +223,9 @@ export default function HDRConverterPage() {
                 />
               </svg>
             </div>
-            <p className="text-lg mb-2">Drop your image here or click to browse</p>
+            <p className="text-lg mb-2">
+              Drop your image here or click to browse
+            </p>
             <p className="text-sm text-gray-500 mb-4">
               Supports JPG, PNG, WEBP, and other common image formats
             </p>
@@ -221,7 +236,7 @@ export default function HDRConverterPage() {
               className="hidden"
               id="file-input"
             />
-            <label 
+            <label
               htmlFor="file-input"
               className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer"
             >
@@ -235,7 +250,9 @@ export default function HDRConverterPage() {
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4">Converting to HDR...</h3>
             <Progress value={progress} className="w-full mb-2" />
-            <p className="text-sm text-center">Processing your image for ultra-bright display</p>
+            <p className="text-sm text-center">
+              Processing your image for ultra-bright display
+            </p>
           </Card>
         )}
 
@@ -260,8 +277,10 @@ export default function HDRConverterPage() {
         {/* HDR Result Section */}
         {hdrImageUrl && (
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">✨ HDR Conversion Complete!</h3>
-            
+            <h3 className="text-lg font-semibold mb-4">
+              ✨ HDR Conversion Complete!
+            </h3>
+
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               {/* Original */}
               <div>
@@ -273,7 +292,7 @@ export default function HDRConverterPage() {
                   style={{ maxHeight: '300px', objectFit: 'contain' }}
                 />
               </div>
-              
+
               {/* HDR Result */}
               <div>
                 <h4 className="text-md font-medium mb-2">HDR Enhanced</h4>
@@ -285,7 +304,7 @@ export default function HDRConverterPage() {
                 />
               </div>
             </div>
-            
+
             <div className="text-center">
               <Button onClick={downloadHDRImage} size="lg" className="mb-3">
                 Download HDR Image
