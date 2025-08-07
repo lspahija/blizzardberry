@@ -169,13 +169,17 @@ export default function HDRConverterPage() {
       } finally {
         isProcessingRef.current = false;
         setIsProcessing(false);
-        
+
         // Process any pending values that came in while we were processing
         if (pendingValuesRef.current) {
           const pending = pendingValuesRef.current;
           pendingValuesRef.current = null;
           // Schedule the next processing
-          scheduleProcessing(pending.brightness, pending.gamma, pending.saturation);
+          scheduleProcessing(
+            pending.brightness,
+            pending.gamma,
+            pending.saturation
+          );
         }
       }
     },
@@ -186,15 +190,15 @@ export default function HDRConverterPage() {
     if (file && file.type.startsWith('image/')) {
       setIsUploading(true);
       setImageLoaded(false);
-      
+
       // Add a small delay to ensure spinner is visible
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
       setSelectedFile(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
       setHdrImageUrl(null);
-      
+
       setIsUploading(false);
       // Don't start HDR conversion until image is loaded
     }
@@ -204,7 +208,12 @@ export default function HDRConverterPage() {
     setImageLoaded(true);
     // Start HDR conversion now that image is loaded
     if (selectedFile) {
-      await convertToHDRWithSettings(selectedFile, brightness, gamma, saturation);
+      await convertToHDRWithSettings(
+        selectedFile,
+        brightness,
+        gamma,
+        saturation
+      );
     }
   }, [selectedFile, brightness, gamma, saturation, convertToHDRWithSettings]);
 
@@ -240,7 +249,6 @@ export default function HDRConverterPage() {
     [handleFileSelect]
   );
 
-
   // Remove unused convertToHDR function since we call convertToHDRWithSettings directly
 
   const downloadHDRImage = () => {
@@ -255,53 +263,52 @@ export default function HDRConverterPage() {
   };
 
   // Industry-standard smooth debouncing with requestAnimationFrame
-  const scheduleProcessing = useCallback((
-    brightnessValue: number,
-    gammaValue: number,
-    saturationValue: number
-  ) => {
-    if (!selectedFile) return;
+  const scheduleProcessing = useCallback(
+    (brightnessValue: number, gammaValue: number, saturationValue: number) => {
+      if (!selectedFile) return;
 
-    // If we're already processing, store the pending values
-    if (isProcessingRef.current) {
-      pendingValuesRef.current = {
-        brightness: brightnessValue,
-        gamma: gammaValue,
-        saturation: saturationValue
-      };
-      return;
-    }
+      // If we're already processing, store the pending values
+      if (isProcessingRef.current) {
+        pendingValuesRef.current = {
+          brightness: brightnessValue,
+          gamma: gammaValue,
+          saturation: saturationValue,
+        };
+        return;
+      }
 
-    // Cancel any pending RAF or timeout
-    if (rafId.current) {
-      cancelAnimationFrame(rafId.current);
-      rafId.current = null;
-    }
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-      debounceTimer.current = null;
-    }
-
-    // Schedule immediate visual feedback with RAF
-    rafId.current = requestAnimationFrame(() => {
-      rafId.current = null;
-      
-      // Provide immediate visual feedback that slider is active
-      setIsSliderActive(true);
-      
-      // Then debounce the actual heavy processing
-      debounceTimer.current = setTimeout(() => {
+      // Cancel any pending RAF or timeout
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+        rafId.current = null;
+      }
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
         debounceTimer.current = null;
-        setIsSliderActive(false);
-        void convertToHDRWithSettings(
-          selectedFile,
-          brightnessValue,
-          gammaValue,
-          saturationValue
-        );
-      }, 150); // Reduced from 300ms for more responsive feel
-    });
-  }, [selectedFile, convertToHDRWithSettings]);
+      }
+
+      // Schedule immediate visual feedback with RAF
+      rafId.current = requestAnimationFrame(() => {
+        rafId.current = null;
+
+        // Provide immediate visual feedback that slider is active
+        setIsSliderActive(true);
+
+        // Then debounce the actual heavy processing
+        debounceTimer.current = setTimeout(() => {
+          debounceTimer.current = null;
+          setIsSliderActive(false);
+          void convertToHDRWithSettings(
+            selectedFile,
+            brightnessValue,
+            gammaValue,
+            saturationValue
+          );
+        }, 75); // Super responsive debouncing for smooth sliders
+      });
+    },
+    [selectedFile, convertToHDRWithSettings]
+  );
 
   // Smooth debounced HDR processing
   const processHDR = useCallback(async () => {
@@ -335,11 +342,11 @@ export default function HDRConverterPage() {
         const blob = await response.blob();
         const file = new File([blob], 'logo.png', { type: 'image/png' });
         const url = URL.createObjectURL(file);
-        
+
         setSelectedFile(file);
         setPreviewUrl(url);
         setImageLoaded(true); // Set to true for initial image since it's already loaded
-        
+
         await convertToHDRWithSettings(file, brightness, gamma, saturation);
       } catch (error) {
         console.error('Failed to load example image:', error);
@@ -496,12 +503,16 @@ export default function HDRConverterPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <Zap className="h-5 w-5 text-brand" />
-                    <h3 className="text-lg font-semibold">Adjust HDR Settings</h3>
+                    <h3 className="text-lg font-semibold">
+                      Adjust HDR Settings
+                    </h3>
                   </div>
                   {(isSliderActive || isProcessing) && (
                     <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                       <div className="animate-spin w-4 h-4 border-2 border-brand border-t-transparent rounded-full"></div>
-                      <span>{isSliderActive ? 'Adjusting...' : 'Processing...'}</span>
+                      <span>
+                        {isSliderActive ? 'Adjusting...' : 'Processing...'}
+                      </span>
                     </div>
                   )}
                 </div>
