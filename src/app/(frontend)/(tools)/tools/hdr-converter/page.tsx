@@ -4,6 +4,9 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { Button } from '../../../components/ui/button';
 import { Card } from '../../../components/ui/card';
 import { Label } from '../../../components/ui/label';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { Download, Zap, Sparkles, ArrowRight } from 'lucide-react';
 
 // Cache ImageMagick initialization
 let magickInitPromise: Promise<{
@@ -342,21 +345,47 @@ export default function HDRConverterPage() {
   }, [brightness, gamma, saturation, convertToHDRWithSettings]);
 
 
-  return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">HDR Image Converter</h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Adds new HDR life into boring old images
-          </p>
-        </div>
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, staggerChildren: 0.2 },
+    },
+  };
 
-      <div className="grid gap-6">
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">
-            ✨ HDR Image Converter -{' '}
-            {hdrImageUrl ? 'Ready!' : 'Loading example...'}
-          </h3>
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      {/* HDR Converter Tool - Top Priority */}
+      <motion.section
+        className="py-8 sm:py-12"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <div className="container mx-auto px-4 max-w-6xl">
+          <motion.div className="text-center mb-8" variants={itemVariants}>
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2 leading-tight">
+              HDR Image Converter
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Convert images to HDR format with enhanced brightness and color range
+            </p>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl p-6">
+              <div className="flex items-center space-x-3 mb-6">
+                <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-brand" />
+                <h3 className="text-xl sm:text-2xl font-bold">
+                  HDR Converter - {hdrImageUrl ? 'Ready!' : 'Loading example...'}
+                </h3>
+              </div>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             {/* Original - Clickable and Draggable */}
@@ -427,7 +456,10 @@ export default function HDRConverterPage() {
 
           {/* HDR Controls */}
           <div className="mb-6 space-y-4">
-            <h4 className="text-md font-medium">🚀 Unleash HDR Power</h4>
+            <div className="flex items-center space-x-3">
+              <Zap className="h-5 w-5 text-brand" />
+              <h4 className="text-lg font-bold">Unleash HDR Power</h4>
+            </div>
 
             <div className="grid md:grid-cols-3 gap-4">
               {/* Brightness Control */}
@@ -511,21 +543,72 @@ export default function HDRConverterPage() {
           </div>
 
           <div className="text-center">
-            <Button
-              onClick={downloadHDRImage}
-              size="lg"
-              className="mb-3"
-              disabled={!hdrImageUrl}
-            >
-              Download HDR Image
-            </Button>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              HDR images display ultra-bright on HDR screens. Try Chrome on your
-              phone if it looks the same.
+            <div className="relative group w-full sm:w-auto inline-block mb-4">
+              <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+              <Button
+                onClick={downloadHDRImage}
+                size="lg"
+                className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 text-lg px-8 py-4 rounded-lg"
+                disabled={!hdrImageUrl}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download HDR Image
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground mb-6">
+              💡 HDR images display ultra-bright on HDR screens. Try viewing on your phone for the full effect!
             </p>
           </div>
-        </Card>
-      </div>
+            </Card>
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* BlizzardBerry Promotion */}
+      <motion.section
+        className="py-12 sm:py-16 bg-gradient-to-br from-brand/10 to-brand/5"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-2 text-center">
+          <motion.div variants={itemVariants}>
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-4 leading-tight">
+              Need More Than Just Image Tools?
+            </h2>
+            <p className="text-lg text-muted-foreground mb-8">
+              BlizzardBerry helps you build AI agents that transform how users interact with your website. Give your users an AI that can actually take action, not just answer questions.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="relative group w-full sm:w-auto">
+                <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                <Button
+                  asChild
+                  size="lg"
+                  className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-lg px-8 py-4 rounded-lg"
+                >
+                  <Link href="/login">
+                    <ArrowRight className="mr-2 h-4 w-4" />
+                    Try BlizzardBerry Free
+                  </Link>
+                </Button>
+              </div>
+              <div className="relative group w-full sm:w-auto">
+                <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full sm:w-auto text-lg px-8 py-4 rounded-lg"
+                  asChild
+                >
+                  <Link href="/pricing">View Pricing</Link>
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </motion.section>
     </div>
   );
 }
