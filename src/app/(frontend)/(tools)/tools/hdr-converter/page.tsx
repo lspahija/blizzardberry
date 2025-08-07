@@ -173,7 +173,11 @@ export default function HDRConverterPage() {
           // Apply proper saturation control using ImageMagick's modulate
           if (saturationValue !== 100) {
             // Use modulate with Percentage objects: modulate(brightness, saturation, hue)
-            img.modulate(new Percentage(100), new Percentage(saturationValue), new Percentage(100));
+            img.modulate(
+              new Percentage(100),
+              new Percentage(saturationValue),
+              new Percentage(100)
+            );
           }
 
           // Equivalent to: -depth 16
@@ -224,15 +228,20 @@ export default function HDRConverterPage() {
   // Smooth debounced HDR processing
   const processHDR = useCallback(async () => {
     if (!selectedFile) return;
-    
+
     // Cancel any existing processing
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
     }
-    
+
     // Debounce the actual processing
     debounceTimer.current = setTimeout(() => {
-      void convertToHDRWithSettings(selectedFile, brightness, gamma, saturation);
+      void convertToHDRWithSettings(
+        selectedFile,
+        brightness,
+        gamma,
+        saturation
+      );
     }, 300);
   }, [selectedFile, brightness, gamma, saturation, convertToHDRWithSettings]);
 
@@ -240,7 +249,6 @@ export default function HDRConverterPage() {
   useEffect(() => {
     void processHDR();
   }, [processHDR]);
-
 
   // Cleanup timer on unmount
   useEffect(() => {
@@ -306,19 +314,16 @@ export default function HDRConverterPage() {
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 {/* Original Image */}
                 <div>
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center mb-3">
                     <h3 className="text-lg font-semibold text-foreground">
                       Original
                     </h3>
-                    <span className="text-sm text-muted-foreground">
-                      Click or drop image here to replace
-                    </span>
                   </div>
                   <div
-                    className={`relative cursor-pointer transition-all duration-200 ${
+                    className={`cursor-pointer transition-all duration-200 border-2 border-dashed rounded-lg p-4 space-y-3 ${
                       isDragOver
-                        ? 'ring-2 ring-blue-500 ring-opacity-50'
-                        : 'hover:ring-2 hover:ring-gray-300'
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20'
+                        : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800/50'
                     }`}
                     onClick={() =>
                       document.getElementById('file-input')?.click()
@@ -327,19 +332,24 @@ export default function HDRConverterPage() {
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                   >
-                    <img
-                      src={previewUrl || undefined}
-                      alt="Original"
-                      className="w-full h-auto rounded-lg shadow-md"
-                      style={{ maxHeight: '300px', objectFit: 'contain' }}
-                    />
-                    {isDragOver && (
-                      <div className="absolute inset-0 bg-blue-50 dark:bg-blue-950/20 rounded-lg flex items-center justify-center">
-                        <p className="text-blue-600 font-medium">
-                          Drop new image here
-                        </p>
-                      </div>
-                    )}
+                    <div className="relative">
+                      <img
+                        src={previewUrl || undefined}
+                        alt="Original"
+                        className="w-full h-auto rounded-lg shadow-md"
+                        style={{ maxHeight: '280px', objectFit: 'contain' }}
+                      />
+                      {isDragOver && (
+                        <div className="absolute inset-0 bg-blue-50 dark:bg-blue-950/40 rounded-lg flex items-center justify-center">
+                          <p className="text-blue-600 dark:text-blue-400 font-medium text-lg">
+                            Drop new image here
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground text-center">
+                      Click to upload or drag and drop
+                    </p>
                   </div>
                   <input
                     type="file"
@@ -410,7 +420,9 @@ export default function HDRConverterPage() {
                       max="7.0"
                       step="0.1"
                       value={brightness}
-                      onChange={(e) => setBrightness(parseFloat(e.target.value))}
+                      onChange={(e) =>
+                        setBrightness(parseFloat(e.target.value))
+                      }
                       className="w-full mt-2"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
@@ -509,7 +521,8 @@ export default function HDRConverterPage() {
               </div>
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">
-                  HDR images display with enhanced brightness on compatible screens.
+                  HDR images display with enhanced brightness on compatible
+                  screens.
                   <br />
                   If the image looks the same, try Chrome on your phone.
                 </p>
