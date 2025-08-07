@@ -602,7 +602,7 @@ export default function HDRConverterPage() {
                   className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full sm:w-auto text-lg px-8 py-4 rounded-lg"
                   asChild
                 >
-                  <Link href="/pricing">View Pricing</Link>
+                  <Link href="/">Learn More</Link>
                 </Button>
               </div>
             </div>
