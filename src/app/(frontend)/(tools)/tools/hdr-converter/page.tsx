@@ -374,11 +374,6 @@ export default function HDRConverterPage() {
                     <h3 className="text-lg font-semibold text-foreground">
                       HDR Enhanced
                     </h3>
-                    {isProcessing && (
-                      <span className="text-sm text-brand animate-pulse">
-                        Converting...
-                      </span>
-                    )}
                   </div>
                   <div
                     className={`${!hdrImageUrl ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
