@@ -77,8 +77,6 @@ export default function HDRConverterPage() {
 
   // Debounce timer for HDR conversion
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
-  // Track current conversion to cancel if needed
-  const currentConversion = useRef<AbortController | null>(null);
 
   const handleFileSelect = useCallback(async (file: File) => {
     if (file && file.type.startsWith('image/')) {
@@ -241,94 +239,32 @@ export default function HDRConverterPage() {
     }
   };
 
-  // Handle slider input with debounced processing
-  const handleSliderInput = useCallback(
-    (newBrightness?: number, newGamma?: number, newSaturation?: number) => {
-      // Update UI state immediately for smooth slider movement
-      if (newBrightness !== undefined) setBrightness(newBrightness);
-      if (newGamma !== undefined) setGamma(newGamma);
-      if (newSaturation !== undefined) setSaturation(newSaturation);
+  // Smooth debounced HDR processing
+  const processHDR = useCallback(async () => {
+    if (!selectedFile) return;
+    
+    // Cancel any existing processing
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+    
+    // Debounce the actual processing
+    debounceTimer.current = setTimeout(() => {
+      void convertToHDRWithSettings(selectedFile, brightness, gamma, saturation);
+    }, 300);
+  }, [selectedFile, brightness, gamma, saturation, convertToHDRWithSettings]);
 
-      // Cancel any existing conversion and timer
-      if (currentConversion.current) {
-        currentConversion.current.abort();
-        currentConversion.current = null;
-      }
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
+  // Auto-process when slider values change
+  useEffect(() => {
+    void processHDR();
+  }, [processHDR]);
 
-      // Schedule HDR conversion with debouncing
-      if (selectedFile) {
-        debounceTimer.current = setTimeout(() => {
-          // Create new AbortController for this conversion
-          const controller = new AbortController();
-          currentConversion.current = controller;
 
-          const brightnessValue = newBrightness ?? brightness;
-          const gammaValue = newGamma ?? gamma;
-          const saturationValue = newSaturation ?? saturation;
-          void convertToHDRWithSettings(
-            selectedFile,
-            brightnessValue,
-            gammaValue,
-            saturationValue
-          ).finally(() => {
-            // Clear reference when done
-            if (currentConversion.current === controller) {
-              currentConversion.current = null;
-            }
-          });
-        }, 150); // Reduced debounce time since we're now properly cancelling
-      }
-    },
-    [selectedFile, brightness, gamma, saturation, convertToHDRWithSettings]
-  );
-
-  // Handle slider change (when user releases slider) - immediate processing
-  const handleSliderChange = useCallback(
-    (newBrightness?: number, newGamma?: number, newSaturation?: number) => {
-      // Cancel any existing conversion and timer
-      if (currentConversion.current) {
-        currentConversion.current.abort();
-        currentConversion.current = null;
-      }
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-
-      // Process HDR conversion immediately when released
-      if (selectedFile) {
-        const controller = new AbortController();
-        currentConversion.current = controller;
-
-        const brightnessValue = newBrightness ?? brightness;
-        const gammaValue = newGamma ?? gamma;
-        const saturationValue = newSaturation ?? saturation;
-        void convertToHDRWithSettings(
-          selectedFile,
-          brightnessValue,
-          gammaValue,
-          saturationValue
-        ).finally(() => {
-          // Clear reference when done
-          if (currentConversion.current === controller) {
-            currentConversion.current = null;
-          }
-        });
-      }
-    },
-    [selectedFile, brightness, gamma, saturation, convertToHDRWithSettings]
-  );
-
-  // Cleanup timer and conversions on unmount
+  // Cleanup timer on unmount
   useEffect(() => {
     return () => {
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current);
-      }
-      if (currentConversion.current) {
-        currentConversion.current.abort();
       }
     };
   }, []);
@@ -497,20 +433,7 @@ export default function HDRConverterPage() {
                       max="7.0"
                       step="0.1"
                       value={brightness}
-                      onInput={(e) =>
-                        handleSliderInput(
-                          parseFloat((e.target as HTMLInputElement).value),
-                          undefined,
-                          undefined
-                        )
-                      }
-                      onChange={(e) =>
-                        handleSliderChange(
-                          parseFloat(e.target.value),
-                          undefined,
-                          undefined
-                        )
-                      }
+                      onChange={(e) => setBrightness(parseFloat(e.target.value))}
                       className="w-full mt-2"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
@@ -537,20 +460,7 @@ export default function HDRConverterPage() {
                       max="2.0"
                       step="0.05"
                       value={gamma}
-                      onInput={(e) =>
-                        handleSliderInput(
-                          undefined,
-                          parseFloat((e.target as HTMLInputElement).value),
-                          undefined
-                        )
-                      }
-                      onChange={(e) =>
-                        handleSliderChange(
-                          undefined,
-                          parseFloat(e.target.value),
-                          undefined
-                        )
-                      }
+                      onChange={(e) => setGamma(parseFloat(e.target.value))}
                       className="w-full mt-2"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
@@ -577,20 +487,7 @@ export default function HDRConverterPage() {
                       max="300"
                       step="10"
                       value={saturation}
-                      onInput={(e) =>
-                        handleSliderInput(
-                          undefined,
-                          undefined,
-                          parseInt((e.target as HTMLInputElement).value)
-                        )
-                      }
-                      onChange={(e) =>
-                        handleSliderChange(
-                          undefined,
-                          undefined,
-                          parseInt(e.target.value)
-                        )
-                      }
+                      onChange={(e) => setSaturation(parseInt(e.target.value))}
                       className="w-full mt-2"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
