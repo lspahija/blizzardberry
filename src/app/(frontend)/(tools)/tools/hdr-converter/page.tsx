@@ -73,10 +73,10 @@ export default function HDRConverterPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
 
-  // HDR adjustment controls - default to higher brightness
-  const [brightness, setBrightness] = useState(2.5); // Multiply factor
-  const [gamma, setGamma] = useState(0.7); // Pow factor
-  const [saturation, setSaturation] = useState(120); // Saturation percentage (100 = normal)
+  // HDR adjustment controls - default to more impressive values
+  const [brightness, setBrightness] = useState(3.5); // Multiply factor
+  const [gamma, setGamma] = useState(0.5); // Pow factor
+  const [saturation, setSaturation] = useState(140); // Saturation percentage (100 = normal)
 
   // Debounce timer for HDR conversion
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
