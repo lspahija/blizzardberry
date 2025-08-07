@@ -414,8 +414,14 @@ export default function HDRConverterPage() {
                       className="w-full mt-2"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                      <span>0.5x</span>
-                      <span>7.0x</span>
+                      <div className="text-center">
+                        <div>0.5x</div>
+                        <div className="text-[10px] mt-0.5">Darker</div>
+                      </div>
+                      <div className="text-center">
+                        <div>7.0x</div>
+                        <div className="text-[10px] mt-0.5">Brighter</div>
+                      </div>
                     </div>
                   </div>
 
@@ -441,8 +447,14 @@ export default function HDRConverterPage() {
                       className="w-full mt-2"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                      <span>0.1</span>
-                      <span>2.0</span>
+                      <div className="text-center">
+                        <div>0.1</div>
+                        <div className="text-[10px] mt-0.5">Dramatic</div>
+                      </div>
+                      <div className="text-center">
+                        <div>2.0</div>
+                        <div className="text-[10px] mt-0.5">Subtle</div>
+                      </div>
                     </div>
                   </div>
 
@@ -468,8 +480,14 @@ export default function HDRConverterPage() {
                       className="w-full mt-2"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                      <span>0%</span>
-                      <span>200%</span>
+                      <div className="text-center">
+                        <div>0%</div>
+                        <div className="text-[10px] mt-0.5">Muted</div>
+                      </div>
+                      <div className="text-center">
+                        <div>200%</div>
+                        <div className="text-[10px] mt-0.5">Vibrant</div>
+                      </div>
                     </div>
                   </div>
                 </div>
