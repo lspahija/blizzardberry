@@ -6,7 +6,7 @@ import { Card } from '../../../components/ui/card';
 import { Label } from '../../../components/ui/label';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Download, Zap, Sparkles, ArrowRight } from 'lucide-react';
+import { Download, Zap, ArrowRight } from 'lucide-react';
 
 // Cache ImageMagick initialization
 let magickInitPromise: Promise<{
@@ -125,95 +125,102 @@ export default function HDRConverterPage() {
   );
 
   // Convert with specific settings
-  const convertToHDRWithSettings = useCallback(async (
-    file: File,
-    brightnessValue: number,
-    gammaValue: number,
-    saturationValue: number
-  ) => {
-    setIsProcessing(true);
+  const convertToHDRWithSettings = useCallback(
+    async (
+      file: File,
+      brightnessValue: number,
+      gammaValue: number,
+      saturationValue: number
+    ) => {
+      setIsProcessing(true);
 
-    try {
-      // Use cached initialization (only slow on first use)
-      const {
-        ImageMagick,
-        MagickFormat,
-        ColorSpace,
-        EvaluateOperator,
-        Channels,
-      } = await initializeMagick();
+      try {
+        // Use cached initialization (only slow on first use)
+        const {
+          ImageMagick,
+          MagickFormat,
+          ColorSpace,
+          EvaluateOperator,
+          Channels,
+        } = await initializeMagick();
 
-      // Get image file as buffer
-      const arrayBuffer = await file.arrayBuffer();
-      const inputBuffer = new Uint8Array(arrayBuffer);
+        // Get image file as buffer
+        const arrayBuffer = await file.arrayBuffer();
+        const inputBuffer = new Uint8Array(arrayBuffer);
 
-      // HDR processing with custom settings
-      let resultBuffer: Uint8Array = new Uint8Array();
+        // HDR processing with custom settings
+        let resultBuffer: Uint8Array = new Uint8Array();
 
-      ImageMagick.read(inputBuffer, (img: any) => {
-        // Equivalent to: -colorspace RGB
-        img.colorSpace = ColorSpace.RGB;
+        ImageMagick.read(inputBuffer, (img: any) => {
+          // Equivalent to: -colorspace RGB
+          img.colorSpace = ColorSpace.RGB;
 
-        // Equivalent to: -evaluate Multiply {brightnessValue}
-        img.evaluate(Channels.All, EvaluateOperator.Multiply, brightnessValue);
-
-        // Equivalent to: -evaluate Pow {gammaValue}
-        img.evaluate(Channels.All, EvaluateOperator.Pow, gammaValue);
-
-        // Equivalent to: -colorspace sRGB
-        img.colorSpace = ColorSpace.sRGB;
-
-        // Apply saturation control - enhanced color saturation
-        if (saturationValue !== 150) {
-          // Only apply if different from default 150%
-          const saturationFactor = saturationValue / 150.0;
-          // Use a simple RGB enhancement approach for vibrancy
-          // This multiplies color differences from gray to enhance saturation
-          img.evaluate(
-            Channels.Red,
-            EvaluateOperator.Multiply,
-            0.5 + saturationFactor * 0.5
-          );
-          img.evaluate(
-            Channels.Green,
-            EvaluateOperator.Multiply,
-            0.5 + saturationFactor * 0.5
-          );
-          img.evaluate(
-            Channels.Blue,
-            EvaluateOperator.Multiply,
-            0.5 + saturationFactor * 0.5
-          );
+          // Equivalent to: -evaluate Multiply {brightnessValue}
           img.evaluate(
             Channels.All,
-            EvaluateOperator.Add,
-            saturationFactor * 0.2
+            EvaluateOperator.Multiply,
+            brightnessValue
           );
-        }
 
-        // Equivalent to: -depth 16
-        img.depth = 16;
+          // Equivalent to: -evaluate Pow {gammaValue}
+          img.evaluate(Channels.All, EvaluateOperator.Pow, gammaValue);
 
-        // Equivalent to: -profile 2020_profile.icc (essential for HDR)
-        img.setProfile({ name: 'icc', data: profileBytes! });
+          // Equivalent to: -colorspace sRGB
+          img.colorSpace = ColorSpace.sRGB;
 
-        // Output as PNG for quality
-        img.write(MagickFormat.Png, (data: any) => {
-          resultBuffer = data;
+          // Apply saturation control - enhanced color saturation
+          if (saturationValue !== 150) {
+            // Only apply if different from default 150%
+            const saturationFactor = saturationValue / 150.0;
+            // Use a simple RGB enhancement approach for vibrancy
+            // This multiplies color differences from gray to enhance saturation
+            img.evaluate(
+              Channels.Red,
+              EvaluateOperator.Multiply,
+              0.5 + saturationFactor * 0.5
+            );
+            img.evaluate(
+              Channels.Green,
+              EvaluateOperator.Multiply,
+              0.5 + saturationFactor * 0.5
+            );
+            img.evaluate(
+              Channels.Blue,
+              EvaluateOperator.Multiply,
+              0.5 + saturationFactor * 0.5
+            );
+            img.evaluate(
+              Channels.All,
+              EvaluateOperator.Add,
+              saturationFactor * 0.2
+            );
+          }
+
+          // Equivalent to: -depth 16
+          img.depth = 16;
+
+          // Equivalent to: -profile 2020_profile.icc (essential for HDR)
+          img.setProfile({ name: 'icc', data: profileBytes! });
+
+          // Output as PNG for quality
+          img.write(MagickFormat.Png, (data: any) => {
+            resultBuffer = data;
+          });
         });
-      });
 
-      // Create blob and URL for download/display
-      const blob = new Blob([resultBuffer], { type: 'image/png' });
-      const url = URL.createObjectURL(blob);
-      setHdrImageUrl(url);
-    } catch (error) {
-      console.error('Error converting image:', error);
-      alert('Failed to convert image to HDR');
-    } finally {
-      setIsProcessing(false);
-    }
-  }, []);
+        // Create blob and URL for download/display
+        const blob = new Blob([resultBuffer], { type: 'image/png' });
+        const url = URL.createObjectURL(blob);
+        setHdrImageUrl(url);
+      } catch (error) {
+        console.error('Error converting image:', error);
+        alert('Failed to convert image to HDR');
+      } finally {
+        setIsProcessing(false);
+      }
+    },
+    []
+  );
 
   const convertToHDR = useCallback(
     async (file: File) => {
@@ -233,7 +240,6 @@ export default function HDRConverterPage() {
       document.body.removeChild(a);
     }
   };
-
 
   // Handle slider input with debounced processing
   const handleSliderInput = useCallback(
@@ -258,7 +264,7 @@ export default function HDRConverterPage() {
           // Create new AbortController for this conversion
           const controller = new AbortController();
           currentConversion.current = controller;
-          
+
           const brightnessValue = newBrightness ?? brightness;
           const gammaValue = newGamma ?? gamma;
           const saturationValue = newSaturation ?? saturation;
@@ -295,7 +301,7 @@ export default function HDRConverterPage() {
       if (selectedFile) {
         const controller = new AbortController();
         currentConversion.current = controller;
-        
+
         const brightnessValue = newBrightness ?? brightness;
         const gammaValue = newGamma ?? gamma;
         const saturationValue = newSaturation ?? saturation;
@@ -344,7 +350,6 @@ export default function HDRConverterPage() {
     void loadExampleImage();
   }, [brightness, gamma, saturation, convertToHDRWithSettings]);
 
-
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -369,196 +374,253 @@ export default function HDRConverterPage() {
         animate="visible"
       >
         <div className="container mx-auto px-4 max-w-6xl">
-          <motion.div className="text-center mb-8" variants={itemVariants}>
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2 leading-tight">
+          <motion.div className="text-center mb-10" variants={itemVariants}>
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3 leading-tight">
               HDR Image Converter
             </h1>
-            <p className="text-lg text-muted-foreground">
-              Convert images to HDR format with enhanced brightness and color range
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Transform your images with enhanced brightness and expanded color
+              range for HDR displays
             </p>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl p-6">
-              <div className="flex items-center space-x-3 mb-6">
-                <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-brand" />
-                <h3 className="text-xl sm:text-2xl font-bold">
-                  HDR Converter - {hdrImageUrl ? 'Ready!' : 'Loading example...'}
-                </h3>
-              </div>
-
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            {/* Original - Clickable and Draggable */}
-            <div>
-              <h4 className="text-md font-medium mb-2">
-                Original - Click or drag to replace
-              </h4>
-              <div
-                className={`relative cursor-pointer transition-all duration-200 ${
-                  isDragOver
-                    ? 'ring-2 ring-blue-500 ring-opacity-50'
-                    : 'hover:ring-2 hover:ring-gray-300'
-                }`}
-                onClick={() => document.getElementById('file-input')?.click()}
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-              >
-                <img
-                  src={previewUrl || undefined}
-                  alt="Original"
-                  className="w-full h-auto rounded-lg shadow-md"
-                  style={{ maxHeight: '300px', objectFit: 'contain' }}
-                />
-                {isDragOver && (
-                  <div className="absolute inset-0 bg-blue-50 dark:bg-blue-950/20 rounded-lg flex items-center justify-center">
-                    <p className="text-blue-600 font-medium">
-                      Drop new image here
-                    </p>
+              <div className="grid md:grid-cols-2 gap-8 mb-8">
+                {/* Original Image */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-semibold text-foreground">
+                      Original
+                    </h3>
+                    <span className="text-sm text-muted-foreground">
+                      Click or drop image here to replace
+                    </span>
                   </div>
-                )}
-              </div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileInput}
-                className="hidden"
-                id="file-input"
-              />
-            </div>
-
-            {/* HDR Result */}
-            <div>
-              <h4 className="text-md font-medium mb-2">
-                HDR Enhanced
-              </h4>
-              <div
-                className={`${!hdrImageUrl ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
-                style={{ minHeight: '200px' }}
-              >
-                {hdrImageUrl ? (
-                  <img
-                    src={hdrImageUrl}
-                    alt="HDR Enhanced"
-                    className="w-full h-auto rounded-lg shadow-md"
-                    style={{ maxHeight: '300px', objectFit: 'contain' }}
+                  <div
+                    className={`relative cursor-pointer transition-all duration-200 ${
+                      isDragOver
+                        ? 'ring-2 ring-blue-500 ring-opacity-50'
+                        : 'hover:ring-2 hover:ring-gray-300'
+                    }`}
+                    onClick={() =>
+                      document.getElementById('file-input')?.click()
+                    }
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                  >
+                    <img
+                      src={previewUrl || undefined}
+                      alt="Original"
+                      className="w-full h-auto rounded-lg shadow-md"
+                      style={{ maxHeight: '300px', objectFit: 'contain' }}
+                    />
+                    {isDragOver && (
+                      <div className="absolute inset-0 bg-blue-50 dark:bg-blue-950/20 rounded-lg flex items-center justify-center">
+                        <p className="text-blue-600 font-medium">
+                          Drop new image here
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileInput}
+                    className="hidden"
+                    id="file-input"
                   />
-                ) : (
-                  <div className="flex items-center justify-center h-full min-h-[200px] text-gray-500">
-                    {isProcessing
-                      ? 'Converting to HDR...'
-                      : 'HDR will appear here'}
+                </div>
+
+                {/* HDR Result */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-semibold text-foreground">
+                      HDR Enhanced
+                    </h3>
+                    {isProcessing && (
+                      <span className="text-sm text-brand animate-pulse">
+                        Converting...
+                      </span>
+                    )}
                   </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* HDR Controls */}
-          <div className="mb-6 space-y-4">
-            <div className="flex items-center space-x-3">
-              <Zap className="h-5 w-5 text-brand" />
-              <h4 className="text-lg font-bold">Unleash HDR Power</h4>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-4">
-              {/* Brightness Control */}
-              <div>
-                <Label htmlFor="brightness" className="text-sm font-medium">
-                  Brightness: {brightness.toFixed(1)}x
-                </Label>
-                <input
-                  id="brightness"
-                  type="range"
-                  min="0.5"
-                  max="7.0"
-                  step="0.1"
-                  value={brightness}
-                  onInput={(e) =>
-                    handleSliderInput(parseFloat((e.target as HTMLInputElement).value), undefined, undefined)
-                  }
-                  onChange={(e) =>
-                    handleSliderChange(parseFloat(e.target.value), undefined, undefined)
-                  }
-                  className="w-full mt-2"
-                />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>Dark (0.5x)</span>
-                  <span>🌟 ULTRA BRIGHT (7x)</span>
+                  <div
+                    className={`${!hdrImageUrl ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
+                    style={{ minHeight: '200px' }}
+                  >
+                    {hdrImageUrl ? (
+                      <img
+                        src={hdrImageUrl}
+                        alt="HDR Enhanced"
+                        className="w-full h-auto rounded-lg shadow-md"
+                        style={{ maxHeight: '300px', objectFit: 'contain' }}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full min-h-[200px] text-muted-foreground border-2 border-dashed border-muted rounded-lg">
+                        {isProcessing ? (
+                          <div className="text-center">
+                            <div className="animate-spin w-8 h-8 border-2 border-brand border-t-transparent rounded-full mx-auto mb-2"></div>
+                            <p>Converting to HDR...</p>
+                          </div>
+                        ) : (
+                          'HDR result will appear here'
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              {/* Gamma Control */}
-              <div>
-                <Label htmlFor="gamma" className="text-sm font-medium">
-                  Gamma: {gamma.toFixed(2)}
-                </Label>
-                <input
-                  id="gamma"
-                  type="range"
-                  min="0.1"
-                  max="2.0"
-                  step="0.05"
-                  value={gamma}
-                  onInput={(e) =>
-                    handleSliderInput(undefined, parseFloat((e.target as HTMLInputElement).value), undefined)
-                  }
-                  onChange={(e) =>
-                    handleSliderChange(undefined, parseFloat(e.target.value), undefined)
-                  }
-                  className="w-full mt-2"
-                />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>🔥 INSANE (0.1)</span>
-                  <span>Flat (2.0)</span>
+              {/* HDR Controls */}
+              <div className="mb-8 space-y-6">
+                <div className="flex items-center space-x-3">
+                  <Zap className="h-5 w-5 text-brand" />
+                  <h3 className="text-lg font-semibold">Adjust HDR Settings</h3>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-6">
+                  {/* Brightness Control */}
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="brightness"
+                      className="text-sm font-medium flex items-center justify-between"
+                    >
+                      <span>Brightness</span>
+                      <span className="text-brand font-semibold">
+                        {brightness.toFixed(1)}x
+                      </span>
+                    </Label>
+                    <input
+                      id="brightness"
+                      type="range"
+                      min="0.5"
+                      max="7.0"
+                      step="0.1"
+                      value={brightness}
+                      onInput={(e) =>
+                        handleSliderInput(
+                          parseFloat((e.target as HTMLInputElement).value),
+                          undefined,
+                          undefined
+                        )
+                      }
+                      onChange={(e) =>
+                        handleSliderChange(
+                          parseFloat(e.target.value),
+                          undefined,
+                          undefined
+                        )
+                      }
+                      className="w-full mt-2"
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                      <span>0.5x</span>
+                      <span>7.0x</span>
+                    </div>
+                  </div>
+
+                  {/* Gamma Control */}
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="gamma"
+                      className="text-sm font-medium flex items-center justify-between"
+                    >
+                      <span>Gamma</span>
+                      <span className="text-brand font-semibold">
+                        {gamma.toFixed(2)}
+                      </span>
+                    </Label>
+                    <input
+                      id="gamma"
+                      type="range"
+                      min="0.1"
+                      max="2.0"
+                      step="0.05"
+                      value={gamma}
+                      onInput={(e) =>
+                        handleSliderInput(
+                          undefined,
+                          parseFloat((e.target as HTMLInputElement).value),
+                          undefined
+                        )
+                      }
+                      onChange={(e) =>
+                        handleSliderChange(
+                          undefined,
+                          parseFloat(e.target.value),
+                          undefined
+                        )
+                      }
+                      className="w-full mt-2"
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                      <span>0.1</span>
+                      <span>2.0</span>
+                    </div>
+                  </div>
+
+                  {/* Saturation Control */}
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="saturation"
+                      className="text-sm font-medium flex items-center justify-between"
+                    >
+                      <span>Saturation</span>
+                      <span className="text-brand font-semibold">
+                        {saturation}%
+                      </span>
+                    </Label>
+                    <input
+                      id="saturation"
+                      type="range"
+                      min="50"
+                      max="300"
+                      step="10"
+                      value={saturation}
+                      onInput={(e) =>
+                        handleSliderInput(
+                          undefined,
+                          undefined,
+                          parseInt((e.target as HTMLInputElement).value)
+                        )
+                      }
+                      onChange={(e) =>
+                        handleSliderChange(
+                          undefined,
+                          undefined,
+                          parseInt(e.target.value)
+                        )
+                      }
+                      className="w-full mt-2"
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                      <span>50%</span>
+                      <span>300%</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Saturation Control */}
-              <div>
-                <Label htmlFor="saturation" className="text-sm font-medium">
-                  Saturation: {saturation}%
-                </Label>
-                <input
-                  id="saturation"
-                  type="range"
-                  min="50"
-                  max="300"
-                  step="10"
-                  value={saturation}
-                  onInput={(e) =>
-                    handleSliderInput(undefined, undefined, parseInt((e.target as HTMLInputElement).value))
-                  }
-                  onChange={(e) =>
-                    handleSliderChange(undefined, undefined, parseInt(e.target.value))
-                  }
-                  className="w-full mt-2"
-                />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>Muted (50%)</span>
-                  <span>🌈 VIBRANT (300%)</span>
+              <div className="text-center">
+                <div className="relative group w-full sm:w-auto inline-block mb-6">
+                  <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                  <Button
+                    onClick={downloadHDRImage}
+                    size="lg"
+                    className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 text-lg px-8 py-4 rounded-lg"
+                    disabled={!hdrImageUrl}
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Download HDR Image
+                  </Button>
                 </div>
+                <p className="text-sm text-muted-foreground">
+                  HDR images display with enhanced brightness on compatible screens.
+                  <br />
+                  If the image looks the same, try Chrome on your phone.
+                </p>
               </div>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <div className="relative group w-full sm:w-auto inline-block mb-4">
-              <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-              <Button
-                onClick={downloadHDRImage}
-                size="lg"
-                className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 text-lg px-8 py-4 rounded-lg"
-                disabled={!hdrImageUrl}
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Download HDR Image
-              </Button>
-            </div>
-            <p className="text-sm text-muted-foreground mb-6">
-              💡 HDR images display ultra-bright on HDR screens. Try viewing on your phone for the full effect!
-            </p>
-          </div>
             </Card>
           </motion.div>
         </div>
@@ -578,7 +640,9 @@ export default function HDRConverterPage() {
               Need More Than Just Image Tools?
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              BlizzardBerry helps you build AI agents that transform how users interact with your website. Give your users an AI that can actually take action, not just answer questions.
+              BlizzardBerry helps you build AI agents that transform how users
+              interact with your website. Give your users an AI that can
+              actually take action, not just answer questions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <div className="relative group w-full sm:w-auto">
