@@ -15,6 +15,7 @@ let magickInitPromise: Promise<{
   ColorSpace: any;
   EvaluateOperator: any;
   Channels: any;
+  Percentage: any;
 }> | null = null;
 
 // Cache profile data
@@ -34,6 +35,7 @@ async function initializeMagick() {
       ColorSpace,
       EvaluateOperator,
       Channels,
+      Percentage,
     } = await import('@imagemagick/magick-wasm');
 
     // Get WASM bytes from public folder
@@ -55,6 +57,7 @@ async function initializeMagick() {
       ColorSpace,
       EvaluateOperator,
       Channels,
+      Percentage,
     };
   })();
 
@@ -73,7 +76,7 @@ export default function HDRConverterPage() {
   // HDR adjustment controls - default to higher brightness
   const [brightness, setBrightness] = useState(2.5); // Multiply factor
   const [gamma, setGamma] = useState(0.7); // Pow factor
-  const [saturation, setSaturation] = useState(160); // Saturation percentage
+  const [saturation, setSaturation] = useState(120); // Saturation percentage (100 = normal)
 
   // Debounce timer for HDR conversion
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
@@ -140,6 +143,7 @@ export default function HDRConverterPage() {
           ColorSpace,
           EvaluateOperator,
           Channels,
+          Percentage,
         } = await initializeMagick();
 
         // Get image file as buffer
@@ -166,32 +170,10 @@ export default function HDRConverterPage() {
           // Equivalent to: -colorspace sRGB
           img.colorSpace = ColorSpace.sRGB;
 
-          // Apply saturation control - enhanced color saturation
-          if (saturationValue !== 150) {
-            // Only apply if different from default 150%
-            const saturationFactor = saturationValue / 150.0;
-            // Use a simple RGB enhancement approach for vibrancy
-            // This multiplies color differences from gray to enhance saturation
-            img.evaluate(
-              Channels.Red,
-              EvaluateOperator.Multiply,
-              0.5 + saturationFactor * 0.5
-            );
-            img.evaluate(
-              Channels.Green,
-              EvaluateOperator.Multiply,
-              0.5 + saturationFactor * 0.5
-            );
-            img.evaluate(
-              Channels.Blue,
-              EvaluateOperator.Multiply,
-              0.5 + saturationFactor * 0.5
-            );
-            img.evaluate(
-              Channels.All,
-              EvaluateOperator.Add,
-              saturationFactor * 0.2
-            );
+          // Apply proper saturation control using ImageMagick's modulate
+          if (saturationValue !== 100) {
+            // Use modulate with Percentage objects: modulate(brightness, saturation, hue)
+            img.modulate(new Percentage(100), new Percentage(saturationValue), new Percentage(100));
           }
 
           // Equivalent to: -depth 16
@@ -478,16 +460,16 @@ export default function HDRConverterPage() {
                     <input
                       id="saturation"
                       type="range"
-                      min="50"
-                      max="300"
+                      min="0"
+                      max="200"
                       step="10"
                       value={saturation}
                       onChange={(e) => setSaturation(parseInt(e.target.value))}
                       className="w-full mt-2"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                      <span>50%</span>
-                      <span>300%</span>
+                      <span>0%</span>
+                      <span>200%</span>
                     </div>
                   </div>
                 </div>
