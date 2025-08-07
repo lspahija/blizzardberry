@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Button } from '../../../components/ui/button';
 import { Card } from '../../../components/ui/card';
 import { Label } from '../../../components/ui/label';
@@ -129,20 +129,38 @@ export default function HDRConverterPage() {
     }
   };
 
-  // Handle slider changes and reconvert
-  const handleSliderChange = useCallback(async (newBrightness?: number, newGamma?: number) => {
+  // Add debouncing for smooth slider experience
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+  // Handle slider changes with debouncing
+  const handleSliderChange = useCallback((newBrightness?: number, newGamma?: number) => {
     if (!selectedFile || isProcessing) return;
     
+    // Update state immediately for smooth UI
     if (newBrightness !== undefined) setBrightness(newBrightness);
     if (newGamma !== undefined) setGamma(newGamma);
     
-    // Use the new values or current state
-    const brightnessValue = newBrightness ?? brightness;
-    const gammaValue = newGamma ?? gamma;
+    // Clear previous timer
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
     
-    // Reconvert with new settings
-    await convertToHDRWithSettings(selectedFile, brightnessValue, gammaValue);
+    // Set new timer to trigger conversion after user stops dragging
+    debounceTimer.current = setTimeout(async () => {
+      const brightnessValue = newBrightness ?? brightness;
+      const gammaValue = newGamma ?? gamma;
+      await convertToHDRWithSettings(selectedFile, brightnessValue, gammaValue);
+    }, 300); // 300ms delay
   }, [selectedFile, brightness, gamma, isProcessing]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, []);
 
   // Convert with specific settings
   const convertToHDRWithSettings = async (file: File, brightnessValue: number, gammaValue: number) => {
@@ -296,7 +314,7 @@ export default function HDRConverterPage() {
 
             {/* HDR Controls */}
             <div className="mb-6 space-y-4">
-              <h4 className="text-md font-medium">Adjust HDR Intensity</h4>
+              <h4 className="text-md font-medium">🚀 Unleash HDR Power</h4>
               
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Brightness Control */}
@@ -307,8 +325,8 @@ export default function HDRConverterPage() {
                   <input
                     id="brightness"
                     type="range"
-                    min="1.0"
-                    max="3.0"
+                    min="0.5"
+                    max="10.0"
                     step="0.1"
                     value={brightness}
                     onChange={(e) => handleSliderChange(parseFloat(e.target.value), undefined)}
@@ -316,8 +334,8 @@ export default function HDRConverterPage() {
                     disabled={isProcessing}
                   />
                   <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>Subtle</span>
-                    <span>Ultra Bright</span>
+                    <span>Dark (0.5x)</span>
+                    <span>🌟 EXTREME (10x)</span>
                   </div>
                 </div>
                 
@@ -329,8 +347,8 @@ export default function HDRConverterPage() {
                   <input
                     id="gamma"
                     type="range"
-                    min="0.5"
-                    max="1.2"
+                    min="0.1"
+                    max="2.0"
                     step="0.05"
                     value={gamma}
                     onChange={(e) => handleSliderChange(undefined, parseFloat(e.target.value))}
@@ -338,8 +356,8 @@ export default function HDRConverterPage() {
                     disabled={isProcessing}
                   />
                   <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>Dramatic</span>
-                    <span>Natural</span>
+                    <span>🔥 INSANE (0.1)</span>
+                    <span>Flat (2.0)</span>
                   </div>
                 </div>
               </div>
