@@ -601,19 +601,21 @@ export default function HDRConverterPage() {
                 </div>
               </div>
 
-              <div className="text-center">
-                <div className="relative group w-full sm:w-auto inline-block mb-6">
+              <div className="flex justify-center mb-6">
+                <div className="relative group w-full sm:w-auto">
                   <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
                   <Button
                     onClick={downloadHDRImage}
                     size="lg"
-                    className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 text-lg px-8 py-4 rounded-lg"
+                    className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-lg px-8 py-4 rounded-lg"
                     disabled={!hdrImageUrl}
                   >
                     <Download className="mr-2 h-4 w-4" />
                     Download HDR Image
                   </Button>
                 </div>
+              </div>
+              <div className="text-center">
                 <p className="text-sm text-muted-foreground">
                   HDR images display with enhanced brightness on compatible screens.
                   <br />
