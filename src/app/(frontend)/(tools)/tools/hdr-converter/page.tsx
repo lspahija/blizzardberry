@@ -71,6 +71,8 @@ export default function HDRConverterPage() {
   );
   const [hdrImageUrl, setHdrImageUrl] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
 
   // HDR adjustment controls - default to more impressive values
@@ -80,50 +82,6 @@ export default function HDRConverterPage() {
 
   // Debounce timer for HDR conversion
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
-
-  const handleFileSelect = useCallback(async (file: File) => {
-    if (file && file.type.startsWith('image/')) {
-      setSelectedFile(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-      setHdrImageUrl(null);
-
-      // Automatically convert to HDR with initial settings
-      await convertToHDR(file);
-    }
-  }, []);
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      setIsDragOver(false);
-      const files = Array.from(e.dataTransfer.files);
-      if (files.length > 0) {
-        handleFileSelect(files[0]);
-      }
-    },
-    [handleFileSelect]
-  );
-
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  }, []);
-
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  }, []);
-
-  const handleFileInput = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = e.target.files;
-      if (files && files.length > 0) {
-        await handleFileSelect(files[0]);
-      }
-    },
-    [handleFileSelect]
-  );
 
   // Convert with specific settings
   const convertToHDRWithSettings = useCallback(
@@ -206,13 +164,66 @@ export default function HDRConverterPage() {
     []
   );
 
-  const convertToHDR = useCallback(
-    async (file: File) => {
-      // Use the current brightness, gamma, and saturation settings
-      await convertToHDRWithSettings(file, brightness, gamma, saturation);
+  const handleFileSelect = useCallback(async (file: File) => {
+    if (file && file.type.startsWith('image/')) {
+      setIsUploading(true);
+      setImageLoaded(false);
+      
+      // Add a small delay to ensure spinner is visible
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      setSelectedFile(file);
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      setHdrImageUrl(null);
+      
+      setIsUploading(false);
+      // Don't start HDR conversion until image is loaded
+    }
+  }, []);
+
+  const handleImageLoad = useCallback(async () => {
+    setImageLoaded(true);
+    // Start HDR conversion now that image is loaded
+    if (selectedFile) {
+      await convertToHDRWithSettings(selectedFile, brightness, gamma, saturation);
+    }
+  }, [selectedFile, brightness, gamma, saturation, convertToHDRWithSettings]);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragOver(false);
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length > 0) {
+        handleFileSelect(files[0]);
+      }
     },
-    [brightness, gamma, saturation, convertToHDRWithSettings]
+    [handleFileSelect]
   );
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  }, []);
+
+  const handleFileInput = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        await handleFileSelect(files[0]);
+      }
+    },
+    [handleFileSelect]
+  );
+
+
+  // Remove unused convertToHDR function since we call convertToHDRWithSettings directly
 
   const downloadHDRImage = () => {
     if (hdrImageUrl) {
@@ -266,7 +277,12 @@ export default function HDRConverterPage() {
         const response = await fetch('/image/logo.png');
         const blob = await response.blob();
         const file = new File([blob], 'logo.png', { type: 'image/png' });
+        const url = URL.createObjectURL(file);
+        
         setSelectedFile(file);
+        setPreviewUrl(url);
+        setImageLoaded(true); // Set to true for initial image since it's already loaded
+        
         await convertToHDRWithSettings(file, brightness, gamma, saturation);
       } catch (error) {
         console.error('Failed to load example image:', error);
@@ -333,12 +349,34 @@ export default function HDRConverterPage() {
                           : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
                       }`}
                     >
-                      <img
-                        src={previewUrl || undefined}
-                        alt="Original"
-                        className="w-full h-auto rounded-lg shadow-md"
-                        style={{ maxHeight: '280px', objectFit: 'contain' }}
-                      />
+                      {isUploading ? (
+                        <div className="flex items-center justify-center h-full min-h-[280px] text-muted-foreground">
+                          <div className="text-center">
+                            <div className="animate-spin w-8 h-8 border-2 border-brand border-t-transparent rounded-full mx-auto mb-2"></div>
+                            <p>Uploading image...</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          {!imageLoaded && previewUrl && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 z-10">
+                              <div className="text-center">
+                                <div className="animate-spin w-8 h-8 border-2 border-brand border-t-transparent rounded-full mx-auto mb-2"></div>
+                                <p>Loading image...</p>
+                              </div>
+                            </div>
+                          )}
+                          <img
+                            key={previewUrl}
+                            src={previewUrl || undefined}
+                            alt="Original"
+                            className="w-full h-auto rounded-lg shadow-md"
+                            style={{ maxHeight: '280px', objectFit: 'contain' }}
+                            onLoad={handleImageLoad}
+                            onError={() => setImageLoaded(true)}
+                          />
+                        </>
+                      )}
                       {isDragOver && (
                         <div className="absolute inset-0 bg-blue-50 dark:bg-blue-950/40 rounded-lg flex items-center justify-center">
                           <p className="text-blue-600 dark:text-blue-400 font-medium text-lg">
