@@ -374,13 +374,12 @@ export default function HDRConverterPage() {
         animate="visible"
       >
         <div className="container mx-auto px-4 max-w-6xl">
-          <motion.div className="text-center mb-10" variants={itemVariants}>
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3 leading-tight">
+          <motion.div className="text-center mb-12" variants={itemVariants}>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter mb-4 leading-tight text-foreground">
               HDR Image Converter
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Transform your images with enhanced brightness and expanded color
-              range for HDR displays
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Make your images pop with HDR brightness and color
             </p>
           </motion.div>
 
