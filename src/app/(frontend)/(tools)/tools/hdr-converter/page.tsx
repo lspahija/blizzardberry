@@ -259,7 +259,7 @@ export default function HDRConverterPage() {
     };
   }, []);
 
-  // Load example image on mount
+  // Load example image on mount (only once)
   useEffect(() => {
     const loadExampleImage = async () => {
       try {
@@ -274,7 +274,7 @@ export default function HDRConverterPage() {
     };
 
     void loadExampleImage();
-  }, [brightness, gamma, saturation, convertToHDRWithSettings]);
+  }, []); // Remove dependencies to only run on mount
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
