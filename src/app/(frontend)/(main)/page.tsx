@@ -112,7 +112,7 @@ export default function LandingPage() {
       >
         <div className="relative flex flex-col items-center justify-center text-center pt-16 pb-24 max-w-4xl mx-auto px-6 sm:px-8 lg:px-2">
           <svg
-            className="hidden lg:block absolute h-auto w-16 lg:w-20 flex-shrink-0 p-2 left-0 translate-y-20 lg:-translate-y-20 -translate-x-4 lg:-translate-x-8 xl:-translate-x-12"
+            className="hidden lg:block absolute h-auto w-16 lg:w-20 flex-shrink-0 p-2 left-0 translate-y-20 lg:-translate-y-42 -translate-x-4 lg:-translate-x-8 xl:-translate-x-20"
             viewBox="0 0 91 98"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -140,7 +140,7 @@ export default function LandingPage() {
           </motion.h1>
 
           <svg
-            className="hidden lg:block absolute w-16 lg:w-20 h-auto flex-shrink-0 right-0 bottom-0 translate-y-12 lg:-translate-y-5 translate-x-15 lg:translate-x-15 xl:translate-x-15"
+            className="hidden lg:block absolute w-16 lg:w-20 h-auto flex-shrink-0 right-0 bottom-0 -translate-y-12 lg:-translate-y-24 translate-x-15 lg:translate-x-15 xl:translate-x-15"
             viewBox="0 0 92 80"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -206,7 +206,10 @@ export default function LandingPage() {
         viewport={{ once: true, amount: 0.3 }} // Reduced amount to trigger earlier
       >
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
-          <motion.div className="text-center mb-10 sm:mb-14" variants={itemVariants}>
+          <motion.div
+            className="text-center mb-10 sm:mb-14"
+            variants={itemVariants}
+          >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
               More Than a Chatbot. An Agent Working for Your Users
             </h2>
@@ -270,7 +273,10 @@ export default function LandingPage() {
         viewport={{ once: true }}
       >
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
-          <motion.div className="text-center mb-10 sm:mb-14" variants={itemVariants}>
+          <motion.div
+            className="text-center mb-10 sm:mb-14"
+            variants={itemVariants}
+          >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
               Powerful Features
             </h2>
@@ -285,7 +291,9 @@ export default function LandingPage() {
                 <CardHeader>
                   <div className="flex items-center space-x-3">
                     <Zap className="h-6 w-6 sm:h-7 sm:w-7 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">Custom Actions</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl">
+                      Custom Actions
+                    </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -303,7 +311,9 @@ export default function LandingPage() {
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">Knowledge Base</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl">
+                      Knowledge Base
+                    </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -321,7 +331,9 @@ export default function LandingPage() {
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">Natural Language</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl">
+                      Natural Language
+                    </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -338,7 +350,9 @@ export default function LandingPage() {
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Users className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">User Context</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl">
+                      User Context
+                    </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -355,7 +369,9 @@ export default function LandingPage() {
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">Secure & Private</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl">
+                      Secure & Private
+                    </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -373,7 +389,9 @@ export default function LandingPage() {
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">Real-time</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl">
+                      Real-time
+                    </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -397,7 +415,10 @@ export default function LandingPage() {
         viewport={{ once: true }}
       >
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
-          <motion.div className="text-center mb-10 sm:mb-14" variants={itemVariants}>
+          <motion.div
+            className="text-center mb-10 sm:mb-14"
+            variants={itemVariants}
+          >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
               Popular Use Cases
             </h2>
@@ -412,7 +433,9 @@ export default function LandingPage() {
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">Customer Support</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl">
+                      Customer Support
+                    </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -422,19 +445,27 @@ export default function LandingPage() {
                   <ul className="space-y-2 text-muted-foreground">
                     <li className="flex items-center space-x-2">
                       <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Answer common questions</span>
+                      <span className="text-sm sm:text-base">
+                        Answer common questions
+                      </span>
                     </li>
                     <li className="flex items-center space-x-2">
                       <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Create support tickets</span>
+                      <span className="text-sm sm:text-base">
+                        Create support tickets
+                      </span>
                     </li>
                     <li className="flex items-center space-x-2">
                       <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Schedule appointments</span>
+                      <span className="text-sm sm:text-base">
+                        Schedule appointments
+                      </span>
                     </li>
                     <li className="flex items-center space-x-2">
                       <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Process refunds</span>
+                      <span className="text-sm sm:text-base">
+                        Process refunds
+                      </span>
                     </li>
                   </ul>
                 </CardContent>
@@ -446,7 +477,9 @@ export default function LandingPage() {
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Globe className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">E-commerce</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl">
+                      E-commerce
+                    </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -456,19 +489,27 @@ export default function LandingPage() {
                   <ul className="space-y-2 text-muted-foreground">
                     <li className="flex items-center space-x-2">
                       <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Search and recommend products</span>
+                      <span className="text-sm sm:text-base">
+                        Search and recommend products
+                      </span>
                     </li>
                     <li className="flex items-center space-x-2">
                       <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Add items to cart</span>
+                      <span className="text-sm sm:text-base">
+                        Add items to cart
+                      </span>
                     </li>
                     <li className="flex items-center space-x-2">
                       <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Process orders</span>
+                      <span className="text-sm sm:text-base">
+                        Process orders
+                      </span>
                     </li>
                     <li className="flex items-center space-x-2">
                       <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Track shipments</span>
+                      <span className="text-sm sm:text-base">
+                        Track shipments
+                      </span>
                     </li>
                   </ul>
                 </CardContent>
