@@ -71,6 +71,7 @@ export async function createWidgetDOM() {
       animation: slideUp 0.3s ease !important;
     `;
 
+
     // Add click handler to open widget when message preview is clicked
     messagePreview.addEventListener('click', () => {
       const widget = getElementById('chatWidget');
@@ -307,10 +308,69 @@ export function updateNotificationBadge() {
           : messageText;
 
       messagePreview.innerHTML = `
-        <div style="font-weight: 600; margin-bottom: 4px; color: #666; font-size: 12px;">AI Agent</div>
         <div>${truncatedText}</div>
+        <button id="messagePreviewClose" style="
+          position: absolute;
+          top: -12px;
+          right: -12px;
+          background: #ffffff;
+          border: 2px solid #e2e8f0;
+          color: #666;
+          cursor: pointer;
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: all 0.2s ease;
+          font-size: 18px;
+          font-weight: bold;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+          z-index: 1;
+        ">×</button>
       `;
       messagePreview.style.setProperty('display', 'block', 'important');
+      
+      // Add hover functionality to show/hide close button
+      messagePreview.addEventListener('mouseenter', () => {
+        const closeBtn = messagePreview.querySelector('#messagePreviewClose');
+        if (closeBtn) {
+          closeBtn.style.opacity = '1';
+        }
+      });
+      
+      messagePreview.addEventListener('mouseleave', () => {
+        const closeBtn = messagePreview.querySelector('#messagePreviewClose');
+        if (closeBtn) {
+          closeBtn.style.opacity = '0';
+        }
+      });
+      
+      // Add click handler for close button
+      const closeBtn = messagePreview.querySelector('#messagePreviewClose');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation(); // Prevent triggering the widget open
+          state.unreadMessages = 0;
+          updateNotificationBadge();
+        });
+        
+        closeBtn.addEventListener('mouseenter', () => {
+          closeBtn.style.background = '#6b7280';
+          closeBtn.style.borderColor = '#4b5563';
+          closeBtn.style.color = '#ffffff';
+          closeBtn.style.transform = 'scale(1.1)';
+        });
+        
+        closeBtn.addEventListener('mouseleave', () => {
+          closeBtn.style.background = '#ffffff';
+          closeBtn.style.borderColor = '#e2e8f0';
+          closeBtn.style.color = '#666';
+          closeBtn.style.transform = 'scale(1)';
+        });
+      }
     }
   } else {
     messagePreview.style.setProperty('display', 'none', 'important');

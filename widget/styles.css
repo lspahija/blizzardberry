@@ -645,3 +645,33 @@
         border-radius: 0;
     }
 }
+
+/* Message preview notification styles */
+#messagePreviewNotification {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+#messagePreviewNotification #messagePreviewClose {
+    transform: scale(1) !important;
+    transition: all 0.2s ease !important;
+}
+
+#messagePreviewNotification #messagePreviewClose:hover {
+    background: #6b7280 !important;
+    border-color: #4b5563 !important;
+    color: #ffffff !important;
+    transform: scale(1.1) !important;
+}
+
+/* Animation for message preview notification */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
