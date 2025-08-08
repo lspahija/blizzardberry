@@ -77,14 +77,14 @@ export function LandingNavbar() {
           <div className="hidden lg:flex items-center gap-6 min-w-[160px] justify-end">
             <RetroButton
               variant="outline"
-              className="bg-background text-foreground hover:bg-background/90"
+              className="bg-background text-foreground hover:bg-background/90 font-medium px-6 h-10"
               asChild
               shadowColor="foreground"
             >
               <Link href="/login">Sign In</Link>
             </RetroButton>
             <RetroButton
-              className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium px-6 h-10"
               asChild
               shadowColor="foreground"
             >
@@ -147,7 +147,7 @@ export function LandingNavbar() {
           <div className="flex flex-col space-y-3 pt-6 mt-4 border-t border-border">
             <RetroButton
               variant="outline"
-              className="bg-background text-foreground hover:bg-background/90 w-full"
+              className="bg-background text-foreground hover:bg-background/90 w-full font-medium h-10"
               asChild
               shadowColor="foreground"
             >
@@ -156,7 +156,7 @@ export function LandingNavbar() {
               </Link>
             </RetroButton>
             <RetroButton
-              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full"
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full font-medium h-10"
               asChild
               shadowColor="foreground"
             >
