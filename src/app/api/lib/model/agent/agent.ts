@@ -2,6 +2,8 @@ export const AGENT_MODELS = {
   'google/gemini-2.0-flash-001': 'Gemini 2.0 Flash',
   'google/gemini-2.5-flash': 'Gemini 2.5 Flash',
   'google/gemini-2.5-pro': 'Gemini 2.5 Pro',
+  'openai/gpt-5-nano': 'OpenAI GPT 5 Nano',
+  'openai/gpt-5-mini': 'OpenAI GPT 5 Mini',
   'openai/gpt-4o-mini': 'OpenAI GPT 4o Mini',
   'openai/gpt-4o': 'OpenAI GPT 4o',
   'openai/gpt-4.1-nano': 'OpenAI GPT 4.1 Nano',
