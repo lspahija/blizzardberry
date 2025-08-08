@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/app/(frontend)/components/ui/button';
+import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 import {
   Card,
   CardContent,
@@ -214,15 +214,15 @@ export default function Layout({ children }) {
                 natural language interfaces to your users.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
+                <RetroButton
                   asChild
-                  className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-6 py-3 rounded-lg hover:bg-brand/90"
+                  className="bg-brand text-primary-foreground hover:bg-brand/90 text-base font-semibold px-6 py-3"
                 >
                   <Link href="/dashboard">
                     <Play className="mr-2 h-5 w-5" />
                     Get Started
                   </Link>
-                </Button>
+                </RetroButton>
               </div>
             </motion.div>
           </div>
@@ -386,21 +386,24 @@ export default function Layout({ children }) {
                       >
                         {getCodeForFramework(selectedFramework)}
                       </SyntaxHighlighter>
-                      <Button
-                        onClick={() =>
-                          handleCopy(
-                            getCodeForFramework(selectedFramework),
-                            selectedFramework
-                          )
-                        }
-                        className="absolute top-2 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 hover:bg-secondary/90"
-                      >
-                        <Copy className="w-4 h-4" />
-                        {copiedCode ===
-                        `${selectedFramework}-${getCodeForFramework(selectedFramework).slice(0, 20)}`
-                          ? 'Copied!'
-                          : 'Copy'}
-                      </Button>
+                      <div className="absolute top-2 right-2 group">
+                        <div className="absolute inset-0 rounded-xl bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                        <button
+                          onClick={() =>
+                            handleCopy(
+                              getCodeForFramework(selectedFramework),
+                              selectedFramework
+                            )
+                          }
+                          className="relative bg-secondary text-foreground border-[2px] border-border hover:bg-secondary/90 rounded-xl flex items-center gap-2 px-3 py-2"
+                        >
+                          <Copy className="w-4 h-4" />
+                          {copiedCode ===
+                          `${selectedFramework}-${getCodeForFramework(selectedFramework).slice(0, 20)}`
+                            ? 'Copied!'
+                            : 'Copy'}
+                        </button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -814,15 +817,15 @@ export default function Layout({ children }) {
                 interact with your website.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
+                <RetroButton
                   asChild
-                  className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-8 py-3 rounded-lg hover:bg-brand/90"
+                  className="bg-brand text-primary-foreground hover:bg-brand/90 text-base font-semibold px-8 py-3"
                 >
                   <Link href="/dashboard">
                     <Play className="mr-2 h-5 w-5" />
                     Create an Agent
                   </Link>
-                </Button>
+                </RetroButton>
               </div>
             </motion.div>
           </div>

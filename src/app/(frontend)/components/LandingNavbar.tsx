@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/app/(frontend)/components/ui/button';
+import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 import { Menu, X } from 'lucide-react';
 
 export function LandingNavbar() {
@@ -74,25 +75,21 @@ export function LandingNavbar() {
             </Link>
           </div>
           <div className="hidden lg:flex items-center gap-6 min-w-[160px] justify-end">
-            <div className="relative group">
-              <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-              <Button
-                variant="outline"
-                className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90"
-                asChild
-              >
-                <Link href="/login">Sign In</Link>
-              </Button>
-            </div>
-            <div className="relative group">
-              <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-              <Button
-                className="relative bg-secondary text-secondary-foreground border-[3px] border-border hover:bg-secondary/90"
-                asChild
-              >
-                <Link href="/login">Try For Free</Link>
-              </Button>
-            </div>
+            <RetroButton
+              variant="outline"
+              className="bg-background text-foreground hover:bg-background/90"
+              asChild
+              shadowColor="foreground"
+            >
+              <Link href="/login">Sign In</Link>
+            </RetroButton>
+            <RetroButton
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+              asChild
+              shadowColor="foreground"
+            >
+              <Link href="/login">Try For Free</Link>
+            </RetroButton>
           </div>
           <div className="flex lg:hidden items-center">
             <Button
@@ -148,29 +145,25 @@ export function LandingNavbar() {
             Contact
           </Link>
           <div className="flex flex-col space-y-3 pt-6 mt-4 border-t border-border">
-            <div className="relative group">
-              <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-              <Button
-                variant="outline"
-                className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full"
-                asChild
-              >
-                <Link href="/login" onClick={handleNavigation}>
-                  Sign In
-                </Link>
-              </Button>
-            </div>
-            <div className="relative group">
-              <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-              <Button
-                className="relative bg-secondary text-secondary-foreground border-[3px] border-border hover:bg-secondary/90 w-full"
-                asChild
-              >
-                <Link href="/login" onClick={handleNavigation}>
-                  Try For Free
-                </Link>
-              </Button>
-            </div>
+            <RetroButton
+              variant="outline"
+              className="bg-background text-foreground hover:bg-background/90 w-full"
+              asChild
+              shadowColor="foreground"
+            >
+              <Link href="/login" onClick={handleNavigation}>
+                Sign In
+              </Link>
+            </RetroButton>
+            <RetroButton
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full"
+              asChild
+              shadowColor="foreground"
+            >
+              <Link href="/login" onClick={handleNavigation}>
+                Try For Free
+              </Link>
+            </RetroButton>
           </div>
         </div>
       </div>

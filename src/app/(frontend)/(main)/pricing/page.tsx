@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 import { useSession } from 'next-auth/react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
@@ -447,15 +448,17 @@ export default function PricingPage() {
                       )}
                     </ul>
 
-                    <button
-                      className={`mt-auto w-full py-2 sm:py-3 px-4 sm:px-6 rounded-xl font-semibold transition-all duration-200 border text-sm sm:text-base ${
-                        key === 'standard'
-                          ? 'bg-secondary text-secondary-foreground border-secondary hover:bg-secondary/90'
-                          : 'bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10'
-                      } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
-                      onClick={() => handleSubscribe(key)}
-                      disabled={isLoading}
-                    >
+                    <div className="mt-auto flex justify-center">
+                      <RetroButton
+                        className={`w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold text-sm sm:text-base ${
+                          key === 'standard'
+                            ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90'
+                            : 'bg-background text-foreground hover:bg-secondary/10'
+                        } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                        onClick={() => handleSubscribe(key)}
+                        disabled={isLoading}
+                        shadowColor="foreground"
+                      >
                       {isLoading ? (
                         <div className="flex items-center justify-center gap-2">
                           <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
@@ -466,7 +469,8 @@ export default function PricingPage() {
                       ) : (
                         'Subscribe'
                       )}
-                    </button>
+                      </RetroButton>
+                    </div>
                   </div>
                 ))}
 
@@ -548,12 +552,15 @@ export default function PricingPage() {
                     </li>
                   ))}
                 </ul>
-                <button
-                  className="mt-auto w-full py-2 sm:py-3 px-4 sm:px-6 rounded-xl font-semibold transition-all duration-200 border bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10 text-sm sm:text-base"
-                  onClick={() => setShowEnterpriseForm(true)}
-                >
-                  Contact Sales
-                </button>
+                <div className="mt-auto flex justify-center">
+                  <RetroButton
+                    className="w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold bg-background text-foreground hover:bg-secondary/10 text-sm sm:text-base"
+                    onClick={() => setShowEnterpriseForm(true)}
+                    shadowColor="foreground"
+                  >
+                    Contact Sales
+                  </RetroButton>
+                </div>
               </div>
             </div>
           )}
@@ -593,10 +600,11 @@ export default function PricingPage() {
                   </div>
                 </div>
 
-                <button
-                  className={`py-3 sm:py-4 px-6 sm:px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow text-sm sm:text-base ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                <RetroButton
+                  className={`py-3 sm:py-4 px-6 sm:px-8 bg-secondary text-secondary-foreground font-semibold hover:bg-secondary/90 text-sm sm:text-base ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
                   onClick={handleBuyCredits}
                   disabled={isLoading}
+                  shadowColor="foreground"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-2">
@@ -606,7 +614,7 @@ export default function PricingPage() {
                   ) : (
                     'Buy Credits Now'
                   )}
-                </button>
+                </RetroButton>
               </div>
             </div>
           )}
@@ -628,12 +636,13 @@ export default function PricingPage() {
                 <EmbeddedCheckout />
               </div>
             </EmbeddedCheckoutProvider>
-            <button
-              className="mt-6 py-3 px-6 bg-background text-foreground border border-border rounded-xl hover:bg-muted transition font-medium mx-auto block"
+            <RetroButton
+              className="mt-6 py-3 px-6 bg-background text-foreground hover:bg-muted font-medium mx-auto block"
               onClick={() => setShowCheckout(false)}
+              shadowColor="foreground"
             >
               Cancel
-            </button>
+            </RetroButton>
           </div>
         </div>
       )}
@@ -686,25 +695,27 @@ export default function PricingPage() {
                 />
               </div>
               <div className="flex justify-end gap-3 pt-4">
-                <button
+                <RetroButton
                   type="button"
-                  className="px-6 py-3 border border-border text-foreground bg-background hover:bg-muted rounded-xl font-semibold transition"
+                  className="px-6 py-3 text-foreground bg-background hover:bg-muted font-semibold"
                   onClick={() => {
                     setShowEnterpriseForm(false);
                     setEmailAddress('');
                     setMessage('');
                     setFormStatus('');
                   }}
+                  shadowColor="foreground"
                 >
                   Cancel
-                </button>
-                <button
+                </RetroButton>
+                <RetroButton
                   type="submit"
-                  className="px-6 py-3 bg-secondary text-secondary-foreground border border-secondary hover:bg-secondary/90 rounded-xl font-semibold transition flex items-center gap-2"
+                  className="px-6 py-3 bg-secondary text-secondary-foreground hover:bg-secondary/90 font-semibold flex items-center gap-2"
+                  shadowColor="foreground"
                 >
                   <Send className="h-4 w-4" />
                   Send Inquiry
-                </button>
+                </RetroButton>
               </div>
             </form>
             {formStatus && (
