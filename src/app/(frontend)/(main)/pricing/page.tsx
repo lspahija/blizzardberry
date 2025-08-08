@@ -218,7 +218,7 @@ export default function PricingPage() {
   .tooltip-text:hover {
     text-decoration: underline;
     text-decoration-style: solid;
-    color: #3b82f6;
+    color: var(--color-brand);
   }
 
   .tooltip {
@@ -247,7 +247,7 @@ export default function PricingPage() {
 `}
       </style>
       {/* Hero Section */}
-      <div className="bg-background">
+      <div className="bg-gradient-to-br from-brand/10 to-brand/5 border-b border-border">
         <div
           className={`container mx-auto px-6 sm:px-8 md:px-2 lg:px-2 xl:px-8 py-12 sm:py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}
         >
@@ -266,7 +266,7 @@ export default function PricingPage() {
                 <button
                   className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border font-semibold transition-all duration-200 text-sm sm:text-base ${
                     billingCycle === 'monthly'
-                      ? 'bg-blue-100 text-foreground border-blue-200 shadow'
+                      ? 'bg-brand/10 text-foreground border-brand/20 shadow'
                       : 'bg-background text-foreground border-border hover:bg-muted'
                   }`}
                   onClick={() => setBillingCycle('monthly')}
@@ -276,7 +276,7 @@ export default function PricingPage() {
                 <button
                   className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border font-semibold transition-all duration-200 flex items-center gap-2 text-sm sm:text-base ${
                     billingCycle === 'yearly'
-                      ? 'bg-blue-100 text-foreground border-blue-200 shadow'
+                      ? 'bg-brand/10 text-foreground border-brand/20 shadow'
                       : 'bg-background text-foreground border-border hover:bg-muted'
                   }`}
                   onClick={() => setBillingCycle('yearly')}
@@ -302,9 +302,9 @@ export default function PricingPage() {
                 .map(([key, tier], idx, arr) => (
                   <div
                     key={key}
-                    className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm lg:max-w-none mx-auto lg:mx-0 2xl:min-w-[360px] 2xl:max-w-[440px] ${
+                    className={`relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full max-w-sm lg:max-w-none mx-auto lg:mx-0 2xl:min-w-[360px] 2xl:max-w-[440px] hover:-translate-y-1 hover:-translate-x-1 ${
                       key === 'standard'
-                        ? 'border-2 border-secondary shadow-lg pt-8 sm:pt-10 md:pt-8'
+                        ? 'border-[3px] border-brand shadow-xl pt-8 sm:pt-10 md:pt-8'
                         : ''
                     } ${
                       arr.length === 5 && (idx === 3 ? 'lg:col-start-2' : idx === 4 ? 'lg:col-start-3' : '')
@@ -320,7 +320,7 @@ export default function PricingPage() {
                     {key === 'standard' && (
                       <div className="absolute -top-4 sm:-top-6 left-1/2 transform -translate-x-1/2 z-10">
                         <span
-                          className="bg-secondary text-secondary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-border whitespace-nowrap"
+                          className="bg-brand text-primary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-brand whitespace-nowrap"
                           style={{ letterSpacing: 1 }}
                         >
                           Most Popular
@@ -331,19 +331,19 @@ export default function PricingPage() {
                     <div className="mb-6 sm:mb-8">
                       <div className="flex items-center gap-2 mb-2">
                         {key === 'free' && (
-                          <Shovel className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
+                          <Shovel className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
                         )}
                         {key === 'hobby' && (
-                          <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
+                          <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
                         )}
                         {key === 'standard' && (
-                          <Star className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
+                          <Star className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
                         )}
                         {key === 'pro' && (
-                          <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
+                          <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
                         )}
                         {key === 'enterprise' && (
-                          <Users className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
+                          <Users className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
                         )}
                         <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                           {tier.name}
@@ -418,12 +418,12 @@ export default function PricingPage() {
                       {tierFeatures[key as keyof typeof tierFeatures].map(
                         (feature, index) => (
                           <li key={index} className="flex items-center gap-2">
-                            <Check className="h-3 w-3 sm:h-4 sm:w-4 text-secondary flex-shrink-0" />
+                            <Check className="h-3 w-3 sm:h-4 sm:w-4 text-brand flex-shrink-0" />
                             {feature === 'Premium models included' ? (
                               <div className="tooltip-container">
                                 <span className="text-xs sm:text-sm text-muted-foreground tooltip-text flex items-center gap-1">
                                   {feature}
-                                  <Info className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
+                                  <Info className="h-3 w-3 sm:h-4 sm:w-4 text-brand" />
                                 </span>
                                 <div className="tooltip">
                                   <p className="font-semibold mb-2">
@@ -452,8 +452,8 @@ export default function PricingPage() {
                       <RetroButton
                         className={`w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold text-sm sm:text-base ${
                           key === 'standard'
-                            ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90'
-                            : 'bg-background text-foreground hover:bg-secondary/10'
+                            ? 'bg-brand text-primary-foreground hover:bg-brand/90'
+                            : 'bg-background text-foreground hover:bg-brand/10'
                         } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
                         onClick={() => handleSubscribe(key)}
                         disabled={isLoading}
@@ -476,14 +476,14 @@ export default function PricingPage() {
 
               {/* Enterprise Card */}
               <div
-                className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm lg:max-w-none mx-auto lg:mx-0 2xl:min-w-[360px] 2xl:max-w-[440px] ${
+                className={`relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full max-w-sm lg:max-w-none mx-auto lg:mx-0 2xl:min-w-[360px] 2xl:max-w-[440px] hover:-translate-y-1 hover:-translate-x-1 ${
                   Object.entries(pricing.tiers).filter(([key]) => !isLoggedIn || key !== 'free').length === 5 ? 'lg:col-start-3' : ''
                 }`}
                 style={{ minHeight: 480, minWidth: '0' }}
               >
                 <div className="mb-6 sm:mb-8">
                   <div className="flex items-center gap-2 mb-2">
-                    <Users className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
+                    <Users className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
                     <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                       Enterprise
                     </h2>
@@ -526,12 +526,12 @@ export default function PricingPage() {
                 <ul className="space-y-2 mb-6 sm:mb-8">
                   {tierFeatures.enterprise.map((feature, index) => (
                     <li key={index} className="flex items-center gap-2">
-                      <Check className="h-3 w-3 sm:h-4 sm:w-4 text-secondary flex-shrink-0" />
+                      <Check className="h-3 w-3 sm:h-4 sm:w-4 text-brand flex-shrink-0" />
                       {feature === 'Premium models included' ? (
                         <div className="tooltip-container">
                           <span className="text-xs sm:text-sm text-muted-foreground tooltip-text flex items-center gap-1">
                             {feature}
-                            <Info className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
+                            <Info className="h-3 w-3 sm:h-4 sm:w-4 text-brand" />
                           </span>
                           <div className="tooltip">
                             <p className="font-semibold mb-2">
@@ -554,7 +554,7 @@ export default function PricingPage() {
                 </ul>
                 <div className="mt-auto flex justify-center">
                   <RetroButton
-                    className="w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold bg-background text-foreground hover:bg-secondary/10 text-sm sm:text-base"
+                    className="w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold bg-background text-foreground hover:bg-brand/10 text-sm sm:text-base"
                     onClick={() => setShowEnterpriseForm(true)}
                     shadowColor="foreground"
                   >
@@ -567,7 +567,7 @@ export default function PricingPage() {
 
           {/* Additional Credits Section */}
           {status !== 'loading' && (
-            <div className="bg-card p-6 sm:p-8 md:p-12 border border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-sm">
+            <div className="bg-card p-6 sm:p-8 md:p-12 border-[3px] border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:-translate-x-1">
               <div className="max-w-2xl mx-auto">
                 <h2
                   id="buy-credits"
@@ -601,7 +601,7 @@ export default function PricingPage() {
                 </div>
 
                 <RetroButton
-                  className={`py-3 sm:py-4 px-6 sm:px-8 bg-secondary text-secondary-foreground font-semibold hover:bg-secondary/90 text-sm sm:text-base ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                  className={`py-3 sm:py-4 px-6 sm:px-8 bg-brand text-primary-foreground font-semibold hover:bg-brand/90 text-sm sm:text-base ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
                   onClick={handleBuyCredits}
                   disabled={isLoading}
                   shadowColor="foreground"
@@ -624,7 +624,7 @@ export default function PricingPage() {
       {/* Checkout Modal */}
       {showCheckout && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
-          <div className="bg-card p-8 border border-border rounded-2xl max-w-md w-full shadow-2xl flex flex-col justify-center">
+          <div className="bg-card p-8 border-[3px] border-border rounded-2xl max-w-md w-full shadow-2xl flex flex-col justify-center">
             <h2 className="text-2xl font-bold mb-6 text-foreground">
               Complete Your Purchase
             </h2>
@@ -650,9 +650,9 @@ export default function PricingPage() {
       {/* Enterprise Form Modal */}
       {showEnterpriseForm && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
-          <div className="bg-card p-8 border border-border rounded-2xl shadow-2xl max-w-lg w-full">
+          <div className="bg-card p-8 border-[3px] border-border rounded-2xl shadow-2xl max-w-lg w-full">
             <div className="flex items-center gap-3 mb-6">
-              <Mail className="h-6 w-6 text-secondary" />
+              <Mail className="h-6 w-6 text-brand" />
               <h2 className="text-2xl font-bold text-foreground">
                 Enterprise Inquiry
               </h2>
@@ -663,7 +663,7 @@ export default function PricingPage() {
                   htmlFor="email"
                   className="text-foreground text-base font-semibold flex items-center gap-2 mb-3"
                 >
-                  <Mail className="h-4 w-4 text-secondary" />
+                  <Mail className="h-4 w-4 text-brand" />
                   Email Address
                 </label>
                 <input
@@ -672,7 +672,7 @@ export default function PricingPage() {
                   value={emailAddress}
                   onChange={(e) => setEmailAddress(e.target.value)}
                   required
-                  className="w-full p-4 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                  className="w-full p-4 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all duration-200"
                   placeholder="your@company.com"
                 />
               </div>
@@ -681,7 +681,7 @@ export default function PricingPage() {
                   htmlFor="message"
                   className="text-foreground text-base font-semibold flex items-center gap-2 mb-3"
                 >
-                  <MessageSquare className="h-4 w-4 text-secondary" />
+                  <MessageSquare className="h-4 w-4 text-brand" />
                   Tell us about your needs
                 </label>
                 <textarea
@@ -689,7 +689,7 @@ export default function PricingPage() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   required
-                  className="w-full p-4 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                  className="w-full p-4 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all duration-200"
                   rows={4}
                   placeholder="Describe your use case, team size, and specific requirements..."
                 />
@@ -710,7 +710,7 @@ export default function PricingPage() {
                 </RetroButton>
                 <RetroButton
                   type="submit"
-                  className="px-6 py-3 bg-secondary text-secondary-foreground hover:bg-secondary/90 font-semibold flex items-center gap-2"
+                  className="px-6 py-3 bg-brand text-primary-foreground hover:bg-brand/90 font-semibold flex items-center gap-2"
                   shadowColor="foreground"
                 >
                   <Send className="h-4 w-4" />
@@ -730,8 +730,8 @@ export default function PricingPage() {
       {/* Checkout Loading Overlay */}
       {checkoutLoading && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center z-[200]">
-          <div className="bg-card p-8 rounded-2xl border border-border shadow-2xl flex flex-col items-center gap-4">
-            <Loader2 className="h-12 w-12 text-secondary animate-spin" />
+          <div className="bg-card p-8 rounded-2xl border-[3px] border-border shadow-2xl flex flex-col items-center gap-4">
+            <Loader2 className="h-12 w-12 text-brand animate-spin" />
             <div className="text-center">
               <h3 className="text-lg font-semibold text-foreground mb-2">
                 Preparing your checkout...

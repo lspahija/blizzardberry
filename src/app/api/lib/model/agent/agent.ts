@@ -16,7 +16,7 @@ export const AGENT_MODELS = {
   'anthropic/claude-opus-4': 'Claude Opus 4',
   'x-ai/grok-3-mini': 'Grok 3 Mini',
   'x-ai/grok-3': 'Grok 3',
-  'x-ai/grok-3-beta': 'Grok 3 Beta',
+  'x-ai/grok-4': 'Grok 4',
   'meta-llama/llama-4-maverick': 'Llama 4 Maverick',
   'meta-llama/llama-4-scout': 'Llama 4 Scout',
   'deepseek/deepseek-chat': 'DeepSeek V3',
