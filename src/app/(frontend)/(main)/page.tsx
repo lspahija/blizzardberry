@@ -293,7 +293,7 @@ export default function LandingPage() {
         </div>
       </motion.section>
 
-      {/* Features Section */}
+      {/* Features Section - Redesigned with alternating layout */}
       <motion.section
         className="py-12 sm:py-16"
         variants={containerVariants}
@@ -301,250 +301,327 @@ export default function LandingPage() {
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
-            className="text-center mb-10 sm:mb-14"
+            className="text-center mb-12 sm:mb-16"
             variants={itemVariants}
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
-              Powerful Features
+              Everything You Need
             </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground">
-              Everything you need to create intelligent AI agents
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+              A complete platform to build, deploy, and manage intelligent AI agents that work seamlessly with your existing systems
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <Zap className="h-6 w-6 sm:h-7 sm:w-7 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Custom Actions
-                    </CardTitle>
+          <div className="space-y-12 sm:space-y-16">
+            {/* Feature Row 1 */}
+            <motion.div 
+              className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+              variants={itemVariants}
+            >
+              <div className="lg:col-span-7">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand/20 to-brand/5 rounded-3xl transform rotate-1"></div>
+                  <Card className="relative border-[3px] border-border bg-card rounded-3xl shadow-xl overflow-hidden">
+                    <CardContent className="p-8 sm:p-12">
+                      <div className="flex items-start space-x-4 mb-6">
+                        <div className="bg-brand/10 p-3 rounded-2xl">
+                          <Zap className="h-8 w-8 text-brand" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
+                            Custom Actions
+                          </h3>
+                          <p className="text-lg text-muted-foreground mb-6">
+                            Create powerful actions that your agent can execute on behalf of users. From simple form submissions to complex API orchestrations.
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="flex items-center space-x-3">
+                              <CheckCircle2 className="h-5 w-5 text-brand flex-shrink-0" />
+                              <span className="text-muted-foreground">Client-side actions</span>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <CheckCircle2 className="h-5 w-5 text-brand flex-shrink-0" />
+                              <span className="text-muted-foreground">Server-side integration</span>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <CheckCircle2 className="h-5 w-5 text-brand flex-shrink-0" />
+                              <span className="text-muted-foreground">API orchestration</span>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <CheckCircle2 className="h-5 w-5 text-brand flex-shrink-0" />
+                              <span className="text-muted-foreground">Workflow automation</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+              
+              <div className="lg:col-span-5 space-y-6">
+                <Card className="border-[3px] border-border bg-card/50 backdrop-blur-sm rounded-2xl p-6">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <MessageSquare className="h-6 w-6 text-brand" />
+                    <h4 className="text-lg font-semibold">Natural Language</h4>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    Create client-side and server-side actions that your agent
-                    can execute. From form submissions to API calls, your agent
-                    can perform any task.
+                  <p className="text-muted-foreground">
+                    Users interact naturally - no commands to learn
                   </p>
-                </CardContent>
-              </Card>
+                </Card>
+                
+                <Card className="border-[3px] border-border bg-card/50 backdrop-blur-sm rounded-2xl p-6">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <Clock className="h-6 w-6 text-brand" />
+                    <h4 className="text-lg font-semibold">Real-time</h4>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Instant responses and live interactions
+                  </p>
+                </Card>
+              </div>
             </motion.div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Knowledge Base
-                    </CardTitle>
+            {/* Feature Row 2 - Reversed */}
+            <motion.div 
+              className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+              variants={itemVariants}
+            >
+              <div className="lg:col-span-5 space-y-6 order-2 lg:order-1">
+                <Card className="border-[3px] border-border bg-card/50 backdrop-blur-sm rounded-2xl p-6">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <Users className="h-6 w-6 text-brand" />
+                    <h4 className="text-lg font-semibold">User Context</h4>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    Upload documents, FAQs, and knowledge articles. Your agent
-                    will use this information to provide accurate answers and
-                    support.
+                  <p className="text-muted-foreground">
+                    Personalized experiences based on user data
                   </p>
-                </CardContent>
-              </Card>
-            </motion.div>
+                </Card>
+                
+                <Card className="border-[3px] border-border bg-card/50 backdrop-blur-sm rounded-2xl p-6">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <Shield className="h-6 w-6 text-brand" />
+                    <h4 className="text-lg font-semibold">Secure & Private</h4>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Encrypted communications and data protection
+                  </p>
+                </Card>
+              </div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Natural Language
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    Users can interact with your agent using natural language.
-                    No need to learn specific commands or syntax.
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Users className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      User Context
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    Pass user information and preferences to your agent. Provide
-                    personalized experiences based on user data.
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Secure & Private
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    All communications are encrypted. Your data stays private
-                    and secure. No sensitive information is stored
-                    unnecessarily.
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Real-time
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    Instant responses and real-time interactions. Your agent
-                    responds immediately to user queries.
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="lg:col-span-7 order-1 lg:order-2">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 to-primary/5 rounded-3xl transform -rotate-1"></div>
+                  <Card className="relative border-[3px] border-border bg-card rounded-3xl shadow-xl overflow-hidden">
+                    <CardContent className="p-8 sm:p-12">
+                      <div className="flex items-start space-x-4 mb-6">
+                        <div className="bg-primary/10 p-3 rounded-2xl">
+                          <FileText className="h-8 w-8 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
+                            Intelligent Knowledge Base
+                          </h3>
+                          <p className="text-lg text-muted-foreground mb-6">
+                            Your agent becomes an instant expert on your product. Upload documentation, FAQs, and knowledge articles for comprehensive support.
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="flex items-center space-x-3">
+                              <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
+                              <span className="text-muted-foreground">Document processing</span>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
+                              <span className="text-muted-foreground">Smart search</span>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
+                              <span className="text-muted-foreground">Auto-updates</span>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
+                              <span className="text-muted-foreground">Context awareness</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
       </motion.section>
 
-      {/* Use Cases Section */}
+      {/* Use Cases Section - Redesigned with visual examples */}
       <motion.section
-        className="py-12 sm:py-16 bg-muted/30"
+        className="py-16 sm:py-20 bg-muted/20 overflow-hidden"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
-            className="text-center mb-10 sm:mb-14"
+            className="text-center mb-12 sm:mb-16"
             variants={itemVariants}
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
-              Popular Use Cases
+              Transform Every Industry
             </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground">
-              See how others are using BlizzardBerry to enhance their websites
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+              From customer support to e-commerce, see how AI agents are revolutionizing user experiences across different sectors
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Customer Support
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground mb-4">
-                    Provide instant customer support with AI agents that can:
-                  </p>
-                  <ul className="space-y-2 text-muted-foreground">
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Answer common questions
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Create support tickets
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Schedule appointments
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Process refunds
-                      </span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+            {/* Customer Support */}
+            <motion.div 
+              className="group"
+              variants={itemVariants}
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-3xl transform rotate-1 group-hover:rotate-2 transition-transform"></div>
+                <Card className="relative border-[3px] border-border bg-card rounded-3xl shadow-xl overflow-hidden group-hover:shadow-2xl transition-all duration-500">
+                  <CardHeader className="pb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-2xl">
+                          <MessageSquare className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-bold text-foreground">Customer Support</h3>
+                          <p className="text-muted-foreground">24/7 intelligent assistance</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Mock conversation */}
+                    <div className="bg-muted/50 rounded-2xl p-4 space-y-3">
+                      <div className="flex items-start space-x-2">
+                        <div className="bg-blue-500 text-white rounded-full p-1">
+                          <Users className="h-3 w-3" />
+                        </div>
+                        <div className="bg-white dark:bg-gray-800 rounded-lg px-3 py-2 max-w-[200px]">
+                          <p className="text-sm">Hi! I need to cancel my order #1234</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-2 justify-end">
+                        <div className="bg-blue-500 text-white rounded-lg px-3 py-2 max-w-[200px]">
+                          <p className="text-sm">I found your order and processing the cancellation now!</p>
+                        </div>
+                        <div className="bg-blue-500 text-white rounded-full p-1">
+                          <Zap className="h-3 w-3" />
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4">
+                      {[
+                        { icon: CheckCircle2, text: "Answer FAQs instantly" },
+                        { icon: CheckCircle2, text: "Create support tickets" },
+                        { icon: CheckCircle2, text: "Process refunds" },
+                        { icon: CheckCircle2, text: "Schedule appointments" }
+                      ].map((item, index) => (
+                        <div key={index} className="flex items-center space-x-2">
+                          <item.icon className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                          <span className="text-sm text-muted-foreground">{item.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </motion.div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Globe className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      E-commerce
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground mb-4">
-                    Enhance your online store with AI agents that can:
-                  </p>
-                  <ul className="space-y-2 text-muted-foreground">
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Search and recommend products
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Add items to cart
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Process orders
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Track shipments
-                      </span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
+            {/* E-commerce */}
+            <motion.div 
+              className="group"
+              variants={itemVariants}
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-bl from-green-500/10 to-emerald-500/10 rounded-3xl transform -rotate-1 group-hover:-rotate-2 transition-transform"></div>
+                <Card className="relative border-[3px] border-border bg-card rounded-3xl shadow-xl overflow-hidden group-hover:shadow-2xl transition-all duration-500">
+                  <CardHeader className="pb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-2xl">
+                          <Globe className="h-8 w-8 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-bold text-foreground">E-commerce</h3>
+                          <p className="text-muted-foreground">Smart shopping assistance</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Mock shopping interaction */}
+                    <div className="bg-muted/50 rounded-2xl p-4 space-y-3">
+                      <div className="flex items-start space-x-2">
+                        <div className="bg-green-500 text-white rounded-full p-1">
+                          <Users className="h-3 w-3" />
+                        </div>
+                        <div className="bg-white dark:bg-gray-800 rounded-lg px-3 py-2 max-w-[200px]">
+                          <p className="text-sm">Find me a blue laptop under $800</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-2 justify-end">
+                        <div className="bg-green-500 text-white rounded-lg px-3 py-2 max-w-[200px]">
+                          <p className="text-sm">Found 3 perfect matches! Adding the top one to your cart.</p>
+                        </div>
+                        <div className="bg-green-500 text-white rounded-full p-1">
+                          <Zap className="h-3 w-3" />
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4">
+                      {[
+                        { icon: CheckCircle2, text: "Product recommendations" },
+                        { icon: CheckCircle2, text: "Add to cart" },
+                        { icon: CheckCircle2, text: "Process orders" },
+                        { icon: CheckCircle2, text: "Track shipments" }
+                      ].map((item, index) => (
+                        <div key={index} className="flex items-center space-x-2">
+                          <item.icon className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                          <span className="text-sm text-muted-foreground">{item.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </motion.div>
           </div>
+
+          {/* Stats bar */}
+          <motion.div 
+            className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12"
+            variants={itemVariants}
+          >
+            {[
+              { number: "90%", label: "Faster Response Time", description: "Compared to traditional support" },
+              { number: "24/7", label: "Always Available", description: "Never miss a customer inquiry" },
+              { number: "3x", label: "Higher Conversion", description: "Turn browsers into buyers" }
+            ].map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-4xl sm:text-5xl font-bold text-brand mb-2">
+                  {stat.number}
+                </div>
+                <div className="text-lg font-semibold text-foreground mb-1">
+                  {stat.label}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {stat.description}
+                </div>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </motion.section>
 
