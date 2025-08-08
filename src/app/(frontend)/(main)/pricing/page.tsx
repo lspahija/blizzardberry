@@ -253,9 +253,9 @@ export default function PricingPage() {
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
               Pricing
             </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-6 sm:mb-8">
-              Choose the perfect plan for your AI agent needs. Start free and
-              scale as you grow.
+            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-8 mb-6 sm:mb-8">
+              Choose the perfect plan for your AI agent needs.<br />
+              Start free and scale as you grow.
             </p>
 
             {/* Billing Toggle */}
