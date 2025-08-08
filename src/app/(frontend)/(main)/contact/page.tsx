@@ -65,27 +65,38 @@ export default function ContactPage() {
 
   return (
     <>
+      {/* Header Section with Gradient Background */}
       <motion.div
-        className="container mx-auto max-w-6xl py-16 px-4"
+        className="bg-gradient-to-br from-brand/10 to-brand/5 border-b border-border"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <motion.div className="text-center mb-16" variants={itemVariants}>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground tracking-tight">
-            Get in Touch
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Have questions about our AI agents? We'd love to hear from you! Send
-            us a message or book a meeting.
-          </p>
-        </motion.div>
+        <div className="container mx-auto max-w-6xl py-12 px-4">
+          <motion.div className="text-center" variants={itemVariants}>
+            <h1 className="text-4xl md:text-6xl font-bold mb-5 text-foreground tracking-tight">
+              Get in Touch
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-normal">
+              Have questions about our AI agents? We&apos;d love to hear from
+              you! You can send us a message or book a meeting.
+            </p>
+          </motion.div>
+        </div>
+      </motion.div>
 
+      {/* Content Section */}
+      <motion.div
+        className="container mx-auto max-w-6xl py-8 px-4"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contact Form */}
           <motion.div className="lg:col-span-2" variants={itemVariants}>
-            <Card className="border-[3px] border-border rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-1 hover:-translate-x-1 group">
-              <CardHeader className="pb-6">
+            <Card className="border-[3px] border-border rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:-translate-x-1 group">
+              <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-3 text-2xl font-bold text-foreground">
                   <div className="p-2 bg-brand/10 rounded-lg">
                     <Mail className="h-6 w-6 text-brand" />
@@ -154,8 +165,8 @@ export default function ContactPage() {
           {/* Contact Options */}
           <motion.div className="space-y-6" variants={itemVariants}>
             {/* Book Meeting Card */}
-            <Card className="border-[3px] border-border rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-1 hover:-translate-x-1 group">
-              <CardHeader className="pb-2">
+            <Card className="border-[3px] border-border rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:-translate-x-1 group">
+              <CardHeader className="pb-1">
                 <CardTitle className="flex items-center gap-3 text-xl font-bold text-foreground">
                   <div className="p-2 bg-brand/10 rounded-lg">
                     <Calendar className="h-5 w-5 text-brand" />
@@ -171,7 +182,7 @@ export default function ContactPage() {
                 <RetroButton
                   asChild
                   size="lg"
-                  className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-semibold"
+                  className="w-full bg-brand text-primary-foreground hover:bg-brand/90 font-semibold"
                   shadowColor="foreground"
                 >
                   <a
@@ -190,21 +201,24 @@ export default function ContactPage() {
 
       {/* Contact Info Section */}
       <motion.div
-        className="container mx-auto max-w-6xl py-8 px-4 border-t border-border"
-        variants={itemVariants}
+        className="bg-muted/30 py-4"
+        variants={containerVariants}
         initial="hidden"
-        animate="visible"
+        whileInView="visible"
+        viewport={{ once: true }}
       >
-        <div className="text-center">
-          <p className="text-muted-foreground">
-            Or email us directly at:{' '}
-            <a
-              href="mailto:support@blizzardberry.com"
-              className="text-brand hover:underline font-medium"
-            >
-              support@blizzardberry.com
-            </a>
-          </p>
+        <div className="container mx-auto max-w-6xl px-4">
+          <motion.div className="text-center" variants={itemVariants}>
+            <p className="text-muted-foreground">
+              Or email us directly at:{' '}
+              <a
+                href="mailto:support@blizzardberry.com"
+                className="text-brand hover:underline font-medium"
+              >
+                support@blizzardberry.com
+              </a>
+            </p>
+          </motion.div>
         </div>
       </motion.div>
     </>

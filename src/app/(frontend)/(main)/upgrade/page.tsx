@@ -25,9 +25,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
-import {
-  AGENT_MODELS,
-} from '@/app/api/lib/model/agent/agent';
+import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
 
 const stripePromise = loadStripe(
@@ -351,7 +349,7 @@ export default function UpgradePage() {
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
               {userSubscription
                 ? `Upgrade your ${userSubscription.tier} plan to unlock more features.`
-                : 'Choose the perfect plan for your AI agent needs. Start free, scale as you grow.'}
+                : 'Choose the perfect plan for your AI agent needs. Start free and scale as you grow.'}
             </p>
 
             <div className="flex justify-center gap-4 mb-12">
@@ -497,11 +495,11 @@ export default function UpgradePage() {
                                   Premium Models:
                                 </p>
                                 <ul className="list-disc pl-4 space-y-1">
-                                  {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
-                                    <li key={model}>
-                                      {displayName}
-                                    </li>
-                                  ))}
+                                  {Object.entries(AGENT_MODELS).map(
+                                    ([model, displayName]) => (
+                                      <li key={model}>{displayName}</li>
+                                    )
+                                  )}
                                 </ul>
                               </div>
                             </div>
@@ -535,7 +533,7 @@ export default function UpgradePage() {
                   </button>
                 </div>
               ))}
-              
+
               {/* Enterprise Card - Always included */}
               <div
                 className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm"
@@ -594,11 +592,15 @@ export default function UpgradePage() {
                             <Info className="h-4 w-4 text-secondary" />
                           </span>
                           <div className="tooltip">
-                            <p className="font-semibold mb-2">Premium Models:</p>
+                            <p className="font-semibold mb-2">
+                              Premium Models:
+                            </p>
                             <ul className="list-disc pl-4 space-y-1">
-                              {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
-                                <li key={model}>{displayName}</li>
-                              ))}
+                              {Object.entries(AGENT_MODELS).map(
+                                ([model, displayName]) => (
+                                  <li key={model}>{displayName}</li>
+                                )
+                              )}
                             </ul>
                           </div>
                         </div>

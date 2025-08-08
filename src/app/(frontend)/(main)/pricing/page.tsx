@@ -26,9 +26,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
-import {
-  AGENT_MODELS,
-} from '@/app/api/lib/model/agent/agent';
+import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
 
 const stripePromise = loadStripe(
@@ -256,8 +254,8 @@ export default function PricingPage() {
               Pricing
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-6 sm:mb-8">
-              Choose the perfect plan for your AI agent needs. Start free, scale
-              as you grow.
+              Choose the perfect plan for your AI agent needs. Start free and
+              scale as you grow.
             </p>
 
             {/* Billing Toggle */}
@@ -307,7 +305,12 @@ export default function PricingPage() {
                         ? 'border-[3px] border-brand shadow-xl pt-8 sm:pt-10 md:pt-8'
                         : ''
                     } ${
-                      arr.length === 5 && (idx === 3 ? 'lg:col-start-2' : idx === 4 ? 'lg:col-start-3' : '')
+                      arr.length === 5 &&
+                      (idx === 3
+                        ? 'lg:col-start-2'
+                        : idx === 4
+                          ? 'lg:col-start-3'
+                          : '')
                     }`}
                     style={{ minHeight: 480, minWidth: '0' }}
                   >
@@ -430,11 +433,11 @@ export default function PricingPage() {
                                     Premium Models:
                                   </p>
                                   <ul className="list-disc pl-4 space-y-1">
-                                    {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
-                                      <li key={model}>
-                                        {displayName}
-                                      </li>
-                                    ))}
+                                    {Object.entries(AGENT_MODELS).map(
+                                      ([model, displayName]) => (
+                                        <li key={model}>{displayName}</li>
+                                      )
+                                    )}
                                   </ul>
                                 </div>
                               </div>
@@ -459,16 +462,16 @@ export default function PricingPage() {
                         disabled={isLoading}
                         shadowColor="foreground"
                       >
-                      {isLoading ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
-                          Processing...
-                        </div>
-                      ) : key === 'free' ? (
-                        'Get Started'
-                      ) : (
-                        'Subscribe'
-                      )}
+                        {isLoading ? (
+                          <div className="flex items-center justify-center gap-2">
+                            <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                            Processing...
+                          </div>
+                        ) : key === 'free' ? (
+                          'Get Started'
+                        ) : (
+                          'Subscribe'
+                        )}
                       </RetroButton>
                     </div>
                   </div>
@@ -477,7 +480,11 @@ export default function PricingPage() {
               {/* Enterprise Card */}
               <div
                 className={`relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full max-w-sm lg:max-w-none mx-auto lg:mx-0 2xl:min-w-[360px] 2xl:max-w-[440px] hover:-translate-y-1 hover:-translate-x-1 ${
-                  Object.entries(pricing.tiers).filter(([key]) => !isLoggedIn || key !== 'free').length === 5 ? 'lg:col-start-3' : ''
+                  Object.entries(pricing.tiers).filter(
+                    ([key]) => !isLoggedIn || key !== 'free'
+                  ).length === 5
+                    ? 'lg:col-start-3'
+                    : ''
                 }`}
                 style={{ minHeight: 480, minWidth: '0' }}
               >
@@ -538,9 +545,11 @@ export default function PricingPage() {
                               Premium Models:
                             </p>
                             <ul className="list-disc pl-4 space-y-1">
-                              {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
-                                <li key={model}>{displayName}</li>
-                              ))}
+                              {Object.entries(AGENT_MODELS).map(
+                                ([model, displayName]) => (
+                                  <li key={model}>{displayName}</li>
+                                )
+                              )}
                             </ul>
                           </div>
                         </div>
@@ -589,7 +598,9 @@ export default function PricingPage() {
                       credits
                     </span>
                   </div>
-                  <div className="text-xl sm:text-2xl text-muted-foreground">for</div>
+                  <div className="text-xl sm:text-2xl text-muted-foreground">
+                    for
+                  </div>
                   <div className="text-center md:text-left">
                     <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground-muted block">
                       ${pricing.oneTimePurchase.price}
