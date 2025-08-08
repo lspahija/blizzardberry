@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS next_auth.users
     CONSTRAINT email_unique UNIQUE (email)
 );
 
+-- Index for email lookups (already handled by UNIQUE constraint)
+
 GRANT ALL ON TABLE next_auth.users TO postgres;
 GRANT ALL ON TABLE next_auth.users TO service_role;
 
@@ -45,6 +47,12 @@ CREATE TABLE IF NOT EXISTS next_auth.sessions
         ON DELETE CASCADE
 );
 
+-- Index for session token lookups (already handled by UNIQUE constraint)
+-- Index for user-based session queries
+CREATE INDEX IF NOT EXISTS sessions_userId_idx ON next_auth.sessions ("userId");
+-- Index for cleanup of expired sessions
+CREATE INDEX IF NOT EXISTS sessions_expires_idx ON next_auth.sessions (expires);
+
 GRANT ALL ON TABLE next_auth.sessions TO postgres;
 GRANT ALL ON TABLE next_auth.sessions TO service_role;
 
@@ -72,6 +80,10 @@ CREATE TABLE IF NOT EXISTS next_auth.accounts
         ON DELETE CASCADE
 );
 
+-- Index for provider+account lookups (already handled by UNIQUE constraint)
+-- Index for user-based account queries
+CREATE INDEX IF NOT EXISTS accounts_userId_idx ON next_auth.accounts ("userId");
+
 GRANT ALL ON TABLE next_auth.accounts TO postgres;
 GRANT ALL ON TABLE next_auth.accounts TO service_role;
 
@@ -84,6 +96,9 @@ CREATE TABLE IF NOT EXISTS next_auth.verification_tokens
     CONSTRAINT token_unique UNIQUE (token),
     CONSTRAINT token_identifier_unique UNIQUE (token, identifier)
 );
+
+-- Index for cleanup of expired tokens
+CREATE INDEX IF NOT EXISTS verification_tokens_expires_idx ON next_auth.verification_tokens (expires);
 
 GRANT ALL ON TABLE next_auth.verification_tokens TO postgres;
 GRANT ALL ON TABLE next_auth.verification_tokens TO service_role;
