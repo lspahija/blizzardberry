@@ -262,20 +262,20 @@ export default function PricingPage() {
             {status !== 'loading' && (
               <div className="flex justify-center gap-3 sm:gap-4 mb-8 sm:mb-12">
                 <button
-                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border font-semibold transition-all duration-200 text-sm sm:text-base ${
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border-2 font-semibold transition-all duration-200 text-sm sm:text-base ${
                     billingCycle === 'monthly'
-                      ? 'bg-blue-100 text-foreground border-blue-200 shadow'
-                      : 'bg-background text-foreground border-border hover:bg-muted'
+                      ? 'bg-blue-100 text-foreground border-blue-300 shadow-md'
+                      : 'bg-background text-foreground border-border hover:bg-muted hover:border-muted-foreground/20'
                   }`}
                   onClick={() => setBillingCycle('monthly')}
                 >
                   Monthly
                 </button>
                 <button
-                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border font-semibold transition-all duration-200 flex items-center gap-2 text-sm sm:text-base ${
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border-2 font-semibold transition-all duration-200 flex items-center gap-2 text-sm sm:text-base ${
                     billingCycle === 'yearly'
-                      ? 'bg-blue-100 text-foreground border-blue-200 shadow'
-                      : 'bg-background text-foreground border-border hover:bg-muted'
+                      ? 'bg-blue-100 text-foreground border-blue-300 shadow-md'
+                      : 'bg-background text-foreground border-border hover:bg-muted hover:border-muted-foreground/20'
                   }`}
                   onClick={() => setBillingCycle('yearly')}
                 >
