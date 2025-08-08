@@ -125,7 +125,7 @@ export function LandingNavbar() {
         >
           <Link
             href="/docs"
-            className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
+            className="block text-center text-foreground hover:-translate-y-0.5 transition-transform mt-4"
             onClick={handleNavigation}
           >
             Docs
