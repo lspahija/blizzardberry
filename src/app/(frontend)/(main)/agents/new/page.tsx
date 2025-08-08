@@ -157,7 +157,8 @@ export default function NewAgentPage() {
               </h1>
               <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
                 Your agent is ready to be added to your website. Follow the
-                steps below to install it, then configure it with actions and documents.
+                steps below to install it, then configure it with actions and
+                documents.
               </p>
             </motion.div>
 
@@ -257,7 +258,7 @@ export default function NewAgentPage() {
                         <li>Save and publish your website changes</li>
                         <li>
                           Your agent will appear on your website at{' '}
-                          <code>https://{websiteDomain}</code>
+                          <code>{websiteDomain}</code>
                         </li>
                         <li>
                           Need help? Visit our{' '}
@@ -282,15 +283,25 @@ export default function NewAgentPage() {
                         <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border border-border">
                           <Zap className="h-5 w-5 text-brand mt-0.5 flex-shrink-0" />
                           <div>
-                            <p className="font-semibold text-foreground text-sm mb-1">Actions</p>
-                            <p className="text-xs text-muted-foreground">Create custom actions your agent can perform, like form submissions or API calls.</p>
+                            <p className="font-semibold text-foreground text-sm mb-1">
+                              Actions
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Create custom actions your agent can perform, like
+                              form submissions or API calls.
+                            </p>
                           </div>
                         </div>
                         <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border border-border">
                           <FileText className="h-5 w-5 text-brand mt-0.5 flex-shrink-0" />
                           <div>
-                            <p className="font-semibold text-foreground text-sm mb-1">Documents</p>
-                            <p className="text-xs text-muted-foreground">Add knowledge files to help your agent answer questions and provide better support.</p>
+                            <p className="font-semibold text-foreground text-sm mb-1">
+                              Documents
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Add knowledge files to help your agent answer
+                              questions and provide better support.
+                            </p>
                           </div>
                         </div>
                       </div>
