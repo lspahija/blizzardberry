@@ -155,7 +155,7 @@ export default function ContactPage() {
           <motion.div className="space-y-6" variants={itemVariants}>
             {/* Book Meeting Card */}
             <Card className="border-[3px] border-border rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-1 hover:-translate-x-1 group">
-              <CardHeader className="pb-4">
+              <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-3 text-xl font-bold text-foreground">
                   <div className="p-2 bg-brand/10 rounded-lg">
                     <Calendar className="h-5 w-5 text-brand" />
@@ -164,7 +164,7 @@ export default function ContactPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+                <p className="text-muted-foreground mb-4 leading-relaxed">
                   Schedule a 30-minute call to discuss your AI agent
                   requirements and see how we can help.
                 </p>
