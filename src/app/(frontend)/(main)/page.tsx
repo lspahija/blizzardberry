@@ -224,17 +224,32 @@ export default function LandingPage() {
               {
                 icon: Zap,
                 title: 'From Intent to Action, Instantly',
-                text: 'Connect your app\'s key functions to the agent. When a user says, "Upgrade my account" or "Add a teammate," our agent securely executes the command through your existing APIs. It\'s the most direct path from user request to conversion.',
+                text: 'Our agent doesn\'t just talk; it acts. It securely connects to your app\'s APIs to turn user requests directly into results.',
+                bullets: [
+                  'Execute commands like "Upgrade my account."',
+                  'Connect users to key functions and workflows.',
+                  'Create the most direct path from request to conversion.'
+                ]
               },
               {
                 icon: Code,
                 title: 'Learns Your App in Minutes',
-                text: 'No need to manually build complex conversation flows. Simply point the agent to your documentation or knowledge base. It instantly becomes an expert on your product, ready to answer user questions with precision. Embed with a single code snippet.',
+                text: 'Forget building complex, manual conversation flows. Our agent learns everything it needs to know directly from your existing content.',
+                bullets: [
+                  'Instantly train on your documentation or knowledge base.',
+                  'Becomes a product expert, ready to answer any question.',
+                  'Embed anywhere on your site with a single line of code.'
+                ]
               },
               {
                 icon: Rocket,
                 title: 'Drive Adoption, Not Just Support Tickets',
-                text: 'Empower users to solve their own problems and discover features 24/7. Our agent reduces support load while actively guiding users to success. Turn your user assistance from a cost center into a powerful engine for engagement and retention.',
+                text: 'Turn user assistance from a cost center into an engine for growth. Our agent helps users succeed while reducing your support burden.',
+                bullets: [
+                  'Provide 24/7 self-service to solve user problems.',
+                  'Proactively guide users to discover and adopt features.',
+                  'Increase engagement, retention, and user success.'
+                ]
               },
             ].map((item, index) => (
               <motion.div
@@ -255,9 +270,21 @@ export default function LandingPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex-1">
-                    <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+                    <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4">
                       {item.text}
                     </p>
+                    {item.bullets && (
+                      <ul className="space-y-2">
+                        {item.bullets.map((bullet, bulletIndex) => (
+                          <li key={bulletIndex} className="flex items-start space-x-2">
+                            <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0 mt-0.5" />
+                            <span className="text-sm sm:text-base text-muted-foreground">
+                              {bullet}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
