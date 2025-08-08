@@ -276,8 +276,8 @@ export default function LandingPage() {
                     {item.bullets && (
                       <ul className="space-y-2">
                         {item.bullets.map((bullet, bulletIndex) => (
-                          <li key={bulletIndex} className="flex items-start space-x-2">
-                            <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0 mt-0.5" />
+                          <li key={bulletIndex} className="flex items-start space-x-3">
+                            <div className="w-1.5 h-1.5 bg-brand rounded-full flex-shrink-0 mt-2" />
                             <span className="text-sm sm:text-base text-muted-foreground">
                               {bullet}
                             </span>
