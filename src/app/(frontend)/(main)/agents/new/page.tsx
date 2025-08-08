@@ -42,8 +42,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import {
   AgentModel,
-  AgentModelDisplay,
-  AgentModelList,
+  AGENT_MODELS,
 } from '@/app/api/lib/model/agent/agent';
 import { Framework, getAgentScript } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
@@ -52,7 +51,7 @@ export default function NewAgentPage() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [websiteDomain, setWebsiteDomain] = useState('');
-  const [model, setModel] = useState<AgentModel>(AgentModel.GEMINI_2_0_FLASH);
+  const [model, setModel] = useState<AgentModel>('google/gemini-2.0-flash-001');
   const [agentId, setAgentId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [errors, setErrors] = useState<{
@@ -453,9 +452,9 @@ export default function NewAgentPage() {
                             <SelectValue placeholder="Select a model" />
                           </SelectTrigger>
                           <SelectContent>
-                            {AgentModelList.map((modelValue) => (
+                            {Object.entries(AGENT_MODELS).map(([modelValue, displayName]) => (
                               <SelectItem key={modelValue} value={modelValue}>
-                                {AgentModelDisplay[modelValue]}
+                                {displayName}
                               </SelectItem>
                             ))}
                           </SelectContent>

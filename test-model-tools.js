@@ -1,9 +1,9 @@
 // Test script to check which models support function calling
-import { AgentModel } from './src/app/api/lib/model/agent/agent';
+import { AGENT_MODELS } from './src/app/api/lib/model/agent/agent';
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
-const models = Object.values(AgentModel);
+const models = Object.keys(AGENT_MODELS);
 
 async function testModelTools(model) {
   try {

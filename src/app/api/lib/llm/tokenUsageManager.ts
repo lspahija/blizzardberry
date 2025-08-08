@@ -1,6 +1,6 @@
 import { captureCredit, holdCredit } from '@/app/api/lib/store/creditStore';
 import { LanguageModelUsage } from 'ai';
-import { AgentModel } from '@/app/api/lib/model/agent/agent';
+import { AgentModel, AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 
 // 1 credit = $0.01, so 1 dollar = 100 credits
 const DOLLARS_TO_CREDITS = 100;
@@ -34,7 +34,7 @@ async function fetchModelPrices(): Promise<
   const costs: Record<AgentModel, { input: number; output: number }> =
     {} as any;
 
-  for (const agentModel of Object.values(AgentModel)) {
+  for (const agentModel of Object.keys(AGENT_MODELS) as AgentModel[]) {
     const model = models.find((m) => m.id === agentModel);
 
     if (!model) {

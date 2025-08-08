@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { Agent, AgentModelList } from '@/app/api/lib/model/agent/agent';
+import { Agent, AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { createAgent, getAgents } from '@/app/api/lib/store/agentStore';
 import { createPrompt } from '@/app/api/lib/store/promptStore';
 import { getSubscription } from '@/app/api/lib/store/subscriptionStore';
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const { name, websiteDomain, model, prompts } = await req.json();
 
-    if (!AgentModelList.includes(model)) {
+    if (!(model in AGENT_MODELS)) {
       return NextResponse.json(
         { error: 'Invalid model selected' },
         { status: 400 }

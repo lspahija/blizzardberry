@@ -63,8 +63,7 @@ import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import { toast } from 'sonner';
 import {
   AgentModel,
-  AgentModelDisplay,
-  AgentModelList,
+  AGENT_MODELS,
 } from '@/app/api/lib/model/agent/agent';
 
 export default function AgentDetailsWrapper({
@@ -105,7 +104,7 @@ function AgentDetails({
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState('');
   const [editWebsiteDomain, setEditWebsiteDomain] = useState('');
-  const [editModel, setEditModel] = useState<AgentModel>(AgentModel.GEMINI_2_0_FLASH);
+  const [editModel, setEditModel] = useState<AgentModel>('google/gemini-2.0-flash-001');
   const [editPrompts, setEditPrompts] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -162,7 +161,7 @@ function AgentDetails({
         // Initialize edit state
         setEditName(data.agent?.name || '');
         setEditWebsiteDomain(data.agent?.websiteDomain || '');
-        setEditModel(data.agent?.model as AgentModel || AgentModel.GEMINI_2_0_FLASH);
+        setEditModel(data.agent?.model as AgentModel || 'google/gemini-2.0-flash-001');
       } catch (error) {
         console.error('Error fetching agent:', error);
       } finally {
@@ -452,16 +451,16 @@ function AgentDetails({
                     <SelectValue placeholder="Select a model" />
                   </SelectTrigger>
                   <SelectContent>
-                    {AgentModelList.map((modelValue) => (
+                    {Object.entries(AGENT_MODELS).map(([modelValue, displayName]) => (
                       <SelectItem key={modelValue} value={modelValue}>
-                        {AgentModelDisplay[modelValue]}
+                        {displayName}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               ) : (
                 <p className="text-muted-foreground text-sm sm:text-base ml-6">
-                  {AgentModelDisplay[agent.model as AgentModel] || agent.model}
+                  {AGENT_MODELS[agent.model as AgentModel] || agent.model}
                 </p>
               )}
             </div>

@@ -26,8 +26,7 @@ import { useRouter } from 'next/navigation';
 import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
 import {
-  AgentModelDisplay,
-  AgentModelList,
+  AGENT_MODELS,
 } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
 
@@ -430,9 +429,9 @@ export default function PricingPage() {
                                     Premium Models:
                                   </p>
                                   <ul className="list-disc pl-4 space-y-1">
-                                    {AgentModelList.map((model) => (
+                                    {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
                                       <li key={model}>
-                                        {AgentModelDisplay[model]}
+                                        {displayName}
                                       </li>
                                     ))}
                                   </ul>
@@ -535,8 +534,8 @@ export default function PricingPage() {
                               Premium Models:
                             </p>
                             <ul className="list-disc pl-4 space-y-1">
-                              {AgentModelList.map((model) => (
-                                <li key={model}>{AgentModelDisplay[model]}</li>
+                              {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
+                                <li key={model}>{displayName}</li>
                               ))}
                             </ul>
                           </div>
