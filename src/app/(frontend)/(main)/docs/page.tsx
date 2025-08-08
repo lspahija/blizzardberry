@@ -213,16 +213,18 @@ export default function Layout({ children }) {
                 Create custom actions, upload knowledge documents, and provide
                 natural language interfaces to your users.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <RetroButton
-                  asChild
-                  className="bg-brand text-primary-foreground hover:bg-brand/90 text-base font-semibold px-6 py-3"
-                >
-                  <Link href="/dashboard">
-                    <Play className="mr-2 h-5 w-5" />
-                    Get Started
-                  </Link>
-                </RetroButton>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <div className="w-fit">
+                  <RetroButton
+                    asChild
+                    className="bg-brand text-primary-foreground hover:bg-brand/90 text-base font-semibold px-6 py-3 w-auto"
+                  >
+                    <Link href="/dashboard" className="inline-flex items-center">
+                      <Play className="mr-2 h-5 w-5" />
+                      Get Started
+                    </Link>
+                  </RetroButton>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -832,16 +834,18 @@ export default function Layout({ children }) {
                 Create your first AI agent in minutes and transform how users
                 interact with your website.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <RetroButton
-                  asChild
-                  className="bg-brand text-primary-foreground hover:bg-brand/90 text-base font-semibold px-8 py-3"
-                >
-                  <Link href="/dashboard">
-                    <Play className="mr-2 h-5 w-5" />
-                    Create an Agent
-                  </Link>
-                </RetroButton>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <div className="w-fit">
+                  <RetroButton
+                    asChild
+                    className="bg-brand text-primary-foreground hover:bg-brand/90 text-base font-semibold px-8 py-3 w-auto"
+                  >
+                    <Link href="/dashboard" className="inline-flex items-center">
+                      <Play className="mr-2 h-5 w-5" />
+                      Create an Agent
+                    </Link>
+                  </RetroButton>
+                </div>
               </div>
             </motion.div>
           </div>

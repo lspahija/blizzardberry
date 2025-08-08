@@ -17,7 +17,7 @@ const RetroButton = React.forwardRef<HTMLButtonElement, RetroButtonProps>(
       <div className="relative group inline-block">
         <div
           className={cn(
-            'absolute inset-0 rounded-lg transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5 translate-x-1 translate-y-1',
+            'absolute inset-0 rounded-lg transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5 translate-x-[3px] translate-y-[3px] sm:translate-x-1 sm:translate-y-1',
             shadowClass
           )}
         />
