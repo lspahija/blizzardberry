@@ -47,7 +47,7 @@ export function LandingNavbar() {
                 className="object-contain"
                 unoptimized={true}
               />
-              <span className="text-2xl font-bold">
+              <span className="text-3xl font-bold tracking-tight">
                 <span>Blizzard</span>
                 <span className="text-brand">Berry</span>
               </span>
@@ -56,19 +56,19 @@ export function LandingNavbar() {
           <div className="hidden lg:flex items-center gap-10 flex-1 justify-center">
             <Link
               href="/docs"
-              className="text-foreground hover:-translate-y-0.5 transition-transform"
+              className="text-lg font-medium text-foreground hover:-translate-y-0.5 transition-transform"
             >
               Docs
             </Link>
             <Link
               href="/pricing"
-              className="text-foreground hover:-translate-y-0.5 transition-transform"
+              className="text-lg font-medium text-foreground hover:-translate-y-0.5 transition-transform"
             >
               Pricing
             </Link>
             <Link
               href="/contact"
-              className="text-foreground hover:-translate-y-0.5 transition-transform"
+              className="text-lg font-medium text-foreground hover:-translate-y-0.5 transition-transform"
             >
               Contact
             </Link>
