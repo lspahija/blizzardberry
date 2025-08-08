@@ -5,6 +5,13 @@ import { executeAction } from './actions';
 import { updateChatUI } from './ui';
 import { updateNotificationBadge } from './dom';
 
+function syncWidgetState() {
+  const widget = document.getElementById('chatWidget');
+  const isWidgetCurrentlyOpen = widget && !widget.classList.contains('hidden');
+  state.isWidgetOpen = isWidgetCurrentlyOpen;
+  return isWidgetCurrentlyOpen;
+}
+
 export async function handleError(messageText) {
   state.isProcessing = false;
   state.messages.push({
@@ -12,6 +19,9 @@ export async function handleError(messageText) {
     role: 'assistant',
     parts: [{ type: 'text', text: messageText }],
   });
+  
+  // Check widget state in real-time to avoid race conditions
+  syncWidgetState();
   
   if (!state.isWidgetOpen) {
     state.unreadMessages++;
@@ -75,6 +85,9 @@ export async function processChatMessage(messageText) {
         role: 'assistant',
         parts: [{ type: 'text', text }],
       });
+      
+      // Check widget state in real-time to avoid race conditions
+      syncWidgetState();
       
       if (!state.isWidgetOpen) {
         state.unreadMessages++;
