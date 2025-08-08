@@ -231,7 +231,7 @@ export default function PricingPage() {
     padding: 12px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 20;
+    z-index: 9999;
     min-width: 200px;
     max-width: 300px;
     font-size: 0.875rem;
@@ -264,7 +264,7 @@ export default function PricingPage() {
                 <button
                   className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border font-semibold transition-all duration-200 text-sm sm:text-base ${
                     billingCycle === 'monthly'
-                      ? 'bg-brand/10 text-foreground border-brand/20 shadow'
+                      ? 'bg-blue-100 text-foreground border-blue-200 shadow'
                       : 'bg-background text-foreground border-border hover:bg-muted'
                   }`}
                   onClick={() => setBillingCycle('monthly')}
@@ -274,7 +274,7 @@ export default function PricingPage() {
                 <button
                   className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border font-semibold transition-all duration-200 flex items-center gap-2 text-sm sm:text-base ${
                     billingCycle === 'yearly'
-                      ? 'bg-brand/10 text-foreground border-brand/20 shadow'
+                      ? 'bg-blue-100 text-foreground border-blue-200 shadow'
                       : 'bg-background text-foreground border-border hover:bg-muted'
                   }`}
                   onClick={() => setBillingCycle('yearly')}
@@ -456,7 +456,7 @@ export default function PricingPage() {
                         className={`w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold text-sm sm:text-base ${
                           key === 'standard'
                             ? 'bg-brand text-primary-foreground hover:bg-brand/90'
-                            : 'bg-background text-foreground hover:bg-brand/10'
+                            : 'bg-background text-foreground hover:bg-muted hover:text-foreground'
                         } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
                         onClick={() => handleSubscribe(key)}
                         disabled={isLoading}
@@ -563,7 +563,7 @@ export default function PricingPage() {
                 </ul>
                 <div className="mt-auto flex justify-center">
                   <RetroButton
-                    className="w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold bg-background text-foreground hover:bg-brand/10 text-sm sm:text-base"
+                    className="w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold bg-background text-foreground hover:bg-muted hover:text-foreground text-sm sm:text-base"
                     onClick={() => setShowEnterpriseForm(true)}
                     shadowColor="foreground"
                   >
@@ -648,7 +648,7 @@ export default function PricingPage() {
               </div>
             </EmbeddedCheckoutProvider>
             <RetroButton
-              className="mt-6 py-3 px-6 bg-background text-foreground hover:bg-muted font-medium mx-auto block"
+              className="mt-6 py-3 px-6 bg-background text-foreground hover:bg-muted hover:text-foreground font-medium mx-auto block"
               onClick={() => setShowCheckout(false)}
               shadowColor="foreground"
             >
@@ -708,7 +708,7 @@ export default function PricingPage() {
               <div className="flex justify-end gap-3 pt-4">
                 <RetroButton
                   type="button"
-                  className="px-6 py-3 text-foreground bg-background hover:bg-muted font-semibold"
+                  className="px-6 py-3 text-foreground bg-background hover:bg-muted hover:text-foreground font-semibold"
                   onClick={() => {
                     setShowEnterpriseForm(false);
                     setEmailAddress('');
