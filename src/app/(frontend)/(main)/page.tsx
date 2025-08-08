@@ -243,10 +243,9 @@ export default function LandingPage() {
                 viewport={{ once: true, amount: 0.5 }}
                 style={{ willChange: 'transform, opacity' }} // Optimize rendering
                 transition={{ duration: 0.3 }} // Faster animation
-                className="group relative"
+                className="group"
               >
-                <div className="absolute inset-0 rounded-2xl bg-black/80 translate-x-1.5 translate-y-1.5 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-                <Card className="relative border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+                <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                   <CardHeader className="pb-4">
                     <item.icon className="w-8 h-8 sm:w-10 sm:h-10 text-brand mb-3 sm:mb-4" />
                     <CardTitle className="text-xl sm:text-2xl font-semibold leading-tight">
@@ -287,9 +286,8 @@ export default function LandingPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            <motion.div variants={itemVariants} className="relative group">
-              <div className="absolute inset-0 rounded-2xl bg-black/80 translate-x-1.5 translate-y-1.5 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              <Card className="relative border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+            <motion.div variants={itemVariants}>
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
                     <Zap className="h-6 w-6 sm:h-7 sm:w-7 text-brand" />
@@ -308,9 +306,8 @@ export default function LandingPage() {
               </Card>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="relative group">
-              <div className="absolute inset-0 rounded-2xl bg-black/80 translate-x-1.5 translate-y-1.5 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              <Card className="relative border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+            <motion.div variants={itemVariants}>
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
@@ -329,9 +326,8 @@ export default function LandingPage() {
               </Card>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="relative group">
-              <div className="absolute inset-0 rounded-2xl bg-black/80 translate-x-1.5 translate-y-1.5 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              <Card className="relative border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+            <motion.div variants={itemVariants}>
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
@@ -349,9 +345,8 @@ export default function LandingPage() {
               </Card>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="relative group">
-              <div className="absolute inset-0 rounded-2xl bg-black/80 translate-x-1.5 translate-y-1.5 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              <Card className="relative border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+            <motion.div variants={itemVariants}>
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Users className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
@@ -369,9 +364,8 @@ export default function LandingPage() {
               </Card>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="relative group">
-              <div className="absolute inset-0 rounded-2xl bg-black/80 translate-x-1.5 translate-y-1.5 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              <Card className="relative border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+            <motion.div variants={itemVariants}>
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
@@ -390,9 +384,8 @@ export default function LandingPage() {
               </Card>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="relative group">
-              <div className="absolute inset-0 rounded-2xl bg-black/80 translate-x-1.5 translate-y-1.5 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              <Card className="relative border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+            <motion.div variants={itemVariants}>
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
@@ -435,9 +428,8 @@ export default function LandingPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-            <motion.div variants={itemVariants} className="relative group">
-              <div className="absolute inset-0 rounded-2xl bg-black/80 translate-x-1.5 translate-y-1.5 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              <Card className="relative border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl">
+            <motion.div variants={itemVariants}>
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
@@ -480,9 +472,8 @@ export default function LandingPage() {
               </Card>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="relative group">
-              <div className="absolute inset-0 rounded-2xl bg-black/80 translate-x-1.5 translate-y-1.5 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              <Card className="relative border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl">
+            <motion.div variants={itemVariants}>
+              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Globe className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
