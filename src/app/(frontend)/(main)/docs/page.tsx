@@ -446,7 +446,10 @@ export default function Layout({ children }) {
                         </span>
                         <span>
                           {selectedFramework === 'nextjs' ? (
-                            <>Paste the code in your layout.tsx or page component</>
+                            <>
+                              Paste the code in your layout.tsx or page
+                              component
+                            </>
                           ) : (
                             <>
                               Paste the code before the closing{' '}
@@ -469,46 +472,59 @@ export default function Layout({ children }) {
                 </Card>
                 <div className="mt-8 pt-2"></div>
                 <motion.div variants={itemVariants}>
-                <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
-                  <CardHeader>
-                    <div className="flex items-center space-x-2">
-                      <Users className="h-6 w-6 text-brand" />
-                      <CardTitle className="text-xl">User Context</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4">
-                      💡 <strong>Why agentUserConfig?</strong> The agentUserConfig contains user information that are passed to the agent, allowing you to provide personalized experiences.
-                    </p>
-                    <p className="text-muted-foreground">
-                      When you configure your agent, you can pass user-specific data like user ID, preferences, account information, and metadata. This information is automatically available to your agent, enabling personalized responses and functionality.
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-              <div className="mt-8 pt-2"></div>
-              <motion.div variants={itemVariants}>
-                <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
-                  <CardHeader>
-                    <div className="flex items-center space-x-2">
-                      <MessageSquare className="h-6 w-6 text-brand" />
-                      <CardTitle className="text-xl">Action Responses</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4">
-                      💡 <strong>Why return values?</strong> The AI agent uses your return value to provide helpful responses to users and confirm actions were executed.
-                    </p>
-                    <p className="text-muted-foreground">
-                      When your custom actions execute, they should return information about what happened. The AI agent uses this return value to provide meaningful responses to users, confirm actions were successful, or handle errors gracefully.
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                  <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
+                    <CardHeader>
+                      <div className="flex items-center space-x-2">
+                        <Users className="h-6 w-6 text-brand" />
+                        <CardTitle className="text-xl">User Context</CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground mb-4">
+                        💡 <strong>Why agentUserConfig?</strong> The
+                        agentUserConfig contains user information that are
+                        passed to the agent, allowing you to provide
+                        personalized experiences.
+                      </p>
+                      <p className="text-muted-foreground">
+                        When you configure your agent, you can pass
+                        user-specific data like user ID, preferences, account
+                        information, and metadata. This information is
+                        automatically available to your agent, enabling
+                        personalized responses and functionality.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+                <div className="mt-8 pt-2"></div>
+                <motion.div variants={itemVariants}>
+                  <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
+                    <CardHeader>
+                      <div className="flex items-center space-x-2">
+                        <MessageSquare className="h-6 w-6 text-brand" />
+                        <CardTitle className="text-xl">
+                          Action Responses
+                        </CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground mb-4">
+                        💡 <strong>Why return values?</strong> The AI agent uses
+                        your return value to provide helpful responses to users
+                        and confirm actions were executed.
+                      </p>
+                      <p className="text-muted-foreground">
+                        When your custom actions execute, they should return
+                        information about what happened. The AI agent uses this
+                        return value to provide meaningful responses to users,
+                        confirm actions were successful, or handle errors
+                        gracefully.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               </motion.div>
             </div>
-
-
           </div>
         </motion.section>
 
@@ -526,7 +542,7 @@ export default function Layout({ children }) {
                 Powerful Features
               </h2>
               <p className="text-lg text-muted-foreground">
-                Everything you need to create intelligent AI agents
+                Everything you need to create AI agents
               </p>
             </motion.div>
 
