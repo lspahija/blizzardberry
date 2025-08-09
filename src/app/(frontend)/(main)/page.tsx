@@ -483,7 +483,7 @@ export default function LandingPage() {
 
       {/* Use Cases Section - Industry Examples */}
       <motion.section
-        className="py-20 sm:py-28 bg-gradient-to-b from-muted/15 to-background overflow-hidden"
+        className="py-12 sm:py-16 bg-gradient-to-b from-muted/15 to-background overflow-hidden"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -626,7 +626,7 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
-          {/* Impact highlights - Consistent with design language */}
+          {/* Simple Impact Cards - Inspired by Docs Page */}
           <motion.div
             className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
             variants={itemVariants}
@@ -634,43 +634,36 @@ export default function LandingPage() {
             {[
               {
                 icon: Zap,
-                title: 'Instant Resolution',
+                title: 'Zero Wait Time',
                 description:
                   'Users get answers and complete tasks without waiting for human support',
-                highlight: 'Zero Wait Time',
               },
               {
                 icon: Globe,
-                title: 'Always-On Support',
+                title: 'Available 24/7',
                 description:
                   'Never miss a customer inquiry, regardless of time zone or business hours',
-                highlight: '24/7 Available',
               },
               {
                 icon: Rocket,
-                title: 'Higher Engagement',
+                title: 'More Conversions',
                 description:
                   'Turn casual browsers into engaged users who complete their goals',
-                highlight: 'More Conversions',
               },
             ].map((item, index) => (
-              <Card
-                key={index}
-                className="border-[3px] border-border bg-card rounded-2xl p-6 text-center hover:scale-105 transition-all duration-300 hover:shadow-lg group"
-              >
-                <div className="bg-brand/10 p-3 rounded-2xl w-fit mx-auto mb-4">
-                  <item.icon className="h-8 w-8 text-brand" />
-                </div>
-                <div className="text-xl font-bold text-brand mb-2">
-                  {item.highlight}
-                </div>
-                <div className="text-lg font-semibold text-foreground mb-2">
-                  {item.title}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {item.description}
-                </div>
-              </Card>
+              <motion.div key={index} variants={itemVariants}>
+                <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl h-full">
+                  <CardHeader className="text-center">
+                    <div className="w-12 h-12 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <item.icon className="h-6 w-6 text-brand" />
+                    </div>
+                    <CardTitle className="text-xl">{item.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    <p className="text-muted-foreground">{item.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </motion.div>
         </div>
