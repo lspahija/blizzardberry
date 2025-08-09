@@ -17,7 +17,6 @@ import {
   MessageSquare,
   Users,
   Shield,
-  Clock,
   CheckCircle2,
   Play,
   Globe,
@@ -202,7 +201,7 @@ export default function LandingPage() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }} // Reduced amount to trigger earlier
+        viewport={{ once: true, amount: 0.3 }}
       >
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
           <motion.div
@@ -224,12 +223,12 @@ export default function LandingPage() {
               {
                 icon: Zap,
                 title: 'From Intent to Action, Instantly',
-                text: 'Our agent doesn\'t just talk; it acts. It securely connects to your app\'s APIs to turn user requests directly into results.',
+                text: "Our agent doesn't just talk; it acts. It securely connects to your app's APIs to turn user requests directly into results.",
                 bullets: [
                   'Execute commands like "Upgrade my account."',
                   'Connect users to key functions and workflows.',
-                  'Create the most direct path from request to conversion.'
-                ]
+                  'Create the most direct path from request to conversion.',
+                ],
               },
               {
                 icon: Code,
@@ -238,8 +237,8 @@ export default function LandingPage() {
                 bullets: [
                   'Instantly train on your documentation or knowledge base.',
                   'Becomes a product expert, ready to answer any question.',
-                  'Embed anywhere on your site with a single line of code.'
-                ]
+                  'Embed anywhere on your site with a single line of code.',
+                ],
               },
               {
                 icon: Rocket,
@@ -248,8 +247,8 @@ export default function LandingPage() {
                 bullets: [
                   'Provide 24/7 self-service to solve user problems.',
                   'Proactively guide users to discover and adopt features.',
-                  'Increase engagement, retention, and user success.'
-                ]
+                  'Increase engagement, retention, and user success.',
+                ],
               },
             ].map((item, index) => (
               <motion.div
@@ -276,7 +275,10 @@ export default function LandingPage() {
                     {item.bullets && (
                       <ul className="space-y-2">
                         {item.bullets.map((bullet, bulletIndex) => (
-                          <li key={bulletIndex} className="flex items-start space-x-3">
+                          <li
+                            key={bulletIndex}
+                            className="flex items-start space-x-3"
+                          >
                             <div className="w-1.5 h-1.5 bg-brand rounded-full flex-shrink-0 mt-2" />
                             <span className="text-sm sm:text-base text-muted-foreground">
                               {bullet}
@@ -293,258 +295,384 @@ export default function LandingPage() {
         </div>
       </motion.section>
 
-      {/* Features Section */}
+      {/* Features Section - Redesigned with alternating layout */}
       <motion.section
-        className="py-12 sm:py-16"
+        className="py-20 sm:py-28 bg-gradient-to-b from-background to-muted/10"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
-            className="text-center mb-10 sm:mb-14"
+            className="text-center mb-16 sm:mb-20"
             variants={itemVariants}
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
-              Powerful Features
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 sm:mb-8 leading-tight">
+              Everything You Need
             </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground">
-              Everything you need to create intelligent AI agents
+            <p className="text-xl sm:text-2xl text-muted-foreground/80 max-w-4xl mx-auto font-medium">
+              A complete platform to build, deploy, and manage intelligent AI
+              agents that work seamlessly with your existing systems
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <Zap className="h-6 w-6 sm:h-7 sm:w-7 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Custom Actions
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    Create client-side and server-side actions that your agent
-                    can execute. From form submissions to API calls, your agent
-                    can perform any task.
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-20 sm:mb-24">
+            {/* Custom Actions */}
+            <div className="lg:col-span-7">
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:border-brand/30 transition-all duration-500">
+                <CardContent className="p-10 sm:p-14">
+                  <div className="flex items-start space-x-6 mb-8">
+                    <div className="bg-brand/15 p-4 rounded-3xl">
+                      <Zap className="h-10 w-10 text-brand" />
+                    </div>
+                    <div>
+                      <h3 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 leading-tight">
+                        Turn Conversations Into Actions
+                      </h3>
+                      <p className="text-xl text-muted-foreground/80 mb-8 font-medium leading-relaxed">
+                        Don&apos;t just chat with users—actually help them
+                        complete tasks. From upgrading accounts to processing
+                        orders, your agent does the work.
+                      </p>
 
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Knowledge Base
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    Upload documents, FAQs, and knowledge articles. Your agent
-                    will use this information to provide accurate answers and
-                    support.
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
+                      {/* Demo conversation */}
+                      <div className="bg-muted/50 rounded-2xl p-4 space-y-3 mb-6">
+                        <div className="flex items-start space-x-2">
+                          <div className="bg-blue-500 text-white rounded-full p-1">
+                            <Users className="h-3 w-3" />
+                          </div>
+                          <div className="bg-background rounded-lg px-3 py-2 max-w-[200px] border-[2px] border-border">
+                            <p className="text-sm">
+                              Upgrade my account to Pro plan
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-2 justify-end">
+                          <div className="bg-brand text-primary-foreground rounded-lg px-3 py-2 max-w-[250px]">
+                            <p className="text-sm">
+                              Processing upgrade... Done! You now have Pro
+                              access.
+                            </p>
+                          </div>
+                          <div className="bg-brand text-primary-foreground rounded-full p-1">
+                            <CheckCircle2 className="h-3 w-3" />
+                          </div>
+                        </div>
+                      </div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Natural Language
-                    </CardTitle>
+                      <p className="text-muted-foreground/80 font-medium">
+                        Supports client-side actions, server-side integration,
+                        API orchestration, and workflow automation.
+                      </p>
+                    </div>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    Users can interact with your agent using natural language.
-                    No need to learn specific commands or syntax.
-                  </p>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Users className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      User Context
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    Pass user information and preferences to your agent. Provide
-                    personalized experiences based on user data.
-                  </p>
-                </CardContent>
+            <div className="lg:col-span-5 space-y-6">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+                <div className="flex items-center space-x-4 mb-4">
+                  <MessageSquare className="h-6 w-6 text-brand" />
+                  <h4 className="text-xl font-bold text-foreground">
+                    Natural Language
+                  </h4>
+                </div>
+                <p className="text-muted-foreground/80 font-medium">
+                  Users interact naturally - no commands to learn
+                </p>
               </Card>
-            </motion.div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Secure & Private
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    All communications are encrypted. Your data stays private
-                    and secure. No sensitive information is stored
-                    unnecessarily.
-                  </p>
-                </CardContent>
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+                <div className="flex items-center space-x-4 mb-4">
+                  <Zap className="h-6 w-6 text-brand" />
+                  <h4 className="text-xl font-bold text-foreground">
+                    Real-time
+                  </h4>
+                </div>
+                <p className="text-muted-foreground/80 font-medium">
+                  Instant responses and live interactions
+                </p>
               </Card>
-            </motion.div>
+            </div>
+          </div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Real-time
-                    </CardTitle>
+          {/* Knowledge Base - Reversed */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="lg:col-span-5 space-y-6 order-2 lg:order-1">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+                <div className="flex items-center space-x-4 mb-4">
+                  <Users className="h-6 w-6 text-brand" />
+                  <h4 className="text-xl font-bold text-foreground">
+                    User Context
+                  </h4>
+                </div>
+                <p className="text-muted-foreground/80 font-medium">
+                  Personalized experiences based on user data
+                </p>
+              </Card>
+
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+                <div className="flex items-center space-x-4 mb-4">
+                  <Shield className="h-6 w-6 text-brand" />
+                  <h4 className="text-xl font-bold text-foreground">
+                    Secure & Private
+                  </h4>
+                </div>
+                <p className="text-muted-foreground/80 font-medium">
+                  Encrypted communications and data protection
+                </p>
+              </Card>
+            </div>
+
+            <div className="lg:col-span-7 order-1 lg:order-2">
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:border-primary/30 transition-all duration-500">
+                <CardContent className="p-10 sm:p-14">
+                  <div className="flex items-start space-x-6 mb-8">
+                    <div className="bg-primary/15 p-4 rounded-3xl">
+                      <FileText className="h-10 w-10 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 leading-tight">
+                        Instant Product Expert
+                      </h3>
+                      <p className="text-xl text-muted-foreground/80 mb-8 font-medium leading-relaxed">
+                        Upload your docs once, get an AI expert forever. Your
+                        agent learns everything about your product and provides
+                        accurate, contextual answers.
+                      </p>
+
+                      {/* Knowledge base demo */}
+                      <div className="bg-muted/50 rounded-2xl p-4 mb-6">
+                        <div className="flex items-center space-x-3 mb-4">
+                          <FileText className="h-5 w-5 text-primary" />
+                          <span className="font-medium">Knowledge Base</span>
+                          <span className="text-xs bg-green-500/10 text-green-600 px-2 py-1 rounded-full">
+                            1,247 docs
+                          </span>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-sm">
+                            <span>API Documentation</span>
+                            <span className="text-green-600">✓ Indexed</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span>User Guide</span>
+                            <span className="text-green-600">✓ Indexed</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span>FAQ Database</span>
+                            <span className="text-green-600">✓ Indexed</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-muted-foreground/80 font-medium">
+                        Features advanced document processing, smart search,
+                        auto-updates, and context awareness.
+                      </p>
+                    </div>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground">
-                    Instant responses and real-time interactions. Your agent
-                    responds immediately to user queries.
-                  </p>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           </div>
         </div>
       </motion.section>
 
-      {/* Use Cases Section */}
+      {/* Use Cases Section - Industry Examples */}
       <motion.section
-        className="py-12 sm:py-16 bg-muted/30"
+        className="py-20 sm:py-28 bg-gradient-to-b from-muted/15 to-background overflow-hidden"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
-            className="text-center mb-10 sm:mb-14"
+            className="text-center mb-16 sm:mb-20"
             variants={itemVariants}
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
-              Popular Use Cases
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 sm:mb-8 leading-tight">
+              Transform Every Industry
             </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground">
-              See how others are using BlizzardBerry to enhance their websites
+            <p className="text-xl sm:text-2xl text-muted-foreground/80 max-w-4xl mx-auto font-medium">
+              From customer support to e-commerce, see how AI agents are
+              revolutionizing user experiences across different sectors
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      Customer Support
-                    </CardTitle>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-20">
+            {/* Customer Support */}
+            <motion.div className="group" variants={itemVariants}>
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group-hover:shadow-[0_16px_64px_rgba(0,0,0,0.15)] transition-all duration-500 h-full">
+                <CardHeader className="pb-8 pt-10 px-10">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-6">
+                      <div className="bg-blue-500/15 p-4 rounded-3xl">
+                        <MessageSquare className="h-10 w-10 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-3xl font-bold text-foreground mb-3">
+                          Customer Support
+                        </h3>
+                        <p className="text-lg text-muted-foreground/80 font-medium leading-relaxed mb-4">
+                          24/7 intelligent assistance that answers FAQs
+                          instantly, creates support tickets, processes refunds,
+                          and schedules appointments through natural
+                          conversation.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mock conversation */}
+                  <div className="bg-muted/50 rounded-2xl p-4 space-y-3">
+                    <div className="flex items-start space-x-2">
+                      <div className="bg-blue-500 text-white rounded-full p-1">
+                        <Users className="h-3 w-3" />
+                      </div>
+                      <div className="bg-background rounded-lg px-3 py-2 max-w-[200px] border-[2px] border-border">
+                        <p className="text-sm">
+                          Hi! I need to cancel my order #1234
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-2 justify-end">
+                      <div className="bg-blue-500 text-white rounded-lg px-3 py-2 max-w-[200px]">
+                        <p className="text-sm">
+                          Done! Your order has been cancelled and you&apos;ll
+                          receive a full refund within 3-5 days.
+                        </p>
+                      </div>
+                      <div className="bg-blue-500 text-white rounded-full p-1">
+                        <CheckCircle2 className="h-3 w-3" />
+                      </div>
+                    </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground mb-4">
-                    Provide instant customer support with AI agents that can:
-                  </p>
-                  <ul className="space-y-2 text-muted-foreground">
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Answer common questions
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Create support tickets
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Schedule appointments
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Process refunds
-                      </span>
-                    </li>
-                  </ul>
-                </CardContent>
               </Card>
             </motion.div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Globe className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
-                    <CardTitle className="text-lg sm:text-xl">
-                      E-commerce
-                    </CardTitle>
+            {/* E-commerce */}
+            <motion.div className="group" variants={itemVariants}>
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group-hover:shadow-[0_16px_64px_rgba(0,0,0,0.15)] transition-all duration-500 h-full">
+                <CardHeader className="pb-8 pt-10 px-10">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-6">
+                      <div className="bg-green-500/15 p-4 rounded-3xl">
+                        <Globe className="h-10 w-10 text-green-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-3xl font-bold text-foreground mb-3">
+                          E-commerce
+                        </h3>
+                        <p className="text-lg text-muted-foreground/80 font-medium leading-relaxed mb-4">
+                          Smart shopping assistance that provides intelligent
+                          product recommendations, adds items to cart, processes
+                          orders, and tracks shipments seamlessly.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mock shopping interaction */}
+                  <div className="bg-muted/50 rounded-2xl p-4 space-y-3 mb-4">
+                    <div className="flex items-start space-x-2">
+                      <div className="bg-green-500 text-white rounded-full p-1">
+                        <Users className="h-3 w-3" />
+                      </div>
+                      <div className="bg-background rounded-lg px-3 py-2 max-w-[200px] border-[2px] border-border">
+                        <p className="text-sm">
+                          Find me a floral dress under $150
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-2 justify-end">
+                      <div className="bg-green-500 text-white rounded-lg px-3 py-2 max-w-[200px]">
+                        <p className="text-sm">
+                          Perfect! Found this lovely maxi dress. Added to your
+                          cart!
+                        </p>
+                      </div>
+                      <div className="bg-green-500 text-white rounded-full p-1">
+                        <Zap className="h-3 w-3" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Product preview */}
+                  <div className="bg-background/50 rounded-xl p-3 mb-4 border-[2px] border-border">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-sage-400 to-sage-600 rounded-lg flex items-center justify-center">
+                        <span className="text-white text-lg">👗</span>
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-sm">
+                          Vintage Floral Maxi Dress
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Size M • Long sleeves • Button front
+                        </div>
+                        <div className="text-green-600 font-bold text-sm">
+                          $138
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-base sm:text-lg text-muted-foreground mb-4">
-                    Enhance your online store with AI agents that can:
-                  </p>
-                  <ul className="space-y-2 text-muted-foreground">
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Search and recommend products
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Add items to cart
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Process orders
-                      </span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle2 className="h-4 w-4 text-brand flex-shrink-0" />
-                      <span className="text-sm sm:text-base">
-                        Track shipments
-                      </span>
-                    </li>
-                  </ul>
-                </CardContent>
               </Card>
             </motion.div>
           </div>
+
+          {/* Impact highlights - Consistent with design language */}
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
+            variants={itemVariants}
+          >
+            {[
+              {
+                icon: Zap,
+                title: 'Instant Resolution',
+                description:
+                  'Users get answers and complete tasks without waiting for human support',
+                highlight: 'Zero Wait Time',
+              },
+              {
+                icon: Globe,
+                title: 'Always-On Support',
+                description:
+                  'Never miss a customer inquiry, regardless of time zone or business hours',
+                highlight: '24/7 Available',
+              },
+              {
+                icon: Rocket,
+                title: 'Higher Engagement',
+                description:
+                  'Turn casual browsers into engaged users who complete their goals',
+                highlight: 'More Conversions',
+              },
+            ].map((item, index) => (
+              <Card
+                key={index}
+                className="border-[3px] border-border bg-card rounded-2xl p-6 text-center hover:scale-105 transition-all duration-300 hover:shadow-lg group"
+              >
+                <div className="bg-brand/10 p-3 rounded-2xl w-fit mx-auto mb-4">
+                  <item.icon className="h-8 w-8 text-brand" />
+                </div>
+                <div className="text-xl font-bold text-brand mb-2">
+                  {item.highlight}
+                </div>
+                <div className="text-lg font-semibold text-foreground mb-2">
+                  {item.title}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {item.description}
+                </div>
+              </Card>
+            ))}
+          </motion.div>
         </div>
       </motion.section>
 

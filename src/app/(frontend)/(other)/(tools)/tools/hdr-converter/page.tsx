@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Button } from '../../../components/ui/button';
-import { Card } from '../../../components/ui/card';
-import { Label } from '../../../components/ui/label';
+import { Button } from '../../../../components/ui/button';
+import { Card } from '../../../../components/ui/card';
+import { Label } from '../../../../components/ui/label';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Download, Zap, ArrowRight } from 'lucide-react';
