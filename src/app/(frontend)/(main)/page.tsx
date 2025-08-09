@@ -21,7 +21,7 @@ import {
   Play,
   Globe,
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,24 +37,24 @@ export default function LandingPage() {
     };
   }, [isMenuOpen]);
 
-  const containerVariants = {
+  const containerVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, staggerChildren: 0.2 },
+      transition: { duration: 0.4, staggerChildren: 0.1 },
     },
-  };
+  }), []);
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
+  const itemVariants = useMemo(() => ({
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
+  }), []);
 
-  const cardVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
-  };
+  const cardVariants = useMemo(() => ({
+    hidden: { opacity: 0, scale: 0.98 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.3, ease: 'easeOut' } },
+  }), []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -201,7 +201,7 @@ export default function LandingPage() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.1, margin: '-10px' }}
       >
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
           <motion.div
@@ -256,12 +256,11 @@ export default function LandingPage() {
                 variants={cardVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
-                style={{ willChange: 'transform, opacity' }} // Optimize rendering
-                transition={{ duration: 0.3 }} // Faster animation
+                viewport={{ once: true, amount: 0.2, margin: '-20px' }}
+                style={{ willChange: 'auto' }}
                 className="group"
               >
-                <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg sm:shadow-2xl h-full transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+                <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg h-full transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-1">
                   <CardHeader className="pb-4">
                     <item.icon className="w-8 h-8 sm:w-10 sm:h-10 text-brand mb-3 sm:mb-4" />
                     <CardTitle className="text-xl sm:text-2xl font-semibold leading-tight">
@@ -301,7 +300,7 @@ export default function LandingPage() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.1, margin: '-50px' }}
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
@@ -320,7 +319,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-20 sm:mb-24">
             {/* Custom Actions */}
             <div className="lg:col-span-7">
-              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:border-brand/30 transition-all duration-500">
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-brand/30">
                 <CardContent className="p-10 sm:p-14">
                   <div className="flex items-start space-x-6 mb-8">
                     <div className="bg-brand/15 p-4 rounded-3xl">
@@ -372,7 +371,7 @@ export default function LandingPage() {
             </div>
 
             <div className="lg:col-span-5 space-y-6">
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-primary/30">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
                 <div className="flex items-center space-x-4 mb-4">
                   <MessageSquare className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -384,7 +383,7 @@ export default function LandingPage() {
                 </p>
               </Card>
 
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-primary/30">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
                 <div className="flex items-center space-x-4 mb-4">
                   <Zap className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -401,7 +400,7 @@ export default function LandingPage() {
           {/* Knowledge Base - Reversed */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-5 space-y-6 order-2 lg:order-1">
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-primary/30">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
                 <div className="flex items-center space-x-4 mb-4">
                   <Users className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -413,7 +412,7 @@ export default function LandingPage() {
                 </p>
               </Card>
 
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-primary/30">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
                 <div className="flex items-center space-x-4 mb-4">
                   <Shield className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -427,7 +426,7 @@ export default function LandingPage() {
             </div>
 
             <div className="lg:col-span-7 order-1 lg:order-2">
-              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:border-brand/40 transition-all duration-500">
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-brand/30">
                 <CardContent className="p-10 sm:p-14">
                   <div className="flex items-start space-x-6 mb-8">
                     <div className="bg-primary/15 p-4 rounded-3xl">
@@ -487,7 +486,7 @@ export default function LandingPage() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.1, margin: '-20px' }}
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
@@ -506,7 +505,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-20">
             {/* Customer Support */}
             <motion.div className="group" variants={itemVariants}>
-              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group-hover:shadow-[0_16px_64px_rgba(0,0,0,0.15)] transition-all duration-500 h-full">
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:-translate-y-1 h-full">
                 <CardHeader className="pb-8 pt-10 px-10">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-6">
@@ -557,7 +556,7 @@ export default function LandingPage() {
 
             {/* E-commerce */}
             <motion.div className="group" variants={itemVariants}>
-              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group-hover:shadow-[0_16px_64px_rgba(0,0,0,0.15)] transition-all duration-500 h-full">
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:-translate-y-1 h-full">
                 <CardHeader className="pb-8 pt-10 px-10">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-6">
@@ -652,7 +651,7 @@ export default function LandingPage() {
               },
             ].map((item, index) => (
               <motion.div key={index} variants={itemVariants}>
-                <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl h-full">
+                <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl h-full transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl hover:-translate-y-2">
                   <CardHeader className="text-center">
                     <div className="w-12 h-12 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-4">
                       <item.icon className="h-6 w-6 text-brand" />
@@ -675,7 +674,7 @@ export default function LandingPage() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.1, margin: '-30px' }}
       >
         <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-2 text-center">
           <motion.div variants={itemVariants}>
@@ -688,7 +687,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <div className="relative group w-full sm:w-auto">
-                <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
                 <Button
                   asChild
                   size="lg"

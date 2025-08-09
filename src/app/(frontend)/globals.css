@@ -114,6 +114,52 @@
     font-size: var(--font-size-base);
   }
 
+  /* Performance optimizations for smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Optimize animations and transforms */
+  * {
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+  }
+
+  /* Use GPU acceleration for common animated elements */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-scroll {
+    will-change: scroll-position;
+  }
+
+  /* Optimize hover effects for cards */
+  [class*="hover:scale-"] {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+
+  /* Smooth transitions for shadow effects */
+  [class*="hover:shadow-"] {
+    will-change: box-shadow;
+  }
+
+  /* Optimize translate effects */
+  [class*="hover:-translate-"] {
+    will-change: transform;
+  }
+
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   /* Responsive container padding */
   .container {
     @apply px-4 sm:px-6 lg:px-8;
