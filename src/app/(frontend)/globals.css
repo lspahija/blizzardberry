@@ -119,12 +119,6 @@
     scroll-behavior: smooth;
   }
 
-  /* Optimize animations and transforms */
-  * {
-    backface-visibility: hidden;
-    transform-style: preserve-3d;
-  }
-
   /* Use GPU acceleration for common animated elements */
   .will-change-transform {
     will-change: transform;
@@ -132,12 +126,6 @@
 
   .will-change-scroll {
     will-change: scroll-position;
-  }
-
-  /* Optimize hover effects for cards */
-  [class*="hover:scale-"] {
-    backface-visibility: hidden;
-    transform: translateZ(0);
   }
 
   /* Smooth transitions for shadow effects */
