@@ -314,141 +314,221 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          <div className="space-y-12 sm:space-y-16">
-            {/* Feature Row 1 */}
+          <div className="space-y-20">
+            {/* Feature Row 1 - Premium Design */}
             <motion.div 
-              className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+              className="relative"
               variants={itemVariants}
             >
-              <div className="lg:col-span-7">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-brand/20 to-brand/5 rounded-3xl transform rotate-1"></div>
-                  <Card className="relative border-[3px] border-border bg-card rounded-3xl shadow-xl overflow-hidden">
-                    <CardContent className="p-8 sm:p-12">
-                      <div className="flex items-start space-x-4 mb-6">
-                        <div className="bg-brand/10 p-3 rounded-2xl">
-                          <Zap className="h-8 w-8 text-brand" />
+              {/* Background decoration */}
+              <div className="absolute inset-0 bg-gradient-to-r from-brand/5 via-transparent to-primary/5 rounded-[3rem] blur-3xl -m-8"></div>
+              
+              <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <div className="space-y-8">
+                  <div className="inline-flex items-center space-x-3 bg-brand/10 backdrop-blur-sm rounded-full px-6 py-3 border border-brand/20">
+                    <Zap className="h-5 w-5 text-brand" />
+                    <span className="text-sm font-semibold text-brand uppercase tracking-wide">Custom Actions</span>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
+                      Turn Conversations Into Actions
+                    </h3>
+                    <p className="text-xl text-muted-foreground leading-relaxed mb-8">
+                      Don't just chat with users—actually help them complete tasks. From upgrading accounts to processing orders, your agent does the work.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {[
+                      { icon: Code, text: "Client-side actions", desc: "Direct DOM manipulation" },
+                      { icon: Globe, text: "API integration", desc: "Connect to any service" },
+                      { icon: Zap, text: "Workflow automation", desc: "Multi-step processes" },
+                      { icon: Shield, text: "Secure execution", desc: "Encrypted & validated" }
+                    ].map((item, index) => (
+                      <div key={index} className="group flex items-start space-x-4 p-4 rounded-2xl hover:bg-muted/50 transition-all duration-300">
+                        <div className="bg-brand/10 p-2 rounded-xl group-hover:bg-brand/20 transition-colors">
+                          <item.icon className="h-5 w-5 text-brand" />
                         </div>
-                        <div>
-                          <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
-                            Custom Actions
-                          </h3>
-                          <p className="text-lg text-muted-foreground mb-6">
-                            Create powerful actions that your agent can execute on behalf of users. From simple form submissions to complex API orchestrations.
-                          </p>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="flex items-center space-x-3">
-                              <CheckCircle2 className="h-5 w-5 text-brand flex-shrink-0" />
-                              <span className="text-muted-foreground">Client-side actions</span>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <CheckCircle2 className="h-5 w-5 text-brand flex-shrink-0" />
-                              <span className="text-muted-foreground">Server-side integration</span>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <CheckCircle2 className="h-5 w-5 text-brand flex-shrink-0" />
-                              <span className="text-muted-foreground">API orchestration</span>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <CheckCircle2 className="h-5 w-5 text-brand flex-shrink-0" />
-                              <span className="text-muted-foreground">Workflow automation</span>
-                            </div>
-                          </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-foreground mb-1">{item.text}</div>
+                          <div className="text-sm text-muted-foreground">{item.desc}</div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              
-              <div className="lg:col-span-5 space-y-6">
-                <Card className="border-[3px] border-border bg-card/50 backdrop-blur-sm rounded-2xl p-6">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <MessageSquare className="h-6 w-6 text-brand" />
-                    <h4 className="text-lg font-semibold">Natural Language</h4>
-                  </div>
-                  <p className="text-muted-foreground">
-                    Users interact naturally - no commands to learn
-                  </p>
-                </Card>
                 
-                <Card className="border-[3px] border-border bg-card/50 backdrop-blur-sm rounded-2xl p-6">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <Clock className="h-6 w-6 text-brand" />
-                    <h4 className="text-lg font-semibold">Real-time</h4>
+                <div className="relative">
+                  {/* Floating cards with premium shadows */}
+                  <div className="space-y-6">
+                    <motion.div
+                      className="relative group"
+                      whileHover={{ scale: 1.02, rotateX: 5 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-brand/20 to-brand/5 rounded-3xl blur-xl transform translate-x-4 translate-y-4 group-hover:translate-x-6 group-hover:translate-y-6 transition-transform"></div>
+                      <Card className="relative bg-card/90 backdrop-blur-xl border-0 rounded-3xl shadow-2xl overflow-hidden">
+                        <CardContent className="p-8">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                              <div className="bg-green-500/10 p-2 rounded-xl">
+                                <MessageSquare className="h-5 w-5 text-green-500" />
+                              </div>
+                              <span className="font-semibold">User Request</span>
+                            </div>
+                            <div className="text-xs bg-muted/50 px-2 py-1 rounded-full">Live</div>
+                          </div>
+                          <div className="bg-muted/30 rounded-2xl p-4 mb-4">
+                            <p className="text-sm">"Upgrade my account to Pro plan"</p>
+                          </div>
+                          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span>Processing upgrade...</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+
+                    <motion.div
+                      className="relative group ml-12"
+                      whileHover={{ scale: 1.02, rotateX: -5 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 to-primary/5 rounded-3xl blur-xl transform -translate-x-4 translate-y-4 group-hover:-translate-x-6 group-hover:translate-y-6 transition-transform"></div>
+                      <Card className="relative bg-card/90 backdrop-blur-xl border-0 rounded-3xl shadow-2xl overflow-hidden">
+                        <CardContent className="p-8">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                              <div className="bg-blue-500/10 p-2 rounded-xl">
+                                <CheckCircle2 className="h-5 w-5 text-blue-500" />
+                              </div>
+                              <span className="font-semibold">Action Complete</span>
+                            </div>
+                            <div className="text-xs bg-green-500/10 text-green-600 px-2 py-1 rounded-full">Success</div>
+                          </div>
+                          <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 mb-4">
+                            <p className="text-sm text-green-800 dark:text-green-200">Account upgraded to Pro! You now have access to all premium features.</p>
+                          </div>
+                          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                            <CheckCircle2 className="w-4 h-4 text-green-500" />
+                            <span>Completed in 1.2s</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
                   </div>
-                  <p className="text-muted-foreground">
-                    Instant responses and live interactions
-                  </p>
-                </Card>
+                </div>
               </div>
             </motion.div>
 
-            {/* Feature Row 2 - Reversed */}
+            {/* Feature Row 2 - Knowledge Base */}
             <motion.div 
-              className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+              className="relative"
               variants={itemVariants}
             >
-              <div className="lg:col-span-5 space-y-6 order-2 lg:order-1">
-                <Card className="border-[3px] border-border bg-card/50 backdrop-blur-sm rounded-2xl p-6">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <Users className="h-6 w-6 text-brand" />
-                    <h4 className="text-lg font-semibold">User Context</h4>
-                  </div>
-                  <p className="text-muted-foreground">
-                    Personalized experiences based on user data
-                  </p>
-                </Card>
-                
-                <Card className="border-[3px] border-border bg-card/50 backdrop-blur-sm rounded-2xl p-6">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <Shield className="h-6 w-6 text-brand" />
-                    <h4 className="text-lg font-semibold">Secure & Private</h4>
-                  </div>
-                  <p className="text-muted-foreground">
-                    Encrypted communications and data protection
-                  </p>
-                </Card>
-              </div>
-
-              <div className="lg:col-span-7 order-1 lg:order-2">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 to-primary/5 rounded-3xl transform -rotate-1"></div>
-                  <Card className="relative border-[3px] border-border bg-card rounded-3xl shadow-xl overflow-hidden">
-                    <CardContent className="p-8 sm:p-12">
-                      <div className="flex items-start space-x-4 mb-6">
-                        <div className="bg-primary/10 p-3 rounded-2xl">
-                          <FileText className="h-8 w-8 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
-                            Intelligent Knowledge Base
-                          </h3>
-                          <p className="text-lg text-muted-foreground mb-6">
-                            Your agent becomes an instant expert on your product. Upload documentation, FAQs, and knowledge articles for comprehensive support.
-                          </p>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="flex items-center space-x-3">
-                              <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
-                              <span className="text-muted-foreground">Document processing</span>
+              {/* Background decoration */}
+              <div className="absolute inset-0 bg-gradient-to-l from-primary/5 via-transparent to-brand/5 rounded-[3rem] blur-3xl -m-8"></div>
+              
+              <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <div className="order-2 lg:order-1 relative">
+                  {/* Knowledge base visualization */}
+                  <div className="relative">
+                    <motion.div
+                      className="relative group"
+                      whileHover={{ scale: 1.02 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-3xl blur-xl transform -translate-x-4 translate-y-4 group-hover:-translate-x-6 group-hover:translate-y-6 transition-transform"></div>
+                      <Card className="relative bg-card/90 backdrop-blur-xl border-0 rounded-3xl shadow-2xl overflow-hidden">
+                        <CardContent className="p-8">
+                          <div className="flex items-center space-x-3 mb-6">
+                            <div className="bg-primary/10 p-3 rounded-2xl">
+                              <FileText className="h-8 w-8 text-primary" />
                             </div>
-                            <div className="flex items-center space-x-3">
-                              <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
-                              <span className="text-muted-foreground">Smart search</span>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
-                              <span className="text-muted-foreground">Auto-updates</span>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
-                              <span className="text-muted-foreground">Context awareness</span>
+                            <div>
+                              <h4 className="text-xl font-bold">Knowledge Base</h4>
+                              <p className="text-sm text-muted-foreground">1,247 documents processed</p>
                             </div>
                           </div>
+                          
+                          <div className="space-y-3">
+                            {[
+                              { name: "API Documentation", status: "Indexed", color: "green" },
+                              { name: "User Guide", status: "Processing", color: "yellow" },
+                              { name: "FAQ Database", status: "Indexed", color: "green" },
+                              { name: "Product Specs", status: "Indexed", color: "green" }
+                            ].map((doc, index) => (
+                              <div key={index} className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
+                                <div className="flex items-center space-x-3">
+                                  <FileText className="h-4 w-4 text-muted-foreground" />
+                                  <span className="text-sm font-medium">{doc.name}</span>
+                                </div>
+                                <div className={`text-xs px-2 py-1 rounded-full ${
+                                  doc.color === 'green' ? 'bg-green-500/10 text-green-600' : 'bg-yellow-500/10 text-yellow-600'
+                                }`}>
+                                  {doc.status}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+
+                    {/* Floating search results */}
+                    <motion.div
+                      className="absolute -right-8 -bottom-8 lg:-right-12 lg:-bottom-12"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5, duration: 0.5 }}
+                    >
+                      <Card className="bg-card/95 backdrop-blur-xl border-0 rounded-2xl shadow-xl p-4 w-64">
+                        <div className="flex items-center space-x-2 mb-3">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                          <span className="text-xs font-medium">Smart Search Active</span>
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Found 12 relevant answers in 0.03s
+                        </div>
+                      </Card>
+                    </motion.div>
+                  </div>
+                </div>
+                
+                <div className="order-1 lg:order-2 space-y-8">
+                  <div className="inline-flex items-center space-x-3 bg-primary/10 backdrop-blur-sm rounded-full px-6 py-3 border border-primary/20">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <span className="text-sm font-semibold text-primary uppercase tracking-wide">Knowledge Base</span>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
+                      Instant Product Expert
+                    </h3>
+                    <p className="text-xl text-muted-foreground leading-relaxed mb-8">
+                      Upload your docs once, get an AI expert forever. Your agent learns everything about your product and provides accurate, contextual answers.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {[
+                      { icon: FileText, text: "Document processing", desc: "PDFs, docs, web pages" },
+                      { icon: MessageSquare, text: "Smart search", desc: "Semantic understanding" },
+                      { icon: Zap, text: "Auto-updates", desc: "Sync with your content" },
+                      { icon: Users, text: "Context awareness", desc: "Personalized responses" }
+                    ].map((item, index) => (
+                      <div key={index} className="group flex items-start space-x-4 p-4 rounded-2xl hover:bg-muted/50 transition-all duration-300">
+                        <div className="bg-primary/10 p-2 rounded-xl group-hover:bg-primary/20 transition-colors">
+                          <item.icon className="h-5 w-5 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-foreground mb-1">{item.text}</div>
+                          <div className="text-sm text-muted-foreground">{item.desc}</div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    ))}
+                  </div>
                 </div>
               </div>
             </motion.div>
