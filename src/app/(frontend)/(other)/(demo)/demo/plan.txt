@@ -1,0 +1,69 @@
+Okay, since you have an existing Next.js app and want to "vibe code" a demo from scratch, the best approach is to build the demo directly within your Next.js project. This allows you to leverage your existing components and styling, and you won't need to rebuild your UI.
+
+Here's the best stack and workflow to create a professional-looking demo video, from code to final product:
+
+### 1\. Build the Demo Page in Next.js
+
+Instead of rebuilding your UI, you'll create a new, dedicated page or component within your Next.js app for the demo. This page will be a simplified, animated version of your product's key features. You can reuse your existing components but strip out the interactive functionality. The goal is to make it a **movie set**, not a functional app.
+
+You will **programmatically control the state** of the UI to simulate user actions like clicking buttons, filling out forms, or opening modals. For example, instead of a user actually clicking a button to open a modal, your code will just set a state variable to `true` after a certain delay.
+
+### 2\. Animate with GSAP
+
+For the animations, **GSAP (GreenSock Animation Platform)** is the best library to use. It's incredibly powerful and performant for creating complex, timed animations.
+
+  * **Installation:** First, install GSAP in your Next.js project: `npm install gsap`.
+  * **Timeline:** Use GSAP's **Timeline** feature to orchestrate the entire demo. A timeline lets you sequence multiple animations, control their start times, durations, and dependencies, just like a video editor. This is how you'll make a cohesive, professional-looking video.
+
+Here's a conceptual code example using GSAP's timeline:
+
+```javascript
+import { useEffect } from 'react';
+import gsap from 'gsap';
+
+const DemoPage = () => {
+  useEffect(() => {
+    // Create a new timeline
+    const tl = gsap.timeline();
+
+    // Fade in the main dashboard UI
+    tl.fromTo("#main-dashboard", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1 });
+
+    // After 1 second, animate a key metric
+    tl.to("#sales-chart", { scale: 1.1, duration: 0.5 }, "+=1");
+
+    // Click a button to open a modal
+    tl.to("#add-project-button", { scale: 0.95, duration: 0.2, ease: "power1.in" }, "+=0.5");
+    tl.to("#add-project-modal", { opacity: 1, y: 0, duration: 0.5, display: "block" });
+
+    // ... add more steps to your timeline
+  }, []);
+
+  return (
+    // Your simplified UI components go here
+    <div id="main-dashboard">
+      <div id="sales-chart">...</div>
+      <button id="add-project-button">Add Project</button>
+      <div id="add-project-modal">...</div>
+    </div>
+  );
+};
+
+export default DemoPage;
+```
+
+### 3\. Record the Video
+
+Once your demo page is complete and the animations are polished, the final step is to capture it as a video.
+
+  * **Screen Recording Tool:** Use a high-quality screen recording tool like **OBS Studio**, QuickTime, or Loom.
+  * **Settings:** Record in high resolution (1080p or 4K) at a high frame rate (at least 30fps, 60fps is better for smooth animations).
+  * **Execution:** Simply navigate to your demo page in a full-screen browser, start your screen recorder, and let the timeline run. The code handles the rest.
+
+### 4\. Post-Production (Optional)
+
+For a final touch, you can use a video editor to:
+
+  * Add a voiceover or background music.
+  * Trim the beginning and end of the recording.
+  * Add text overlays for key features that weren't part of the original code.
