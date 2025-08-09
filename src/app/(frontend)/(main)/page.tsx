@@ -536,170 +536,256 @@ export default function LandingPage() {
         </div>
       </motion.section>
 
-      {/* Use Cases Section - Redesigned with visual examples */}
+      {/* Use Cases Section - Premium Industry Showcase */}
       <motion.section
-        className="py-16 sm:py-20 bg-muted/20 overflow-hidden"
+        className="py-20 sm:py-24 relative overflow-hidden"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-green-500/5"></div>
+        <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-muted/10 to-transparent"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
-            className="text-center mb-12 sm:mb-16"
+            className="text-center mb-16 sm:mb-20"
             variants={itemVariants}
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
+            <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-blue-500/10 to-green-500/10 backdrop-blur-sm rounded-full px-6 py-3 border border-blue-500/20 mb-6">
+              <Globe className="h-5 w-5 text-blue-600" />
+              <span className="text-sm font-semibold text-blue-600 uppercase tracking-wide">Industry Solutions</span>
+            </div>
+            
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
               Transform Every Industry
             </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-              From customer support to e-commerce, see how AI agents are revolutionizing user experiences across different sectors
+            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+              See how AI agents are revolutionizing user experiences across sectors—from instant support to intelligent shopping assistance
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
-            {/* Customer Support */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 lg:gap-16 mb-20">
+            {/* Customer Support - Enhanced */}
             <motion.div 
-              className="group"
+              className="group relative"
               variants={itemVariants}
             >
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-3xl transform rotate-1 group-hover:rotate-2 transition-transform"></div>
-                <Card className="relative border-[3px] border-border bg-card rounded-3xl shadow-xl overflow-hidden group-hover:shadow-2xl transition-all duration-500">
-                  <CardHeader className="pb-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-2xl">
-                          <MessageSquare className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <div>
-                          <h3 className="text-2xl font-bold text-foreground">Customer Support</h3>
-                          <p className="text-muted-foreground">24/7 intelligent assistance</p>
-                        </div>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-[2rem] blur-2xl transform group-hover:scale-105 transition-transform duration-700"></div>
+              <div className="relative bg-card/60 backdrop-blur-xl border-0 rounded-[2rem] shadow-2xl overflow-hidden group-hover:shadow-3xl transition-all duration-700">
+                {/* Header */}
+                <div className="p-8 pb-4">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-2xl shadow-lg">
+                        <MessageSquare className="h-8 w-8 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold text-foreground">Customer Support</h3>
+                        <p className="text-muted-foreground">24/7 intelligent assistance</p>
+                      </div>
+                    </div>
+                    <div className="bg-green-500/10 text-green-600 px-3 py-1 rounded-full text-sm font-medium">
+                      Live Demo
+                    </div>
+                  </div>
+                  
+                  {/* Enhanced conversation mockup */}
+                  <div className="bg-gradient-to-br from-muted/50 to-muted/30 backdrop-blur-sm rounded-2xl p-6 space-y-4 mb-6">
+                    <div className="flex items-start space-x-3">
+                      <div className="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-full p-2 shadow-lg">
+                        <Users className="h-4 w-4" />
+                      </div>
+                      <div className="bg-white dark:bg-gray-800 rounded-2xl px-4 py-3 max-w-[280px] shadow-md">
+                        <p className="text-sm font-medium">Hi! I need to cancel my order #1234 and get a refund</p>
+                        <div className="text-xs text-muted-foreground mt-1">2:14 PM</div>
                       </div>
                     </div>
                     
-                    {/* Mock conversation */}
-                    <div className="bg-muted/50 rounded-2xl p-4 space-y-3">
-                      <div className="flex items-start space-x-2">
-                        <div className="bg-blue-500 text-white rounded-full p-1">
-                          <Users className="h-3 w-3" />
-                        </div>
-                        <div className="bg-white dark:bg-gray-800 rounded-lg px-3 py-2 max-w-[200px]">
-                          <p className="text-sm">Hi! I need to cancel my order #1234</p>
-                        </div>
+                    <div className="flex items-center space-x-2 pl-12">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-1 h-1 bg-blue-300 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                      <span className="text-xs text-muted-foreground">Agent is typing...</span>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3 justify-end">
+                      <div className="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-2xl px-4 py-3 max-w-[300px] shadow-lg">
+                        <p className="text-sm font-medium">I found your order and processed the cancellation. Your refund of $89.99 will appear in 3-5 business days. Is there anything else I can help with?</p>
+                        <div className="text-xs text-blue-100 mt-1">2:14 PM • Completed in 1.2s</div>
                       </div>
-                      <div className="flex items-start space-x-2 justify-end">
-                        <div className="bg-blue-500 text-white rounded-lg px-3 py-2 max-w-[200px]">
-                          <p className="text-sm">I found your order and processing the cancellation now!</p>
-                        </div>
-                        <div className="bg-blue-500 text-white rounded-full p-1">
-                          <Zap className="h-3 w-3" />
-                        </div>
+                      <div className="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-full p-2 shadow-lg">
+                        <CheckCircle2 className="h-4 w-4" />
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-4">
-                      {[
-                        { icon: CheckCircle2, text: "Answer FAQs instantly" },
-                        { icon: CheckCircle2, text: "Create support tickets" },
-                        { icon: CheckCircle2, text: "Process refunds" },
-                        { icon: CheckCircle2, text: "Schedule appointments" }
-                      ].map((item, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                          <item.icon className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                          <span className="text-sm text-muted-foreground">{item.text}</span>
+                  </div>
+                </div>
+
+                {/* Features grid */}
+                <div className="px-8 pb-8">
+                  <div className="grid grid-cols-2 gap-4">
+                    {[
+                      { icon: MessageSquare, text: "Answer FAQs instantly", desc: "From knowledge base" },
+                      { icon: FileText, text: "Create support tickets", desc: "Auto-routing & priority" },
+                      { icon: CheckCircle2, text: "Process refunds", desc: "Secure payment handling" },
+                      { icon: Users, text: "Schedule appointments", desc: "Calendar integration" }
+                    ].map((item, index) => (
+                      <div key={index} className="group/item flex items-start space-x-3 p-4 rounded-xl hover:bg-blue-500/5 transition-all duration-300">
+                        <div className="bg-blue-500/10 p-2 rounded-lg group-hover/item:bg-blue-500/20 transition-colors">
+                          <item.icon className="h-4 w-4 text-blue-600" />
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-sm text-foreground mb-1">{item.text}</div>
+                          <div className="text-xs text-muted-foreground">{item.desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </motion.div>
 
-            {/* E-commerce */}
+            {/* E-commerce - Enhanced */}
             <motion.div 
-              className="group"
+              className="group relative"
               variants={itemVariants}
             >
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-bl from-green-500/10 to-emerald-500/10 rounded-3xl transform -rotate-1 group-hover:-rotate-2 transition-transform"></div>
-                <Card className="relative border-[3px] border-border bg-card rounded-3xl shadow-xl overflow-hidden group-hover:shadow-2xl transition-all duration-500">
-                  <CardHeader className="pb-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-2xl">
-                          <Globe className="h-8 w-8 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div>
-                          <h3 className="text-2xl font-bold text-foreground">E-commerce</h3>
-                          <p className="text-muted-foreground">Smart shopping assistance</p>
-                        </div>
+              <div className="absolute inset-0 bg-gradient-to-bl from-green-500/10 to-emerald-500/10 rounded-[2rem] blur-2xl transform group-hover:scale-105 transition-transform duration-700"></div>
+              <div className="relative bg-card/60 backdrop-blur-xl border-0 rounded-[2rem] shadow-2xl overflow-hidden group-hover:shadow-3xl transition-all duration-700">
+                {/* Header */}
+                <div className="p-8 pb-4">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-4 rounded-2xl shadow-lg">
+                        <Globe className="h-8 w-8 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold text-foreground">E-commerce</h3>
+                        <p className="text-muted-foreground">Smart shopping assistant</p>
+                      </div>
+                    </div>
+                    <div className="bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full text-sm font-medium">
+                      Active
+                    </div>
+                  </div>
+                  
+                  {/* Enhanced shopping interaction */}
+                  <div className="bg-gradient-to-br from-muted/50 to-muted/30 backdrop-blur-sm rounded-2xl p-6 space-y-4 mb-6">
+                    <div className="flex items-start space-x-3">
+                      <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-full p-2 shadow-lg">
+                        <Users className="h-4 w-4" />
+                      </div>
+                      <div className="bg-white dark:bg-gray-800 rounded-2xl px-4 py-3 max-w-[280px] shadow-md">
+                        <p className="text-sm font-medium">Find me a blue laptop under $800 with good battery life</p>
+                        <div className="text-xs text-muted-foreground mt-1">3:22 PM</div>
                       </div>
                     </div>
                     
-                    {/* Mock shopping interaction */}
-                    <div className="bg-muted/50 rounded-2xl p-4 space-y-3">
-                      <div className="flex items-start space-x-2">
-                        <div className="bg-green-500 text-white rounded-full p-1">
-                          <Users className="h-3 w-3" />
-                        </div>
-                        <div className="bg-white dark:bg-gray-800 rounded-lg px-3 py-2 max-w-[200px]">
-                          <p className="text-sm">Find me a blue laptop under $800</p>
-                        </div>
+                    <div className="flex items-start space-x-3 justify-end">
+                      <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl px-4 py-3 max-w-[320px] shadow-lg">
+                        <p className="text-sm font-medium">Perfect! I found 3 laptops matching your criteria. The ASUS VivoBook 15 ($679) has 12-hour battery life and great reviews. Should I add it to your cart?</p>
+                        <div className="text-xs text-green-100 mt-1">3:22 PM • Found in 0.8s</div>
                       </div>
-                      <div className="flex items-start space-x-2 justify-end">
-                        <div className="bg-green-500 text-white rounded-lg px-3 py-2 max-w-[200px]">
-                          <p className="text-sm">Found 3 perfect matches! Adding the top one to your cart.</p>
-                        </div>
-                        <div className="bg-green-500 text-white rounded-full p-1">
-                          <Zap className="h-3 w-3" />
-                        </div>
+                      <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-full p-2 shadow-lg">
+                        <Zap className="h-4 w-4" />
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-4">
-                      {[
-                        { icon: CheckCircle2, text: "Product recommendations" },
-                        { icon: CheckCircle2, text: "Add to cart" },
-                        { icon: CheckCircle2, text: "Process orders" },
-                        { icon: CheckCircle2, text: "Track shipments" }
-                      ].map((item, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                          <item.icon className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
-                          <span className="text-sm text-muted-foreground">{item.text}</span>
+                    
+                    {/* Product preview */}
+                    <div className="bg-white/50 dark:bg-gray-800/50 rounded-xl p-4 ml-12 border border-green-200/50">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">ASUS</span>
                         </div>
-                      ))}
+                        <div className="flex-1">
+                          <div className="font-semibold text-sm">ASUS VivoBook 15</div>
+                          <div className="text-xs text-muted-foreground">15.6" • 8GB RAM • 256GB SSD</div>
+                          <div className="text-green-600 font-bold text-sm">$679</div>
+                        </div>
+                        <button className="bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-green-600 transition-colors">
+                          Add to Cart
+                        </button>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
+
+                {/* Features grid */}
+                <div className="px-8 pb-8">
+                  <div className="grid grid-cols-2 gap-4">
+                    {[
+                      { icon: MessageSquare, text: "Smart recommendations", desc: "AI-powered matching" },
+                      { icon: Globe, text: "Add to cart", desc: "One-click purchasing" },
+                      { icon: CheckCircle2, text: "Process orders", desc: "Payment & shipping" },
+                      { icon: FileText, text: "Track shipments", desc: "Real-time updates" }
+                    ].map((item, index) => (
+                      <div key={index} className="group/item flex items-start space-x-3 p-4 rounded-xl hover:bg-green-500/5 transition-all duration-300">
+                        <div className="bg-green-500/10 p-2 rounded-lg group-hover/item:bg-green-500/20 transition-colors">
+                          <item.icon className="h-4 w-4 text-green-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-sm text-foreground mb-1">{item.text}</div>
+                          <div className="text-xs text-muted-foreground">{item.desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </motion.div>
           </div>
 
-          {/* Stats bar */}
+          {/* Impact metrics - Enhanced */}
           <motion.div 
-            className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12"
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
             variants={itemVariants}
           >
             {[
-              { number: "90%", label: "Faster Response Time", description: "Compared to traditional support" },
-              { number: "24/7", label: "Always Available", description: "Never miss a customer inquiry" },
-              { number: "3x", label: "Higher Conversion", description: "Turn browsers into buyers" }
-            ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-4xl sm:text-5xl font-bold text-brand mb-2">
-                  {stat.number}
+              { 
+                icon: Zap, 
+                metric: "Instant", 
+                label: "Response Time", 
+                description: "No more waiting for human agents",
+                color: "from-yellow-400 to-orange-500"
+              },
+              { 
+                icon: Globe, 
+                metric: "24/7", 
+                label: "Always Available", 
+                description: "Never miss a customer inquiry",
+                color: "from-blue-400 to-cyan-500"
+              },
+              { 
+                icon: Rocket, 
+                metric: "Higher", 
+                label: "Conversion Rate", 
+                description: "Turn browsers into buyers",
+                color: "from-purple-400 to-pink-500"
+              }
+            ].map((item, index) => (
+              <motion.div 
+                key={index} 
+                className="group relative"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-muted/20 to-muted/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                <div className="relative bg-card/60 backdrop-blur-xl border-0 rounded-2xl p-8 text-center shadow-xl group-hover:shadow-2xl transition-all duration-300">
+                  <div className={`bg-gradient-to-br ${item.color} p-4 rounded-2xl w-fit mx-auto mb-6 shadow-lg group-hover:shadow-xl transition-shadow`}>
+                    <item.icon className="h-8 w-8 text-white" />
+                  </div>
+                  <div className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+                    {item.metric}
+                  </div>
+                  <div className="text-lg font-semibold text-foreground mb-2">
+                    {item.label}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {item.description}
+                  </div>
                 </div>
-                <div className="text-lg font-semibold text-foreground mb-1">
-                  {stat.label}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {stat.description}
-                </div>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
         </div>
