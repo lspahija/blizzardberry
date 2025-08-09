@@ -372,7 +372,7 @@ export default function LandingPage() {
             </div>
 
             <div className="lg:col-span-5 space-y-6">
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-primary/30">
                 <div className="flex items-center space-x-4 mb-4">
                   <MessageSquare className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -384,7 +384,7 @@ export default function LandingPage() {
                 </p>
               </Card>
 
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-primary/30">
                 <div className="flex items-center space-x-4 mb-4">
                   <Zap className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -401,7 +401,7 @@ export default function LandingPage() {
           {/* Knowledge Base - Reversed */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-5 space-y-6 order-2 lg:order-1">
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-primary/30">
                 <div className="flex items-center space-x-4 mb-4">
                   <Users className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -413,7 +413,7 @@ export default function LandingPage() {
                 </p>
               </Card>
 
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-primary/30">
                 <div className="flex items-center space-x-4 mb-4">
                   <Shield className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -427,7 +427,7 @@ export default function LandingPage() {
             </div>
 
             <div className="lg:col-span-7 order-1 lg:order-2">
-              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:border-primary/30 transition-all duration-500">
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:border-brand/40 transition-all duration-500">
                 <CardContent className="p-10 sm:p-14">
                   <div className="flex items-start space-x-6 mb-8">
                     <div className="bg-primary/15 p-4 rounded-3xl">
@@ -495,7 +495,7 @@ export default function LandingPage() {
             variants={itemVariants}
           >
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 sm:mb-8 leading-tight">
-              Transform Every Industry
+              Transform Your UX
             </h2>
             <p className="text-xl sm:text-2xl text-muted-foreground/80 max-w-4xl mx-auto font-medium">
               From customer support to e-commerce, see how AI agents are
