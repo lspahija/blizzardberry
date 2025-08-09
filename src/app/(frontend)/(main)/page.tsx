@@ -265,11 +265,11 @@ export default function LandingPage() {
             <div className="lg:col-span-7">
               <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-brand/30">
                 <CardContent className="p-10 sm:p-14">
-                  <div className="flex items-start space-x-6 mb-8">
-                    <div className="bg-brand/15 p-4 rounded-3xl">
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-6 sm:space-y-0 sm:space-x-6 mb-8">
+                    <div className="bg-brand/15 p-4 rounded-3xl flex-shrink-0 mx-auto sm:mx-0">
                       <Zap className="h-10 w-10 text-brand" />
                     </div>
-                    <div>
+                    <div className="text-center sm:text-left">
                       <h3 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 leading-tight">
                         Turn Conversations Into Actions
                       </h3>
@@ -316,8 +316,8 @@ export default function LandingPage() {
 
             <div className="lg:col-span-5 space-y-6">
               <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <MessageSquare className="h-6 w-6 text-brand" />
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-4">
+                  <MessageSquare className="h-6 w-6 text-brand flex-shrink-0" />
                   <h4 className="text-xl font-bold text-foreground">
                     Natural Language
                   </h4>
@@ -328,8 +328,8 @@ export default function LandingPage() {
               </Card>
 
               <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <Zap className="h-6 w-6 text-brand" />
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-4">
+                  <Zap className="h-6 w-6 text-brand flex-shrink-0" />
                   <h4 className="text-xl font-bold text-foreground">
                     Real-time
                   </h4>
@@ -345,8 +345,8 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-5 space-y-6 order-2 lg:order-1">
               <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <Users className="h-6 w-6 text-brand" />
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-4">
+                  <Users className="h-6 w-6 text-brand flex-shrink-0" />
                   <h4 className="text-xl font-bold text-foreground">
                     User Context
                   </h4>
@@ -357,8 +357,8 @@ export default function LandingPage() {
               </Card>
 
               <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <Shield className="h-6 w-6 text-brand" />
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-4">
+                  <Shield className="h-6 w-6 text-brand flex-shrink-0" />
                   <h4 className="text-xl font-bold text-foreground">
                     Secure & Private
                   </h4>
@@ -372,11 +372,11 @@ export default function LandingPage() {
             <div className="lg:col-span-7 order-1 lg:order-2">
               <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-brand/30">
                 <CardContent className="p-10 sm:p-14">
-                  <div className="flex items-start space-x-6 mb-8">
-                    <div className="bg-primary/15 p-4 rounded-3xl">
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-6 sm:space-y-0 sm:space-x-6 mb-8">
+                    <div className="bg-primary/15 p-4 rounded-3xl flex-shrink-0 mx-auto sm:mx-0">
                       <FileText className="h-10 w-10 text-primary" />
                     </div>
-                    <div>
+                    <div className="text-center sm:text-left">
                       <h3 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 leading-tight">
                         Instant Product Expert
                       </h3>
