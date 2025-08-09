@@ -17,7 +17,6 @@ import {
   MessageSquare,
   Users,
   Shield,
-  Clock,
   CheckCircle2,
   Play,
   Globe,
@@ -202,7 +201,7 @@ export default function LandingPage() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }} // Reduced amount to trigger earlier
+        viewport={{ once: true, amount: 0.3 }}
       >
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-2">
           <motion.div
@@ -224,12 +223,12 @@ export default function LandingPage() {
               {
                 icon: Zap,
                 title: 'From Intent to Action, Instantly',
-                text: 'Our agent doesn\'t just talk; it acts. It securely connects to your app\'s APIs to turn user requests directly into results.',
+                text: "Our agent doesn't just talk; it acts. It securely connects to your app's APIs to turn user requests directly into results.",
                 bullets: [
                   'Execute commands like "Upgrade my account."',
                   'Connect users to key functions and workflows.',
-                  'Create the most direct path from request to conversion.'
-                ]
+                  'Create the most direct path from request to conversion.',
+                ],
               },
               {
                 icon: Code,
@@ -238,8 +237,8 @@ export default function LandingPage() {
                 bullets: [
                   'Instantly train on your documentation or knowledge base.',
                   'Becomes a product expert, ready to answer any question.',
-                  'Embed anywhere on your site with a single line of code.'
-                ]
+                  'Embed anywhere on your site with a single line of code.',
+                ],
               },
               {
                 icon: Rocket,
@@ -248,8 +247,8 @@ export default function LandingPage() {
                 bullets: [
                   'Provide 24/7 self-service to solve user problems.',
                   'Proactively guide users to discover and adopt features.',
-                  'Increase engagement, retention, and user success.'
-                ]
+                  'Increase engagement, retention, and user success.',
+                ],
               },
             ].map((item, index) => (
               <motion.div
@@ -276,7 +275,10 @@ export default function LandingPage() {
                     {item.bullets && (
                       <ul className="space-y-2">
                         {item.bullets.map((bullet, bulletIndex) => (
-                          <li key={bulletIndex} className="flex items-start space-x-3">
+                          <li
+                            key={bulletIndex}
+                            className="flex items-start space-x-3"
+                          >
                             <div className="w-1.5 h-1.5 bg-brand rounded-full flex-shrink-0 mt-2" />
                             <span className="text-sm sm:text-base text-muted-foreground">
                               {bullet}
@@ -295,7 +297,7 @@ export default function LandingPage() {
 
       {/* Features Section - Redesigned with alternating layout */}
       <motion.section
-        className="py-12 sm:py-16"
+        className="py-20 sm:py-28 bg-gradient-to-b from-background to-muted/10"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -303,489 +305,372 @@ export default function LandingPage() {
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
-            className="text-center mb-12 sm:mb-16"
+            className="text-center mb-16 sm:mb-20"
             variants={itemVariants}
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 sm:mb-8 leading-tight">
               Everything You Need
             </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-              A complete platform to build, deploy, and manage intelligent AI agents that work seamlessly with your existing systems
+            <p className="text-xl sm:text-2xl text-muted-foreground/80 max-w-4xl mx-auto font-medium">
+              A complete platform to build, deploy, and manage intelligent AI
+              agents that work seamlessly with your existing systems
             </p>
           </motion.div>
 
-          <div className="space-y-20">
-            {/* Feature Row 1 - Premium Design */}
-            <motion.div 
-              className="relative"
-              variants={itemVariants}
-            >
-              {/* Background decoration */}
-              <div className="absolute inset-0 bg-gradient-to-r from-brand/5 via-transparent to-primary/5 rounded-[3rem] blur-3xl -m-8"></div>
-              
-              <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                <div className="space-y-8">
-                  <div className="inline-flex items-center space-x-3 bg-brand/10 backdrop-blur-sm rounded-full px-6 py-3 border border-brand/20">
-                    <Zap className="h-5 w-5 text-brand" />
-                    <span className="text-sm font-semibold text-brand uppercase tracking-wide">Custom Actions</span>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
-                      Turn Conversations Into Actions
-                    </h3>
-                    <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-                      Don't just chat with users—actually help them complete tasks. From upgrading accounts to processing orders, your agent does the work.
-                    </p>
-                  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-20 sm:mb-24">
+            {/* Custom Actions */}
+            <div className="lg:col-span-7">
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:border-brand/30 transition-all duration-500">
+                <CardContent className="p-10 sm:p-14">
+                  <div className="flex items-start space-x-6 mb-8">
+                    <div className="bg-brand/15 p-4 rounded-3xl">
+                      <Zap className="h-10 w-10 text-brand" />
+                    </div>
+                    <div>
+                      <h3 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 leading-tight">
+                        Turn Conversations Into Actions
+                      </h3>
+                      <p className="text-xl text-muted-foreground/80 mb-8 font-medium leading-relaxed">
+                        Don&apos;t just chat with users—actually help them
+                        complete tasks. From upgrading accounts to processing
+                        orders, your agent does the work.
+                      </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {[
-                      { icon: Code, text: "Client-side actions", desc: "Direct DOM manipulation" },
-                      { icon: Globe, text: "API integration", desc: "Connect to any service" },
-                      { icon: Zap, text: "Workflow automation", desc: "Multi-step processes" },
-                      { icon: Shield, text: "Secure execution", desc: "Encrypted & validated" }
-                    ].map((item, index) => (
-                      <div key={index} className="group flex items-start space-x-4 p-4 rounded-2xl hover:bg-muted/50 transition-all duration-300">
-                        <div className="bg-brand/10 p-2 rounded-xl group-hover:bg-brand/20 transition-colors">
-                          <item.icon className="h-5 w-5 text-brand" />
+                      {/* Demo conversation */}
+                      <div className="bg-muted/50 rounded-2xl p-4 space-y-3 mb-6">
+                        <div className="flex items-start space-x-2">
+                          <div className="bg-blue-500 text-white rounded-full p-1">
+                            <Users className="h-3 w-3" />
+                          </div>
+                          <div className="bg-background rounded-lg px-3 py-2 max-w-[200px] border-[2px] border-border">
+                            <p className="text-sm">
+                              Upgrade my account to Pro plan
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex-1">
-                          <div className="font-semibold text-foreground mb-1">{item.text}</div>
-                          <div className="text-sm text-muted-foreground">{item.desc}</div>
+                        <div className="flex items-start space-x-2 justify-end">
+                          <div className="bg-brand text-primary-foreground rounded-lg px-3 py-2 max-w-[250px]">
+                            <p className="text-sm">
+                              Processing upgrade... Done! You now have Pro
+                              access.
+                            </p>
+                          </div>
+                          <div className="bg-brand text-primary-foreground rounded-full p-1">
+                            <CheckCircle2 className="h-3 w-3" />
+                          </div>
                         </div>
                       </div>
-                    ))}
+
+                      <p className="text-muted-foreground/80 font-medium">
+                        Supports client-side actions, server-side integration,
+                        API orchestration, and workflow automation.
+                      </p>
+                    </div>
                   </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="lg:col-span-5 space-y-6">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+                <div className="flex items-center space-x-4 mb-4">
+                  <MessageSquare className="h-6 w-6 text-brand" />
+                  <h4 className="text-xl font-bold text-foreground">
+                    Natural Language
+                  </h4>
                 </div>
-                
-                <div className="relative">
-                  {/* Floating cards with premium shadows */}
-                  <div className="space-y-6">
-                    <motion.div
-                      className="relative group"
-                      whileHover={{ scale: 1.02, rotateX: 5 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-brand/20 to-brand/5 rounded-3xl blur-xl transform translate-x-4 translate-y-4 group-hover:translate-x-6 group-hover:translate-y-6 transition-transform"></div>
-                      <Card className="relative bg-card/90 backdrop-blur-xl border-0 rounded-3xl shadow-2xl overflow-hidden">
-                        <CardContent className="p-8">
-                          <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center space-x-3">
-                              <div className="bg-green-500/10 p-2 rounded-xl">
-                                <MessageSquare className="h-5 w-5 text-green-500" />
-                              </div>
-                              <span className="font-semibold">User Request</span>
-                            </div>
-                            <div className="text-xs bg-muted/50 px-2 py-1 rounded-full">Live</div>
-                          </div>
-                          <div className="bg-muted/30 rounded-2xl p-4 mb-4">
-                            <p className="text-sm">"Upgrade my account to Pro plan"</p>
-                          </div>
-                          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <span>Processing upgrade...</span>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
+                <p className="text-muted-foreground/80 font-medium">
+                  Users interact naturally - no commands to learn
+                </p>
+              </Card>
 
-                    <motion.div
-                      className="relative group ml-12"
-                      whileHover={{ scale: 1.02, rotateX: -5 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 to-primary/5 rounded-3xl blur-xl transform -translate-x-4 translate-y-4 group-hover:-translate-x-6 group-hover:translate-y-6 transition-transform"></div>
-                      <Card className="relative bg-card/90 backdrop-blur-xl border-0 rounded-3xl shadow-2xl overflow-hidden">
-                        <CardContent className="p-8">
-                          <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center space-x-3">
-                              <div className="bg-blue-500/10 p-2 rounded-xl">
-                                <CheckCircle2 className="h-5 w-5 text-blue-500" />
-                              </div>
-                              <span className="font-semibold">Action Complete</span>
-                            </div>
-                            <div className="text-xs bg-green-500/10 text-green-600 px-2 py-1 rounded-full">Success</div>
-                          </div>
-                          <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 mb-4">
-                            <p className="text-sm text-green-800 dark:text-green-200">Account upgraded to Pro! You now have access to all premium features.</p>
-                          </div>
-                          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                            <CheckCircle2 className="w-4 h-4 text-green-500" />
-                            <span>Completed in 1.2s</span>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  </div>
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+                <div className="flex items-center space-x-4 mb-4">
+                  <Zap className="h-6 w-6 text-brand" />
+                  <h4 className="text-xl font-bold text-foreground">
+                    Real-time
+                  </h4>
                 </div>
-              </div>
-            </motion.div>
+                <p className="text-muted-foreground/80 font-medium">
+                  Instant responses and live interactions
+                </p>
+              </Card>
+            </div>
+          </div>
 
-            {/* Feature Row 2 - Knowledge Base */}
-            <motion.div 
-              className="relative"
-              variants={itemVariants}
-            >
-              {/* Background decoration */}
-              <div className="absolute inset-0 bg-gradient-to-l from-primary/5 via-transparent to-brand/5 rounded-[3rem] blur-3xl -m-8"></div>
-              
-              <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                <div className="order-2 lg:order-1 relative">
-                  {/* Knowledge base visualization */}
-                  <div className="relative">
-                    <motion.div
-                      className="relative group"
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-3xl blur-xl transform -translate-x-4 translate-y-4 group-hover:-translate-x-6 group-hover:translate-y-6 transition-transform"></div>
-                      <Card className="relative bg-card/90 backdrop-blur-xl border-0 rounded-3xl shadow-2xl overflow-hidden">
-                        <CardContent className="p-8">
-                          <div className="flex items-center space-x-3 mb-6">
-                            <div className="bg-primary/10 p-3 rounded-2xl">
-                              <FileText className="h-8 w-8 text-primary" />
-                            </div>
-                            <div>
-                              <h4 className="text-xl font-bold">Knowledge Base</h4>
-                              <p className="text-sm text-muted-foreground">1,247 documents processed</p>
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-3">
-                            {[
-                              { name: "API Documentation", status: "Indexed", color: "green" },
-                              { name: "User Guide", status: "Processing", color: "yellow" },
-                              { name: "FAQ Database", status: "Indexed", color: "green" },
-                              { name: "Product Specs", status: "Indexed", color: "green" }
-                            ].map((doc, index) => (
-                              <div key={index} className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
-                                <div className="flex items-center space-x-3">
-                                  <FileText className="h-4 w-4 text-muted-foreground" />
-                                  <span className="text-sm font-medium">{doc.name}</span>
-                                </div>
-                                <div className={`text-xs px-2 py-1 rounded-full ${
-                                  doc.color === 'green' ? 'bg-green-500/10 text-green-600' : 'bg-yellow-500/10 text-yellow-600'
-                                }`}>
-                                  {doc.status}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-
-                    {/* Floating search results */}
-                    <motion.div
-                      className="absolute -right-8 -bottom-8 lg:-right-12 lg:-bottom-12"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.5, duration: 0.5 }}
-                    >
-                      <Card className="bg-card/95 backdrop-blur-xl border-0 rounded-2xl shadow-xl p-4 w-64">
-                        <div className="flex items-center space-x-2 mb-3">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                          <span className="text-xs font-medium">Smart Search Active</span>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Found 12 relevant answers in 0.03s
-                        </div>
-                      </Card>
-                    </motion.div>
-                  </div>
+          {/* Knowledge Base - Reversed */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="lg:col-span-5 space-y-6 order-2 lg:order-1">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+                <div className="flex items-center space-x-4 mb-4">
+                  <Users className="h-6 w-6 text-brand" />
+                  <h4 className="text-xl font-bold text-foreground">
+                    User Context
+                  </h4>
                 </div>
-                
-                <div className="order-1 lg:order-2 space-y-8">
-                  <div className="inline-flex items-center space-x-3 bg-primary/10 backdrop-blur-sm rounded-full px-6 py-3 border border-primary/20">
-                    <FileText className="h-5 w-5 text-primary" />
-                    <span className="text-sm font-semibold text-primary uppercase tracking-wide">Knowledge Base</span>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
-                      Instant Product Expert
-                    </h3>
-                    <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-                      Upload your docs once, get an AI expert forever. Your agent learns everything about your product and provides accurate, contextual answers.
-                    </p>
-                  </div>
+                <p className="text-muted-foreground/80 font-medium">
+                  Personalized experiences based on user data
+                </p>
+              </Card>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {[
-                      { icon: FileText, text: "Document processing", desc: "PDFs, docs, web pages" },
-                      { icon: MessageSquare, text: "Smart search", desc: "Semantic understanding" },
-                      { icon: Zap, text: "Auto-updates", desc: "Sync with your content" },
-                      { icon: Users, text: "Context awareness", desc: "Personalized responses" }
-                    ].map((item, index) => (
-                      <div key={index} className="group flex items-start space-x-4 p-4 rounded-2xl hover:bg-muted/50 transition-all duration-300">
-                        <div className="bg-primary/10 p-2 rounded-xl group-hover:bg-primary/20 transition-colors">
-                          <item.icon className="h-5 w-5 text-primary" />
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 backdrop-blur-sm rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-brand/40">
+                <div className="flex items-center space-x-4 mb-4">
+                  <Shield className="h-6 w-6 text-brand" />
+                  <h4 className="text-xl font-bold text-foreground">
+                    Secure & Private
+                  </h4>
+                </div>
+                <p className="text-muted-foreground/80 font-medium">
+                  Encrypted communications and data protection
+                </p>
+              </Card>
+            </div>
+
+            <div className="lg:col-span-7 order-1 lg:order-2">
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:border-primary/30 transition-all duration-500">
+                <CardContent className="p-10 sm:p-14">
+                  <div className="flex items-start space-x-6 mb-8">
+                    <div className="bg-primary/15 p-4 rounded-3xl">
+                      <FileText className="h-10 w-10 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 leading-tight">
+                        Instant Product Expert
+                      </h3>
+                      <p className="text-xl text-muted-foreground/80 mb-8 font-medium leading-relaxed">
+                        Upload your docs once, get an AI expert forever. Your
+                        agent learns everything about your product and provides
+                        accurate, contextual answers.
+                      </p>
+
+                      {/* Knowledge base demo */}
+                      <div className="bg-muted/50 rounded-2xl p-4 mb-6">
+                        <div className="flex items-center space-x-3 mb-4">
+                          <FileText className="h-5 w-5 text-primary" />
+                          <span className="font-medium">Knowledge Base</span>
+                          <span className="text-xs bg-green-500/10 text-green-600 px-2 py-1 rounded-full">
+                            1,247 docs
+                          </span>
                         </div>
-                        <div className="flex-1">
-                          <div className="font-semibold text-foreground mb-1">{item.text}</div>
-                          <div className="text-sm text-muted-foreground">{item.desc}</div>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-sm">
+                            <span>API Documentation</span>
+                            <span className="text-green-600">✓ Indexed</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span>User Guide</span>
+                            <span className="text-green-600">✓ Indexed</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span>FAQ Database</span>
+                            <span className="text-green-600">✓ Indexed</span>
+                          </div>
                         </div>
                       </div>
-                    ))}
+
+                      <p className="text-muted-foreground/80 font-medium">
+                        Features advanced document processing, smart search,
+                        auto-updates, and context awareness.
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </motion.div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </motion.section>
 
-      {/* Use Cases Section - Premium Industry Showcase */}
+      {/* Use Cases Section - Industry Examples */}
       <motion.section
-        className="py-20 sm:py-24 relative overflow-hidden"
+        className="py-20 sm:py-28 bg-gradient-to-b from-muted/15 to-background overflow-hidden"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        {/* Background decoration */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-green-500/5"></div>
-        <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-muted/10 to-transparent"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
             className="text-center mb-16 sm:mb-20"
             variants={itemVariants}
           >
-            <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-blue-500/10 to-green-500/10 backdrop-blur-sm rounded-full px-6 py-3 border border-blue-500/20 mb-6">
-              <Globe className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-semibold text-blue-600 uppercase tracking-wide">Industry Solutions</span>
-            </div>
-            
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 sm:mb-8 leading-tight">
               Transform Every Industry
             </h2>
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-              See how AI agents are revolutionizing user experiences across sectors—from instant support to intelligent shopping assistance
+            <p className="text-xl sm:text-2xl text-muted-foreground/80 max-w-4xl mx-auto font-medium">
+              From customer support to e-commerce, see how AI agents are
+              revolutionizing user experiences across different sectors
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 lg:gap-16 mb-20">
-            {/* Customer Support - Enhanced */}
-            <motion.div 
-              className="group relative"
-              variants={itemVariants}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-[2rem] blur-2xl transform group-hover:scale-105 transition-transform duration-700"></div>
-              <div className="relative bg-card/60 backdrop-blur-xl border-0 rounded-[2rem] shadow-2xl overflow-hidden group-hover:shadow-3xl transition-all duration-700">
-                {/* Header */}
-                <div className="p-8 pb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-20">
+            {/* Customer Support */}
+            <motion.div className="group" variants={itemVariants}>
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group-hover:shadow-[0_16px_64px_rgba(0,0,0,0.15)] transition-all duration-500 h-full">
+                <CardHeader className="pb-8 pt-10 px-10">
                   <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-4">
-                      <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-2xl shadow-lg">
-                        <MessageSquare className="h-8 w-8 text-white" />
+                    <div className="flex items-center space-x-6">
+                      <div className="bg-blue-500/15 p-4 rounded-3xl">
+                        <MessageSquare className="h-10 w-10 text-blue-600" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground">Customer Support</h3>
-                        <p className="text-muted-foreground">24/7 intelligent assistance</p>
-                      </div>
-                    </div>
-                    <div className="bg-green-500/10 text-green-600 px-3 py-1 rounded-full text-sm font-medium">
-                      Live Demo
-                    </div>
-                  </div>
-                  
-                  {/* Enhanced conversation mockup */}
-                  <div className="bg-gradient-to-br from-muted/50 to-muted/30 backdrop-blur-sm rounded-2xl p-6 space-y-4 mb-6">
-                    <div className="flex items-start space-x-3">
-                      <div className="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-full p-2 shadow-lg">
-                        <Users className="h-4 w-4" />
-                      </div>
-                      <div className="bg-white dark:bg-gray-800 rounded-2xl px-4 py-3 max-w-[280px] shadow-md">
-                        <p className="text-sm font-medium">Hi! I need to cancel my order #1234 and get a refund</p>
-                        <div className="text-xs text-muted-foreground mt-1">2:14 PM</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2 pl-12">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-1 h-1 bg-blue-300 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                      <span className="text-xs text-muted-foreground">Agent is typing...</span>
-                    </div>
-                    
-                    <div className="flex items-start space-x-3 justify-end">
-                      <div className="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-2xl px-4 py-3 max-w-[300px] shadow-lg">
-                        <p className="text-sm font-medium">I found your order and processed the cancellation. Your refund of $89.99 will appear in 3-5 business days. Is there anything else I can help with?</p>
-                        <div className="text-xs text-blue-100 mt-1">2:14 PM • Completed in 1.2s</div>
-                      </div>
-                      <div className="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-full p-2 shadow-lg">
-                        <CheckCircle2 className="h-4 w-4" />
+                        <h3 className="text-3xl font-bold text-foreground mb-3">
+                          Customer Support
+                        </h3>
+                        <p className="text-lg text-muted-foreground/80 font-medium leading-relaxed mb-4">
+                          24/7 intelligent assistance that answers FAQs
+                          instantly, creates support tickets, processes refunds,
+                          and schedules appointments through natural
+                          conversation.
+                        </p>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Features grid */}
-                <div className="px-8 pb-8">
-                  <div className="grid grid-cols-2 gap-4">
-                    {[
-                      { icon: MessageSquare, text: "Answer FAQs instantly", desc: "From knowledge base" },
-                      { icon: FileText, text: "Create support tickets", desc: "Auto-routing & priority" },
-                      { icon: CheckCircle2, text: "Process refunds", desc: "Secure payment handling" },
-                      { icon: Users, text: "Schedule appointments", desc: "Calendar integration" }
-                    ].map((item, index) => (
-                      <div key={index} className="group/item flex items-start space-x-3 p-4 rounded-xl hover:bg-blue-500/5 transition-all duration-300">
-                        <div className="bg-blue-500/10 p-2 rounded-lg group-hover/item:bg-blue-500/20 transition-colors">
-                          <item.icon className="h-4 w-4 text-blue-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm text-foreground mb-1">{item.text}</div>
-                          <div className="text-xs text-muted-foreground">{item.desc}</div>
-                        </div>
+                  {/* Mock conversation */}
+                  <div className="bg-muted/50 rounded-2xl p-4 space-y-3">
+                    <div className="flex items-start space-x-2">
+                      <div className="bg-blue-500 text-white rounded-full p-1">
+                        <Users className="h-3 w-3" />
                       </div>
-                    ))}
+                      <div className="bg-background rounded-lg px-3 py-2 max-w-[200px] border-[2px] border-border">
+                        <p className="text-sm">
+                          Hi! I need to cancel my order #1234
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-2 justify-end">
+                      <div className="bg-blue-500 text-white rounded-lg px-3 py-2 max-w-[200px]">
+                        <p className="text-sm">
+                          Done! Your order has been cancelled and you&apos;ll
+                          receive a full refund within 3-5 days.
+                        </p>
+                      </div>
+                      <div className="bg-blue-500 text-white rounded-full p-1">
+                        <CheckCircle2 className="h-3 w-3" />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </CardHeader>
+              </Card>
             </motion.div>
 
-            {/* E-commerce - Enhanced */}
-            <motion.div 
-              className="group relative"
-              variants={itemVariants}
-            >
-              <div className="absolute inset-0 bg-gradient-to-bl from-green-500/10 to-emerald-500/10 rounded-[2rem] blur-2xl transform group-hover:scale-105 transition-transform duration-700"></div>
-              <div className="relative bg-card/60 backdrop-blur-xl border-0 rounded-[2rem] shadow-2xl overflow-hidden group-hover:shadow-3xl transition-all duration-700">
-                {/* Header */}
-                <div className="p-8 pb-4">
+            {/* E-commerce */}
+            <motion.div className="group" variants={itemVariants}>
+              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden group-hover:shadow-[0_16px_64px_rgba(0,0,0,0.15)] transition-all duration-500 h-full">
+                <CardHeader className="pb-8 pt-10 px-10">
                   <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-4">
-                      <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-4 rounded-2xl shadow-lg">
-                        <Globe className="h-8 w-8 text-white" />
+                    <div className="flex items-center space-x-6">
+                      <div className="bg-green-500/15 p-4 rounded-3xl">
+                        <Globe className="h-10 w-10 text-green-600" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground">E-commerce</h3>
-                        <p className="text-muted-foreground">Smart shopping assistant</p>
-                      </div>
-                    </div>
-                    <div className="bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full text-sm font-medium">
-                      Active
-                    </div>
-                  </div>
-                  
-                  {/* Enhanced shopping interaction */}
-                  <div className="bg-gradient-to-br from-muted/50 to-muted/30 backdrop-blur-sm rounded-2xl p-6 space-y-4 mb-6">
-                    <div className="flex items-start space-x-3">
-                      <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-full p-2 shadow-lg">
-                        <Users className="h-4 w-4" />
-                      </div>
-                      <div className="bg-white dark:bg-gray-800 rounded-2xl px-4 py-3 max-w-[280px] shadow-md">
-                        <p className="text-sm font-medium">Find me a blue laptop under $800 with good battery life</p>
-                        <div className="text-xs text-muted-foreground mt-1">3:22 PM</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start space-x-3 justify-end">
-                      <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl px-4 py-3 max-w-[320px] shadow-lg">
-                        <p className="text-sm font-medium">Perfect! I found 3 laptops matching your criteria. The ASUS VivoBook 15 ($679) has 12-hour battery life and great reviews. Should I add it to your cart?</p>
-                        <div className="text-xs text-green-100 mt-1">3:22 PM • Found in 0.8s</div>
-                      </div>
-                      <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-full p-2 shadow-lg">
-                        <Zap className="h-4 w-4" />
-                      </div>
-                    </div>
-                    
-                    {/* Product preview */}
-                    <div className="bg-white/50 dark:bg-gray-800/50 rounded-xl p-4 ml-12 border border-green-200/50">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
-                          <span className="text-white font-bold text-sm">ASUS</span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-semibold text-sm">ASUS VivoBook 15</div>
-                          <div className="text-xs text-muted-foreground">15.6" • 8GB RAM • 256GB SSD</div>
-                          <div className="text-green-600 font-bold text-sm">$679</div>
-                        </div>
-                        <button className="bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-green-600 transition-colors">
-                          Add to Cart
-                        </button>
+                        <h3 className="text-3xl font-bold text-foreground mb-3">
+                          E-commerce
+                        </h3>
+                        <p className="text-lg text-muted-foreground/80 font-medium leading-relaxed mb-4">
+                          Smart shopping assistance that provides intelligent
+                          product recommendations, adds items to cart, processes
+                          orders, and tracks shipments seamlessly.
+                        </p>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Features grid */}
-                <div className="px-8 pb-8">
-                  <div className="grid grid-cols-2 gap-4">
-                    {[
-                      { icon: MessageSquare, text: "Smart recommendations", desc: "AI-powered matching" },
-                      { icon: Globe, text: "Add to cart", desc: "One-click purchasing" },
-                      { icon: CheckCircle2, text: "Process orders", desc: "Payment & shipping" },
-                      { icon: FileText, text: "Track shipments", desc: "Real-time updates" }
-                    ].map((item, index) => (
-                      <div key={index} className="group/item flex items-start space-x-3 p-4 rounded-xl hover:bg-green-500/5 transition-all duration-300">
-                        <div className="bg-green-500/10 p-2 rounded-lg group-hover/item:bg-green-500/20 transition-colors">
-                          <item.icon className="h-4 w-4 text-green-600" />
+                  {/* Mock shopping interaction */}
+                  <div className="bg-muted/50 rounded-2xl p-4 space-y-3 mb-4">
+                    <div className="flex items-start space-x-2">
+                      <div className="bg-green-500 text-white rounded-full p-1">
+                        <Users className="h-3 w-3" />
+                      </div>
+                      <div className="bg-background rounded-lg px-3 py-2 max-w-[200px] border-[2px] border-border">
+                        <p className="text-sm">
+                          Find me a floral dress under $150
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-2 justify-end">
+                      <div className="bg-green-500 text-white rounded-lg px-3 py-2 max-w-[200px]">
+                        <p className="text-sm">
+                          Perfect! Found this lovely maxi dress. Added to your
+                          cart!
+                        </p>
+                      </div>
+                      <div className="bg-green-500 text-white rounded-full p-1">
+                        <Zap className="h-3 w-3" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Product preview */}
+                  <div className="bg-background/50 rounded-xl p-3 mb-4 border-[2px] border-border">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-sage-400 to-sage-600 rounded-lg flex items-center justify-center">
+                        <span className="text-white text-lg">👗</span>
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-sm">
+                          Vintage Floral Maxi Dress
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm text-foreground mb-1">{item.text}</div>
-                          <div className="text-xs text-muted-foreground">{item.desc}</div>
+                        <div className="text-xs text-muted-foreground">
+                          Size M • Long sleeves • Button front
+                        </div>
+                        <div className="text-green-600 font-bold text-sm">
+                          $138
                         </div>
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
-              </div>
+                </CardHeader>
+              </Card>
             </motion.div>
           </div>
 
-          {/* Impact metrics - Enhanced */}
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          {/* Impact highlights - Consistent with design language */}
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
             variants={itemVariants}
           >
             {[
-              { 
-                icon: Zap, 
-                metric: "Instant", 
-                label: "Response Time", 
-                description: "No more waiting for human agents",
-                color: "from-yellow-400 to-orange-500"
+              {
+                icon: Zap,
+                title: 'Instant Resolution',
+                description:
+                  'Users get answers and complete tasks without waiting for human support',
+                highlight: 'Zero Wait Time',
               },
-              { 
-                icon: Globe, 
-                metric: "24/7", 
-                label: "Always Available", 
-                description: "Never miss a customer inquiry",
-                color: "from-blue-400 to-cyan-500"
+              {
+                icon: Globe,
+                title: 'Always-On Support',
+                description:
+                  'Never miss a customer inquiry, regardless of time zone or business hours',
+                highlight: '24/7 Available',
               },
-              { 
-                icon: Rocket, 
-                metric: "Higher", 
-                label: "Conversion Rate", 
-                description: "Turn browsers into buyers",
-                color: "from-purple-400 to-pink-500"
-              }
+              {
+                icon: Rocket,
+                title: 'Higher Engagement',
+                description:
+                  'Turn casual browsers into engaged users who complete their goals',
+                highlight: 'More Conversions',
+              },
             ].map((item, index) => (
-              <motion.div 
-                key={index} 
-                className="group relative"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
+              <Card
+                key={index}
+                className="border-[3px] border-border bg-card rounded-2xl p-6 text-center hover:scale-105 transition-all duration-300 hover:shadow-lg group"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-muted/20 to-muted/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                <div className="relative bg-card/60 backdrop-blur-xl border-0 rounded-2xl p-8 text-center shadow-xl group-hover:shadow-2xl transition-all duration-300">
-                  <div className={`bg-gradient-to-br ${item.color} p-4 rounded-2xl w-fit mx-auto mb-6 shadow-lg group-hover:shadow-xl transition-shadow`}>
-                    <item.icon className="h-8 w-8 text-white" />
-                  </div>
-                  <div className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
-                    {item.metric}
-                  </div>
-                  <div className="text-lg font-semibold text-foreground mb-2">
-                    {item.label}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {item.description}
-                  </div>
+                <div className="bg-brand/10 p-3 rounded-2xl w-fit mx-auto mb-4">
+                  <item.icon className="h-8 w-8 text-brand" />
                 </div>
-              </motion.div>
+                <div className="text-xl font-bold text-brand mb-2">
+                  {item.highlight}
+                </div>
+                <div className="text-lg font-semibold text-foreground mb-2">
+                  {item.title}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {item.description}
+                </div>
+              </Card>
             ))}
           </motion.div>
         </div>
