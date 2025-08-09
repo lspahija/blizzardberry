@@ -21,21 +21,9 @@ import {
   Play,
   Globe,
 } from 'lucide-react';
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 
 export default function LandingPage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.classList.add('overflow-hidden');
-    } else {
-      document.body.classList.remove('overflow-hidden');
-    }
-    return () => {
-      document.body.classList.remove('overflow-hidden');
-    };
-  }, [isMenuOpen]);
 
   const containerVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 20 },
@@ -58,50 +46,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {isMenuOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-sm px-4 py-6 space-y-4 fixed top-[75px] left-0 right-0 bottom-0 z-40">
-          <Link
-            href="/docs"
-            className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
-          >
-            Docs
-          </Link>
-          <Link
-            href="/pricing"
-            className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
-          >
-            Pricing
-          </Link>
-          <Link
-            href="/contact"
-            className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
-          >
-            Contact
-          </Link>
-          <div className="flex flex-col space-y-3 pt-6 mt-4 border-t border-border">
-            <div className="relative group">
-              <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-              <Button
-                variant="outline"
-                className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full"
-                asChild
-              >
-                <Link href="/login">Sign In</Link>
-              </Button>
-            </div>
-            <div className="relative group">
-              <div className="absolute inset-0 rounded bg-foreground translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-              <Button
-                className="relative bg-secondary text-secondary-foreground border-[3px] border-border hover:bg-secondary/90 w-full"
-                asChild
-              >
-                <Link href="/login">Try For Free</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Hero Section with Gradient Background */}
       <motion.div
         className="bg-gradient-to-br from-brand/10 to-brand/5 border-b border-border"
