@@ -181,8 +181,7 @@ export default function ContactPage() {
                 </p>
                 <RetroButton
                   asChild
-                  size="lg"
-                  className="w-full bg-brand text-primary-foreground hover:bg-brand/90 font-semibold"
+                  className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium px-6 h-10"
                   shadowColor="foreground"
                 >
                   <a
