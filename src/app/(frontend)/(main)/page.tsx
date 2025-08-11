@@ -260,45 +260,45 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-20 sm:mb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center mb-20 sm:mb-24">
             {/* Custom Actions */}
             <div className="lg:col-span-7">
               <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-brand/30">
-                <CardContent className="p-10 sm:p-14">
-                  <div className="flex items-start space-x-6 mb-8">
-                    <div className="bg-brand/15 p-4 rounded-3xl">
-                      <Zap className="h-10 w-10 text-brand" />
+                <CardContent className="p-6 sm:p-8 lg:p-10 xl:p-14">
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
+                    <div className="bg-brand/15 p-3 sm:p-4 rounded-3xl self-start">
+                      <Zap className="h-8 sm:h-10 w-8 sm:w-10 text-brand" />
                     </div>
-                    <div>
-                      <h3 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 leading-tight">
+                    <div className="flex-1">
+                      <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 leading-tight">
                         Turn Conversations Into Actions
                       </h3>
-                      <p className="text-xl text-muted-foreground/80 mb-8 font-medium leading-relaxed">
+                      <p className="text-lg sm:text-xl text-muted-foreground/80 mb-6 sm:mb-8 font-medium leading-relaxed">
                         Don&apos;t just chat with users—actually help them
                         complete tasks. From upgrading accounts to processing
                         orders, your agent does the work.
                       </p>
 
                       {/* Demo conversation */}
-                      <div className="bg-muted/50 rounded-2xl p-4 space-y-3 mb-6">
+                      <div className="bg-muted/50 rounded-2xl p-3 sm:p-4 space-y-3 mb-4 sm:mb-6">
                         <div className="flex items-start space-x-2">
-                          <div className="bg-blue-500 text-white rounded-full p-1">
+                          <div className="bg-blue-500 text-white rounded-full p-1 flex-shrink-0">
                             <Users className="h-3 w-3" />
                           </div>
-                          <div className="bg-background rounded-lg px-3 py-2 max-w-[200px] border-[2px] border-border">
-                            <p className="text-sm">
+                          <div className="bg-background rounded-lg px-3 py-2 max-w-[180px] sm:max-w-[200px] border-[2px] border-border">
+                            <p className="text-xs sm:text-sm">
                               Upgrade my account to Pro plan
                             </p>
                           </div>
                         </div>
                         <div className="flex items-start space-x-2 justify-end">
-                          <div className="bg-brand text-primary-foreground rounded-lg px-3 py-2 max-w-[250px]">
-                            <p className="text-sm">
+                          <div className="bg-brand text-primary-foreground rounded-lg px-3 py-2 max-w-[200px] sm:max-w-[250px]">
+                            <p className="text-xs sm:text-sm">
                               Processing upgrade... Done! You now have Pro
                               access.
                             </p>
                           </div>
-                          <div className="bg-brand text-primary-foreground rounded-full p-1">
+                          <div className="bg-brand text-primary-foreground rounded-full p-1 flex-shrink-0">
                             <CheckCircle2 className="h-3 w-3" />
                           </div>
                         </div>
@@ -314,8 +314,8 @@ export default function LandingPage() {
               </Card>
             </div>
 
-            <div className="lg:col-span-5 space-y-6">
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
+            <div className="lg:col-span-5 space-y-4 sm:space-y-6">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
                 <div className="flex items-center space-x-4 mb-4">
                   <MessageSquare className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -327,7 +327,7 @@ export default function LandingPage() {
                 </p>
               </Card>
 
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
                 <div className="flex items-center space-x-4 mb-4">
                   <Zap className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -342,9 +342,9 @@ export default function LandingPage() {
           </div>
 
           {/* Knowledge Base - Reversed */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            <div className="lg:col-span-5 space-y-6 order-2 lg:order-1">
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
+            <div className="lg:col-span-5 space-y-4 sm:space-y-6 order-2 lg:order-1">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
                 <div className="flex items-center space-x-4 mb-4">
                   <Users className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -356,7 +356,7 @@ export default function LandingPage() {
                 </p>
               </Card>
 
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
+              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
                 <div className="flex items-center space-x-4 mb-4">
                   <Shield className="h-6 w-6 text-brand" />
                   <h4 className="text-xl font-bold text-foreground">
@@ -371,23 +371,23 @@ export default function LandingPage() {
 
             <div className="lg:col-span-7 order-1 lg:order-2">
               <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-brand/30">
-                <CardContent className="p-10 sm:p-14">
-                  <div className="flex items-start space-x-6 mb-8">
-                    <div className="bg-primary/15 p-4 rounded-3xl">
-                      <FileText className="h-10 w-10 text-primary" />
+                <CardContent className="p-6 sm:p-8 lg:p-10 xl:p-14">
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
+                    <div className="bg-primary/15 p-3 sm:p-4 rounded-3xl self-start">
+                      <FileText className="h-8 sm:h-10 w-8 sm:w-10 text-primary" />
                     </div>
-                    <div>
-                      <h3 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 leading-tight">
+                    <div className="flex-1">
+                      <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 leading-tight">
                         Instant Product Expert
                       </h3>
-                      <p className="text-xl text-muted-foreground/80 mb-8 font-medium leading-relaxed">
+                      <p className="text-lg sm:text-xl text-muted-foreground/80 mb-6 sm:mb-8 font-medium leading-relaxed">
                         Upload your docs once, get an AI expert forever. Your
                         agent learns everything about your product and provides
                         accurate, contextual answers.
                       </p>
 
                       {/* Knowledge base demo */}
-                      <div className="bg-muted/50 rounded-2xl p-4 mb-6">
+                      <div className="bg-muted/50 rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
                         <div className="flex items-center space-x-3 mb-4">
                           <FileText className="h-5 w-5 text-primary" />
                           <span className="font-medium">Knowledge Base</span>
