@@ -52,7 +52,17 @@ To access encrypted files, follow these steps:
    gpg --import your-name-public-key.asc
    ```
 
-4. **Team Member Adds You to git-crypt**  
+4. **Team Member Trusts Your Public Key**  
+   The team member must trust the imported key before it can be used:
+   ```bash
+   gpg --edit-key <your-email>
+   ```
+   This opens an interactive GPG session. Then:
+   - Type `trust` and press Enter
+   - Select `5` (ultimate trust) or `4` (full trust)
+   - Type `quit` to exit
+
+5. **Team Member Adds You to git-crypt**  
    The team member will add you to git-crypt with:
    ```bash
    git-crypt add-gpg-user <your-email>
