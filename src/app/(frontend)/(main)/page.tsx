@@ -446,21 +446,21 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20 mb-20">
             {/* Customer Support */}
             <motion.div className="group" variants={itemVariants}>
               <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:-translate-y-1 h-full">
-                <CardHeader className="pb-8 pt-10 px-10">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-6">
-                      <div className="bg-blue-500/15 p-4 rounded-3xl">
-                        <MessageSquare className="h-10 w-10 text-blue-600" />
+                <CardHeader className="pb-6 sm:pb-8 pt-8 sm:pt-10 px-6 sm:px-10">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                      <div className="bg-blue-500/15 p-3 sm:p-4 rounded-3xl self-start">
+                        <MessageSquare className="h-8 sm:h-10 w-8 sm:w-10 text-blue-600" />
                       </div>
-                      <div>
-                        <h3 className="text-3xl font-bold text-foreground mb-3">
+                      <div className="flex-1">
+                        <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
                           Customer Support
                         </h3>
-                        <p className="text-lg text-muted-foreground/80 font-medium leading-relaxed mb-4">
+                        <p className="text-base sm:text-lg text-muted-foreground/80 font-medium leading-relaxed mb-4">
                           24/7 intelligent assistance that answers FAQs
                           instantly, creates support tickets, processes refunds,
                           and schedules appointments through natural
@@ -471,25 +471,25 @@ export default function LandingPage() {
                   </div>
 
                   {/* Mock conversation */}
-                  <div className="bg-muted/50 rounded-2xl p-4 space-y-3">
+                  <div className="bg-muted/50 rounded-2xl p-3 sm:p-4 space-y-3">
                     <div className="flex items-start space-x-2">
-                      <div className="bg-blue-500 text-white rounded-full p-1">
+                      <div className="bg-blue-500 text-white rounded-full p-1 flex-shrink-0">
                         <Users className="h-3 w-3" />
                       </div>
-                      <div className="bg-background rounded-lg px-3 py-2 max-w-[200px] border-[2px] border-border">
-                        <p className="text-sm">
+                      <div className="bg-background rounded-lg px-3 py-2 max-w-[160px] sm:max-w-[200px] border-[2px] border-border">
+                        <p className="text-xs sm:text-sm">
                           Hi! I need to cancel my order #1234
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-2 justify-end">
-                      <div className="bg-blue-500 text-white rounded-lg px-3 py-2 max-w-[200px]">
-                        <p className="text-sm">
+                      <div className="bg-blue-500 text-white rounded-lg px-3 py-2 max-w-[180px] sm:max-w-[200px]">
+                        <p className="text-xs sm:text-sm">
                           Done! Your order has been cancelled and you&apos;ll
                           receive a full refund within 3-5 days.
                         </p>
                       </div>
-                      <div className="bg-blue-500 text-white rounded-full p-1">
+                      <div className="bg-blue-500 text-white rounded-full p-1 flex-shrink-0">
                         <CheckCircle2 className="h-3 w-3" />
                       </div>
                     </div>
@@ -501,17 +501,17 @@ export default function LandingPage() {
             {/* E-commerce */}
             <motion.div className="group" variants={itemVariants}>
               <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:-translate-y-1 h-full">
-                <CardHeader className="pb-8 pt-10 px-10">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-6">
-                      <div className="bg-green-500/15 p-4 rounded-3xl">
-                        <Globe className="h-10 w-10 text-green-600" />
+                <CardHeader className="pb-6 sm:pb-8 pt-8 sm:pt-10 px-6 sm:px-10">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                      <div className="bg-green-500/15 p-3 sm:p-4 rounded-3xl self-start">
+                        <Globe className="h-8 sm:h-10 w-8 sm:w-10 text-green-600" />
                       </div>
-                      <div>
-                        <h3 className="text-3xl font-bold text-foreground mb-3">
+                      <div className="flex-1">
+                        <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
                           E-commerce
                         </h3>
-                        <p className="text-lg text-muted-foreground/80 font-medium leading-relaxed mb-4">
+                        <p className="text-base sm:text-lg text-muted-foreground/80 font-medium leading-relaxed mb-4">
                           Smart shopping assistance that provides intelligent
                           product recommendations, adds items to cart, processes
                           orders, and tracks shipments seamlessly.
@@ -521,25 +521,25 @@ export default function LandingPage() {
                   </div>
 
                   {/* Mock shopping interaction */}
-                  <div className="bg-muted/50 rounded-2xl p-4 space-y-3 mb-4">
+                  <div className="bg-muted/50 rounded-2xl p-3 sm:p-4 space-y-3 mb-4">
                     <div className="flex items-start space-x-2">
-                      <div className="bg-green-500 text-white rounded-full p-1">
+                      <div className="bg-green-500 text-white rounded-full p-1 flex-shrink-0">
                         <Users className="h-3 w-3" />
                       </div>
-                      <div className="bg-background rounded-lg px-3 py-2 max-w-[200px] border-[2px] border-border">
-                        <p className="text-sm">
+                      <div className="bg-background rounded-lg px-3 py-2 max-w-[160px] sm:max-w-[200px] border-[2px] border-border">
+                        <p className="text-xs sm:text-sm">
                           Find me a floral dress under $150
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-2 justify-end">
-                      <div className="bg-green-500 text-white rounded-lg px-3 py-2 max-w-[200px]">
-                        <p className="text-sm">
+                      <div className="bg-green-500 text-white rounded-lg px-3 py-2 max-w-[180px] sm:max-w-[200px]">
+                        <p className="text-xs sm:text-sm">
                           Perfect! Found this lovely maxi dress. Added to your
                           cart!
                         </p>
                       </div>
-                      <div className="bg-green-500 text-white rounded-full p-1">
+                      <div className="bg-green-500 text-white rounded-full p-1 flex-shrink-0">
                         <Zap className="h-3 w-3" />
                       </div>
                     </div>
@@ -548,17 +548,17 @@ export default function LandingPage() {
                   {/* Product preview */}
                   <div className="bg-background/50 rounded-xl p-3 mb-4 border-[2px] border-border">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-sage-400 to-sage-600 rounded-lg flex items-center justify-center">
-                        <span className="text-white text-lg">👗</span>
+                      <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-sage-400 to-sage-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-sm sm:text-lg">👗</span>
                       </div>
-                      <div className="flex-1">
-                        <div className="font-semibold text-sm">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-xs sm:text-sm truncate">
                           Vintage Floral Maxi Dress
                         </div>
                         <div className="text-xs text-muted-foreground">
                           Size M • Long sleeves • Button front
                         </div>
-                        <div className="text-green-600 font-bold text-sm">
+                        <div className="text-green-600 font-bold text-xs sm:text-sm">
                           $138
                         </div>
                       </div>
