@@ -46,16 +46,16 @@ To access encrypted files, follow these steps:
 2. **Share Your Public Key**  
    Send the generated `your-name-public-key.asc` file and your email to a team member with repository access.
 
-3. **Import Their Public Key**  
+3. **Team Member Imports Your Public Key**  
    The team member will import your public key into their GPG keyring:
    ```bash
-   gpg --import their-public-key.asc
+   gpg --import your-name-public-key.asc
    ```
 
-4. **Add Your GPG User**  
+4. **Team Member Adds You to git-crypt**  
    The team member will add you to git-crypt with:
    ```bash
-   git-crypt add-gpg-user <their-email>
+   git-crypt add-gpg-user <your-email>
    ```
 
 ### 3. Install git-crypt
