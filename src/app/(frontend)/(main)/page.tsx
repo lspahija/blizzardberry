@@ -322,7 +322,7 @@ export default function LandingPage() {
                     Natural Language
                   </h4>
                 </div>
-                <p className="text-muted-foreground/80 font-medium">
+                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
                   Users interact naturally - no commands to learn
                 </p>
               </Card>
@@ -334,7 +334,7 @@ export default function LandingPage() {
                     Real-time
                   </h4>
                 </div>
-                <p className="text-muted-foreground/80 font-medium">
+                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
                   Instant responses and live interactions
                 </p>
               </Card>
@@ -351,7 +351,7 @@ export default function LandingPage() {
                     User Context
                   </h4>
                 </div>
-                <p className="text-muted-foreground/80 font-medium">
+                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
                   Personalized experiences based on user data
                 </p>
               </Card>
@@ -363,7 +363,7 @@ export default function LandingPage() {
                     Secure & Private
                   </h4>
                 </div>
-                <p className="text-muted-foreground/80 font-medium">
+                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
                   Encrypted communications and data protection
                 </p>
               </Card>
@@ -603,7 +603,7 @@ export default function LandingPage() {
                     <CardTitle className="text-xl">{item.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
-                    <p className="text-muted-foreground">{item.description}</p>
+                    <p className="text-base sm:text-base text-muted-foreground">{item.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
