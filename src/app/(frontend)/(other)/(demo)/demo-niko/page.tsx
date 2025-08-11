@@ -1354,6 +1354,33 @@ export default function DemoPage() {
     }
   };
 
+  // Handle tab visibility change for auto-pause
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Tab is hidden - pause demo
+        if (masterTimelineRef.current && demoState.isRunning && !demoState.isPaused) {
+          masterTimelineRef.current.pause();
+          setDemoState(prev => ({ ...prev, isPaused: true }));
+          console.log('=== DEMO AUTO-PAUSED: Tab hidden ===');
+        }
+      } else {
+        // Tab is visible - resume demo if it was auto-paused
+        if (masterTimelineRef.current && demoState.isRunning && demoState.isPaused) {
+          masterTimelineRef.current.play();
+          setDemoState(prev => ({ ...prev, isPaused: false }));
+          console.log('=== DEMO AUTO-RESUMED: Tab visible ===');
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [demoState.isRunning, demoState.isPaused]);
+
   // Initialize demo
   useEffect(() => {
     const initDemo = async () => {
@@ -1508,6 +1535,91 @@ export default function DemoPage() {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.2); }
         }
+
+        /* Micro-interactions for hover effects */
+        .interactive-hover {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .interactive-hover:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .interactive-hover:active {
+          transform: translateY(0);
+          transition-duration: 0.1s;
+        }
+        
+        .button-shimmer {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .button-shimmer::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+          transition: left 0.6s;
+        }
+        
+        .button-shimmer:hover::before {
+          left: 100%;
+        }
+        
+        .card-glow {
+          transition: all 0.3s ease;
+          position: relative;
+        }
+        
+        .card-glow::after {
+          content: '';
+          position: absolute;
+          inset: -2px;
+          background: linear-gradient(45deg, #F43F5E, #3B82F6, #10B981, #F43F5E);
+          border-radius: inherit;
+          z-index: -1;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+        
+        .card-glow:hover::after {
+          opacity: 0.3;
+        }
+        
+        .metric-card-hover {
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .metric-card-hover:hover {
+          transform: translateY(-5px) scale(1.02);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Focus management styles */
+        .focus-visible {
+          outline: 2px solid #F43F5E;
+          outline-offset: 2px;
+          border-radius: 4px;
+        }
+        
+        button:focus-visible,
+        .interactive-element:focus-visible {
+          outline: 2px solid #F43F5E;
+          outline-offset: 2px;
+          box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.1);
+        }
+        
+        /* Remove default focus for mouse users */
+        button:focus:not(:focus-visible),
+        .interactive-element:focus:not(:focus-visible) {
+          outline: none;
+          box-shadow: none;
+        }
       `}</style>
 
       {/* Modern Loader */}
@@ -1573,9 +1685,12 @@ export default function DemoPage() {
             {/* Start/Stop Button */}
             <button 
               onClick={handleStartStop}
-              className="absolute inset-2 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl hover:bg-white transition-all duration-300 hover:scale-105"
+              className="absolute inset-2 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl hover:bg-white transition-all duration-300 hover:scale-105 interactive-hover"
+              tabIndex={0}
+              aria-label={demoState.isRunning && !demoState.isPaused ? 'Pause demo' : 'Play demo'}
+              aria-pressed={demoState.isRunning && !demoState.isPaused}
             >
-              <div className="text-2xl">
+              <div className="text-2xl" role="img" aria-hidden="true">
                 {demoState.isRunning && !demoState.isPaused ? '⏸️' : '▶️'}
               </div>
             </button>
@@ -1633,7 +1748,9 @@ export default function DemoPage() {
               
               <button
                 id="createBtn"
-                className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white text-xl font-semibold py-4 rounded-xl hover:from-rose-600 hover:to-rose-700 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
+                className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white text-xl font-semibold py-4 rounded-xl hover:from-rose-600 hover:to-rose-700 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl interactive-hover button-shimmer"
+                tabIndex={0}
+                aria-label="Create new AI action"
               >
                 Create Action
               </button>
@@ -1802,13 +1919,13 @@ export default function DemoPage() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="statsGrid">
-              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg">
+              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg metric-card-hover card-glow interactive-element" tabIndex={0} role="region" aria-label="Total Revenue: $847K">
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-50/50 to-transparent rounded-2xl"></div>
                 <div className="relative">
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-gray-600 text-sm font-medium uppercase tracking-wider">Total Revenue</div>
                     <div className="w-10 h-10 bg-rose-500/10 rounded-xl flex items-center justify-center">
-                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                       </svg>
                     </div>
@@ -1818,13 +1935,13 @@ export default function DemoPage() {
                 </div>
               </div>
               
-              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg">
+              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg metric-card-hover card-glow interactive-element" tabIndex={0} role="region" aria-label="Growth Rate: 18% Year over Year">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent rounded-2xl"></div>
                 <div className="relative">
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-gray-600 text-sm font-medium uppercase tracking-wider">Growth Rate</div>
                     <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center">
-                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/>
                       </svg>
                     </div>
@@ -1834,13 +1951,13 @@ export default function DemoPage() {
                 </div>
               </div>
               
-              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg">
+              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg metric-card-hover card-glow interactive-element" tabIndex={0} role="region" aria-label="Active Clients: 2,840 Total">
                 <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent rounded-2xl"></div>
                 <div className="relative">
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-gray-600 text-sm font-medium uppercase tracking-wider">Active Clients</div>
                     <div className="w-10 h-10 bg-gray-500/10 rounded-xl flex items-center justify-center">
-                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M16 7c0-2.21-1.79-4-4-4S8 4.79 8 7s1.79 4 4 4 4-1.79 4-4zM12 13c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4z"/>
                       </svg>
                     </div>
@@ -1850,13 +1967,13 @@ export default function DemoPage() {
                 </div>
               </div>
               
-              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg">
+              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg metric-card-hover card-glow interactive-element" tabIndex={0} role="region" aria-label="Average Deal Size: $298K">
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-50/50 to-transparent rounded-2xl"></div>
                 <div className="relative">
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-gray-600 text-sm font-medium uppercase tracking-wider">Avg Deal Size</div>
                     <div className="w-10 h-10 bg-rose-500/10 rounded-xl flex items-center justify-center">
-                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
                       </svg>
                     </div>
