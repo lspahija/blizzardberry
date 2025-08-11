@@ -450,8 +450,8 @@ export default function LandingPage() {
             {/* Customer Support */}
             <motion.div className="group" variants={itemVariants}>
               <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:-translate-y-1 h-full">
-                <CardHeader className="pb-6 sm:pb-8 pt-8 sm:pt-10 px-6 sm:px-10">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+                <CardHeader className="pb-6 sm:pb-8 pt-6 sm:pt-10 px-6 sm:px-10">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-0 sm:mb-6">
                     <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
                       <div className="bg-blue-500/15 p-3 sm:p-4 rounded-3xl self-start">
                         <MessageSquare className="h-8 sm:h-10 w-8 sm:w-10 text-blue-600" />
@@ -501,8 +501,8 @@ export default function LandingPage() {
             {/* E-commerce */}
             <motion.div className="group" variants={itemVariants}>
               <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:-translate-y-1 h-full">
-                <CardHeader className="pb-6 sm:pb-8 pt-8 sm:pt-10 px-6 sm:px-10">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+                <CardHeader className="pb-6 sm:pb-8 pt-6 sm:pt-10 px-6 sm:px-10">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-0 sm:mb-6">
                     <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
                       <div className="bg-green-500/15 p-3 sm:p-4 rounded-3xl self-start">
                         <Globe className="h-8 sm:h-10 w-8 sm:w-10 text-green-600" />
