@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 import { useSession } from 'next-auth/react';
 import { loadStripe } from '@stripe/stripe-js';
@@ -28,6 +28,7 @@ import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
 import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/app/(frontend)/components/ui/tooltip';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -177,6 +178,7 @@ export default function PricingPage() {
     [clientSecret]
   );
 
+
   // Enhanced descriptions for each tier
   const tierDescriptions = {
     free: 'Great for trying things out',
@@ -197,53 +199,6 @@ export default function PricingPage() {
 
   return (
     <>
-      <style>
-        {`
-  .tooltip-container {
-    position: relative;
-    display: inline-block;
-  }
-
-  .tooltip-text {
-    text-decoration: underline;
-    text-decoration-style: dotted;
-    text-underline-offset: 4px;
-    color: inherit;
-    cursor: pointer;
-    transition: color 0.2s ease, text-decoration-color 0.2s ease;
-  }
-
-  .tooltip-text:hover {
-    text-decoration: underline;
-    text-decoration-style: solid;
-    color: var(--color-brand);
-  }
-
-  .tooltip {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #1f2937;
-    color: #ffffff;
-    padding: 12px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 9999;
-    min-width: 200px;
-    max-width: 300px;
-    font-size: 0.875rem;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
-  }
-
-  .tooltip-container:hover .tooltip {
-    visibility: visible;
-    opacity: 1;
-  }
-`}
-      </style>
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-brand/10 to-brand/5 border-b border-border">
         <div
@@ -300,7 +255,7 @@ export default function PricingPage() {
                 .map(([key, tier], idx, arr) => (
                   <div
                     key={key}
-                    className={`relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full max-w-sm lg:max-w-none mx-auto lg:mx-0 2xl:min-w-[360px] 2xl:max-w-[440px] hover:-translate-y-1 hover:-translate-x-1 ${
+                    className={`relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full max-w-sm lg:max-w-none mx-auto lg:mx-0 2xl:min-w-[360px] 2xl:max-w-[440px] hover:-translate-y-1 hover:-translate-x-1 z-1 ${
                       key === 'standard'
                         ? 'border-[3px] border-brand shadow-xl pt-8 sm:pt-10 md:pt-8'
                         : ''
@@ -423,24 +378,24 @@ export default function PricingPage() {
                           <li key={index} className="flex items-center gap-2">
                             <Check className="h-3 w-3 sm:h-4 sm:w-4 text-brand flex-shrink-0" />
                             {feature === 'Premium models included' ? (
-                              <div className="tooltip-container">
-                                <span className="text-xs sm:text-sm text-muted-foreground tooltip-text flex items-center gap-1">
-                                  {feature}
-                                  <Info className="h-3 w-3 sm:h-4 sm:w-4 text-brand" />
-                                </span>
-                                <div className="tooltip">
-                                  <p className="font-semibold mb-2">
-                                    Premium Models:
-                                  </p>
-                                  <ul className="list-disc pl-4 space-y-1">
-                                    {Object.entries(AGENT_MODELS).map(
-                                      ([model, displayName]) => (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1 cursor-pointer underline decoration-dotted underline-offset-4 hover:decoration-solid hover:text-brand transition-colors">
+                                    {feature}
+                                    <Info className="h-3 w-3 sm:h-4 sm:w-4 text-brand" />
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <div className="min-w-[200px] max-w-[300px]">
+                                    <p className="font-semibold mb-2">Premium Models:</p>
+                                    <ul className="list-disc pl-4 space-y-1">
+                                      {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
                                         <li key={model}>{displayName}</li>
-                                      )
-                                    )}
-                                  </ul>
-                                </div>
-                              </div>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
                             ) : (
                               <span className="text-xs sm:text-sm text-muted-foreground">
                                 {feature}
@@ -535,24 +490,24 @@ export default function PricingPage() {
                     <li key={index} className="flex items-center gap-2">
                       <Check className="h-3 w-3 sm:h-4 sm:w-4 text-brand flex-shrink-0" />
                       {feature === 'Premium models included' ? (
-                        <div className="tooltip-container">
-                          <span className="text-xs sm:text-sm text-muted-foreground tooltip-text flex items-center gap-1">
-                            {feature}
-                            <Info className="h-3 w-3 sm:h-4 sm:w-4 text-brand" />
-                          </span>
-                          <div className="tooltip">
-                            <p className="font-semibold mb-2">
-                              Premium Models:
-                            </p>
-                            <ul className="list-disc pl-4 space-y-1">
-                              {Object.entries(AGENT_MODELS).map(
-                                ([model, displayName]) => (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1 cursor-pointer underline decoration-dotted underline-offset-4 hover:decoration-solid hover:text-brand transition-colors">
+                              {feature}
+                              <Info className="h-3 w-3 sm:h-4 sm:w-4 text-brand" />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <div className="min-w-[200px] max-w-[300px]">
+                              <p className="font-semibold mb-2">Premium Models:</p>
+                              <ul className="list-disc pl-4 space-y-1">
+                                {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
                                   <li key={model}>{displayName}</li>
-                                )
-                              )}
-                            </ul>
-                          </div>
-                        </div>
+                                ))}
+                              </ul>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
                       ) : (
                         <span className="text-xs sm:text-sm text-muted-foreground">
                           {feature}
@@ -576,7 +531,7 @@ export default function PricingPage() {
 
           {/* Additional Credits Section */}
           {status !== 'loading' && (
-            <div className="bg-card p-6 sm:p-8 md:p-12 border-[3px] border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:-translate-x-1">
+            <div className="bg-card p-6 sm:p-8 md:p-12 border-[3px] border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:-translate-x-1 relative z-1">
               <div className="max-w-2xl mx-auto">
                 <h2
                   id="buy-credits"
@@ -751,6 +706,7 @@ export default function PricingPage() {
           </div>
         </div>
       )}
+
     </>
   );
 }
