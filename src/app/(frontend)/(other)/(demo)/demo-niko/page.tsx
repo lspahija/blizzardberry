@@ -1642,7 +1642,7 @@ export default function DemoPage() {
                 <div className="flex items-center justify-center space-x-2">
                   <div className="w-2 h-2 bg-rose-500 rounded-full animate-pulse"></div>
                   <span>AI is analyzing your request...</span>
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                  <div className="w-2 h-2 bg-rose-500 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
                 </div>
               </div>
             </div>
