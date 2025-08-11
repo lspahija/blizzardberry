@@ -1205,16 +1205,12 @@ export default function DemoPage() {
   const showDashboard = () => {
     console.log('=== DASHBOARD SHOWING ===');
     
-    // Just animate counters and create chart - no complex animations
+    // Start counters and chart at the same time
     setTimeout(() => {
-      console.log('Starting counter animation');
+      console.log('Starting counter animation and chart simultaneously');
       animateCounters();
-    }, 500);
-    
-    setTimeout(() => {
-      console.log('Creating chart');
       createChart();
-    }, 1000);
+    }, 500);
   };
 
   const startDashboardTransition = () => {
