@@ -6,6 +6,7 @@
     <title>BlizzardBerry Demo - Enhanced</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         /* CSS Custom Properties for easy theming and consistency */
         :root {
@@ -1090,32 +1091,6 @@
         <div class="demo-progress-bar" id="progressBar"></div>
     </div>
 
-    <!-- Demo Controls Panel -->
-    <div class="demo-controls" id="demoControls">
-        <!-- Play/Pause Button -->
-        <button class="play-pause-btn paused" id="playPauseBtn"></button>
-        
-        <div class="control-separator"></div>
-        
-        <!-- Speed Control -->
-        <div class="speed-control">
-            <span class="control-label">Speed</span>
-            <button class="speed-btn" data-speed="0.5">0.5x</button>
-            <button class="speed-btn active" data-speed="1">1x</button>
-            <button class="speed-btn" data-speed="2">2x</button>
-        </div>
-        
-        <div class="control-separator"></div>
-        
-        <!-- Scene Navigation -->
-        <div class="scene-navigation">
-            <span class="control-label">Scenes</span>
-            <div class="scene-dot active" data-scene="1" title="Create Action"></div>
-            <div class="scene-dot" data-scene="2" title="Chat & Dashboard"></div>
-            <div class="scene-dot" data-scene="3" title="Support Tickets"></div>
-            <div class="scene-dot" data-scene="4" title="Logo Finale"></div>
-        </div>
-    </div>
 
     <!-- Enhanced Mouse Cursor -->
     <div id="mouseCursor">
@@ -4242,973 +4217,408 @@
     </style>
 
     <script>
-        // Demo Controller Class for better organization
-        class DemoController {
+        // GSAP Animated Demo - "Filmski Set"
+        class GSAPDemo {
             constructor() {
-                this.currentScene = 0;
-                this.totalScenes = 4;
-                this.animationSpeed = 1; // Speed multiplier
-                this.timeouts = [];
-                this.intervals = [];
+                this.masterTimeline = gsap.timeline({ repeat: -1 });
                 this.currentChart = null;
-                this.isRunning = false;
-                this.isPaused = false;
-                this.startTime = Date.now();
-                this.totalDuration = 35000; // Total demo duration in ms - slowed for better comprehension
-                
                 this.init();
-                this.initControls();
             }
             
             init() {
-                // Hide loader after assets load
+                // Hide loader and start demo after assets load
                 window.addEventListener('load', () => {
                     setTimeout(() => {
                         document.getElementById('loader').classList.add('hidden');
-                        this.showControls();
-                        this.start();
+                        this.setupScenes();
+                        this.createMasterTimeline();
+                        this.masterTimeline.play();
                     }, 800);
                 });
             }
             
-            // Initialize demo controls
-            initControls() {
-                const playPauseBtn = document.getElementById('playPauseBtn');
-                const speedBtns = document.querySelectorAll('.speed-btn');
-                const sceneDots = document.querySelectorAll('.scene-dot');
-                
-                // Play/Pause functionality
-                playPauseBtn.addEventListener('click', () => {
-                    if (this.isPaused) {
-                        this.resume();
-                    } else {
-                        this.pause();
-                    }
-                });
-                
-                // Speed control
-                speedBtns.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const speed = parseFloat(btn.dataset.speed);
-                        this.setSpeed(speed);
-                        
-                        // Update active state
-                        speedBtns.forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                    });
-                });
-                
-                // Scene navigation
-                sceneDots.forEach(dot => {
-                    dot.addEventListener('click', () => {
-                        const scene = parseInt(dot.dataset.scene);
-                        this.jumpToScene(scene);
-                    });
-                });
-            }
-            
-            // Show controls panel
-            showControls() {
-                const controls = document.getElementById('demoControls');
-                controls.classList.add('visible');
-            }
-            
-            // Hide controls panel
-            hideControls() {
-                const controls = document.getElementById('demoControls');
-                controls.classList.add('hidden');
-            }
-            
-            // Pause demo
-            pause() {
-                this.isPaused = true;
-                this.clearAllTimers();
-                
-                const playPauseBtn = document.getElementById('playPauseBtn');
-                playPauseBtn.classList.remove('playing');
-                playPauseBtn.classList.add('paused');
-            }
-            
-            // Resume demo
-            resume() {
-                this.isPaused = false;
-                
-                const playPauseBtn = document.getElementById('playPauseBtn');
-                playPauseBtn.classList.remove('paused');
-                playPauseBtn.classList.add('playing');
-                
-                // Continue from current scene
-                this.continueFromCurrentScene();
-            }
-            
-            // Set animation speed
-            setSpeed(speed) {
-                this.animationSpeed = speed;
-            }
-            
-            // Jump to specific scene
-            jumpToScene(sceneNumber) {
-                this.currentScene = sceneNumber - 1;
-                this.clearAllTimers();
-                
-                // Update scene dots
-                this.updateSceneDots(sceneNumber);
-                
-                // Reset and go to scene
-                this.reset();
-                
-                if (sceneNumber === 1) {
-                    this.scene1();
-                } else if (sceneNumber === 2) {
-                    this.scene2();
-                } else if (sceneNumber === 3) {
-                    this.scene3();
-                } else if (sceneNumber === 4) {
-                    this.scene4();
-                }
-            }
-            
-            // Continue from current scene
-            continueFromCurrentScene() {
-                if (this.currentScene === 0) {
-                    this.scene1();
-                } else if (this.currentScene === 1) {
-                    this.scene2();
-                } else if (this.currentScene === 2) {
-                    this.scene3();
-                } else if (this.currentScene === 3) {
-                    this.scene4();
-                }
-            }
-            
-            // Update scene dots visual state
-            updateSceneDots(activeScene) {
-                const dots = document.querySelectorAll('.scene-dot');
-                dots.forEach((dot, index) => {
-                    const sceneNum = index + 1;
-                    dot.classList.remove('active', 'completed');
-                    
-                    if (sceneNum === activeScene) {
-                        dot.classList.add('active');
-                    } else if (sceneNum < activeScene) {
-                        dot.classList.add('completed');
-                    }
-                });
-            }
-            
-            // Progress bar management
-            updateProgress(percentage) {
-                const progressBar = document.getElementById('progressBar');
-                progressBar.style.width = `${percentage}%`;
-            }
-            
-            // Enhanced timeout wrapper with progress tracking
-            addTimeout(fn, delay) {
-                const adjustedDelay = delay / this.animationSpeed;
-                const timeout = setTimeout(() => {
-                    fn();
-                    // Update progress based on elapsed time
-                    const elapsed = Date.now() - this.startTime;
-                    const progress = Math.min((elapsed / this.totalDuration) * 100, 100);
-                    this.updateProgress(progress);
-                }, adjustedDelay);
-                this.timeouts.push(timeout);
-                return timeout;
-            }
-            
-            addInterval(fn, delay) {
-                const adjustedDelay = delay / this.animationSpeed;
-                const interval = setInterval(fn, adjustedDelay);
-                this.intervals.push(interval);
-                return interval;
-            }
-            
-            clearAllTimers() {
-                this.timeouts.forEach(timeout => clearTimeout(timeout));
-                this.intervals.forEach(interval => clearInterval(interval));
-                this.timeouts = [];
-                this.intervals = [];
-            }
-            
-            reset() {
-                this.clearAllTimers();
-                this.currentScene = 0;
-                this.startTime = Date.now();
-                this.updateProgress(0);
-                
-                // Reset all scenes and remove any classes
+            setupScenes() {
+                // Initially hide all scenes
                 document.querySelectorAll('[id^="scene"]').forEach(scene => {
-                    scene.style.display = 'none';
-                    scene.style.opacity = '1';
-                    scene.style.transform = '';
-                    scene.style.filter = '';
-                    scene.classList.remove('scene-enter', 'scene-exit');
+                    gsap.set(scene, { display: 'none', opacity: 0 });
                 });
-                
-                // Reset scene 1
+            }
+            
+            createMasterTimeline() {
+                this.masterTimeline
+                    .add(this.scene1Timeline(), 0)
+                    .add(this.scene2Timeline(), 8)
+                    .add(this.scene3Timeline(), 20)
+                    .add(this.scene4Timeline(), 30)
+                    .add(() => {
+                        // Update progress bar to 100%
+                        gsap.to('#progressBar', { width: '100%', duration: 0.5 });
+                    }, 35);
+            }
+            
+            // SCENE 1: Create Action Animation - 8 seconds
+            scene1Timeline() {
+                const tl = gsap.timeline();
                 const scene1 = document.getElementById('scene1');
-                scene1.style.display = 'flex';
-                scene1.style.transform = '';
-                scene1.style.filter = '';
+                const actionInput = document.getElementById('actionInput');
+                const createBtn = document.getElementById('createBtn');
                 
-                // Reset input and button
-                document.getElementById('actionInput').value = '';
-                document.getElementById('actionInput').classList.remove('focused');
-                document.getElementById('createBtn').classList.remove('success', 'hover', 'clicked');
-                document.getElementById('createBtn').innerHTML = 'Create Action';
-                document.getElementById('captionText').classList.remove('show');
-                document.getElementById('appContainer').classList.remove('active');
+                tl.set(scene1, { display: 'flex' })
+                  .to(scene1, { opacity: 1, duration: 0.5 })
+                  .to('#progressBar', { width: '10%', duration: 0.3 }, 0)
+                  .add(() => {
+                      // Typewriter effect
+                      this.typewriterEffect(actionInput, "Send welcome email to new users", 0.05);
+                  }, 1)
+                  .to(createBtn, { 
+                      scale: 0.95,
+                      duration: 0.1,
+                      yoyo: true,
+                      repeat: 1,
+                      ease: "power2.inOut"
+                  }, 5)
+                  .add(() => {
+                      // Success notification
+                      this.showSuccessNotification();
+                  }, 5.5)
+                  .to('#progressBar', { width: '25%', duration: 0.5 }, 6)
+                  .to(scene1, { opacity: 0, duration: 0.5 }, 7.5)
+                  .set(scene1, { display: 'none' });
                 
-                // Reset chat
-                document.getElementById('chatMessages').innerHTML = '';
-                const chatPanel = document.getElementById('chatPanel');
-                if (chatPanel) chatPanel.classList.remove('hidden');
-                
-                // Reset dashboard
-                const dashboardWindow = document.getElementById('dashboardWindow');
-                if (dashboardWindow) {
-                    dashboardWindow.classList.remove('visible');
-                    dashboardWindow.style.transform = '';
-                    dashboardWindow.style.opacity = '';
-                }
-                
-                // Reset scene 2
-                const scene2 = document.getElementById('scene2');
-                if (scene2) {
-                    scene2.classList.remove('scene-enter', 'scene-exit');
-                    scene2.style.transform = '';
-                    scene2.style.display = 'none';
-                }
-                
-                // Reset scene 3
-                const scene3 = document.getElementById('scene3-tickets');
-                if (scene3) {
-                    scene3.style.transform = '';
-                    scene3.style.opacity = '';
-                }
-                
-                // Reset ticket page
-                const ticketPage = document.querySelector('.ticket-page');
-                if (ticketPage) {
-                    ticketPage.classList.remove('visible');
-                    ticketPage.style.transform = '';
-                    ticketPage.style.opacity = '';
-                }
-                
-                // Reset metric values to original text
-                const metricValues = document.querySelectorAll('.metric-value');
-                const originalValues = ['$847K', '12.4K', '3.2%', '98%'];
-                metricValues.forEach((el, index) => {
-                    if (originalValues[index]) {
-                        el.textContent = originalValues[index];
-                    }
-                });
-                
-                // Destroy chart
-                if (this.currentChart) {
-                    this.currentChart.destroy();
-                    this.currentChart = null;
-                }
-                
-                // Clear finale container elements if they exist
-                const finaleContainer = document.getElementById('finaleContainer');
-                if (finaleContainer) {
-                    finaleContainer.querySelectorAll('.finale-logo-img, .finale-brand-title, .finale-brand-tagline, .finale-text').forEach(el => {
-                        el.style.transform = '';
-                        el.style.opacity = '';
-                        el.style.animation = '';
-                    });
-                }
-                
-                // Reset cursor
-                const cursor = document.getElementById('mouseCursor');
-                cursor.style.opacity = '0';
-                cursor.style.display = 'block';
-                cursor.style.left = '';
-                cursor.style.top = '';
+                return tl;
             }
             
-            start() {
-                this.reset();
-                this.isRunning = true;
-                this.isPaused = false;
-                
-                // Set play button to playing state
-                const playPauseBtn = document.getElementById('playPauseBtn');
-                playPauseBtn.classList.remove('paused');
-                playPauseBtn.classList.add('playing');
-                
-                // Update scene dots
-                this.updateSceneDots(1);
-                
-                // Ensure scene1 is visible
-                const scene1 = document.getElementById('scene1');
-                scene1.style.display = 'flex';
-                scene1.style.opacity = '1';
-                scene1.style.transform = '';
-                
-                this.addTimeout(() => {
-                    this.scene1();
-                }, 100);
-            }
-            
-            // SCENE 1 - Create Action with enhanced animations
-            scene1() {
-                console.log('Scene 1 starting...');
-                const cursor = document.getElementById('mouseCursor');
-                const input = document.getElementById('actionInput');
-                const btn = document.getElementById('createBtn');
-                const container = document.getElementById('appContainer');
-                
-                console.log('Elements found:', { cursor, input, btn, container });
-                
-                // Show mouse cursor
-                this.addTimeout(() => {
-                    console.log('Setting cursor opacity...');
-                    if (cursor) {
-                        cursor.style.opacity = '1';
-                        cursor.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-                    }
-                    
-                    // Move to input
-                    this.addTimeout(() => {
-                        const inputRect = input.getBoundingClientRect();
-                        cursor.style.left = (inputRect.left + 100) + 'px';
-                        cursor.style.top = (inputRect.top + inputRect.height/2) + 'px';
-                        
-                        // Click input
-                        this.addTimeout(() => {
-                            container.classList.add('active');
-                            input.classList.add('focused');
-                            input.focus();
-                            this.showClickEffect(cursor);
-                            
-                            // Start typing
-                            this.addTimeout(() => {
-                                this.typeText(input, 'Show Revenue Numbers for North America', () => {
-                                    // Show caption
-                                    document.getElementById('captionText').classList.add('show');
-                                    
-                                    // Move to button
-                                    this.addTimeout(() => {
-                                        const btnRect = btn.getBoundingClientRect();
-                                        cursor.style.left = (btnRect.left + btnRect.width/2) + 'px';
-                                        cursor.style.top = (btnRect.top + btnRect.height/2) + 'px';
-                                        
-                                        // Hover effect
-                                        this.addTimeout(() => {
-                                            btn.classList.add('hover');
-                                            this.showHoverEffect(cursor, true);
-                                            
-                                            // Click button
-                                            this.addTimeout(() => {
-                                                btn.classList.add('clicked');
-                                                this.showHoverEffect(cursor, false);
-                                                this.showClickEffect(cursor);
-                                                
-                                                this.addTimeout(() => {
-                                                    btn.classList.remove('clicked');
-                                                    btn.classList.add('success');
-                                                    btn.innerHTML = 'Action Created';
-                                                    
-                                                    // Go to scene 2
-                                                    this.addTimeout(() => {
-                                                        this.scene2();
-                                                    }, 1000);
-                                                }, 200);
-                                            }, 300);
-                                        }, 300);
-                                    }, 1000);
-                                });
-                            }, 500);
-                        }, 800);
-                    }, 800);
-                }, 500);
-            }
-            
-            // Enhanced typing effect with blinking cursor
-            typeText(element, text, callback) {
-                let i = 0;
-                element.classList.add('typing');
-                
-                const typing = this.addInterval(() => {
-                    if (i < text.length) {
-                        element.value += text[i];
-                        i++;
-                    } else {
-                        clearInterval(typing);
-                        element.classList.remove('typing');
-                        if (callback) callback();
-                    }
-                }, 80);
-            }
-            
-            // Enhanced click effect animation
-            showClickEffect(cursor) {
-                const effect = document.getElementById('clickEffect');
-                const pointer = cursor.querySelector('.mouse-pointer');
-                
-                // Mouse click state
-                pointer.classList.add('clicking');
-                setTimeout(() => {
-                    pointer.classList.remove('clicking');
-                }, 200);
-                
-                // Ripple effect
-                effect.classList.remove('active');
-                void effect.offsetWidth; // Force reflow
-                effect.classList.add('active');
-            }
-            
-            // Enhanced hover effect
-            showHoverEffect(cursor, isHovering) {
-                const pointer = cursor.querySelector('.mouse-pointer');
-                if (isHovering) {
-                    pointer.classList.add('hovering');
-                } else {
-                    pointer.classList.remove('hovering');
-                }
-            }
-            
-            // SCENE 2 - Chat and Dashboard
-            scene2() {
-                this.currentScene = 1;
-                this.updateSceneDots(2);
-                
-                const scene1 = document.getElementById('scene1');
+            // SCENE 2: Dashboard Animation - 12 seconds
+            scene2Timeline() {
+                const tl = gsap.timeline();
                 const scene2 = document.getElementById('scene2');
                 
-                // Exit scene 1 with animation
-                scene1.classList.add('scene-exit');
+                tl.set(scene2, { display: 'block' })
+                  .to(scene2, { opacity: 1, duration: 0.5 })
+                  .to('#progressBar', { width: '40%', duration: 0.3 }, 0)
+                  .add(() => {
+                      // Animate metric cards
+                      const cards = scene2.querySelectorAll('.metric-card');
+                      gsap.fromTo(cards, 
+                          { y: 30, opacity: 0 },
+                          { 
+                              y: 0, 
+                              opacity: 1, 
+                              duration: 0.6,
+                              stagger: 0.2,
+                              ease: "back.out(1.7)"
+                          }
+                      );
+                  }, 0.5)
+                  .add(() => {
+                      // Create and animate chart
+                      this.createAnimatedChart();
+                  }, 1)
+                  .add(() => {
+                      // Animate activity items
+                      const activities = scene2.querySelectorAll('.activity-item');
+                      gsap.fromTo(activities,
+                          { x: -50, opacity: 0 },
+                          {
+                              x: 0,
+                              opacity: 1,
+                              duration: 0.5,
+                              stagger: 0.3,
+                              ease: "power2.out"
+                          }
+                      );
+                  }, 2)
+                  .add(() => {
+                      // Animate chat
+                      this.animateChatMessages();
+                  }, 5)
+                  .to('#progressBar', { width: '60%', duration: 0.5 }, 10)
+                  .to(scene2, { opacity: 0, duration: 0.5 }, 11.5)
+                  .set(scene2, { display: 'none' });
                 
-                this.addTimeout(() => {
-                    scene1.style.display = 'none';
-                    scene2.style.display = 'flex';
-                    document.getElementById('mouseCursor').style.display = 'none';
-                    
-                    // Enter scene 2 with animation
-                    this.addTimeout(() => {
-                        scene2.classList.add('scene-enter');
-                    }, 50);
-                }, 400);
-                
-                this.addTimeout(() => {
-                    this.simulateChatConversation();
-                }, 1000);
+                return tl;
             }
             
-            simulateChatConversation() {
-                const chat = document.getElementById('chatMessages');
+            // SCENE 3: Support & Analytics Animation - 10 seconds
+            scene3Timeline() {
+                const tl = gsap.timeline();
+                const scene3 = document.getElementById('scene3');
                 
-                // User message
-                this.addMessage('user', 'JD', 'Show me revenue numbers for North America for the last 6 months.');
+                tl.set(scene3, { display: 'block' })
+                  .to(scene3, { opacity: 1, duration: 0.5 })
+                  .to('#progressBar', { width: '75%', duration: 0.3 }, 0)
+                  .add(() => {
+                      // Animate stat cards with bounce
+                      const statCards = scene3.querySelectorAll('.stat-card');
+                      gsap.fromTo(statCards,
+                          { scale: 0, rotation: 180 },
+                          {
+                              scale: 1,
+                              rotation: 0,
+                              duration: 0.8,
+                              stagger: 0.2,
+                              ease: "elastic.out(1, 0.5)"
+                          }
+                      );
+                  }, 0.5)
+                  .add(() => {
+                      // Animate support tickets
+                      const tickets = scene3.querySelectorAll('.support-ticket');
+                      gsap.fromTo(tickets,
+                          { y: 50, opacity: 0, rotationX: 90 },
+                          {
+                              y: 0,
+                              opacity: 1,
+                              rotationX: 0,
+                              duration: 0.6,
+                              stagger: 0.4,
+                              ease: "power3.out"
+                          }
+                      );
+                  }, 2)
+                  .add(() => {
+                      // Animate table rows
+                      const rows = scene3.querySelectorAll('tbody tr');
+                      gsap.fromTo(rows,
+                          { x: 100, opacity: 0 },
+                          {
+                              x: 0,
+                              opacity: 1,
+                              duration: 0.4,
+                              stagger: 0.15,
+                              ease: "power2.out"
+                          }
+                      );
+                  }, 5)
+                  .to('#progressBar', { width: '90%', duration: 0.5 }, 8)
+                  .to(scene3, { opacity: 0, duration: 0.5 }, 9.5)
+                  .set(scene3, { display: 'none' });
                 
-                // Agent typing
-                this.addTimeout(() => {
-                    this.showTypingIndicator(() => {
-                        this.addMessage('agent', '', 'Here are the revenue numbers for North America for the last 6 months, showing a 12.3% increase this month.');
-                        
-                        this.addTimeout(() => {
-                            this.showDashboard();
-                        }, 3000); // Slowed from 1800ms for better comprehension
-                    });
-                }, 1000);
+                return tl;
             }
             
-            addMessage(type, avatar, text) {
-                const chat = document.getElementById('chatMessages');
-                const message = document.createElement('div');
-                message.className = `message ${type}`;
-                message.innerHTML = `
-                    <div class="message-avatar">${avatar}</div>
-                    <div class="message-content">
-                        <div class="message-bubble">${text}</div>
-                    </div>
+            // SCENE 4: Logo Finale Animation - 5 seconds
+            scene4Timeline() {
+                const tl = gsap.timeline();
+                const scene4 = document.getElementById('scene4');
+                const finalLogo = scene4.querySelector('.final-logo');
+                const brandText = scene4.querySelector('.final-brand-text');
+                const tagline = scene4.querySelector('.final-tagline');
+                
+                tl.set(scene4, { display: 'flex' })
+                  .to(scene4, { opacity: 1, duration: 0.5 })
+                  .to('#progressBar', { width: '95%', duration: 0.3 }, 0)
+                  .fromTo(finalLogo,
+                      { scale: 0, rotation: 360, opacity: 0 },
+                      { 
+                          scale: 1, 
+                          rotation: 0, 
+                          opacity: 1, 
+                          duration: 1.2, 
+                          ease: "elastic.out(1, 0.3)" 
+                      }, 0.5)
+                  .fromTo(brandText,
+                      { y: 30, opacity: 0 },
+                      { 
+                          y: 0, 
+                          opacity: 1, 
+                          duration: 0.8, 
+                          ease: "power3.out" 
+                      }, 1.5)
+                  .fromTo(tagline,
+                      { y: 20, opacity: 0 },
+                      { 
+                          y: 0, 
+                          opacity: 1, 
+                          duration: 0.6, 
+                          ease: "power2.out" 
+                      }, 2.5)
+                  .to('#progressBar', { width: '100%', duration: 0.5 }, 3)
+                  .to([finalLogo, brandText, tagline], {
+                      scale: 1.05,
+                      duration: 0.3,
+                      yoyo: true,
+                      repeat: 1,
+                      ease: "power2.inOut"
+                  }, 3.5)
+                  .to(scene4, { opacity: 0, duration: 1 }, 4.5)
+                  .set(scene4, { display: 'none' })
+                  .to('#progressBar', { width: '0%', duration: 0.5 });
+                
+                return tl;
+            }
+            
+            // Helper Methods
+            typewriterEffect(element, text, speed) {
+                element.value = '';
+                const chars = text.split('');
+                const tl = gsap.timeline();
+                
+                chars.forEach((char, index) => {
+                    tl.add(() => {
+                        element.value += char;
+                    }, index * speed);
+                });
+                
+                return tl;
+            }
+            
+            showSuccessNotification() {
+                const notification = document.createElement('div');
+                notification.className = 'success-notification';
+                notification.innerHTML = `
+                    <div class="success-icon">✓</div>
+                    <div class="success-text">Action created successfully!</div>
                 `;
-                chat.appendChild(message);
-                chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
-            }
-            
-            showTypingIndicator(callback) {
-                const chat = document.getElementById('chatMessages');
-                const typing = document.createElement('div');
-                typing.className = 'message agent';
-                typing.innerHTML = `
-                    <div class="typing-indicator">
-                        <div class="typing-avatar"></div>
-                        <div class="typing-dots">
-                            <span class="typing-dot"></span>
-                            <span class="typing-dot"></span>
-                            <span class="typing-dot"></span>
-                        </div>
-                    </div>
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+                    z-index: 1000;
+                    font-family: 'Inter', sans-serif;
                 `;
-                chat.appendChild(typing);
-                chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
                 
-                this.addTimeout(() => {
-                    typing.remove();
-                    if (callback) callback();
-                }, 1000);
-            }
-            
-            showDashboard() {
-                // Start AI Architecture Animation
-                this.startAIArchitecture();
-            }
-            
-            startAIArchitecture() {
-                console.log('Starting AI Architecture Animation...');
+                document.body.appendChild(notification);
                 
-                // Korak 1: Highlight "North America" i učini chat proziran (0-2s)
-                this.highlightAndDimChat();
+                gsap.fromTo(notification,
+                    { x: 100, opacity: 0 },
+                    { x: 0, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }
+                );
                 
-                // Korak 2: Prikaz arhitekture slojeva (2-6s)  
-                this.addTimeout(() => {
-                    this.showArchitectureLayers();
-                }, 2000);
-                
-                // Korak 3: Putanja podatka (6-9s)
-                this.addTimeout(() => {
-                    this.animateDataFlow();
-                }, 6000);
-                
-                // Korak 4: Formiranje rezultata (9-11s)
-                this.addTimeout(() => {
-                    this.formResult();
-                }, 9000);
-                
-                // Korak 5: Povratak u chat (11-14s) 
-                this.addTimeout(() => {
-                    this.returnToChat();
-                }, 11000);
-            }
-            
-            // Korak 1: Highlight text i učini chat proziran
-            highlightAndDimChat() {
-                // Highlight "North America" u zadnjoj poruci
-                const messages = document.querySelectorAll('.message.user .message-bubble');
-                const lastMessage = messages[messages.length - 1];
-                if (lastMessage && lastMessage.textContent.includes('North America')) {
-                    const text = lastMessage.innerHTML;
-                    const highlightedText = text.replace('North America', '<span class="highlight-trigger">North America</span>');
-                    lastMessage.innerHTML = highlightedText;
-                }
-                
-                // Učini chat proziran i manji
-                const chatPanel = document.getElementById('chatPanel');
-                chatPanel.classList.add('analyzing');
-            }
-            
-            // Korak 2: Prikaz arhitekture slojeva
-            showArchitectureLayers() {
-                const aiArchitecture = document.getElementById('aiArchitecture');
-                const globalLayer = document.getElementById('globalLayer');
-                const revenueLayer = document.getElementById('revenueLayer');
-                const regionLayer = document.getElementById('regionLayer');
-                
-                // Prikaži AI arhitekturu
-                aiArchitecture.style.display = 'block';
-                
-                // Pokaži slojeve jedan po jedan s kašnjenjem
-                globalLayer.classList.add('active');
-                
-                this.addTimeout(() => {
-                    revenueLayer.classList.add('active');
-                }, 800);
-                
-                this.addTimeout(() => {
-                    regionLayer.classList.add('active');  
-                }, 1600);
-            }
-            
-            // Korak 3: Animacija putanje podatka
-            animateDataFlow() {
-                const dataParticle = document.getElementById('dataParticle');
-                const dataTrail = document.getElementById('dataTrail');
-                
-                // Pokreni putovanjem čestice
-                dataParticle.classList.add('traveling');
-                dataTrail.classList.add('active');
-            }
-            
-            // Korak 4: Formiranje rezultata
-            formResult() {
-                const resultIcon = document.getElementById('resultIcon');
-                
-                // Prikaži ikonu grafikona
-                resultIcon.classList.add('forming');
-            }
-            
-            // Korak 5: Povratak u chat
-            returnToChat() {
-                const aiArchitecture = document.getElementById('aiArchitecture');
-                const chatPanel = document.getElementById('chatPanel');
-                const resultIcon = document.getElementById('resultIcon');
-                
-                // Pokreni ekstrakciju ikone
-                resultIcon.classList.add('extracting');
-                
-                this.addTimeout(() => {
-                    // Ukloni arhitekturu
-                    aiArchitecture.style.display = 'none';
-                    
-                    // Vrati chat u normalno stanje
-                    chatPanel.classList.remove('analyzing');
-                    
-                    // Dodaj agent poruku s rezultatom
-                    this.addMessage('agent', '', 'Here are the revenue numbers for North America for the last 6 months, showing a 12.3% increase this month.');
-                    
-                    // Nastavi razgovor
-                    this.addTimeout(() => {
-                        this.addMessage('agent', '', 'Can I do anything else for you?');
-                        
-                        this.addTimeout(() => {
-                            this.scene3Setup();
-                        }, 1000);
-                    }, 2000);
-                    
-                    // Resetiraj animacije za sljedeći put
-                    this.resetAIArchitecture();
-                }, 2000);
-            }
-            
-            resetAIArchitecture() {
-                // Resetiraj sve elemente na početno stanje
-                const elements = [
-                    document.getElementById('globalLayer'),
-                    document.getElementById('revenueLayer'), 
-                    document.getElementById('regionLayer'),
-                    document.getElementById('dataParticle'),
-                    document.getElementById('dataTrail'),
-                    document.getElementById('resultIcon')
-                ];
-                
-                elements.forEach(el => {
-                    if (el) {
-                        el.className = el.className.replace(/ active| traveling| forming| extracting/g, '');
+                gsap.to(notification, {
+                    x: 100,
+                    opacity: 0,
+                    duration: 0.5,
+                    delay: 2,
+                    ease: "back.in(1.7)",
+                    onComplete: () => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
                     }
                 });
             }
             
-            
-            createChart() {
+            createAnimatedChart() {
+                const ctx = document.getElementById('performanceChart');
+                if (!ctx) return;
+                
                 if (this.currentChart) {
                     this.currentChart.destroy();
                 }
-                
-                const worldData = [12.5, 15.8, 14.2, 18.6, 21.3, 24.7];
-                const northAmericaData = [2.1, 2.8, 2.4, 3.2, 3.6, 4.1];
-                const ctx = document.getElementById('visitorChart').getContext('2d');
                 
                 this.currentChart = new Chart(ctx, {
-                    type: 'bar',
+                    type: 'line',
                     data: {
                         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                         datasets: [{
-                            label: 'Revenue ($M)',
-                            data: [0, 0, 0, 0, 0, 0], // Start from 0
-                            backgroundColor: 'rgba(244, 63, 94, 0.8)',
-                            borderColor: 'rgba(244, 63, 94, 1)',
-                            borderWidth: 2,
-                            borderRadius: 8
+                            label: 'Performance Score',
+                            data: [0, 0, 0, 0, 0, 0],
+                            borderColor: '#F43F5E',
+                            backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#F43F5E',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6
                         }]
                     },
                     options: {
-                        animation: {
-                            duration: 2500 // Slowed chart animation for better comprehension
-                        },
-                        plugins: { 
-                            legend: { display: false },
-                            tooltip: { 
-                                enabled: true,
-                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                                padding: 12,
-                                borderRadius: 8,
-                                displayColors: false,
-                                callbacks: {
-                                    label: function(context) {
-                                        return '$' + context.parsed.y.toFixed(1) + 'M';
-                                    }
-                                }
-                            }
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                max: 4.5, // Set fixed max value
-                                ticks: { 
-                                    stepSize: 0.5,
-                                    callback: function(value) {
-                                        return '$' + value + 'M';
-                                    },
-                                    font: { 
-                                        family: 'Inter', 
-                                        size: 12 
-                                    },
-                                    color: '#64748b'
-                                },
-                                grid: { 
-                                    color: 'rgba(226, 232, 240, 0.5)',
-                                    drawBorder: false,
-                                    borderDash: [5, 5]
+                                max: 100,
+                                grid: { color: 'rgba(244, 63, 94, 0.1)' },
+                                ticks: {
+                                    color: '#64748b',
+                                    font: { family: 'Inter', size: 12 }
                                 }
                             },
                             x: {
+                                grid: { color: 'rgba(244, 63, 94, 0.1)' },
                                 ticks: {
-                                    font: { 
-                                        family: 'Inter', 
-                                        size: 12,
-                                        weight: '600'
-                                    },
-                                    color: '#374151'
-                                },
-                                grid: { display: false }
+                                    color: '#64748b',
+                                    font: { family: 'Inter', size: 12 }
+                                }
                             }
                         }
                     }
                 });
                 
-                // Animate chart bars manually to sync with metric counting
-                this.addTimeout(() => {
-                    this.animateChartBars(northAmericaData);
-                }, 600); // Start when metric counting starts
-            }
-            
-            animateChartBars(targetData, chart = null) {
-                const chartToAnimate = chart || this.currentChart;
-                if (!chartToAnimate) return;
+                // Animate chart data with GSAP
+                const targetData = [65, 75, 80, 85, 90, 95];
+                const animData = { values: [0, 0, 0, 0, 0, 0] };
                 
-                const steps = 40; // 40 animation steps
-                const stepDuration = 50; // 50ms per step = 2000ms total
-                let currentStep = 0;
-                
-                const animateStep = () => {
-                    if (currentStep >= steps || !chartToAnimate) return;
-                    
-                    const progress = currentStep / steps;
-                    const easedProgress = this.easeOutCubic(progress);
-                    
-                    // Update all bars simultaneously
-                    targetData.forEach((targetValue, index) => {
-                        const currentValue = targetValue * easedProgress;
-                        chartToAnimate.data.datasets[0].data[index] = currentValue;
-                    });
-                    
-                    chartToAnimate.update('none'); // Update without animation
-                    
-                    currentStep++;
-                    if (currentStep < steps) {
-                        this.addTimeout(animateStep, stepDuration);
+                gsap.to(animData, {
+                    values: targetData,
+                    duration: 2.5,
+                    ease: "power2.out",
+                    onUpdate: () => {
+                        this.currentChart.data.datasets[0].data = [...animData.values];
+                        this.currentChart.update('none');
                     }
-                };
-                
-                animateStep();
-            }
-            
-            easeOutCubic(t) {
-                return 1 - Math.pow(1 - t, 3);
-            }
-            
-            animateMetricValues() {
-                // Animate the metric cards values with counting effect
-                const metrics = [
-                    { element: document.querySelector('.metric-card:nth-child(1) .metric-value'), target: 847, suffix: 'K', prefix: '$' },
-                    { element: document.querySelector('.metric-card:nth-child(2) .metric-value'), target: 12.4, suffix: 'K', prefix: '' },
-                    { element: document.querySelector('.metric-card:nth-child(3) .metric-value'), target: 3.2, suffix: '%', prefix: '' },
-                    { element: document.querySelector('.metric-card:nth-child(4) .metric-value'), target: 98, suffix: '%', prefix: '' }
-                ];
-                
-                metrics.forEach((metric, index) => {
-                    if (!metric.element) return;
-                    
-                    let current = 0;
-                    const increment = metric.target / 30; // 30 steps for smooth animation
-                    
-                    this.addTimeout(() => {
-                        const timer = this.addInterval(() => {
-                            current += increment;
-                            if (current >= metric.target) {
-                                current = metric.target;
-                                clearInterval(timer);
-                            }
-                            
-                            let displayValue;
-                            if (metric.target > 10 && metric.suffix !== '%') {
-                                displayValue = Math.round(current);
-                            } else {
-                                displayValue = current.toFixed(1);
-                            }
-                            
-                            metric.element.textContent = `${metric.prefix}${displayValue}${metric.suffix}`;
-                        }, 60);
-                    }, index * 150); // Stagger each metric by 150ms
                 });
             }
             
-            // SCENE 3 - Support Tickets
-            scene3Setup() {
-                this.addMessage('user', 'JD', 'Summarize today\'s support tickets.');
+            animateChatMessages() {
+                const chatMessages = document.getElementById('chatMessages');
+                if (!chatMessages) return;
                 
-                this.addTimeout(() => {
-                    this.showTypingIndicator(() => {
-                        const ticketSummary = `
-                            <div class="ticket-summary">
-                                <div class="ticket-header">Today's Support Overview</div>
-                                <div class="ticket-item" style="animation-delay: 0.1s;">
-                                    <div class="ticket-icon resolved">✓</div>
-                                    <div class="ticket-details">
-                                        <div class="ticket-count">3 Resolved</div>
-                                        <div class="ticket-desc">2x billing, 1x feature request</div>
-                                    </div>
-                                </div>
-                                <div class="ticket-item" style="animation-delay: 0.3s;">
-                                    <div class="ticket-icon open">!</div>
-                                    <div class="ticket-details">
-                                        <div class="ticket-count">2 Open</div>
-                                        <div class="ticket-desc">1x high-priority, 1x pending</div>
-                                    </div>
-                                </div>
-                            </div>
+                const messages = [
+                    { type: 'received', text: 'Hey! How can I help you today?' },
+                    { type: 'sent', text: 'I need help with my account settings' },
+                    { type: 'received', text: 'I can help with that! What specific setting would you like to change?' }
+                ];
+                
+                chatMessages.innerHTML = '';
+                
+                const tl = gsap.timeline();
+                
+                messages.forEach((message, index) => {
+                    tl.add(() => {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = `chat-message ${message.type}`;
+                        messageDiv.innerHTML = `
+                            <div class="message-content">${message.text}</div>
+                            <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                         `;
+                        messageDiv.style.opacity = '0';
+                        messageDiv.style.transform = 'translateY(20px)';
                         
-                        const chat = document.getElementById('chatMessages');
-                        const message = document.createElement('div');
-                        message.className = 'message agent';
-                        message.innerHTML = `
-                            <div class="message-avatar"></div>
-                            <div class="message-content">
-                                <div class="message-bubble">${ticketSummary}</div>
-                            </div>
-                        `;
-                        chat.appendChild(message);
-                        chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+                        chatMessages.appendChild(messageDiv);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
                         
-                        this.addTimeout(() => {
-                            this.addMessage('agent', '', 'Do you want the details for the high-priority ticket?');
-                            
-                            this.addTimeout(() => {
-                                this.addMessage('user', 'JD', 'Yes');
-                                
-                                this.addTimeout(() => {
-                                    this.scene3();
-                                }, 1000);
-                            }, 1000);
-                        }, 1000);
-                    });
-                }, 800);
-            }
-            
-            scene3() {
-                this.currentScene = 2;
-                this.updateSceneDots(3);
-                
-                const scene2 = document.getElementById('scene2');
-                const scene3 = document.getElementById('scene3-tickets');
-                
-                // Ticket page is already visible by default - no separate animation needed
-                
-                // Start perfectly synchronized sliding transition - with explicit initial states
-                scene2.classList.add('smooth-scene-slide-out');
-                
-                // Set scene3 initial state before animation
-                scene3.style.display = 'flex';
-                scene3.style.transform = 'translateY(-100vh) scale(0.9)';
-                scene3.style.opacity = '0';
-                scene3.style.filter = 'blur(4px)';
-                
-                // Start scene3 animation with tiny delay for perfect sync
-                this.addTimeout(() => {
-                    scene3.classList.add('smooth-scene-slide-in');
-                }, 50);
-                
-                // Complete transition cleanup - adjusted for diagonal fade animation
-                this.addTimeout(() => {
-                    scene2.style.display = 'none';
-                    scene2.classList.remove('smooth-scene-slide-out');
-                    scene3.classList.remove('smooth-scene-slide-in');
-                    // Keep element visible after animation
-                    scene3.style.opacity = '1';
-                    scene3.style.transform = 'translateY(0) scale(1)';
-                    scene3.style.filter = 'blur(0px)';
-                    
-                    this.addTimeout(() => {
-                        this.scene4();
-                    }, 5400);
-                }, 1200); // Match slide-out-down animation duration
-            }
-            
-            showTicketDashboard() {
-                const ticketPage = document.querySelector('.ticket-page');
-                if (ticketPage) {
-                    ticketPage.classList.add('visible');
-                }
-            }
-            
-            // SCENE 4 - Elegant Logo Finale
-            scene4() {
-                this.currentScene = 3;
-                this.updateSceneDots(4);
-                
-                const scene3 = document.getElementById('scene3-tickets');
-                
-                // Exit scene 3 with dramatic animation
-                scene3.classList.add('scene-exit');
-                
-                this.addTimeout(() => {
-                    scene3.style.display = 'none';
-                    const scene4 = document.getElementById('scene4');
-                    scene4.style.display = 'flex';
-                    
-                    // Scene 4 starts in initial transformed state (defined in CSS)
-                    this.addTimeout(() => {
-                        scene4.classList.add('scene-enter');
-                        
-                        // Mark progress complete and restart demo
-                        this.addTimeout(() => {
-                            this.updateProgress(100);
-                            
-                            // Mark all scenes as completed
-                            this.updateSceneDots(5); // 5 to mark all as completed
-                            
-                            this.addTimeout(() => {
-                                if (!this.isPaused) {
-                                    this.start();
-                                }
-                            }, 6000);
-                        }, 2000);
-                    }, 200);
-                }, 1000);
+                        gsap.to(messageDiv, {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.5,
+                            ease: "back.out(1.7)"
+                        });
+                    }, index * 1.5);
+                });
             }
         }
         
-        // Initialize demo
-        const demo = new DemoController();
-        
-        // Debug check
-        console.log('Demo initialized');
-        
-        // Ensure initial visibility
+        // Initialize GSAP Demo
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded');
-            const scene1 = document.getElementById('scene1');
-            if (scene1) {
-                scene1.style.display = 'flex';
-                scene1.style.opacity = '1';
-                console.log('Scene1 made visible');
-            }
+            console.log('DOM loaded, initializing GSAP demo...');
+            new GSAPDemo();
         });
-        
-        // Start demo after a short delay
-        setTimeout(() => {
-            console.log('Starting demo...');
-            const scene1 = document.getElementById('scene1');
-            if (scene1) {
-                scene1.style.display = 'flex';
-                scene1.style.opacity = '1';
-            }
-            demo.start();
-        }, 1000);
     </script>
 </body>
 </html>
