@@ -27,6 +27,8 @@ import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
 import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/app/(frontend)/components/ui/tooltip';
+import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -269,7 +271,7 @@ export default function UpgradePage() {
     enterprise: 'Custom solutions for large organizations',
   };
 
-  // Feature highlights for each tier
+  // Feature highlights for each tier (only real features)
   const tierFeatures = {
     free: [],
     hobby: ['Premium models included', 'Support'],
@@ -281,8 +283,8 @@ export default function UpgradePage() {
   if (loadingSubscription) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="bg-card p-8 rounded-2xl border border-border shadow-2xl flex flex-col items-center gap-4">
-          <Loader2 className="h-12 w-12 text-secondary animate-spin" />
+        <div className="bg-card p-8 rounded-2xl border-[3px] border-border shadow-2xl flex flex-col items-center gap-4">
+          <Loader2 className="h-12 w-12 text-brand animate-spin" />
           <h3 className="text-lg font-semibold text-foreground">
             Loading subscription details...
           </h3>
@@ -293,218 +295,197 @@ export default function UpgradePage() {
 
   return (
     <>
-      <style>
-        {`
-  .tooltip-container {
-    position: relative;
-    display: inline-block;
-  }
-
-  .tooltip-text {
-    text-decoration: underline;
-    text-decoration-style: dotted;
-    text-underline-offset: 4px;
-    color: inherit;
-    cursor: pointer;
-    transition: color 0.2s ease, text-decoration-color 0.2s ease;
-  }
-
-  .tooltip-text:hover {
-    text-decoration: underline;
-    text-decoration-style: solid;
-    color: #3b82f6;
-  }
-
-  .tooltip {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #1f2937;
-    color: #ffffff;
-    padding: 12px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 20;
-    min-width: 200px;
-    max-width: 300px;
-    font-size: 0.875rem;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
-  }
-
-  .tooltip-container:hover .tooltip {
-    visibility: visible;
-    opacity: 1;
-  }
-`}
-      </style>
-      <div className="bg-background">
-        <div className="container mx-auto px-4 py-20 max-w-7xl">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-brand/10 to-brand/5 border-b border-border">
+        <div
+          className={`container mx-auto px-6 sm:px-8 md:px-2 lg:px-2 xl:px-8 py-12 sm:py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}
+        >
+          <div className="text-center mb-12 sm:mb-16">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
               Upgrade
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
+            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-8 mb-6 sm:mb-8">
               {userSubscription
                 ? `Upgrade your ${userSubscription.tier} plan to unlock more features.`
-                : 'Choose the perfect plan for your AI agent needs. Start free and scale as you grow.'}
+                : 'Choose the perfect plan for your AI agent needs.<br />Start free and scale as you grow.'}
             </p>
 
-            <div className="flex justify-center gap-4 mb-12">
-              <button
-                className={`px-6 py-3 rounded-xl border font-semibold transition-all duration-200 ${
-                  billingCycle === 'monthly'
-                    ? 'bg-blue-100 text-foreground border-blue-200 shadow'
-                    : 'bg-background text-foreground border-border hover:bg-muted'
-                }`}
-                onClick={() => setBillingCycle('monthly')}
-              >
-                Monthly
-              </button>
-              <button
-                className={`px-6 py-3 rounded-xl border font-semibold transition-all duration-200 flex items-center gap-2 ${
-                  billingCycle === 'yearly'
-                    ? 'bg-blue-100 text-foreground border-blue-200 shadow'
-                    : 'bg-background text-foreground border-border hover:bg-muted'
-                }`}
-                onClick={() => setBillingCycle('yearly')}
-              >
-                <span>Yearly</span>
-                <span className="inline-block rounded-full bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 ml-2">
-                  Save 20%
-                </span>
-              </button>
-            </div>
+            {/* Billing Toggle */}
+            {status !== 'loading' && (
+              <div className="flex justify-center gap-3 sm:gap-4 mb-8 sm:mb-12">
+                <button
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border-2 font-semibold transition-all duration-200 text-sm sm:text-base ${
+                    billingCycle === 'monthly'
+                      ? 'bg-blue-100 text-foreground border-blue-300 shadow-md'
+                      : 'bg-background text-foreground border-border hover:bg-muted hover:border-muted-foreground/20'
+                  }`}
+                  onClick={() => setBillingCycle('monthly')}
+                >
+                  Monthly
+                </button>
+                <button
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border-2 font-semibold transition-all duration-200 flex items-center gap-2 text-sm sm:text-base ${
+                    billingCycle === 'yearly'
+                      ? 'bg-blue-100 text-foreground border-blue-300 shadow-md'
+                      : 'bg-background text-foreground border-border hover:bg-muted hover:border-muted-foreground/20'
+                  }`}
+                  onClick={() => setBillingCycle('yearly')}
+                >
+                  <span>Yearly</span>
+                  <span className="inline-block rounded-full bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 ml-2">
+                    Save 20%
+                  </span>
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Pricing Cards - Responsive Grid Layout */}
-          <div className="flex justify-center mb-20">
-            <div className="flex flex-wrap justify-center gap-6 max-w-7xl w-full">
-              {availableTiers.map(([key, tier]) => (
+          {/* Pricing Cards */}
+          {status === 'loading' ? (
+            <div className="text-center text-muted-foreground mb-16 sm:mb-20">
+              Loading pricing options...
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16 sm:mb-20 pt-6 justify-items-center max-w-7xl mx-auto">
+              {availableTiers.map(([key, tier], idx, arr) => (
                 <div
                   key={key}
-                  className={`relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm ${
+                  className={`relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full max-w-sm hover:-translate-y-1 hover:-translate-x-1 z-1 ${
                     key === 'standard'
-                      ? 'border-2 border-secondary shadow-lg pt-8 sm:pt-10 md:pt-8'
+                      ? 'border-[3px] border-brand shadow-xl pt-8 sm:pt-10 md:pt-8'
                       : ''
                   }`}
-                  style={{ minHeight: 480 }}
+                  style={{ minHeight: 480, minWidth: '0' }}
                 >
+                  {/* -20% badge for yearly */}
                   {billingCycle === 'yearly' && (
-                    <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
+                    <span className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
                       -20%
                     </span>
                   )}
                   {key === 'standard' && (
-                    <div className="absolute -top-1 sm:-top-2 md:-top-4 left-1/2 transform -translate-x-1/2 z-10">
+                    <div className="absolute -top-4 sm:-top-6 left-1/2 transform -translate-x-1/2 z-10">
                       <span
-                        className="bg-secondary text-secondary-foreground text-xs font-bold px-2 sm:px-3 py-1 rounded-full shadow border border-border"
-                        style={{ letterSpacing: 0.5 }}
+                        className="bg-brand text-primary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-brand whitespace-nowrap"
+                        style={{ letterSpacing: 1 }}
                       >
                         Most Popular
                       </span>
                     </div>
                   )}
 
-                  <div className="mb-8">
+                  <div className="mb-6 sm:mb-8">
                     <div className="flex items-center gap-2 mb-2">
+                      {key === 'free' && (
+                        <Shovel className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
+                      )}
                       {key === 'hobby' && (
-                        <Zap className="h-6 w-6 text-secondary" />
+                        <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
                       )}
                       {key === 'standard' && (
-                        <Star className="h-6 w-6 text-secondary" />
+                        <Star className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
                       )}
                       {key === 'pro' && (
-                        <Shield className="h-6 w-6 text-secondary" />
+                        <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
                       )}
-                      <h2 className="text-2xl font-bold text-foreground">
+                      {key === 'enterprise' && (
+                        <Users className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
+                      )}
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                         {tier.name}
                       </h2>
                     </div>
                     <div className="mb-2 flex items-end gap-2">
                       {billingCycle === 'yearly' ? (
-                        <>
-                          <span className="text-xl font-semibold text-muted-foreground line-through mr-2">
+                        <div className="flex flex-row items-end gap-0.5">
+                          <span className="text-lg sm:text-xl font-semibold text-muted-foreground line-through mr-2">
                             ${tier.monthlyPrice}
                           </span>
-                          <span className="text-4xl font-bold text-foreground">
-                            ${(tier.yearlyPrice / 12).toFixed(0)}
+                          <span className="flex flex-row items-end gap-0.5">
+                            <span className="text-3xl sm:text-4xl font-bold text-foreground">
+                              ${(tier.yearlyPrice / 12).toFixed(0)}
+                            </span>
+                            <span className="text-sm sm:text-base text-muted-foreground mb-1 align-bottom mr-1">
+                              /month
+                            </span>
                           </span>
-                        </>
+                        </div>
                       ) : (
-                        <span className="text-4xl font-bold text-foreground">
-                          ${tier.monthlyPrice}
-                        </span>
+                        <div className="flex flex-row items-end gap-0.5">
+                          <span className="text-3xl sm:text-4xl font-bold text-foreground">
+                            ${tier.monthlyPrice}
+                          </span>
+                          <span className="text-sm sm:text-base text-muted-foreground mb-1 align-bottom mr-1">
+                            /month
+                          </span>
+                        </div>
                       )}
-                      <span className="text-base text-muted-foreground mb-1 align-bottom">
-                        /month
-                      </span>
                     </div>
                     {billingCycle === 'yearly' && (
                       <p className="text-xs text-muted-foreground mt-1">
                         ${tier.yearlyPrice} billed annually
                       </p>
                     )}
-                    <p className="text-muted-foreground font-medium mt-2">
+                    <p className="text-sm sm:text-base text-muted-foreground font-medium mt-2">
                       {tierDescriptions[key as keyof typeof tierDescriptions]}
                     </p>
                   </div>
 
-                  <div className="space-y-3 mb-8">
-                    <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                      <span className="text-sm font-medium text-foreground">
+                  {/* Key Features */}
+                  <div className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                    <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                      <span className="text-xs sm:text-sm font-medium text-foreground">
                         Credits
                       </span>
-                      <span className="text-base font-bold text-foreground">
+                      <span className="text-sm sm:text-base font-bold text-foreground">
                         {tier.credits.toLocaleString()}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                      <span className="text-sm font-medium text-foreground">
+                    <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                      <span className="text-xs sm:text-sm font-medium text-foreground">
                         Agents
                       </span>
-                      <span className="text-base font-bold text-foreground">
+                      <span className="text-sm sm:text-base font-bold text-foreground">
                         {tier.agents}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                      <span className="text-sm font-medium text-foreground">
+                    <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                      <span className="text-xs sm:text-sm font-medium text-foreground">
                         Actions/Agent
                       </span>
-                      <span className="text-base font-bold text-foreground">
+                      <span className="text-sm sm:text-base font-bold text-foreground">
                         {tier.actionsPerAgent}
                       </span>
                     </div>
                   </div>
 
-                  <ul className="space-y-2 mb-8">
+                  {/* Feature List */}
+                  <ul className="space-y-2 mb-6 sm:mb-8">
                     {tierFeatures[key as keyof typeof tierFeatures].map(
                       (feature, index) => (
                         <li key={index} className="flex items-center gap-2">
-                          <Check className="h-4 w-4 text-secondary flex-shrink-0" />
+                          <Check className="h-3 w-3 sm:h-4 sm:w-4 text-brand flex-shrink-0" />
                           {feature === 'Premium models included' ? (
-                            <div className="tooltip-container">
-                              <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
-                                {feature}
-                                <Info className="h-4 w-4 text-secondary" />
-                              </span>
-                              <div className="tooltip">
-                                <p className="font-semibold mb-2">
-                                  Premium Models:
-                                </p>
-                                <ul className="list-disc pl-4 space-y-1">
-                                  {Object.entries(AGENT_MODELS).map(
-                                    ([model, displayName]) => (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1 cursor-pointer underline decoration-dotted underline-offset-4 hover:decoration-solid hover:text-brand transition-colors">
+                                  {feature}
+                                  <Info className="h-3 w-3 sm:h-4 sm:w-4 text-brand" />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <div className="min-w-[200px] max-w-[300px]">
+                                  <p className="font-semibold mb-2">Premium Models:</p>
+                                  <ul className="list-disc pl-4 space-y-1">
+                                    {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
                                       <li key={model}>{displayName}</li>
-                                    )
-                                  )}
-                                </ul>
-                              </div>
-                            </div>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
                           ) : (
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-xs sm:text-sm text-muted-foreground">
                               {feature}
                             </span>
                           )}
@@ -513,192 +494,211 @@ export default function UpgradePage() {
                     )}
                   </ul>
 
-                  <button
-                    className={`mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border ${
-                      key === 'standard'
-                        ? 'bg-secondary text-secondary-foreground border-secondary hover:bg-secondary/90'
-                        : 'bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10'
-                    } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
-                    onClick={() => handleSubscribe(key)}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <div className="flex items-center justify-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Processing...
-                      </div>
-                    ) : (
-                      'Upgrade'
-                    )}
-                  </button>
+                  <div className="mt-auto flex justify-center">
+                    <RetroButton
+                      className={`w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold text-sm sm:text-base ${
+                        key === 'standard'
+                          ? 'bg-brand text-primary-foreground hover:bg-brand/90'
+                          : 'bg-background text-foreground hover:bg-muted hover:text-foreground'
+                      } ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                      onClick={() => handleSubscribe(key)}
+                      disabled={isLoading}
+                      shadowColor="foreground"
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                          Processing...
+                        </div>
+                      ) : (
+                        'Upgrade'
+                      )}
+                    </RetroButton>
+                  </div>
                 </div>
               ))}
 
-              {/* Enterprise Card - Always included */}
+              {/* Enterprise Card */}
               <div
-                className="relative bg-card p-8 border border-border rounded-2xl transition-all duration-300 hover:shadow-lg flex flex-col items-stretch w-full max-w-sm"
-                style={{ minHeight: 480 }}
+                className="relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full max-w-sm hover:-translate-y-1 hover:-translate-x-1"
+                style={{ minHeight: 480, minWidth: '0' }}
               >
-                <div className="mb-8">
+                <div className="mb-6 sm:mb-8">
                   <div className="flex items-center gap-2 mb-2">
-                    <Users className="h-6 w-6 text-secondary" />
-                    <h2 className="text-2xl font-bold text-foreground">
+                    <Users className="h-5 w-5 sm:h-6 sm:w-6 text-brand" />
+                    <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                       Enterprise
                     </h2>
                   </div>
                   <div className="mb-2 flex items-end gap-2">
-                    <span className="text-4xl font-bold text-foreground">
+                    <span className="text-3xl sm:text-4xl font-bold text-foreground">
                       Custom
                     </span>
                   </div>
-                  <p className="text-muted-foreground font-medium mt-2">
+                  <p className="text-sm sm:text-base text-muted-foreground font-medium mt-2">
                     {tierDescriptions.enterprise}
                   </p>
                 </div>
-                <div className="space-y-3 mb-8">
-                  <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                    <span className="text-sm font-medium text-foreground">
+                <div className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                  <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                    <span className="text-xs sm:text-sm font-medium text-foreground">
                       Credits
                     </span>
-                    <span className="text-base font-bold text-foreground">
+                    <span className="text-sm sm:text-base font-bold text-foreground">
                       Unlimited
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                    <span className="text-sm font-medium text-foreground">
+                  <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                    <span className="text-xs sm:text-sm font-medium text-foreground">
                       Agents
                     </span>
-                    <span className="text-base font-bold text-foreground">
+                    <span className="text-sm sm:text-base font-bold text-foreground">
                       Unlimited
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-2 bg-muted/40 rounded">
-                    <span className="text-sm font-medium text-foreground">
+                  <div className="flex items-center justify-between p-2 sm:p-2 bg-muted/40 rounded">
+                    <span className="text-xs sm:text-sm font-medium text-foreground">
                       Support
                     </span>
-                    <span className="text-base font-bold text-foreground">
+                    <span className="text-sm sm:text-base font-bold text-foreground">
                       24/7
                     </span>
                   </div>
                 </div>
-                <ul className="space-y-2 mb-8">
+                <ul className="space-y-2 mb-6 sm:mb-8">
                   {tierFeatures.enterprise.map((feature, index) => (
                     <li key={index} className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-secondary flex-shrink-0" />
+                      <Check className="h-3 w-3 sm:h-4 sm:w-4 text-brand flex-shrink-0" />
                       {feature === 'Premium models included' ? (
-                        <div className="tooltip-container">
-                          <span className="text-sm text-muted-foreground tooltip-text flex items-center gap-1">
-                            {feature}
-                            <Info className="h-4 w-4 text-secondary" />
-                          </span>
-                          <div className="tooltip">
-                            <p className="font-semibold mb-2">
-                              Premium Models:
-                            </p>
-                            <ul className="list-disc pl-4 space-y-1">
-                              {Object.entries(AGENT_MODELS).map(
-                                ([model, displayName]) => (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1 cursor-pointer underline decoration-dotted underline-offset-4 hover:decoration-solid hover:text-brand transition-colors">
+                              {feature}
+                              <Info className="h-3 w-3 sm:h-4 sm:w-4 text-brand" />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <div className="min-w-[200px] max-w-[300px]">
+                              <p className="font-semibold mb-2">Premium Models:</p>
+                              <ul className="list-disc pl-4 space-y-1">
+                                {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
                                   <li key={model}>{displayName}</li>
-                                )
-                              )}
-                            </ul>
-                          </div>
-                        </div>
+                                ))}
+                              </ul>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
                       ) : (
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-xs sm:text-sm text-muted-foreground">
                           {feature}
                         </span>
                       )}
                     </li>
                   ))}
                 </ul>
-                <button
-                  className="mt-auto w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 border bg-background text-foreground border-border hover:border-secondary hover:bg-secondary/10"
-                  onClick={() => setShowEnterpriseForm(true)}
+                <div className="mt-auto flex justify-center">
+                  <RetroButton
+                    className="w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold bg-background text-foreground hover:bg-muted hover:text-foreground text-sm sm:text-base"
+                    onClick={() => setShowEnterpriseForm(true)}
+                    shadowColor="foreground"
+                  >
+                    Contact Sales
+                  </RetroButton>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Additional Credits Section */}
+          {status !== 'loading' && (
+            <div className="bg-card p-6 sm:p-8 md:p-12 border-[3px] border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:-translate-x-1 relative z-1">
+              <div className="max-w-2xl mx-auto">
+                <h2
+                  id="buy-credits"
+                  className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-foreground"
                 >
-                  Contact Sales
-                </button>
-              </div>
-            </div>
-          </div>
+                  Need More Credits?
+                </h2>
+                <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-muted-foreground">
+                  Buy additional credits anytime. They never expire and are
+                  perfect for scaling your AI agents.
+                </p>
 
-          <div className="bg-card p-8 md:p-12 border border-border rounded-2xl text-center mb-16 shadow-sm">
-            <div className="max-w-2xl mx-auto">
-              <h2
-                id="buy-credits"
-                className="text-3xl md:text-4xl font-bold mb-4 text-foreground"
-              >
-                Need More Credits?
-              </h2>
-              <p className="text-lg md:text-xl mb-8 text-muted-foreground">
-                Buy additional credits anytime. They never expire and are
-                perfect for scaling your AI agents.
-              </p>
-
-              <div className="bg-background p-6 rounded-xl border border-border mb-8 flex flex-col md:flex-row items-center justify-center gap-4">
-                <div className="text-center md:text-left">
-                  <span className="text-4xl md:text-5xl font-bold text-foreground block">
-                    {pricing.oneTimePurchase.credits.toLocaleString()}
-                  </span>
-                  <span className="text-lg text-muted-foreground">credits</span>
-                </div>
-                <div className="text-2xl text-muted-foreground">for</div>
-                <div className="text-center md:text-left">
-                  <span className="text-4xl md:text-5xl font-bold text-foreground-muted block">
-                    ${pricing.oneTimePurchase.price}
-                  </span>
-                  <span className="text-lg text-muted-foreground">
-                    one-time
-                  </span>
-                </div>
-              </div>
-
-              <button
-                className={`py-4 px-8 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-200 shadow ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
-                onClick={handleBuyCredits}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Processing...
+                <div className="bg-background p-4 sm:p-6 rounded-xl border border-border mb-6 sm:mb-8 flex flex-col md:flex-row items-center justify-center gap-4">
+                  <div className="text-center md:text-left">
+                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground block">
+                      {pricing.oneTimePurchase.credits.toLocaleString()}
+                    </span>
+                    <span className="text-base sm:text-lg text-muted-foreground">
+                      credits
+                    </span>
                   </div>
-                ) : (
-                  'Buy Credits Now'
-                )}
-              </button>
+                  <div className="text-xl sm:text-2xl text-muted-foreground">
+                    for
+                  </div>
+                  <div className="text-center md:text-left">
+                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground-muted block">
+                      ${pricing.oneTimePurchase.price}
+                    </span>
+                    <span className="text-base sm:text-lg text-muted-foreground">
+                      one-time
+                    </span>
+                  </div>
+                </div>
+
+                <RetroButton
+                  className={`py-3 sm:py-4 px-6 sm:px-8 bg-brand text-primary-foreground font-semibold hover:bg-brand/90 text-sm sm:text-base ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                  onClick={handleBuyCredits}
+                  disabled={isLoading}
+                  shadowColor="foreground"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                      Processing...
+                    </div>
+                  ) : (
+                    'Buy Credits Now'
+                  )}
+                </RetroButton>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
+      {/* Checkout Modal */}
       {showCheckout && (
-        <div
-          className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 sm:p-6 z-[100] backdrop-blur-sm"
-          onClick={() => setShowCheckout(false)} // Close on backdrop click
-        >
-          <div
-            className="bg-card border border-border rounded-2xl max-w-lg w-full shadow-2xl p-4 sm:p-6"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-          >
-            <h2 className="text-2xl font-bold mb-6 text-foreground text-center">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
+          <div className="bg-card p-8 border-[3px] border-border rounded-2xl max-w-md w-full shadow-2xl flex flex-col justify-center">
+            <h2 className="text-2xl font-bold mb-6 text-foreground">
               Complete Your Purchase
             </h2>
             <EmbeddedCheckoutProvider
               stripe={stripePromise}
               options={{ fetchClientSecret }}
             >
-              <EmbeddedCheckout />
+              <div className="max-h-[60vh] overflow-y-auto">
+                <EmbeddedCheckout />
+              </div>
             </EmbeddedCheckoutProvider>
+            <RetroButton
+              className="mt-6 py-3 px-6 bg-background text-foreground hover:bg-muted hover:text-foreground font-medium mx-auto block"
+              onClick={() => setShowCheckout(false)}
+              shadowColor="foreground"
+            >
+              Cancel
+            </RetroButton>
           </div>
         </div>
       )}
 
+      {/* Enterprise Form Modal */}
       {showEnterpriseForm && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
-          <div className="bg-card p-8 border border-border rounded-2xl shadow-2xl max-w-lg w-full">
+          <div className="bg-card p-8 border-[3px] border-border rounded-2xl shadow-2xl max-w-lg w-full">
             <div className="flex items-center gap-3 mb-6">
-              <Mail className="h-6 w-6 text-secondary" />
+              <Mail className="h-6 w-6 text-brand" />
               <h2 className="text-2xl font-bold text-foreground">
                 Enterprise Inquiry
               </h2>
@@ -709,7 +709,7 @@ export default function UpgradePage() {
                   htmlFor="email"
                   className="text-foreground text-base font-semibold flex items-center gap-2 mb-3"
                 >
-                  <Mail className="h-4 w-4 text-secondary" />
+                  <Mail className="h-4 w-4 text-brand" />
                   Email Address
                 </label>
                 <input
@@ -718,7 +718,7 @@ export default function UpgradePage() {
                   value={emailAddress}
                   onChange={(e) => setEmailAddress(e.target.value)}
                   required
-                  className="w-full p-4 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                  className="w-full p-4 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all duration-200"
                   placeholder="your@company.com"
                 />
               </div>
@@ -727,7 +727,7 @@ export default function UpgradePage() {
                   htmlFor="message"
                   className="text-foreground text-base font-semibold flex items-center gap-2 mb-3"
                 >
-                  <MessageSquare className="h-4 w-4 text-secondary" />
+                  <MessageSquare className="h-4 w-4 text-brand" />
                   Tell us about your needs
                 </label>
                 <textarea
@@ -735,31 +735,33 @@ export default function UpgradePage() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   required
-                  className="w-full p-4 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                  className="w-full p-4 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all duration-200"
                   rows={4}
                   placeholder="Describe your use case, team size, and specific requirements..."
                 />
               </div>
               <div className="flex justify-end gap-3 pt-4">
-                <button
+                <RetroButton
                   type="button"
-                  className="px-6 py-3 border border-border text-foreground bg-background hover:bg-muted rounded-xl font-semibold transition"
+                  className="px-6 py-3 text-foreground bg-background hover:bg-muted hover:text-foreground font-semibold"
                   onClick={() => {
                     setShowEnterpriseForm(false);
                     setEmailAddress('');
                     setMessage('');
                     setFormStatus('');
                   }}
+                  shadowColor="foreground"
                 >
                   Cancel
-                </button>
-                <button
+                </RetroButton>
+                <RetroButton
                   type="submit"
-                  className="px-6 py-3 bg-secondary text-secondary-foreground border border-secondary hover:bg-secondary/90 rounded-xl font-semibold transition flex items-center gap-2"
+                  className="px-6 py-3 bg-brand text-primary-foreground hover:bg-brand/90 font-semibold flex items-center gap-2"
+                  shadowColor="foreground"
                 >
                   <Send className="h-4 w-4" />
                   Send Inquiry
-                </button>
+                </RetroButton>
               </div>
             </form>
             {formStatus && (
@@ -771,10 +773,11 @@ export default function UpgradePage() {
         </div>
       )}
 
+      {/* Checkout Loading Overlay */}
       {checkoutLoading && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center z-[200]">
-          <div className="bg-card p-8 rounded-2xl border border-border shadow-2xl flex flex-col items-center gap-4">
-            <Loader2 className="h-12 w-12 text-secondary animate-spin" />
+          <div className="bg-card p-8 rounded-2xl border-[3px] border-border shadow-2xl flex flex-col items-center gap-4">
+            <Loader2 className="h-12 w-12 text-brand animate-spin" />
             <div className="text-center">
               <h3 className="text-lg font-semibold text-foreground mb-2">
                 Preparing your checkout...
@@ -783,6 +786,7 @@ export default function UpgradePage() {
           </div>
         </div>
       )}
+
     </>
   );
 }

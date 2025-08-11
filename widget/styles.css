@@ -675,3 +675,10 @@
         transform: translateY(0) scale(1);
     }
 }
+
+/* Mobile-specific styles for message preview close button */
+@media (max-width: 768px) {
+    #messagePreviewNotification #messagePreviewClose {
+        opacity: 1 !important;
+    }
+}
