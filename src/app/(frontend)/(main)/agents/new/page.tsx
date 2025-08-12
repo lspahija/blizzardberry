@@ -46,6 +46,7 @@ import {
 } from '@/app/api/lib/model/agent/agent';
 import { Framework, getAgentScript } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
+import posthog from 'posthog-js';
 
 export default function NewAgentPage() {
   const router = useRouter();
@@ -83,12 +84,19 @@ export default function NewAgentPage() {
 
   const handleCopy = () => {
     if (creatingAgent) return;
+    posthog.capture('agent_code_copied', {
+      agent_id: agentId,
+      framework: selectedFramework
+    });
     navigator.clipboard.writeText(getAgentScript(selectedFramework, agentId));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleContinue = () => {
+    posthog.capture('agent_configuration_started', {
+      agent_id: agentId
+    });
     router.push(`/agents/${agentId}`);
   };
 
@@ -123,8 +131,20 @@ export default function NewAgentPage() {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      posthog.capture('agent_creation_validation_failed', {
+        missing_fields: Object.keys(newErrors),
+        name_provided: !!name.trim(),
+        domain_provided: !!websiteDomain.trim()
+      });
       return;
     }
+
+    posthog.capture('agent_creation_started', {
+      name: name.trim(),
+      website_domain: websiteDomain.trim(),
+      model,
+      prompt_count: prompts.filter((p) => p.trim()).length
+    });
 
     try {
       const { agentId: newAgentId } = await handleCreateAgent({
@@ -133,8 +153,23 @@ export default function NewAgentPage() {
         model,
         prompts: prompts.filter((p) => p.trim()),
       });
+      
+      posthog.capture('agent_creation_success', {
+        agent_id: newAgentId,
+        name: name.trim(),
+        website_domain: websiteDomain.trim(),
+        model,
+        prompt_count: prompts.filter((p) => p.trim()).length
+      });
+      
       setAgentId(newAgentId);
     } catch (error) {
+      posthog.capture('agent_creation_failed', {
+        name: name.trim(),
+        website_domain: websiteDomain.trim(),
+        model,
+        error: (error as Error).message
+      });
       console.error('Error creating agent:', error);
     }
   };

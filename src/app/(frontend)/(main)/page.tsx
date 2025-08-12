@@ -22,8 +22,29 @@ import {
   Globe,
 } from 'lucide-react';
 import { useMemo } from 'react';
+import posthog from 'posthog-js';
 
 export default function LandingPage() {
+  const handleHeroCtaClick = () => {
+    posthog.capture('homepage_hero_cta_clicked', {
+      cta_text: 'Get Started Now',
+      section: 'hero'
+    });
+  };
+
+  const handleContactCtaClick = () => {
+    posthog.capture('homepage_contact_cta_clicked', {
+      cta_text: 'Talk With Us',
+      section: 'hero'
+    });
+  };
+
+  const handleFinalCtaClick = () => {
+    posthog.capture('homepage_final_cta_clicked', {
+      cta_text: 'Create an Agent',
+      section: 'cta'
+    });
+  };
 
   const containerVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 20 },
@@ -118,6 +139,7 @@ export default function LandingPage() {
                 size="lg"
                 className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
                 asChild
+                onClick={handleHeroCtaClick}
               >
                 <Link href="/login">
                   <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -132,6 +154,7 @@ export default function LandingPage() {
                 variant="outline"
                 className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
                 asChild
+                onClick={handleContactCtaClick}
               >
                 <Link href="/contact">Talk With Us</Link>
               </Button>
@@ -315,28 +338,50 @@ export default function LandingPage() {
             </div>
 
             <div className="lg:col-span-5 space-y-4 sm:space-y-6">
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <MessageSquare className="h-6 w-6 text-brand" />
-                  <h4 className="text-xl font-bold text-foreground">
-                    Natural Language
-                  </h4>
+              <Card className="group border-3 border-border/50 bg-gradient-to-br from-slate-50/50 via-card to-slate-50/30 dark:from-slate-950/20 dark:via-card dark:to-slate-900/10 rounded-2xl p-6 sm:p-8 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-2xl hover:border-slate-400/40 hover:-translate-y-1 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-start space-x-5 mb-5">
+                    <div className="bg-slate-100 dark:bg-slate-900/30 p-3 rounded-2xl group-hover:bg-slate-200 dark:group-hover:bg-slate-800/40 transition-colors duration-300">
+                      <MessageSquare className="h-7 w-7 text-slate-600 dark:text-slate-400 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl sm:text-2xl font-bold text-foreground mb-3 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors duration-300">
+                        Natural Language
+                      </h4>
+                      <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
+                        Users interact naturally - no commands to learn, no complex interfaces to master
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-400 font-medium text-sm">
+                    <div className="w-2 h-2 bg-slate-500 rounded-full animate-pulse"></div>
+                    <span>Intuitive Conversations</span>
+                  </div>
                 </div>
-                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
-                  Users interact naturally - no commands to learn
-                </p>
               </Card>
 
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <Zap className="h-6 w-6 text-brand" />
-                  <h4 className="text-xl font-bold text-foreground">
-                    Real-time
-                  </h4>
+              <Card className="group border-3 border-border/50 bg-gradient-to-br from-cyan-50/50 via-card to-cyan-50/30 dark:from-cyan-950/20 dark:via-card dark:to-cyan-900/10 rounded-2xl p-6 sm:p-8 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-2xl hover:border-cyan-400/40 hover:-translate-y-1 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-start space-x-5 mb-5">
+                    <div className="bg-cyan-100 dark:bg-cyan-900/30 p-3 rounded-2xl group-hover:bg-cyan-200 dark:group-hover:bg-cyan-800/40 transition-colors duration-300">
+                      <Rocket className="h-7 w-7 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl sm:text-2xl font-bold text-foreground mb-3 group-hover:text-cyan-700 dark:group-hover:text-cyan-300 transition-colors duration-300">
+                        Real-time
+                      </h4>
+                      <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
+                        Instant responses and live interactions with millisecond response times
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 text-cyan-600 dark:text-cyan-400 font-medium text-sm">
+                    <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
+                    <span>Lightning Fast</span>
+                  </div>
                 </div>
-                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
-                  Instant responses and live interactions
-                </p>
               </Card>
             </div>
           </div>
@@ -344,28 +389,50 @@ export default function LandingPage() {
           {/* Knowledge Base - Reversed */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-5 space-y-4 sm:space-y-6 order-2 lg:order-1">
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <Users className="h-6 w-6 text-brand" />
-                  <h4 className="text-xl font-bold text-foreground">
-                    User Context
-                  </h4>
+              <Card className="group border-3 border-border/50 bg-gradient-to-br from-teal-50/50 via-card to-teal-50/30 dark:from-teal-950/20 dark:via-card dark:to-teal-900/10 rounded-2xl p-6 sm:p-8 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-2xl hover:border-teal-400/40 hover:-translate-y-1 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-start space-x-5 mb-5">
+                    <div className="bg-teal-100 dark:bg-teal-900/30 p-3 rounded-2xl group-hover:bg-teal-200 dark:group-hover:bg-teal-800/40 transition-colors duration-300">
+                      <Users className="h-7 w-7 text-teal-600 dark:text-teal-400 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl sm:text-2xl font-bold text-foreground mb-3 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors duration-300">
+                        User Context
+                      </h4>
+                      <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
+                        Personalized experiences based on user data, preferences, and interaction history
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 text-teal-600 dark:text-teal-400 font-medium text-sm">
+                    <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
+                    <span>Smart Personalization</span>
+                  </div>
                 </div>
-                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
-                  Personalized experiences based on user data
-                </p>
               </Card>
 
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <Shield className="h-6 w-6 text-brand" />
-                  <h4 className="text-xl font-bold text-foreground">
-                    Secure & Private
-                  </h4>
+              <Card className="group border-3 border-border/50 bg-gradient-to-br from-indigo-50/50 via-card to-indigo-50/30 dark:from-indigo-950/20 dark:via-card dark:to-indigo-900/10 rounded-2xl p-6 sm:p-8 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-2xl hover:border-indigo-400/40 hover:-translate-y-1 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-start space-x-5 mb-5">
+                    <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-2xl group-hover:bg-indigo-200 dark:group-hover:bg-indigo-800/40 transition-colors duration-300">
+                      <Shield className="h-7 w-7 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl sm:text-2xl font-bold text-foreground mb-3 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors duration-300">
+                        Secure & Private
+                      </h4>
+                      <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
+                        End-to-end encrypted communications with enterprise-grade data protection
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 text-indigo-600 dark:text-indigo-400 font-medium text-sm">
+                    <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></div>
+                    <span>Bank-Level Security</span>
+                  </div>
                 </div>
-                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
-                  Encrypted communications and data protection
-                </p>
               </Card>
             </div>
 
@@ -636,6 +703,7 @@ export default function LandingPage() {
                   asChild
                   size="lg"
                   className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
+                  onClick={handleFinalCtaClick}
                 >
                   <Link href="/login">
                     <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />

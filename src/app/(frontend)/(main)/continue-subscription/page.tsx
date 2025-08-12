@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
+import posthog from 'posthog-js';
 
 interface SubscriptionIntent {
   intent: 'subscription' | 'credits';
@@ -56,6 +57,11 @@ export default function ContinueSubscriptionPage() {
         if (intent.intent === 'subscription' && intent.data.tier) {
           setMessage('Processing your subscription...');
 
+          posthog.capture('subscription_continuation_started', {
+            tier: intent.data.tier,
+            billing_cycle: intent.data.billingCycle || 'monthly'
+          });
+
           const data = await subscribe({
             tier: intent.data.tier,
             billingCycle: intent.data.billingCycle || 'monthly',
@@ -64,6 +70,12 @@ export default function ContinueSubscriptionPage() {
           sessionStorage.removeItem('subscriptionIntent');
 
           if (data.clientSecret) {
+            posthog.capture('subscription_checkout_redirect', {
+              tier: intent.data.tier,
+              billing_cycle: intent.data.billingCycle || 'monthly',
+              checkout_session_id: data.checkoutSessionId
+            });
+
             const returnUrl = new URL('/upgrade', window.location.origin);
             returnUrl.searchParams.set('checkout', 'true');
             returnUrl.searchParams.set('clientSecret', data.clientSecret);
@@ -77,6 +89,11 @@ export default function ContinueSubscriptionPage() {
             setMessage('Redirecting to complete your subscription...');
             setTimeout(() => router.push(returnUrl.toString()), 1000);
           } else if (data.success) {
+            posthog.capture('subscription_updated_directly', {
+              tier: intent.data.tier,
+              billing_cycle: intent.data.billingCycle || 'monthly'
+            });
+
             setStatus('success');
             setMessage('Your subscription has been updated successfully!');
             toast.success('Subscription updated successfully!');
@@ -85,7 +102,13 @@ export default function ContinueSubscriptionPage() {
         } else if (intent.intent === 'credits') {
           setMessage('Processing your credit purchase...');
 
+          posthog.capture('credits_continuation_started');
+
           const data = await buyCredits();
+
+          posthog.capture('credits_checkout_redirect', {
+            checkout_session_id: data.checkoutSessionId
+          });
 
           sessionStorage.removeItem('subscriptionIntent');
           
@@ -100,6 +123,11 @@ export default function ContinueSubscriptionPage() {
         }
       } catch (error) {
         console.error('Error continuing subscription:', error);
+        
+        posthog.capture('subscription_continuation_failed', {
+          error: (error as Error).message
+        });
+
         setStatus('error');
         setMessage(
           'Failed to continue subscription: ' + (error as Error).message
