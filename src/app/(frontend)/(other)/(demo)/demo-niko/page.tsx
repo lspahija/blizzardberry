@@ -290,16 +290,7 @@ export default function DemoPage() {
         hideScene('scene2');
       }, undefined, "scene2Start+=44");
 
-    // Phase 3: Scene 4 - Brand Finale (6 seconds) - optimized timing
-    tl.addLabel("scene4Start", "scene2Start+=42")  // Much shorter - after tickets dashboard completes
-      .call(() => {
-        console.log('=== MASTER TIMELINE: STARTING SCENE 4 ===');
-        showScene('scene4');
-      }, undefined, "scene4Start")
-      .call(() => {
-        scene4Sequence();
-      }, undefined, "scene4Start+=0.5")
-      .call(() => hideScene('scene4'), undefined, "scene4Start+=8.5");
+    // Scene 4 is now triggered directly from hideTicketsDashboard()
 
     masterTimelineRef.current = tl;
     return tl;
@@ -320,7 +311,7 @@ export default function DemoPage() {
       cursor.style.opacity = '1';
       gsap.to(cursor, {
         left: '50%',
-        top: '47%',
+        top: '52%',
         duration: 0.8,
         ease: "power2.inOut"
       });
@@ -336,33 +327,20 @@ export default function DemoPage() {
       }, 800);
     }, 1300);
 
-    // Show caption text
-    addTimeout(() => {
-      const captionText = document.getElementById('captionText');
-      if (captionText) {
-        gsap.to(captionText, {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          ease: "back.out(1.7)"
-        });
-      }
-    }, 4000);
-
     // Move cursor to button
     addTimeout(() => {
       gsap.to(cursor, {
         left: '50%',
-        top: '58%',
+        top: '63%',
         duration: 1,
         ease: "power2.inOut"
       });
-    }, 5000);
+    }, 4000);
 
     // Hover effect on button
     addTimeout(() => {
       createBtn.classList.add('hover');
-    }, 6000);
+    }, 5000);
 
     // Click button and show success
     addTimeout(() => {
@@ -383,7 +361,7 @@ export default function DemoPage() {
           });
         }
       }, 1000);
-    }, 6300);
+    }, 5300);
   };
 
   // Scene 2: AI Processing & Dashboard - exact recreation
@@ -399,7 +377,7 @@ export default function DemoPage() {
 
     // Dashboard is now triggered directly from AI analysis completion
 
-    // Hide dashboard and return to chat (extended timing)
+    // Hide dashboard and return to chat (much faster timing)
     addTimeout(() => {
       console.log('=== HIDING DASHBOARD, RETURNING TO CHAT ===');
       const dashboardScene = document.getElementById('dashboardScene');
@@ -408,7 +386,7 @@ export default function DemoPage() {
       if (dashboardScene) {
         gsap.to(dashboardScene, {
           opacity: 0,
-          duration: 1,
+          duration: 0.6,
           ease: "power2.inOut",
           onComplete: () => {
             dashboardScene.style.display = 'none';
@@ -421,58 +399,48 @@ export default function DemoPage() {
         chatWindow.style.display = 'flex';
         gsap.fromTo(chatWindow,
           { opacity: 0, scale: 0.9 },
-          { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" }
+          { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }
         );
       }
       
       showScene('scene2');
       continueConversationAfterDashboard();
-    }, 23500);  // Dashboard shows at ~15.5s, with 8s duration (15.5+8=23.5s) - extended by 3s more
+    }, 14500);  // Extended - dashboard shows for ~8.5 seconds total (3.5s longer)
   };
 
   const startChatConversation = () => {
+    // Show chat window immediately with fade-in effect
+    const chatWindow = document.getElementById('chatWindow');
+    if (chatWindow) {
+      chatWindow.style.display = 'flex';
+      gsap.fromTo(chatWindow,
+        { opacity: 0, scale: 0.9 },
+        { opacity: 1, scale: 1, duration: 0.6, ease: "power2.out" }
+      );
+    }
+
     const messages = [
       { type: 'sent', text: 'Show me revenue numbers for North America.' }
     ];
 
-    const chatMessages = document.getElementById('chatMessages');
-    if (!chatMessages) return;
+    // Add the first message with immediate fade-in
+    addTimeout(() => {
+      const chatMessages = document.getElementById('chatMessages');
+      if (!chatMessages) return;
 
-    chatMessages.innerHTML = '';
-
-    messages.forEach((message, index) => {
-      addTimeout(() => {
-        // Show typing indicator first (for received messages)
-        if (message.type === 'received' && index > 0) {
-          const typingDiv = document.createElement('div');
-          typingDiv.className = 'flex justify-start mb-3';
-          typingDiv.innerHTML = `
-            <div class="bg-gray-100 px-4 py-2 rounded-2xl">
-              <div class="flex space-x-1">
-                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-              </div>
-            </div>
-          `;
-          chatMessages.appendChild(typingDiv);
-
-          // Remove typing and show actual message after delay
-          addTimeout(() => {
-            if (typingDiv.parentNode) {
-              typingDiv.parentNode.removeChild(typingDiv);
-            }
-            addMessage(message, index);
-          }, 3000);
-        } else {
+      messages.forEach((message, index) => {
+        addTimeout(() => {
           addMessage(message, index);
-        }
-      }, index * 4000); // Slowed down from 3000 to 4000
-    });
+        }, index * 200); // Faster message appearance
+      });
+    }, 200); // Much faster start
 
     const addMessage = (message: { type: string; text: string }, messageIndex: number) => {
+      const chatMessages = document.getElementById('chatMessages');
+      if (!chatMessages) return;
+
       const messageDiv = document.createElement('div');
-      messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} mb-3`;
+      messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
       
       // For the sent message with North America, initially show without highlighting
       let messageText = message.text;
@@ -481,36 +449,24 @@ export default function DemoPage() {
       }
       
       messageDiv.innerHTML = `
-        <div class="max-w-xs px-4 py-2 rounded-2xl ${
+        <div class="max-w-md px-5 py-3 rounded-3xl ${
           message.type === 'sent' 
             ? 'bg-rose-500 text-white' 
-            : 'bg-gray-100 text-gray-800'
+            : 'bg-gray-100 text-gray-900'
         }">
-          <div class="text-sm" id="messageText-${messageIndex}">${messageText}</div>
-          <div class="text-xs opacity-70 mt-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+          <div class="text-base leading-relaxed" id="messageText-${messageIndex}">${messageText}</div>
         </div>
       `;
       
-      gsap.fromTo(messageDiv, 
-        { y: 20, opacity: 0 },
-        { 
-          y: 0, 
-          opacity: 1, 
-          duration: 0.8, // Slowed down
-          ease: "back.out(1.7)",
-          onComplete: () => {
-            // After message is shown, show analyzing bubble and highlight
-            if (message.type === 'sent' && message.text.includes('North America')) {
-              addTimeout(() => {
-                showInitialAnalyzingBubble();
-              }, 1500);
-            }
-          }
-        }
-      );
-      
+      // Append to end (new messages at bottom)
       chatMessages.appendChild(messageDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Trigger callbacks after animation
+      setTimeout(() => {
+        if (message.type === 'sent' && message.text.includes('North America')) {
+          showInitialAnalyzingBubble();
+        }
+      }, 300); // After animation completes
     };
   };
 
@@ -526,46 +482,37 @@ export default function DemoPage() {
     // Then show analyzing bubble
     addTimeout(() => {
       initialAnalyzingBubbleDiv = document.createElement('div');
-      initialAnalyzingBubbleDiv.className = 'flex justify-start mb-3';
+      initialAnalyzingBubbleDiv.className = 'flex justify-start chat-message';
       initialAnalyzingBubbleDiv.innerHTML = `
-        <div class="bg-gray-100 px-4 py-3 rounded-2xl">
-          <div class="flex items-center space-x-2">
+        <div class="bg-gray-100 px-5 py-3 rounded-3xl max-w-md">
+          <div class="flex items-center space-x-3">
             <div class="flex space-x-1">
               <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
               <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
               <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
             </div>
-            <div class="text-sm text-gray-600">Analyzing...</div>
+            <div class="text-base text-gray-900">Analyzing...</div>
           </div>
         </div>
       `;
       
-      gsap.fromTo(initialAnalyzingBubbleDiv, 
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.7)" }
-      );
-      
+      // Append to end (new messages at bottom)
       chatMessages.appendChild(initialAnalyzingBubbleDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
 
       // Hide the bubble exactly when AI analysis starts (synchronized)
       addTimeout(() => {
         if (initialAnalyzingBubbleDiv && initialAnalyzingBubbleDiv.parentNode) {
-          gsap.to(initialAnalyzingBubbleDiv, {
-            opacity: 0,
-            y: -10,
-            duration: 0.1,
-            onComplete: () => {
-              if (initialAnalyzingBubbleDiv && initialAnalyzingBubbleDiv.parentNode) {
-                initialAnalyzingBubbleDiv.parentNode.removeChild(initialAnalyzingBubbleDiv);
-              }
-              // Trigger AI analysis immediately after bubble is removed
-              startAIArchitecture();
+          initialAnalyzingBubbleDiv.style.opacity = '0';
+          setTimeout(() => {
+            if (initialAnalyzingBubbleDiv && initialAnalyzingBubbleDiv.parentNode) {
+              initialAnalyzingBubbleDiv.parentNode.removeChild(initialAnalyzingBubbleDiv);
             }
-          });
+            // Trigger AI analysis immediately after bubble is removed
+            startAIArchitecture();
+          }, 250);
         }
-      }, 1000); // Start hiding analyzing bubble after 1s
-    }, 500);
+      }, 600); // Faster bubble removal
+    }, 300); // Faster initial delay
   };
 
   const highlightNorthAmericaInChat = () => {
@@ -599,27 +546,27 @@ export default function DemoPage() {
     });
   };
 
-  // Animate Step 2 processing cards with counters
+  // Animate Step 2 processing cards with counters - faster
   const animateProcessingCards = () => {
     const cards = document.querySelectorAll('.processing-card');
     
     cards.forEach((card, index) => {
-      const delay = parseInt(card.getAttribute('data-delay') || '0');
+      const delay = parseInt(card.getAttribute('data-delay') || '0') / 2; // Half the delay
       
-      // Animate card appearance
+      // Animate card appearance - quicker
       addTimeout(() => {
         gsap.fromTo(card,
-          { opacity: 0, y: 30, scale: 0.9 },
+          { opacity: 0, y: 20, scale: 0.95 },
           { 
             opacity: 1, 
             y: 0, 
             scale: 1,
-            duration: 0.6, 
+            duration: 0.4, 
             ease: "back.out(1.7)"
           }
         );
         
-        // Animate counter
+        // Animate counter - faster
         const counterElement = card.querySelector('.counter-number');
         if (counterElement) {
           const target = parseInt(counterElement.getAttribute('data-target') || '0');
@@ -627,7 +574,7 @@ export default function DemoPage() {
           
           gsap.to(obj, {
             value: target,
-            duration: 1.5,
+            duration: 0.8, // Faster counting
             ease: "power2.out",
             onUpdate: () => {
               if (target >= 1000) {
@@ -642,13 +589,13 @@ export default function DemoPage() {
     });
   };
 
-  // Animate Step 3 completion sequence with staggered checkmarks
+  // Animate Step 3 completion sequence - much faster
   const animateCompletionSequence = () => {
     const completionItems = document.querySelectorAll('.completion-item');
     
     completionItems.forEach((item, index) => {
       const order = parseInt(item.getAttribute('data-order') || '1');
-      const delay = (order - 1) * 800; // 800ms between each completion
+      const delay = (order - 1) * 300; // Much faster - 300ms between each completion
       
       addTimeout(() => {
         const checkmark = item.querySelector('.checkmark');
@@ -658,28 +605,28 @@ export default function DemoPage() {
           (pingEffect as HTMLElement).style.opacity = '0.6';
           addTimeout(() => {
             (pingEffect as HTMLElement).style.opacity = '0';
-          }, 600);
+          }, 200); // Faster ping effect
         }
         
         if (checkmark) {
           gsap.fromTo(checkmark,
-            { opacity: 0, scale: 0, rotation: -180 },
+            { opacity: 0, scale: 0, rotation: -90 },
             { 
               opacity: 1, 
               scale: 1, 
               rotation: 0,
-              duration: 0.6, 
+              duration: 0.3, // Faster checkmark
               ease: "back.out(2.7)"
             }
           );
         }
         
-        // Add completion celebration
+        // Quick completion celebration
         gsap.fromTo(item,
           { scale: 1 },
           { 
-            scale: 1.1,
-            duration: 0.2,
+            scale: 1.05, // Smaller scale
+            duration: 0.15, // Faster celebration
             yoyo: true,
             repeat: 1,
             ease: "power2.out"
@@ -725,16 +672,16 @@ export default function DemoPage() {
       }
     );
 
-    // Step 1: Data Collection (1-4s) - Extended by 1s
+    // Step 1: Data Collection (faster - 1-2.5s)
     addTimeout(() => {
       const step1 = document.getElementById('analysisStep1');
       if (step1) {
         gsap.to(step1, {
           opacity: 1,
-          duration: 1.2,
+          duration: 0.6,
           ease: "power2.out",
           onComplete: () => {
-            // Animate data dots
+            // Quick data dots animation
             const dataDots = step1.querySelectorAll('.data-dot');
             dataDots.forEach((dot, index) => {
               gsap.fromTo(dot,
@@ -742,18 +689,18 @@ export default function DemoPage() {
                 { 
                   opacity: 1, 
                   scale: 1, 
-                  duration: 0.5, 
+                  duration: 0.3, 
                   ease: "back.out(1.7)",
-                  delay: index * 0.2
+                  delay: index * 0.1
                 }
               );
             });
           }
         });
       }
-    }, 1000);
+    }, 500);
 
-    // Step 2: Processing (4-7.5s) - Extended by 2s total
+    // Step 2: Processing (2.5-4.5s) - Much faster
     addTimeout(() => {
       const step1 = document.getElementById('analysisStep1');
       const step2 = document.getElementById('analysisStep2');
@@ -761,31 +708,31 @@ export default function DemoPage() {
       if (step1) {
         gsap.to(step1, {
           opacity: 0,
-          x: -100,
-          duration: 0.8,
+          scale: 0.9,
+          duration: 0.4,
           ease: "power2.in"
         });
       }
       
       if (step2) {
         gsap.fromTo(step2,
-          { opacity: 0, x: 100 },
+          { opacity: 0, scale: 0.95 },
           { 
             opacity: 1, 
-            x: 0,
-            duration: 1.2, 
+            scale: 1,
+            duration: 0.6, 
             ease: "power2.out",
-            delay: 0.3,
+            delay: 0.2,
             onComplete: () => {
-              // Animate processing cards and counters
+              // Quick processing cards animation
               animateProcessingCards();
             }
           }
         );
       }
-    }, 4000);
+    }, 2500);
 
-    // Step 3: Results (7.5-11s) - Extended by 2s total
+    // Step 3: Results (4.5-6s) - Even faster
     addTimeout(() => {
       const step2 = document.getElementById('analysisStep2');
       const step3 = document.getElementById('analysisStep3');
@@ -793,49 +740,47 @@ export default function DemoPage() {
       if (step2) {
         gsap.to(step2, {
           opacity: 0,
-          x: -100,
-          duration: 0.8,
+          scale: 0.9,
+          duration: 0.4,
           ease: "power2.in"
         });
       }
       
       if (step3) {
         gsap.fromTo(step3,
-          { opacity: 0, x: 100 },
+          { opacity: 0, scale: 0.95 },
           { 
             opacity: 1, 
-            x: 0,
-            duration: 1.2, 
+            scale: 1,
+            duration: 0.6, 
             ease: "power2.out",
-            delay: 0.3,
+            delay: 0.2,
             onComplete: () => {
-              // Animate completion checkmarks in sequence
+              // Quick completion sequence
               animateCompletionSequence();
             }
           }
         );
       }
-    }, 7500);
+    }, 4500);
 
-    // Exit to Dashboard after Step 3 completes - Extended by 2s total
+    // Exit to Dashboard (6-7s) - Much faster overall
     addTimeout(() => {
       const step3 = document.getElementById('analysisStep3');
       
       if (step3) {
         gsap.to(step3, {
           opacity: 0,
-          scale: 0.9,
-          y: -50,
-          duration: 0.8,
+          scale: 0.95,
+          duration: 0.5,
           ease: "power2.in",
           onComplete: () => {
-            // Immediately transition to dashboard when Step 3 fades out
+            // Quick transition to dashboard
             gsap.to(aiArchitecture, { 
               opacity: 0, 
-              duration: 0.5,
+              duration: 0.3,
               onComplete: () => {
                 aiArchitecture.style.display = 'none';
-                // Show dashboard immediately
                 console.log('=== DASHBOARD TIME: Analysis complete, showing dashboard immediately ===');
                 startDashboardTransition();
               }
@@ -843,45 +788,53 @@ export default function DemoPage() {
           }
         });
       }
-    }, 11000);
+    }, 6000); // Total analysis time: 6 seconds instead of 11
   };
 
   const continueConversationAfterDashboard = () => {
     console.log('=== CONTINUING CONVERSATION AFTER DASHBOARD ===');
+    
+    // Reset to initial state for new conversation
+    const initialState = document.getElementById('chatInitialState');
+    const conversationState = document.getElementById('chatConversationState');
     const chatMessages = document.getElementById('chatMessages');
-    if (!chatMessages) {
-      console.error('Chat messages container not found!');
+    
+    if (!initialState || !conversationState || !chatMessages) {
+      console.error('Chat elements not found!');
       return;
     }
 
-    // Agent responds about North America numbers (quicker timing)
-    addTimeout(() => {
-      addChatMessage({
-        type: 'received',
-        text: 'Here are the North America numbers. Revenue is up 15% vs rest of world, driven by strong US performance.'
-      }, false);
-    }, 1000);
+    // Clear previous messages
+    chatMessages.innerHTML = '';
+    
+    // Show initial state, hide conversation state
+    conversationState.style.display = 'none';
+    conversationState.style.opacity = '0';
+    initialState.style.display = 'flex';
+    initialState.style.opacity = '1';
 
-    // Agent asks if can help with anything else (shorter gap)
+    // Start typing animation in the centered input
     addTimeout(() => {
-      addChatMessage({
-        type: 'received', 
-        text: 'Can I help with anything else?'
-      }, false);
-    }, 4000);
+      showUserTypingAnimation('Show me today\'s support tickets');
+    }, 500);
 
-    // User asks about support tickets (quicker)
+    // Transition to conversation mode after typing
+    addTimeout(() => {
+      transitionToChatConversation();
+    }, 2200); // After typing completes
+
+    // User message appears in chat after transition
     addTimeout(() => {
       addChatMessage({
         type: 'sent',
         text: 'Show me today\'s support tickets'
       }, false);
-    }, 6500);
+    }, 2700); // After transition completes
 
     // Show analyzing bubble (brief)
     addTimeout(() => {
       showAnalyzingBubble();
-    }, 8000);
+    }, 3200); // After user message appears
 
     // Agent responds with ticket summary (optimized timing)
     addTimeout(() => {
@@ -890,7 +843,7 @@ export default function DemoPage() {
         type: 'received',
         text: 'We have 5 tickets today:\n\n• 3 Resolved (billing & features)\n• 2 Open (1 high-priority bug, 1 pending)\n\nWant to see the full details?'
       }, true);
-    }, 11000);
+    }, 5200); // Much faster
 
     // User responds YES (key moment - make it prominent)
     addTimeout(() => {
@@ -903,8 +856,8 @@ export default function DemoPage() {
       // Show tickets dashboard after YES (immediate but smooth)
       addTimeout(() => {
         showTicketsDashboard();
-      }, 1800);
-    }, 13000);  // Faster YES response - 2s after question instead of 3.5s
+      }, 1200); // Faster transition
+    }, 6700);  // Much faster YES response
   };
 
   // New streamlined tickets dashboard
@@ -938,73 +891,76 @@ export default function DemoPage() {
     // Create dashboard container
     const dashboardDiv = document.createElement('div');
     dashboardDiv.id = 'ticketsDashboard';
-    dashboardDiv.className = 'fixed inset-0 bg-white flex items-center justify-center p-6 z-50';
+    dashboardDiv.className = 'fixed inset-0 flex items-center justify-center z-50';
     dashboardDiv.style.opacity = '0';
     
     dashboardDiv.innerHTML = `
-      <div class="w-full max-w-4xl mx-auto">
+      <div class="w-[600px] h-[680px] bg-white overflow-y-auto p-4">
         <!-- Header -->
-        <div class="text-center mb-8">
-          <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-rose-500 to-rose-600 rounded-2xl mb-4 shadow-lg">
-            <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+        <div class="text-center mb-4">
+          <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-rose-500 to-rose-600 rounded-xl mb-3 shadow-lg">
+            <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
               <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/>
             </svg>
           </div>
-          <h1 class="text-4xl font-bold text-gray-900 mb-3">Support Tickets</h1>
-          <p class="text-lg text-gray-600">Today's Support Overview</p>
+          <h1 class="text-xl font-bold text-gray-900 mb-1">Support Tickets</h1>
+          <p class="text-xs text-gray-600">Today's Overview</p>
         </div>
 
         <!-- Quick Stats -->
-        <div class="grid grid-cols-3 gap-6 mb-8">
-          <div class="bg-white rounded-2xl p-6 text-gray-900 text-center border border-gray-200 shadow-lg">
-            <div class="text-4xl font-bold mb-2 ticket-stat text-blue-600" data-target="5">0</div>
-            <div class="text-gray-600 text-sm uppercase tracking-wider">Total Tickets</div>
+        <div class="grid grid-cols-3 gap-2 mb-4">
+          <div class="bg-gray-50 rounded-lg p-3 text-center">
+            <div class="text-2xl font-bold mb-1 ticket-stat text-blue-600" data-target="5">0</div>
+            <div class="text-xs text-gray-600">Total</div>
           </div>
-          <div class="bg-white rounded-2xl p-6 text-gray-900 text-center border border-gray-200 shadow-lg">
-            <div class="text-4xl font-bold mb-2 ticket-stat text-emerald-600" data-target="3">0</div>
-            <div class="text-gray-600 text-sm uppercase tracking-wider">Resolved</div>
+          <div class="bg-gray-50 rounded-lg p-3 text-center">
+            <div class="text-2xl font-bold mb-1 ticket-stat text-emerald-600" data-target="3">0</div>
+            <div class="text-xs text-gray-600">Resolved</div>
           </div>
-          <div class="bg-white rounded-2xl p-6 text-gray-900 text-center border border-gray-200 shadow-lg">
-            <div class="text-4xl font-bold mb-2 ticket-stat text-rose-600" data-target="2">0</div>
-            <div class="text-gray-600 text-sm uppercase tracking-wider">Open</div>
+          <div class="bg-gray-50 rounded-lg p-3 text-center">
+            <div class="text-2xl font-bold mb-1 ticket-stat text-rose-600" data-target="2">0</div>
+            <div class="text-xs text-gray-600">Open</div>
           </div>
         </div>
 
         <!-- Tickets List -->
-        <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-lg">
-          <h3 class="text-2xl font-bold text-gray-900 mb-4">Recent Tickets</h3>
-          <div class="space-y-3">
-            <div class="ticket-row bg-gray-50 rounded-xl p-4 flex items-center justify-between opacity-0">
-              <div class="flex items-center space-x-4">
-                <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                <div>
-                  <div class="text-gray-900 font-medium">#12847 - Payment Processing Error</div>
-                  <div class="text-gray-600 text-sm">High Priority • Credit card transaction failed</div>
+        <div class="bg-gray-50 rounded-lg p-3">
+          <h3 class="text-sm font-bold text-gray-900 mb-3">Recent Tickets</h3>
+          <div class="space-y-2">
+            <div class="ticket-row bg-white rounded-lg p-3 opacity-0">
+              <div class="flex items-center justify-between mb-1">
+                <div class="flex items-center space-x-2">
+                  <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                  <div class="text-xs font-medium text-gray-900">#12847</div>
                 </div>
+                <span class="px-2 py-1 bg-red-500/10 text-red-600 text-xs rounded-full">Open</span>
               </div>
-              <span class="px-3 py-1 bg-red-500/10 text-red-600 text-sm rounded-full border border-red-200">Open</span>
+              <div class="text-xs text-gray-700 mb-1">Payment Processing Error</div>
+              <div class="text-xs text-gray-500">High Priority</div>
             </div>
             
-            <div class="ticket-row bg-gray-50 rounded-xl p-4 flex items-center justify-between opacity-0">
-              <div class="flex items-center space-x-4">
-                <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
-                <div>
-                  <div class="text-gray-900 font-medium">#12846 - Billing Question</div>
-                  <div class="text-gray-600 text-sm">Low Priority • Monthly subscription inquiry</div>
+            <div class="ticket-row bg-white rounded-lg p-3 opacity-0">
+              <div class="flex items-center justify-between mb-1">
+                <div class="flex items-center space-x-2">
+                  <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                  <div class="text-xs font-medium text-gray-900">#12846</div>
                 </div>
+                <span class="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-xs rounded-full">Resolved</span>
               </div>
-              <span class="px-3 py-1 bg-emerald-500/10 text-emerald-600 text-sm rounded-full border border-emerald-200">Resolved</span>
+              <div class="text-xs text-gray-700 mb-1">Billing Question</div>
+              <div class="text-xs text-gray-500">Low Priority</div>
             </div>
             
-            <div class="ticket-row bg-gray-50 rounded-xl p-4 flex items-center justify-between opacity-0">
-              <div class="flex items-center space-x-4">
-                <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                <div>
-                  <div class="text-gray-900 font-medium">#12845 - Feature Request</div>
-                  <div class="text-gray-600 text-sm">Low Priority • Dark mode implementation</div>
+            <div class="ticket-row bg-white rounded-lg p-3 opacity-0">
+              <div class="flex items-center justify-between mb-1">
+                <div class="flex items-center space-x-2">
+                  <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div class="text-xs font-medium text-gray-900">#12845</div>
                 </div>
+                <span class="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-xs rounded-full">Resolved</span>
               </div>
-              <span class="px-3 py-1 bg-emerald-500/10 text-emerald-600 text-sm rounded-full border border-emerald-200">Resolved</span>
+              <div class="text-xs text-gray-700 mb-1">Feature Request</div>
+              <div class="text-xs text-gray-500">Low Priority</div>
             </div>
           </div>
         </div>
@@ -1093,10 +1049,10 @@ export default function DemoPage() {
       });
     }, 1200);
     
-    // Hide dashboard after 5 seconds (optimal timing)
+    // Hide dashboard after 3 seconds (faster timing)
     addTimeout(() => {
       hideTicketsDashboard();
-    }, 5000);
+    }, 3000);
   };
 
   const hideTicketsDashboard = () => {
@@ -1107,11 +1063,14 @@ export default function DemoPage() {
       gsap.to(dashboard, {
         opacity: 0,
         scale: 0.9,
-        duration: 0.8,
+        duration: 0.5,
         ease: "power2.inOut",
         onComplete: () => {
           dashboard.remove();
-          console.log('Tickets dashboard removed');
+          console.log('Tickets dashboard removed, showing Scene 4');
+          // Immediately show Scene 4 and start its sequence
+          showScene('scene4');
+          scene4Sequence();
         }
       });
     }
@@ -1126,7 +1085,7 @@ export default function DemoPage() {
     }
 
     const messageDiv = document.createElement('div');
-    messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} mb-3`;
+    messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
     
     // Format text for multiline with bullet points
     let formattedText = message.text;
@@ -1138,23 +1097,17 @@ export default function DemoPage() {
     }
     
     messageDiv.innerHTML = `
-      <div class="max-w-xs px-4 py-2 rounded-2xl ${
+      <div class="max-w-md px-5 py-3 rounded-3xl ${
         message.type === 'sent' 
           ? 'bg-rose-500 text-white' 
-          : 'bg-gray-100 text-gray-800'
+          : 'bg-gray-100 text-gray-900'
       }">
-        <div class="text-sm">${formattedText}</div>
-        <div class="text-xs opacity-70 mt-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+        <div class="text-base leading-relaxed">${formattedText}</div>
       </div>
     `;
     
-    gsap.fromTo(messageDiv, 
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.7)" }
-    );
-    
+    // Append to end (new messages at bottom)
     chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
   };
 
   let analyzingBubbleDiv: HTMLElement | null = null;
@@ -1164,42 +1117,93 @@ export default function DemoPage() {
     if (!chatMessages) return;
 
     analyzingBubbleDiv = document.createElement('div');
-    analyzingBubbleDiv.className = 'flex justify-start mb-3';
+    analyzingBubbleDiv.className = 'flex justify-start chat-message';
     analyzingBubbleDiv.innerHTML = `
-      <div class="bg-gray-100 px-4 py-3 rounded-2xl">
-        <div class="flex items-center space-x-2">
+      <div class="bg-gray-100 px-5 py-3 rounded-3xl max-w-md">
+        <div class="flex items-center space-x-3">
           <div class="flex space-x-1">
             <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
             <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
             <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
-          <div class="text-sm text-gray-600">Analyzing support logs...</div>
+          <div class="text-base text-gray-900">Analyzing support logs...</div>
         </div>
       </div>
     `;
     
-    gsap.fromTo(analyzingBubbleDiv, 
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.7)" }
-    );
-    
+    // Append to end (new messages at bottom)
     chatMessages.appendChild(analyzingBubbleDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
   };
 
   const hideAnalyzingBubble = () => {
     if (analyzingBubbleDiv && analyzingBubbleDiv.parentNode) {
-      gsap.to(analyzingBubbleDiv, {
-        opacity: 0,
-        y: -10,
-        duration: 0.5,
-        onComplete: () => {
-          if (analyzingBubbleDiv && analyzingBubbleDiv.parentNode) {
-            analyzingBubbleDiv.parentNode.removeChild(analyzingBubbleDiv);
-          }
+      analyzingBubbleDiv.style.opacity = '0';
+      setTimeout(() => {
+        if (analyzingBubbleDiv && analyzingBubbleDiv.parentNode) {
+          analyzingBubbleDiv.parentNode.removeChild(analyzingBubbleDiv);
         }
-      });
+      }, 250);
     }
+  };
+
+  // Transition from initial state to conversation state
+  const transitionToChatConversation = () => {
+    const initialState = document.getElementById('chatInitialState');
+    const conversationState = document.getElementById('chatConversationState');
+    
+    if (!initialState || !conversationState) return;
+
+    // Animate out initial state
+    gsap.to(initialState, {
+      opacity: 0,
+      scale: 0.9,
+      duration: 0.4,
+      ease: "power2.in",
+      onComplete: () => {
+        initialState.style.display = 'none';
+        
+        // Show conversation state
+        conversationState.style.display = 'flex';
+        gsap.fromTo(conversationState,
+          { opacity: 0, scale: 0.95 },
+          { 
+            opacity: 1, 
+            scale: 1,
+            duration: 0.5, 
+            ease: "power2.out"
+          }
+        );
+      }
+    });
+  };
+
+  // User typing animation in input field
+  const showUserTypingAnimation = (text: string) => {
+    const inputField = document.querySelector('#chatInitialInput') as HTMLInputElement;
+    if (!inputField) return;
+
+    // Clear input and show cursor focus
+    inputField.value = '';
+    inputField.focus();
+    inputField.classList.add('bg-gray-100');
+
+    let i = 0;
+    const typeChar = () => {
+      if (i < text.length) {
+        inputField.value += text.charAt(i);
+        i++;
+        addTimeout(typeChar, 60); // Realistic typing speed
+      } else {
+        // Typing completed, blur input after brief pause
+        addTimeout(() => {
+          inputField.blur();
+          inputField.classList.remove('bg-gray-100');
+        }, 300);
+      }
+    };
+
+    // Start typing after brief delay
+    addTimeout(typeChar, 200);
   };
 
   const showDashboard = () => {
@@ -1616,6 +1620,29 @@ export default function DemoPage() {
           outline: none;
           box-shadow: none;
         }
+        
+        /* Chat Message Animations */
+        .chat-message {
+          animation: slideUpFadeIn 250ms ease-out forwards;
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        
+        @keyframes slideUpFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        /* Smooth push-up animation for existing messages */
+        .chat-message-push-up {
+          transition: transform 250ms ease-out;
+        }
       `}</style>
 
       {/* Modern Loader */}
@@ -1713,21 +1740,15 @@ export default function DemoPage() {
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-50 to-rose-50 rounded-full transform -translate-x-12 translate-y-12 opacity-20"></div>
           
           <div className="relative text-center">
-            {/* Header with logo */}
+            {/* Just Logo in Center */}
             <div className="flex items-center justify-center mb-8">
               <div className="relative">
                 {/* Logo with subtle animation rings */}
-                <div className="relative z-10 w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100">
-                  <Image src="/image/logo.png" alt="BlizzardBerry Logo" width={40} height={40} className="rounded-lg" priority unoptimized />
+                <div className="relative z-10 w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100">
+                  <Image src="/image/logo.png" alt="BlizzardBerry Logo" width={50} height={50} className="rounded-lg" priority unoptimized />
                 </div>
                 {/* Subtle animated ring */}
-                <div className="absolute inset-0 w-16 h-16 border-2 border-rose-200 rounded-2xl animate-ping opacity-20"></div>
-              </div>
-              <div className="ml-4">
-                <h1 className="text-3xl font-bold text-gray-900">
-                  BlizzardBerry
-                </h1>
-                <div className="h-1 w-full bg-gradient-to-r from-rose-500 to-blue-500 rounded-full mt-1"></div>
+                <div className="absolute inset-0 w-20 h-20 border-2 border-rose-200 rounded-2xl animate-ping opacity-20"></div>
               </div>
             </div>
             
@@ -1750,14 +1771,6 @@ export default function DemoPage() {
               >
                 Create Action
               </button>
-
-              <div id="captionText" className="text-center text-gray-600 opacity-0 transform translate-y-4 transition-all duration-300">
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="w-2 h-2 bg-rose-500 rounded-full animate-pulse"></div>
-                  <span>AI is analyzing your request...</span>
-                  <div className="w-2 h-2 bg-rose-500 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1766,120 +1779,132 @@ export default function DemoPage() {
       {/* Scene 2: AI Processing & Dashboard */}
       <div id="scene2" className="fixed inset-0 opacity-0" style={{ display: 'none' }}>
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-10">
-          {/* Chat Section */}
-          <div id="chatWindow" className="bg-white rounded-2xl shadow-2xl flex flex-col h-96 transition-all duration-800">
+        {/* Fixed Size Chat Widget */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div id="chatWindow" className="w-[600px] h-[680px] bg-white flex flex-col transition-all duration-800 relative">
             
-            <div id="chatMessages" className="flex-1 p-6 overflow-y-auto space-y-4">
-              {/* Messages will be dynamically added here */}
+            {/* Initial State: Centered Input (hidden for first chat) */}
+            <div id="chatInitialState" className="flex-1 flex items-center justify-center px-6" style={{ display: 'none' }}>
+              <div className="w-full max-w-md">
+                <div className="flex gap-3 items-center">
+                  <div className="flex-1 relative">
+                    <input
+                      id="chatInitialInput"
+                      type="text"
+                      placeholder="Ask a question..."
+                      className="w-full px-6 py-4 text-base bg-gray-50 rounded-full focus:outline-none focus:bg-gray-100 transition-all duration-300"
+                      disabled
+                    />
+                  </div>
+                  <button className="w-12 h-12 bg-rose-500 rounded-full flex items-center justify-center hover:bg-rose-600 transition-all duration-300">
+                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
-            
-            <div className="p-6 border-t border-gray-100">
-              <div className="flex gap-4">
-                <input
-                  type="text"
-                  placeholder="Ask me anything..."
-                  className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-rose-500"
-                  disabled
-                />
-                <button className="px-6 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors">
-                  Send
-                </button>
+
+            {/* Conversation State: Just Messages in Center (shown for first chat) */}
+            <div id="chatConversationState" className="flex-1 flex items-center justify-center">
+              {/* Messages Container - centered vertically and horizontally */}
+              <div id="chatMessages" className="w-full max-w-2xl px-6 flex flex-col space-y-4">
+                {/* Messages will be dynamically added here */}
               </div>
             </div>
           </div>
         </div>
 
         {/* Modern 3-Step Revenue Analysis */}
-        <div id="aiArchitecture" className="absolute inset-0 bg-white/95 backdrop-blur-sm opacity-0" style={{ display: 'none' }}>
-          <div className="relative w-full h-full flex items-center justify-center">
+        <div id="aiArchitecture" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0" style={{ display: 'none' }}>
+          <div className="w-[600px] h-[680px] bg-white flex items-center justify-center relative overflow-hidden">
             
             {/* Step 1: Data Collection */}
-            <div id="analysisStep1" className="absolute inset-0 flex flex-col items-center justify-center opacity-0">
-              <div className="mb-12">
+            <div id="analysisStep1" className="absolute inset-0 flex flex-col items-center justify-center opacity-0 px-6">
+              <div className="mb-6">
                 <div className="relative">
-                  <div className="w-40 h-40 mx-auto mb-8 bg-gradient-to-br from-rose-500 to-rose-600 rounded-3xl flex items-center justify-center shadow-2xl border border-gray-200">
-                    <svg width="64" height="64" fill="white" viewBox="0 0 24 24">
+                  <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
                       <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
                     </svg>
                   </div>
                   {/* Animated data particles */}
                   <div className="absolute inset-0">
-                    <div className="data-dot absolute top-1/2 left-0 w-3 h-3 bg-rose-500 rounded-full opacity-0"></div>
-                    <div className="data-dot absolute top-1/4 right-0 w-3 h-3 bg-blue-500 rounded-full opacity-0"></div>
-                    <div className="data-dot absolute bottom-1/4 left-1/2 w-3 h-3 bg-rose-400 rounded-full opacity-0"></div>
+                    <div className="data-dot absolute top-1/2 left-0 w-2 h-2 bg-rose-500 rounded-full opacity-0"></div>
+                    <div className="data-dot absolute top-1/4 right-0 w-2 h-2 bg-blue-500 rounded-full opacity-0"></div>
+                    <div className="data-dot absolute bottom-1/4 left-1/2 w-2 h-2 bg-rose-400 rounded-full opacity-0"></div>
                   </div>
                 </div>
               </div>
-              <h2 className="text-5xl font-bold text-gray-900 mb-6 text-center">Collecting Data</h2>
-              <p className="text-2xl text-gray-700 text-center max-w-2xl">Gathering sales records, transactions, and regional data from North America...</p>
-              <div className="mt-8 flex space-x-4">
-                <div className="px-6 py-3 bg-rose-500/10 rounded-full text-rose-700 text-lg border border-rose-200">Sales Database</div>
-                <div className="px-6 py-3 bg-blue-500/10 rounded-full text-blue-700 text-lg border border-blue-200">Transaction Log</div>
-                <div className="px-6 py-3 bg-gray-500/10 rounded-full text-gray-700 text-lg border border-gray-200">Regional Stats</div>
+              <h2 className="text-xl font-bold text-gray-900 mb-3 text-center">Collecting Data</h2>
+              <p className="text-sm text-gray-700 text-center mb-4 px-4">Gathering sales records and regional data from North America...</p>
+              <div className="flex flex-col space-y-2 w-full px-4">
+                <div className="px-3 py-2 bg-rose-500/10 rounded-full text-rose-700 text-xs text-center border border-rose-200">Sales Database</div>
+                <div className="px-3 py-2 bg-blue-500/10 rounded-full text-blue-700 text-xs text-center border border-blue-200">Transaction Log</div>
+                <div className="px-3 py-2 bg-gray-500/10 rounded-full text-gray-700 text-xs text-center border border-gray-200">Regional Stats</div>
               </div>
             </div>
 
             {/* Step 2: Processing */}
-            <div id="analysisStep2" className="absolute inset-0 flex flex-col items-center justify-center opacity-0">
-              <div className="mb-12">
-                <div className="w-40 h-40 mx-auto mb-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl border border-gray-200">
-                  <svg width="64" height="64" fill="white" viewBox="0 0 24 24" className="animate-spin">
+            <div id="analysisStep2" className="absolute inset-0 flex flex-col items-center justify-center opacity-0 px-6">
+              <div className="mb-6">
+                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg width="32" height="32" fill="white" viewBox="0 0 24 24" className="animate-spin">
                     <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/>
                   </svg>
                 </div>
               </div>
-              <h2 className="text-5xl font-bold text-gray-900 mb-6 text-center">Processing Analytics</h2>
-              <p className="text-2xl text-gray-700 text-center max-w-2xl mb-8">AI engine analyzing patterns, trends, and revenue metrics...</p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 processing-card opacity-0" data-delay="0">
-                  <div className="text-3xl font-bold text-rose-600 mb-2 counter-number" data-target="847">0</div>
-                  <div className="text-gray-600">Records Analyzed</div>
+              <h2 className="text-xl font-bold text-gray-900 mb-3 text-center">Processing Analytics</h2>
+              <p className="text-sm text-gray-700 text-center mb-4 px-4">AI engine analyzing patterns and revenue metrics...</p>
+              <div className="grid grid-cols-1 gap-3 text-center w-full px-4">
+                <div className="bg-gray-50 rounded-lg p-3 processing-card opacity-0" data-delay="0">
+                  <div className="text-lg font-bold text-rose-600 mb-1 counter-number" data-target="847">0</div>
+                  <div className="text-xs text-gray-600">Records Analyzed</div>
                 </div>
-                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 processing-card opacity-0" data-delay="300">
-                  <div className="text-3xl font-bold text-blue-600 mb-2 counter-number" data-target="2800">0</div>
-                  <div className="text-gray-600">Transaction Volume ($K)</div>
+                <div className="bg-gray-50 rounded-lg p-3 processing-card opacity-0" data-delay="300">
+                  <div className="text-lg font-bold text-blue-600 mb-1 counter-number" data-target="2800">0</div>
+                  <div className="text-xs text-gray-600">Transaction Volume ($K)</div>
                 </div>
-                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 processing-card opacity-0" data-delay="600">
-                  <div className="text-3xl font-bold text-emerald-600 mb-2 counter-number" data-target="15">0</div>
-                  <div className="text-gray-600">Growth Rate (%)</div>
+                <div className="bg-gray-50 rounded-lg p-3 processing-card opacity-0" data-delay="600">
+                  <div className="text-lg font-bold text-emerald-600 mb-1 counter-number" data-target="15">0</div>
+                  <div className="text-xs text-gray-600">Growth Rate (%)</div>
                 </div>
               </div>
             </div>
 
             {/* Step 3: Results */}
-            <div id="analysisStep3" className="absolute inset-0 flex flex-col items-center justify-center opacity-0">
-              <div className="mb-12">
-                <div className="w-40 h-40 mx-auto mb-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-3xl flex items-center justify-center shadow-2xl border border-gray-200">
-                  <svg width="64" height="64" fill="white" viewBox="0 0 24 24">
+            <div id="analysisStep3" className="absolute inset-0 flex flex-col items-center justify-center opacity-0 px-6">
+              <div className="mb-6">
+                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                   </svg>
                 </div>
               </div>
-              <h2 className="text-5xl font-bold text-gray-900 mb-6 text-center">Analysis Complete</h2>
-              <p className="text-2xl text-gray-700 text-center max-w-2xl mb-8">Revenue insights ready! Preparing comprehensive dashboard...</p>
-              <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-                <div className="flex items-center justify-center space-x-8">
-                  <div className="text-center completion-item" data-order="1">
+              <h2 className="text-xl font-bold text-gray-900 mb-3 text-center">Analysis Complete</h2>
+              <p className="text-sm text-gray-700 text-center mb-6 px-4">Revenue insights ready! Preparing dashboard...</p>
+              <div className="bg-gray-50 rounded-lg p-4 w-full mx-4">
+                <div className="flex items-center justify-between space-x-4">
+                  <div className="text-center completion-item flex-1" data-order="1">
                     <div className="relative">
-                      <div className="text-4xl font-bold text-emerald-600 mb-2 checkmark opacity-0 scale-0">✓</div>
-                      <div className="absolute inset-0 w-12 h-12 mx-auto border-2 border-emerald-200 rounded-full animate-ping opacity-0 ping-effect"></div>
+                      <div className="text-2xl font-bold text-emerald-600 mb-1 checkmark opacity-0 scale-0">✓</div>
+                      <div className="absolute inset-0 w-8 h-8 mx-auto border-2 border-emerald-200 rounded-full animate-ping opacity-0 ping-effect"></div>
                     </div>
-                    <div className="text-gray-700">Data Ready</div>
+                    <div className="text-xs text-gray-700">Data Ready</div>
                   </div>
-                  <div className="text-center completion-item" data-order="2">
+                  <div className="text-center completion-item flex-1" data-order="2">
                     <div className="relative">
-                      <div className="text-4xl font-bold text-blue-600 mb-2 checkmark opacity-0 scale-0">✓</div>
-                      <div className="absolute inset-0 w-12 h-12 mx-auto border-2 border-blue-200 rounded-full animate-ping opacity-0 ping-effect"></div>
+                      <div className="text-2xl font-bold text-blue-600 mb-1 checkmark opacity-0 scale-0">✓</div>
+                      <div className="absolute inset-0 w-8 h-8 mx-auto border-2 border-blue-200 rounded-full animate-ping opacity-0 ping-effect"></div>
                     </div>
-                    <div className="text-gray-700">Charts Built</div>
+                    <div className="text-xs text-gray-700">Charts Built</div>
                   </div>
-                  <div className="text-center completion-item" data-order="3">
+                  <div className="text-center completion-item flex-1" data-order="3">
                     <div className="relative">
-                      <div className="text-4xl font-bold text-rose-600 mb-2 checkmark opacity-0 scale-0">✓</div>
-                      <div className="absolute inset-0 w-12 h-12 mx-auto border-2 border-rose-200 rounded-full animate-ping opacity-0 ping-effect"></div>
+                      <div className="text-2xl font-bold text-rose-600 mb-1 checkmark opacity-0 scale-0">✓</div>
+                      <div className="absolute inset-0 w-8 h-8 mx-auto border-2 border-rose-200 rounded-full animate-ping opacity-0 ping-effect"></div>
                     </div>
-                    <div className="text-gray-700">Dashboard Ready</div>
+                    <div className="text-xs text-gray-700">Dashboard Ready</div>
                   </div>
                 </div>
               </div>
@@ -1890,112 +1915,59 @@ export default function DemoPage() {
 
       {/* New Modern Revenue Dashboard */}
       <div id="dashboardScene" className="fixed inset-0 z-50 opacity-0" style={{ display: 'none' }}>
-        {/* Clean white background */}
-        <div className="absolute inset-0 bg-white">
-          {/* Subtle animated particles using brand colors */}
-          <div className="absolute top-10 left-10 w-2 h-2 bg-rose-500/20 rounded-full animate-pulse"></div>
-          <div className="absolute top-32 right-20 w-3 h-3 bg-blue-500/15 rounded-full animate-bounce" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute bottom-40 left-32 w-2 h-2 bg-rose-600/25 rounded-full animate-ping" style={{ animationDelay: '2s' }}></div>
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100"></div>
         
-        {/* Main dashboard container */}
-        <div id="dashboardWindow" className="relative w-full h-full flex items-center justify-center p-6">
-          <div className="w-full max-w-5xl mx-auto">
+        {/* Fixed Size Dashboard Widget */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-white overflow-y-auto">
+            <div className="p-4">
             
             {/* Header Section */}
-            <div className="text-center mb-8" id="dashboardHeader">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-rose-500 to-rose-600 rounded-2xl mb-4 shadow-lg">
-                <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+            <div className="text-center mb-4" id="dashboardHeader">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-rose-500 to-rose-600 rounded-xl mb-3 shadow-lg">
+                <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
                   <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
                 </svg>
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-3">Revenue Analytics</h1>
-              <p className="text-lg text-gray-600">North America • Real-time Performance Dashboard</p>
+              <h1 className="text-xl font-bold text-gray-900 mb-1">Revenue Analytics</h1>
+              <p className="text-xs text-gray-600">North America • Real-time Performance</p>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="statsGrid">
-              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg metric-card-hover card-glow interactive-element" tabIndex={0} role="region" aria-label="Total Revenue: $847K">
-                <div className="absolute inset-0 bg-gradient-to-br from-rose-50/50 to-transparent rounded-2xl"></div>
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-gray-600 text-sm font-medium uppercase tracking-wider">Total Revenue</div>
-                    <div className="w-10 h-10 bg-rose-500/10 rounded-xl flex items-center justify-center">
-                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="metric-number text-4xl font-bold mb-2 text-rose-600" data-target="847">0</div>
-                  <div className="text-gray-500 text-sm">$847K (In thousands)</div>
-                </div>
+            <div className="grid grid-cols-2 gap-2 mb-4" id="statsGrid">
+              <div className="metric-card bg-gray-50 rounded-lg p-3 text-center">
+                <div className="metric-number text-2xl font-bold mb-1 text-rose-600" data-target="847">0</div>
+                <div className="text-xs text-gray-600">Total Revenue ($K)</div>
               </div>
               
-              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg metric-card-hover card-glow interactive-element" tabIndex={0} role="region" aria-label="Growth Rate: 18% Year over Year">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent rounded-2xl"></div>
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-gray-600 text-sm font-medium uppercase tracking-wider">Growth Rate</div>
-                    <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center">
-                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/>
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="metric-number text-4xl font-bold mb-2 text-blue-600" data-target="18">0</div>
-                  <div className="text-gray-500 text-sm">18% Year over Year</div>
-                </div>
+              <div className="metric-card bg-gray-50 rounded-lg p-3 text-center">
+                <div className="metric-number text-2xl font-bold mb-1 text-blue-600" data-target="18">0</div>
+                <div className="text-xs text-gray-600">Growth Rate (%)</div>
               </div>
               
-              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg metric-card-hover card-glow interactive-element" tabIndex={0} role="region" aria-label="Active Clients: 2,840 Total">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent rounded-2xl"></div>
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-gray-600 text-sm font-medium uppercase tracking-wider">Active Clients</div>
-                    <div className="w-10 h-10 bg-gray-500/10 rounded-xl flex items-center justify-center">
-                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M16 7c0-2.21-1.79-4-4-4S8 4.79 8 7s1.79 4 4 4 4-1.79 4-4zM12 13c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4z"/>
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="metric-number text-4xl font-bold mb-2 text-gray-700" data-target="2840">0</div>
-                  <div className="text-gray-500 text-sm">2,840 Total Clients</div>
-                </div>
+              <div className="metric-card bg-gray-50 rounded-lg p-3 text-center">
+                <div className="metric-number text-2xl font-bold mb-1 text-gray-700" data-target="2840">0</div>
+                <div className="text-xs text-gray-600">Active Clients</div>
               </div>
               
-              <div className="metric-card group relative bg-white rounded-2xl p-6 text-gray-900 hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg metric-card-hover card-glow interactive-element" tabIndex={0} role="region" aria-label="Average Deal Size: $298K">
-                <div className="absolute inset-0 bg-gradient-to-br from-rose-50/50 to-transparent rounded-2xl"></div>
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-gray-600 text-sm font-medium uppercase tracking-wider">Avg Deal Size</div>
-                    <div className="w-10 h-10 bg-rose-500/10 rounded-xl flex items-center justify-center">
-                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="metric-number text-4xl font-bold mb-2 text-rose-600" data-target="298">0</div>
-                  <div className="text-gray-500 text-sm">$298K Average</div>
-                </div>
+              <div className="metric-card bg-gray-50 rounded-lg p-3 text-center">
+                <div className="metric-number text-2xl font-bold mb-1 text-rose-600" data-target="298">0</div>
+                <div className="text-xs text-gray-600">Avg Deal ($K)</div>
               </div>
             </div>
 
             {/* Chart Section */}
-            <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-lg" id="chartSection">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Revenue Trend Analysis</h3>
-                  <p className="text-gray-600">6-Month performance overview • June - November 2024</p>
-                </div>
-                <div className="px-4 py-2 bg-gradient-to-r from-rose-500/10 to-rose-600/10 rounded-full border border-rose-200">
-                  <span className="text-rose-600 text-sm font-medium">Live Data</span>
-                </div>
+            <div className="bg-gray-50 rounded-lg p-3" id="chartSection">
+              <div className="mb-3">
+                <h3 className="text-sm font-bold text-gray-900 mb-1">Revenue Trend</h3>
+                <p className="text-xs text-gray-600">6-Month Overview</p>
               </div>
-              <div className="h-64 bg-gray-50 rounded-xl p-3">
+              <div className="h-40 bg-white rounded p-2">
                 <canvas id="performanceChart" className="w-full h-full"></canvas>
               </div>
             </div>
             
+            </div>
           </div>
         </div>
       </div>
