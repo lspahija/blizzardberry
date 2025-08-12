@@ -499,20 +499,12 @@ export default function DemoPage() {
       // Append to end (new messages at bottom)
       chatMessages.appendChild(initialAnalyzingBubbleDiv);
 
-      // Hide the bubble exactly when AI analysis starts (synchronized)
+      // Start AI analysis immediately while analyzing bubble is visible
       addTimeout(() => {
-        if (initialAnalyzingBubbleDiv && initialAnalyzingBubbleDiv.parentNode) {
-          initialAnalyzingBubbleDiv.style.opacity = '0';
-          setTimeout(() => {
-            if (initialAnalyzingBubbleDiv && initialAnalyzingBubbleDiv.parentNode) {
-              initialAnalyzingBubbleDiv.parentNode.removeChild(initialAnalyzingBubbleDiv);
-            }
-            // Trigger AI analysis immediately after bubble is removed
-            startAIArchitecture();
-          }, 250);
-        }
-      }, 600); // Faster bubble removal
-    }, 300); // Faster initial delay
+        // Trigger AI analysis right away - no need to wait for bubble removal
+        startAIArchitecture();
+      }, 200); // Very quick start - analysis begins while "Analyzing..." is still showing
+    }, 300);
   };
 
   const highlightNorthAmericaInChat = () => {
@@ -637,7 +629,7 @@ export default function DemoPage() {
   };
 
   const startAIArchitecture = () => {
-    console.log('=== STARTING AI ANALYSIS FADE-IN ===');
+    console.log('=== STARTING PROFESSIONAL AI ANALYSIS TRANSITION ===');
     const chatWindow = document.getElementById('chatWindow');
     const aiArchitecture = document.getElementById('aiArchitecture');
     
@@ -646,149 +638,214 @@ export default function DemoPage() {
       return;
     }
 
-    // Step 1: Completely hide chat and fade in analysis
+    // Step 1: Elegant chat disappearance with scale down + fade out
     gsap.to(chatWindow, {
+      scale: 0.85,
       opacity: 0,
-      duration: 0.8,
-      ease: "power2.inOut",
+      duration: 0.5,
+      ease: "power2.in",
       onComplete: () => {
         chatWindow.style.display = 'none';
-        console.log('Chat completely hidden');
+        console.log('Chat elegantly scaled down and hidden');
+        
+        // Step 2: Immediate professional analysis card appearance
+        aiArchitecture.style.display = 'block';
+        gsap.fromTo(aiArchitecture,
+          { 
+            scale: 0.8, 
+            opacity: 0,
+            rotationY: -10 
+          },
+          { 
+            scale: 1, 
+            opacity: 1, 
+            rotationY: 0,
+            duration: 0.8,
+            ease: "back.out(1.4)",
+            onComplete: () => {
+              console.log('Professional analysis card appeared, starting enhanced 3-step sequence');
+            }
+          }
+        );
       }
     });
 
-    // Fade in analysis window smoothly
-    aiArchitecture.style.display = 'block';
-    gsap.fromTo(aiArchitecture,
-      { opacity: 0 },
-      { 
-        opacity: 1, 
-        duration: 1.5,
-        ease: "power2.out",
-        delay: 0.3,
-        onComplete: () => {
-          console.log('Analysis window faded in cleanly, starting 3-step sequence');
-        }
-      }
-    );
-
-    // Step 1: Data Collection (faster - 1-2.5s)
+    // Modern Analysis - Single Progressive Screen
     addTimeout(() => {
-      const step1 = document.getElementById('analysisStep1');
-      if (step1) {
-        gsap.to(step1, {
-          opacity: 1,
-          duration: 0.6,
-          ease: "power2.out",
-          onComplete: () => {
-            // Quick data dots animation
-            const dataDots = step1.querySelectorAll('.data-dot');
-            dataDots.forEach((dot, index) => {
-              gsap.fromTo(dot,
-                { opacity: 0, scale: 0 },
-                { 
-                  opacity: 1, 
-                  scale: 1, 
-                  duration: 0.3, 
-                  ease: "back.out(1.7)",
-                  delay: index * 0.1
-                }
-              );
-            });
-          }
-        });
-      }
-    }, 500);
-
-    // Step 2: Processing (2.5-4.5s) - Much faster
-    addTimeout(() => {
-      const step1 = document.getElementById('analysisStep1');
-      const step2 = document.getElementById('analysisStep2');
-      
-      if (step1) {
-        gsap.to(step1, {
-          opacity: 0,
-          scale: 0.9,
-          duration: 0.4,
-          ease: "power2.in"
-        });
-      }
-      
-      if (step2) {
-        gsap.fromTo(step2,
-          { opacity: 0, scale: 0.95 },
-          { 
-            opacity: 1, 
+      const analysisView = document.getElementById('analysisStep1');
+      if (analysisView) {
+        // Show main analysis view
+        gsap.fromTo(analysisView,
+          { opacity: 0, y: 20, scale: 0.95 },
+          {
+            opacity: 1,
+            y: 0,
             scale: 1,
-            duration: 0.6, 
+            duration: 0.8,
             ease: "power2.out",
-            delay: 0.2,
             onComplete: () => {
-              // Quick processing cards animation
-              animateProcessingCards();
+              // Start progressive step animations
+              startProgressiveAnalysis();
             }
           }
         );
       }
-    }, 2500);
+    }, 300);
 
-    // Step 3: Results (4.5-6s) - Even faster
+    // Exit to Dashboard after all steps complete
     addTimeout(() => {
-      const step2 = document.getElementById('analysisStep2');
-      const step3 = document.getElementById('analysisStep3');
+      const analysisView = document.getElementById('analysisStep1');
       
-      if (step2) {
-        gsap.to(step2, {
+      if (analysisView) {
+        gsap.to(analysisView, {
           opacity: 0,
-          scale: 0.9,
-          duration: 0.4,
-          ease: "power2.in"
-        });
-      }
-      
-      if (step3) {
-        gsap.fromTo(step3,
-          { opacity: 0, scale: 0.95 },
-          { 
-            opacity: 1, 
-            scale: 1,
-            duration: 0.6, 
-            ease: "power2.out",
-            delay: 0.2,
-            onComplete: () => {
-              // Quick completion sequence
-              animateCompletionSequence();
-            }
-          }
-        );
-      }
-    }, 4500);
-
-    // Exit to Dashboard (6-7s) - Much faster overall
-    addTimeout(() => {
-      const step3 = document.getElementById('analysisStep3');
-      
-      if (step3) {
-        gsap.to(step3, {
-          opacity: 0,
+          y: -20,
           scale: 0.95,
-          duration: 0.5,
+          duration: 0.6,
           ease: "power2.in",
           onComplete: () => {
-            // Quick transition to dashboard
+            // Smooth analysis exit
             gsap.to(aiArchitecture, { 
-              opacity: 0, 
-              duration: 0.3,
+              opacity: 0,
+              scale: 0.9,
+              duration: 0.5,
+              ease: "power2.in",
               onComplete: () => {
                 aiArchitecture.style.display = 'none';
-                console.log('=== DASHBOARD TIME: Analysis complete, showing dashboard immediately ===');
+                console.log('=== ANALYSIS COMPLETE: Showing dashboard ===');
                 startDashboardTransition();
               }
             });
           }
         });
       }
-    }, 6000); // Total analysis time: 6 seconds instead of 11
+    }, 4500); // Total analysis time: 4.5 seconds
+  };
+
+  // New Progressive Analysis Animation System
+  const startProgressiveAnalysis = () => {
+    console.log('=== STARTING PROGRESSIVE ANALYSIS ANIMATIONS ===');
+    
+    // Step 1: Complete first step (Data Fetching)
+    addTimeout(() => {
+      completeAnalysisStep('step1', '✓ Complete');
+      startAnalysisStep('step2');
+    }, 800);
+    
+    // Step 2: Complete second step (Analysis)
+    addTimeout(() => {
+      completeAnalysisStep('step2', '✓ Complete');
+      startAnalysisStep('step3');
+    }, 2000);
+    
+    // Step 3: Complete final step (Dashboard)
+    addTimeout(() => {
+      completeAnalysisStep('step3', '✓ Ready');
+      // Update main title for completion
+      const title = document.getElementById('analysisTitle');
+      const subtitle = document.getElementById('analysisSubtitle');
+      if (title && subtitle) {
+        gsap.to([title, subtitle], {
+          opacity: 0,
+          y: -10,
+          duration: 0.3,
+          stagger: 0.1,
+          onComplete: () => {
+            title.textContent = 'Analysis Complete';
+            subtitle.textContent = 'Revenue dashboard is ready to view';
+            gsap.to([title, subtitle], {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              stagger: 0.1
+            });
+          }
+        });
+      }
+    }, 3200);
+  };
+  
+  const startAnalysisStep = (stepId: string) => {
+    const step = document.getElementById(stepId);
+    if (!step) return;
+    
+    // Activate step - remove opacity and start animation
+    gsap.to(step, {
+      opacity: 1,
+      duration: 0.4,
+      ease: "power2.out"
+    });
+    
+    // Start loader animation
+    const loader = step.querySelector('.step-loader');
+    if (loader) {
+      gsap.to(loader, {
+        scale: 1.5,
+        duration: 0.8,
+        ease: "power2.inOut",
+        yoyo: true,
+        repeat: -1
+      });
+    }
+    
+    // Update status
+    const status = step.querySelector('.step-status');
+    if (status) {
+      status.textContent = 'Processing...';
+    }
+  };
+  
+  const completeAnalysisStep = (stepId: string, completionText: string) => {
+    const step = document.getElementById(stepId);
+    if (!step) return;
+    
+    const icon = step.querySelector('.step-icon');
+    const loader = step.querySelector('.step-loader');
+    const status = step.querySelector('.step-status');
+    
+    if (icon && loader && status) {
+      // Stop loader animation
+      gsap.killTweensOf(loader);
+      
+      // Transform to checkmark
+      gsap.to(loader, {
+        scale: 0,
+        duration: 0.2,
+        onComplete: () => {
+          loader.classList.remove('animate-pulse');
+          loader.innerHTML = '✓';
+          loader.className = 'text-white text-xs font-bold';
+          gsap.to(loader, {
+            scale: 1,
+            duration: 0.3,
+            ease: "back.out(1.7)"
+          });
+        }
+      });
+      
+      // Update status with success
+      gsap.to(status, {
+        opacity: 0,
+        duration: 0.2,
+        onComplete: () => {
+          status.textContent = completionText;
+          status.className = 'step-status text-xs text-emerald-600 font-medium';
+          gsap.to(status, {
+            opacity: 1,
+            duration: 0.3
+          });
+        }
+      });
+      
+      // Success pulse effect
+      gsap.to(step, {
+        scale: 1.02,
+        duration: 0.2,
+        yoyo: true,
+        repeat: 1,
+        ease: "power2.out"
+      });
+    }
   };
 
   const continueConversationAfterDashboard = () => {
@@ -1815,99 +1872,78 @@ export default function DemoPage() {
           </div>
         </div>
 
-        {/* Modern 3-Step Revenue Analysis */}
+        {/* Modern AI Analysis - Single Progressive Screen */}
         <div id="aiArchitecture" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0" style={{ display: 'none' }}>
-          <div className="w-[600px] h-[680px] bg-white flex items-center justify-center relative overflow-hidden">
+          <div className="w-[500px] h-[400px] bg-white flex items-center justify-center relative overflow-hidden rounded-3xl shadow-2xl border border-gray-100">
             
-            {/* Step 1: Data Collection */}
-            <div id="analysisStep1" className="absolute inset-0 flex flex-col items-center justify-center opacity-0 px-6">
+            {/* Modern gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-blue-50"></div>
+            
+            {/* Single Progressive Analysis View */}
+            <div id="analysisStep1" className="relative z-10 text-center px-8 opacity-0">
+              
+              {/* Central AI Brain Icon */}
               <div className="mb-6">
-                <div className="relative">
-                  <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
-                      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                <div className="relative mx-auto w-20 h-20">
+                  {/* Animated brain/AI icon */}
+                  <div className="w-20 h-20 bg-gradient-to-br from-rose-500 via-purple-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-2xl relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-rose-400 to-blue-600 animate-pulse opacity-30"></div>
+                    <svg width="36" height="36" fill="white" viewBox="0 0 24 24" className="relative z-10">
+                      <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/>
                     </svg>
-                  </div>
-                  {/* Animated data particles */}
-                  <div className="absolute inset-0">
-                    <div className="data-dot absolute top-1/2 left-0 w-2 h-2 bg-rose-500 rounded-full opacity-0"></div>
-                    <div className="data-dot absolute top-1/4 right-0 w-2 h-2 bg-blue-500 rounded-full opacity-0"></div>
-                    <div className="data-dot absolute bottom-1/4 left-1/2 w-2 h-2 bg-rose-400 rounded-full opacity-0"></div>
+                    {/* Pulsing rings */}
+                    <div className="absolute inset-0 w-20 h-20 border-2 border-white/20 rounded-2xl animate-ping"></div>
+                    <div className="absolute inset-2 w-16 h-16 border border-white/30 rounded-xl animate-pulse"></div>
                   </div>
                 </div>
               </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-3 text-center">Collecting Data</h2>
-              <p className="text-sm text-gray-700 text-center mb-4 px-4">Gathering sales records and regional data from North America...</p>
-              <div className="flex flex-col space-y-2 w-full px-4">
-                <div className="px-3 py-2 bg-rose-500/10 rounded-full text-rose-700 text-xs text-center border border-rose-200">Sales Database</div>
-                <div className="px-3 py-2 bg-blue-500/10 rounded-full text-blue-700 text-xs text-center border border-blue-200">Transaction Log</div>
-                <div className="px-3 py-2 bg-gray-500/10 rounded-full text-gray-700 text-xs text-center border border-gray-200">Regional Stats</div>
-              </div>
-            </div>
-
-            {/* Step 2: Processing */}
-            <div id="analysisStep2" className="absolute inset-0 flex flex-col items-center justify-center opacity-0 px-6">
+              
+              {/* Dynamic Status Text */}
               <div className="mb-6">
-                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <svg width="32" height="32" fill="white" viewBox="0 0 24 24" className="animate-spin">
-                    <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/>
-                  </svg>
-                </div>
+                <h2 id="analysisTitle" className="text-xl font-bold text-gray-900 mb-2">Analyzing Revenue Data</h2>
+                <p id="analysisSubtitle" className="text-sm text-gray-600">BlizzardBerry AI is processing your request...</p>
               </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-3 text-center">Processing Analytics</h2>
-              <p className="text-sm text-gray-700 text-center mb-4 px-4">AI engine analyzing patterns and revenue metrics...</p>
-              <div className="grid grid-cols-1 gap-3 text-center w-full px-4">
-                <div className="bg-gray-50 rounded-lg p-3 processing-card opacity-0" data-delay="0">
-                  <div className="text-lg font-bold text-rose-600 mb-1 counter-number" data-target="847">0</div>
-                  <div className="text-xs text-gray-600">Records Analyzed</div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-3 processing-card opacity-0" data-delay="300">
-                  <div className="text-lg font-bold text-blue-600 mb-1 counter-number" data-target="2800">0</div>
-                  <div className="text-xs text-gray-600">Transaction Volume ($K)</div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-3 processing-card opacity-0" data-delay="600">
-                  <div className="text-lg font-bold text-emerald-600 mb-1 counter-number" data-target="15">0</div>
-                  <div className="text-xs text-gray-600">Growth Rate (%)</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 3: Results */}
-            <div id="analysisStep3" className="absolute inset-0 flex flex-col items-center justify-center opacity-0 px-6">
-              <div className="mb-6">
-                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
-                </div>
-              </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-3 text-center">Analysis Complete</h2>
-              <p className="text-sm text-gray-700 text-center mb-6 px-4">Revenue insights ready! Preparing dashboard...</p>
-              <div className="bg-gray-50 rounded-lg p-4 w-full mx-4">
-                <div className="flex items-center justify-between space-x-4">
-                  <div className="text-center completion-item flex-1" data-order="1">
-                    <div className="relative">
-                      <div className="text-2xl font-bold text-emerald-600 mb-1 checkmark opacity-0 scale-0">✓</div>
-                      <div className="absolute inset-0 w-8 h-8 mx-auto border-2 border-emerald-200 rounded-full animate-ping opacity-0 ping-effect"></div>
+              
+              {/* Progress Indicators - Live Updates */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-gray-200">
+                <div className="space-y-3">
+                  
+                  {/* Step 1: Data Fetching */}
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-gray-50" id="step1">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-6 h-6 bg-rose-500 rounded-lg flex items-center justify-center step-icon">
+                        <div className="w-2 h-2 bg-white rounded-full animate-pulse step-loader"></div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-800">Fetching North America data</span>
                     </div>
-                    <div className="text-xs text-gray-700">Data Ready</div>
+                    <div className="step-status text-xs text-gray-500">Processing...</div>
                   </div>
-                  <div className="text-center completion-item flex-1" data-order="2">
-                    <div className="relative">
-                      <div className="text-2xl font-bold text-blue-600 mb-1 checkmark opacity-0 scale-0">✓</div>
-                      <div className="absolute inset-0 w-8 h-8 mx-auto border-2 border-blue-200 rounded-full animate-ping opacity-0 ping-effect"></div>
+                  
+                  {/* Step 2: Analysis */}
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-gray-50 opacity-50" id="step2">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center step-icon">
+                        <div className="w-2 h-2 bg-white rounded-full step-loader"></div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-800">Running revenue analytics</span>
                     </div>
-                    <div className="text-xs text-gray-700">Charts Built</div>
+                    <div className="step-status text-xs text-gray-500">Waiting...</div>
                   </div>
-                  <div className="text-center completion-item flex-1" data-order="3">
-                    <div className="relative">
-                      <div className="text-2xl font-bold text-rose-600 mb-1 checkmark opacity-0 scale-0">✓</div>
-                      <div className="absolute inset-0 w-8 h-8 mx-auto border-2 border-rose-200 rounded-full animate-ping opacity-0 ping-effect"></div>
+                  
+                  {/* Step 3: Chart Generation */}
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-gray-50 opacity-50" id="step3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-6 h-6 bg-emerald-500 rounded-lg flex items-center justify-center step-icon">
+                        <div className="w-2 h-2 bg-white rounded-full step-loader"></div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-800">Building dashboard</span>
                     </div>
-                    <div className="text-xs text-gray-700">Dashboard Ready</div>
+                    <div className="step-status text-xs text-gray-500">Waiting...</div>
                   </div>
+                  
                 </div>
               </div>
+              
             </div>
           </div>
         </div>
