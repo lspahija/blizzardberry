@@ -28,42 +28,59 @@ export default function LandingPage() {
   const handleHeroCtaClick = () => {
     posthog.capture('homepage_hero_cta_clicked', {
       cta_text: 'Get Started Now',
-      section: 'hero'
+      section: 'hero',
     });
   };
 
   const handleContactCtaClick = () => {
     posthog.capture('homepage_contact_cta_clicked', {
       cta_text: 'Talk With Us',
-      section: 'hero'
+      section: 'hero',
     });
   };
 
   const handleFinalCtaClick = () => {
     posthog.capture('homepage_final_cta_clicked', {
       cta_text: 'Create an Agent',
-      section: 'cta'
+      section: 'cta',
     });
   };
 
-  const containerVariants = useMemo(() => ({
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.4, staggerChildren: 0.1 },
-    },
-  }), []);
+  const containerVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0, y: 20 },
+      visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.4, staggerChildren: 0.1 },
+      },
+    }),
+    []
+  );
 
-  const itemVariants = useMemo(() => ({
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
-  }), []);
+  const itemVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0, y: 10 },
+      visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.3, ease: 'easeOut' },
+      },
+    }),
+    []
+  );
 
-  const cardVariants = useMemo(() => ({
-    hidden: { opacity: 0, scale: 0.98 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.3, ease: 'easeOut' } },
-  }), []);
+  const cardVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0, scale: 0.98 },
+      visible: {
+        opacity: 1,
+        scale: 1,
+        transition: { duration: 0.3, ease: 'easeOut' },
+      },
+    }),
+    []
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -286,8 +303,9 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center mb-20 sm:mb-24">
             {/* Custom Actions */}
             <div className="lg:col-span-7">
-              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-brand/30">
-                <CardContent className="p-6 sm:p-8 lg:p-10 xl:p-14">
+              <Card className="group border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-brand/30 relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <CardContent className="p-6 sm:p-8 lg:p-10 xl:p-14 relative z-10">
                   <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
                     <div className="bg-brand/15 p-3 sm:p-4 rounded-3xl self-start">
                       <Zap className="h-8 sm:h-10 w-8 sm:w-10 text-brand" />
@@ -350,7 +368,8 @@ export default function LandingPage() {
                         Natural Language
                       </h4>
                       <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
-                        Users interact naturally - no commands to learn, no complex interfaces to master
+                        Users interact naturally - no commands to learn, no
+                        complex interfaces to master
                       </p>
                     </div>
                   </div>
@@ -373,7 +392,8 @@ export default function LandingPage() {
                         Real-time
                       </h4>
                       <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
-                        Instant responses and live interactions with millisecond response times
+                        Instant responses and live interactions with millisecond
+                        response times
                       </p>
                     </div>
                   </div>
@@ -401,7 +421,8 @@ export default function LandingPage() {
                         User Context
                       </h4>
                       <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
-                        Personalized experiences based on user data, preferences, and interaction history
+                        Personalized experiences based on user data,
+                        preferences, and interaction history
                       </p>
                     </div>
                   </div>
@@ -424,7 +445,8 @@ export default function LandingPage() {
                         Secure & Private
                       </h4>
                       <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
-                        End-to-end encrypted communications with enterprise-grade data protection
+                        End-to-end encrypted communications with
+                        enterprise-grade data protection
                       </p>
                     </div>
                   </div>
@@ -437,11 +459,12 @@ export default function LandingPage() {
             </div>
 
             <div className="lg:col-span-7 order-1 lg:order-2">
-              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-brand/30">
-                <CardContent className="p-6 sm:p-8 lg:p-10 xl:p-14">
+              <Card className="group border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-blue-400/40 relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <CardContent className="p-6 sm:p-8 lg:p-10 xl:p-14 relative z-10">
                   <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
-                    <div className="bg-primary/15 p-3 sm:p-4 rounded-3xl self-start">
-                      <FileText className="h-8 sm:h-10 w-8 sm:w-10 text-primary" />
+                    <div className="bg-blue-500/15 p-3 sm:p-4 rounded-3xl self-start">
+                      <FileText className="h-8 sm:h-10 w-8 sm:w-10 text-blue-600" />
                     </div>
                     <div className="flex-1">
                       <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 leading-tight">
@@ -456,7 +479,7 @@ export default function LandingPage() {
                       {/* Knowledge base demo */}
                       <div className="bg-muted/50 rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
                         <div className="flex items-center space-x-3 mb-4">
-                          <FileText className="h-5 w-5 text-primary" />
+                          <FileText className="h-5 w-5 text-blue-600" />
                           <span className="font-medium">Knowledge Base</span>
                           <span className="text-xs bg-green-500/10 text-green-600 px-2 py-1 rounded-full">
                             1,247 docs
@@ -616,7 +639,9 @@ export default function LandingPage() {
                   <div className="bg-background/50 rounded-xl p-3 mb-4 border-[2px] border-border">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-sage-400 to-sage-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <span className="text-white text-sm sm:text-lg">👗</span>
+                        <span className="text-white text-sm sm:text-lg">
+                          👗
+                        </span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="font-semibold text-xs sm:text-sm truncate">
@@ -670,7 +695,9 @@ export default function LandingPage() {
                     <CardTitle className="text-xl">{item.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
-                    <p className="text-base sm:text-base text-muted-foreground">{item.description}</p>
+                    <p className="text-base sm:text-base text-muted-foreground">
+                      {item.description}
+                    </p>
                   </CardContent>
                 </Card>
               </motion.div>
