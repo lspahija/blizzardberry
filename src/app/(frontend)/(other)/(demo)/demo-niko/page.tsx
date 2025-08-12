@@ -1427,20 +1427,27 @@ export default function DemoPage() {
         });
       }
     }, 5500);
+
+    // 5. Auto-restart after 5 seconds (10.5s total)
+    addTimeout(() => {
+      console.log('=== SCENE 4: Auto-restarting demo ===');
+      // Reset and restart the demo
+      setDemoState(prev => ({ 
+        ...prev, 
+        startTime: Date.now(),
+        currentScene: 0,
+        isRunning: true,
+        isPaused: false
+      }));
+      // Clear all timers and restart
+      clearAllTimers();
+      // Small delay before restart for smooth transition
+      setTimeout(() => {
+        console.log('Demo automatically restarting...');
+      }, 100);
+    }, 10500); // 5.5s + 5s = 10.5s total
   };
 
-  // Simple Start/Stop control
-  const handleStartStop = () => {
-    if (!masterTimelineRef.current) return;
-    
-    if (demoState.isPaused || !demoState.isRunning) {
-      masterTimelineRef.current.play();
-      setDemoState(prev => ({ ...prev, isPaused: false, isRunning: true }));
-    } else {
-      masterTimelineRef.current.pause();
-      setDemoState(prev => ({ ...prev, isPaused: true }));
-    }
-  };
 
   // Handle tab visibility change for auto-pause
   useEffect(() => {
@@ -1762,52 +1769,6 @@ export default function DemoPage() {
         <div id="progressBar" className="h-full bg-gradient-to-r from-rose-500 to-blue-500 transition-all duration-300 ease-out" style={{ width: '0%' }}></div>
       </div>
 
-      {/* Simple Start/Stop Control */}
-      {controlsVisible && (
-        <div className="fixed left-6 top-1/2 transform -translate-y-1/2 z-30">
-          <div className="relative">
-            {/* Circular Progress Ring */}
-            <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
-              {/* Background circle */}
-              <circle
-                cx="32"
-                cy="32"
-                r="28"
-                fill="none"
-                stroke="rgba(255, 255, 255, 0.2)"
-                strokeWidth="4"
-              />
-              {/* Progress circle */}
-              <circle
-                id="progressCircle"
-                cx="32"
-                cy="32"
-                r="28"
-                fill="none"
-                stroke="#F43F5E"
-                strokeWidth="4"
-                strokeLinecap="round"
-                strokeDasharray="175.93"
-                strokeDashoffset="175.93"
-                className="transition-all duration-300"
-              />
-            </svg>
-            
-            {/* Start/Stop Button */}
-            <button 
-              onClick={handleStartStop}
-              className="absolute inset-2 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl hover:bg-white transition-all duration-300 hover:scale-105 interactive-hover"
-              tabIndex={0}
-              aria-label={demoState.isRunning && !demoState.isPaused ? 'Pause demo' : 'Play demo'}
-              aria-pressed={demoState.isRunning && !demoState.isPaused}
-            >
-              <div className="text-2xl" role="img" aria-hidden="true">
-                {demoState.isRunning && !demoState.isPaused ? '⏸️' : '▶️'}
-              </div>
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Realistic Mouse Cursor Simulation */}
       <div id="mouseCursor" className="fixed pointer-events-none z-40 opacity-0" style={{ left: '20%', top: '20%' }}>
