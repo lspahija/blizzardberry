@@ -502,7 +502,7 @@ export default function DemoPage() {
         // Replace text with highlighted version
         textDiv.innerHTML = 'Show me revenue numbers for <span class="highlight-north-america">North America</span>.';
         
-        // Animate the highlight - yellow flash
+        // Animate the highlight - permanent yellow highlight
         const highlightElement = textDiv.querySelector('.highlight-north-america');
         if (highlightElement) {
           gsap.fromTo(highlightElement,
@@ -510,17 +510,9 @@ export default function DemoPage() {
             { 
               backgroundColor: '#FDE047',
               color: '#1F2937',
-              duration: 0.4,
-              ease: "power2.out",
-              yoyo: true,
-              repeat: 1,
-              onComplete: () => {
-                // Return to original styling
-                gsap.set(highlightElement, {
-                  backgroundColor: 'transparent',
-                  color: 'white'
-                });
-              }
+              duration: 0.6,
+              ease: "power2.out"
+              // No yoyo or repeat - highlight stays permanently yellow
             }
           );
         }
@@ -1200,6 +1192,10 @@ export default function DemoPage() {
 
     analyzingBubbleDiv = document.createElement('div');
     analyzingBubbleDiv.className = 'flex justify-start chat-message';
+    analyzingBubbleDiv.style.opacity = '0';
+    analyzingBubbleDiv.style.transform = 'translateY(20px)';
+    analyzingBubbleDiv.style.transition = 'all 250ms ease-out';
+    
     analyzingBubbleDiv.innerHTML = `
       <div class="bg-gray-100 px-5 py-3 rounded-3xl max-w-md">
         <div class="flex items-center space-x-3">
@@ -1215,11 +1211,20 @@ export default function DemoPage() {
     
     // Append to end (new messages at bottom)
     chatMessages.appendChild(analyzingBubbleDiv);
+    
+    // Trigger smooth slide-up animation
+    setTimeout(() => {
+      analyzingBubbleDiv.style.opacity = '1';
+      analyzingBubbleDiv.style.transform = 'translateY(0)';
+    }, 10);
   };
 
   const hideAnalyzingBubble = () => {
     if (analyzingBubbleDiv && analyzingBubbleDiv.parentNode) {
+      // Smooth slide-down and fade-out
       analyzingBubbleDiv.style.opacity = '0';
+      analyzingBubbleDiv.style.transform = 'translateY(-10px) scale(0.95)';
+      
       setTimeout(() => {
         if (analyzingBubbleDiv && analyzingBubbleDiv.parentNode) {
           analyzingBubbleDiv.parentNode.removeChild(analyzingBubbleDiv);
