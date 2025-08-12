@@ -87,13 +87,13 @@ export default function DemoPage() {
       scene.style.display = sceneId.includes('scene4') ? 'flex' : 'block';
       scene.style.visibility = 'visible';
       
-      // Smooth fade in with scale
+      // Smooth fade in with scale - faster
       gsap.fromTo(scene, 
         { opacity: 0, scale: 0.95 },
         { 
           opacity: 1, 
           scale: 1,
-          duration: 0.8, 
+          duration: 0.5, 
           ease: "power2.out"
         }
       );
@@ -256,23 +256,23 @@ export default function DemoPage() {
       }
     });
 
-    // Phase 1: Loading (2 seconds)
+    // Phase 1: Loading (1.5 seconds - faster)
     tl.addLabel("loadingStart")
       .to("#loader", { 
         opacity: 0, 
         scale: 1.1, 
         filter: "blur(10px)", 
-        duration: 1.2, 
+        duration: 0.8, 
         ease: "power2.inOut" 
-      }, 1)
+      }, 0.5)
       .call(() => {
         const loader = document.getElementById('loader');
         if (loader) loader.style.display = 'none';
         setControlsVisible(true);
-      }, undefined, 2.2);
+      }, undefined, 1.5);
 
     // Phase 2: Scene 1 - Create Action (8 seconds)
-    tl.addLabel("scene1Start", 2.5)
+    tl.addLabel("scene1Start", 1.8)
       .call(() => showScene('scene1'), undefined, "scene1Start")
       .call(() => {
         // Start Scene 1 animations
@@ -1386,12 +1386,12 @@ export default function DemoPage() {
       // Build master timeline
       const timeline = buildMasterTimeline();
       
-      // Start after loader
+      // Start after loader - faster startup
       setTimeout(() => {
         setIsLoaded(true);
         timeline.play();
         setDemoState(prev => ({ ...prev, isRunning: true, startTime: Date.now() }));
-      }, 3000);
+      }, 2000);
     };
 
     initDemo();
