@@ -143,8 +143,8 @@ export default function LandingPage() {
             className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 max-w-2xl z-10 leading-relaxed"
             variants={itemVariants}
           >
-            Go beyond a simple chatbot. Give your users an AI agent that can
-            complete tasks, manage accounts, and navigate your app.
+            Go beyond a simple chatbot. Our agents can complete tasks, manage
+            accounts, and navigate your app.
           </motion.p>
           <motion.div
             className="flex flex-col sm:flex-row items-center gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-4 sm:px-0"
