@@ -459,10 +459,7 @@ export default function DemoPage() {
     const chatMessages = document.getElementById('chatMessages');
     if (!chatMessages) return;
 
-    // First highlight North America when analyzing starts
-    highlightNorthAmericaInChat();
-
-    // Then show analyzing bubble
+    // Show analyzing bubble first
     addTimeout(() => {
       initialAnalyzingBubbleDiv = document.createElement('div');
       initialAnalyzingBubbleDiv.className = 'flex justify-start chat-message';
@@ -481,6 +478,9 @@ export default function DemoPage() {
       
       // Append to end (new messages at bottom)
       chatMessages.appendChild(initialAnalyzingBubbleDiv);
+
+      // THEN highlight North America when analyzing bubble appears
+      highlightNorthAmericaInChat();
 
       // Start AI analysis after chat with analyzing bubble is visible for 1 more second
       addTimeout(() => {
@@ -875,14 +875,17 @@ export default function DemoPage() {
       showAnalyzingBubble();
     }, 4200); // After user message appears
 
-    // Agent responds with ticket summary (optimized timing)
+    // Agent responds with ticket summary (smooth transition)
     addTimeout(() => {
       hideAnalyzingBubble();
-      addChatMessage({
-        type: 'received',
-        text: 'We have 5 tickets today:\n\n• 3 Resolved (billing & features)\n• 2 Open (1 high-priority bug, 1 pending)\n\nWant to see the full details?'
-      }, true);
-    }, 6200); // Much faster
+      // Wait for hide animation to complete before showing response
+      addTimeout(() => {
+        addChatMessage({
+          type: 'received',
+          text: 'We have 5 tickets today:\n\n• 3 Resolved (billing & features)\n• 2 Open (1 high-priority bug, 1 pending)\n\nWant to see the full details?'
+        }, true);
+      }, 300); // Wait for hide animation to complete
+    }, 5400); // Shorter analyzing duration
 
     // User responds YES (key moment - make it prominent)
     addTimeout(() => {
@@ -896,7 +899,7 @@ export default function DemoPage() {
       addTimeout(() => {
         showTicketsDashboard();
       }, 1200); // Faster transition
-    }, 7700);  // Much faster YES response
+    }, 7000);  // Adjusted to match new AI response timing
   };
 
   // New streamlined tickets dashboard
@@ -1912,21 +1915,21 @@ export default function DemoPage() {
               
               {/* AI Processing Center */}
               <div className="mb-5">
-                <div className="relative mx-auto w-18 h-18">
+                <div className="relative mx-auto w-16 h-16">
                   {/* Clean AI Core */}
-                  <div className="w-18 h-18 bg-gradient-to-br from-blue-500 via-purple-500 to-rose-500 rounded-2xl flex items-center justify-center shadow-xl relative">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-500 to-rose-500 rounded-2xl flex items-center justify-center shadow-xl relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-600 animate-pulse opacity-30 rounded-2xl"></div>
                     
                     {/* Simple AI Icon */}
-                    <svg width="28" height="28" fill="white" viewBox="0 0 24 24" className="relative z-10">
+                    <svg width="24" height="24" fill="white" viewBox="0 0 24 24" className="relative z-10">
                       <path d="M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1M12,7C9.24,7 7,9.24 7,12S9.24,17 12,17S17,14.76 17,12S14.76,7 12,7M12,9C13.66,9 15,10.34 15,12S13.66,15 12,15S9,13.66 9,12S10.34,9 12,9Z"/>
                     </svg>
                     
                     {/* Simple rotating ring */}
-                    <div className="absolute inset-0 w-18 h-18 border-2 border-white/25 rounded-2xl animate-spin opacity-50" style={{ animationDuration: '6s' }}></div>
+                    <div className="absolute inset-0 w-16 h-16 border-2 border-white/25 rounded-2xl animate-spin opacity-50" style={{ animationDuration: '6s' }}></div>
                     
                     {/* Subtle pulse */}
-                    <div className="absolute inset-0 w-18 h-18 border border-white/20 rounded-2xl animate-ping opacity-30"></div>
+                    <div className="absolute inset-0 w-16 h-16 border border-white/20 rounded-2xl animate-ping opacity-30"></div>
                   </div>
                 </div>
               </div>
