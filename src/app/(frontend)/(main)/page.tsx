@@ -112,7 +112,7 @@ export default function LandingPage() {
           </svg>
 
           <motion.h1
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold tracking-tighter mb-6 z-10 leading-tight"
+            className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold tracking-tighter mb-6 z-10 leading-tight"
             variants={itemVariants}
           >
             Give Your Users an
