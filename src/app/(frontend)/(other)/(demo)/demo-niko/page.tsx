@@ -170,13 +170,14 @@ export default function DemoPage() {
       chartInstanceRef.current.destroy();
     }
 
+    // Start with full data immediately visible
     chartInstanceRef.current = new Chart(ctx, {
       type: 'line',
       data: {
         labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
         datasets: [{
           label: 'Revenue (North America)',
-          data: [120, 135, 142, 156, 148, 141],
+          data: [120, 135, 142, 156, 148, 141], // Show full data immediately
           borderColor: '#F43F5E',
           backgroundColor: 'rgba(244, 63, 94, 0.1)',
           borderWidth: 3,
@@ -215,25 +216,7 @@ export default function DemoPage() {
       }
     });
 
-    // Animate chart appearance
-    const chart = chartInstanceRef.current;
-    const originalData = chart.data.datasets[0].data;
-    chart.data.datasets[0].data = new Array(originalData.length).fill(0);
-    chart.update();
-
-    // Animate to final values
-    let step = 0;
-    const animateData = () => {
-      if (step <= 20) {
-        chart.data.datasets[0].data = originalData.map(val => 
-          typeof val === 'number' ? (val * step) / 20 : 0
-        );
-        chart.update('none');
-        step++;
-        addTimeout(animateData, 100);
-      }
-    };
-    addTimeout(animateData, 500);
+    // Chart appears with full data immediately - no animation delay needed
   };
 
   // Master Timeline using GSAP - recreating original timing but with GSAP control
@@ -377,7 +360,7 @@ export default function DemoPage() {
 
     // Dashboard is now triggered directly from AI analysis completion
 
-    // Hide dashboard and return to chat (much faster timing)
+    // Hide dashboard and return to chat (2 seconds longer timing)
     addTimeout(() => {
       console.log('=== HIDING DASHBOARD, RETURNING TO CHAT ===');
       const dashboardScene = document.getElementById('dashboardScene');
@@ -405,7 +388,7 @@ export default function DemoPage() {
       
       showScene('scene2');
       continueConversationAfterDashboard();
-    }, 14500);  // Extended - dashboard shows for ~8.5 seconds total (3.5s longer)
+    }, 16500);  // Extended - dashboard shows for ~10.5 seconds total (2s longer)
   };
 
   const startChatConversation = () => {
@@ -499,11 +482,11 @@ export default function DemoPage() {
       // Append to end (new messages at bottom)
       chatMessages.appendChild(initialAnalyzingBubbleDiv);
 
-      // Start AI analysis immediately while analyzing bubble is visible
+      // Start AI analysis after chat with analyzing bubble is visible for 1 more second
       addTimeout(() => {
-        // Trigger AI analysis right away - no need to wait for bubble removal
+        // Trigger AI analysis after giving more time to see the chat
         startAIArchitecture();
-      }, 200); // Very quick start - analysis begins while "Analyzing..." is still showing
+      }, 1200); // 1 second longer - let user see chat with "Analyzing..." bubble
     }, 300);
   };
 
@@ -514,23 +497,30 @@ export default function DemoPage() {
 
     const sentMessages = chatMessages.querySelectorAll('.flex.justify-end');
     sentMessages.forEach((messageDiv) => {
-      const textDiv = messageDiv.querySelector('.text-sm');
+      const textDiv = messageDiv.querySelector('div:last-child div');
       if (textDiv && textDiv.textContent?.includes('North America')) {
         // Replace text with highlighted version
         textDiv.innerHTML = 'Show me revenue numbers for <span class="highlight-north-america">North America</span>.';
         
-        // Animate the highlight
+        // Animate the highlight - yellow flash
         const highlightElement = textDiv.querySelector('.highlight-north-america');
         if (highlightElement) {
           gsap.fromTo(highlightElement,
-            { backgroundColor: 'transparent', scale: 1 },
+            { backgroundColor: 'transparent', color: 'white' },
             { 
-              backgroundColor: '#EAB308',
-              scale: 1.05,
-              duration: 0.8,
+              backgroundColor: '#FDE047',
+              color: '#1F2937',
+              duration: 0.4,
               ease: "power2.out",
               yoyo: true,
-              repeat: 1
+              repeat: 1,
+              onComplete: () => {
+                // Return to original styling
+                gsap.set(highlightElement, {
+                  backgroundColor: 'transparent',
+                  color: 'white'
+                });
+              }
             }
           );
         }
@@ -719,7 +709,7 @@ export default function DemoPage() {
           }
         });
       }
-    }, 4500); // Total analysis time: 4.5 seconds
+    }, 6500); // Total analysis time: 6.5 seconds (1 second longer than before)
   };
 
   // New Progressive Analysis Animation System
@@ -875,10 +865,10 @@ export default function DemoPage() {
       showUserTypingAnimation('Show me today\'s support tickets');
     }, 500);
 
-    // Transition to conversation mode after typing
+    // Transition to conversation mode after typing (wait 1 second longer)
     addTimeout(() => {
       transitionToChatConversation();
-    }, 2200); // After typing completes
+    }, 3200); // Extended delay after typing completes
 
     // User message appears in chat after transition
     addTimeout(() => {
@@ -886,12 +876,12 @@ export default function DemoPage() {
         type: 'sent',
         text: 'Show me today\'s support tickets'
       }, false);
-    }, 2700); // After transition completes
+    }, 3700); // After transition completes
 
     // Show analyzing bubble (brief)
     addTimeout(() => {
       showAnalyzingBubble();
-    }, 3200); // After user message appears
+    }, 4200); // After user message appears
 
     // Agent responds with ticket summary (optimized timing)
     addTimeout(() => {
@@ -900,7 +890,7 @@ export default function DemoPage() {
         type: 'received',
         text: 'We have 5 tickets today:\n\n• 3 Resolved (billing & features)\n• 2 Open (1 high-priority bug, 1 pending)\n\nWant to see the full details?'
       }, true);
-    }, 5200); // Much faster
+    }, 6200); // Much faster
 
     // User responds YES (key moment - make it prominent)
     addTimeout(() => {
@@ -914,7 +904,7 @@ export default function DemoPage() {
       addTimeout(() => {
         showTicketsDashboard();
       }, 1200); // Faster transition
-    }, 6700);  // Much faster YES response
+    }, 7700);  // Much faster YES response
   };
 
   // New streamlined tickets dashboard
@@ -949,42 +939,42 @@ export default function DemoPage() {
     const dashboardDiv = document.createElement('div');
     dashboardDiv.id = 'ticketsDashboard';
     dashboardDiv.className = 'fixed inset-0 flex items-center justify-center z-50';
-    dashboardDiv.style.opacity = '0';
+    dashboardDiv.style.opacity = '1'; // Set to visible immediately
     
     dashboardDiv.innerHTML = `
       <div class="w-[600px] h-[680px] bg-white overflow-y-auto p-4">
-        <!-- Header -->
+        <!-- Header - All elements initially hidden -->
         <div class="text-center mb-4">
-          <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-rose-500 to-rose-600 rounded-xl mb-3 shadow-lg">
+          <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-rose-500 to-rose-600 rounded-xl mb-3 shadow-lg" id="header-icon" style="opacity: 0; transform: translateY(-40px) scale(0.5);">
             <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
               <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/>
             </svg>
           </div>
-          <h1 class="text-xl font-bold text-gray-900 mb-1">Support Tickets</h1>
-          <p class="text-xs text-gray-600">Today's Overview</p>
+          <h1 class="text-xl font-bold text-gray-900 mb-1" id="header-title" style="opacity: 0; transform: translateY(-20px);">Support Tickets</h1>
+          <p class="text-xs text-gray-600" id="header-subtitle" style="opacity: 0; transform: translateY(-15px);">Today's Overview</p>
         </div>
 
-        <!-- Quick Stats -->
-        <div class="grid grid-cols-3 gap-2 mb-4">
-          <div class="bg-gray-50 rounded-lg p-3 text-center">
-            <div class="text-2xl font-bold mb-1 ticket-stat text-blue-600" data-target="5">0</div>
-            <div class="text-xs text-gray-600">Total</div>
+        <!-- Quick Stats - All elements initially hidden -->
+        <div class="grid grid-cols-3 gap-2 mb-4" id="stats-grid">
+          <div class="bg-gray-50 rounded-lg p-3 text-center stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+            <div class="text-2xl font-bold mb-1 ticket-stat text-blue-600" data-target="5" style="opacity: 0;">0</div>
+            <div class="text-xs text-gray-600" style="opacity: 0;">Total</div>
           </div>
-          <div class="bg-gray-50 rounded-lg p-3 text-center">
-            <div class="text-2xl font-bold mb-1 ticket-stat text-emerald-600" data-target="3">0</div>
-            <div class="text-xs text-gray-600">Resolved</div>
+          <div class="bg-gray-50 rounded-lg p-3 text-center stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+            <div class="text-2xl font-bold mb-1 ticket-stat text-emerald-600" data-target="3" style="opacity: 0;">0</div>
+            <div class="text-xs text-gray-600" style="opacity: 0;">Resolved</div>
           </div>
-          <div class="bg-gray-50 rounded-lg p-3 text-center">
-            <div class="text-2xl font-bold mb-1 ticket-stat text-rose-600" data-target="2">0</div>
-            <div class="text-xs text-gray-600">Open</div>
+          <div class="bg-gray-50 rounded-lg p-3 text-center stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+            <div class="text-2xl font-bold mb-1 ticket-stat text-rose-600" data-target="2" style="opacity: 0;">0</div>
+            <div class="text-xs text-gray-600" style="opacity: 0;">Open</div>
           </div>
         </div>
 
-        <!-- Tickets List -->
-        <div class="bg-gray-50 rounded-lg p-3">
-          <h3 class="text-sm font-bold text-gray-900 mb-3">Recent Tickets</h3>
+        <!-- Tickets List - All elements initially hidden -->
+        <div class="bg-gray-50 rounded-lg p-3" id="tickets-section" style="opacity: 0; transform: translateY(20px);">
+          <h3 class="text-sm font-bold text-gray-900 mb-3" style="opacity: 0;">Recent Tickets</h3>
           <div class="space-y-2">
-            <div class="ticket-row bg-white rounded-lg p-3 opacity-0">
+            <div class="ticket-row bg-white rounded-lg p-3" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-red-500 rounded-full"></div>
@@ -996,7 +986,7 @@ export default function DemoPage() {
               <div class="text-xs text-gray-500">High Priority</div>
             </div>
             
-            <div class="ticket-row bg-white rounded-lg p-3 opacity-0">
+            <div class="ticket-row bg-white rounded-lg p-3" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
@@ -1008,7 +998,7 @@ export default function DemoPage() {
               <div class="text-xs text-gray-500">Low Priority</div>
             </div>
             
-            <div class="ticket-row bg-white rounded-lg p-3 opacity-0">
+            <div class="ticket-row bg-white rounded-lg p-3" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -1027,89 +1017,124 @@ export default function DemoPage() {
     // Add to DOM
     document.body.appendChild(dashboardDiv);
     
-    // Step 3: Animate dashboard in
-    gsap.fromTo(dashboardDiv,
-      { opacity: 0, scale: 0.9 },
-      { 
-        opacity: 1, 
-        scale: 1,
-        duration: 1,
-        ease: "power2.out",
-        onComplete: () => {
-          // Animate dashboard content
-          animateTicketsDashboard();
-        }
-      }
-    );
+    // Start sequential animations immediately
+    animateTicketsDashboard();
   };
 
   const animateTicketsDashboard = () => {
-    console.log('=== ANIMATING TICKETS DASHBOARD ===');
+    console.log('=== ANIMATING TICKETS DASHBOARD WITH PERFECT SEQUENCE ===');
     
-    // Animate header
+    // Step 1: Animate header icon first
     addTimeout(() => {
-      const header = document.querySelector('#ticketsDashboard .text-center');
-      if (header) {
-        gsap.fromTo(header,
-          { y: -30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }
-        );
+      const headerIcon = document.getElementById('header-icon');
+      if (headerIcon) {
+        gsap.to(headerIcon, {
+          y: 0, 
+          opacity: 1, 
+          scale: 1,
+          duration: 0.8, 
+          ease: "back.out(1.7)"
+        });
       }
     }, 200);
     
-    // Animate stats with counters
+    // Step 2: Animate header text
     addTimeout(() => {
-      const stats = document.querySelectorAll('.ticket-stat');
-      stats.forEach((stat, index) => {
-        const target = parseInt(stat.getAttribute('data-target') || '0');
-        
-        // Animate container
-        const container = stat.closest('.rounded-2xl');
-        if (container) {
-          gsap.fromTo(container,
-            { scale: 0, rotation: 5 },
-            { 
-              scale: 1, 
-              rotation: 0,
-              duration: 0.8, 
-              ease: "elastic.out(1, 0.6)",
-              delay: index * 0.15
-            }
-          );
-        }
-        
-        // Animate counter
+      const headerTitle = document.getElementById('header-title');
+      if (headerTitle) {
+        gsap.to(headerTitle, {
+          y: 0, opacity: 1, duration: 0.6, ease: "power2.out"
+        });
+      }
+    }, 600);
+    
+    addTimeout(() => {
+      const headerSubtitle = document.getElementById('header-subtitle');
+      if (headerSubtitle) {
+        gsap.to(headerSubtitle, {
+          y: 0, opacity: 1, duration: 0.6, ease: "power2.out"
+        });
+      }
+    }, 800);
+    
+    // Step 3: Animate stats cards one by one
+    addTimeout(() => {
+      const statsCards = document.querySelectorAll('.stats-card');
+      statsCards.forEach((card, index) => {
         addTimeout(() => {
-          const obj = { value: 0 };
-          gsap.to(obj, {
-            value: target,
-            duration: 1.2,
+          // First animate the card container
+          gsap.to(card, {
+            y: 0, 
+            opacity: 1, 
+            scale: 1,
+            duration: 0.6, 
             ease: "power2.out",
-            onUpdate: () => {
-              stat.textContent = Math.ceil(obj.value).toString();
+            onComplete: () => {
+              // Then animate the content inside
+              const counter = card.querySelector('.ticket-stat');
+              const label = card.querySelector('.text-xs');
+              
+              if (counter && label) {
+                // Show the text elements
+                gsap.to([counter, label], {
+                  opacity: 1,
+                  duration: 0.3,
+                  stagger: 0.1
+                });
+                
+                // Animate the counter
+                const target = parseInt(counter.getAttribute('data-target') || '0');
+                const obj = { value: 0 };
+                gsap.to(obj, {
+                  value: target,
+                  duration: 0.8,
+                  ease: "power2.out",
+                  onUpdate: () => {
+                    counter.textContent = Math.ceil(obj.value).toString();
+                  }
+                });
+              }
             }
           });
-        }, (index * 150) + 300);
+        }, index * 200);
       });
-    }, 400);
+    }, 1100);
     
-    // Animate ticket rows
+    // Step 4: Animate tickets section
+    addTimeout(() => {
+      const ticketsSection = document.getElementById('tickets-section');
+      if (ticketsSection) {
+        gsap.to(ticketsSection, {
+          y: 0, opacity: 1, duration: 0.7, ease: "power2.out",
+          onComplete: () => {
+            // Animate section header
+            const sectionHeader = ticketsSection.querySelector('h3');
+            if (sectionHeader) {
+              gsap.to(sectionHeader, {
+                opacity: 1, duration: 0.4
+              });
+            }
+          }
+        });
+      }
+    }, 1800);
+    
+    // Step 5: Animate individual ticket rows
     addTimeout(() => {
       const rows = document.querySelectorAll('.ticket-row');
       rows.forEach((row, index) => {
         addTimeout(() => {
-          gsap.fromTo(row,
-            { x: -100, opacity: 0 },
-            { x: 0, opacity: 1, duration: 0.6, ease: "power3.out" }
-          );
-        }, index * 200);
+          gsap.to(row, {
+            x: 0, opacity: 1, duration: 0.5, ease: "power2.out"
+          });
+        }, index * 150);
       });
-    }, 1200);
+    }, 2100);
     
-    // Hide dashboard after 3 seconds (faster timing)
+    // Hide dashboard after 5 seconds (2 seconds longer for viewing)
     addTimeout(() => {
       hideTicketsDashboard();
-    }, 3000);
+    }, 5000);
   };
 
   const hideTicketsDashboard = () => {
@@ -1266,12 +1291,10 @@ export default function DemoPage() {
   const showDashboard = () => {
     console.log('=== DASHBOARD SHOWING ===');
     
-    // Start counters and chart at the same time
-    setTimeout(() => {
-      console.log('Starting counter animation and chart simultaneously');
-      animateCounters();
-      createChart();
-    }, 500);
+    // Start counters and chart immediately when dashboard appears
+    console.log('Starting counter animation and chart immediately');
+    animateCounters();
+    createChart();
   };
 
   const startDashboardTransition = () => {
@@ -1284,27 +1307,27 @@ export default function DemoPage() {
       return;
     }
     
-    // Step 1: Fade out analysis (1 second)
+    // Step 1: Fade out analysis
     gsap.to(aiArchitecture, {
       opacity: 0,
-      duration: 1,
+      duration: 0.8,
       ease: "power2.inOut",
       onComplete: () => {
         aiArchitecture.style.display = 'none';
         console.log('Analysis faded out');
         
-        // Step 2: Show and fade in dashboard scene (1.5 seconds)
+        // Step 2: Show dashboard immediately with content
         dashboardScene.style.display = 'block';
         gsap.fromTo(dashboardScene,
-          { opacity: 0 },
+          { opacity: 0, scale: 0.95 },
           { 
-            opacity: 1, 
-            duration: 1.5,
+            opacity: 1,
+            scale: 1, 
+            duration: 0.6,
             ease: "power2.out",
             onComplete: () => {
-              console.log('Dashboard scene faded in');
-              
-              // Step 3: Animate dashboard content
+              console.log('Dashboard scene appeared');
+              // Start animations immediately while dashboard is fully visible
               showDashboard();
             }
           }
@@ -1882,18 +1905,23 @@ export default function DemoPage() {
             {/* Single Progressive Analysis View */}
             <div id="analysisStep1" className="relative z-10 text-center px-8 opacity-0">
               
-              {/* Central AI Brain Icon */}
-              <div className="mb-6">
-                <div className="relative mx-auto w-20 h-20">
-                  {/* Animated brain/AI icon */}
-                  <div className="w-20 h-20 bg-gradient-to-br from-rose-500 via-purple-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-2xl relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-rose-400 to-blue-600 animate-pulse opacity-30"></div>
-                    <svg width="36" height="36" fill="white" viewBox="0 0 24 24" className="relative z-10">
-                      <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/>
+              {/* AI Processing Center */}
+              <div className="mb-5">
+                <div className="relative mx-auto w-18 h-18">
+                  {/* Clean AI Core */}
+                  <div className="w-18 h-18 bg-gradient-to-br from-blue-500 via-purple-500 to-rose-500 rounded-2xl flex items-center justify-center shadow-xl relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-600 animate-pulse opacity-30 rounded-2xl"></div>
+                    
+                    {/* Simple AI Icon */}
+                    <svg width="28" height="28" fill="white" viewBox="0 0 24 24" className="relative z-10">
+                      <path d="M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1M12,7C9.24,7 7,9.24 7,12S9.24,17 12,17S17,14.76 17,12S14.76,7 12,7M12,9C13.66,9 15,10.34 15,12S13.66,15 12,15S9,13.66 9,12S10.34,9 12,9Z"/>
                     </svg>
-                    {/* Pulsing rings */}
-                    <div className="absolute inset-0 w-20 h-20 border-2 border-white/20 rounded-2xl animate-ping"></div>
-                    <div className="absolute inset-2 w-16 h-16 border border-white/30 rounded-xl animate-pulse"></div>
+                    
+                    {/* Simple rotating ring */}
+                    <div className="absolute inset-0 w-18 h-18 border-2 border-white/25 rounded-2xl animate-spin opacity-50" style={{ animationDuration: '6s' }}></div>
+                    
+                    {/* Subtle pulse */}
+                    <div className="absolute inset-0 w-18 h-18 border border-white/20 rounded-2xl animate-ping opacity-30"></div>
                   </div>
                 </div>
               </div>
@@ -1904,41 +1932,50 @@ export default function DemoPage() {
                 <p id="analysisSubtitle" className="text-sm text-gray-600">BlizzardBerry AI is processing your request...</p>
               </div>
               
-              {/* Progress Indicators - Live Updates */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-gray-200">
+              {/* Progress System */}
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-gray-200">
                 <div className="space-y-3">
                   
                   {/* Step 1: Data Fetching */}
-                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-gray-50" id="step1">
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-rose-50 border border-rose-200/50 transition-all duration-300" id="step1">
                     <div className="flex items-center space-x-3">
-                      <div className="w-6 h-6 bg-rose-500 rounded-lg flex items-center justify-center step-icon">
+                      <div className="w-6 h-6 bg-gradient-to-br from-rose-500 to-rose-600 rounded-lg flex items-center justify-center step-icon shadow-md">
                         <div className="w-2 h-2 bg-white rounded-full animate-pulse step-loader"></div>
                       </div>
-                      <span className="text-sm font-medium text-gray-800">Fetching North America data</span>
+                      <div>
+                        <span className="text-sm font-medium text-gray-900">Data Collection</span>
+                        <div className="text-xs text-gray-600">North America revenue streams</div>
+                      </div>
                     </div>
-                    <div className="step-status text-xs text-gray-500">Processing...</div>
+                    <div className="step-status text-xs font-medium text-rose-600 bg-rose-100 px-2 py-1 rounded-lg">Processing...</div>
                   </div>
                   
-                  {/* Step 2: Analysis */}
-                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-gray-50 opacity-50" id="step2">
+                  {/* Step 2: AI Analysis */}
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-blue-50 border border-blue-200/50 opacity-50 transition-all duration-300" id="step2">
                     <div className="flex items-center space-x-3">
-                      <div className="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center step-icon">
+                      <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center step-icon shadow-md">
                         <div className="w-2 h-2 bg-white rounded-full step-loader"></div>
                       </div>
-                      <span className="text-sm font-medium text-gray-800">Running revenue analytics</span>
+                      <div>
+                        <span className="text-sm font-medium text-gray-900">AI Analytics</span>
+                        <div className="text-xs text-gray-600">Pattern recognition & insights</div>
+                      </div>
                     </div>
-                    <div className="step-status text-xs text-gray-500">Waiting...</div>
+                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">Waiting...</div>
                   </div>
                   
-                  {/* Step 3: Chart Generation */}
-                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-gray-50 opacity-50" id="step3">
+                  {/* Step 3: Dashboard */}
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-emerald-50 border border-emerald-200/50 opacity-50 transition-all duration-300" id="step3">
                     <div className="flex items-center space-x-3">
-                      <div className="w-6 h-6 bg-emerald-500 rounded-lg flex items-center justify-center step-icon">
+                      <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center step-icon shadow-md">
                         <div className="w-2 h-2 bg-white rounded-full step-loader"></div>
                       </div>
-                      <span className="text-sm font-medium text-gray-800">Building dashboard</span>
+                      <div>
+                        <span className="text-sm font-medium text-gray-900">Dashboard</span>
+                        <div className="text-xs text-gray-600">Interactive visualizations</div>
+                      </div>
                     </div>
-                    <div className="step-status text-xs text-gray-500">Waiting...</div>
+                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">Waiting...</div>
                   </div>
                   
                 </div>
@@ -1949,56 +1986,60 @@ export default function DemoPage() {
         </div>
       </div>
 
-      {/* New Modern Revenue Dashboard */}
+      {/* Modern Revenue Dashboard */}
       <div id="dashboardScene" className="fixed inset-0 z-50 opacity-0" style={{ display: 'none' }}>
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100"></div>
         
         {/* Fixed Size Dashboard Widget */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-white overflow-y-auto">
-            <div className="p-4">
+          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-white overflow-y-auto rounded-2xl shadow-xl border border-gray-200">
+            <div className="p-6">
             
-            {/* Header Section */}
-            <div className="text-center mb-4" id="dashboardHeader">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-rose-500 to-rose-600 rounded-xl mb-3 shadow-lg">
-                <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+            {/* Clean Header Section */}
+            <div className="text-center mb-6" id="dashboardHeader">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-rose-500 to-rose-600 rounded-2xl mb-4 shadow-lg">
+                <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
                   <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
                 </svg>
               </div>
-              <h1 className="text-xl font-bold text-gray-900 mb-1">Revenue Analytics</h1>
-              <p className="text-xs text-gray-600">North America • Real-time Performance</p>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Revenue Analytics</h1>
+              <p className="text-sm text-gray-600">North America • Real-time Performance</p>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 gap-2 mb-4" id="statsGrid">
-              <div className="metric-card bg-gray-50 rounded-lg p-3 text-center">
-                <div className="metric-number text-2xl font-bold mb-1 text-rose-600" data-target="847">0</div>
-                <div className="text-xs text-gray-600">Total Revenue ($K)</div>
+            {/* Stats Grid - Minimal Layout */}
+            <div className="grid grid-cols-2 gap-1.5 mb-1.5" id="statsGrid">
+              <div className="metric-card bg-gradient-to-br from-rose-50 to-pink-50 rounded-lg p-1.5 text-center border border-rose-200/50 shadow-sm">
+                <div className="metric-number text-base font-bold text-rose-600" data-target="847">0</div>
+                <div className="text-xs text-gray-700 font-medium">Total Revenue</div>
+                <div className="text-xs text-gray-500">Thousands USD</div>
               </div>
               
-              <div className="metric-card bg-gray-50 rounded-lg p-3 text-center">
-                <div className="metric-number text-2xl font-bold mb-1 text-blue-600" data-target="18">0</div>
-                <div className="text-xs text-gray-600">Growth Rate (%)</div>
+              <div className="metric-card bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-1.5 text-center border border-blue-200/50 shadow-sm">
+                <div className="metric-number text-base font-bold text-blue-600" data-target="18">0</div>
+                <div className="text-xs text-gray-700 font-medium">Growth Rate</div>
+                <div className="text-xs text-gray-500">Percentage increase</div>
               </div>
               
-              <div className="metric-card bg-gray-50 rounded-lg p-3 text-center">
-                <div className="metric-number text-2xl font-bold mb-1 text-gray-700" data-target="2840">0</div>
-                <div className="text-xs text-gray-600">Active Clients</div>
+              <div className="metric-card bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-1.5 text-center border border-emerald-200/50 shadow-sm">
+                <div className="metric-number text-base font-bold text-emerald-600" data-target="2840">0</div>
+                <div className="text-xs text-gray-700 font-medium">Active Clients</div>
+                <div className="text-xs text-gray-500">Customer base</div>
               </div>
               
-              <div className="metric-card bg-gray-50 rounded-lg p-3 text-center">
-                <div className="metric-number text-2xl font-bold mb-1 text-rose-600" data-target="298">0</div>
-                <div className="text-xs text-gray-600">Avg Deal ($K)</div>
+              <div className="metric-card bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg p-1.5 text-center border border-purple-200/50 shadow-sm">
+                <div className="metric-number text-base font-bold text-purple-600" data-target="298">0</div>
+                <div className="text-xs text-gray-700 font-medium">Avg Deal Size</div>
+                <div className="text-xs text-gray-500">Thousands USD</div>
               </div>
             </div>
 
-            {/* Chart Section */}
-            <div className="bg-gray-50 rounded-lg p-3" id="chartSection">
+            {/* Chart Section - Full Visible Chart */}
+            <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-4 border border-gray-200 shadow-sm" id="chartSection">
               <div className="mb-3">
-                <h3 className="text-sm font-bold text-gray-900 mb-1">Revenue Trend</h3>
-                <p className="text-xs text-gray-600">6-Month Overview</p>
+                <h3 className="text-lg font-bold text-gray-900 mb-1">Revenue Trend</h3>
+                <p className="text-sm text-gray-600">6-Month Performance Overview</p>
               </div>
-              <div className="h-40 bg-white rounded p-2">
+              <div className="h-64 bg-white rounded-lg p-2 shadow-inner border border-gray-100">
                 <canvas id="performanceChart" className="w-full h-full"></canvas>
               </div>
             </div>
