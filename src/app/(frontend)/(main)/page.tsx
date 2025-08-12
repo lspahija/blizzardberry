@@ -338,28 +338,50 @@ export default function LandingPage() {
             </div>
 
             <div className="lg:col-span-5 space-y-4 sm:space-y-6">
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <MessageSquare className="h-6 w-6 text-brand" />
-                  <h4 className="text-xl font-bold text-foreground">
-                    Natural Language
-                  </h4>
+              <Card className="group border-3 border-border/50 bg-gradient-to-br from-blue-50/50 via-card to-blue-50/30 dark:from-blue-950/20 dark:via-card dark:to-blue-900/10 rounded-2xl p-6 sm:p-8 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-2xl hover:border-blue-400/40 hover:-translate-y-1 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-start space-x-5 mb-5">
+                    <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-2xl group-hover:bg-blue-200 dark:group-hover:bg-blue-800/40 transition-colors duration-300">
+                      <MessageSquare className="h-7 w-7 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl sm:text-2xl font-bold text-foreground mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors duration-300">
+                        Natural Language
+                      </h4>
+                      <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
+                        Users interact naturally - no commands to learn, no complex interfaces to master
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 font-medium text-sm">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                    <span>Intuitive Conversations</span>
+                  </div>
                 </div>
-                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
-                  Users interact naturally - no commands to learn
-                </p>
               </Card>
 
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <Zap className="h-6 w-6 text-brand" />
-                  <h4 className="text-xl font-bold text-foreground">
-                    Real-time
-                  </h4>
+              <Card className="group border-3 border-border/50 bg-gradient-to-br from-green-50/50 via-card to-green-50/30 dark:from-green-950/20 dark:via-card dark:to-green-900/10 rounded-2xl p-6 sm:p-8 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-2xl hover:border-green-400/40 hover:-translate-y-1 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-start space-x-5 mb-5">
+                    <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-2xl group-hover:bg-green-200 dark:group-hover:bg-green-800/40 transition-colors duration-300">
+                      <Rocket className="h-7 w-7 text-green-600 dark:text-green-400 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl sm:text-2xl font-bold text-foreground mb-3 group-hover:text-green-700 dark:group-hover:text-green-300 transition-colors duration-300">
+                        Real-time
+                      </h4>
+                      <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
+                        Instant responses and live interactions with millisecond response times
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 text-green-600 dark:text-green-400 font-medium text-sm">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span>Lightning Fast</span>
+                  </div>
                 </div>
-                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
-                  Instant responses and live interactions
-                </p>
               </Card>
             </div>
           </div>
@@ -367,28 +389,50 @@ export default function LandingPage() {
           {/* Knowledge Base - Reversed */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-5 space-y-4 sm:space-y-6 order-2 lg:order-1">
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <Users className="h-6 w-6 text-brand" />
-                  <h4 className="text-xl font-bold text-foreground">
-                    User Context
-                  </h4>
+              <Card className="group border-3 border-border/50 bg-gradient-to-br from-red-50/50 via-card to-red-50/30 dark:from-red-950/20 dark:via-card dark:to-red-900/10 rounded-2xl p-6 sm:p-8 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-2xl hover:border-red-400/40 hover:-translate-y-1 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-start space-x-5 mb-5">
+                    <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-2xl group-hover:bg-red-200 dark:group-hover:bg-red-800/40 transition-colors duration-300">
+                      <Users className="h-7 w-7 text-red-600 dark:text-red-400 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl sm:text-2xl font-bold text-foreground mb-3 group-hover:text-red-700 dark:group-hover:text-red-300 transition-colors duration-300">
+                        User Context
+                      </h4>
+                      <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
+                        Personalized experiences based on user data, preferences, and interaction history
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 text-red-600 dark:text-red-400 font-medium text-sm">
+                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                    <span>Smart Personalization</span>
+                  </div>
                 </div>
-                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
-                  Personalized experiences based on user data
-                </p>
               </Card>
 
-              <Card className="border-2 border-border/40 bg-gradient-to-br from-card to-card/90 rounded-2xl p-6 sm:p-8 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-primary/20">
-                <div className="flex items-center space-x-4 mb-4">
-                  <Shield className="h-6 w-6 text-brand" />
-                  <h4 className="text-xl font-bold text-foreground">
-                    Secure & Private
-                  </h4>
+              <Card className="group border-3 border-border/50 bg-gradient-to-br from-emerald-50/50 via-card to-emerald-50/30 dark:from-emerald-950/20 dark:via-card dark:to-emerald-900/10 rounded-2xl p-6 sm:p-8 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-2xl hover:border-emerald-400/40 hover:-translate-y-1 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-start space-x-5 mb-5">
+                    <div className="bg-emerald-100 dark:bg-emerald-900/30 p-3 rounded-2xl group-hover:bg-emerald-200 dark:group-hover:bg-emerald-800/40 transition-colors duration-300">
+                      <Shield className="h-7 w-7 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl sm:text-2xl font-bold text-foreground mb-3 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors duration-300">
+                        Secure & Private
+                      </h4>
+                      <p className="text-base sm:text-lg text-muted-foreground/90 font-medium leading-relaxed">
+                        End-to-end encrypted communications with enterprise-grade data protection
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 font-medium text-sm">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <span>Bank-Level Security</span>
+                  </div>
                 </div>
-                <p className="text-base sm:text-base text-muted-foreground/80 font-medium">
-                  Encrypted communications and data protection
-                </p>
               </Card>
             </div>
 
