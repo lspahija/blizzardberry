@@ -11,6 +11,7 @@ import { Loader2 } from 'lucide-react'; // Import a loading icon
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import { ExecutionContext } from '@/app/api/lib/model/action/baseAction';
+import posthog from 'posthog-js';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -64,10 +65,18 @@ function ActionFormContent() {
   const agentId = params.agentId as string;
 
   const handleSuccessClose = () => {
+    posthog.capture('action_creation_completed', {
+      agent_id: agentId,
+      action_type: baseAction.executionContext
+    });
     router.push(`/agents/${agentId}`);
   };
 
   const handleContinueToAgent = () => {
+    posthog.capture('action_creation_completed', {
+      agent_id: agentId,
+      action_type: baseAction.executionContext
+    });
     router.push(`/agents/${agentId}`);
   };
 

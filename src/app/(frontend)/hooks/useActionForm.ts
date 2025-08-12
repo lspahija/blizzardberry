@@ -17,6 +17,7 @@ import { FrontendModel } from '@/app/api/lib/model/action/frontendAction';
 import { Action } from '@/app/api/lib/model/action/baseAction';
 import { toast } from 'sonner';
 import { toCamelCase } from '../lib/actionUtils';
+import posthog from 'posthog-js';
 
 interface DataInput {
   name: string;
@@ -161,6 +162,14 @@ export const useActionForm = (isEditing = false) => {
 
   const handleCreateAction = async () => {
     setIsCreatingAction(true);
+
+    posthog.capture('action_creation_started', {
+      agent_id: agentId,
+      execution_context: baseAction.executionContext,
+      action_name: baseAction.name,
+      data_inputs_count: dataInputs.filter(input => input.name).length
+    });
+
     let action: Action;
 
     if (baseAction.executionContext === ExecutionContext.SERVER) {
@@ -259,6 +268,13 @@ export const useActionForm = (isEditing = false) => {
       console.log('Action created successfully');
       console.log('Response data:', createdAction);
 
+      posthog.capture('action_creation_success', {
+        agent_id: agentId,
+        execution_context: baseAction.executionContext,
+        action_name: baseAction.name,
+        action_id: createdAction.actionId
+      });
+
       if (baseAction.executionContext === ExecutionContext.CLIENT) {
         const clientAction: Action = {
           ...baseAction,
@@ -294,7 +310,15 @@ export const useActionForm = (isEditing = false) => {
       }
     } catch (error) {
       console.error('Error creating action:', error);
-      if (error.message !== 'Action limit reached') {
+      
+      posthog.capture('action_creation_failed', {
+        agent_id: agentId,
+        execution_context: baseAction.executionContext,
+        action_name: baseAction.name,
+        error: (error as Error).message
+      });
+
+      if ((error as Error).message !== 'Action limit reached') {
         toast.error('Failed to create action. Please try again.');
       }
       throw error;

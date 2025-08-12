@@ -29,6 +29,7 @@ import { toast } from 'sonner';
 import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/app/(frontend)/components/ui/tooltip';
+import posthog from 'posthog-js';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -78,23 +79,43 @@ export default function PricingPage() {
   }, [searchParams, isLoggedIn]);
 
   const handleSubscribe = async (tier: string) => {
+    posthog.capture('pricing_plan_selected', {
+      tier,
+      billing_cycle: billingCycle,
+      is_logged_in: isLoggedIn
+    });
+
     if (tier === 'free') {
       if (!isLoggedIn) {
+        posthog.capture('pricing_free_login_required');
         router.push('/login');
         return;
       }
 
       try {
         const data = await subscribe({ tier: 'free', billingCycle });
+        posthog.capture('subscription_success', {
+          tier: 'free',
+          billing_cycle: billingCycle
+        });
         toast.success('Free tier activated! Redirecting to dashboard...');
         setTimeout(() => router.push('/dashboard'), 1000);
         return;
       } catch (err) {
+        posthog.capture('subscription_failed', {
+          tier: 'free',
+          billing_cycle: billingCycle,
+          error: (err as Error).message
+        });
         return;
       }
     }
 
     if (!isLoggedIn) {
+      posthog.capture('pricing_login_required', {
+        tier,
+        billing_cycle: billingCycle
+      });
       const subscriptionIntent = {
         tier,
         billingCycle,
@@ -110,17 +131,34 @@ export default function PricingPage() {
     setCheckoutLoading(true);
     try {
       const data = await subscribe({ tier, billingCycle });
+      posthog.capture('checkout_initiated', {
+        tier,
+        billing_cycle: billingCycle,
+        checkout_session_id: data.checkoutSessionId
+      });
       setClientSecret(data.clientSecret);
       setCheckoutSessionId(data.checkoutSessionId || '');
       setShowCheckout(true);
     } catch (err) {
+      posthog.capture('checkout_failed', {
+        tier,
+        billing_cycle: billingCycle,
+        error: (err as Error).message
+      });
     } finally {
       setCheckoutLoading(false);
     }
   };
 
   const handleBuyCredits = async () => {
+    posthog.capture('credits_purchase_clicked', {
+      is_logged_in: isLoggedIn,
+      credits_amount: pricing.oneTimePurchase.credits,
+      price: pricing.oneTimePurchase.price
+    });
+
     if (!isLoggedIn) {
+      posthog.capture('credits_login_required');
       const creditIntent = {
         action: 'buy-credits',
       };
@@ -135,10 +173,20 @@ export default function PricingPage() {
     setCheckoutLoading(true);
     try {
       const data = await buyCredits();
+      posthog.capture('credits_checkout_initiated', {
+        credits_amount: pricing.oneTimePurchase.credits,
+        price: pricing.oneTimePurchase.price,
+        checkout_session_id: data.checkoutSessionId
+      });
       setClientSecret(data.clientSecret);
       setCheckoutSessionId(data.checkoutSessionId || '');
       setShowCheckout(true);
     } catch (err) {
+      posthog.capture('credits_checkout_failed', {
+        credits_amount: pricing.oneTimePurchase.credits,
+        price: pricing.oneTimePurchase.price,
+        error: (err as Error).message
+      });
     } finally {
       setCheckoutLoading(false);
     }
@@ -147,6 +195,12 @@ export default function PricingPage() {
   const handleEnterpriseSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormStatus('Submitting...');
+    
+    posthog.capture('enterprise_form_submitted', {
+      email: emailAddress,
+      message_length: message.length
+    });
+
     try {
       const res = await fetch('/api/notifications', {
         method: 'POST',
@@ -161,6 +215,9 @@ export default function PricingPage() {
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Failed to send inquiry');
       }
+      posthog.capture('enterprise_form_success', {
+        email: emailAddress
+      });
       setFormStatus('Inquiry sent successfully!');
       setEmailAddress('');
       setMessage('');
@@ -169,6 +226,10 @@ export default function PricingPage() {
         setFormStatus('');
       }, 2000);
     } catch (err) {
+      posthog.capture('enterprise_form_failed', {
+        email: emailAddress,
+        error: (err as Error).message
+      });
       setFormStatus('Error: ' + (err as Error).message);
     }
   };
@@ -222,7 +283,13 @@ export default function PricingPage() {
                       ? 'bg-blue-100 text-foreground border-blue-300 shadow-md'
                       : 'bg-background text-foreground border-border hover:bg-muted hover:border-muted-foreground/20'
                   }`}
-                  onClick={() => setBillingCycle('monthly')}
+                  onClick={() => {
+                    posthog.capture('billing_cycle_changed', {
+                      from: billingCycle,
+                      to: 'monthly'
+                    });
+                    setBillingCycle('monthly');
+                  }}
                 >
                   Monthly
                 </button>
@@ -232,7 +299,13 @@ export default function PricingPage() {
                       ? 'bg-blue-100 text-foreground border-blue-300 shadow-md'
                       : 'bg-background text-foreground border-border hover:bg-muted hover:border-muted-foreground/20'
                   }`}
-                  onClick={() => setBillingCycle('yearly')}
+                  onClick={() => {
+                    posthog.capture('billing_cycle_changed', {
+                      from: billingCycle,
+                      to: 'yearly'
+                    });
+                    setBillingCycle('yearly');
+                  }}
                 >
                   <span>Yearly</span>
                   <span className="inline-block rounded-full bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 ml-2">
@@ -519,7 +592,10 @@ export default function PricingPage() {
                 <div className="mt-auto flex justify-center">
                   <RetroButton
                     className="w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold bg-background text-foreground hover:bg-muted hover:text-foreground text-sm sm:text-base"
-                    onClick={() => setShowEnterpriseForm(true)}
+                    onClick={() => {
+                      posthog.capture('enterprise_contact_clicked');
+                      setShowEnterpriseForm(true);
+                    }}
                     shadowColor="foreground"
                   >
                     Contact Sales

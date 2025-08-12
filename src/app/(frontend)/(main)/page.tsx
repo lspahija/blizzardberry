@@ -22,8 +22,29 @@ import {
   Globe,
 } from 'lucide-react';
 import { useMemo } from 'react';
+import posthog from 'posthog-js';
 
 export default function LandingPage() {
+  const handleHeroCtaClick = () => {
+    posthog.capture('homepage_hero_cta_clicked', {
+      cta_text: 'Get Started Now',
+      section: 'hero'
+    });
+  };
+
+  const handleContactCtaClick = () => {
+    posthog.capture('homepage_contact_cta_clicked', {
+      cta_text: 'Talk With Us',
+      section: 'hero'
+    });
+  };
+
+  const handleFinalCtaClick = () => {
+    posthog.capture('homepage_final_cta_clicked', {
+      cta_text: 'Create an Agent',
+      section: 'cta'
+    });
+  };
 
   const containerVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 20 },
@@ -118,6 +139,7 @@ export default function LandingPage() {
                 size="lg"
                 className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
                 asChild
+                onClick={handleHeroCtaClick}
               >
                 <Link href="/login">
                   <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -132,6 +154,7 @@ export default function LandingPage() {
                 variant="outline"
                 className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
                 asChild
+                onClick={handleContactCtaClick}
               >
                 <Link href="/contact">Talk With Us</Link>
               </Button>
@@ -636,6 +659,7 @@ export default function LandingPage() {
                   asChild
                   size="lg"
                   className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
+                  onClick={handleFinalCtaClick}
                 >
                   <Link href="/login">
                     <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />

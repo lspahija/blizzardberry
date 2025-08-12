@@ -24,6 +24,7 @@ import { Dropzone } from '@/app/(frontend)/components/ui/dropzone';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
 import Link from 'next/link';
 import SuccessOverlay from '@/app/(frontend)/components/ui/success-overlay';
+import posthog from 'posthog-js';
 
 interface MetadataField {
   key: string;
@@ -74,11 +75,39 @@ export default function AddDocument({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const combinedText = fileContent || text;
-    await handleCreateDocument(combinedText, metadataFields);
+    
+    posthog.capture('document_creation_started', {
+      agent_id: params.agentId,
+      has_file_content: !!fileContent,
+      has_text: !!text,
+      content_length: combinedText.length,
+      metadata_fields_count: metadataFields.length
+    });
+
+    const result = await handleCreateDocument(combinedText, metadataFields);
+    
+    if (result) {
+      posthog.capture('document_creation_success', {
+        agent_id: params.agentId,
+        content_length: combinedText.length,
+        metadata_fields_count: metadataFields.length
+      });
+    } else if (error) {
+      posthog.capture('document_creation_failed', {
+        agent_id: params.agentId,
+        error: error
+      });
+    }
   };
 
   const handleFileDrop = (fileText: string) => {
     if (isSubmitting) return;
+    
+    posthog.capture('document_file_uploaded', {
+      agent_id: params.agentId,
+      file_size: fileText.length
+    });
+    
     setFileContent(fileText);
   };
 

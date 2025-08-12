@@ -13,6 +13,7 @@ import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { Mail, Send, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import posthog from 'posthog-js';
 
 export default function ContactPage() {
   const [email, setEmail] = useState('');
@@ -38,6 +39,12 @@ export default function ContactPage() {
     e.preventDefault();
     setFormStatus('Submitting...');
     setIsSubmitting(true);
+
+    posthog.capture('contact_form_submitted', {
+      email,
+      message_length: message.length
+    });
+
     try {
       const res = await fetch('/api/notifications', {
         method: 'POST',
@@ -52,11 +59,20 @@ export default function ContactPage() {
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Failed to send message');
       }
+
+      posthog.capture('contact_form_success', {
+        email
+      });
+
       setFormStatus('Message sent successfully!');
       setEmail('');
       setMessage('');
       setTimeout(() => setFormStatus(''), 2000);
     } catch (err) {
+      posthog.capture('contact_form_failed', {
+        email,
+        error: (err as Error).message
+      });
       setFormStatus('Error: ' + (err as Error).message);
     } finally {
       setIsSubmitting(false);
@@ -188,6 +204,7 @@ export default function ContactPage() {
                     href="https://calendly.com/blizzardberry/30min"
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => posthog.capture('meeting_booking_clicked')}
                   >
                     Schedule Call
                   </a>
