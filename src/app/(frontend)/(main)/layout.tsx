@@ -7,7 +7,7 @@ import { Navbar } from '@/app/(frontend)/components/Navbar';
 
 export const metadata: Metadata = {
   title: 'BlizzardBerry',
-  description: 'The Future of UX is Here',
+  description: 'Give Your Users an AI Agent',
 };
 
 export default function FrontendLayout({
