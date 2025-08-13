@@ -162,21 +162,17 @@ export default function DemoPage() {
 
     // Start with full data immediately visible
     chartInstanceRef.current = new Chart(ctx, {
-      type: 'line',
+      type: 'bar',
       data: {
         labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
         datasets: [{
           label: 'Revenue (North America)',
           data: [120, 135, 142, 156, 148, 141], // Show full data immediately
-          borderColor: '#F43F5E',
-          backgroundColor: 'rgba(244, 63, 94, 0.1)',
-          borderWidth: 3,
-          fill: true,
-          tension: 0.4,
-          pointBackgroundColor: '#F43F5E',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          pointRadius: 6
+          backgroundColor: '#F43F5E',
+          borderColor: '#E11D48',
+          borderWidth: 2,
+          borderRadius: 8,
+          borderSkipped: false,
         }]
       },
       options: {
@@ -940,7 +936,7 @@ export default function DemoPage() {
     dashboardDiv.style.opacity = '1'; // Set to visible immediately
     
     dashboardDiv.innerHTML = `
-      <div class="w-[600px] h-[680px] bg-white overflow-y-auto p-4">
+      <div class="w-[600px] h-[680px] bg-gradient-to-br from-blue-50/50 via-white to-blue-50/30 overflow-y-auto p-4 border border-blue-200/50 rounded-2xl shadow-xl">
         <!-- Header - All elements initially hidden -->
         <div class="text-center mb-4">
           <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-rose-500 to-rose-600 rounded-xl mb-3 shadow-lg" id="header-icon" style="opacity: 0; transform: translateY(-40px) scale(0.5);">
@@ -1963,7 +1959,7 @@ export default function DemoPage() {
         
         {/* Fixed Size Dashboard Widget */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-white overflow-y-auto rounded-2xl shadow-xl border border-gray-200">
+          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-gradient-to-br from-rose-50/50 via-white to-rose-50/30 overflow-y-auto rounded-2xl shadow-xl border border-rose-200/50">
             <div className="p-6">
             
             {/* Minimalist Header */}
