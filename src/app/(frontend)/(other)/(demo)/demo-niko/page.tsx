@@ -79,6 +79,22 @@ export default function DemoPage() {
     }
   };
 
+  // Mouse cursor simulation - click effect without blue circle
+  const showClickEffect = () => {
+    const cursor = document.getElementById('mouseCursor');
+    
+    if (cursor) {
+      // Realistic cursor press animation only
+      gsap.to(cursor, {
+        scale: 0.9,
+        duration: 0.08,
+        yoyo: true,
+        repeat: 1,
+        ease: "power2.inOut"
+      });
+    }
+  };
+
   // Enhanced scene transition functions with smooth animations
   const showScene = (sceneId: string) => {
     console.log('=== SHOWING SCENE:', sceneId);
@@ -134,32 +150,6 @@ export default function DemoPage() {
     type();
   };
 
-  // Mouse cursor simulation with realistic click effect
-  const showClickEffect = () => {
-    const clickEffect = document.getElementById('clickEffect');
-    const cursor = document.getElementById('mouseCursor');
-    
-    if (clickEffect && cursor) {
-      clickEffect.style.transform = 'scale(0)';
-      clickEffect.style.opacity = '1';
-      
-      gsap.to(clickEffect, {
-        scale: 2,
-        opacity: 0,
-        duration: 0.4,
-        ease: "power2.out"
-      });
-      
-      // Realistic cursor press animation
-      gsap.to(cursor, {
-        scale: 0.9,
-        duration: 0.08,
-        yoyo: true,
-        repeat: 1,
-        ease: "power2.inOut"
-      });
-    }
-  };
 
   // Chart creation function
   const createChart = () => {
@@ -263,11 +253,12 @@ export default function DemoPage() {
       }, undefined, "scene1Start+=0.5")
       .call(() => hideScene('scene1'), undefined, "scene1Start+=7.5");
 
-    // Phase 3: Scene 2 - AI Processing & Dashboard & Chat Continuation (44.5 seconds) 
+    // Scene 2 is now triggered directly from Scene 1 button click
+    // Keeping timeline structure for scene management
     tl.addLabel("scene2Start", "scene1Start+=8")
       .call(() => showScene('scene2'), undefined, "scene2Start")
       .call(() => {
-        scene2Sequence();
+        // Scene2Sequence is now called directly from Scene1 - no duplicate call needed
       }, undefined, "scene2Start+=0.5")
       .call(() => {
         hideScene('scene2');
@@ -325,25 +316,52 @@ export default function DemoPage() {
       createBtn.classList.add('hover');
     }, 5000);
 
-    // Click button and show success
+    // Click button and animate out elements
     addTimeout(() => {
       showClickEffect();
       createBtn.classList.add('clicked');
-      createBtn.textContent = 'Action Created ✓';
-      createBtn.classList.add('success');
       
-      // Hide cursor after successful action creation
+      // Hide cursor immediately
+      const cursor = document.getElementById('mouseCursor');
+      if (cursor) {
+        gsap.to(cursor, {
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.3,
+          ease: "power2.inOut"
+        });
+      }
+      
+      // Animate out create action elements first
       addTimeout(() => {
-        const cursor = document.getElementById('mouseCursor');
-        if (cursor) {
-          gsap.to(cursor, {
+        const createActionSection = document.querySelector('#scene1 .relative.text-center');
+        if (createActionSection) {
+          gsap.to(createActionSection, {
             opacity: 0,
-            scale: 0.8,
-            duration: 0.5,
+            scale: 0.9,
+            y: -30,
+            duration: 0.6,
             ease: "power2.inOut"
           });
         }
-      }, 1000);
+        
+        // Then hide entire scene 1 second later
+        addTimeout(() => {
+          const scene1 = document.getElementById('scene1');
+          if (scene1) {
+            gsap.to(scene1, {
+              opacity: 0,
+              duration: 0.5,
+              ease: "power2.inOut",
+              onComplete: () => {
+                scene1.style.display = 'none';
+                // Start scene 2
+                scene2Sequence();
+              }
+            });
+          }
+        }, 1000);
+      }, 200);
     }, 5300);
   };
 
@@ -499,23 +517,8 @@ export default function DemoPage() {
     sentMessages.forEach((messageDiv) => {
       const textDiv = messageDiv.querySelector('div:last-child div');
       if (textDiv && textDiv.textContent?.includes('North America')) {
-        // Replace text with highlighted version
-        textDiv.innerHTML = 'Show me revenue numbers for <span class="highlight-north-america">North America</span>.';
-        
-        // Animate the highlight - permanent yellow highlight
-        const highlightElement = textDiv.querySelector('.highlight-north-america');
-        if (highlightElement) {
-          gsap.fromTo(highlightElement,
-            { backgroundColor: 'transparent', color: 'white' },
-            { 
-              backgroundColor: '#FDE047',
-              color: '#1F2937',
-              duration: 0.6,
-              ease: "power2.out"
-              // No yoyo or repeat - highlight stays permanently yellow
-            }
-          );
-        }
+        // Replace text with bold version (no yellow highlight)
+        textDiv.innerHTML = 'Show me revenue numbers for <span style="font-weight: bold;">North America</span>.';
       }
     });
   };
@@ -1554,7 +1557,7 @@ export default function DemoPage() {
         .data-particle {
           width: 8px;
           height: 8px;
-          background: linear-gradient(45deg, #F43F5E, #EC4899);
+          background: linear-gradient(45deg, #F43F5E, #E11D48);
           border-radius: 50%;
           position: absolute;
           top: 50%;
@@ -1601,7 +1604,7 @@ export default function DemoPage() {
         }
         
         .highlight {
-          background: linear-gradient(135deg, #F43F5E, #EC4899);
+          background: linear-gradient(135deg, #F43F5E, #E11D48);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -1777,7 +1780,6 @@ export default function DemoPage() {
           <path d="M3 3L10.07 19.97L12.58 12.58L20 10.07L3 3Z" fill="white" stroke="black" strokeWidth="1"/>
           <path d="M4.5 4.5L8.93 17.43L10.64 11.64L16.5 9.93L4.5 4.5Z" fill="black"/>
         </svg>
-        <div id="clickEffect" className="absolute top-2 left-2 w-4 h-4 border-2 border-blue-500 rounded-full opacity-0"></div>
       </div>
 
       {/* Scene 1: Create Action - Modern Design */}
@@ -1872,14 +1874,14 @@ export default function DemoPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-blue-50"></div>
             
             {/* Single Progressive Analysis View */}
-            <div id="analysisStep1" className="relative z-10 text-center px-8 opacity-0">
+            <div id="analysisStep1" className="relative z-10 text-center px-10 py-6 opacity-0">
               
               {/* AI Processing Center */}
               <div className="mb-5">
                 <div className="relative mx-auto w-16 h-16">
                   {/* Clean AI Core */}
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-500 to-rose-500 rounded-2xl flex items-center justify-center shadow-xl relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-600 animate-pulse opacity-30 rounded-2xl"></div>
+                  <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 via-teal-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-xl relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-teal-400 animate-pulse opacity-30 rounded-2xl"></div>
                     
                     {/* Simple AI Icon */}
                     <svg width="24" height="24" fill="white" viewBox="0 0 24 24" className="relative z-10">
@@ -1906,9 +1908,9 @@ export default function DemoPage() {
                 <div className="space-y-3">
                   
                   {/* Step 1: Data Fetching */}
-                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-rose-50 border border-rose-200/50 transition-all duration-300" id="step1">
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-cyan-50 border border-cyan-200/50 transition-all duration-300" id="step1">
                     <div className="flex items-center space-x-3">
-                      <div className="w-6 h-6 bg-gradient-to-br from-rose-500 to-rose-600 rounded-lg flex items-center justify-center step-icon shadow-md">
+                      <div className="w-6 h-6 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg flex items-center justify-center step-icon shadow-md">
                         <div className="w-2 h-2 bg-white rounded-full animate-pulse step-loader"></div>
                       </div>
                       <div>
@@ -1916,13 +1918,13 @@ export default function DemoPage() {
                         <div className="text-xs text-gray-600">North America revenue streams</div>
                       </div>
                     </div>
-                    <div className="step-status text-xs font-medium text-rose-600 bg-rose-100 px-2 py-1 rounded-lg">Processing...</div>
+                    <div className="step-status text-xs font-medium text-cyan-600 bg-cyan-100 px-2 py-1 rounded-lg">Processing...</div>
                   </div>
                   
                   {/* Step 2: AI Analysis */}
-                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-blue-50 border border-blue-200/50 opacity-50 transition-all duration-300" id="step2">
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-teal-50 border border-teal-200/50 opacity-50 transition-all duration-300" id="step2">
                     <div className="flex items-center space-x-3">
-                      <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center step-icon shadow-md">
+                      <div className="w-6 h-6 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center step-icon shadow-md">
                         <div className="w-2 h-2 bg-white rounded-full step-loader"></div>
                       </div>
                       <div>
@@ -1934,9 +1936,9 @@ export default function DemoPage() {
                   </div>
                   
                   {/* Step 3: Dashboard */}
-                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-emerald-50 border border-emerald-200/50 opacity-50 transition-all duration-300" id="step3">
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-indigo-50 border border-indigo-200/50 opacity-50 transition-all duration-300" id="step3">
                     <div className="flex items-center space-x-3">
-                      <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center step-icon shadow-md">
+                      <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center step-icon shadow-md">
                         <div className="w-2 h-2 bg-white rounded-full step-loader"></div>
                       </div>
                       <div>
@@ -1964,53 +1966,30 @@ export default function DemoPage() {
           <div id="dashboardWindow" className="w-[600px] h-[680px] bg-white overflow-y-auto rounded-2xl shadow-xl border border-gray-200">
             <div className="p-6">
             
-            {/* Clean Header Section */}
-            <div className="text-center mb-6" id="dashboardHeader">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-rose-500 to-rose-600 rounded-2xl mb-4 shadow-lg">
-                <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
-                  <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
-                </svg>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Revenue Analytics</h1>
-              <p className="text-sm text-gray-600">North America • Real-time Performance</p>
+            {/* Minimalist Header */}
+            <div className="text-center mb-12" id="dashboardHeader">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Revenue</h1>
+              <p className="text-sm text-gray-500 uppercase tracking-wider">North America</p>
             </div>
 
-            {/* Stats Grid - Minimal Layout */}
-            <div className="grid grid-cols-2 gap-1.5 mb-1.5" id="statsGrid">
-              <div className="metric-card bg-gradient-to-br from-rose-50 to-pink-50 rounded-lg p-1.5 text-center border border-rose-200/50 shadow-sm">
-                <div className="metric-number text-base font-bold text-rose-600" data-target="847">0</div>
-                <div className="text-xs text-gray-700 font-medium">Total Revenue</div>
-                <div className="text-xs text-gray-500">Thousands USD</div>
+            {/* Hero Metrics - Prominent Display */}
+            <div className="grid grid-cols-2 gap-8 mb-12" id="statsGrid">
+              <div className="text-center">
+                <div className="metric-number text-6xl font-bold text-gray-900 mb-2" data-target="847">0</div>
+                <div className="text-sm text-gray-500 uppercase tracking-wider">Revenue (K)</div>
+                <div className="h-0.5 w-16 bg-rose-500 mx-auto mt-3"></div>
               </div>
               
-              <div className="metric-card bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-1.5 text-center border border-blue-200/50 shadow-sm">
-                <div className="metric-number text-base font-bold text-blue-600" data-target="18">0</div>
-                <div className="text-xs text-gray-700 font-medium">Growth Rate</div>
-                <div className="text-xs text-gray-500">Percentage increase</div>
-              </div>
-              
-              <div className="metric-card bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-1.5 text-center border border-emerald-200/50 shadow-sm">
-                <div className="metric-number text-base font-bold text-emerald-600" data-target="2840">0</div>
-                <div className="text-xs text-gray-700 font-medium">Active Clients</div>
-                <div className="text-xs text-gray-500">Customer base</div>
-              </div>
-              
-              <div className="metric-card bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg p-1.5 text-center border border-purple-200/50 shadow-sm">
-                <div className="metric-number text-base font-bold text-purple-600" data-target="298">0</div>
-                <div className="text-xs text-gray-700 font-medium">Avg Deal Size</div>
-                <div className="text-xs text-gray-500">Thousands USD</div>
+              <div className="text-center">
+                <div className="metric-number text-6xl font-bold text-gray-900 mb-2" data-target="18">0</div>
+                <div className="text-sm text-gray-500 uppercase tracking-wider">Growth %</div>
+                <div className="h-0.5 w-16 bg-blue-500 mx-auto mt-3"></div>
               </div>
             </div>
 
-            {/* Chart Section - Full Visible Chart */}
-            <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-4 border border-gray-200 shadow-sm" id="chartSection">
-              <div className="mb-3">
-                <h3 className="text-lg font-bold text-gray-900 mb-1">Revenue Trend</h3>
-                <p className="text-sm text-gray-600">6-Month Performance Overview</p>
-              </div>
-              <div className="h-64 bg-white rounded-lg p-2 shadow-inner border border-gray-100">
-                <canvas id="performanceChart" className="w-full h-full"></canvas>
-              </div>
+            {/* Pure Chart */}
+            <div className="h-80 relative" id="chartSection">
+              <canvas id="performanceChart" className="w-full h-full"></canvas>
             </div>
             
             </div>
