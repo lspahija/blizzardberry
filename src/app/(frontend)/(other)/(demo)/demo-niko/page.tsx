@@ -439,6 +439,11 @@ export default function DemoPage() {
       const messageDiv = document.createElement('div');
       messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
       
+      // Start with hidden state for smooth animation - less bouncy for stability
+      messageDiv.style.opacity = '0';
+      messageDiv.style.transform = 'translateY(20px)';
+      messageDiv.style.transition = 'opacity 300ms ease-out, transform 300ms ease-out';
+      
       // For the sent message with North America, initially show without highlighting
       let messageText = message.text;
       if (message.type === 'sent' && message.text.includes('North America')) {
@@ -457,6 +462,12 @@ export default function DemoPage() {
       
       // Append to end (new messages at bottom)
       chatMessages.appendChild(messageDiv);
+      
+      // Trigger smooth entrance animation with slight delay for stability
+      setTimeout(() => {
+        messageDiv.style.opacity = '1';
+        messageDiv.style.transform = 'translateY(0)';
+      }, 50);
       
       // Trigger callbacks after animation
       setTimeout(() => {
@@ -477,6 +488,12 @@ export default function DemoPage() {
     addTimeout(() => {
       initialAnalyzingBubbleDiv = document.createElement('div');
       initialAnalyzingBubbleDiv.className = 'flex justify-start chat-message';
+      
+      // Start with hidden state for smooth animation - less bouncy for stability
+      initialAnalyzingBubbleDiv.style.opacity = '0';
+      initialAnalyzingBubbleDiv.style.transform = 'translateY(20px)';
+      initialAnalyzingBubbleDiv.style.transition = 'opacity 300ms ease-out, transform 300ms ease-out';
+      
       initialAnalyzingBubbleDiv.innerHTML = `
         <div class="bg-gray-100 px-5 py-3 rounded-3xl max-w-md">
           <div class="flex items-center space-x-3">
@@ -492,6 +509,12 @@ export default function DemoPage() {
       
       // Append to end (new messages at bottom)
       chatMessages.appendChild(initialAnalyzingBubbleDiv);
+      
+      // Trigger smooth entrance animation with slight delay for stability
+      setTimeout(() => {
+        initialAnalyzingBubbleDiv.style.opacity = '1';
+        initialAnalyzingBubbleDiv.style.transform = 'translateY(0)';
+      }, 50);
 
       // THEN highlight North America when analyzing bubble appears
       highlightNorthAmericaInChat();
@@ -936,7 +959,7 @@ export default function DemoPage() {
     dashboardDiv.style.opacity = '1'; // Set to visible immediately
     
     dashboardDiv.innerHTML = `
-      <div class="w-[600px] h-[680px] bg-gradient-to-br from-blue-50/50 via-white to-blue-50/30 overflow-y-auto p-4 border border-blue-200/50 rounded-2xl shadow-xl">
+      <div class="w-[600px] h-[680px] bg-gradient-to-br from-indigo-50/50 via-white to-indigo-50/30 overflow-y-auto p-4 border border-indigo-200/50 rounded-2xl shadow-xl">
         <!-- Header - All elements initially hidden -->
         <div class="text-center mb-4">
           <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-rose-500 to-rose-600 rounded-xl mb-3 shadow-lg" id="header-icon" style="opacity: 0; transform: translateY(-40px) scale(0.5);">
@@ -1160,8 +1183,12 @@ export default function DemoPage() {
       return;
     }
 
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
+    // Create temporary placeholder to measure height
+    const tempDiv = document.createElement('div');
+    tempDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
+    tempDiv.style.visibility = 'hidden';
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.top = '-1000px';
     
     // Format text for multiline with bullet points
     let formattedText = message.text;
@@ -1172,7 +1199,7 @@ export default function DemoPage() {
         .join('<br>');
     }
     
-    messageDiv.innerHTML = `
+    tempDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-3xl ${
         message.type === 'sent' 
           ? 'bg-rose-500 text-white' 
@@ -1182,8 +1209,43 @@ export default function DemoPage() {
       </div>
     `;
     
-    // Append to end (new messages at bottom)
+    // Temporarily append to get height
+    chatMessages.appendChild(tempDiv);
+    const messageHeight = tempDiv.offsetHeight + 16; // Include margin
+    chatMessages.removeChild(tempDiv);
+
+    // Get all existing messages
+    const existingMessages = Array.from(chatMessages.querySelectorAll('.chat-message'));
+    
+    // Smoothly animate existing messages upward
+    existingMessages.forEach((msg) => {
+      msg.style.transition = 'transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      msg.style.transform = `translateY(-${messageHeight}px)`;
+    });
+
+    // Create the actual message
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
+    
+    // Start new message below viewport
+    messageDiv.style.opacity = '0';
+    messageDiv.style.transform = `translateY(${messageHeight}px)`;
+    messageDiv.style.transition = 'opacity 500ms ease-out, transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    
+    messageDiv.innerHTML = tempDiv.innerHTML;
+    
+    // Add message to DOM
     chatMessages.appendChild(messageDiv);
+    
+    // Reset existing messages position and animate new message in
+    setTimeout(() => {
+      existingMessages.forEach((msg) => {
+        msg.style.transform = 'translateY(0)';
+      });
+      
+      messageDiv.style.opacity = '1';
+      messageDiv.style.transform = 'translateY(0)';
+    }, 50);
   };
 
   let analyzingBubbleDiv: HTMLElement | null = null;
@@ -1196,7 +1258,7 @@ export default function DemoPage() {
     analyzingBubbleDiv.className = 'flex justify-start chat-message';
     analyzingBubbleDiv.style.opacity = '0';
     analyzingBubbleDiv.style.transform = 'translateY(20px)';
-    analyzingBubbleDiv.style.transition = 'all 250ms ease-out';
+    analyzingBubbleDiv.style.transition = 'opacity 300ms ease-out, transform 300ms ease-out';
     
     analyzingBubbleDiv.innerHTML = `
       <div class="bg-gray-100 px-5 py-3 rounded-3xl max-w-md">
@@ -1206,7 +1268,7 @@ export default function DemoPage() {
             <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
             <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
-          <div class="text-base text-gray-900">Analyzing support logs...</div>
+          <div class="text-base text-gray-900">Analyzing...</div>
         </div>
       </div>
     `;
@@ -1214,11 +1276,11 @@ export default function DemoPage() {
     // Append to end (new messages at bottom)
     chatMessages.appendChild(analyzingBubbleDiv);
     
-    // Trigger smooth slide-up animation
+    // Trigger smooth slide-up animation with slight delay for stability
     setTimeout(() => {
       analyzingBubbleDiv.style.opacity = '1';
       analyzingBubbleDiv.style.transform = 'translateY(0)';
-    }, 10);
+    }, 50);
   };
 
   const hideAnalyzingBubble = () => {
@@ -1781,7 +1843,7 @@ export default function DemoPage() {
       {/* Scene 1: Create Action - Modern Design */}
       <div id="scene1" className="fixed inset-0 opacity-0" style={{ display: 'none' }}>
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl border border-gray-100 p-12 w-full max-w-lg overflow-hidden z-10">
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-cyan-50/30 via-white to-cyan-50/20 rounded-3xl shadow-2xl border border-cyan-200/50 p-12 w-full max-w-lg overflow-hidden z-10">
           {/* Subtle background decoration */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-rose-50 to-blue-50 rounded-full transform translate-x-16 -translate-y-16 opacity-30"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-50 to-rose-50 rounded-full transform -translate-x-12 translate-y-12 opacity-20"></div>
@@ -1959,7 +2021,7 @@ export default function DemoPage() {
         
         {/* Fixed Size Dashboard Widget */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-gradient-to-br from-rose-50/50 via-white to-rose-50/30 overflow-y-auto rounded-2xl shadow-xl border border-rose-200/50">
+          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-gradient-to-br from-teal-50/50 via-white to-teal-50/30 overflow-y-auto rounded-2xl shadow-xl border border-teal-200/50">
             <div className="p-6">
             
             {/* Minimalist Header */}
@@ -2024,13 +2086,7 @@ export default function DemoPage() {
           </div>
         </div>
         
-        {/* Final message with better contrast */}
-        <div id="finalMessage" className="text-center opacity-0 max-w-3xl mx-auto">
-          <p className="text-xl text-gray-700 leading-relaxed">
-            Your Business Has Countless Actions. <br />
-            <span className="text-rose-600 font-semibold">Your AI Should Too.</span>
-          </p>
-        </div>
+        {/* Final message removed */}
       </div>
     </div>
   );
