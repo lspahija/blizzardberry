@@ -166,8 +166,8 @@ export default function DemoPage() {
       data: {
         labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
         datasets: [{
-          label: 'Revenue (North America)',
-          data: [120, 135, 142, 156, 148, 141], // Show full data immediately
+          label: 'Monthly Revenue ($K)',
+          data: [120, 135, 142, 156, 148, 147], // Show full data immediately - in hundreds (multiply by ~5.7 to get 847K)
           backgroundColor: '#F43F5E',
           borderColor: '#E11D48',
           borderWidth: 2,
@@ -184,11 +184,16 @@ export default function DemoPage() {
         scales: {
           y: {
             beginAtZero: true,
-            max: 200,
+            max: 180,
             grid: { color: 'rgba(244, 63, 94, 0.1)' },
             ticks: {
               color: '#64748b',
-              font: { family: 'Inter', size: 12 }
+              font: { family: 'Inter', size: 12 },
+              callback: function(value) {
+                // Convert chart values to actual K values (multiply by ~5.7)
+                const realValue = Math.round(value * 5.7);
+                return realValue + 'K';
+              }
             }
           },
           x: {
@@ -402,7 +407,7 @@ export default function DemoPage() {
       
       showScene('scene2');
       continueConversationAfterDashboard();
-    }, 16500);  // Extended - dashboard shows for ~10.5 seconds total (2s longer)
+    }, 17500);  // Extended - dashboard shows for ~11.5 seconds total (1s longer)
   };
 
   const startChatConversation = () => {
@@ -516,14 +521,10 @@ export default function DemoPage() {
         initialAnalyzingBubbleDiv.style.transform = 'translateY(0)';
       }, 50);
 
-      // THEN highlight North America when analyzing bubble appears
-      highlightNorthAmericaInChat();
-
-      // Start AI analysis after chat with analyzing bubble is visible for 1 more second
+      // Start AI analysis after chat with analyzing bubble is visible
       addTimeout(() => {
-        // Trigger AI analysis after giving time to see the chat with analyzing bubble
         startAIArchitecture();
-      }, 1800); // 1.8 seconds - time to see chat + analyzing bubble + clear animation
+      }, 1800); // Time to see chat + analyzing bubble before analysis
     }, 300);
   };
 
@@ -570,7 +571,7 @@ export default function DemoPage() {
           
           gsap.to(obj, {
             value: target,
-            duration: 0.8, // Faster counting
+            duration: 1.8, // Slower counting for better visibility
             ease: "power2.out",
             onUpdate: () => {
               if (target >= 1000) {
@@ -947,7 +948,7 @@ export default function DemoPage() {
     addTimeout(() => {
       addChatMessage({
         type: 'received',
-        text: 'We have 5 tickets today:\n\n• 3 Resolved (billing & features)\n• 2 Open (1 high-priority bug, 1 pending)\n\nWant to see the full details?'
+        text: 'We have 3 tickets today:\n\n• 2 Resolved (billing & features)\n• 1 Open (high-priority bug)\n\nWant to see the full details?'
       }, true);
     }, 4500); // Direct smooth response
 
@@ -1042,15 +1043,15 @@ export default function DemoPage() {
         <!-- Quick Stats - All elements initially hidden -->
         <div class="grid grid-cols-3 gap-2 mb-4" id="stats-grid">
           <div class="bg-gray-50 rounded-lg p-3 text-center stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
-            <div class="text-2xl font-bold mb-1 ticket-stat text-blue-600" data-target="5" style="opacity: 0;">0</div>
+            <div class="text-2xl font-bold mb-1 ticket-stat text-blue-600" data-target="3" style="opacity: 0;">0</div>
             <div class="text-xs text-gray-600" style="opacity: 0;">Total</div>
           </div>
           <div class="bg-gray-50 rounded-lg p-3 text-center stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
-            <div class="text-2xl font-bold mb-1 ticket-stat text-emerald-600" data-target="3" style="opacity: 0;">0</div>
+            <div class="text-2xl font-bold mb-1 ticket-stat text-emerald-600" data-target="2" style="opacity: 0;">0</div>
             <div class="text-xs text-gray-600" style="opacity: 0;">Resolved</div>
           </div>
           <div class="bg-gray-50 rounded-lg p-3 text-center stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
-            <div class="text-2xl font-bold mb-1 ticket-stat text-rose-600" data-target="2" style="opacity: 0;">0</div>
+            <div class="text-2xl font-bold mb-1 ticket-stat text-rose-600" data-target="1" style="opacity: 0;">0</div>
             <div class="text-xs text-gray-600" style="opacity: 0;">Open</div>
           </div>
         </div>
@@ -1172,7 +1173,7 @@ export default function DemoPage() {
                 const obj = { value: 0 };
                 gsap.to(obj, {
                   value: target,
-                  duration: 0.8,
+                  duration: 1.8,
                   ease: "power2.out",
                   onUpdate: () => {
                     counter.textContent = Math.ceil(obj.value).toString();
@@ -1251,13 +1252,6 @@ export default function DemoPage() {
       return;
     }
 
-    // Create temporary placeholder to measure height
-    const tempDiv = document.createElement('div');
-    tempDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
-    tempDiv.style.visibility = 'hidden';
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.top = '-1000px';
-    
     // Format text for multiline with bullet points
     let formattedText = message.text;
     if (isMultiline) {
@@ -1267,70 +1261,75 @@ export default function DemoPage() {
         .join('<br>');
     }
     
-    tempDiv.innerHTML = `
+    // Clean FLIP Animation - works with gap instead of space-y
+    const existingMessages = Array.from(chatMessages.querySelectorAll('.chat-message'));
+    
+    // Capture initial positions using getBoundingClientRect for accuracy
+    const initialPositions = existingMessages.map((el) => {
+      const rect = el.getBoundingClientRect();
+      const containerRect = chatMessages.getBoundingClientRect();
+      return {
+        el,
+        y: rect.top - containerRect.top
+      };
+    });
+
+    // Create the new message
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
+    messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-3xl ${
-        message.type === 'sent' 
-          ? 'bg-rose-500 text-white' 
-          : 'bg-gray-100 text-gray-900'
+        message.type === 'sent' ? 'bg-rose-500 text-white' : 'bg-gray-100 text-gray-900'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
       </div>
     `;
-    
-    // Temporarily append to get height
-    chatMessages.appendChild(tempDiv);
-    const messageHeight = tempDiv.offsetHeight + 16; // Include margin
-    chatMessages.removeChild(tempDiv);
 
-    // Get all existing messages
-    const existingMessages = Array.from(chatMessages.querySelectorAll('.chat-message'));
-    
-    // Create the actual message
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
-    
-    // Start completely hidden
-    messageDiv.style.opacity = '0';
-    messageDiv.style.transform = 'translateY(30px)';
-    
-    messageDiv.innerHTML = tempDiv.innerHTML;
-    
-    // Add message to DOM
+    // Add to DOM - this causes layout shift with gap (not margin)
     chatMessages.appendChild(messageDiv);
-    
-    // Beautiful coordinated animation using GSAP - ALWAYS applied
-    if (existingMessages.length > 0) {
-      // Step 1: Smoothly animate ALL existing messages up by the new message height
-      existingMessages.forEach((msg, index) => {
-        gsap.to(msg, {
-          y: -messageHeight,
-          duration: 0.5,
-          ease: "power3.out",
-          delay: index * 0.02, // Subtle stagger for elegance
-          onComplete: () => {
-            // Step 2: Reset each message position to natural state
-            gsap.set(msg, { y: 0 });
-          }
-        });
+
+    // FLIP Animation
+    gsap.context(() => {
+      initialPositions.forEach(({ el, y: oldY }, i) => {
+        // Get new position after DOM change
+        const rect = el.getBoundingClientRect();
+        const containerRect = chatMessages.getBoundingClientRect();
+        const newY = rect.top - containerRect.top;
+        const deltaY = oldY - newY;
+
+        // Only animate if there's significant movement
+        if (Math.abs(deltaY) > 2) {
+          // INVERT: Move element back to old position instantly
+          gsap.set(el, { y: deltaY, immediateRender: true });
+          
+          // PLAY: Animate to new position smoothly
+          gsap.to(el, {
+            y: 0,
+            duration: 1.0,
+            ease: "power3.out",
+            delay: i * 0.1,
+            clearProps: "y"
+          });
+        }
       });
-      
-      // Step 3: Animate new message in with perfect timing
-      gsap.to(messageDiv, {
-        opacity: 1,
-        y: 0,
-        duration: 0.5,
-        ease: "back.out(1.1)",
-        delay: 0.2
-      });
-    } else {
-      // No existing messages, just animate new one
-      gsap.to(messageDiv, {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: "back.out(1.2)"
-      });
-    }
+
+      // New message entrance animation
+      gsap.fromTo(messageDiv, 
+        { 
+          y: 30,
+          opacity: 0,
+          scale: 0.95
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "back.out(1.3)",
+          clearProps: "all"
+        }
+      );
+    }, chatMessages);
   };
 
   let analyzingBubbleDiv: HTMLElement | null = null;
@@ -1498,7 +1497,7 @@ export default function DemoPage() {
       
       gsap.to(obj, {
         value: target,
-        duration: 2,
+        duration: 2.5,
         ease: "power2.out",
         onUpdate: () => {
           counter.textContent = Math.ceil(obj.value).toLocaleString();
@@ -2002,7 +2001,7 @@ export default function DemoPage() {
             {/* Conversation State: Just Messages in Center (shown for first chat) */}
             <div id="chatConversationState" className="flex-1 flex items-center justify-center">
               {/* Messages Container - centered vertically and horizontally */}
-              <div id="chatMessages" className="w-full max-w-2xl px-6 flex flex-col space-y-4">
+              <div id="chatMessages" className="w-full max-w-2xl px-6 flex flex-col gap-4">
                 {/* Messages will be dynamically added here */}
               </div>
             </div>
@@ -2118,14 +2117,21 @@ export default function DemoPage() {
             {/* Hero Metrics - Prominent Display */}
             <div className="grid grid-cols-2 gap-8 mb-12" id="statsGrid">
               <div className="text-center">
-                <div className="metric-number text-6xl font-bold text-gray-900 mb-2" data-target="847">0</div>
-                <div className="text-sm text-gray-500 uppercase tracking-wider">Revenue (K)</div>
+                <div className="text-6xl font-bold text-gray-900 mb-1">
+                  <span className="text-2xl text-gray-500">$</span>
+                  <span className="metric-number" data-target="847">0</span>
+                  <span className="text-3xl text-gray-500">K</span>
+                </div>
+                <div className="text-sm text-gray-500 uppercase tracking-wider">Monthly Revenue</div>
                 <div className="h-0.5 w-16 bg-rose-500 mx-auto mt-3"></div>
               </div>
               
               <div className="text-center">
-                <div className="metric-number text-6xl font-bold text-gray-900 mb-2" data-target="18">0</div>
-                <div className="text-sm text-gray-500 uppercase tracking-wider">Growth %</div>
+                <div className="text-6xl font-bold text-gray-900 mb-1">
+                  <span className="metric-number" data-target="18">0</span>
+                  <span className="text-3xl text-gray-500">%</span>
+                </div>
+                <div className="text-sm text-gray-500 uppercase tracking-wider">Growth Rate</div>
                 <div className="h-0.5 w-16 bg-blue-500 mx-auto mt-3"></div>
               </div>
             </div>
