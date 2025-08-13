@@ -943,22 +943,13 @@ export default function DemoPage() {
       }, false);
     }, slideOutDelay + 3700); // After transition completes + slide-out time
 
-    // Show analyzing bubble (brief)
+    // Agent responds directly and smoothly (no analyzing bubble)
     addTimeout(() => {
-      showAnalyzingBubble();
-    }, 4200); // After user message appears
-
-    // Agent responds with ticket summary (smooth transition)
-    addTimeout(() => {
-      hideAnalyzingBubble();
-      // Wait for hide animation to complete before showing response
-      addTimeout(() => {
-        addChatMessage({
-          type: 'received',
-          text: 'We have 5 tickets today:\n\n• 3 Resolved (billing & features)\n• 2 Open (1 high-priority bug, 1 pending)\n\nWant to see the full details?'
-        }, true);
-      }, 300); // Wait for hide animation to complete
-    }, 5400); // Shorter analyzing duration
+      addChatMessage({
+        type: 'received',
+        text: 'We have 5 tickets today:\n\n• 3 Resolved (billing & features)\n• 2 Open (1 high-priority bug, 1 pending)\n\nWant to see the full details?'
+      }, true);
+    }, 4500); // Direct smooth response
 
     // User responds YES (key moment - make it prominent)
     addTimeout(() => {
@@ -1294,35 +1285,52 @@ export default function DemoPage() {
     // Get all existing messages
     const existingMessages = Array.from(chatMessages.querySelectorAll('.chat-message'));
     
-    // Smoothly animate existing messages upward
-    existingMessages.forEach((msg) => {
-      msg.style.transition = 'transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-      msg.style.transform = `translateY(-${messageHeight}px)`;
-    });
-
     // Create the actual message
     const messageDiv = document.createElement('div');
     messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
     
-    // Start new message below viewport
+    // Start completely hidden
     messageDiv.style.opacity = '0';
-    messageDiv.style.transform = `translateY(${messageHeight}px)`;
-    messageDiv.style.transition = 'opacity 500ms ease-out, transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    messageDiv.style.transform = 'translateY(30px)';
     
     messageDiv.innerHTML = tempDiv.innerHTML;
     
     // Add message to DOM
     chatMessages.appendChild(messageDiv);
     
-    // Reset existing messages position and animate new message in
-    setTimeout(() => {
-      existingMessages.forEach((msg) => {
-        msg.style.transform = 'translateY(0)';
+    // Beautiful coordinated animation using GSAP - ALWAYS applied
+    if (existingMessages.length > 0) {
+      // Step 1: Smoothly animate ALL existing messages up by the new message height
+      existingMessages.forEach((msg, index) => {
+        gsap.to(msg, {
+          y: -messageHeight,
+          duration: 0.5,
+          ease: "power3.out",
+          delay: index * 0.02, // Subtle stagger for elegance
+          onComplete: () => {
+            // Step 2: Reset each message position to natural state
+            gsap.set(msg, { y: 0 });
+          }
+        });
       });
       
-      messageDiv.style.opacity = '1';
-      messageDiv.style.transform = 'translateY(0)';
-    }, 50);
+      // Step 3: Animate new message in with perfect timing
+      gsap.to(messageDiv, {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: "back.out(1.1)",
+        delay: 0.2
+      });
+    } else {
+      // No existing messages, just animate new one
+      gsap.to(messageDiv, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: "back.out(1.2)"
+      });
+    }
   };
 
   let analyzingBubbleDiv: HTMLElement | null = null;
@@ -2003,20 +2011,20 @@ export default function DemoPage() {
 
         {/* Modern AI Analysis - Single Progressive Screen */}
         <div id="aiArchitecture" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0" style={{ display: 'none' }}>
-          <div className="w-[500px] h-[400px] bg-white flex items-center justify-center relative overflow-hidden rounded-3xl shadow-2xl border border-gray-100">
+          <div className="w-[500px] h-[480px] bg-white flex items-center justify-center relative overflow-hidden rounded-3xl shadow-2xl border border-gray-100">
             
             {/* Modern gradient background */}
             <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-blue-50"></div>
             
             {/* Single Progressive Analysis View */}
-            <div id="analysisStep1" className="relative z-10 text-center px-10 py-6 opacity-0">
+            <div id="analysisStep1" className="relative z-10 text-center px-16 py-16 opacity-0">
               
               {/* AI Processing Center */}
-              <div className="mb-5">
+              <div className="mb-6">
                 <div className="relative mx-auto w-16 h-16">
                   {/* Clean AI Core */}
-                  <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 via-teal-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-xl relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-teal-400 animate-pulse opacity-30 rounded-2xl"></div>
+                  <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-xl relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-rose-400 to-rose-500 animate-pulse opacity-30 rounded-2xl"></div>
                     
                     {/* Simple AI Icon */}
                     <svg width="24" height="24" fill="white" viewBox="0 0 24 24" className="relative z-10">
