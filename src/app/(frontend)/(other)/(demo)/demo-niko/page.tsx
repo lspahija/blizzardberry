@@ -521,9 +521,9 @@ export default function DemoPage() {
 
       // Start AI analysis after chat with analyzing bubble is visible for 1 more second
       addTimeout(() => {
-        // Trigger AI analysis after giving more time to see the chat
+        // Trigger AI analysis after giving time to see the chat with analyzing bubble
         startAIArchitecture();
-      }, 1200); // 1 second longer - let user see chat with "Analyzing..." bubble
+      }, 1800); // 1.8 seconds - time to see chat + analyzing bubble + clear animation
     }, 300);
   };
 
@@ -636,18 +636,43 @@ export default function DemoPage() {
     console.log('=== STARTING PROFESSIONAL AI ANALYSIS TRANSITION ===');
     const chatWindow = document.getElementById('chatWindow');
     const aiArchitecture = document.getElementById('aiArchitecture');
+    const chatMessages = document.getElementById('chatMessages');
     
-    if (!chatWindow || !aiArchitecture) {
+    if (!chatWindow || !aiArchitecture || !chatMessages) {
       console.error('Missing chat or analysis elements');
       return;
     }
 
-    // Step 1: Elegant chat disappearance with scale down + fade out
-    gsap.to(chatWindow, {
-      scale: 0.85,
-      opacity: 0,
-      duration: 0.5,
-      ease: "power2.in",
+    // Step 1: Clear chat animation - animate entire message container
+    const allChatMessages = chatMessages.querySelectorAll('.chat-message');
+    if (allChatMessages.length > 0) {
+      // Animate the entire chat messages container with transform and opacity simultaneously  
+      chatMessages.style.transition = 'transform 500ms ease-in-out, opacity 500ms ease-in-out';
+      chatMessages.style.transform = 'translateY(-100%)';
+      chatMessages.style.opacity = '0';
+      
+      // Wait for clear chat animation to complete, then animate chat window
+      setTimeout(() => {
+        // Reset chat messages container for next conversation
+        chatMessages.innerHTML = '';
+        chatMessages.style.transform = 'translateY(0)';
+        chatMessages.style.opacity = '1';
+        chatMessages.style.transition = '';
+        
+        animateChatWindow();
+      }, 500); // Wait for clear chat animation to complete
+    } else {
+      // No messages to animate, proceed directly to chat window animation
+      animateChatWindow();
+    }
+    
+    function animateChatWindow() {
+      // Step 2: Elegant chat window disappearance with scale down + fade out
+      gsap.to(chatWindow, {
+        scale: 0.85,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.in",
       onComplete: () => {
         chatWindow.style.display = 'none';
         console.log('Chat elegantly scaled down and hidden');
@@ -673,6 +698,7 @@ export default function DemoPage() {
         );
       }
     });
+    } // Close animateChatWindow function
 
     // Modern Analysis - Single Progressive Screen
     addTimeout(() => {
@@ -865,24 +891,49 @@ export default function DemoPage() {
       return;
     }
 
-    // Clear previous messages
-    chatMessages.innerHTML = '';
+    // Animate out existing messages before clearing
+    const existingMessages = Array.from(chatMessages.querySelectorAll('.chat-message'));
+    const hasMessages = existingMessages.length > 0;
+    const slideOutDelay = hasMessages ? 650 : 0;
     
-    // Show initial state, hide conversation state
-    conversationState.style.display = 'none';
-    conversationState.style.opacity = '0';
-    initialState.style.display = 'flex';
-    initialState.style.opacity = '1';
+    if (hasMessages) {
+      // Animate all messages sliding up and fading out
+      existingMessages.forEach((msg, index) => {
+        msg.style.transition = 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 600ms ease-out';
+        msg.style.transform = 'translateY(-100px)';
+        msg.style.opacity = '0';
+      });
+      
+      // Wait for animation to complete before clearing
+      setTimeout(() => {
+        chatMessages.innerHTML = '';
+        
+        // Show initial state, hide conversation state
+        conversationState.style.display = 'none';
+        conversationState.style.opacity = '0';
+        initialState.style.display = 'flex';
+        initialState.style.opacity = '1';
+      }, slideOutDelay); // Wait for slide-up animation to finish
+    } else {
+      // No messages to animate, proceed immediately
+      chatMessages.innerHTML = '';
+      
+      // Show initial state, hide conversation state
+      conversationState.style.display = 'none';
+      conversationState.style.opacity = '0';
+      initialState.style.display = 'flex';
+      initialState.style.opacity = '1';
+    }
 
-    // Start typing animation in the centered input
+    // Start typing animation in the centered input (wait for slide-out animation)
     addTimeout(() => {
       showUserTypingAnimation('Show me today\'s support tickets');
-    }, 500);
+    }, slideOutDelay + 500); // 650ms for slide-out + 500ms original delay
 
     // Transition to conversation mode after typing (wait 1 second longer)
     addTimeout(() => {
       transitionToChatConversation();
-    }, 3200); // Extended delay after typing completes
+    }, slideOutDelay + 3200); // Extended delay after typing completes + slide-out time
 
     // User message appears in chat after transition
     addTimeout(() => {
@@ -890,7 +941,7 @@ export default function DemoPage() {
         type: 'sent',
         text: 'Show me today\'s support tickets'
       }, false);
-    }, 3700); // After transition completes
+    }, slideOutDelay + 3700); // After transition completes + slide-out time
 
     // Show analyzing bubble (brief)
     addTimeout(() => {
@@ -917,10 +968,10 @@ export default function DemoPage() {
         text: 'Yes'
       }, false);
       
-      // Show tickets dashboard after YES (immediate but smooth)
+      // Show tickets dashboard after YES (with time to see clear chat animation)
       addTimeout(() => {
         showTicketsDashboard();
-      }, 1200); // Faster transition
+      }, 1800); // Time to see YES message + clear chat animation
     }, 7000);  // Adjusted to match new AI response timing
   };
 
@@ -928,25 +979,51 @@ export default function DemoPage() {
   const showTicketsDashboard = () => {
     console.log('=== SHOWING TICKETS DASHBOARD ===');
     const chatWindow = document.getElementById('chatWindow');
+    const chatMessages = document.getElementById('chatMessages');
     
-    if (!chatWindow) {
-      console.error('Chat window not found!');
+    if (!chatWindow || !chatMessages) {
+      console.error('Chat window or messages not found!');
       return;
     }
 
-    // Step 1: Fade out chat smoothly
-    gsap.to(chatWindow, {
-      opacity: 0,
-      scale: 0.95,
-      duration: 0.6,
-      ease: "power2.inOut",
-      onComplete: () => {
-        chatWindow.style.display = 'none';
+    // Step 1: Clear chat animation - animate entire message container
+    const allChatMessages = chatMessages.querySelectorAll('.chat-message');
+    if (allChatMessages.length > 0) {
+      // Animate the entire chat messages container with transform and opacity simultaneously  
+      chatMessages.style.transition = 'transform 500ms ease-in-out, opacity 500ms ease-in-out';
+      chatMessages.style.transform = 'translateY(-100%)';
+      chatMessages.style.opacity = '0';
+      
+      // Wait for clear chat animation to complete, then animate chat window
+      setTimeout(() => {
+        // Reset chat messages container for next conversation
+        chatMessages.innerHTML = '';
+        chatMessages.style.transform = 'translateY(0)';
+        chatMessages.style.opacity = '1';
+        chatMessages.style.transition = '';
         
-        // Step 2: Create and show tickets dashboard
-        createTicketsDashboard();
-      }
-    });
+        animateChatWindowForTickets();
+      }, 500); // Wait for clear chat animation to complete
+    } else {
+      // No messages to animate, proceed directly to chat window animation
+      animateChatWindowForTickets();
+    }
+    
+    function animateChatWindowForTickets() {
+      // Step 2: Fade out chat window smoothly
+      gsap.to(chatWindow, {
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.6,
+        ease: "power2.inOut",
+        onComplete: () => {
+          chatWindow.style.display = 'none';
+          
+          // Step 3: Create and show tickets dashboard
+          createTicketsDashboard();
+        }
+      });
+    }
   };
 
   const createTicketsDashboard = () => {
