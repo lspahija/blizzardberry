@@ -71,7 +71,7 @@ function html({ url, host, theme }: { url: string; host: string; theme: any }) {
       If you didn't sign up for ${escapedHost}, you can safely ignore this email.
     </div>
     <div style="text-align: center; font-size: 12px; color: ${color.mutedText}; padding: 20px 0 0;">
-      ${escapedHost} - The Future of UX is Here
+      ${escapedHost} - Give Your Users an AI Agent
     </div>
   </div>
 </body>
@@ -90,6 +90,6 @@ If the link doesn't work, copy and paste it into your browser.
 
 If you didn't sign up for BlizzardBerry, you can safely ignore this email.
 
-BlizzardBerry - The Future of UX is Here
+BlizzardBerry - Give Your Users an AI Agent
 `;
 }
