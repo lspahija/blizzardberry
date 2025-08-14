@@ -1,13 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
-import { Inter } from 'next/font/google';
 import { gsap } from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import Chart from 'chart.js/auto';
 import Image from 'next/image';
-
-const inter = Inter({ subsets: ['latin'] });
 
 // Register GSAP plugins
 gsap.registerPlugin(TextPlugin);
@@ -281,12 +278,12 @@ export default function DemoPage() {
 
     setDemoState(prev => ({ ...prev, currentScene: 1 }));
 
-    // Show cursor and move to input
+    // Show cursor and move to input (centered on input field)
     addTimeout(() => {
       cursor.style.opacity = '1';
       gsap.to(cursor, {
         left: '50%',
-        top: '52%',
+        top: '53%', // Input is below center due to logo and title
         duration: 0.8,
         ease: "power2.inOut"
       });
@@ -302,11 +299,11 @@ export default function DemoPage() {
       }, 800);
     }, 1300);
 
-    // Move cursor to button
+    // Move cursor to button (centered on button) 
     addTimeout(() => {
       gsap.to(cursor, {
         left: '50%',
-        top: '63%',
+        top: '66%', // Button is further down due to spacing
         duration: 1,
         ease: "power2.inOut"
       });
@@ -386,22 +383,32 @@ export default function DemoPage() {
       const chatWindow = document.getElementById('chatWindow');
       
       if (dashboardScene) {
+        // Slide Away Effect - kartica klizi lijevo i nestaje
         gsap.to(dashboardScene, {
-          opacity: 0,
-          duration: 0.6,
+          x: '-100vw',  // Klizi lijevo van ekrana
+          opacity: 0.3,  // Blago fade tijekom klizanja
+          duration: 0.8,
           ease: "power2.inOut",
           onComplete: () => {
             dashboardScene.style.display = 'none';
+            // Reset position za sljedeći put
+            gsap.set(dashboardScene, { x: 0, opacity: 1 });
           }
         });
       }
       
-      // Show chat window again
+      // Slide In Effect - nova kartica klizi s desne strane
       if (chatWindow) {
         chatWindow.style.display = 'flex';
         gsap.fromTo(chatWindow,
-          { opacity: 0, scale: 0.9 },
-          { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }
+          { x: '100vw', opacity: 0.3 },  // Start s desne strane ekrana
+          { 
+            x: 0,  // Klizi do centra
+            opacity: 1, 
+            duration: 0.8, 
+            delay: 0.3,  // Kratka pauza nakon što prethodna kartica izađe
+            ease: "power2.out"  // Smooth deceleration
+          }
         );
       }
       
@@ -456,10 +463,10 @@ export default function DemoPage() {
       }
       
       messageDiv.innerHTML = `
-        <div class="max-w-md px-5 py-3 rounded-3xl ${
+        <div class="max-w-md px-5 py-3 rounded-2xl border-[2px] transition-all duration-300 ${
           message.type === 'sent' 
-            ? 'bg-rose-500 text-white' 
-            : 'bg-gray-100 text-gray-900'
+            ? 'bg-brand text-primary-foreground border-border shadow-lg hover:shadow-2xl hover:scale-105' 
+            : 'bg-card text-foreground border-border shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300'
         }">
           <div class="text-base leading-relaxed" id="messageText-${messageIndex}">${messageText}</div>
         </div>
@@ -500,14 +507,14 @@ export default function DemoPage() {
       initialAnalyzingBubbleDiv.style.transition = 'opacity 300ms ease-out, transform 300ms ease-out';
       
       initialAnalyzingBubbleDiv.innerHTML = `
-        <div class="bg-gray-100 px-5 py-3 rounded-3xl max-w-md">
+        <div class="bg-muted px-5 py-3 rounded-3xl max-w-md border-[2px] border-border shadow-md hover:shadow-lg transition-all duration-300">
           <div class="flex items-center space-x-3">
             <div class="flex space-x-1">
-              <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-              <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-              <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+              <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce"></div>
+              <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+              <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
             </div>
-            <div class="text-base text-gray-900">Analyzing...</div>
+            <div class="text-base text-muted-foreground">Analyzing...</div>
           </div>
         </div>
       `;
@@ -1002,106 +1009,89 @@ export default function DemoPage() {
     }
     
     function animateChatWindowForTickets() {
-      // Step 2: Fade out chat window smoothly
-      gsap.to(chatWindow, {
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.6,
-        ease: "power2.inOut",
-        onComplete: () => {
-          chatWindow.style.display = 'none';
-          
-          // Step 3: Create and show tickets dashboard
-          createTicketsDashboard();
-        }
-      });
+      // Step 2: Transform chat window content to tickets dashboard
+      // Keep the same chat window, just change content
+      replaceWithTicketsDashboard();
     }
   };
 
-  const createTicketsDashboard = () => {
-    console.log('=== CREATING TICKETS DASHBOARD ===');
+  const replaceWithTicketsDashboard = () => {
+    console.log('=== REPLACING CHAT WITH TICKETS DASHBOARD ===');
+    const chatWindow = document.getElementById('chatWindow');
     
-    // Create dashboard container
-    const dashboardDiv = document.createElement('div');
-    dashboardDiv.id = 'ticketsDashboard';
-    dashboardDiv.className = 'fixed inset-0 flex items-center justify-center z-50';
-    dashboardDiv.style.opacity = '1'; // Set to visible immediately
+    if (!chatWindow) {
+      console.error('Chat window not found!');
+      return;
+    }
     
-    dashboardDiv.innerHTML = `
-      <div class="w-[600px] h-[680px] bg-gradient-to-br from-indigo-50/50 via-white to-indigo-50/30 overflow-y-auto p-4 border border-indigo-200/50 rounded-2xl shadow-xl">
+    // Replace chat window content with tickets dashboard
+    chatWindow.innerHTML = `
+      <div class="w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-4">
         <!-- Header - All elements initially hidden -->
-        <div class="text-center mb-4">
-          <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-rose-500 to-rose-600 rounded-xl mb-3 shadow-lg" id="header-icon" style="opacity: 0; transform: translateY(-40px) scale(0.5);">
-            <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
-              <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/>
-            </svg>
-          </div>
-          <h1 class="text-xl font-bold text-gray-900 mb-1" id="header-title" style="opacity: 0; transform: translateY(-20px);">Support Tickets</h1>
-          <p class="text-xs text-gray-600" id="header-subtitle" style="opacity: 0; transform: translateY(-15px);">Today's Overview</p>
+        <div class="text-center mb-5 mt-4">
+          <h1 class="text-3xl font-bold text-foreground mb-2 tracking-tight" id="header-title" style="opacity: 0; transform: translateY(-20px);">Support Tickets</h1>
+          <p class="text-sm text-muted-foreground font-medium" id="header-subtitle" style="opacity: 0; transform: translateY(-15px);">Today's Overview</p>
         </div>
 
         <!-- Quick Stats - All elements initially hidden -->
         <div class="grid grid-cols-3 gap-2 mb-4" id="stats-grid">
-          <div class="bg-gray-50 rounded-lg p-3 text-center stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
-            <div class="text-2xl font-bold mb-1 ticket-stat text-blue-600" data-target="3" style="opacity: 0;">0</div>
-            <div class="text-xs text-gray-600" style="opacity: 0;">Total</div>
+          <div class="bg-card border-[2px] border-border rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+            <div class="text-2xl font-bold mb-1 ticket-stat text-secondary" data-target="3" style="opacity: 0;">0</div>
+            <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Total</div>
           </div>
-          <div class="bg-gray-50 rounded-lg p-3 text-center stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+          <div class="bg-card border-[2px] border-border rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
             <div class="text-2xl font-bold mb-1 ticket-stat text-emerald-600" data-target="2" style="opacity: 0;">0</div>
-            <div class="text-xs text-gray-600" style="opacity: 0;">Resolved</div>
+            <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Resolved</div>
           </div>
-          <div class="bg-gray-50 rounded-lg p-3 text-center stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
-            <div class="text-2xl font-bold mb-1 ticket-stat text-rose-600" data-target="1" style="opacity: 0;">0</div>
-            <div class="text-xs text-gray-600" style="opacity: 0;">Open</div>
+          <div class="bg-card border-[2px] border-border rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+            <div class="text-2xl font-bold mb-1 ticket-stat text-brand" data-target="1" style="opacity: 0;">0</div>
+            <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Open</div>
           </div>
         </div>
 
         <!-- Tickets List - All elements initially hidden -->
-        <div class="bg-gray-50 rounded-lg p-3" id="tickets-section" style="opacity: 0; transform: translateY(20px);">
-          <h3 class="text-sm font-bold text-gray-900 mb-3" style="opacity: 0;">Recent Tickets</h3>
+        <div class="bg-card border-[2px] border-border rounded-lg p-3 shadow-lg hover:shadow-2xl transition-all duration-300" id="tickets-section" style="opacity: 0; transform: translateY(20px);">
+          <h3 class="text-lg font-bold text-foreground mb-3 tracking-tight" style="opacity: 0;">Recent Tickets</h3>
           <div class="space-y-2">
-            <div class="ticket-row bg-white rounded-lg p-3" style="opacity: 0; transform: translateX(-50px);">
+            <div class="ticket-row bg-background border-[2px] border-border rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
-                  <div class="w-2 h-2 bg-red-500 rounded-full"></div>
-                  <div class="text-xs font-medium text-gray-900">#12847</div>
+                  <div class="w-2 h-2 bg-brand rounded-full"></div>
+                  <div class="text-xs font-semibold text-foreground">#12847</div>
                 </div>
-                <span class="px-2 py-1 bg-red-500/10 text-red-600 text-xs rounded-full">Open</span>
+                <span class="px-2 py-1 bg-brand/10 text-brand text-xs rounded-full font-medium">Open</span>
               </div>
-              <div class="text-xs text-gray-700 mb-1">Payment Processing Error</div>
-              <div class="text-xs text-gray-500">High Priority</div>
+              <div class="text-xs text-foreground mb-1 font-medium">Payment Processing Error</div>
+              <div class="text-xs text-muted-foreground">High Priority</div>
             </div>
             
-            <div class="ticket-row bg-white rounded-lg p-3" style="opacity: 0; transform: translateX(-50px);">
+            <div class="ticket-row bg-background border-[2px] border-border rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                  <div class="text-xs font-medium text-gray-900">#12846</div>
+                  <div class="text-xs font-semibold text-foreground">#12846</div>
                 </div>
-                <span class="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-xs rounded-full">Resolved</span>
+                <span class="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-xs rounded-full font-medium">Resolved</span>
               </div>
-              <div class="text-xs text-gray-700 mb-1">Billing Question</div>
-              <div class="text-xs text-gray-500">Low Priority</div>
+              <div class="text-xs text-foreground mb-1 font-medium">Billing Question</div>
+              <div class="text-xs text-muted-foreground">Low Priority</div>
             </div>
             
-            <div class="ticket-row bg-white rounded-lg p-3" style="opacity: 0; transform: translateX(-50px);">
+            <div class="ticket-row bg-background border-[2px] border-border rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
-                  <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <div class="text-xs font-medium text-gray-900">#12845</div>
+                  <div class="w-2 h-2 bg-secondary rounded-full"></div>
+                  <div class="text-xs font-semibold text-foreground">#12845</div>
                 </div>
-                <span class="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-xs rounded-full">Resolved</span>
+                <span class="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-xs rounded-full font-medium">Resolved</span>
               </div>
-              <div class="text-xs text-gray-700 mb-1">Feature Request</div>
-              <div class="text-xs text-gray-500">Low Priority</div>
+              <div class="text-xs text-foreground mb-1 font-medium">Feature Request</div>
+              <div class="text-xs text-muted-foreground">Low Priority</div>
             </div>
           </div>
         </div>
       </div>
     `;
-    
-    // Add to DOM
-    document.body.appendChild(dashboardDiv);
     
     // Start sequential animations immediately
     animateTicketsDashboard();
@@ -1110,29 +1100,15 @@ export default function DemoPage() {
   const animateTicketsDashboard = () => {
     console.log('=== ANIMATING TICKETS DASHBOARD WITH PERFECT SEQUENCE ===');
     
-    // Step 1: Animate header icon first
-    addTimeout(() => {
-      const headerIcon = document.getElementById('header-icon');
-      if (headerIcon) {
-        gsap.to(headerIcon, {
-          y: 0, 
-          opacity: 1, 
-          scale: 1,
-          duration: 0.8, 
-          ease: "back.out(1.7)"
-        });
-      }
-    }, 200);
-    
-    // Step 2: Animate header text
+    // Step 1: Animate header text (no icon)
     addTimeout(() => {
       const headerTitle = document.getElementById('header-title');
       if (headerTitle) {
         gsap.to(headerTitle, {
-          y: 0, opacity: 1, duration: 0.6, ease: "power2.out"
+          y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.7)"
         });
       }
-    }, 600);
+    }, 300);
     
     addTimeout(() => {
       const headerSubtitle = document.getElementById('header-subtitle');
@@ -1141,7 +1117,7 @@ export default function DemoPage() {
           y: 0, opacity: 1, duration: 0.6, ease: "power2.out"
         });
       }
-    }, 800);
+    }, 600);
     
     // Step 3: Animate stats cards one by one
     addTimeout(() => {
@@ -1225,16 +1201,16 @@ export default function DemoPage() {
 
   const hideTicketsDashboard = () => {
     console.log('=== HIDING TICKETS DASHBOARD ===');
-    const dashboard = document.getElementById('ticketsDashboard');
+    const chatWindow = document.getElementById('chatWindow');
     
-    if (dashboard) {
-      gsap.to(dashboard, {
+    if (chatWindow) {
+      gsap.to(chatWindow, {
         opacity: 0,
         scale: 0.9,
         duration: 0.5,
         ease: "power2.inOut",
         onComplete: () => {
-          dashboard.remove();
+          chatWindow.style.display = 'none';
           console.log('Tickets dashboard removed, showing Scene 4');
           // Immediately show Scene 4 and start its sequence
           showScene('scene4');
@@ -1278,8 +1254,10 @@ export default function DemoPage() {
     const messageDiv = document.createElement('div');
     messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
     messageDiv.innerHTML = `
-      <div class="max-w-md px-5 py-3 rounded-3xl ${
-        message.type === 'sent' ? 'bg-rose-500 text-white' : 'bg-gray-100 text-gray-900'
+      <div class="max-w-md px-5 py-3 rounded-2xl border-[2px] ${
+        message.type === 'sent' 
+          ? 'bg-brand text-primary-foreground border-border shadow-lg' 
+          : 'bg-card text-foreground border-border shadow-md hover:shadow-lg transition-shadow duration-200'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
       </div>
@@ -1345,14 +1323,14 @@ export default function DemoPage() {
     analyzingBubbleDiv.style.transition = 'opacity 300ms ease-out, transform 300ms ease-out';
     
     analyzingBubbleDiv.innerHTML = `
-      <div class="bg-gray-100 px-5 py-3 rounded-3xl max-w-md">
+      <div class="bg-muted px-5 py-3 rounded-3xl max-w-md border-[2px] border-border shadow-md hover:shadow-lg transition-all duration-300">
         <div class="flex items-center space-x-3">
           <div class="flex space-x-1">
-            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
-          <div class="text-base text-gray-900">Analyzing...</div>
+          <div class="text-base text-muted-foreground">Analyzing...</div>
         </div>
       </div>
     `;
@@ -1654,7 +1632,7 @@ export default function DemoPage() {
   }, []);
 
   return (
-    <div className={`${inter.className} min-h-screen bg-gradient-to-br from-gray-50 via-rose-50 to-pink-50 overflow-hidden relative`}>
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-muted/30 overflow-hidden relative">
       <style>{`
         /* Custom CSS for complex animations that need CSS */
         @keyframes logoBreathing {
@@ -1732,13 +1710,13 @@ export default function DemoPage() {
         }
         
         .focused {
-          border-color: #F43F5E !important;
-          box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.1) !important;
+          border-color: var(--color-brand) !important;
+          box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.2) !important;
         }
         
         .hover {
-          transform: translateY(-2px) !important;
-          box-shadow: 0 8px 25px rgba(244, 63, 94, 0.25) !important;
+          transform: translateY(-2px) scale(1.02) !important;
+          box-shadow: 0 8px 25px rgba(244, 63, 94, 0.3) !important;
         }
         
         .success {
@@ -1782,8 +1760,8 @@ export default function DemoPage() {
         }
         
         .interactive-hover:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+          transform: translateY(-2px) scale(1.02);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
         
         .interactive-hover:active {
@@ -1803,8 +1781,8 @@ export default function DemoPage() {
           left: -100%;
           width: 100%;
           height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-          transition: left 0.6s;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          transition: left 0.5s ease;
         }
         
         .button-shimmer:hover::before {
@@ -1820,7 +1798,7 @@ export default function DemoPage() {
           content: '';
           position: absolute;
           inset: -2px;
-          background: linear-gradient(45deg, #F43F5E, #3B82F6, #10B981, #F43F5E);
+          background: linear-gradient(45deg, var(--color-brand), var(--color-secondary), var(--color-primary), var(--color-brand));
           border-radius: inherit;
           z-index: -1;
           opacity: 0;
@@ -1836,8 +1814,8 @@ export default function DemoPage() {
         }
         
         .metric-card-hover:hover {
-          transform: translateY(-5px) scale(1.02);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+          transform: translateY(-3px) scale(1.02);
+          box-shadow: 0 20px 40px rgba(244, 63, 94, 0.15);
         }
         
         /* Focus management styles */
@@ -1894,10 +1872,10 @@ export default function DemoPage() {
           </div>
           
           {/* Animated rings */}
-          <div className="absolute w-40 h-40 border-4 border-transparent border-t-rose-500 rounded-full animate-spin"></div>
-          <div className="absolute w-36 h-36 border-4 border-transparent border-t-blue-500 rounded-full animate-spin" style={{ animationDelay: '-0.3s' }}></div>
-          <div className="absolute w-32 h-32 border-4 border-transparent border-t-emerald-500 rounded-full animate-spin" style={{ animationDelay: '-0.6s' }}></div>
-          <div className="absolute w-28 h-28 border-4 border-transparent border-t-rose-600 rounded-full animate-spin" style={{ animationDelay: '-0.9s' }}></div>
+          <div className="absolute w-40 h-40 border-4 border-transparent border-t-brand rounded-full animate-spin"></div>
+          <div className="absolute w-36 h-36 border-4 border-transparent border-t-secondary rounded-full animate-spin" style={{ animationDelay: '-0.3s' }}></div>
+          <div className="absolute w-32 h-32 border-4 border-transparent border-t-primary rounded-full animate-spin" style={{ animationDelay: '-0.6s' }}></div>
+          <div className="absolute w-28 h-28 border-4 border-transparent border-t-brand/60 rounded-full animate-spin" style={{ animationDelay: '-0.9s' }}></div>
         </div>
         
         {/* Brand text below */}
@@ -1910,8 +1888,8 @@ export default function DemoPage() {
       </div>
 
       {/* Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-40">
-        <div id="progressBar" className="h-full bg-gradient-to-r from-rose-500 to-blue-500 transition-all duration-300 ease-out" style={{ width: '0%' }}></div>
+      <div className="fixed top-0 left-0 w-full h-1 bg-muted z-40">
+        <div id="progressBar" className="h-full bg-gradient-to-r from-brand to-secondary transition-all duration-300 ease-out" style={{ width: '0%' }}></div>
       </div>
 
 
@@ -1924,10 +1902,10 @@ export default function DemoPage() {
         </svg>
       </div>
 
-      {/* Scene 1: Create Action - Modern Design */}
+      {/* Scene 1: Create Action - BlizzardBerry Style */}
       <div id="scene1" className="fixed inset-0 opacity-0" style={{ display: 'none' }}>
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-cyan-50/30 via-white to-cyan-50/20 rounded-3xl shadow-2xl border border-cyan-200/50 p-12 w-full max-w-lg overflow-hidden z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-brand/10 to-brand/5"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-card border-[3px] border-border rounded-3xl shadow-2xl p-12 w-full max-w-lg overflow-hidden z-10 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-1">
           {/* Subtle background decoration */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-rose-50 to-blue-50 rounded-full transform translate-x-16 -translate-y-16 opacity-30"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-50 to-rose-50 rounded-full transform -translate-x-12 translate-y-12 opacity-20"></div>
@@ -1937,33 +1915,39 @@ export default function DemoPage() {
             <div className="flex items-center justify-center mb-8">
               <div className="relative">
                 {/* Logo with subtle animation rings */}
-                <div className="relative z-10 w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100">
+                <div className="relative z-10 w-20 h-20 bg-card border-[3px] border-border rounded-2xl flex items-center justify-center shadow-xl">
                   <Image src="/image/logo.png" alt="BlizzardBerry Logo" width={50} height={50} className="rounded-lg" priority unoptimized />
                 </div>
-                {/* Subtle animated ring */}
-                <div className="absolute inset-0 w-20 h-20 border-2 border-rose-200 rounded-2xl animate-ping opacity-20"></div>
+                {/* Brand colored animated ring */}
+                <div className="absolute inset-0 w-20 h-20 border-2 border-brand/30 rounded-2xl animate-ping opacity-40"></div>
               </div>
             </div>
             
             <div className="space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Create New Action</h2>
+                <h2 className="text-3xl font-bold text-foreground mb-6 tracking-tight">Create New Action</h2>
                 <input
                   id="actionInput"
                   type="text"
                   placeholder="Enter action name..."
-                  className="w-full px-6 py-4 text-lg border-2 border-gray-200 rounded-xl focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 focus:outline-none transition-all duration-300 bg-white text-center shadow-sm hover:shadow-md"
+                  className="w-full px-6 py-4 text-lg border-[3px] border-border rounded-xl focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all duration-300 bg-background text-center shadow-sm hover:shadow-md"
                 />
               </div>
               
-              <button
-                id="createBtn"
-                className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white text-xl font-semibold py-4 rounded-xl hover:from-rose-600 hover:to-rose-700 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl interactive-hover button-shimmer"
-                tabIndex={0}
-                aria-label="Create new AI action"
-              >
-                Create Action
-              </button>
+              <div className="relative group w-full">
+                <div className="absolute inset-0 rounded-xl bg-black/80 translate-x-1 translate-y-1 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                <button
+                  id="createBtn"
+                  className="relative w-full bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 text-xl font-semibold py-4 rounded-xl transition-all duration-300 shadow-lg"
+                  tabIndex={0}
+                  aria-label="Create new AI action"
+                >
+                  <svg className="inline mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  Create Action
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1971,10 +1955,10 @@ export default function DemoPage() {
 
       {/* Scene 2: AI Processing & Dashboard */}
       <div id="scene2" className="fixed inset-0 opacity-0" style={{ display: 'none' }}>
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-brand/10 to-brand/5"></div>
         {/* Fixed Size Chat Widget */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div id="chatWindow" className="w-[600px] h-[680px] bg-white flex flex-col transition-all duration-800 relative">
+          <div id="chatWindow" className="w-[600px] h-[680px] bg-card border-[3px] border-border rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden">
             
             {/* Initial State: Centered Input (hidden for first chat) */}
             <div id="chatInitialState" className="flex-1 flex items-center justify-center px-6" style={{ display: 'none' }}>
@@ -1985,15 +1969,18 @@ export default function DemoPage() {
                       id="chatInitialInput"
                       type="text"
                       placeholder="Ask a question..."
-                      className="w-full px-6 py-4 text-base bg-gray-50 rounded-full focus:outline-none focus:bg-gray-100 transition-all duration-300"
+                      className="w-full px-6 py-4 text-base bg-muted border-[2px] border-border rounded-full focus:outline-none focus:border-brand transition-all duration-300"
                       disabled
                     />
                   </div>
-                  <button className="w-12 h-12 bg-rose-500 rounded-full flex items-center justify-center hover:bg-rose-600 transition-all duration-300">
-                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
-                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                    </svg>
-                  </button>
+                  <div className="relative group">
+                    <div className="absolute inset-0 rounded-full bg-black/80 translate-x-1 translate-y-1 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                    <button className="relative w-12 h-12 bg-brand border-[2px] border-border rounded-full flex items-center justify-center hover:bg-brand/90 transition-all duration-300 shadow-lg">
+                      <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2010,10 +1997,10 @@ export default function DemoPage() {
 
         {/* Modern AI Analysis - Single Progressive Screen */}
         <div id="aiArchitecture" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0" style={{ display: 'none' }}>
-          <div className="w-[500px] h-[480px] bg-white flex items-center justify-center relative overflow-hidden rounded-3xl shadow-2xl border border-gray-100">
+          <div className="w-[500px] h-[480px] bg-card border-[3px] border-border flex items-center justify-center relative overflow-hidden rounded-3xl shadow-2xl transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl">
             
-            {/* Modern gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-blue-50"></div>
+            {/* Brand gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-brand/5 via-card to-brand/5"></div>
             
             {/* Single Progressive Analysis View */}
             <div id="analysisStep1" className="relative z-10 text-center px-16 py-16 opacity-0">
@@ -2022,8 +2009,8 @@ export default function DemoPage() {
               <div className="mb-6">
                 <div className="relative mx-auto w-16 h-16">
                   {/* Clean AI Core */}
-                  <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-xl relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-rose-400 to-rose-500 animate-pulse opacity-30 rounded-2xl"></div>
+                  <div className="w-16 h-16 bg-gradient-to-br from-brand to-brand/80 border-[2px] border-border rounded-2xl flex items-center justify-center shadow-xl relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-brand/60 to-brand/80 animate-pulse opacity-30 rounded-2xl"></div>
                     
                     {/* Simple AI Icon */}
                     <svg width="24" height="24" fill="white" viewBox="0 0 24 24" className="relative z-10">
@@ -2041,12 +2028,12 @@ export default function DemoPage() {
               
               {/* Dynamic Status Text */}
               <div className="mb-6">
-                <h2 id="analysisTitle" className="text-xl font-bold text-gray-900 mb-2">Analyzing Revenue Data</h2>
-                <p id="analysisSubtitle" className="text-sm text-gray-600">BlizzardBerry AI is processing your request...</p>
+                <h2 id="analysisTitle" className="text-2xl sm:text-3xl font-bold text-foreground mb-2 tracking-tighter leading-tight">Analyzing Revenue Data</h2>
+                <p id="analysisSubtitle" className="text-sm sm:text-base text-muted-foreground leading-relaxed">BlizzardBerry AI is processing your request...</p>
               </div>
               
               {/* Progress System */}
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-gray-200">
+              <div className="bg-card/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg border-[2px] border-border">
                 <div className="space-y-3">
                   
                   {/* Step 1: Data Fetching */}
@@ -2101,38 +2088,38 @@ export default function DemoPage() {
 
       {/* Modern Revenue Dashboard */}
       <div id="dashboardScene" className="fixed inset-0 z-50 opacity-0" style={{ display: 'none' }}>
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-brand/10 to-brand/5"></div>
         
         {/* Fixed Size Dashboard Widget */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-gradient-to-br from-teal-50/50 via-white to-teal-50/30 overflow-y-auto rounded-2xl shadow-xl border border-teal-200/50">
+          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-y-auto rounded-3xl shadow-2xl border-[3px] border-border transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-1">
             <div className="p-6">
             
             {/* Minimalist Header */}
             <div className="text-center mb-12" id="dashboardHeader">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Revenue</h1>
-              <p className="text-sm text-gray-500 uppercase tracking-wider">North America</p>
+              <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-2 tracking-tighter leading-tight">Revenue</h1>
+              <p className="text-sm text-muted-foreground uppercase tracking-wider font-medium">North America</p>
             </div>
 
             {/* Hero Metrics - Prominent Display */}
             <div className="grid grid-cols-2 gap-8 mb-12" id="statsGrid">
               <div className="text-center">
-                <div className="text-6xl font-bold text-gray-900 mb-1">
-                  <span className="text-2xl text-gray-500">$</span>
+                <div className="text-5xl sm:text-6xl font-bold text-foreground mb-1">
+                  <span className="text-xl sm:text-2xl text-muted-foreground">$</span>
                   <span className="metric-number" data-target="847">0</span>
-                  <span className="text-3xl text-gray-500">K</span>
+                  <span className="text-2xl sm:text-3xl text-muted-foreground">K</span>
                 </div>
-                <div className="text-sm text-gray-500 uppercase tracking-wider">Monthly Revenue</div>
-                <div className="h-0.5 w-16 bg-rose-500 mx-auto mt-3"></div>
+                <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-medium">Monthly Revenue</div>
+                <div className="h-0.5 w-16 bg-brand mx-auto mt-3 rounded-full"></div>
               </div>
               
               <div className="text-center">
-                <div className="text-6xl font-bold text-gray-900 mb-1">
+                <div className="text-5xl sm:text-6xl font-bold text-foreground mb-1">
                   <span className="metric-number" data-target="18">0</span>
-                  <span className="text-3xl text-gray-500">%</span>
+                  <span className="text-2xl sm:text-3xl text-muted-foreground">%</span>
                 </div>
-                <div className="text-sm text-gray-500 uppercase tracking-wider">Growth Rate</div>
-                <div className="h-0.5 w-16 bg-blue-500 mx-auto mt-3"></div>
+                <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-medium">Growth Rate</div>
+                <div className="h-0.5 w-16 bg-secondary mx-auto mt-3 rounded-full"></div>
               </div>
             </div>
 
@@ -2146,33 +2133,33 @@ export default function DemoPage() {
         </div>
       </div>
 
-      {/* Scene 4: Brand Finale - Professional Design */}
-      <div id="scene4" className="fixed inset-0 opacity-0 flex-col items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-100" style={{ display: 'none' }}>
-        {/* Subtle decorative elements */}
+      {/* Scene 4: Brand Finale - BlizzardBerry Style */}
+      <div id="scene4" className="fixed inset-0 opacity-0 flex flex-col items-center justify-center bg-gradient-to-br from-brand/10 to-brand/5" style={{ display: 'none' }}>
+        {/* Brand decorative elements */}
         <div className="absolute">
-          <div className="w-96 h-96 border border-rose-100 rounded-full animate-ping opacity-30"></div>
-          <div className="absolute top-8 left-8 w-80 h-80 border border-blue-100 rounded-full animate-ping opacity-20" style={{ animationDelay: '0.5s' }}></div>
-          <div className="absolute top-16 left-16 w-64 h-64 border border-rose-50 rounded-full animate-ping opacity-15" style={{ animationDelay: '1s' }}></div>
+          <div className="w-96 h-96 border border-brand/20 rounded-full animate-ping opacity-30"></div>
+          <div className="absolute top-8 left-8 w-80 h-80 border border-secondary/20 rounded-full animate-ping opacity-20" style={{ animationDelay: '0.5s' }}></div>
+          <div className="absolute top-16 left-16 w-64 h-64 border border-brand/10 rounded-full animate-ping opacity-15" style={{ animationDelay: '1s' }}></div>
         </div>
         
         {/* Logo with modern styling */}
         <div id="finalLogo" className="relative z-10 mb-12 opacity-0">
           <div className="relative">
-            <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center shadow-2xl border border-gray-200" style={{ animation: 'logoPulse 3s infinite' }}>
+            <div className="w-32 h-32 bg-card border-[3px] border-border rounded-3xl flex items-center justify-center shadow-2xl" style={{ animation: 'logoPulse 3s infinite' }}>
               <Image src="/image/logo.png" alt="BlizzardBerry Logo" width={80} height={80} priority unoptimized />
             </div>
-            {/* Subtle animated ring */}
-            <div className="absolute inset-0 w-32 h-32 border-2 border-rose-200 rounded-3xl animate-ping opacity-30"></div>
+            {/* Brand colored animated ring */}
+            <div className="absolute inset-0 w-32 h-32 border-2 border-brand/30 rounded-3xl animate-ping opacity-40"></div>
           </div>
         </div>
         
         {/* Brand text with modern styling */}
         <div id="finalBrand" className="text-center mb-12 opacity-0">
-          <h1 className="text-7xl font-bold text-gray-900 mb-4">
+          <h1 className="text-7xl font-bold text-foreground mb-4 tracking-tight">
             BlizzardBerry
           </h1>
-          <div className="h-2 w-48 bg-gradient-to-r from-rose-500 to-blue-500 rounded-full mx-auto mb-6"></div>
-          <div id="finalTagline" className="text-2xl text-gray-600 font-medium opacity-0 tracking-wide">
+          <div className="h-2 w-48 bg-gradient-to-r from-brand to-secondary rounded-full mx-auto mb-6"></div>
+          <div id="finalTagline" className="text-2xl text-muted-foreground font-semibold opacity-0 tracking-wide">
             POWERFUL AI ACTIONS
           </div>
         </div>
