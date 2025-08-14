@@ -227,23 +227,11 @@ export default function DemoPage() {
       }
     });
 
-    // Phase 1: Loading (1.5 seconds - faster)
-    tl.addLabel("loadingStart")
-      .to("#loader", { 
-        opacity: 0, 
-        scale: 1.1, 
-        filter: "blur(10px)", 
-        duration: 0.8, 
-        ease: "power2.inOut" 
-      }, 0.5)
+    // Start directly with Scene 1 - Create Action (8 seconds)
+    tl.addLabel("scene1Start", 0.5)
       .call(() => {
-        const loader = document.getElementById('loader');
-        if (loader) loader.style.display = 'none';
         setControlsVisible(true);
-      }, undefined, 1.5);
-
-    // Phase 2: Scene 1 - Create Action (8 seconds)
-    tl.addLabel("scene1Start", 1.8)
+      }, undefined, 0)
       .call(() => showScene('scene1'), undefined, "scene1Start")
       .call(() => {
         // Start Scene 1 animations
@@ -399,13 +387,51 @@ export default function DemoPage() {
       
       // Slide In Effect - nova kartica klizi s desne strane
       if (chatWindow) {
+        // Reset chat window to original dimensions and styles
+        chatWindow.className = "w-[600px] h-[680px] bg-card border-[3px] border-border rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden";
         chatWindow.style.display = 'flex';
+        // Ensure proper positioning - clear any transforms that might interfere
+        chatWindow.style.transform = '';
+        chatWindow.style.left = '';
+        chatWindow.style.top = '';
+        chatWindow.style.position = 'static';
+        
+        // Reset content to original chat layout (complete structure)
+        chatWindow.innerHTML = `
+          <div id="chatInitialState" class="flex-1 flex items-center justify-center px-6" style="display: none;">
+            <div class="w-full max-w-md">
+              <div class="flex gap-3 items-center">
+                <div class="flex-1 relative">
+                  <input
+                    id="chatInitialInput"
+                    type="text"
+                    placeholder="Ask a question..."
+                    class="w-full px-6 py-4 text-base bg-muted border-[2px] border-border rounded-full focus:outline-none focus:border-brand transition-all duration-300"
+                    disabled
+                  />
+                </div>
+                <div class="relative group">
+                  <div class="absolute inset-0 rounded-full bg-black/80 translate-x-1 translate-y-1 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                  <button class="relative w-12 h-12 bg-brand border-[2px] border-border rounded-full flex items-center justify-center hover:bg-brand/90 transition-all duration-300 shadow-lg">
+                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="chatConversationState" class="flex-1 flex items-center justify-center">
+            <div id="chatMessages" class="w-full max-w-2xl px-6 flex flex-col gap-4"></div>
+          </div>
+        `;
+        
         gsap.fromTo(chatWindow,
-          { x: '100vw', opacity: 0.3 },  // Start s desne strane ekrana
+          { opacity: 0 },  // Start invisible but in correct position
           { 
-            x: 0,  // Klizi do centra
             opacity: 1, 
-            duration: 0.8, 
+            duration: 0.6, 
             delay: 0.3,  // Kratka pauza nakon što prethodna kartica izađe
             ease: "power2.out"  // Smooth deceleration
           }
@@ -766,19 +792,19 @@ export default function DemoPage() {
     
     // Step 1: Complete first step (Data Fetching)
     addTimeout(() => {
-      completeAnalysisStep('step1', '✓ Complete');
+      completeAnalysisStep('step1', 'Complete');
       startAnalysisStep('step2');
     }, 800);
     
     // Step 2: Complete second step (Analysis)
     addTimeout(() => {
-      completeAnalysisStep('step2', '✓ Complete');
+      completeAnalysisStep('step2', 'Complete');
       startAnalysisStep('step3');
     }, 2000);
     
     // Step 3: Complete final step (Dashboard)
     addTimeout(() => {
-      completeAnalysisStep('step3', '✓ Ready');
+      completeAnalysisStep('step3', 'Ready');
       // Update main title for completion
       const title = document.getElementById('analysisTitle');
       const subtitle = document.getElementById('analysisSubtitle');
@@ -845,14 +871,14 @@ export default function DemoPage() {
       // Stop loader animation
       gsap.killTweensOf(loader);
       
-      // Transform to checkmark
+      // Transform to complete indicator
       gsap.to(loader, {
         scale: 0,
         duration: 0.2,
         onComplete: () => {
           loader.classList.remove('animate-pulse');
-          loader.innerHTML = '✓';
-          loader.className = 'text-white text-xs font-bold';
+          loader.innerHTML = '•';  // Simple dot instead of checkmark
+          loader.className = 'text-green-500 text-lg font-bold';
           gsap.to(loader, {
             scale: 1,
             duration: 0.3,
@@ -1024,9 +1050,11 @@ export default function DemoPage() {
       return;
     }
     
-    // Replace chat window content with tickets dashboard
+    // Replace chat window content with tickets dashboard  
+    // Keep exact same styling as first chat window
+    chatWindow.className = "w-[600px] h-[680px] bg-card border-[3px] border-border rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden";
     chatWindow.innerHTML = `
-      <div class="w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-4">
+      <div class="w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-6">
         <!-- Header - All elements initially hidden -->
         <div class="text-center mb-5 mt-4">
           <h1 class="text-3xl font-bold text-foreground mb-2 tracking-tight" id="header-title" style="opacity: 0; transform: translateY(-20px);">Support Tickets</h1>
@@ -1608,12 +1636,12 @@ export default function DemoPage() {
       // Build master timeline
       const timeline = buildMasterTimeline();
       
-      // Start after loader - faster startup
+      // Start immediately - no loader
       setTimeout(() => {
         setIsLoaded(true);
         timeline.play();
         setDemoState(prev => ({ ...prev, isRunning: true, startTime: Date.now() }));
-      }, 2000);
+      }, 1000);  // Just 1 second delay
     };
 
     initDemo();
@@ -1863,8 +1891,8 @@ export default function DemoPage() {
         }
       `}</style>
 
-      {/* Modern Loader */}
-      <div id="loader" className="fixed inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-gray-800 flex items-center justify-center z-50">
+      {/* Modern Loader - Hidden by default */}
+      <div id="loader" className="fixed inset-0 bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center z-50" style={{ display: 'none' }}>
         <div className="relative flex items-center justify-center">
           {/* Logo in center */}
           <div className="relative z-10" style={{ animation: 'logoPulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1)' }}>
@@ -2092,7 +2120,7 @@ export default function DemoPage() {
         
         {/* Fixed Size Dashboard Widget */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-y-auto rounded-3xl shadow-2xl border-[3px] border-border transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-1">
+          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden rounded-3xl shadow-2xl border-[3px] border-border transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl flex flex-col relative">
             <div className="p-6">
             
             {/* Minimalist Header */}
@@ -2104,10 +2132,10 @@ export default function DemoPage() {
             {/* Hero Metrics - Prominent Display */}
             <div className="grid grid-cols-2 gap-8 mb-12" id="statsGrid">
               <div className="text-center">
-                <div className="text-5xl sm:text-6xl font-bold text-foreground mb-1">
-                  <span className="text-xl sm:text-2xl text-muted-foreground">$</span>
+                <div className="text-5xl sm:text-6xl font-bold text-foreground mb-1 flex items-baseline justify-center">
+                  <span className="text-3xl sm:text-4xl text-muted-foreground mr-1">$</span>
                   <span className="metric-number" data-target="847">0</span>
-                  <span className="text-2xl sm:text-3xl text-muted-foreground">K</span>
+                  <span className="text-2xl sm:text-3xl text-muted-foreground ml-1">K</span>
                 </div>
                 <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-medium">Monthly Revenue</div>
                 <div className="h-0.5 w-16 bg-brand mx-auto mt-3 rounded-full"></div>
@@ -2134,7 +2162,7 @@ export default function DemoPage() {
       </div>
 
       {/* Scene 4: Brand Finale - BlizzardBerry Style */}
-      <div id="scene4" className="fixed inset-0 opacity-0 flex flex-col items-center justify-center bg-gradient-to-br from-brand/10 to-brand/5" style={{ display: 'none' }}>
+      <div id="scene4" className="fixed inset-0 opacity-0 flex flex-col items-center justify-center bg-gradient-to-br from-background to-muted/30" style={{ display: 'none' }}>
         {/* Brand decorative elements */}
         <div className="absolute">
           <div className="w-96 h-96 border border-brand/20 rounded-full animate-ping opacity-30"></div>
