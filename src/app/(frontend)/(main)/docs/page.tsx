@@ -135,13 +135,13 @@ export default function Layout({ children }) {
           {\`
             window.agentActions = {
               // Example: Submit a contact form
-              submitContactForm: async (agentUserConfig, name, email, message) => {
+              submitContactForm: async (agentUserConfig, params) => {
                 // Your custom action logic here
                 return { status: 'success', message: 'Form submitted' };
               },
               
               // Example: Search products
-              searchProducts: async (agentUserConfig, query) => {
+              searchProducts: async (agentUserConfig, params) => {
                 // Your custom action logic here
                 return { status: 'success', results: [] };
               }
