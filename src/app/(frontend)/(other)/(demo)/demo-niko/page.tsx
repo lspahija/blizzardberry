@@ -914,7 +914,7 @@ export default function DemoPage() {
       
       // Update status instantly to avoid any layout shifts
       status.textContent = completionText;
-      status.className = 'step-status text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-lg min-w-[80px] text-center';
+      status.className = 'step-status text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-lg w-[80px] text-center';
       
       // No background animation to avoid any layout shifts
     }
@@ -2120,7 +2120,7 @@ export default function DemoPage() {
                 <div className="space-y-3">
                   
                   {/* Step 1: Data Fetching */}
-                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-cyan-50 border border-cyan-200/50 transition-all duration-300" id="step1">
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-cyan-50 border border-cyan-200/50" id="step1">
                     <div className="flex items-center space-x-3">
                       <div className="w-6 h-6 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg flex items-center justify-center step-icon shadow-md">
                         <div className="w-2 h-2 bg-white rounded-full animate-pulse step-loader"></div>
@@ -2130,11 +2130,11 @@ export default function DemoPage() {
                         <div className="text-xs text-gray-600">North America revenue streams</div>
                       </div>
                     </div>
-                    <div className="step-status text-xs font-medium text-cyan-600 bg-cyan-100 px-2 py-1 rounded-lg min-w-[80px] text-center">Processing...</div>
+                    <div className="step-status text-xs font-medium text-cyan-600 bg-cyan-100 px-2 py-1 rounded-lg w-[80px] text-center">Processing...</div>
                   </div>
                   
                   {/* Step 2: AI Analysis */}
-                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-teal-50 border border-teal-200/50 opacity-50 transition-all duration-300" id="step2">
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-teal-50 border border-teal-200/50 opacity-50" id="step2">
                     <div className="flex items-center space-x-3">
                       <div className="w-6 h-6 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center step-icon shadow-md">
                         <div className="w-2 h-2 bg-white rounded-full step-loader"></div>
@@ -2144,11 +2144,11 @@ export default function DemoPage() {
                         <div className="text-xs text-gray-600">Pattern recognition & insights</div>
                       </div>
                     </div>
-                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg min-w-[80px] text-center">Waiting...</div>
+                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[80px] text-center">Waiting...</div>
                   </div>
                   
                   {/* Step 3: Dashboard */}
-                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-indigo-50 border border-indigo-200/50 opacity-50 transition-all duration-300" id="step3">
+                  <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-indigo-50 border border-indigo-200/50 opacity-50" id="step3">
                     <div className="flex items-center space-x-3">
                       <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center step-icon shadow-md">
                         <div className="w-2 h-2 bg-white rounded-full step-loader"></div>
@@ -2158,7 +2158,7 @@ export default function DemoPage() {
                         <div className="text-xs text-gray-600">Interactive visualizations</div>
                       </div>
                     </div>
-                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg min-w-[80px] text-center">Waiting...</div>
+                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[80px] text-center">Waiting...</div>
                   </div>
                   
                 </div>
