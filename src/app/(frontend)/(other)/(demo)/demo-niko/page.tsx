@@ -927,13 +927,13 @@ export default function DemoPage() {
         }
       });
       
-      // Update status with success
+      // Update status with success - maintain original sizing
       gsap.to(status, {
         opacity: 0,
         duration: 0.2,
         onComplete: () => {
           status.textContent = completionText;
-          status.className = 'step-status text-xs text-emerald-600 font-medium';
+          status.className = 'step-status text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-lg min-w-[80px] text-center';
           gsap.to(status, {
             opacity: 1,
             duration: 0.3
@@ -2162,7 +2162,7 @@ export default function DemoPage() {
                         <div className="text-xs text-gray-600">North America revenue streams</div>
                       </div>
                     </div>
-                    <div className="step-status text-xs font-medium text-cyan-600 bg-cyan-100 px-2 py-1 rounded-lg">Processing...</div>
+                    <div className="step-status text-xs font-medium text-cyan-600 bg-cyan-100 px-2 py-1 rounded-lg min-w-[80px] text-center">Processing...</div>
                   </div>
                   
                   {/* Step 2: AI Analysis */}
@@ -2176,7 +2176,7 @@ export default function DemoPage() {
                         <div className="text-xs text-gray-600">Pattern recognition & insights</div>
                       </div>
                     </div>
-                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">Waiting...</div>
+                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg min-w-[80px] text-center">Waiting...</div>
                   </div>
                   
                   {/* Step 3: Dashboard */}
@@ -2190,7 +2190,7 @@ export default function DemoPage() {
                         <div className="text-xs text-gray-600">Interactive visualizations</div>
                       </div>
                     </div>
-                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">Waiting...</div>
+                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg min-w-[80px] text-center">Waiting...</div>
                   </div>
                   
                 </div>
