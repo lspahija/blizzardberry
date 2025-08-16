@@ -87,6 +87,7 @@ export function LandingNavbar() {
               className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium px-6 h-10"
               asChild
               shadowColor="foreground"
+              id="try-for-free-btn"
             >
               <Link href="/login">Try For Free</Link>
             </RetroButton>
@@ -106,6 +107,41 @@ export function LandingNavbar() {
           </div>
         </div>
       </nav>
+
+      {/* Quirky yellow line pointing to Try For Free button */}
+      <div className="hidden lg:block fixed top-28 right-16 z-[60] pointer-events-none">
+        <div className="relative">
+          {/* Message bubble positioned down and right of button */}
+          <div
+            className="text-yellow-400 px-3 py-2 text-lg font-bold transform -rotate-12 whitespace-nowrap"
+            style={{ fontFamily: 'Comic Sans MS, cursive, sans-serif' }}
+          >
+            No credit card required!
+          </div>
+          {/* Curved yellow line pointing up and left to the Try For Free button */}
+          <svg
+            width="120"
+            height="80"
+            className="absolute -top-12 -left-8"
+            viewBox="0 0 120 80"
+          >
+            <path
+              d="M80 60 Q60 35 40 20"
+              stroke="#fbbf24"
+              strokeWidth="3"
+              fill="none"
+              strokeLinecap="round"
+              strokeDasharray="6,4"
+              className="animate-pulse"
+            />
+            <polygon
+              points="45,17 35,20 45,23"
+              fill="#fbbf24"
+              className="animate-pulse"
+            />
+          </svg>
+        </div>
+      </div>
 
       {/* Mobile menu overlay with smooth transitions */}
       <div
