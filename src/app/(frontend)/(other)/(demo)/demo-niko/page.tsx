@@ -873,12 +873,8 @@ export default function DemoPage() {
     const step = document.getElementById(stepId);
     if (!step) return;
     
-    // Activate step - remove opacity and start animation
-    gsap.to(step, {
-      opacity: 1,
-      duration: 0.4,
-      ease: "power2.out"
-    });
+    // Activate step - instantly set opacity to avoid layout shift
+    step.style.opacity = '1';
     
     // Start loader animation
     const loader = step.querySelector('.step-loader');
@@ -911,44 +907,16 @@ export default function DemoPage() {
       // Stop loader animation
       gsap.killTweensOf(loader);
       
-      // Transform to complete indicator
-      gsap.to(loader, {
-        scale: 0,
-        duration: 0.2,
-        onComplete: () => {
-          loader.classList.remove('animate-pulse');
-          loader.innerHTML = '•';  // Simple dot instead of checkmark
-          loader.className = 'text-green-500 text-lg font-bold';
-          gsap.to(loader, {
-            scale: 1,
-            duration: 0.3,
-            ease: "back.out(1.7)"
-          });
-        }
-      });
+      // Transform to complete indicator - maintain exact size
+      loader.classList.remove('animate-pulse');
+      loader.className = 'w-2 h-2 bg-green-500 rounded-full flex items-center justify-center';
+      loader.innerHTML = '';  // Remove content to maintain circle shape
       
-      // Update status with success - maintain original sizing
-      gsap.to(status, {
-        opacity: 0,
-        duration: 0.2,
-        onComplete: () => {
-          status.textContent = completionText;
-          status.className = 'step-status text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-lg min-w-[80px] text-center';
-          gsap.to(status, {
-            opacity: 1,
-            duration: 0.3
-          });
-        }
-      });
+      // Update status instantly to avoid any layout shifts
+      status.textContent = completionText;
+      status.className = 'step-status text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-lg min-w-[80px] text-center';
       
-      // Success pulse effect
-      gsap.to(step, {
-        scale: 1.02,
-        duration: 0.2,
-        yoyo: true,
-        repeat: 1,
-        ease: "power2.out"
-      });
+      // No background animation to avoid any layout shifts
     }
   };
 
