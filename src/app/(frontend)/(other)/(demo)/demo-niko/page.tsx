@@ -164,9 +164,9 @@ export default function DemoPage() {
         labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
         datasets: [{
           label: 'Monthly Revenue ($K)',
-          data: [120, 135, 142, 156, 148, 147], // Show full data immediately - in hundreds (multiply by ~5.7 to get 847K)
-          backgroundColor: '#F43F5E',
-          borderColor: '#E11D48',
+          data: [150, 200, 180, 250, 220, 240], // Round numbers that show as 150K, 200K, 180K, 250K, 220K, 240K
+          backgroundColor: '#3B82F6',  // Blue-500 like landing page
+          borderColor: '#2563EB',      // Blue-600 for border
           borderWidth: 2,
           borderRadius: 8,
           borderSkipped: false,
@@ -181,20 +181,22 @@ export default function DemoPage() {
         scales: {
           y: {
             beginAtZero: true,
-            max: 180,
-            grid: { color: 'rgba(244, 63, 94, 0.1)' },
+            max: 300,  // Increased to show nice round numbers
+            grid: { color: 'rgba(59, 130, 246, 0.1)' },  // Blue grid color
             ticks: {
               color: '#64748b',
               font: { family: 'Inter', size: 12 },
+              stepSize: 50,  // Steps of 50 for round numbers
               callback: function(value) {
-                // Convert chart values to actual K values (multiply by ~5.7)
-                const realValue = Math.round(value * 5.7);
-                return realValue + 'K';
+                // Show round numbers: 100K, 200K, 300K, etc.
+                if (value === 0) return '0';
+                if (value % 100 === 0) return value + 'K';
+                return '';  // Hide non-round numbers
               }
             }
           },
           x: {
-            grid: { color: 'rgba(244, 63, 94, 0.1)' },
+            grid: { color: 'rgba(59, 130, 246, 0.1)' },  // Blue grid color
             ticks: {
               color: '#64748b',
               font: { family: 'Inter', size: 12 }
@@ -227,28 +229,19 @@ export default function DemoPage() {
       }
     });
 
-    // Start directly with Scene 1 - Create Action (8 seconds)
-    tl.addLabel("scene1Start", 0.5)
+    // Start directly with Scene 2 - Chat (reduced initial delay)
+    tl.addLabel("scene2Start", 0.2)
       .call(() => {
         setControlsVisible(true);
       }, undefined, 0)
-      .call(() => showScene('scene1'), undefined, "scene1Start")
-      .call(() => {
-        // Start Scene 1 animations
-        scene1Sequence();
-      }, undefined, "scene1Start+=0.5")
-      .call(() => hideScene('scene1'), undefined, "scene1Start+=7.5");
-
-    // Scene 2 is now triggered directly from Scene 1 button click
-    // Keeping timeline structure for scene management
-    tl.addLabel("scene2Start", "scene1Start+=8")
       .call(() => showScene('scene2'), undefined, "scene2Start")
       .call(() => {
-        // Scene2Sequence is now called directly from Scene1 - no duplicate call needed
-      }, undefined, "scene2Start+=0.5")
+        // Start Scene 2 animations - direct chat conversation
+        scene2Sequence();
+      }, undefined, "scene2Start+=0.3")
       .call(() => {
         hideScene('scene2');
-      }, undefined, "scene2Start+=44");
+      }, undefined, "scene2Start+=45");  // Extended to cover full flow including tickets
 
     // Scene 4 is now triggered directly from hideTicketsDashboard()
 
@@ -256,191 +249,19 @@ export default function DemoPage() {
     return tl;
   };
 
-  // Scene 1: Create Action - exact recreation of original
-  const scene1Sequence = () => {
-    const cursor = document.getElementById('mouseCursor');
-    const actionInput = document.getElementById('actionInput') as HTMLInputElement;
-    const createBtn = document.getElementById('createBtn');
-    
-    if (!cursor || !actionInput || !createBtn) return;
-
-    setDemoState(prev => ({ ...prev, currentScene: 1 }));
-
-    // Show cursor and move to input (centered on input field)
-    addTimeout(() => {
-      cursor.style.opacity = '1';
-      gsap.to(cursor, {
-        left: '50%',
-        top: '53%', // Input is below center due to logo and title
-        duration: 0.8,
-        ease: "power2.inOut"
-      });
-    }, 500);
-
-    // Click on input and start typing
-    addTimeout(() => {
-      showClickEffect();
-      actionInput.classList.add('focused');
-      
-      addTimeout(() => {
-        typeText(actionInput, "Show Revenue Numbers", 80);
-      }, 800);
-    }, 1300);
-
-    // Move cursor to button (centered on button) 
-    addTimeout(() => {
-      gsap.to(cursor, {
-        left: '50%',
-        top: '66%', // Button is further down due to spacing
-        duration: 1,
-        ease: "power2.inOut"
-      });
-    }, 4000);
-
-    // Hover effect on button
-    addTimeout(() => {
-      createBtn.classList.add('hover');
-    }, 5000);
-
-    // Click button and animate out elements
-    addTimeout(() => {
-      showClickEffect();
-      createBtn.classList.add('clicked');
-      
-      // Hide cursor immediately
-      const cursor = document.getElementById('mouseCursor');
-      if (cursor) {
-        gsap.to(cursor, {
-          opacity: 0,
-          scale: 0.8,
-          duration: 0.3,
-          ease: "power2.inOut"
-        });
-      }
-      
-      // Animate out create action elements first
-      addTimeout(() => {
-        const createActionSection = document.querySelector('#scene1 .relative.text-center');
-        if (createActionSection) {
-          gsap.to(createActionSection, {
-            opacity: 0,
-            scale: 0.9,
-            y: -30,
-            duration: 0.6,
-            ease: "power2.inOut"
-          });
-        }
-        
-        // Then hide entire scene 1 second later
-        addTimeout(() => {
-          const scene1 = document.getElementById('scene1');
-          if (scene1) {
-            gsap.to(scene1, {
-              opacity: 0,
-              duration: 0.5,
-              ease: "power2.inOut",
-              onComplete: () => {
-                scene1.style.display = 'none';
-                // Start scene 2
-                scene2Sequence();
-              }
-            });
-          }
-        }, 1000);
-      }, 200);
-    }, 5300);
-  };
 
   // Scene 2: AI Processing & Dashboard - exact recreation
   const scene2Sequence = () => {
     setDemoState(prev => ({ ...prev, currentScene: 2 }));
 
-    // Start chat conversation
-    addTimeout(() => {
-      startChatConversation();
-    }, 500);
+    // Start chat conversation immediately - no delay
+    startChatConversation();
 
     // AI architecture is now triggered directly from analyzing bubble's onComplete callback
 
     // Dashboard is now triggered directly from AI analysis completion
 
-    // Hide dashboard and return to chat (2 seconds longer timing)
-    addTimeout(() => {
-      console.log('=== HIDING DASHBOARD, RETURNING TO CHAT ===');
-      const dashboardScene = document.getElementById('dashboardScene');
-      const chatWindow = document.getElementById('chatWindow');
-      
-      if (dashboardScene) {
-        // Slide Away Effect - kartica klizi lijevo i nestaje
-        gsap.to(dashboardScene, {
-          x: '-100vw',  // Klizi lijevo van ekrana
-          opacity: 0.3,  // Blago fade tijekom klizanja
-          duration: 0.8,
-          ease: "power2.inOut",
-          onComplete: () => {
-            dashboardScene.style.display = 'none';
-            // Reset position za sljedeći put
-            gsap.set(dashboardScene, { x: 0, opacity: 1 });
-          }
-        });
-      }
-      
-      // Slide In Effect - nova kartica klizi s desne strane
-      if (chatWindow) {
-        // Reset chat window to original dimensions and styles
-        chatWindow.className = "w-[600px] h-[680px] bg-card border-[3px] border-border rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden";
-        chatWindow.style.display = 'flex';
-        // Ensure proper positioning - clear any transforms that might interfere
-        chatWindow.style.transform = '';
-        chatWindow.style.left = '';
-        chatWindow.style.top = '';
-        chatWindow.style.position = 'static';
-        
-        // Reset content to original chat layout (complete structure)
-        chatWindow.innerHTML = `
-          <div id="chatInitialState" class="flex-1 flex items-center justify-center px-6" style="display: none;">
-            <div class="w-full max-w-md">
-              <div class="flex gap-3 items-center">
-                <div class="flex-1 relative">
-                  <input
-                    id="chatInitialInput"
-                    type="text"
-                    placeholder="Ask a question..."
-                    class="w-full px-6 py-4 text-base bg-muted border-[2px] border-border rounded-full focus:outline-none focus:border-brand transition-all duration-300"
-                    disabled
-                  />
-                </div>
-                <div class="relative group">
-                  <div class="absolute inset-0 rounded-full bg-black/80 translate-x-1 translate-y-1 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-                  <button class="relative w-12 h-12 bg-brand border-[2px] border-border rounded-full flex items-center justify-center hover:bg-brand/90 transition-all duration-300 shadow-lg">
-                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
-                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div id="chatConversationState" class="flex-1 flex items-center justify-center">
-            <div id="chatMessages" class="w-full max-w-2xl px-6 flex flex-col gap-4"></div>
-          </div>
-        `;
-        
-        gsap.fromTo(chatWindow,
-          { opacity: 0 },  // Start invisible but in correct position
-          { 
-            opacity: 1, 
-            duration: 0.6, 
-            delay: 0.3,  // Kratka pauza nakon što prethodna kartica izađe
-            ease: "power2.out"  // Smooth deceleration
-          }
-        );
-      }
-      
-      showScene('scene2');
-      continueConversationAfterDashboard();
-    }, 17500);  // Extended - dashboard shows for ~11.5 seconds total (1s longer)
+    // Dashboard hiding is now handled directly in showDashboard() function
   };
 
   const startChatConversation = () => {
@@ -458,17 +279,10 @@ export default function DemoPage() {
       { type: 'sent', text: 'Show me revenue numbers for North America.' }
     ];
 
-    // Add the first message with immediate fade-in
+    // Start typing simulation after chat window appears
     addTimeout(() => {
-      const chatMessages = document.getElementById('chatMessages');
-      if (!chatMessages) return;
-
-      messages.forEach((message, index) => {
-        addTimeout(() => {
-          addMessage(message, index);
-        }, index * 200); // Faster message appearance
-      });
-    }, 200); // Much faster start
+      simulateTypingAndSend();
+    }, 800);
 
     const addMessage = (message: { type: string; text: string }, messageIndex: number) => {
       const chatMessages = document.getElementById('chatMessages');
@@ -489,10 +303,10 @@ export default function DemoPage() {
       }
       
       messageDiv.innerHTML = `
-        <div class="max-w-md px-5 py-3 rounded-2xl border-[2px] transition-all duration-300 ${
+        <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
           message.type === 'sent' 
-            ? 'bg-brand text-primary-foreground border-border shadow-lg hover:shadow-2xl hover:scale-105' 
-            : 'bg-card text-foreground border-border shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300'
+            ? 'bg-brand text-primary-foreground shadow-lg hover:shadow-2xl hover:scale-105' 
+            : 'bg-white text-foreground shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300'
         }">
           <div class="text-base leading-relaxed" id="messageText-${messageIndex}">${messageText}</div>
         </div>
@@ -514,6 +328,143 @@ export default function DemoPage() {
         }
       }, 300); // After animation completes
     };
+
+    const simulateTypingAndSend = () => {
+      const chatInitialInput = document.getElementById('chatInitialInput') as HTMLInputElement;
+      const cursor = document.getElementById('mouseCursor');
+      
+      if (!chatInitialInput || !cursor) return;
+
+      // Show the initial state for typing
+      const initialState = document.getElementById('chatInitialState');
+      const conversationState = document.getElementById('chatConversationState');
+      
+      if (initialState && conversationState) {
+        initialState.style.display = 'flex';
+        conversationState.style.display = 'none';
+      }
+
+      // Enable input
+      chatInitialInput.disabled = false;
+      
+      // Show cursor and move to input (faster)
+      addTimeout(() => {
+        cursor.style.opacity = '1';
+        gsap.to(cursor, {
+          left: '50%',
+          top: '52%',
+          duration: 0.6,
+          ease: "power2.inOut"
+        });
+      }, 100);
+
+      // Click on input and start typing (faster)
+      addTimeout(() => {
+        showClickEffect();
+        chatInitialInput.focus();
+        
+        addTimeout(() => {
+          typeText(chatInitialInput, "Show me revenue numbers for North America.", 80); // Normal typing speed
+        }, 300);
+      }, 1000);
+
+      // Move cursor to send button inside input field (precisely measured)
+      addTimeout(() => {
+        // Get precise send button position dynamically (now inside input field)
+        const sendButton = document.getElementById('sendButton');
+        if (sendButton) {
+          const rect = sendButton.getBoundingClientRect();
+          const buttonCenterX = rect.left + rect.width / 2;
+          const buttonCenterY = rect.top + rect.height / 2;
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          
+          gsap.to(cursor, {
+            left: `${(buttonCenterX / viewportWidth) * 100}%`,
+            top: `${(buttonCenterY / viewportHeight) * 100}%`,
+            duration: 0.8,
+            ease: "power2.inOut"
+          });
+          
+          console.log(`Send button (inside input) positioned at: ${(buttonCenterX / viewportWidth) * 100}% x ${(buttonCenterY / viewportHeight) * 100}%`);
+        } else {
+          // Fallback positioning for button inside input
+          gsap.to(cursor, {
+            left: '68%',  // Adjusted for button inside input field
+            top: '50%',
+            duration: 0.8,
+            ease: "power2.inOut"
+          });
+        }
+      }, 5500);
+
+      // Click send and switch to conversation view
+      addTimeout(() => {
+        showClickEffect();
+        
+        // Animate send button flying out of input field with fast airplane trajectory
+        const sendButton = document.getElementById('sendButton');
+        if (sendButton) {
+          // Set higher z-index so airplane flies over everything
+          sendButton.style.zIndex = '1000';
+          
+          gsap.to(sendButton, {
+            x: 400,           // Much further distance to exit screen
+            y: -30,           // Slight upward trajectory
+            rotation: -6,     // Rotate to match flight direction
+            scale: 1.1,       // Slight grow
+            duration: 0.4,    // Much faster - 400ms
+            ease: "power1.out", // Fast exit curve
+            onUpdate: function() {
+              // Check if airplane has exited the input field bounds
+              const inputField = document.getElementById('chatInitialInput');
+              if (inputField && sendButton) {
+                const inputRect = inputField.getBoundingClientRect();
+                const buttonRect = sendButton.getBoundingClientRect();
+                
+                // If button has moved past the right edge of input field
+                if (buttonRect.left > inputRect.right) {
+                  console.log('Airplane has exited input field - triggering page transition');
+                  // Trigger immediate transition to chat
+                  this.kill(); // Stop the animation
+                  triggerChatTransition();
+                }
+              }
+            },
+            onComplete: () => {
+              console.log('Send button animation complete');
+              triggerChatTransition();
+            }
+          });
+        } else {
+          // Fallback if button not found
+          triggerChatTransition();
+        }
+        
+        // Function to handle immediate chat transition when airplane exits
+        function triggerChatTransition() {
+          console.log('=== TRIGGERING IMMEDIATE CHAT TRANSITION ===');
+          
+          if (initialState && conversationState) {
+            initialState.style.display = 'none';
+            conversationState.style.display = 'flex';
+          }
+          
+          // Hide cursor immediately
+          cursor.style.opacity = '0';
+          
+          // Add the message immediately
+          const message = { type: 'sent', text: 'Show me revenue numbers for North America.' };
+          addChatMessage(message);
+          
+          // Show analyzing bubble quickly after message appears
+          addTimeout(() => {
+            showInitialAnalyzingBubble();
+          }, 300);
+        }
+        
+      }, 6500);
+    };
   };
 
   let initialAnalyzingBubbleDiv: HTMLElement | null = null;
@@ -531,7 +482,7 @@ export default function DemoPage() {
       initialAnalyzingBubbleDiv.className = 'flex justify-start chat-message';
       
       initialAnalyzingBubbleDiv.innerHTML = `
-        <div class="bg-muted px-5 py-3 rounded-3xl max-w-md border-[2px] border-border shadow-md hover:shadow-lg transition-all duration-300">
+        <div class="bg-white px-5 py-3 rounded-3xl max-w-md shadow-md hover:shadow-lg transition-all duration-300">
           <div class="flex items-center space-x-3">
             <div class="flex space-x-1">
               <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce"></div>
@@ -909,15 +860,15 @@ export default function DemoPage() {
       initialState.style.opacity = '1';
     }
 
-    // Start typing animation in the centered input (wait for slide-out animation)
+    // Start typing animation in the centered input (wait for dashboard to fully clear)
     addTimeout(() => {
       showUserTypingAnimation('Show me today\'s support tickets');
-    }, slideOutDelay + 500); // 650ms for slide-out + 500ms original delay
+    }, slideOutDelay + 1500); // Longer delay to ensure dashboard is completely hidden
 
-    // Transition to conversation mode after typing (wait 1 second longer)
+    // Transition to conversation mode after typing
     addTimeout(() => {
       transitionToChatConversation();
-    }, slideOutDelay + 3200); // Extended delay after typing completes + slide-out time
+    }, slideOutDelay + 3600); // Adjusted timing
 
     // User message appears in chat after transition
     addTimeout(() => {
@@ -925,15 +876,15 @@ export default function DemoPage() {
         type: 'sent',
         text: 'Show me today\'s support tickets'
       }, false);
-    }, slideOutDelay + 3700); // After transition completes + slide-out time
+    }, slideOutDelay + 4000); // Adjusted timing
 
-    // Agent responds directly and smoothly (no analyzing bubble)
+    // Agent responds directly and smoothly
     addTimeout(() => {
       addChatMessage({
         type: 'received',
         text: 'We have 3 tickets today:\n\n• 2 Resolved (billing & features)\n• 1 Open (high-priority bug)\n\nWant to see the full details?'
       }, true);
-    }, 4500); // Direct smooth response
+    }, slideOutDelay + 5500); // Adjusted to slideOutDelay + timing
 
     // User responds YES (key moment - make it prominent)
     addTimeout(() => {
@@ -943,11 +894,11 @@ export default function DemoPage() {
         text: 'Yes'
       }, false);
       
-      // Show tickets dashboard after YES (with time to see clear chat animation)
+      // Show tickets dashboard after YES
       addTimeout(() => {
         showTicketsDashboard();
-      }, 1800); // Time to see YES message + clear chat animation
-    }, 7000);  // Adjusted to match new AI response timing
+      }, 1800); // Normal timing
+    }, slideOutDelay + 8500);  // Adjusted to slideOutDelay + timing
   };
 
   // New streamlined tickets dashboard
@@ -1002,7 +953,7 @@ export default function DemoPage() {
     
     // Replace chat window content with tickets dashboard  
     // Keep exact same styling as first chat window
-    chatWindow.className = "w-[600px] h-[680px] bg-card border-[3px] border-border rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden";
+    chatWindow.className = "w-[600px] h-[680px] bg-white rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden";
     chatWindow.innerHTML = `
       <div class="w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-6">
         <!-- Header - All elements initially hidden -->
@@ -1013,25 +964,25 @@ export default function DemoPage() {
 
         <!-- Quick Stats - All elements initially hidden -->
         <div class="grid grid-cols-3 gap-2 mb-4" id="stats-grid">
-          <div class="bg-card border-[2px] border-border rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+          <div class="bg-white rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
             <div class="text-2xl font-bold mb-1 ticket-stat text-secondary" data-target="3" style="opacity: 0;">0</div>
             <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Total</div>
           </div>
-          <div class="bg-card border-[2px] border-border rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+          <div class="bg-white rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
             <div class="text-2xl font-bold mb-1 ticket-stat text-emerald-600" data-target="2" style="opacity: 0;">0</div>
             <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Resolved</div>
           </div>
-          <div class="bg-card border-[2px] border-border rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+          <div class="bg-white rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
             <div class="text-2xl font-bold mb-1 ticket-stat text-brand" data-target="1" style="opacity: 0;">0</div>
             <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Open</div>
           </div>
         </div>
 
         <!-- Tickets List - All elements initially hidden -->
-        <div class="bg-card border-[2px] border-border rounded-lg p-3 shadow-lg hover:shadow-2xl transition-all duration-300" id="tickets-section" style="opacity: 0; transform: translateY(20px);">
+        <div class="bg-white rounded-lg p-3 shadow-lg hover:shadow-2xl transition-all duration-300" id="tickets-section" style="opacity: 0; transform: translateY(20px);">
           <h3 class="text-lg font-bold text-foreground mb-3 tracking-tight" style="opacity: 0;">Recent Tickets</h3>
           <div class="space-y-2">
-            <div class="ticket-row bg-background border-[2px] border-border rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
+            <div class="ticket-row bg-white rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-brand rounded-full"></div>
@@ -1043,7 +994,7 @@ export default function DemoPage() {
               <div class="text-xs text-muted-foreground">High Priority</div>
             </div>
             
-            <div class="ticket-row bg-background border-[2px] border-border rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
+            <div class="ticket-row bg-white rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
@@ -1055,7 +1006,7 @@ export default function DemoPage() {
               <div class="text-xs text-muted-foreground">Low Priority</div>
             </div>
             
-            <div class="ticket-row bg-background border-[2px] border-border rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
+            <div class="ticket-row bg-white rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-secondary rounded-full"></div>
@@ -1174,7 +1125,7 @@ export default function DemoPage() {
     // Hide dashboard after 5 seconds (2 seconds longer for viewing)
     addTimeout(() => {
       hideTicketsDashboard();
-    }, 5000);
+    }, 5000); // Tickets dashboard shows for 5 seconds
   };
 
   const hideTicketsDashboard = () => {
@@ -1232,10 +1183,10 @@ export default function DemoPage() {
     const messageDiv = document.createElement('div');
     messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
     messageDiv.innerHTML = `
-      <div class="max-w-md px-5 py-3 rounded-2xl border-[2px] ${
+      <div class="max-w-md px-5 py-3 rounded-2xl ${
         message.type === 'sent' 
-          ? 'bg-brand text-primary-foreground border-border shadow-lg' 
-          : 'bg-card text-foreground border-border shadow-md hover:shadow-lg transition-shadow duration-200'
+          ? 'bg-brand text-primary-foreground shadow-lg' 
+          : 'bg-white text-foreground shadow-md hover:shadow-lg transition-shadow duration-200'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
       </div>
@@ -1417,6 +1368,91 @@ export default function DemoPage() {
     console.log('Starting counter animation and chart immediately');
     animateCounters();
     createChart();
+    
+    // Hide dashboard after it has been displayed for 8 seconds
+    addTimeout(() => {
+      console.log('=== HIDING DASHBOARD, RETURNING TO CHAT ===');
+      const dashboardScene = document.getElementById('dashboardScene');
+      const chatWindow = document.getElementById('chatWindow');
+      
+      if (dashboardScene) {
+        // Slide Away Effect - kartica klizi lijevo i nestaje
+        gsap.to(dashboardScene, {
+          x: '-100vw',  // Klizi lijevo van ekrana
+          opacity: 0.3,  // Blago fade tijekom klizanja
+          duration: 0.8,
+          ease: "power2.inOut",
+          onComplete: () => {
+            dashboardScene.style.display = 'none';
+            dashboardScene.style.visibility = 'hidden';
+            // Reset position za sljedeći put
+            gsap.set(dashboardScene, { x: 0, opacity: 1 });
+            console.log('Revenue dashboard completely hidden');
+          }
+        });
+      }
+      
+      // Slide In Effect - nova kartica klizi s desne strane
+      if (chatWindow) {
+        // Reset chat window to original dimensions and styles
+        chatWindow.className = "w-[600px] h-[680px] bg-white rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden";
+        chatWindow.style.display = 'flex';
+        // Ensure proper positioning - clear any transforms that might interfere
+        chatWindow.style.transform = '';
+        chatWindow.style.left = '';
+        chatWindow.style.top = '';
+        chatWindow.style.position = 'static';
+        
+        // Reset content to original chat layout (complete structure)
+        chatWindow.innerHTML = `
+          <div id="chatInitialState" class="flex-1 flex items-center justify-center px-6" style="display: none;">
+            <div class="w-full max-w-md">
+              <div class="flex gap-3 items-center">
+                <div class="flex-1 relative overflow-visible">
+                  <input
+                    id="chatInitialInput"
+                    type="text"
+                    placeholder="Ask a question..."
+                    class="w-full px-6 py-4 pr-16 text-base bg-muted rounded-full focus:outline-none transition-all duration-300"
+                    disabled
+                  />
+                  <!-- Send button inside input field -->
+                  <button id="sendButton" class="group absolute right-3 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
+                    <!-- Airplane icon - pointing upward and to the right -->
+                    <div class="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
+                      <svg width="20" height="20" fill="#ef4444" viewBox="0 0 24 24" class="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                      </svg>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="chatConversationState" class="flex-1 flex items-center justify-center">
+            <div id="chatMessages" class="w-full max-w-2xl px-6 flex flex-col gap-4"></div>
+          </div>
+        `;
+        
+        gsap.fromTo(chatWindow,
+          { opacity: 0 },  // Start invisible but in correct position
+          { 
+            opacity: 1, 
+            duration: 0.6, 
+            delay: 0.3,  // Kratka pauza nakon što prethodna kartica izađe
+            ease: "power2.out"  // Smooth deceleration
+          }
+        );
+      }
+      
+      showScene('scene2');
+      
+      // Wait for dashboard hide animation to complete before starting tickets
+      addTimeout(() => {
+        continueConversationAfterDashboard();
+      }, 1200); // Wait for slide-away animation to complete
+    }, 8000); // Dashboard shows for 8 seconds
   };
 
   const startDashboardTransition = () => {
@@ -1440,6 +1476,8 @@ export default function DemoPage() {
         
         // Step 2: Show dashboard immediately with content
         dashboardScene.style.display = 'block';
+        dashboardScene.style.visibility = 'visible';
+        console.log('Dashboard scene display set to block and visible');
         gsap.fromTo(dashboardScene,
           { opacity: 0, scale: 0.95 },
           { 
@@ -1448,7 +1486,7 @@ export default function DemoPage() {
             duration: 0.6,
             ease: "power2.out",
             onComplete: () => {
-              console.log('Dashboard scene appeared');
+              console.log('Dashboard scene appeared and animation complete');
               // Start animations immediately while dashboard is fully visible
               showDashboard();
             }
@@ -1490,59 +1528,59 @@ export default function DemoPage() {
     if (tagline) gsap.set(tagline, { y: 30, opacity: 0 });
     if (finalMessage) gsap.set(finalMessage, { y: 20, opacity: 0 });
 
-    // 1. Logo appears first (0.5s delay)
+    // 1. Logo appears first (reduced delay)
     addTimeout(() => {
       console.log('=== SCENE 4: Showing logo ===');
       if (logo) {
         gsap.to(logo, {
           scale: 1, 
           opacity: 1, 
-          duration: 1.5, 
+          duration: 1.2, 
           ease: "elastic.out(1, 0.3)"
         });
       }
-    }, 500);
+    }, 300);
 
-    // 2. Brand text appears (2.5s total)
+    // 2. Brand text appears (faster)
     addTimeout(() => {
       console.log('=== SCENE 4: Showing brand text ===');
       if (brand) {
         gsap.to(brand, {
           y: 0, 
           opacity: 1, 
-          duration: 1, 
+          duration: 0.8, 
           ease: "power3.out"
         });
       }
-    }, 2500);
+    }, 1800);
 
-    // 3. Tagline appears (4s total)
+    // 3. Tagline appears (faster)
     addTimeout(() => {
       console.log('=== SCENE 4: Showing tagline ===');
       if (tagline) {
         gsap.to(tagline, {
           y: 0, 
           opacity: 1, 
-          duration: 0.8, 
+          duration: 0.6, 
           ease: "power2.out"
         });
       }
-    }, 4000);
+    }, 2800);
 
-    // 4. Final message appears (5.5s total)
+    // 4. Final message appears (faster)
     addTimeout(() => {
       console.log('=== SCENE 4: Showing final message ===');
       if (finalMessage) {
         gsap.to(finalMessage, {
           y: 0, 
           opacity: 1, 
-          duration: 0.6, 
+          duration: 0.5, 
           ease: "power2.out"
         });
       }
-    }, 5500);
+    }, 3800);
 
-    // 5. Auto-restart after 5 seconds (10.5s total)
+    // 5. Auto-restart after 3 seconds (optimized total timing)
     addTimeout(() => {
       console.log('=== SCENE 4: Auto-restarting demo ===');
       // Reset and restart the demo
@@ -1559,7 +1597,7 @@ export default function DemoPage() {
       setTimeout(() => {
         console.log('Demo automatically restarting...');
       }, 100);
-    }, 10500); // 5.5s + 5s = 10.5s total
+    }, 6800); // Optimized total timing: 3.8s + 3s = 6.8s total
   };
 
 
@@ -1894,82 +1932,34 @@ export default function DemoPage() {
       </div>
 
       {/* Scene 1: Create Action - BlizzardBerry Style */}
-      <div id="scene1" className="fixed inset-0 opacity-0" style={{ display: 'none' }}>
-        <div className="absolute inset-0 bg-gradient-to-br from-brand/10 to-brand/5"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-card border-[3px] border-border rounded-3xl shadow-2xl p-12 w-full max-w-lg overflow-hidden z-10 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-1">
-          {/* Subtle background decoration */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-rose-50 to-blue-50 rounded-full transform translate-x-16 -translate-y-16 opacity-30"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-50 to-rose-50 rounded-full transform -translate-x-12 translate-y-12 opacity-20"></div>
-          
-          <div className="relative text-center">
-            {/* Just Logo in Center */}
-            <div className="flex items-center justify-center mb-8">
-              <div className="relative">
-                {/* Logo with subtle animation rings */}
-                <div className="relative z-10 w-20 h-20 bg-card border-[3px] border-border rounded-2xl flex items-center justify-center shadow-xl">
-                  <Image src="/image/logo.png" alt="BlizzardBerry Logo" width={50} height={50} className="rounded-lg" priority unoptimized />
-                </div>
-                {/* Brand colored animated ring */}
-                <div className="absolute inset-0 w-20 h-20 border-2 border-brand/30 rounded-2xl animate-ping opacity-40"></div>
-              </div>
-            </div>
-            
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-3xl font-bold text-foreground mb-6 tracking-tight">Create New Action</h2>
-                <input
-                  id="actionInput"
-                  type="text"
-                  placeholder="Enter action name..."
-                  className="w-full px-6 py-4 text-lg border-[3px] border-border rounded-xl focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all duration-300 bg-background text-center shadow-sm hover:shadow-md"
-                />
-              </div>
-              
-              <div className="relative group w-full">
-                <div className="absolute inset-0 rounded-xl bg-black/80 translate-x-1 translate-y-1 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-                <button
-                  id="createBtn"
-                  className="relative w-full bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 text-xl font-semibold py-4 rounded-xl transition-all duration-300 shadow-lg"
-                  tabIndex={0}
-                  aria-label="Create new AI action"
-                >
-                  <svg className="inline mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
-                  Create Action
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Scene 2: AI Processing & Dashboard */}
       <div id="scene2" className="fixed inset-0 opacity-0" style={{ display: 'none' }}>
-        <div className="absolute inset-0 bg-gradient-to-br from-brand/10 to-brand/5"></div>
+        <div className="absolute inset-0 bg-white"></div>
         {/* Fixed Size Chat Widget */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div id="chatWindow" className="w-[600px] h-[680px] bg-card border-[3px] border-border rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden">
+          <div id="chatWindow" className="w-[600px] h-[680px] bg-white rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden">
             
             {/* Initial State: Centered Input (hidden for first chat) */}
             <div id="chatInitialState" className="flex-1 flex items-center justify-center px-6" style={{ display: 'none' }}>
               <div className="w-full max-w-md">
                 <div className="flex gap-3 items-center">
-                  <div className="flex-1 relative">
+                  <div className="flex-1 relative overflow-visible">
                     <input
                       id="chatInitialInput"
                       type="text"
                       placeholder="Ask a question..."
-                      className="w-full px-6 py-4 text-base bg-muted border-[2px] border-border rounded-full focus:outline-none focus:border-brand transition-all duration-300"
+                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-full focus:outline-none transition-all duration-300"
                       disabled
                     />
-                  </div>
-                  <div className="relative group">
-                    <div className="absolute inset-0 rounded-full bg-black/80 translate-x-1 translate-y-1 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-                    <button className="relative w-12 h-12 bg-brand border-[2px] border-border rounded-full flex items-center justify-center hover:bg-brand/90 transition-all duration-300 shadow-lg">
-                      <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                      </svg>
+                    {/* Send button inside input field */}
+                    <button id="sendButton" className="group absolute right-3 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
+                      {/* Airplane icon - pointing upward and to the right */}
+                      <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
+                        <svg width="20" height="20" fill="#ef4444" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">
+                          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                      </div>
                     </button>
                   </div>
                 </div>
@@ -1988,10 +1978,10 @@ export default function DemoPage() {
 
         {/* Modern AI Analysis - Single Progressive Screen */}
         <div id="aiArchitecture" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0" style={{ display: 'none' }}>
-          <div className="w-[500px] h-[480px] bg-card border-[3px] border-border flex items-center justify-center relative overflow-hidden rounded-3xl shadow-2xl transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl">
+          <div className="w-[500px] h-[480px] bg-white flex items-center justify-center relative overflow-hidden rounded-3xl shadow-2xl transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl">
             
-            {/* Brand gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-brand/5 via-card to-brand/5"></div>
+            {/* White background */}
+            <div className="absolute inset-0 bg-white"></div>
             
             {/* Single Progressive Analysis View */}
             <div id="analysisStep1" className="relative z-10 text-center px-16 py-16 opacity-0">
@@ -2024,7 +2014,7 @@ export default function DemoPage() {
               </div>
               
               {/* Progress System */}
-              <div className="bg-card/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg border-[2px] border-border">
+              <div className="bg-white rounded-2xl p-4 shadow-lg">
                 <div className="space-y-3">
                   
                   {/* Step 1: Data Fetching */}
@@ -2064,11 +2054,11 @@ export default function DemoPage() {
 
       {/* Modern Revenue Dashboard */}
       <div id="dashboardScene" className="fixed inset-0 z-50 opacity-0" style={{ display: 'none' }}>
-        <div className="absolute inset-0 bg-gradient-to-br from-brand/10 to-brand/5"></div>
+        <div className="absolute inset-0 bg-white"></div>
         
         {/* Fixed Size Dashboard Widget */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden rounded-3xl shadow-2xl border-[3px] border-border transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl flex flex-col relative">
+          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-white overflow-hidden rounded-3xl shadow-2xl transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl flex flex-col relative">
             <div className="p-6">
             
             {/* Minimalist Header */}
@@ -2110,22 +2100,14 @@ export default function DemoPage() {
       </div>
 
       {/* Scene 4: Brand Finale - BlizzardBerry Style */}
-      <div id="scene4" className="fixed inset-0 opacity-0 flex flex-col items-center justify-center bg-gradient-to-br from-background to-muted/30" style={{ display: 'none' }}>
-        {/* Brand decorative elements */}
-        <div className="absolute">
-          <div className="w-96 h-96 border border-brand/20 rounded-full animate-ping opacity-30"></div>
-          <div className="absolute top-8 left-8 w-80 h-80 border border-secondary/20 rounded-full animate-ping opacity-20" style={{ animationDelay: '0.5s' }}></div>
-          <div className="absolute top-16 left-16 w-64 h-64 border border-brand/10 rounded-full animate-ping opacity-15" style={{ animationDelay: '1s' }}></div>
-        </div>
+      <div id="scene4" className="fixed inset-0 opacity-0 flex flex-col items-center justify-center bg-white" style={{ display: 'none' }}>
         
         {/* Logo with modern styling */}
         <div id="finalLogo" className="relative z-10 mb-12 opacity-0">
           <div className="relative">
-            <div className="w-32 h-32 bg-card border-[3px] border-border rounded-3xl flex items-center justify-center shadow-2xl" style={{ animation: 'logoPulse 3s infinite' }}>
+            <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center shadow-2xl" style={{ animation: 'logoPulse 3s infinite' }}>
               <Image src="/image/logo.png" alt="BlizzardBerry Logo" width={80} height={80} priority unoptimized />
             </div>
-            {/* Brand colored animated ring */}
-            <div className="absolute inset-0 w-32 h-32 border-2 border-brand/30 rounded-3xl animate-ping opacity-40"></div>
           </div>
         </div>
         
