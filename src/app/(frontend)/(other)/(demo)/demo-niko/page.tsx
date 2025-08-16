@@ -546,48 +546,31 @@ export default function DemoPage() {
       // Append to DOM
       chatMessages.appendChild(initialAnalyzingBubbleDiv);
       
-      // Elegant sliding animation matching other messages
+      // Smooth sliding animation matching the updated style
       gsap.context(() => {
-        // Existing messages: elegant slide up with subtle fade
-        existingMessages.forEach((el, i) => {
-          gsap.fromTo(el, 
-            { y: 0, opacity: 1 },
-            {
-              y: -70,  // Smooth upward motion
-              opacity: 0.6,  // Gentle fade to create depth
-              duration: 0.9,
-              ease: "power3.out",
-              delay: i * 0.04,  // Subtle stagger for fluid motion
-            }
-          );
+        // Start initial analyzing bubble below its final position
+        gsap.set(initialAnalyzingBubbleDiv, { 
+          y: 60,  // Start from below its final position
+          opacity: 0
         });
-
-        // Initial analyzing bubble: elegant slide in from bottom
-        gsap.fromTo(initialAnalyzingBubbleDiv, 
-          { 
-            y: 100,  // Start from below viewport
-            opacity: 0,
-            scale: 0.95
-          },
-          {
-            y: 0,    // Slide to final position
-            opacity: 1,
-            scale: 1,
-            duration: 1.1,  // Slightly longer for smoothness
-            delay: 0.15,  // Small delay for existing messages to begin moving
-            ease: "power3.out",  // Smooth, elegant curve
-            clearProps: "all"
-          }
-        );
         
-        // Reset existing messages to their natural positions after bubble settles
-        existingMessages.forEach((el, i) => {
+        // Calculate how much everything needs to move up
+        const bubbleHeight = initialAnalyzingBubbleDiv.offsetHeight;
+        const gap = 16; // gap-4 = 1rem = 16px
+        const totalMove = bubbleHeight + gap;
+        
+        // Animate everything up together smoothly
+        const allElements = [...existingMessages, initialAnalyzingBubbleDiv];
+        
+        allElements.forEach((el, i) => {
+          const isNewBubble = el === initialAnalyzingBubbleDiv;
+          
           gsap.to(el, {
-            y: 0,
+            y: isNewBubble ? 0 : -totalMove,  // New bubble goes to 0, others move up
             opacity: 1,
-            duration: 0.7,
-            delay: 0.8 + (i * 0.02),  // After bubble animation starts
-            ease: "power3.out",
+            duration: 0.8,
+            delay: i * 0.02,  // Very subtle stagger for smooth wave effect
+            ease: "power2.out",
             clearProps: "all"
           });
         });
@@ -876,18 +859,6 @@ export default function DemoPage() {
     // Activate step - instantly set opacity to avoid layout shift
     step.style.opacity = '1';
     
-    // Start loader animation
-    const loader = step.querySelector('.step-loader');
-    if (loader) {
-      gsap.to(loader, {
-        scale: 1.5,
-        duration: 0.8,
-        ease: "power2.inOut",
-        yoyo: true,
-        repeat: -1
-      });
-    }
-    
     // Update status
     const status = step.querySelector('.step-status');
     if (status) {
@@ -899,24 +870,12 @@ export default function DemoPage() {
     const step = document.getElementById(stepId);
     if (!step) return;
     
-    const icon = step.querySelector('.step-icon');
-    const loader = step.querySelector('.step-loader');
     const status = step.querySelector('.step-status');
     
-    if (icon && loader && status) {
-      // Stop loader animation
-      gsap.killTweensOf(loader);
-      
-      // Transform to complete indicator - maintain exact size
-      loader.classList.remove('animate-pulse');
-      loader.className = 'w-2 h-2 bg-green-500 rounded-full flex items-center justify-center';
-      loader.innerHTML = '';  // Remove content to maintain circle shape
-      
+    if (status) {
       // Update status instantly to avoid any layout shifts
       status.textContent = completionText;
       status.className = 'step-status text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-lg w-[80px] text-center';
-      
-      // No background animation to avoid any layout shifts
     }
   };
 
@@ -1302,48 +1261,31 @@ export default function DemoPage() {
     // Add to DOM - this causes layout shift with gap (not margin)
     chatMessages.appendChild(messageDiv);
 
-    // Elegant sliding animation - old messages slide up gracefully, new message slides in smoothly
+    // Smooth sliding animation - everything slides up naturally
     gsap.context(() => {
-      // Existing messages: elegant slide up with subtle fade
-      existingMessages.forEach((el, i) => {
-        gsap.fromTo(el, 
-          { y: 0, opacity: 1 },
-          {
-            y: -70,  // Smooth upward motion
-            opacity: 0.6,  // Gentle fade to create depth
-            duration: 0.9,
-            ease: "power3.out",  // Smooth, natural deceleration
-            delay: i * 0.04,  // Subtle stagger for fluid motion
-          }
-        );
+      // Start new message below its final position
+      gsap.set(messageDiv, { 
+        y: 60,  // Start from below its final position
+        opacity: 0
       });
-
-      // New message: elegant slide in from bottom with smooth entrance
-      gsap.fromTo(messageDiv, 
-        { 
-          y: 100,  // Start from below viewport
-          opacity: 0,
-          scale: 0.95
-        },
-        {
-          y: 0,    // Slide to final position
-          opacity: 1,
-          scale: 1,
-          duration: 1.1,  // Slightly longer for smoothness
-          delay: 0.15,  // Small delay for existing messages to begin moving
-          ease: "power3.out",  // Smooth, elegant curve
-          clearProps: "all"
-        }
-      );
       
-      // Reset existing messages to their natural positions after new message settles
-      existingMessages.forEach((el, i) => {
+      // Calculate how much everything needs to move up
+      const messageHeight = messageDiv.offsetHeight;
+      const gap = 16; // gap-4 = 1rem = 16px
+      const totalMove = messageHeight + gap;
+      
+      // Animate everything up together smoothly
+      const allElements = [...existingMessages, messageDiv];
+      
+      allElements.forEach((el, i) => {
+        const isNewMessage = el === messageDiv;
+        
         gsap.to(el, {
-          y: 0,
+          y: isNewMessage ? 0 : -totalMove,  // New message goes to 0, others move up by message height + gap
           opacity: 1,
-          duration: 0.7,
-          delay: 0.8 + (i * 0.02),  // After new message animation starts
-          ease: "power3.out",
+          duration: 0.8,
+          delay: i * 0.02,  // Very subtle stagger for smooth wave effect
+          ease: "power2.out",
           clearProps: "all"
         });
       });
@@ -1379,48 +1321,31 @@ export default function DemoPage() {
     // Append to DOM
     chatMessages.appendChild(analyzingBubbleDiv);
     
-    // Elegant sliding animation matching the chat message style
+    // Smooth sliding animation matching the updated chat message style
     gsap.context(() => {
-      // Existing messages: elegant slide up with subtle fade
-      existingMessages.forEach((el, i) => {
-        gsap.fromTo(el, 
-          { y: 0, opacity: 1 },
-          {
-            y: -70,  // Smooth upward motion
-            opacity: 0.6,  // Gentle fade to create depth
-            duration: 0.9,
-            ease: "power3.out",
-            delay: i * 0.04,  // Subtle stagger for fluid motion
-          }
-        );
+      // Start analyzing bubble below its final position
+      gsap.set(analyzingBubbleDiv, { 
+        y: 60,  // Start from below its final position
+        opacity: 0
       });
-
-      // Analyzing bubble: elegant slide in from bottom
-      gsap.fromTo(analyzingBubbleDiv, 
-        { 
-          y: 100,  // Start from below viewport
-          opacity: 0,
-          scale: 0.95
-        },
-        {
-          y: 0,    // Slide to final position
-          opacity: 1,
-          scale: 1,
-          duration: 1.1,  // Slightly longer for smoothness
-          delay: 0.15,  // Small delay for existing messages to begin moving
-          ease: "power3.out",  // Smooth, elegant curve
-          clearProps: "all"
-        }
-      );
       
-      // Reset existing messages to their natural positions after bubble settles
-      existingMessages.forEach((el, i) => {
+      // Calculate how much everything needs to move up
+      const bubbleHeight = analyzingBubbleDiv.offsetHeight;
+      const gap = 16; // gap-4 = 1rem = 16px
+      const totalMove = bubbleHeight + gap;
+      
+      // Animate everything up together smoothly
+      const allElements = [...existingMessages, analyzingBubbleDiv];
+      
+      allElements.forEach((el, i) => {
+        const isNewBubble = el === analyzingBubbleDiv;
+        
         gsap.to(el, {
-          y: 0,
+          y: isNewBubble ? 0 : -totalMove,  // New bubble goes to 0, others move up
           opacity: 1,
-          duration: 0.7,
-          delay: 0.8 + (i * 0.02),  // After bubble animation starts
-          ease: "power3.out",
+          duration: 0.8,
+          delay: i * 0.02,  // Very subtle stagger for smooth wave effect
+          ease: "power2.out",
           clearProps: "all"
         });
       });
@@ -2121,42 +2046,27 @@ export default function DemoPage() {
                   
                   {/* Step 1: Data Fetching */}
                   <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-cyan-50 border border-cyan-200/50" id="step1">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-6 h-6 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg flex items-center justify-center step-icon shadow-md">
-                        <div className="w-2 h-2 bg-white rounded-full animate-pulse step-loader"></div>
-                      </div>
-                      <div>
-                        <span className="text-sm font-medium text-gray-900">Data Collection</span>
-                        <div className="text-xs text-gray-600">North America revenue streams</div>
-                      </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-900">Data Collection</span>
+                      <div className="text-xs text-gray-600">North America revenue streams</div>
                     </div>
                     <div className="step-status text-xs font-medium text-cyan-600 bg-cyan-100 px-2 py-1 rounded-lg w-[80px] text-center">Processing...</div>
                   </div>
                   
                   {/* Step 2: AI Analysis */}
                   <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-teal-50 border border-teal-200/50 opacity-50" id="step2">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-6 h-6 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center step-icon shadow-md">
-                        <div className="w-2 h-2 bg-white rounded-full step-loader"></div>
-                      </div>
-                      <div>
-                        <span className="text-sm font-medium text-gray-900">AI Analytics</span>
-                        <div className="text-xs text-gray-600">Pattern recognition & insights</div>
-                      </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-900">AI Analytics</span>
+                      <div className="text-xs text-gray-600">Pattern recognition & insights</div>
                     </div>
                     <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[80px] text-center">Waiting...</div>
                   </div>
                   
                   {/* Step 3: Dashboard */}
                   <div className="progress-step flex items-center justify-between p-2 rounded-xl bg-indigo-50 border border-indigo-200/50 opacity-50" id="step3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center step-icon shadow-md">
-                        <div className="w-2 h-2 bg-white rounded-full step-loader"></div>
-                      </div>
-                      <div>
-                        <span className="text-sm font-medium text-gray-900">Dashboard</span>
-                        <div className="text-xs text-gray-600">Interactive visualizations</div>
-                      </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-900">Dashboard</span>
+                      <div className="text-xs text-gray-600">Interactive visualizations</div>
                     </div>
                     <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[80px] text-center">Waiting...</div>
                   </div>
