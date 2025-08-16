@@ -133,7 +133,7 @@ export default function DemoPage() {
   };
 
   // Typing animation function
-  const typeText = (element: HTMLInputElement | null, text: string, speed = 80) => {
+  const typeText = (element: HTMLInputElement | null, text: string, speed = 80, callback?: () => void) => {
     if (!element) return;
     element.value = '';
     let i = 0;
@@ -142,6 +142,9 @@ export default function DemoPage() {
         element.value += text.charAt(i);
         i++;
         addTimeout(type, speed);
+      } else if (callback) {
+        // Typing completed, call the callback
+        callback();
       }
     };
     type();
@@ -257,11 +260,50 @@ export default function DemoPage() {
     // Start chat conversation immediately - no delay
     startChatConversation();
 
+    // Wait for airplane animation to complete, then execute transition
+    const waitForAirplaneAndTransition = () => {
+      if (window.firstChatReady) {
+        // Airplane animation is done, execute transition
+        executeFirstChatTransition();
+      } else {
+        // Check again in 100ms
+        addTimeout(waitForAirplaneAndTransition, 100);
+      }
+    };
+    
+    // Start checking after enough time for airplane to completely exit (~8.5 seconds)
+    addTimeout(() => {
+      waitForAirplaneAndTransition();
+    }, 8500);
+
     // AI architecture is now triggered directly from analyzing bubble's onComplete callback
 
     // Dashboard is now triggered directly from AI analysis completion
 
     // Dashboard hiding is now handled directly in showDashboard() function
+  };
+
+  // Function to execute the actual chat transition when ready
+  const executeFirstChatTransition = () => {
+    console.log('=== EXECUTING FIRST CHAT TRANSITION ===');
+    
+    const initialState = document.getElementById('chatInitialState');
+    const conversationState = document.getElementById('chatConversationState');
+    
+    if (initialState && conversationState) {
+      initialState.style.display = 'none';
+      conversationState.style.display = 'flex';
+    }
+    
+    // Add the prepared message
+    if (window.firstChatMessage) {
+      addChatMessage(window.firstChatMessage);
+      
+      // Show analyzing bubble after message appears
+      addTimeout(() => {
+        showInitialAnalyzingBubble();
+      }, 300);
+    }
   };
 
   const startChatConversation = () => {
@@ -364,77 +406,13 @@ export default function DemoPage() {
         chatInitialInput.focus();
         
         addTimeout(() => {
-          typeText(chatInitialInput, "Show me revenue numbers for North America.", 80, () => {
-            // Typing completed callback - trigger airplane animation immediately
-            console.log('First chat typing completed - triggering airplane');
-            
-            // Hide cursor first
-            cursor.style.opacity = '0';
-            
-            // Trigger fast airplane animation like tickets chat
-            const sendButton = document.getElementById('sendButton');
-            if (sendButton) {
-              // Set higher z-index so airplane flies over everything
-              sendButton.style.zIndex = '1000';
-              
-              gsap.to(sendButton, {
-                x: 500,           // Even further distance to exit screen
-                y: -20,           // Slight upward trajectory
-                rotation: -6,     // Rotate to match flight direction
-                scale: 1.1,       // Slight grow
-                duration: 0.25,   // Ultra fast - 250ms
-                ease: "power1.out", // Fast exit curve
-                onUpdate: function() {
-                  // Check if airplane has exited the input field bounds
-                  const inputField = document.getElementById('chatInitialInput');
-                  if (inputField && sendButton) {
-                    const inputRect = inputField.getBoundingClientRect();
-                    const buttonRect = sendButton.getBoundingClientRect();
-                    
-                    // If button has moved past the right edge of input field
-                    if (buttonRect.left > inputRect.right) {
-                      console.log('First chat airplane has exited input field - triggering transition');
-                      // Trigger immediate transition to chat
-                      this.kill(); // Stop the animation
-                      triggerFirstChatTransition();
-                    }
-                  }
-                },
-                onComplete: () => {
-                  console.log('First chat airplane animation complete');
-                  triggerFirstChatTransition();
-                }
-              });
-            } else {
-              // Fallback if button not found
-              triggerFirstChatTransition();
-            }
-            
-            // Function to handle immediate first chat transition
-            function triggerFirstChatTransition() {
-              console.log('=== TRIGGERING FIRST CHAT TRANSITION ===');
-              
-              if (initialState && conversationState) {
-                initialState.style.display = 'none';
-                conversationState.style.display = 'flex';
-              }
-              
-              // Add the message immediately
-              const message = { type: 'sent', text: 'Show me revenue numbers for North America.' };
-              addChatMessage(message);
-              
-              // Show analyzing bubble quickly after message appears
-              addTimeout(() => {
-                showInitialAnalyzingBubble();
-              }, 300);
-            }
-          }); // Add completion callback to typeText
+          typeText(chatInitialInput, "Show me revenue numbers for North America.", 80); // Just type, no callback yet
         }, 300);
       }, 1000);
 
-      // Move cursor to send button inside input field (precisely measured)
+      // Move cursor to send button after typing is complete
       addTimeout(() => {
-        // Get precise send button position dynamically (now inside input field)
+        // Get precise send button position dynamically
         const sendButton = document.getElementById('sendButton');
         if (sendButton) {
           const rect = sendButton.getBoundingClientRect();
@@ -446,27 +424,25 @@ export default function DemoPage() {
           gsap.to(cursor, {
             left: `${(buttonCenterX / viewportWidth) * 100}%`,
             top: `${(buttonCenterY / viewportHeight) * 100}%`,
-            duration: 0.8,
+            duration: 0.6,
             ease: "power2.inOut"
           });
           
-          console.log(`Send button (inside input) positioned at: ${(buttonCenterX / viewportWidth) * 100}% x ${(buttonCenterY / viewportHeight) * 100}%`);
-        } else {
-          // Fallback positioning for button inside input
-          gsap.to(cursor, {
-            left: '68%',  // Adjusted for button inside input field
-            top: '50%',
-            duration: 0.8,
-            ease: "power2.inOut"
-          });
+          console.log(`Send button positioned at: ${(buttonCenterX / viewportWidth) * 100}% x ${(buttonCenterY / viewportHeight) * 100}%`);
         }
-      }, 5500);
+      }, 5200); // After typing completes (text is ~48 chars * 80ms = 3840ms + 1300ms delays = ~5200ms)
 
-      // Click send and switch to conversation view
+      // Click send button and trigger airplane animation
       addTimeout(() => {
         showClickEffect();
+        console.log('Mouse clicked send button - triggering airplane');
         
-        // Animate send button flying out of input field with fast airplane trajectory
+        // Hide cursor after click
+        addTimeout(() => {
+          cursor.style.opacity = '0';
+        }, 200);
+        
+        // Trigger fast airplane animation
         const sendButton = document.getElementById('sendButton');
         if (sendButton) {
           // Set higher z-index so airplane flies over everything
@@ -488,46 +464,41 @@ export default function DemoPage() {
                 
                 // If button has moved past the right edge of input field
                 if (buttonRect.left > inputRect.right) {
-                  console.log('Airplane has exited input field - triggering page transition');
+                  console.log('First chat airplane has exited input field - triggering transition');
                   // Trigger immediate transition to chat
                   this.kill(); // Stop the animation
-                  triggerChatTransition();
+                  triggerFirstChatTransition();
                 }
               }
             },
             onComplete: () => {
-              console.log('Send button animation complete');
-              triggerChatTransition();
+              console.log('First chat airplane animation complete');
+              triggerFirstChatTransition();
             }
           });
         } else {
           // Fallback if button not found
-          triggerChatTransition();
+          triggerFirstChatTransition();
         }
         
-        // Function to handle immediate chat transition when airplane exits
-        function triggerChatTransition() {
-          console.log('=== TRIGGERING IMMEDIATE CHAT TRANSITION ===');
+        // Function to prepare first chat transition (but don't execute yet)
+        function triggerFirstChatTransition() {
+          console.log('=== AIRPLANE ANIMATION COMPLETE - READY FOR TRANSITION ===');
           
-          if (initialState && conversationState) {
-            initialState.style.display = 'none';
-            conversationState.style.display = 'flex';
-          }
-          
-          // Hide cursor immediately
-          cursor.style.opacity = '0';
-          
-          // Add the message immediately
-          const message = { type: 'sent', text: 'Show me revenue numbers for North America.' };
-          addChatMessage(message);
-          
-          // Show analyzing bubble quickly after message appears
+          // Wait a bit more to ensure airplane has fully exited screen
           addTimeout(() => {
-            showInitialAnalyzingBubble();
-          }, 300);
+            // Mark that airplane has finished and we're ready for transition
+            // The actual transition will be triggered by master timeline
+            window.firstChatReady = true;
+            
+            // Prepare the message for when transition happens
+            window.firstChatMessage = { type: 'sent', text: 'Show me revenue numbers for North America.' };
+            
+            console.log('=== FIRST CHAT READY FLAG SET ===');
+          }, 500); // Extra 500ms to let airplane fully exit
         }
         
-      }, 6500);
+      }, 6000); // Give mouse time to reach button (5200ms + 800ms = 6000ms)
     };
   };
 
