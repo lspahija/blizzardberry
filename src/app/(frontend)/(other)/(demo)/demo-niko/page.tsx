@@ -364,7 +364,71 @@ export default function DemoPage() {
         chatInitialInput.focus();
         
         addTimeout(() => {
-          typeText(chatInitialInput, "Show me revenue numbers for North America.", 80); // Normal typing speed
+          typeText(chatInitialInput, "Show me revenue numbers for North America.", 80, () => {
+            // Typing completed callback - trigger airplane animation immediately
+            console.log('First chat typing completed - triggering airplane');
+            
+            // Hide cursor first
+            cursor.style.opacity = '0';
+            
+            // Trigger fast airplane animation like tickets chat
+            const sendButton = document.getElementById('sendButton');
+            if (sendButton) {
+              // Set higher z-index so airplane flies over everything
+              sendButton.style.zIndex = '1000';
+              
+              gsap.to(sendButton, {
+                x: 500,           // Even further distance to exit screen
+                y: -20,           // Slight upward trajectory
+                rotation: -6,     // Rotate to match flight direction
+                scale: 1.1,       // Slight grow
+                duration: 0.25,   // Ultra fast - 250ms
+                ease: "power1.out", // Fast exit curve
+                onUpdate: function() {
+                  // Check if airplane has exited the input field bounds
+                  const inputField = document.getElementById('chatInitialInput');
+                  if (inputField && sendButton) {
+                    const inputRect = inputField.getBoundingClientRect();
+                    const buttonRect = sendButton.getBoundingClientRect();
+                    
+                    // If button has moved past the right edge of input field
+                    if (buttonRect.left > inputRect.right) {
+                      console.log('First chat airplane has exited input field - triggering transition');
+                      // Trigger immediate transition to chat
+                      this.kill(); // Stop the animation
+                      triggerFirstChatTransition();
+                    }
+                  }
+                },
+                onComplete: () => {
+                  console.log('First chat airplane animation complete');
+                  triggerFirstChatTransition();
+                }
+              });
+            } else {
+              // Fallback if button not found
+              triggerFirstChatTransition();
+            }
+            
+            // Function to handle immediate first chat transition
+            function triggerFirstChatTransition() {
+              console.log('=== TRIGGERING FIRST CHAT TRANSITION ===');
+              
+              if (initialState && conversationState) {
+                initialState.style.display = 'none';
+                conversationState.style.display = 'flex';
+              }
+              
+              // Add the message immediately
+              const message = { type: 'sent', text: 'Show me revenue numbers for North America.' };
+              addChatMessage(message);
+              
+              // Show analyzing bubble quickly after message appears
+              addTimeout(() => {
+                showInitialAnalyzingBubble();
+              }, 300);
+            }
+          }); // Add completion callback to typeText
         }, 300);
       }, 1000);
 
@@ -409,11 +473,11 @@ export default function DemoPage() {
           sendButton.style.zIndex = '1000';
           
           gsap.to(sendButton, {
-            x: 400,           // Much further distance to exit screen
-            y: -30,           // Slight upward trajectory
+            x: 500,           // Even further distance to exit screen
+            y: -20,           // Slight upward trajectory
             rotation: -6,     // Rotate to match flight direction
             scale: 1.1,       // Slight grow
-            duration: 0.4,    // Much faster - 400ms
+            duration: 0.25,   // Ultra fast - 250ms
             ease: "power1.out", // Fast exit curve
             onUpdate: function() {
               // Check if airplane has exited the input field bounds
@@ -865,10 +929,7 @@ export default function DemoPage() {
       showUserTypingAnimation('Show me today\'s support tickets');
     }, slideOutDelay + 1500); // Longer delay to ensure dashboard is completely hidden
 
-    // Transition to conversation mode after typing
-    addTimeout(() => {
-      transitionToChatConversation();
-    }, slideOutDelay + 3600); // Adjusted timing
+    // Transition is now handled by airplane animation in showUserTypingAnimation
 
     // User message appears in chat after transition
     addTimeout(() => {
@@ -1349,10 +1410,56 @@ export default function DemoPage() {
         i++;
         addTimeout(typeChar, 60); // Realistic typing speed
       } else {
-        // Typing completed, blur input after brief pause
+        // Typing completed, trigger airplane animation and transition
         addTimeout(() => {
           inputField.blur();
           inputField.classList.remove('bg-gray-100');
+          
+          // Trigger fast airplane animation like first chat
+          const sendButton = document.getElementById('sendButton');
+          if (sendButton) {
+            // Set higher z-index so airplane flies over everything
+            sendButton.style.zIndex = '1000';
+            
+            gsap.to(sendButton, {
+              x: 500,           // Even further distance to exit screen
+              y: -20,           // Slight upward trajectory
+              rotation: -6,     // Rotate to match flight direction
+              scale: 1.1,       // Slight grow
+              duration: 0.25,   // Ultra fast - 250ms
+              ease: "power1.out", // Fast exit curve
+              onUpdate: function() {
+                // Check if airplane has exited the input field bounds
+                const inputField = document.getElementById('chatInitialInput');
+                if (inputField && sendButton) {
+                  const inputRect = inputField.getBoundingClientRect();
+                  const buttonRect = sendButton.getBoundingClientRect();
+                  
+                  // If button has moved past the right edge of input field
+                  if (buttonRect.left > inputRect.right) {
+                    console.log('Tickets airplane has exited input field - triggering transition');
+                    // Trigger immediate transition to conversation
+                    this.kill(); // Stop the animation
+                    triggerTicketsTransition();
+                  }
+                }
+              },
+              onComplete: () => {
+                console.log('Tickets airplane animation complete');
+                triggerTicketsTransition();
+              }
+            });
+          } else {
+            // Fallback if button not found
+            triggerTicketsTransition();
+          }
+          
+          // Function to handle immediate tickets transition
+          function triggerTicketsTransition() {
+            console.log('=== TRIGGERING TICKETS CHAT TRANSITION ===');
+            // Call the original transition function
+            transitionToChatConversation();
+          }
         }, 300);
       }
     };
@@ -2076,7 +2183,7 @@ export default function DemoPage() {
                   <span className="text-2xl sm:text-3xl text-muted-foreground ml-1">K</span>
                 </div>
                 <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-medium">Monthly Revenue</div>
-                <div className="h-0.5 w-16 bg-brand mx-auto mt-3 rounded-full"></div>
+                <div className="h-0.5 w-16 bg-blue-500 mx-auto mt-3 rounded-full"></div>
               </div>
               
               <div className="text-center">
