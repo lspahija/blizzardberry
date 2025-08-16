@@ -524,13 +524,11 @@ export default function DemoPage() {
 
     // Show analyzing bubble first
     addTimeout(() => {
+      // Get existing messages for elegant sliding animation
+      const existingMessages = Array.from(chatMessages.querySelectorAll('.chat-message'));
+      
       initialAnalyzingBubbleDiv = document.createElement('div');
       initialAnalyzingBubbleDiv.className = 'flex justify-start chat-message';
-      
-      // Start with hidden state for smooth animation - less bouncy for stability
-      initialAnalyzingBubbleDiv.style.opacity = '0';
-      initialAnalyzingBubbleDiv.style.transform = 'translateY(20px)';
-      initialAnalyzingBubbleDiv.style.transition = 'opacity 300ms ease-out, transform 300ms ease-out';
       
       initialAnalyzingBubbleDiv.innerHTML = `
         <div class="bg-muted px-5 py-3 rounded-3xl max-w-md border-[2px] border-border shadow-md hover:shadow-lg transition-all duration-300">
@@ -545,14 +543,56 @@ export default function DemoPage() {
         </div>
       `;
       
-      // Append to end (new messages at bottom)
+      // Append to DOM
       chatMessages.appendChild(initialAnalyzingBubbleDiv);
       
-      // Trigger smooth entrance animation with slight delay for stability
-      setTimeout(() => {
-        initialAnalyzingBubbleDiv.style.opacity = '1';
-        initialAnalyzingBubbleDiv.style.transform = 'translateY(0)';
-      }, 50);
+      // Elegant sliding animation matching other messages
+      gsap.context(() => {
+        // Existing messages: elegant slide up with subtle fade
+        existingMessages.forEach((el, i) => {
+          gsap.fromTo(el, 
+            { y: 0, opacity: 1 },
+            {
+              y: -70,  // Smooth upward motion
+              opacity: 0.6,  // Gentle fade to create depth
+              duration: 0.9,
+              ease: "power3.out",
+              delay: i * 0.04,  // Subtle stagger for fluid motion
+            }
+          );
+        });
+
+        // Initial analyzing bubble: elegant slide in from bottom
+        gsap.fromTo(initialAnalyzingBubbleDiv, 
+          { 
+            y: 100,  // Start from below viewport
+            opacity: 0,
+            scale: 0.95
+          },
+          {
+            y: 0,    // Slide to final position
+            opacity: 1,
+            scale: 1,
+            duration: 1.1,  // Slightly longer for smoothness
+            delay: 0.15,  // Small delay for existing messages to begin moving
+            ease: "power3.out",  // Smooth, elegant curve
+            clearProps: "all"
+          }
+        );
+        
+        // Reset existing messages to their natural positions after bubble settles
+        existingMessages.forEach((el, i) => {
+          gsap.to(el, {
+            y: 0,
+            opacity: 1,
+            duration: 0.7,
+            delay: 0.8 + (i * 0.02),  // After bubble animation starts
+            ease: "power3.out",
+            clearProps: "all"
+          });
+        });
+        
+      }, chatMessages);
 
       // Start AI analysis after chat with analyzing bubble is visible
       addTimeout(() => {
@@ -1294,47 +1334,52 @@ export default function DemoPage() {
     // Add to DOM - this causes layout shift with gap (not margin)
     chatMessages.appendChild(messageDiv);
 
-    // FLIP Animation
+    // Elegant sliding animation - old messages slide up gracefully, new message slides in smoothly
     gsap.context(() => {
-      initialPositions.forEach(({ el, y: oldY }, i) => {
-        // Get new position after DOM change
-        const rect = el.getBoundingClientRect();
-        const containerRect = chatMessages.getBoundingClientRect();
-        const newY = rect.top - containerRect.top;
-        const deltaY = oldY - newY;
-
-        // Only animate if there's significant movement
-        if (Math.abs(deltaY) > 2) {
-          // INVERT: Move element back to old position instantly
-          gsap.set(el, { y: deltaY, immediateRender: true });
-          
-          // PLAY: Animate to new position smoothly
-          gsap.to(el, {
-            y: 0,
-            duration: 1.0,
-            ease: "power3.out",
-            delay: i * 0.1,
-            clearProps: "y"
-          });
-        }
+      // Existing messages: elegant slide up with subtle fade
+      existingMessages.forEach((el, i) => {
+        gsap.fromTo(el, 
+          { y: 0, opacity: 1 },
+          {
+            y: -70,  // Smooth upward motion
+            opacity: 0.6,  // Gentle fade to create depth
+            duration: 0.9,
+            ease: "power3.out",  // Smooth, natural deceleration
+            delay: i * 0.04,  // Subtle stagger for fluid motion
+          }
+        );
       });
 
-      // New message entrance animation
+      // New message: elegant slide in from bottom with smooth entrance
       gsap.fromTo(messageDiv, 
         { 
-          y: 30,
+          y: 100,  // Start from below viewport
           opacity: 0,
           scale: 0.95
         },
         {
-          y: 0,
+          y: 0,    // Slide to final position
           opacity: 1,
           scale: 1,
-          duration: 0.8,
-          ease: "back.out(1.3)",
+          duration: 1.1,  // Slightly longer for smoothness
+          delay: 0.15,  // Small delay for existing messages to begin moving
+          ease: "power3.out",  // Smooth, elegant curve
           clearProps: "all"
         }
       );
+      
+      // Reset existing messages to their natural positions after new message settles
+      existingMessages.forEach((el, i) => {
+        gsap.to(el, {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          delay: 0.8 + (i * 0.02),  // After new message animation starts
+          ease: "power3.out",
+          clearProps: "all"
+        });
+      });
+      
     }, chatMessages);
   };
 
@@ -1344,11 +1389,11 @@ export default function DemoPage() {
     const chatMessages = document.getElementById('chatMessages');
     if (!chatMessages) return;
 
+    // Get existing messages for elegant sliding animation
+    const existingMessages = Array.from(chatMessages.querySelectorAll('.chat-message'));
+
     analyzingBubbleDiv = document.createElement('div');
     analyzingBubbleDiv.className = 'flex justify-start chat-message';
-    analyzingBubbleDiv.style.opacity = '0';
-    analyzingBubbleDiv.style.transform = 'translateY(20px)';
-    analyzingBubbleDiv.style.transition = 'opacity 300ms ease-out, transform 300ms ease-out';
     
     analyzingBubbleDiv.innerHTML = `
       <div class="bg-muted px-5 py-3 rounded-3xl max-w-md border-[2px] border-border shadow-md hover:shadow-lg transition-all duration-300">
@@ -1363,14 +1408,56 @@ export default function DemoPage() {
       </div>
     `;
     
-    // Append to end (new messages at bottom)
+    // Append to DOM
     chatMessages.appendChild(analyzingBubbleDiv);
     
-    // Trigger smooth slide-up animation with slight delay for stability
-    setTimeout(() => {
-      analyzingBubbleDiv.style.opacity = '1';
-      analyzingBubbleDiv.style.transform = 'translateY(0)';
-    }, 50);
+    // Elegant sliding animation matching the chat message style
+    gsap.context(() => {
+      // Existing messages: elegant slide up with subtle fade
+      existingMessages.forEach((el, i) => {
+        gsap.fromTo(el, 
+          { y: 0, opacity: 1 },
+          {
+            y: -70,  // Smooth upward motion
+            opacity: 0.6,  // Gentle fade to create depth
+            duration: 0.9,
+            ease: "power3.out",
+            delay: i * 0.04,  // Subtle stagger for fluid motion
+          }
+        );
+      });
+
+      // Analyzing bubble: elegant slide in from bottom
+      gsap.fromTo(analyzingBubbleDiv, 
+        { 
+          y: 100,  // Start from below viewport
+          opacity: 0,
+          scale: 0.95
+        },
+        {
+          y: 0,    // Slide to final position
+          opacity: 1,
+          scale: 1,
+          duration: 1.1,  // Slightly longer for smoothness
+          delay: 0.15,  // Small delay for existing messages to begin moving
+          ease: "power3.out",  // Smooth, elegant curve
+          clearProps: "all"
+        }
+      );
+      
+      // Reset existing messages to their natural positions after bubble settles
+      existingMessages.forEach((el, i) => {
+        gsap.to(el, {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          delay: 0.8 + (i * 0.02),  // After bubble animation starts
+          ease: "power3.out",
+          clearProps: "all"
+        });
+      });
+      
+    }, chatMessages);
   };
 
   const hideAnalyzingBubble = () => {
