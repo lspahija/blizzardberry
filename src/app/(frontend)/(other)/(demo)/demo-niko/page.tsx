@@ -786,15 +786,12 @@ export default function DemoPage() {
       if (analysisView) {
         gsap.to(analysisView, {
           opacity: 0,
-          y: -20,
-          scale: 0.95,
           duration: 0.6,
           ease: "power2.in",
           onComplete: () => {
-            // Smooth analysis exit
+            // Smooth analysis exit without scaling
             gsap.to(aiArchitecture, { 
               opacity: 0,
-              scale: 0.9,
               duration: 0.5,
               ease: "power2.in",
               onComplete: () => {
@@ -828,26 +825,12 @@ export default function DemoPage() {
     // Step 3: Complete final step (Dashboard)
     addTimeout(() => {
       completeAnalysisStep('step3', 'Ready');
-      // Update main title for completion
+      // Update main title for completion instantly to avoid layout shifts
       const title = document.getElementById('analysisTitle');
       const subtitle = document.getElementById('analysisSubtitle');
       if (title && subtitle) {
-        gsap.to([title, subtitle], {
-          opacity: 0,
-          y: -10,
-          duration: 0.3,
-          stagger: 0.1,
-          onComplete: () => {
-            title.textContent = 'Analysis Complete';
-            subtitle.textContent = 'Revenue dashboard is ready to view';
-            gsap.to([title, subtitle], {
-              opacity: 1,
-              y: 0,
-              duration: 0.5,
-              stagger: 0.1
-            });
-          }
-        });
+        title.textContent = 'Analysis Complete';
+        subtitle.textContent = 'Revenue dashboard is ready to view';
       }
     }, 3200);
   };
@@ -875,7 +858,7 @@ export default function DemoPage() {
     if (status) {
       // Update status instantly to avoid any layout shifts
       status.textContent = completionText;
-      status.className = 'step-status text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-lg w-[80px] text-center';
+      status.className = 'step-status text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-lg w-[90px] text-center';
     }
   };
 
@@ -2050,7 +2033,7 @@ export default function DemoPage() {
                       <span className="text-sm font-medium text-gray-900">Data Collection</span>
                       <div className="text-xs text-gray-600">North America revenue streams</div>
                     </div>
-                    <div className="step-status text-xs font-medium text-cyan-600 bg-cyan-100 px-2 py-1 rounded-lg w-[80px] text-center">Processing...</div>
+                    <div className="step-status text-xs font-medium text-cyan-600 bg-cyan-100 px-2 py-1 rounded-lg w-[90px] text-center">Processing...</div>
                   </div>
                   
                   {/* Step 2: AI Analysis */}
@@ -2059,7 +2042,7 @@ export default function DemoPage() {
                       <span className="text-sm font-medium text-gray-900">AI Analytics</span>
                       <div className="text-xs text-gray-600">Pattern recognition & insights</div>
                     </div>
-                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[80px] text-center">Waiting...</div>
+                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[90px] text-center">Waiting...</div>
                   </div>
                   
                   {/* Step 3: Dashboard */}
@@ -2068,7 +2051,7 @@ export default function DemoPage() {
                       <span className="text-sm font-medium text-gray-900">Dashboard</span>
                       <div className="text-xs text-gray-600">Interactive visualizations</div>
                     </div>
-                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[80px] text-center">Waiting...</div>
+                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[90px] text-center">Waiting...</div>
                   </div>
                   
                 </div>
