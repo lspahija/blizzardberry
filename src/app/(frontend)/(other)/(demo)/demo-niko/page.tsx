@@ -260,21 +260,7 @@ export default function DemoPage() {
     // Start chat conversation immediately - no delay
     startChatConversation();
 
-    // Wait for airplane animation to complete, then execute transition
-    const waitForAirplaneAndTransition = () => {
-      if (window.firstChatReady) {
-        // Airplane animation is done, execute transition
-        executeFirstChatTransition();
-      } else {
-        // Check again in 100ms
-        addTimeout(waitForAirplaneAndTransition, 100);
-      }
-    };
-    
-    // Start checking after enough time for airplane to completely exit (~8.5 seconds)
-    addTimeout(() => {
-      waitForAirplaneAndTransition();
-    }, 8500);
+    // Transition is now handled directly by airplane boundary detection - no waiting needed
 
     // AI architecture is now triggered directly from analyzing bubble's onComplete callback
 
@@ -283,28 +269,7 @@ export default function DemoPage() {
     // Dashboard hiding is now handled directly in showDashboard() function
   };
 
-  // Function to execute the actual chat transition when ready
-  const executeFirstChatTransition = () => {
-    console.log('=== EXECUTING FIRST CHAT TRANSITION ===');
-    
-    const initialState = document.getElementById('chatInitialState');
-    const conversationState = document.getElementById('chatConversationState');
-    
-    if (initialState && conversationState) {
-      initialState.style.display = 'none';
-      conversationState.style.display = 'flex';
-    }
-    
-    // Add the prepared message
-    if (window.firstChatMessage) {
-      addChatMessage(window.firstChatMessage);
-      
-      // Show analyzing bubble after message appears
-      addTimeout(() => {
-        showInitialAnalyzingBubble();
-      }, 300);
-    }
-  };
+  // Transition is now handled directly by airplane boundary detection
 
   const startChatConversation = () => {
     // Show chat window immediately with fade-in effect
@@ -456,15 +421,14 @@ export default function DemoPage() {
             duration: 0.25,   // Ultra fast - 250ms
             ease: "power1.out", // Fast exit curve
             onUpdate: function() {
-              // Check if airplane has exited the input field bounds
-              const inputField = document.getElementById('chatInitialInput');
-              if (inputField && sendButton) {
-                const inputRect = inputField.getBoundingClientRect();
+              // Check if airplane has completely exited the screen
+              if (sendButton) {
                 const buttonRect = sendButton.getBoundingClientRect();
+                const viewportWidth = window.innerWidth;
                 
-                // If button has moved past the right edge of input field
-                if (buttonRect.left > inputRect.right) {
-                  console.log('First chat airplane has exited input field - triggering transition');
+                // If button has moved completely past the right edge of the screen
+                if (buttonRect.left > viewportWidth) {
+                  console.log('First chat airplane has completely exited screen - triggering transition');
                   // Trigger immediate transition to chat
                   this.kill(); // Stop the animation
                   triggerFirstChatTransition();
@@ -481,21 +445,26 @@ export default function DemoPage() {
           triggerFirstChatTransition();
         }
         
-        // Function to prepare first chat transition (but don't execute yet)
+        // Function to handle immediate first chat transition when airplane exits
         function triggerFirstChatTransition() {
-          console.log('=== AIRPLANE ANIMATION COMPLETE - READY FOR TRANSITION ===');
+          console.log('=== TRIGGERING FIRST CHAT TRANSITION IMMEDIATELY ===');
           
-          // Wait a bit more to ensure airplane has fully exited screen
+          const initialState = document.getElementById('chatInitialState');
+          const conversationState = document.getElementById('chatConversationState');
+          
+          if (initialState && conversationState) {
+            initialState.style.display = 'none';
+            conversationState.style.display = 'flex';
+          }
+          
+          // Add the message immediately
+          const message = { type: 'sent', text: 'Show me revenue numbers for North America.' };
+          addChatMessage(message);
+          
+          // Show analyzing bubble quickly after message appears
           addTimeout(() => {
-            // Mark that airplane has finished and we're ready for transition
-            // The actual transition will be triggered by master timeline
-            window.firstChatReady = true;
-            
-            // Prepare the message for when transition happens
-            window.firstChatMessage = { type: 'sent', text: 'Show me revenue numbers for North America.' };
-            
-            console.log('=== FIRST CHAT READY FLAG SET ===');
-          }, 500); // Extra 500ms to let airplane fully exit
+            showInitialAnalyzingBubble();
+          }, 300);
         }
         
       }, 6000); // Give mouse time to reach button (5200ms + 800ms = 6000ms)
@@ -1400,15 +1369,14 @@ export default function DemoPage() {
               duration: 0.25,   // Ultra fast - 250ms
               ease: "power1.out", // Fast exit curve
               onUpdate: function() {
-                // Check if airplane has exited the input field bounds
-                const inputField = document.getElementById('chatInitialInput');
-                if (inputField && sendButton) {
-                  const inputRect = inputField.getBoundingClientRect();
+                // Check if airplane has completely exited the screen
+                if (sendButton) {
                   const buttonRect = sendButton.getBoundingClientRect();
+                  const viewportWidth = window.innerWidth;
                   
-                  // If button has moved past the right edge of input field
-                  if (buttonRect.left > inputRect.right) {
-                    console.log('Tickets airplane has exited input field - triggering transition');
+                  // If button has moved completely past the right edge of the screen
+                  if (buttonRect.left > viewportWidth) {
+                    console.log('Tickets airplane has completely exited screen - triggering transition');
                     // Trigger immediate transition to conversation
                     this.kill(); // Stop the animation
                     triggerTicketsTransition();
