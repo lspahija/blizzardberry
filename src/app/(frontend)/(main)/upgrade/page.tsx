@@ -669,26 +669,26 @@ export default function UpgradePage() {
 
       {/* Checkout Modal */}
       {showCheckout && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
-          <div className="bg-card p-8 border-[3px] border-border rounded-2xl max-w-md w-full shadow-2xl flex flex-col justify-center">
-            <h2 className="text-2xl font-bold mb-6 text-foreground">
+        <div 
+          className="fixed inset-0 bg-black/60 flex items-center justify-center p-2 sm:p-4 z-[100] backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowCheckout(false);
+            }
+          }}
+        >
+          <div className="bg-card p-4 sm:p-6 md:p-8 border-[3px] border-border rounded-2xl w-full max-w-lg max-h-[90vh] shadow-2xl flex flex-col">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-foreground flex-shrink-0">
               Complete Your Purchase
             </h2>
             <EmbeddedCheckoutProvider
               stripe={stripePromise}
               options={{ fetchClientSecret }}
             >
-              <div className="max-h-[60vh] overflow-y-auto">
+              <div className="flex-1 overflow-y-auto">
                 <EmbeddedCheckout />
               </div>
             </EmbeddedCheckoutProvider>
-            <RetroButton
-              className="mt-6 py-3 px-6 bg-background text-foreground hover:bg-muted hover:text-foreground font-medium mx-auto block"
-              onClick={() => setShowCheckout(false)}
-              shadowColor="foreground"
-            >
-              Cancel
-            </RetroButton>
           </div>
         </div>
       )}
