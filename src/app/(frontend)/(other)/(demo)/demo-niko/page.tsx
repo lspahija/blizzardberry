@@ -2193,7 +2193,7 @@ export default function DemoPage() {
           </h1>
           <div className="h-2 w-48 bg-gradient-to-r from-[#F43F5E] to-[#1D4ED8] rounded-full mx-auto mb-6"></div>
           <div id="finalTagline" className="text-2xl text-muted-foreground font-semibold opacity-0 tracking-wide">
-            POWERFUL AI ACTIONS
+            AN AI AGENT FOR EVERY APP
           </div>
         </div>
         
