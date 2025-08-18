@@ -312,8 +312,8 @@ export default function DemoPage() {
       messageDiv.innerHTML = `
         <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
           message.type === 'sent' 
-            ? 'bg-brand text-primary-foreground shadow-lg hover:shadow-2xl hover:scale-105' 
-            : 'bg-white text-foreground shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300'
+            ? 'bg-brand text-primary-foreground hover:scale-105' 
+            : 'bg-white text-foreground hover:scale-[1.02] transition-all duration-300'
         }">
           <div class="text-base leading-relaxed" id="messageText-${messageIndex}">${messageText}</div>
         </div>
@@ -414,6 +414,8 @@ export default function DemoPage() {
             // Set higher z-index so airplane flies over everything
             sendButton.style.zIndex = '1000';
             
+            let transitionTriggered = false; // Flag to prevent multiple transitions
+            
             gsap.to(sendButton, {
               x: 500,           // Even further distance to exit screen
               y: -20,           // Slight upward trajectory
@@ -423,33 +425,40 @@ export default function DemoPage() {
               ease: "power1.out", // Fast exit curve
               onUpdate: function() {
                 // Check if airplane has completely exited the screen
-                if (sendButton) {
+                if (sendButton && !transitionTriggered) {
                   const buttonRect = sendButton.getBoundingClientRect();
                   const viewportWidth = window.innerWidth;
                   
                   // If button has moved completely past the right edge of the screen
                   if (buttonRect.left > viewportWidth) {
                     console.log('First chat airplane has completely exited screen - triggering transition');
-                    // Trigger immediate transition to chat
-                    this.kill(); // Stop the animation
-                    triggerFirstChatTransition();
+                    transitionTriggered = true;
+                    // Stop the animation
+                    this.kill();
+                    // Small delay to ensure airplane is fully out of view
+                    setTimeout(() => {
+                      triggerFirstChatTransition();
+                    }, 150); // Extra 150ms to ensure smooth transition
                   }
                 }
               },
               onComplete: () => {
-                console.log('First chat airplane animation complete');
-                triggerFirstChatTransition();
+                if (!transitionTriggered) {
+                  console.log('First chat airplane animation complete - fallback trigger');
+                  triggerFirstChatTransition();
+                }
               }
           });
           } else {
-            // Fallback if button not found
-            triggerFirstChatTransition();
+            // No fallback - only airplane animation should trigger transition
+            console.error('Send button not found for airplane animation');
           }
         }, 150); // Brief pause to see click effect before airplane starts
         
         // Function to handle immediate first chat transition when airplane exits
         function triggerFirstChatTransition() {
           console.log('=== TRIGGERING FIRST CHAT TRANSITION IMMEDIATELY ===');
+          console.trace('Call stack for first chat transition:');
           
           const initialState = document.getElementById('chatInitialState');
           const conversationState = document.getElementById('chatConversationState');
@@ -488,7 +497,7 @@ export default function DemoPage() {
       initialAnalyzingBubbleDiv.className = 'flex justify-start chat-message';
       
       initialAnalyzingBubbleDiv.innerHTML = `
-        <div class="bg-white px-5 py-3 rounded-3xl max-w-md shadow-md hover:shadow-lg transition-all duration-300">
+        <div class="bg-white px-5 py-3 rounded-3xl max-w-md transition-all duration-300">
           <div class="flex items-center space-x-3">
             <div class="flex space-x-1">
               <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce"></div>
@@ -956,7 +965,7 @@ export default function DemoPage() {
     
     // Replace chat window content with tickets dashboard  
     // Keep exact same styling as first chat window
-    chatWindow.className = "w-[600px] h-[680px] bg-white rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden";
+    chatWindow.className = "w-[600px] h-[680px] bg-white rounded-3xl flex flex-col transition-all duration-300 ease-out relative overflow-hidden";
     chatWindow.innerHTML = `
       <div class="w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-5">
         <!-- Header - All elements initially hidden -->
@@ -967,25 +976,25 @@ export default function DemoPage() {
 
         <!-- Quick Stats - All elements initially hidden -->
         <div class="grid grid-cols-3 gap-3 mb-8" id="stats-grid">
-          <div class="bg-white rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+          <div class="bg-white rounded-lg p-3 text-center stats-card hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
             <div class="text-2xl font-bold mb-1 ticket-stat text-secondary" data-target="3" style="opacity: 0;">0</div>
             <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Total</div>
           </div>
-          <div class="bg-white rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+          <div class="bg-white rounded-lg p-3 text-center stats-card hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
             <div class="text-2xl font-bold mb-1 ticket-stat text-emerald-600" data-target="2" style="opacity: 0;">0</div>
             <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Resolved</div>
           </div>
-          <div class="bg-white rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+          <div class="bg-white rounded-lg p-3 text-center stats-card hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
             <div class="text-2xl font-bold mb-1 ticket-stat text-brand" data-target="1" style="opacity: 0;">0</div>
             <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Open</div>
           </div>
         </div>
 
         <!-- Tickets List - All elements initially hidden -->
-        <div class="bg-white rounded-lg p-3 shadow-lg hover:shadow-2xl transition-all duration-300" id="tickets-section" style="opacity: 0; transform: translateY(20px);">
+        <div class="bg-white rounded-lg p-3 transition-all duration-300" id="tickets-section" style="opacity: 0; transform: translateY(20px);">
           <h3 class="text-lg font-bold text-foreground mb-3 tracking-tight" style="opacity: 0;">Recent Tickets</h3>
           <div class="space-y-2">
-            <div class="ticket-row bg-white rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
+            <div class="ticket-row bg-white rounded-lg p-3 hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-brand rounded-full"></div>
@@ -997,7 +1006,7 @@ export default function DemoPage() {
               <div class="text-xs text-muted-foreground">High Priority</div>
             </div>
             
-            <div class="ticket-row bg-white rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
+            <div class="ticket-row bg-white rounded-lg p-3 hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
@@ -1009,7 +1018,7 @@ export default function DemoPage() {
               <div class="text-xs text-muted-foreground">Low Priority</div>
             </div>
             
-            <div class="ticket-row bg-white rounded-lg p-3 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
+            <div class="ticket-row bg-white rounded-lg p-3 hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-secondary rounded-full"></div>
@@ -1188,8 +1197,8 @@ export default function DemoPage() {
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl ${
         message.type === 'sent' 
-          ? 'bg-brand text-primary-foreground shadow-lg' 
-          : 'bg-white text-foreground shadow-md hover:shadow-lg transition-shadow duration-200'
+          ? 'bg-brand text-primary-foreground' 
+          : 'bg-white text-foreground transition-shadow duration-200'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
       </div>
@@ -1443,7 +1452,7 @@ export default function DemoPage() {
       // Slide In Effect - nova kartica klizi s desne strane
       if (chatWindow) {
         // Reset chat window to original dimensions and styles
-        chatWindow.className = "w-[600px] h-[680px] bg-white rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden";
+        chatWindow.className = "w-[600px] h-[680px] bg-white rounded-3xl flex flex-col transition-all duration-300 ease-out relative overflow-hidden";
         chatWindow.style.display = 'flex';
         // Ensure proper positioning - clear any transforms that might interfere
         chatWindow.style.transform = '';
@@ -1713,8 +1722,8 @@ export default function DemoPage() {
       <style>{`
         /* Custom CSS for complex animations that need CSS */
         @keyframes logoBreathing {
-          0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(244, 63, 94, 0.3); }
-          50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(244, 63, 94, 0.5); }
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
         }
         
         @keyframes logoPulse {
@@ -1725,6 +1734,17 @@ export default function DemoPage() {
           50% {
             transform: scale(1.1);
             opacity: 0.8;
+          }
+        }
+        
+        @keyframes ringPulse {
+          0% {
+            transform: scale(1);
+            opacity: 0.6;
+          }
+          100% {
+            transform: scale(1.4);
+            opacity: 0;
           }
         }
         
@@ -1986,7 +2006,7 @@ export default function DemoPage() {
         <div className="absolute inset-0 bg-white"></div>
         {/* Fixed Size Chat Widget */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div id="chatWindow" className="w-[600px] h-[680px] bg-white rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden">
+          <div id="chatWindow" className="w-[600px] h-[680px] bg-white flex flex-col transition-all duration-300 ease-out relative overflow-hidden">
             
             {/* Initial State: Centered Input (hidden for first chat) */}
             <div id="chatInitialState" className="flex-1 flex items-center justify-center px-6" style={{ display: 'none' }}>
@@ -2026,7 +2046,7 @@ export default function DemoPage() {
 
         {/* Modern AI Analysis - Single Progressive Screen */}
         <div id="aiArchitecture" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0" style={{ display: 'none' }}>
-          <div className="w-[500px] h-[480px] bg-white flex items-center justify-center relative overflow-hidden rounded-3xl shadow-2xl transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl">
+          <div className="w-[500px] h-[480px] bg-white flex items-center justify-center relative overflow-hidden rounded-3xl transition-all duration-300 ease-out">
             
             {/* White background */}
             <div className="absolute inset-0 bg-white"></div>
@@ -2038,7 +2058,7 @@ export default function DemoPage() {
               <div className="mb-6">
                 <div className="relative mx-auto w-16 h-16">
                   {/* Clean AI Core */}
-                  <div className="w-16 h-16 bg-gradient-to-br from-brand to-brand/80 border-[2px] border-border rounded-2xl flex items-center justify-center shadow-xl relative">
+                  <div className="w-16 h-16 bg-gradient-to-br from-brand to-brand/80 rounded-2xl flex items-center justify-center relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-brand/60 to-brand/80 animate-pulse opacity-30 rounded-2xl"></div>
                     
                     {/* Simple AI Icon */}
@@ -2062,7 +2082,7 @@ export default function DemoPage() {
               </div>
               
               {/* Progress System */}
-              <div className="bg-white rounded-2xl p-4 shadow-lg">
+              <div className="bg-white rounded-2xl p-4">
                 <div className="space-y-3">
                   
                   {/* Step 1: Data Fetching */}
@@ -2106,7 +2126,7 @@ export default function DemoPage() {
         
         {/* Fixed Size Dashboard Widget */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-white overflow-hidden rounded-3xl shadow-2xl transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl flex flex-col relative">
+          <div id="dashboardWindow" className="w-[600px] h-[680px] bg-white overflow-hidden rounded-3xl transition-all duration-300 ease-out flex flex-col relative">
             <div className="p-6">
             
             {/* Minimalist Header */}
@@ -2153,9 +2173,12 @@ export default function DemoPage() {
         {/* Logo with modern styling */}
         <div id="finalLogo" className="relative z-10 mb-12 opacity-0">
           <div className="relative">
-            <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center shadow-2xl" style={{ animation: 'logoPulse 3s infinite' }}>
+            <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center border border-border" style={{ animation: 'logoPulse 3s infinite' }}>
               <Image src="/image/logo.png" alt="BlizzardBerry Logo" width={80} height={80} priority unoptimized />
             </div>
+            
+            {/* Pulse ring effects */}
+            <div className="absolute inset-0 w-32 h-32 border-2 border-brand/40 rounded-3xl" style={{ animation: 'ringPulse 2s infinite ease-out' }}></div>
           </div>
         </div>
         
