@@ -133,7 +133,7 @@ export default function DemoPage() {
   };
 
   // Typing animation function
-  const typeText = (element: HTMLInputElement | null, text: string, speed = 80, callback?: () => void) => {
+  const typeText = (element: HTMLInputElement | null, text: string, speed = 50, callback?: () => void) => {
     if (!element) return;
     element.value = '';
     let i = 0;
@@ -166,7 +166,7 @@ export default function DemoPage() {
       data: {
         labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
         datasets: [{
-          label: 'Monthly Revenue ($K)',
+          label: 'Peak Revenue ($K)',
           data: [650, 720, 580, 847, 620, 750], // Higher numbers to match the scale up to 1000K
           backgroundColor: '#3B82F6',  // Blue-500 like landing page
           borderColor: '#2563EB',      // Blue-600 for border
@@ -371,12 +371,16 @@ export default function DemoPage() {
         chatInitialInput.focus();
         
         addTimeout(() => {
-          typeText(chatInitialInput, "Show me revenue numbers for North America.", 80); // Just type, no callback yet
+          typeText(chatInitialInput, "Show me revenue numbers for North America.", 50, () => {
+            // Callback when typing is completely finished (after the dot is added)
+            console.log('Typing completed, moving mouse to send button');
+            moveMouseToSendButton();
+          });
         }, 300);
       }, 1000);
 
-      // Move cursor to send button after typing is complete
-      addTimeout(() => {
+      // Function to move mouse to send button (called from typing callback)
+      const moveMouseToSendButton = () => {
         // Get precise send button position dynamically
         const sendButton = document.getElementById('sendButton');
         if (sendButton) {
@@ -390,15 +394,21 @@ export default function DemoPage() {
             left: `${(buttonCenterX / viewportWidth) * 100}%`,
             top: `${(buttonCenterY / viewportHeight) * 100}%`,
             duration: 0.6,
-            ease: "power2.inOut"
+            ease: "power2.inOut",
+            onComplete: () => {
+              // Click the button after mouse reaches it
+              addTimeout(() => {
+                clickSendButton();
+              }, 600); // Wait 600ms after reaching the button
+            }
           });
           
           console.log(`Send button positioned at: ${(buttonCenterX / viewportWidth) * 100}% x ${(buttonCenterY / viewportHeight) * 100}%`);
         }
-      }, 5200); // After typing completes (text is ~48 chars * 80ms = 3840ms + 1300ms delays = ~5200ms)
+      };
 
-      // Click send button and trigger airplane animation
-      addTimeout(() => {
+      // Function to click send button and trigger airplane animation
+      const clickSendButton = () => {
         showClickEffect();
         console.log('Mouse clicked send button - triggering airplane');
         
@@ -477,8 +487,7 @@ export default function DemoPage() {
             showInitialAnalyzingBubble();
           }, 300);
         }
-        
-      }, 5800); // Give mouse time to reach button (5200ms + 600ms = 5800ms)
+      };
     };
   };
 
@@ -1359,7 +1368,7 @@ export default function DemoPage() {
       if (i < text.length) {
         inputField.value += text.charAt(i);
         i++;
-        addTimeout(typeChar, 60); // Realistic typing speed
+        addTimeout(typeChar, 40); // Faster typing speed
       } else {
         // Typing completed, trigger airplane animation and transition
         addTimeout(() => {
@@ -2147,7 +2156,7 @@ export default function DemoPage() {
                   <span className="metric-number" data-target="847">0</span>
                   <span className="text-2xl sm:text-3xl text-muted-foreground ml-1">K</span>
                 </div>
-                <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-medium">Monthly Revenue</div>
+                <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-medium">Peak Revenue</div>
                 <div className="h-0.5 w-16 bg-blue-500 mx-auto mt-3 rounded-full"></div>
               </div>
               
