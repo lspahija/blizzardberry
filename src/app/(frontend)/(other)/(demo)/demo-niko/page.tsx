@@ -1738,7 +1738,11 @@ export default function DemoPage() {
         }
         
         @keyframes ringPulse {
-          0% {
+          0%, 49% {
+            transform: scale(1);
+            opacity: 0;
+          }
+          50% {
             transform: scale(1);
             opacity: 0.6;
           }
@@ -2178,7 +2182,7 @@ export default function DemoPage() {
             </div>
             
             {/* Pulse ring effects */}
-            <div className="absolute inset-0 w-32 h-32 border-2 border-brand/40 rounded-3xl" style={{ animation: 'ringPulse 2s infinite ease-out' }}></div>
+            <div className="absolute inset-0 w-32 h-32 border-2 border-brand/40 rounded-3xl" style={{ animation: 'ringPulse 3s infinite ease-out' }}></div>
           </div>
         </div>
         
