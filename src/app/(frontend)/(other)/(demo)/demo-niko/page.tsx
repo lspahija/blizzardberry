@@ -396,10 +396,8 @@ export default function DemoPage() {
             duration: 0.6,
             ease: "power2.inOut",
             onComplete: () => {
-              // Click the button after mouse reaches it
-              addTimeout(() => {
-                clickSendButton();
-              }, 600); // Wait 600ms after reaching the button
+              // Click the button immediately when mouse reaches it
+              clickSendButton();
             }
           });
           
