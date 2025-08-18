@@ -866,10 +866,10 @@ export default function DemoPage() {
       initialState.style.opacity = '1';
     }
 
-    // Start typing animation in the centered input (wait for dashboard to fully clear)
+    // Start typing animation in the centered input immediately
     addTimeout(() => {
-      showUserTypingAnimation('Show me today\'s support tickets');
-    }, slideOutDelay + 1500); // Longer delay to ensure dashboard is completely hidden
+      showUserTypingAnimation('Show me today\'s support tickets.');
+    }, slideOutDelay + 200); // Start typing immediately after input appears
 
     // Transition is now handled by airplane animation in showUserTypingAnimation
 
