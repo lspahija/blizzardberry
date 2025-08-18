@@ -286,8 +286,20 @@ export default function NewAgentPage() {
                       <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-6">
                         <li>Copy the code snippet above</li>
                         <li>
-                          Paste it between the <code>&lt;body&gt;</code> tags of
-                          your website's HTML
+                          {selectedFramework === Framework.NEXT_JS ? (
+                            <>
+                              Paste the code in your layout.tsx or page
+                              component
+                            </>
+                          ) : (
+                            <>
+                              Paste the code before the closing{' '}
+                              <code className="bg-muted px-1 rounded">
+                                &lt;/body&gt;
+                              </code>{' '}
+                              tag
+                            </>
+                          )}
                         </li>
                         <li>Save and publish your website changes</li>
                         <li>
