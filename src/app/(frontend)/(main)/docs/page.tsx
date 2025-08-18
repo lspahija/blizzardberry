@@ -81,7 +81,7 @@ export default function DocsPage() {
   data-agent-id="your-agent-id"
 ></script>
 
-<!-- 3. Custom Actions - Define what your agent can do -->
+<!-- 3. Custom Client Actions - Define the client actions your agent can do -->
 <script id="blizzardberry-actions" type="text/javascript">
   window.agentActions = {
     // Example: Submit a contact form
@@ -130,7 +130,7 @@ export default function Layout({ children }) {
           data-agent-id="your-agent-id"
         />
         
-        {/* 3. Custom Actions - Define what your agent can do */}
+        {/* 3. Custom Client Actions - Define the client actions your agent can do */}
         <Script id="blizzardberry-actions" strategy="afterInteractive">
           {\`
             window.agentActions = {
@@ -527,6 +527,109 @@ export default function Layout({ children }) {
                 </motion.div>
               </motion.div>
             </div>
+          </div>
+        </motion.section>
+
+        {/* Server vs Client Actions */}
+        <motion.section
+          className="py-16"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <div className="max-w-6xl mx-auto px-4">
+            <motion.div className="text-center mb-12" variants={itemVariants}>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                Action Types Explained
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Understand the difference between server and client actions
+              </p>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <Card className="border-[3px] border-border bg-card rounded-xl shadow-xl">
+                <CardHeader>
+                  <div className="flex items-center space-x-2">
+                    <Zap className="h-6 w-6 text-brand" />
+                    <CardTitle className="text-2xl">
+                      Server vs Client Actions
+                    </CardTitle>
+                  </div>
+                  <p className="text-muted-foreground mt-2">
+                    Choose the right action type for your use case
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-3 flex items-center text-lg">
+                        <Globe className="h-5 w-5 text-brand mr-2" />
+                        Server Actions
+                      </h4>
+                      <p className="text-muted-foreground mb-4">
+                        Use server actions when you have an API endpoint that can handle the request:
+                      </p>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li className="flex items-start">
+                          <span className="text-brand mr-2 font-bold">•</span>
+                          <strong>You have an existing API endpoint</strong> - agent calls it directly
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-brand mr-2 font-bold">•</span>
+                          <strong>Zero code implementation</strong> - just provide your API endpoint
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-brand mr-2 font-bold">•</span>
+                          <strong>Secure and reliable</strong> - runs on your backend infrastructure
+                        </li>
+                      </ul>
+                      <div className="mt-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                        <p className="text-sm text-green-700 dark:text-green-300">
+                          ✅ <strong>Easy setup:</strong> Just provide your API endpoint and the agent handles the rest!
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-3 flex items-center text-lg">
+                        <Code className="h-5 w-5 text-brand mr-2" />
+                        Client Actions
+                      </h4>
+                      <p className="text-muted-foreground mb-4">
+                        Use client actions when you don't have an API or need browser-specific functionality:
+                      </p>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li className="flex items-start">
+                          <span className="text-brand mr-2 font-bold">•</span>
+                          <strong>No API endpoint needed</strong> - works directly in the browser
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-brand mr-2 font-bold">•</span>
+                          <strong>Custom JavaScript required</strong> - copy and paste provided code
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-brand mr-2 font-bold">•</span>
+                          <strong>Full browser control</strong> - manipulate UI, forms, and page behavior
+                        </li>
+                      </ul>
+                      <div className="mt-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                        <p className="text-sm text-blue-700 dark:text-blue-300">
+                          🔧 <strong>Manual setup:</strong> You'll receive ready-to-use JavaScript code to add to your website.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 bg-brand/5 border border-brand/20 rounded-lg p-6">
+                    <p className="text-muted-foreground text-center">
+                      <strong className="text-foreground">💡 Key Difference:</strong> Server actions work automatically through API calls, while client actions need custom JavaScript code in your website.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </motion.section>
 
