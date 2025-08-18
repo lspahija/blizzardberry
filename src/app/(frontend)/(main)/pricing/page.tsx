@@ -29,6 +29,7 @@ import { toast } from 'sonner';
 import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/app/(frontend)/components/ui/tooltip';
+import { PricingFAQ } from '@/app/(frontend)/components/ui/pricing-faq';
 import posthog from 'posthog-js';
 
 const stripePromise = loadStripe(
@@ -479,6 +480,11 @@ export default function PricingPage() {
                       )}
                     </ul>
 
+                    {key === 'free' && (
+                      <p className="text-xs sm:text-sm text-muted-foreground text-center mb-3">
+                        No credit card required
+                      </p>
+                    )}
                     <div className="mt-auto flex justify-center">
                       <RetroButton
                         className={`w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold text-sm sm:text-base ${
@@ -660,6 +666,9 @@ export default function PricingPage() {
               </div>
             </div>
           )}
+
+          {/* FAQ Section */}
+          <PricingFAQ />
         </div>
       </div>
 

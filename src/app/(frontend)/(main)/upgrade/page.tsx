@@ -28,6 +28,7 @@ import { toast } from 'sonner';
 import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/app/(frontend)/components/ui/tooltip';
+import { PricingFAQ } from '@/app/(frontend)/components/ui/pricing-faq';
 import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 
 const stripePromise = loadStripe(
@@ -664,6 +665,9 @@ export default function UpgradePage() {
               </div>
             </div>
           )}
+
+          {/* FAQ Section */}
+          <PricingFAQ />
         </div>
       </div>
 
