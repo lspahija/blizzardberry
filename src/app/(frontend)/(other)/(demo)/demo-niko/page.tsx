@@ -402,48 +402,50 @@ export default function DemoPage() {
         showClickEffect();
         console.log('Mouse clicked send button - triggering airplane');
         
-        // Hide cursor after click
+        // Hide cursor after brief pause to see click effect
         addTimeout(() => {
           cursor.style.opacity = '0';
-        }, 200);
+        }, 100);
         
-        // Trigger fast airplane animation
-        const sendButton = document.getElementById('sendButton');
-        if (sendButton) {
-          // Set higher z-index so airplane flies over everything
-          sendButton.style.zIndex = '1000';
-          
-          gsap.to(sendButton, {
-            x: 500,           // Even further distance to exit screen
-            y: -20,           // Slight upward trajectory
-            rotation: -6,     // Rotate to match flight direction
-            scale: 1.1,       // Slight grow
-            duration: 0.25,   // Ultra fast - 250ms
-            ease: "power1.out", // Fast exit curve
-            onUpdate: function() {
-              // Check if airplane has completely exited the screen
-              if (sendButton) {
-                const buttonRect = sendButton.getBoundingClientRect();
-                const viewportWidth = window.innerWidth;
-                
-                // If button has moved completely past the right edge of the screen
-                if (buttonRect.left > viewportWidth) {
-                  console.log('First chat airplane has completely exited screen - triggering transition');
-                  // Trigger immediate transition to chat
-                  this.kill(); // Stop the animation
-                  triggerFirstChatTransition();
+        // Trigger fast airplane animation after click effect
+        addTimeout(() => {
+          const sendButton = document.getElementById('sendButton');
+          if (sendButton) {
+            // Set higher z-index so airplane flies over everything
+            sendButton.style.zIndex = '1000';
+            
+            gsap.to(sendButton, {
+              x: 500,           // Even further distance to exit screen
+              y: -20,           // Slight upward trajectory
+              rotation: -6,     // Rotate to match flight direction
+              scale: 1.1,       // Slight grow
+              duration: 0.25,   // Ultra fast - 250ms
+              ease: "power1.out", // Fast exit curve
+              onUpdate: function() {
+                // Check if airplane has completely exited the screen
+                if (sendButton) {
+                  const buttonRect = sendButton.getBoundingClientRect();
+                  const viewportWidth = window.innerWidth;
+                  
+                  // If button has moved completely past the right edge of the screen
+                  if (buttonRect.left > viewportWidth) {
+                    console.log('First chat airplane has completely exited screen - triggering transition');
+                    // Trigger immediate transition to chat
+                    this.kill(); // Stop the animation
+                    triggerFirstChatTransition();
+                  }
                 }
+              },
+              onComplete: () => {
+                console.log('First chat airplane animation complete');
+                triggerFirstChatTransition();
               }
-            },
-            onComplete: () => {
-              console.log('First chat airplane animation complete');
-              triggerFirstChatTransition();
-            }
           });
-        } else {
-          // Fallback if button not found
-          triggerFirstChatTransition();
-        }
+          } else {
+            // Fallback if button not found
+            triggerFirstChatTransition();
+          }
+        }, 150); // Brief pause to see click effect before airplane starts
         
         // Function to handle immediate first chat transition when airplane exits
         function triggerFirstChatTransition() {
@@ -467,7 +469,7 @@ export default function DemoPage() {
           }, 300);
         }
         
-      }, 6000); // Give mouse time to reach button (5200ms + 800ms = 6000ms)
+      }, 5800); // Give mouse time to reach button (5200ms + 600ms = 5800ms)
     };
   };
 
@@ -956,15 +958,15 @@ export default function DemoPage() {
     // Keep exact same styling as first chat window
     chatWindow.className = "w-[600px] h-[680px] bg-white rounded-3xl shadow-2xl flex flex-col transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl relative overflow-hidden";
     chatWindow.innerHTML = `
-      <div class="w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-6">
+      <div class="w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-5">
         <!-- Header - All elements initially hidden -->
-        <div class="text-center mb-5 mt-4">
+        <div class="text-center mb-4 mt-2">
           <h1 class="text-3xl font-bold text-foreground mb-2 tracking-tight" id="header-title" style="opacity: 0; transform: translateY(-20px);">Support Tickets</h1>
           <p class="text-sm text-muted-foreground font-medium" id="header-subtitle" style="opacity: 0; transform: translateY(-15px);">Today's Overview</p>
         </div>
 
         <!-- Quick Stats - All elements initially hidden -->
-        <div class="grid grid-cols-3 gap-2 mb-4" id="stats-grid">
+        <div class="grid grid-cols-3 gap-3 mb-8" id="stats-grid">
           <div class="bg-white rounded-lg p-3 text-center stats-card shadow-lg hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
             <div class="text-2xl font-bold mb-1 ticket-stat text-secondary" data-target="3" style="opacity: 0;">0</div>
             <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Total</div>
@@ -987,11 +989,11 @@ export default function DemoPage() {
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-brand rounded-full"></div>
-                  <div class="text-xs font-semibold text-foreground">#12847</div>
+                  <div class="text-sm font-semibold text-foreground">#12847</div>
                 </div>
                 <span class="px-2 py-1 bg-brand/10 text-brand text-xs rounded-full font-medium">Open</span>
               </div>
-              <div class="text-xs text-foreground mb-1 font-medium">Payment Processing Error</div>
+              <div class="text-sm text-foreground mb-1 font-medium">Payment Processing Error</div>
               <div class="text-xs text-muted-foreground">High Priority</div>
             </div>
             
@@ -999,11 +1001,11 @@ export default function DemoPage() {
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                  <div class="text-xs font-semibold text-foreground">#12846</div>
+                  <div class="text-sm font-semibold text-foreground">#12846</div>
                 </div>
                 <span class="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-xs rounded-full font-medium">Resolved</span>
               </div>
-              <div class="text-xs text-foreground mb-1 font-medium">Billing Question</div>
+              <div class="text-sm text-foreground mb-1 font-medium">Billing Question</div>
               <div class="text-xs text-muted-foreground">Low Priority</div>
             </div>
             
@@ -1011,11 +1013,11 @@ export default function DemoPage() {
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-secondary rounded-full"></div>
-                  <div class="text-xs font-semibold text-foreground">#12845</div>
+                  <div class="text-sm font-semibold text-foreground">#12845</div>
                 </div>
                 <span class="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-xs rounded-full font-medium">Resolved</span>
               </div>
-              <div class="text-xs text-foreground mb-1 font-medium">Feature Request</div>
+              <div class="text-sm text-foreground mb-1 font-medium">Feature Request</div>
               <div class="text-xs text-muted-foreground">Low Priority</div>
             </div>
           </div>
@@ -1415,7 +1417,7 @@ export default function DemoPage() {
     animateCounters();
     createChart();
     
-    // Hide dashboard after it has been displayed for 8 seconds
+    // Hide dashboard after it has been displayed for 5 seconds
     addTimeout(() => {
       console.log('=== HIDING DASHBOARD, RETURNING TO CHAT ===');
       const dashboardScene = document.getElementById('dashboardScene');
@@ -1498,7 +1500,7 @@ export default function DemoPage() {
       addTimeout(() => {
         continueConversationAfterDashboard();
       }, 1200); // Wait for slide-away animation to complete
-    }, 8000); // Dashboard shows for 8 seconds
+    }, 5000); // Dashboard shows for 5 seconds
   };
 
   const startDashboardTransition = () => {
