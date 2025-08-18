@@ -313,7 +313,7 @@ export default function DemoPage() {
         <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
           message.type === 'sent' 
             ? 'bg-brand text-primary-foreground hover:scale-105' 
-            : 'bg-white text-foreground hover:scale-[1.02] transition-all duration-300'
+            : 'bg-muted text-foreground hover:scale-[1.02] transition-all duration-300'
         }">
           <div class="text-base leading-relaxed" id="messageText-${messageIndex}">${messageText}</div>
         </div>
@@ -359,7 +359,7 @@ export default function DemoPage() {
         cursor.style.opacity = '1';
         gsap.to(cursor, {
           left: '50%',
-          top: '52%',
+          top: '50%',
           duration: 0.6,
           ease: "power2.inOut"
         });
@@ -497,7 +497,7 @@ export default function DemoPage() {
       initialAnalyzingBubbleDiv.className = 'flex justify-start chat-message';
       
       initialAnalyzingBubbleDiv.innerHTML = `
-        <div class="bg-white px-5 py-3 rounded-3xl max-w-md transition-all duration-300">
+        <div class="bg-muted px-5 py-3 rounded-3xl max-w-md transition-all duration-300">
           <div class="flex items-center space-x-3">
             <div class="flex space-x-1">
               <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce"></div>
@@ -1198,7 +1198,7 @@ export default function DemoPage() {
       <div class="max-w-md px-5 py-3 rounded-2xl ${
         message.type === 'sent' 
           ? 'bg-brand text-primary-foreground' 
-          : 'bg-white text-foreground transition-shadow duration-200'
+          : 'bg-muted text-foreground transition-shadow duration-200'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
       </div>
