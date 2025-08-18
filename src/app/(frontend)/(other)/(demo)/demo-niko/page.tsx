@@ -886,7 +886,7 @@ export default function DemoPage() {
     addTimeout(() => {
       addChatMessage({
         type: 'sent',
-        text: 'Show me today\'s support tickets'
+        text: 'Show me today\'s support tickets.'
       }, false);
     }, slideOutDelay + 4000); // Adjusted timing
 
@@ -903,7 +903,7 @@ export default function DemoPage() {
       console.log('=== SENDING YES MESSAGE ===');
       addChatMessage({
         type: 'sent',
-        text: 'Yes'
+        text: 'Yes.'
       }, false);
       
       // Show tickets dashboard after YES
@@ -965,7 +965,7 @@ export default function DemoPage() {
     
     // Replace chat window content with tickets dashboard  
     // Keep exact same styling as first chat window
-    chatWindow.className = "w-[600px] h-[680px] bg-white rounded-3xl flex flex-col transition-all duration-300 ease-out relative overflow-hidden";
+    chatWindow.className = "w-[600px] h-[680px] bg-white flex flex-col transition-all duration-300 ease-out relative overflow-hidden";
     chatWindow.innerHTML = `
       <div class="w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-5">
         <!-- Header - All elements initially hidden -->
@@ -1452,7 +1452,7 @@ export default function DemoPage() {
       // Slide In Effect - nova kartica klizi s desne strane
       if (chatWindow) {
         // Reset chat window to original dimensions and styles
-        chatWindow.className = "w-[600px] h-[680px] bg-white rounded-3xl flex flex-col transition-all duration-300 ease-out relative overflow-hidden";
+        chatWindow.className = "w-[600px] h-[680px] bg-white flex flex-col transition-all duration-300 ease-out relative overflow-hidden";
         chatWindow.style.display = 'flex';
         // Ensure proper positioning - clear any transforms that might interfere
         chatWindow.style.transform = '';
@@ -2177,7 +2177,7 @@ export default function DemoPage() {
         {/* Logo with modern styling */}
         <div id="finalLogo" className="relative z-10 mb-12 opacity-0">
           <div className="relative">
-            <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center border border-border" style={{ animation: 'logoPulse 3s infinite' }}>
+            <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center" style={{ animation: 'logoPulse 3s infinite' }}>
               <Image src="/image/logo.png" alt="BlizzardBerry Logo" width={80} height={80} priority unoptimized />
             </div>
             
