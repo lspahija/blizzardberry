@@ -167,7 +167,7 @@ export default function DemoPage() {
         labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
         datasets: [{
           label: 'Monthly Revenue ($K)',
-          data: [150, 200, 180, 250, 220, 240], // Round numbers that show as 150K, 200K, 180K, 250K, 220K, 240K
+          data: [650, 720, 580, 847, 620, 750], // Higher numbers to match the scale up to 1000K
           backgroundColor: '#3B82F6',  // Blue-500 like landing page
           borderColor: '#2563EB',      // Blue-600 for border
           borderWidth: 2,
@@ -184,12 +184,12 @@ export default function DemoPage() {
         scales: {
           y: {
             beginAtZero: true,
-            max: 300,  // Increased to show nice round numbers
+            max: 1000,  // Increased to show up to 1000K
             grid: { color: 'rgba(59, 130, 246, 0.1)' },  // Blue grid color
             ticks: {
               color: '#64748b',
               font: { family: 'Inter', size: 12 },
-              stepSize: 50,  // Steps of 50 for round numbers
+              stepSize: 100,  // Steps of 100 for round numbers
               callback: function(value) {
                 // Show round numbers: 100K, 200K, 300K, etc.
                 if (value === 0) return '0';
