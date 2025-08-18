@@ -2162,7 +2162,7 @@ export default function DemoPage() {
           <h1 className="text-7xl font-bold text-foreground mb-4 tracking-tight">
             BlizzardBerry
           </h1>
-          <div className="h-2 w-48 bg-gradient-to-r from-brand to-secondary rounded-full mx-auto mb-6"></div>
+          <div className="h-2 w-48 bg-gradient-to-r from-[#F43F5E] to-[#1D4ED8] rounded-full mx-auto mb-6"></div>
           <div id="finalTagline" className="text-2xl text-muted-foreground font-semibold opacity-0 tracking-wide">
             POWERFUL AI ACTIONS
           </div>
