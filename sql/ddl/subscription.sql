@@ -12,7 +12,7 @@ CREATE TYPE subscription_status AS ENUM (
 CREATE TABLE subscriptions
 (
     id                          UUID                 DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id                     UUID        NOT NULL UNIQUE REFERENCES next_auth.users (id) ON DELETE CASCADE,
+    user_id                     UUID        NOT NULL UNIQUE REFERENCES next_auth.users (id) ON DELETE CASCADE, -- TODO: this foreign key has been removed but needs to be added back after we ensure it works. we were getting foreign key constraint errors in auth.ts when trying to create the subscription
     stripe_subscription_id      TEXT,
     stripe_subscription_item_id TEXT,
     tier                        TEXT        NOT NULL,

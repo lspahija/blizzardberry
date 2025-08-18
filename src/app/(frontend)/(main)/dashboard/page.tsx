@@ -2,7 +2,6 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/app/(frontend)/components/ui/button';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import {
@@ -38,8 +37,11 @@ export default function Dashboard() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [agentToDelete, setAgentToDelete] = useState<string | null>(null);
   const [isCreatingAgent, setIsCreatingAgent] = useState(false);
-  const [isNavigatingToUserConfig, setIsNavigatingToUserConfig] = useState(false);
-  const [navigatingToAgentId, setNavigatingToAgentId] = useState<string | null>(null);
+  const [isNavigatingToUserConfig, setIsNavigatingToUserConfig] =
+    useState(false);
+  const [navigatingToAgentId, setNavigatingToAgentId] = useState<string | null>(
+    null
+  );
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -138,7 +140,7 @@ export default function Dashboard() {
     posthog.capture('create_agent_clicked', {
       user_email: session?.user?.email,
     });
-    
+
     router.push('/agents/new');
   };
 
@@ -147,7 +149,7 @@ export default function Dashboard() {
     posthog.capture('user_config_clicked', {
       user_email: session?.user?.email,
     });
-    
+
     router.push('/user-config');
   };
 
@@ -157,7 +159,7 @@ export default function Dashboard() {
       agent_id: agentId,
       user_email: session?.user?.email,
     });
-    
+
     router.push(`/agents/${agentId}`);
   };
 

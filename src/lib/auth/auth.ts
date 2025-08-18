@@ -42,7 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         return true;
       } catch (error) {
-        console.error(error);
+        console.error('Error in signIn callback:', error);
         posthog.capture('sign_in_failed', {
           userId: user.id,
           error: error.message,

@@ -20,7 +20,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/app/(frontend)/components/ui/dialog';
 import { Input } from '@/app/(frontend)/components/ui/input';
 import { Textarea } from '@/app/(frontend)/components/ui/textarea';
