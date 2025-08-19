@@ -355,7 +355,7 @@ export default function PricingPage() {
                           className="bg-brand text-primary-foreground text-xs font-bold px-3 py-1 rounded-full shadow border border-brand whitespace-nowrap"
                           style={{ letterSpacing: 1 }}
                         >
-                          Most Popular
+                          Recommended
                         </span>
                       </div>
                     )}
