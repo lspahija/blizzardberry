@@ -182,7 +182,7 @@ export default function Dashboard() {
         <div className="max-w-4xl mx-auto w-full">
           <div className="flex justify-between items-center mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight leading-tight">
-              Welcome, {session.user?.name}!
+              {session.user?.name ? `Welcome, ${session.user.name}!` : 'Welcome!'}
             </h1>
           </div>
           <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
