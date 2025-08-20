@@ -2073,8 +2073,8 @@ export default function DemoPage() {
                         North America revenue streams
                       </div>
                     </div>
-                    <div className="step-status text-xs font-medium text-cyan-600 bg-cyan-100 px-2 py-1 rounded-lg w-[90px] text-center">
-                      Processing...
+                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[90px] text-center">
+                      Waiting...
                     </div>
                   </div>
 
