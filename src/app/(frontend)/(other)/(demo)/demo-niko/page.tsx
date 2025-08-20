@@ -9,8 +9,31 @@ import Image from 'next/image';
 // Register GSAP plugins
 gsap.registerPlugin(TextPlugin);
 
-// Constants
-const NORTH_AMERICA_QUERY = 'Show me revenue numbers for North America';
+// Configuration Constants
+const CONFIG = {
+  QUERIES: {
+    NORTH_AMERICA: 'Show me revenue numbers for North America',
+    SUPPORT_TICKETS: "Show me today's support tickets"
+  },
+  TIMINGS: {
+    SCENE_DURATION: 48000,
+    TYPING_SPEED: 50,
+    AIRPLANE_DURATION: 250,
+    DASHBOARD_DISPLAY: 5000,
+    TICKETS_DISPLAY: 5000,
+    SCENE4_TOTAL: 6800
+  },
+  ANIMATION: {
+    FADE_DURATION: 0.6,
+    SCALE_DURATION: 0.8,
+    SLIDE_DURATION: 0.5
+  },
+  CHART: {
+    DATA: [650, 720, 580, 847, 620, 750],
+    LABELS: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+    MAX_VALUE: 1000
+  }
+};
 
 interface DemoState {
   currentScene: number;
@@ -30,7 +53,7 @@ export default function DemoPage() {
     isRunning: false,
     isPaused: false,
     startTime: Date.now(),
-    totalDuration: 48000, // Extended total duration to 48 seconds (+3s for Scene 4)
+    totalDuration: CONFIG.TIMINGS.SCENE_DURATION,
   });
 
   const [, setIsLoaded] = useState(false);
@@ -40,24 +63,6 @@ export default function DemoPage() {
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
   const intervalsRef = useRef<NodeJS.Timeout[]>([]);
   const animationSpeedRef = useRef<number>(1);
-
-  // Animation helper functions
-  const addTimeout = (fn: () => void, delay: number) => {
-    const adjustedDelay = delay / animationSpeedRef.current;
-    const timeout = setTimeout(() => {
-      fn();
-      updateProgress();
-    }, adjustedDelay);
-    timeoutsRef.current.push(timeout);
-    return timeout;
-  };
-
-  const clearAllTimers = () => {
-    timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
-    intervalsRef.current.forEach((interval) => clearInterval(interval));
-    timeoutsRef.current = [];
-    intervalsRef.current = [];
-  };
 
   const updateProgress = () => {
     const elapsed = Date.now() - demoState.startTime;
@@ -78,25 +83,82 @@ export default function DemoPage() {
     }
   };
 
-  // Enhanced scene transition functions with smooth animations
-  const showScene = (sceneId: string) => {
-    console.log('=== SHOWING SCENE:', sceneId);
-    const scene = document.getElementById(sceneId);
-    if (scene) {
-      scene.style.display = sceneId.includes('scene4') ? 'flex' : 'block';
-      scene.style.visibility = 'visible';
+  // Animation helper functions
+  const addTimeout = (fn: () => void, delay: number) => {
+    const adjustedDelay = delay / animationSpeedRef.current;
+    const timeout = setTimeout(() => {
+      fn();
+      updateProgress();
+    }, adjustedDelay);
+    timeoutsRef.current.push(timeout);
+    return timeout;
+  };
 
-      // Smooth fade in with scale - faster
-      gsap.fromTo(
-        scene,
+  const clearAllTimers = () => {
+    timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
+    intervalsRef.current.forEach((interval) => clearInterval(interval));
+    timeoutsRef.current = [];
+    intervalsRef.current = [];
+  };
+
+  // Animation utilities
+  const animationUtils = {
+    fadeInScene: (element: HTMLElement, displayType = 'block') => {
+      element.style.display = displayType;
+      element.style.visibility = 'visible';
+      return gsap.fromTo(
+        element,
         { opacity: 0, scale: 0.95 },
         {
           opacity: 1,
           scale: 1,
-          duration: 0.5,
+          duration: CONFIG.ANIMATION.FADE_DURATION,
           ease: 'power2.out',
         }
       );
+    },
+    
+    fadeOutScene: (element: HTMLElement) => {
+      return gsap.to(element, {
+        opacity: 0,
+        scale: 0.95,
+        duration: CONFIG.ANIMATION.FADE_DURATION,
+        ease: 'power2.in',
+        onComplete: () => {
+          element.style.display = 'none';
+        },
+      });
+    },
+    
+    slideElement: (element: HTMLElement, direction: 'up' | 'down' | 'left' | 'right', distance = 50) => {
+      const transforms = {
+        up: { y: -distance },
+        down: { y: distance },
+        left: { x: -distance },
+        right: { x: distance }
+      };
+      
+      return gsap.fromTo(
+        element,
+        { opacity: 0, ...transforms[direction] },
+        {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          duration: CONFIG.ANIMATION.SLIDE_DURATION,
+          ease: 'power2.out'
+        }
+      );
+    }
+  };
+
+  // Scene transition functions
+  const showScene = (sceneId: string) => {
+    console.log('=== SHOWING SCENE:', sceneId);
+    const scene = document.getElementById(sceneId);
+    if (scene) {
+      const displayType = sceneId.includes('scene4') ? 'flex' : 'block';
+      animationUtils.fadeInScene(scene, displayType);
       console.log('Scene', sceneId, 'is now smoothly transitioning in');
     } else {
       console.error('Scene not found:', sceneId);
@@ -106,24 +168,22 @@ export default function DemoPage() {
   const hideScene = (sceneId: string) => {
     const scene = document.getElementById(sceneId);
     if (scene) {
-      // Smooth fade out with scale
-      gsap.to(scene, {
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.6,
-        ease: 'power2.in',
-        onComplete: () => {
-          if (scene) scene.style.display = 'none';
-        },
-      });
+      animationUtils.fadeOutScene(scene);
     }
+  };
+
+  // DOM utility helper
+  const getElementById = (id: string) => {
+    const element = document.getElementById(id);
+    if (!element) console.error(`Element not found: ${id}`);
+    return element;
   };
 
   // Typing animation function
   const typeText = (
     element: HTMLInputElement | null,
     text: string,
-    speed = 50,
+    speed = CONFIG.TIMINGS.TYPING_SPEED,
     callback?: () => void
   ) => {
     if (!element) return;
@@ -135,7 +195,6 @@ export default function DemoPage() {
         i++;
         addTimeout(type, speed);
       } else if (callback) {
-        // Typing completed, call the callback
         callback();
       }
     };
@@ -157,11 +216,11 @@ export default function DemoPage() {
     chartInstanceRef.current = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+        labels: CONFIG.CHART.LABELS,
         datasets: [
           {
             label: 'Peak Revenue ($K)',
-            data: [650, 720, 580, 847, 620, 750], // Higher numbers to match the scale up to 1000K
+            data: CONFIG.CHART.DATA,
             backgroundColor: '#3B82F6', // Blue-500 like landing page
             borderColor: '#2563EB', // Blue-600 for border
             borderWidth: 2,
@@ -179,7 +238,7 @@ export default function DemoPage() {
         scales: {
           y: {
             beginAtZero: true,
-            max: 1000, // Increased to show up to 1000K
+            max: CONFIG.CHART.MAX_VALUE,
             grid: { color: 'rgba(59, 130, 246, 0.1)' }, // Blue grid color
             ticks: {
               color: '#64748b',
@@ -313,7 +372,7 @@ export default function DemoPage() {
         chatInitialInput.focus();
 
         addTimeout(() => {
-          typeText(chatInitialInput, NORTH_AMERICA_QUERY, 50, () => {
+          typeText(chatInitialInput, CONFIG.QUERIES.NORTH_AMERICA, CONFIG.TIMINGS.TYPING_SPEED, () => {
             // Callback when typing is completely finished (after the dot is added)
             console.log('Typing completed, triggering send');
             triggerSendDirectly();
@@ -339,7 +398,7 @@ export default function DemoPage() {
               y: -20, // Slight upward trajectory
               rotation: -6, // Rotate to match flight direction
               scale: 1.1, // Slight grow
-              duration: 0.25, // Ultra fast - 250ms
+              duration: CONFIG.TIMINGS.AIRPLANE_DURATION / 1000, // Convert to seconds
               ease: 'power1.out', // Fast exit curve
               onUpdate: function () {
                 // Check if airplane has completely exited the screen
@@ -395,7 +454,7 @@ export default function DemoPage() {
           // Add the message immediately
           const message = {
             type: 'sent',
-            text: NORTH_AMERICA_QUERY,
+            text: CONFIG.QUERIES.NORTH_AMERICA,
           };
           addChatMessage(message);
 
@@ -772,7 +831,7 @@ export default function DemoPage() {
 
     // Start typing animation in the centered input immediately
     addTimeout(() => {
-      showUserTypingAnimation("Show me today's support tickets");
+      showUserTypingAnimation(CONFIG.QUERIES.SUPPORT_TICKETS);
     }, slideOutDelay + 200); // Start typing immediately after input appears
 
     // Transition is now handled by airplane animation in showUserTypingAnimation
@@ -782,7 +841,7 @@ export default function DemoPage() {
       addChatMessage(
         {
           type: 'sent',
-          text: "Show me today's support tickets",
+          text: CONFIG.QUERIES.SUPPORT_TICKETS,
         },
         false
       );
@@ -1060,7 +1119,7 @@ export default function DemoPage() {
     // Hide dashboard after 5 seconds (2 seconds longer for viewing)
     addTimeout(() => {
       hideTicketsDashboard();
-    }, 5000); // Tickets dashboard shows for 5 seconds
+    }, CONFIG.TIMINGS.TICKETS_DISPLAY);
   };
 
   const hideTicketsDashboard = () => {
@@ -1084,76 +1143,65 @@ export default function DemoPage() {
     }
   };
 
+  // Chat utilities
+  const chatUtils = {
+    formatText: (text: string, isMultiline = false) => {
+      return isMultiline ? text.split('\n').map(line => line.trim()).join('<br>') : text;
+    },
+    
+    createMessageElement: (message: { type: string; text: string }, formattedText: string) => {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
+      messageDiv.innerHTML = `
+        <div class="max-w-md px-5 py-3 rounded-2xl ${
+          message.type === 'sent'
+            ? 'bg-brand text-primary-foreground'
+            : 'bg-muted text-foreground transition-shadow duration-200'
+        }">
+          <div class="text-base leading-relaxed">${formattedText}</div>
+        </div>
+      `;
+      return messageDiv;
+    },
+    
+    animateMessageSlide: (chatMessages: HTMLElement, messageDiv: HTMLElement, existingMessages: Element[]) => {
+      gsap.context(() => {
+        gsap.set(messageDiv, { y: 60, opacity: 0 });
+        
+        const messageHeight = messageDiv.offsetHeight;
+        const gap = 16;
+        const totalMove = messageHeight + gap;
+        const allElements = [...existingMessages, messageDiv];
+        
+        allElements.forEach((el, i) => {
+          const isNewMessage = el === messageDiv;
+          gsap.to(el, {
+            y: isNewMessage ? 0 : -totalMove,
+            opacity: 1,
+            duration: CONFIG.ANIMATION.SCALE_DURATION,
+            delay: i * 0.02,
+            ease: 'power2.out',
+            clearProps: 'all',
+          });
+        });
+      }, chatMessages);
+    }
+  };
+
   const addChatMessage = (
     message: { type: string; text: string },
     isMultiline = false
   ) => {
     console.log('=== ADDING CHAT MESSAGE ===', message.text);
-    const chatMessages = document.getElementById('chatMessages');
-    if (!chatMessages) {
-      console.error('Chat messages container not found!');
-      return;
-    }
+    const chatMessages = getElementById('chatMessages');
+    if (!chatMessages) return;
 
-    // Format text for multiline with bullet points
-    let formattedText = message.text;
-    if (isMultiline) {
-      formattedText = message.text
-        .split('\n')
-        .map((line) => line.trim())
-        .join('<br>');
-    }
-
-    // Clean FLIP Animation - works with gap instead of space-y
-    const existingMessages = Array.from(
-      chatMessages.querySelectorAll('.chat-message')
-    );
-
-    // Create the new message
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
-    messageDiv.innerHTML = `
-      <div class="max-w-md px-5 py-3 rounded-2xl ${
-        message.type === 'sent'
-          ? 'bg-brand text-primary-foreground'
-          : 'bg-muted text-foreground transition-shadow duration-200'
-      }">
-        <div class="text-base leading-relaxed">${formattedText}</div>
-      </div>
-    `;
-
-    // Add to DOM - this causes layout shift with gap (not margin)
+    const formattedText = chatUtils.formatText(message.text, isMultiline);
+    const existingMessages = Array.from(chatMessages.querySelectorAll('.chat-message'));
+    const messageDiv = chatUtils.createMessageElement(message, formattedText);
+    
     chatMessages.appendChild(messageDiv);
-
-    // Smooth sliding animation - everything slides up naturally
-    gsap.context(() => {
-      // Start new message below its final position
-      gsap.set(messageDiv, {
-        y: 60, // Start from below its final position
-        opacity: 0,
-      });
-
-      // Calculate how much everything needs to move up
-      const messageHeight = messageDiv.offsetHeight;
-      const gap = 16; // gap-4 = 1rem = 16px
-      const totalMove = messageHeight + gap;
-
-      // Animate everything up together smoothly
-      const allElements = [...existingMessages, messageDiv];
-
-      allElements.forEach((el, i) => {
-        const isNewMessage = el === messageDiv;
-
-        gsap.to(el, {
-          y: isNewMessage ? 0 : -totalMove, // New message goes to 0, others move up by message height + gap
-          opacity: 1,
-          duration: 0.8,
-          delay: i * 0.02, // Very subtle stagger for smooth wave effect
-          ease: 'power2.out',
-          clearProps: 'all',
-        });
-      });
-    }, chatMessages);
+    chatUtils.animateMessageSlide(chatMessages, messageDiv, existingMessages);
   };
 
   // Transition from initial state to conversation state
@@ -1223,7 +1271,7 @@ export default function DemoPage() {
               y: -20, // Slight upward trajectory
               rotation: -6, // Rotate to match flight direction
               scale: 1.1, // Slight grow
-              duration: 0.25, // Ultra fast - 250ms
+              duration: CONFIG.TIMINGS.AIRPLANE_DURATION / 1000, // Convert to seconds
               ease: 'power1.out', // Fast exit curve
               onUpdate: function () {
                 // Check if airplane has completely exited the screen
@@ -1360,7 +1408,7 @@ export default function DemoPage() {
       addTimeout(() => {
         continueConversationAfterDashboard();
       }, 1200); // Wait for slide-away animation to complete
-    }, 5000); // Dashboard shows for 5 seconds
+    }, CONFIG.TIMINGS.DASHBOARD_DISPLAY);
   };
 
   const startDashboardTransition = () => {
@@ -1426,16 +1474,15 @@ export default function DemoPage() {
   const scene4Sequence = () => {
     setDemoState((prev) => ({ ...prev, currentScene: 4 }));
 
-    const logo = document.getElementById('finalLogo');
-    const brand = document.getElementById('finalBrand');
-    const tagline = document.getElementById('finalTagline');
-    const finalMessage = document.getElementById('finalMessage');
+    const logo = getElementById('finalLogo');
+    const brand = getElementById('finalBrand');
+    const tagline = getElementById('finalTagline');
+    // Note: finalMessage element was removed from JSX, so we don't try to animate it
 
     // Ensure all elements start hidden
     if (logo) gsap.set(logo, { scale: 0, opacity: 0 });
     if (brand) gsap.set(brand, { y: 50, opacity: 0 });
     if (tagline) gsap.set(tagline, { y: 30, opacity: 0 });
-    if (finalMessage) gsap.set(finalMessage, { y: 20, opacity: 0 });
 
     // 1. Logo appears first (reduced delay)
     addTimeout(() => {
@@ -1457,7 +1504,7 @@ export default function DemoPage() {
         gsap.to(brand, {
           y: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: CONFIG.ANIMATION.SCALE_DURATION,
           ease: 'power3.out',
         });
       }
@@ -1470,26 +1517,13 @@ export default function DemoPage() {
         gsap.to(tagline, {
           y: 0,
           opacity: 1,
-          duration: 0.6,
+          duration: CONFIG.ANIMATION.FADE_DURATION,
           ease: 'power2.out',
         });
       }
     }, 2800);
 
-    // 4. Final message appears (faster)
-    addTimeout(() => {
-      console.log('=== SCENE 4: Showing final message ===');
-      if (finalMessage) {
-        gsap.to(finalMessage, {
-          y: 0,
-          opacity: 1,
-          duration: 0.5,
-          ease: 'power2.out',
-        });
-      }
-    }, 3800);
-
-    // 5. Auto-restart after 3 seconds (optimized total timing)
+    // 4. Auto-restart after showing tagline (adjusted timing since no final message)
     addTimeout(() => {
       console.log('=== SCENE 4: Auto-restarting demo ===');
       // Reset and restart the demo
@@ -1506,7 +1540,7 @@ export default function DemoPage() {
       setTimeout(() => {
         console.log('Demo automatically restarting...');
       }, 100);
-    }, 6800); // Optimized total timing: 3.8s + 3s = 6.8s total
+    }, CONFIG.TIMINGS.SCENE4_TOTAL);
   };
 
   // Handle tab visibility change for auto-pause
