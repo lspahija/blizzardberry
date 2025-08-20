@@ -862,7 +862,7 @@ export default function DemoPage() {
         addChatMessage(
           {
             type: 'received',
-            text: 'We have 3 tickets today:\n\n• 2 Resolved (billing & features)\n• 1 Open (high-priority bug)\n\nWant to see the full details?',
+            text: 'We had 3 tickets today:\n\n• 2 Resolved\n• 1 Open\n\nWant to see the full details?',
           },
           true
         );
