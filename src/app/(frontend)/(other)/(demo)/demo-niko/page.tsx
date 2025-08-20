@@ -9,6 +9,9 @@ import Image from 'next/image';
 // Register GSAP plugins
 gsap.registerPlugin(TextPlugin);
 
+// Constants
+const NORTH_AMERICA_QUERY = 'Show me revenue numbers for North America';
+
 interface DemoState {
   currentScene: number;
   totalScenes: number;
@@ -30,7 +33,6 @@ export default function DemoPage() {
     totalDuration: 48000, // Extended total duration to 48 seconds (+3s for Scene 4)
   });
 
-  const [controlsVisible, setControlsVisible] = useState(false);
   const [, setIsLoaded] = useState(false);
 
   const masterTimelineRef = useRef<gsap.core.Timeline | null>(null);
@@ -227,13 +229,6 @@ export default function DemoPage() {
 
     // Start directly with Scene 2 - Chat (reduced initial delay)
     tl.addLabel('scene2Start', 0.2)
-      .call(
-        () => {
-          setControlsVisible(true);
-        },
-        undefined,
-        0
-      )
       .call(() => showScene('scene2'), undefined, 'scene2Start')
       .call(
         () => {
@@ -287,63 +282,10 @@ export default function DemoPage() {
       );
     }
 
-    const messages = [
-      { type: 'sent', text: 'Show me revenue numbers for North America' },
-    ];
-
     // Start typing simulation after chat window appears
     addTimeout(() => {
       simulateTypingAndSend();
     }, 800);
-
-    const addMessage = (
-      message: { type: string; text: string },
-      messageIndex: number
-    ) => {
-      const chatMessages = document.getElementById('chatMessages');
-      if (!chatMessages) return;
-
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
-
-      // Start with hidden state for smooth animation - less bouncy for stability
-      messageDiv.style.opacity = '0';
-      messageDiv.style.transform = 'translateY(20px)';
-      messageDiv.style.transition =
-        'opacity 300ms ease-out, transform 300ms ease-out';
-
-      // For the sent message with North America, initially show without highlighting
-      let messageText = message.text;
-      if (message.type === 'sent' && message.text.includes('North America')) {
-        messageText = 'Show me revenue numbers for North America'; // Plain text first
-      }
-
-      messageDiv.innerHTML = `
-        <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
-          message.type === 'sent'
-            ? 'bg-brand text-primary-foreground hover:scale-105'
-            : 'bg-muted text-foreground hover:scale-[1.02] transition-all duration-300'
-        }">
-          <div class="text-base leading-relaxed" id="messageText-${messageIndex}">${messageText}</div>
-        </div>
-      `;
-
-      // Append to end (new messages at bottom)
-      chatMessages.appendChild(messageDiv);
-
-      // Trigger smooth entrance animation with slight delay for stability
-      setTimeout(() => {
-        messageDiv.style.opacity = '1';
-        messageDiv.style.transform = 'translateY(0)';
-      }, 50);
-
-      // Trigger callbacks after animation
-      setTimeout(() => {
-        if (message.type === 'sent' && message.text.includes('North America')) {
-          showInitialAnalyzingBubble();
-        }
-      }, 300); // After animation completes
-    };
 
     const simulateTypingAndSend = () => {
       const chatInitialInput = document.getElementById(
@@ -371,16 +313,11 @@ export default function DemoPage() {
         chatInitialInput.focus();
 
         addTimeout(() => {
-          typeText(
-            chatInitialInput,
-            'Show me revenue numbers for North America',
-            50,
-            () => {
-              // Callback when typing is completely finished (after the dot is added)
-              console.log('Typing completed, triggering send');
-              triggerSendDirectly();
-            }
-          );
+          typeText(chatInitialInput, NORTH_AMERICA_QUERY, 50, () => {
+            // Callback when typing is completely finished (after the dot is added)
+            console.log('Typing completed, triggering send');
+            triggerSendDirectly();
+          });
         }, 300);
       }, 500);
 
@@ -458,7 +395,7 @@ export default function DemoPage() {
           // Add the message immediately
           const message = {
             type: 'sent',
-            text: 'Show me revenue numbers for North America',
+            text: NORTH_AMERICA_QUERY,
           };
           addChatMessage(message);
 
@@ -602,119 +539,6 @@ export default function DemoPage() {
         startAIArchitecture();
       }, 1800); // Time to see analyzing bubble before analysis
     }, 300);
-  };
-
-  const highlightNorthAmericaInChat = () => {
-    // Find the sent message containing North America
-    const chatMessages = document.getElementById('chatMessages');
-    if (!chatMessages) return;
-
-    const sentMessages = chatMessages.querySelectorAll('.flex.justify-end');
-    sentMessages.forEach((messageDiv) => {
-      const textDiv = messageDiv.querySelector('div:last-child div');
-      if (textDiv && textDiv.textContent?.includes('North America')) {
-        // Replace text with bold version (no yellow highlight)
-        textDiv.innerHTML =
-          'Show me revenue numbers for <span style="font-weight: bold;">North America</span>.';
-      }
-    });
-  };
-
-  // Animate Step 2 processing cards with counters - faster
-  const animateProcessingCards = () => {
-    const cards = document.querySelectorAll('.processing-card');
-
-    cards.forEach((card, index) => {
-      const delay = parseInt(card.getAttribute('data-delay') || '0') / 2; // Half the delay
-
-      // Animate card appearance - quicker
-      addTimeout(() => {
-        gsap.fromTo(
-          card,
-          { opacity: 0, y: 20, scale: 0.95 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.4,
-            ease: 'back.out(1.7)',
-          }
-        );
-
-        // Animate counter - faster
-        const counterElement = card.querySelector('.counter-number');
-        if (counterElement) {
-          const target = parseInt(
-            counterElement.getAttribute('data-target') || '0'
-          );
-          const obj = { value: 0 };
-
-          gsap.to(obj, {
-            value: target,
-            duration: 1.8, // Slower counting for better visibility
-            ease: 'power2.out',
-            onUpdate: () => {
-              if (target >= 1000) {
-                counterElement.textContent =
-                  (obj.value / 1000).toFixed(1) + 'K';
-              } else {
-                counterElement.textContent =
-                  Math.ceil(obj.value).toString() + (target === 15 ? '%' : '');
-              }
-            },
-          });
-        }
-      }, delay);
-    });
-  };
-
-  // Animate Step 3 completion sequence - much faster
-  const animateCompletionSequence = () => {
-    const completionItems = document.querySelectorAll('.completion-item');
-
-    completionItems.forEach((item, index) => {
-      const order = parseInt(item.getAttribute('data-order') || '1');
-      const delay = (order - 1) * 300; // Much faster - 300ms between each completion
-
-      addTimeout(() => {
-        const checkmark = item.querySelector('.checkmark');
-        const pingEffect = item.querySelector('.ping-effect');
-
-        if (pingEffect) {
-          (pingEffect as HTMLElement).style.opacity = '0.6';
-          addTimeout(() => {
-            (pingEffect as HTMLElement).style.opacity = '0';
-          }, 200); // Faster ping effect
-        }
-
-        if (checkmark) {
-          gsap.fromTo(
-            checkmark,
-            { opacity: 0, scale: 0, rotation: -90 },
-            {
-              opacity: 1,
-              scale: 1,
-              rotation: 0,
-              duration: 0.3, // Faster checkmark
-              ease: 'back.out(2.7)',
-            }
-          );
-        }
-
-        // Quick completion celebration
-        gsap.fromTo(
-          item,
-          { scale: 1 },
-          {
-            scale: 1.05, // Smaller scale
-            duration: 0.15, // Faster celebration
-            yoyo: true,
-            repeat: 1,
-            ease: 'power2.out',
-          }
-        );
-      }, delay);
-    });
   };
 
   const startAIArchitecture = () => {
@@ -918,7 +742,7 @@ export default function DemoPage() {
 
     if (hasMessages) {
       // Animate all messages sliding up and fading out
-      existingMessages.forEach((msg, index) => {
+      existingMessages.forEach((msg) => {
         msg.style.transition =
           'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 600ms ease-out';
         msg.style.transform = 'translateY(-100px)';
@@ -983,7 +807,7 @@ export default function DemoPage() {
       addChatMessage(
         {
           type: 'sent',
-          text: 'Yes.',
+          text: 'Yes, please!',
         },
         false
       );
@@ -1285,16 +1109,6 @@ export default function DemoPage() {
       chatMessages.querySelectorAll('.chat-message')
     );
 
-    // Capture initial positions using getBoundingClientRect for accuracy
-    const initialPositions = existingMessages.map((el) => {
-      const rect = el.getBoundingClientRect();
-      const containerRect = chatMessages.getBoundingClientRect();
-      return {
-        el,
-        y: rect.top - containerRect.top,
-      };
-    });
-
     // Create the new message
     const messageDiv = document.createElement('div');
     messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
@@ -1340,81 +1154,6 @@ export default function DemoPage() {
         });
       });
     }, chatMessages);
-  };
-
-  let analyzingBubbleDiv: HTMLElement | null = null;
-
-  const showAnalyzingBubble = () => {
-    const chatMessages = document.getElementById('chatMessages');
-    if (!chatMessages) return;
-
-    // Get existing messages for elegant sliding animation
-    const existingMessages = Array.from(
-      chatMessages.querySelectorAll('.chat-message')
-    );
-
-    analyzingBubbleDiv = document.createElement('div');
-    analyzingBubbleDiv.className = 'flex justify-start chat-message';
-
-    analyzingBubbleDiv.innerHTML = `
-      <div class="bg-muted px-5 py-3 rounded-3xl max-w-md border-[2px] border-border shadow-md hover:shadow-lg transition-all duration-300">
-        <div class="flex items-center space-x-3">
-          <div class="flex space-x-1">
-            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-          </div>
-          <div class="text-base text-muted-foreground">Analyzing...</div>
-        </div>
-      </div>
-    `;
-
-    // Append to DOM
-    chatMessages.appendChild(analyzingBubbleDiv);
-
-    // Smooth sliding animation matching the updated chat message style
-    gsap.context(() => {
-      // Start analyzing bubble below its final position
-      gsap.set(analyzingBubbleDiv, {
-        y: 60, // Start from below its final position
-        opacity: 0,
-      });
-
-      // Calculate how much everything needs to move up
-      const bubbleHeight = analyzingBubbleDiv.offsetHeight;
-      const gap = 16; // gap-4 = 1rem = 16px
-      const totalMove = bubbleHeight + gap;
-
-      // Animate everything up together smoothly
-      const allElements = [...existingMessages, analyzingBubbleDiv];
-
-      allElements.forEach((el, i) => {
-        const isNewBubble = el === analyzingBubbleDiv;
-
-        gsap.to(el, {
-          y: isNewBubble ? 0 : -totalMove, // New bubble goes to 0, others move up
-          opacity: 1,
-          duration: 0.8,
-          delay: i * 0.02, // Very subtle stagger for smooth wave effect
-          ease: 'power2.out',
-          clearProps: 'all',
-        });
-      });
-    }, chatMessages);
-  };
-
-  const hideAnalyzingBubble = () => {
-    if (analyzingBubbleDiv && analyzingBubbleDiv.parentNode) {
-      // Smooth slide-down and fade-out
-      analyzingBubbleDiv.style.opacity = '0';
-      analyzingBubbleDiv.style.transform = 'translateY(-10px) scale(0.95)';
-
-      setTimeout(() => {
-        if (analyzingBubbleDiv && analyzingBubbleDiv.parentNode) {
-          analyzingBubbleDiv.parentNode.removeChild(analyzingBubbleDiv);
-        }
-      }, 250);
-    }
   };
 
   // Transition from initial state to conversation state
