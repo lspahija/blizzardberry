@@ -13,7 +13,7 @@ gsap.registerPlugin(TextPlugin);
 const CONFIG = {
   QUERIES: {
     NORTH_AMERICA: 'Show me revenue numbers for North America',
-    SUPPORT_TICKETS: "Show me today's support tickets"
+    SUPPORT_TICKETS: 'How many support tickets did we have today?',
   },
   TIMINGS: {
     SCENE_DURATION: 48000,
@@ -21,18 +21,18 @@ const CONFIG = {
     AIRPLANE_DURATION: 250,
     DASHBOARD_DISPLAY: 5000,
     TICKETS_DISPLAY: 5000,
-    SCENE4_TOTAL: 6800
+    SCENE4_TOTAL: 6800,
   },
   ANIMATION: {
     FADE_DURATION: 0.6,
     SCALE_DURATION: 0.8,
-    SLIDE_DURATION: 0.5
+    SLIDE_DURATION: 0.5,
   },
   CHART: {
     DATA: [650, 720, 580, 847, 620, 750],
     LABELS: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
-    MAX_VALUE: 1000
-  }
+    MAX_VALUE: 1000,
+  },
 };
 
 interface DemoState {
@@ -117,7 +117,7 @@ export default function DemoPage() {
         }
       );
     },
-    
+
     fadeOutScene: (element: HTMLElement) => {
       return gsap.to(element, {
         opacity: 0,
@@ -129,15 +129,19 @@ export default function DemoPage() {
         },
       });
     },
-    
-    slideElement: (element: HTMLElement, direction: 'up' | 'down' | 'left' | 'right', distance = 50) => {
+
+    slideElement: (
+      element: HTMLElement,
+      direction: 'up' | 'down' | 'left' | 'right',
+      distance = 50
+    ) => {
       const transforms = {
         up: { y: -distance },
         down: { y: distance },
         left: { x: -distance },
-        right: { x: distance }
+        right: { x: distance },
       };
-      
+
       return gsap.fromTo(
         element,
         { opacity: 0, ...transforms[direction] },
@@ -146,10 +150,10 @@ export default function DemoPage() {
           x: 0,
           y: 0,
           duration: CONFIG.ANIMATION.SLIDE_DURATION,
-          ease: 'power2.out'
+          ease: 'power2.out',
         }
       );
-    }
+    },
   };
 
   // Scene transition functions
@@ -372,11 +376,16 @@ export default function DemoPage() {
         chatInitialInput.focus();
 
         addTimeout(() => {
-          typeText(chatInitialInput, CONFIG.QUERIES.NORTH_AMERICA, CONFIG.TIMINGS.TYPING_SPEED, () => {
-            // Callback when typing is completely finished (after the dot is added)
-            console.log('Typing completed, triggering send');
-            triggerSendDirectly();
-          });
+          typeText(
+            chatInitialInput,
+            CONFIG.QUERIES.NORTH_AMERICA,
+            CONFIG.TIMINGS.TYPING_SPEED,
+            () => {
+              // Callback when typing is completely finished (after the dot is added)
+              console.log('Typing completed, triggering send');
+              triggerSendDirectly();
+            }
+          );
         }, 300);
       }, 500);
 
@@ -1146,10 +1155,18 @@ export default function DemoPage() {
   // Chat utilities
   const chatUtils = {
     formatText: (text: string, isMultiline = false) => {
-      return isMultiline ? text.split('\n').map(line => line.trim()).join('<br>') : text;
+      return isMultiline
+        ? text
+            .split('\n')
+            .map((line) => line.trim())
+            .join('<br>')
+        : text;
     },
-    
-    createMessageElement: (message: { type: string; text: string }, formattedText: string) => {
+
+    createMessageElement: (
+      message: { type: string; text: string },
+      formattedText: string
+    ) => {
       const messageDiv = document.createElement('div');
       messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
       messageDiv.innerHTML = `
@@ -1163,16 +1180,20 @@ export default function DemoPage() {
       `;
       return messageDiv;
     },
-    
-    animateMessageSlide: (chatMessages: HTMLElement, messageDiv: HTMLElement, existingMessages: Element[]) => {
+
+    animateMessageSlide: (
+      chatMessages: HTMLElement,
+      messageDiv: HTMLElement,
+      existingMessages: Element[]
+    ) => {
       gsap.context(() => {
         gsap.set(messageDiv, { y: 60, opacity: 0 });
-        
+
         const messageHeight = messageDiv.offsetHeight;
         const gap = 16;
         const totalMove = messageHeight + gap;
         const allElements = [...existingMessages, messageDiv];
-        
+
         allElements.forEach((el, i) => {
           const isNewMessage = el === messageDiv;
           gsap.to(el, {
@@ -1185,7 +1206,7 @@ export default function DemoPage() {
           });
         });
       }, chatMessages);
-    }
+    },
   };
 
   const addChatMessage = (
@@ -1197,9 +1218,11 @@ export default function DemoPage() {
     if (!chatMessages) return;
 
     const formattedText = chatUtils.formatText(message.text, isMultiline);
-    const existingMessages = Array.from(chatMessages.querySelectorAll('.chat-message'));
+    const existingMessages = Array.from(
+      chatMessages.querySelectorAll('.chat-message')
+    );
     const messageDiv = chatUtils.createMessageElement(message, formattedText);
-    
+
     chatMessages.appendChild(messageDiv);
     chatUtils.animateMessageSlide(chatMessages, messageDiv, existingMessages);
   };
