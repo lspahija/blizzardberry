@@ -1320,6 +1320,7 @@ export default function DemoPage() {
                     type="text"
                     placeholder="Ask a question..."
                     class="w-full px-6 py-4 pr-16 text-base bg-muted rounded-full focus:outline-none transition-all duration-300"
+                    spellcheck="false"
                     disabled
                   />
                   <!-- Send button inside input field -->
@@ -1919,6 +1920,7 @@ export default function DemoPage() {
                       type="text"
                       placeholder="Ask a question..."
                       className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-full focus:outline-none transition-all duration-300"
+                      spellCheck="false"
                       disabled
                     />
                     {/* Send button inside input field */}
