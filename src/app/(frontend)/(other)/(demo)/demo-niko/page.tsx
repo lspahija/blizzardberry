@@ -76,21 +76,6 @@ export default function DemoPage() {
     }
   };
 
-  // Mouse cursor simulation - click effect without blue circle
-  const showClickEffect = () => {
-    const cursor = document.getElementById('mouseCursor');
-    
-    if (cursor) {
-      // Realistic cursor press animation only
-      gsap.to(cursor, {
-        scale: 0.9,
-        duration: 0.08,
-        yoyo: true,
-        repeat: 1,
-        ease: "power2.inOut"
-      });
-    }
-  };
 
   // Enhanced scene transition functions with smooth animations
   const showScene = (sceneId: string) => {
@@ -338,9 +323,8 @@ export default function DemoPage() {
 
     const simulateTypingAndSend = () => {
       const chatInitialInput = document.getElementById('chatInitialInput') as HTMLInputElement;
-      const cursor = document.getElementById('mouseCursor');
       
-      if (!chatInitialInput || !cursor) return;
+      if (!chatInitialInput) return;
 
       // Show the initial state for typing
       const initialState = document.getElementById('chatInitialState');
@@ -354,68 +338,24 @@ export default function DemoPage() {
       // Enable input
       chatInitialInput.disabled = false;
       
-      // Show cursor and move to input (faster)
+      // Start typing directly
       addTimeout(() => {
-        cursor.style.opacity = '1';
-        gsap.to(cursor, {
-          left: '50%',
-          top: '50%',
-          duration: 0.6,
-          ease: "power2.inOut"
-        });
-      }, 100);
-
-      // Click on input and start typing (faster)
-      addTimeout(() => {
-        showClickEffect();
         chatInitialInput.focus();
         
         addTimeout(() => {
           typeText(chatInitialInput, "Show me revenue numbers for North America.", 50, () => {
             // Callback when typing is completely finished (after the dot is added)
-            console.log('Typing completed, moving mouse to send button');
-            moveMouseToSendButton();
+            console.log('Typing completed, triggering send');
+            triggerSendDirectly();
           });
         }, 300);
-      }, 1000);
+      }, 500);
 
-      // Function to move mouse to send button (called from typing callback)
-      const moveMouseToSendButton = () => {
-        // Get precise send button position dynamically
-        const sendButton = document.getElementById('sendButton');
-        if (sendButton) {
-          const rect = sendButton.getBoundingClientRect();
-          const buttonCenterX = rect.left + rect.width / 2;
-          const buttonCenterY = rect.top + rect.height / 2;
-          const viewportWidth = window.innerWidth;
-          const viewportHeight = window.innerHeight;
-          
-          gsap.to(cursor, {
-            left: `${(buttonCenterX / viewportWidth) * 100}%`,
-            top: `${(buttonCenterY / viewportHeight) * 100}%`,
-            duration: 0.6,
-            ease: "power2.inOut",
-            onComplete: () => {
-              // Click the button immediately when mouse reaches it
-              clickSendButton();
-            }
-          });
-          
-          console.log(`Send button positioned at: ${(buttonCenterX / viewportWidth) * 100}% x ${(buttonCenterY / viewportHeight) * 100}%`);
-        }
-      };
-
-      // Function to click send button and trigger airplane animation
-      const clickSendButton = () => {
-        showClickEffect();
-        console.log('Mouse clicked send button - triggering airplane');
+      // Function to trigger send directly without mouse animation
+      const triggerSendDirectly = () => {
+        console.log('Triggering send directly - starting airplane animation');
         
-        // Hide cursor after brief pause to see click effect
-        addTimeout(() => {
-          cursor.style.opacity = '0';
-        }, 100);
-        
-        // Trigger fast airplane animation after click effect
+        // Trigger airplane animation immediately
         addTimeout(() => {
           const sendButton = document.getElementById('sendButton');
           if (sendButton) {
@@ -461,7 +401,7 @@ export default function DemoPage() {
             // No fallback - only airplane animation should trigger transition
             console.error('Send button not found for airplane animation');
           }
-        }, 150); // Brief pause to see click effect before airplane starts
+        }, 150); // Brief pause before airplane starts
         
         // Function to handle immediate first chat transition when airplane exits
         function triggerFirstChatTransition() {
@@ -2001,14 +1941,6 @@ export default function DemoPage() {
       </div>
 
 
-      {/* Realistic Mouse Cursor Simulation */}
-      <div id="mouseCursor" className="fixed pointer-events-none z-40 opacity-0" style={{ left: '20%', top: '20%' }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="drop-shadow-lg">
-          {/* Realistic Windows/Mac cursor */}
-          <path d="M3 3L10.07 19.97L12.58 12.58L20 10.07L3 3Z" fill="white" stroke="black" strokeWidth="1"/>
-          <path d="M4.5 4.5L8.93 17.43L10.64 11.64L16.5 9.93L4.5 4.5Z" fill="black"/>
-        </svg>
-      </div>
 
       {/* Scene 1: Create Action - BlizzardBerry Style */}
 
