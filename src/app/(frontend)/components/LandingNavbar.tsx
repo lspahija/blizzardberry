@@ -98,9 +98,9 @@ export function LandingNavbar() {
               size="icon"
             >
               {isMenuOpen ? (
-                <X className="h-6 w-6" />
+                <X className="h-7 w-7 size-7" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="h-7 w-7 size-7" />
               )}
             </Button>
           </div>

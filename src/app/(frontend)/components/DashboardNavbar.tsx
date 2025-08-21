@@ -182,7 +182,7 @@ export function DashboardNavbar() {
               className="p-2 rounded-lg hover:bg-muted transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              <Menu className="h-6 w-6 text-gray-900" />
+              <Menu className="h-7 w-7 text-gray-900" />
             </button>
           </div>
         </div>
@@ -212,7 +212,7 @@ export function DashboardNavbar() {
               onClick={handleMenuClose}
               className="p-2 rounded-lg hover:bg-muted transition-colors"
             >
-              <X className="h-6 w-6 text-gray-900" />
+              <X className="h-7 w-7 text-gray-900" />
             </button>
           </div>
           <div className="space-y-4">
