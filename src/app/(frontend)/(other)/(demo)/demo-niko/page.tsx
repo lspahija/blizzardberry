@@ -2257,7 +2257,7 @@ export default function DemoPage() {
             id="finalTagline"
             className="text-2xl text-muted-foreground font-semibold opacity-0 tracking-wide"
           >
-            An AI-powered natural language interface for every app.
+            An AI-powered natural language interface for every app
           </div>
         </div>
 
