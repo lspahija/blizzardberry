@@ -11,6 +11,21 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/app/(frontend)/components/ui/chart';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/app/(frontend)/components/ui/card';
+import { Badge } from '@/app/(frontend)/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/app/(frontend)/components/ui/table';
 
 // Register GSAP plugins
 gsap.registerPlugin(TextPlugin);
@@ -730,77 +745,121 @@ export default function DemoPage() {
       return;
     }
 
-    // Replace chat window content with tickets dashboard
-    // Keep exact same styling as first chat window
+    // Replace chat window content with tickets dashboard using React components
+    // We'll create this with proper React components in the DOM
     chatWindow.className =
       'w-[600px] h-[680px] bg-white flex flex-col transition-all duration-300 ease-out relative overflow-hidden';
-    chatWindow.innerHTML = `
-      <div class="w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-5">
-        <!-- Header - All elements initially hidden -->
-        <div class="text-center mb-4 mt-2">
-          <h1 class="text-3xl font-bold text-foreground mb-2 tracking-tight" id="header-title" style="opacity: 0; transform: translateY(-20px);">Support Tickets</h1>
-          <p class="text-sm text-muted-foreground font-medium" id="header-subtitle" style="opacity: 0; transform: translateY(-15px);">Today's Overview</p>
-        </div>
+    
+    // Create the tickets dashboard structure with shadcn components
+    const ticketsContent = document.createElement('div');
+    ticketsContent.className = 'w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-5';
+    
+    ticketsContent.innerHTML = `
+      <!-- Header -->
+      <div class="text-center mb-4 mt-2">
+        <h1 class="text-3xl font-bold text-foreground mb-2 tracking-tight" id="header-title" style="opacity: 0; transform: translateY(-20px);">Support Tickets</h1>
+        <p class="text-sm text-muted-foreground font-medium" id="header-subtitle" style="opacity: 0; transform: translateY(-15px);">Today's Overview</p>
+      </div>
 
-        <!-- Quick Stats - All elements initially hidden -->
-        <div class="grid grid-cols-3 gap-3 mb-8" id="stats-grid">
-          <div class="bg-white rounded-lg p-3 text-center stats-card hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
-            <div class="text-2xl font-bold mb-1 ticket-stat text-indigo-600" data-target="3" style="opacity: 0;">0</div>
-            <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Total</div>
-          </div>
-          <div class="bg-white rounded-lg p-3 text-center stats-card hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
-            <div class="text-2xl font-bold mb-1 ticket-stat text-emerald-600" data-target="2" style="opacity: 0;">0</div>
-            <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Resolved</div>
-          </div>
-          <div class="bg-white rounded-lg p-3 text-center stats-card hover:scale-105 hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateY(30px) scale(0.9);">
-            <div class="text-2xl font-bold mb-1 ticket-stat text-orange-600" data-target="1" style="opacity: 0;">0</div>
-            <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Open</div>
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-3 gap-3 mb-6" id="stats-grid">
+        <div class="stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+          <div class="bg-card text-card-foreground flex flex-col gap-3 rounded-xl border py-4 px-3 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+            <div class="text-center">
+              <div class="text-2xl font-bold mb-1 ticket-stat text-indigo-600" data-target="3" style="opacity: 0;">0</div>
+              <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Total</div>
+            </div>
           </div>
         </div>
-
-        <!-- Tickets List - All elements initially hidden -->
-        <div class="bg-white rounded-lg p-3 transition-all duration-300" id="tickets-section" style="opacity: 0; transform: translateY(20px);">
-          <h3 class="text-lg font-bold text-foreground mb-3 tracking-tight" style="opacity: 0;">Recent Tickets</h3>
-          <div class="space-y-2">
-            <div class="ticket-row bg-white rounded-lg p-3 hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
-              <div class="flex items-center justify-between mb-1">
-                <div class="flex items-center space-x-2">
-                  <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
-                  <div class="text-sm font-semibold text-foreground">#12847</div>
-                </div>
-                <span class="px-2 py-1 bg-orange-500/10 text-orange-600 text-xs rounded-full font-medium">Open</span>
-              </div>
-              <div class="text-sm text-foreground mb-1 font-medium">Payment Processing Error</div>
-              <div class="text-xs text-muted-foreground">High Priority</div>
+        <div class="stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+          <div class="bg-card text-card-foreground flex flex-col gap-3 rounded-xl border py-4 px-3 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+            <div class="text-center">
+              <div class="text-2xl font-bold mb-1 ticket-stat text-emerald-600" data-target="2" style="opacity: 0;">0</div>
+              <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Resolved</div>
             </div>
-            
-            <div class="ticket-row bg-white rounded-lg p-3 hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
-              <div class="flex items-center justify-between mb-1">
-                <div class="flex items-center space-x-2">
-                  <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                  <div class="text-sm font-semibold text-foreground">#12846</div>
-                </div>
-                <span class="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-xs rounded-full font-medium">Resolved</span>
-              </div>
-              <div class="text-sm text-foreground mb-1 font-medium">Billing Question</div>
-              <div class="text-xs text-muted-foreground">Low Priority</div>
-            </div>
-            
-            <div class="ticket-row bg-white rounded-lg p-3 hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300" style="opacity: 0; transform: translateX(-50px);">
-              <div class="flex items-center justify-between mb-1">
-                <div class="flex items-center space-x-2">
-                  <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  <div class="text-sm font-semibold text-foreground">#12845</div>
-                </div>
-                <span class="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-xs rounded-full font-medium">Resolved</span>
-              </div>
-              <div class="text-sm text-foreground mb-1 font-medium">Feature Request</div>
-              <div class="text-xs text-muted-foreground">Low Priority</div>
+          </div>
+        </div>
+        <div class="stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
+          <div class="bg-card text-card-foreground flex flex-col gap-3 rounded-xl border py-4 px-3 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+            <div class="text-center">
+              <div class="text-2xl font-bold mb-1 ticket-stat text-orange-600" data-target="1" style="opacity: 0;">0</div>
+              <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Open</div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Tickets Table -->
+      <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm" id="tickets-section" style="opacity: 0; transform: translateY(20px);">
+        <div class="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
+          <div class="leading-none font-semibold" id="tickets-title" style="opacity: 0;">Recent Tickets</div>
+        </div>
+        <div class="px-6">
+          <div class="relative w-full overflow-x-auto">
+            <table class="w-full caption-bottom text-sm">
+              <thead class="[&_tr]:border-b">
+                <tr class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors">
+                  <th class="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap">ID</th>
+                  <th class="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap">Subject</th>
+                  <th class="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap">Status</th>
+                  <th class="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap">Priority</th>
+                </tr>
+              </thead>
+              <tbody class="[&_tr:last-child]:border-0">
+                <tr class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors ticket-row" style="opacity: 0; transform: translateX(-50px);">
+                  <td class="p-2 align-middle whitespace-nowrap">
+                    <div class="flex items-center space-x-2">
+                      <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                      <span class="font-semibold">#12847</span>
+                    </div>
+                  </td>
+                  <td class="p-2 align-middle whitespace-nowrap font-medium">Payment Processing Error</td>
+                  <td class="p-2 align-middle whitespace-nowrap">
+                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 gap-1 border-transparent bg-orange-100 text-orange-800">Open</span>
+                  </td>
+                  <td class="p-2 align-middle whitespace-nowrap">
+                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 gap-1 border-transparent bg-red-100 text-red-800">High</span>
+                  </td>
+                </tr>
+                <tr class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors ticket-row" style="opacity: 0; transform: translateX(-50px);">
+                  <td class="p-2 align-middle whitespace-nowrap">
+                    <div class="flex items-center space-x-2">
+                      <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                      <span class="font-semibold">#12846</span>
+                    </div>
+                  </td>
+                  <td class="p-2 align-middle whitespace-nowrap font-medium">Billing Question</td>
+                  <td class="p-2 align-middle whitespace-nowrap">
+                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 gap-1 border-transparent bg-emerald-100 text-emerald-800">Resolved</span>
+                  </td>
+                  <td class="p-2 align-middle whitespace-nowrap">
+                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 gap-1 border-transparent bg-blue-100 text-blue-800">Low</span>
+                  </td>
+                </tr>
+                <tr class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors ticket-row" style="opacity: 0; transform: translateX(-50px);">
+                  <td class="p-2 align-middle whitespace-nowrap">
+                    <div class="flex items-center space-x-2">
+                      <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <span class="font-semibold">#12845</span>
+                    </div>
+                  </td>
+                  <td class="p-2 align-middle whitespace-nowrap font-medium">Feature Request</td>
+                  <td class="p-2 align-middle whitespace-nowrap">
+                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 gap-1 border-transparent bg-emerald-100 text-emerald-800">Resolved</span>
+                  </td>
+                  <td class="p-2 align-middle whitespace-nowrap">
+                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 gap-1 border-transparent bg-blue-100 text-blue-800">Low</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     `;
+    
+    chatWindow.innerHTML = '';
+    chatWindow.appendChild(ticketsContent);
 
     // Start sequential animations immediately
     animateTicketsDashboard();
@@ -890,9 +949,9 @@ export default function DemoPage() {
           ease: 'power2.out',
           onComplete: () => {
             // Animate section header
-            const sectionHeader = ticketsSection.querySelector('h3');
-            if (sectionHeader) {
-              gsap.to(sectionHeader, {
+            const ticketsTitle = document.getElementById('tickets-title');
+            if (ticketsTitle) {
+              gsap.to(ticketsTitle, {
                 opacity: 1,
                 duration: 0.4,
               });
