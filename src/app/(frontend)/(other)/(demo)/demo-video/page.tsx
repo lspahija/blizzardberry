@@ -1913,7 +1913,7 @@ export default function DemoPage() {
         style={{ display: 'none' }}
       >
         {/* Logo with modern styling */}
-        <div id="finalLogo" className="relative z-10 mb-16 opacity-0">
+        <div id="finalLogo" className="relative z-10 mb-8 opacity-0">
           <div className="relative">
             <div
               className="w-48 h-48 bg-white rounded-3xl flex items-center justify-center"
@@ -1938,7 +1938,7 @@ export default function DemoPage() {
         </div>
 
         {/* Brand text with modern styling */}
-        <div id="finalBrand" className="text-center mb-16 opacity-0">
+        <div id="finalBrand" className="text-center mb-8 opacity-0">
           <h1 className="text-7xl font-bold text-foreground mb-8 tracking-tight">
             BlizzardBerry
           </h1>
