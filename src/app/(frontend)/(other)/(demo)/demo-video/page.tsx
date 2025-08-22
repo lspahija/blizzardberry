@@ -654,7 +654,7 @@ export default function DemoPage() {
         addChatMessage(
           {
             type: 'received',
-            text: 'We had 3 tickets today:\n\n• 2 Resolved\n• 1 Open\n\nWant to see the full details?',
+            text: 'We had 3 tickets today:\n\n• 2 Resolved\n• 1 Open\n\nWould you like to see the full details?',
           },
           true
         );
@@ -1886,7 +1886,9 @@ export default function DemoPage() {
                   >
                     <ChartTooltip
                       cursor={false}
-                      content={<ChartTooltipContent hideLabel nameKey="month" />}
+                      content={
+                        <ChartTooltipContent hideLabel nameKey="month" />
+                      }
                     />
                     <RadialBar dataKey="revenue" background>
                       <LabelList
