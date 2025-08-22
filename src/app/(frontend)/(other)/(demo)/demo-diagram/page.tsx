@@ -21,11 +21,11 @@ import {
 export const description = 'A radial chart with a label';
 
 const chartData = [
-  { month: 'April', revenue: 120, fill: '#BFDBFE' },
-  { month: 'May', revenue: 145, fill: '#93C5FD' },
-  { month: 'June', revenue: 175, fill: '#60A5FA' },
-  { month: 'July', revenue: 210, fill: '#3B82F6' },
-  { month: 'August', revenue: 285, fill: '#1E40AF' },
+  { month: 'April', revenue: 80, fill: '#BFDBFE' },
+  { month: 'May', revenue: 140, fill: '#93C5FD' },
+  { month: 'June', revenue: 200, fill: '#60A5FA' },
+  { month: 'July', revenue: 120, fill: '#3B82F6' },
+  { month: 'August', revenue: 150, fill: '#1E40AF' },
 ];
 
 const chartConfig = {
@@ -90,10 +90,10 @@ export default function DemoDiagramPage() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 leading-none font-medium">
-          Trending up by 35.7% this month <TrendingUp className="h-4 w-4" />
+          Revenue up 25% vs last month <TrendingUp className="h-4 w-4" />
         </div>
         <div className="text-muted-foreground leading-none">
-          Showing monthly revenue for the last 5 months
+          Up 20% this quarter • Peak was in June at $200K
         </div>
       </CardFooter>
     </Card>
