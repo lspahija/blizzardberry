@@ -1913,17 +1913,17 @@ export default function DemoPage() {
         style={{ display: 'none' }}
       >
         {/* Logo with modern styling */}
-        <div id="finalLogo" className="relative z-10 mb-12 opacity-0">
+        <div id="finalLogo" className="relative z-10 mb-16 opacity-0">
           <div className="relative">
             <div
-              className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center"
+              className="w-48 h-48 bg-white rounded-3xl flex items-center justify-center"
               style={{ animation: 'logoPulse 3s infinite' }}
             >
               <Image
                 src="/image/logo.png"
                 alt="BlizzardBerry Logo"
-                width={80}
-                height={80}
+                width={120}
+                height={120}
                 priority
                 unoptimized
               />
@@ -1931,21 +1931,21 @@ export default function DemoPage() {
 
             {/* Pulse ring effects */}
             <div
-              className="absolute inset-0 w-32 h-32 border-2 border-brand/40 rounded-3xl"
+              className="absolute inset-0 w-48 h-48 border-2 border-brand/40 rounded-3xl"
               style={{ animation: 'ringPulse 3s infinite ease-out' }}
             ></div>
           </div>
         </div>
 
         {/* Brand text with modern styling */}
-        <div id="finalBrand" className="text-center mb-12 opacity-0">
-          <h1 className="text-7xl font-bold text-foreground mb-4 tracking-tight">
+        <div id="finalBrand" className="text-center mb-16 opacity-0">
+          <h1 className="text-7xl font-bold text-foreground mb-8 tracking-tight">
             BlizzardBerry
           </h1>
-          <div className="h-2 w-48 bg-gradient-to-r from-[#F43F5E] to-[#1D4ED8] rounded-full mx-auto mb-6"></div>
+          <div className="h-2 w-48 bg-gradient-to-r from-[#F43F5E] to-[#1D4ED8] rounded-full mx-auto mb-12"></div>
           <div
             id="finalTagline"
-            className="text-2xl text-muted-foreground font-semibold opacity-0 tracking-wide"
+            className="text-xl text-muted-foreground font-normal opacity-0 tracking-wide"
           >
             An AI-powered natural language interface for every app
           </div>
