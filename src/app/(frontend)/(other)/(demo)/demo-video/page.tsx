@@ -3,8 +3,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
-import Chart from 'chart.js/auto';
 import Image from 'next/image';
+import { LabelList, RadialBar, RadialBarChart } from 'recharts';
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/app/(frontend)/components/ui/chart';
 
 // Register GSAP plugins
 gsap.registerPlugin(TextPlugin);
@@ -29,9 +35,14 @@ const CONFIG = {
     SLIDE_DURATION: 0.5,
   },
   CHART: {
-    DATA: [650, 720, 580, 847, 620, 750],
-    LABELS: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
-    MAX_VALUE: 1000,
+    DATA: [
+      { month: 'Jun', revenue: 650, fill: '#BFDBFE' },
+      { month: 'Jul', revenue: 720, fill: '#93C5FD' },
+      { month: 'Aug', revenue: 580, fill: '#60A5FA' },
+      { month: 'Sep', revenue: 847, fill: '#3B82F6' },
+      { month: 'Oct', revenue: 620, fill: '#1E40AF' },
+      { month: 'Nov', revenue: 750, fill: '#1E3A8A' },
+    ],
   },
 };
 
@@ -59,7 +70,6 @@ export default function DemoPage() {
   const [, setIsLoaded] = useState(false);
 
   const masterTimelineRef = useRef<gsap.core.Timeline | null>(null);
-  const chartInstanceRef = useRef<Chart | null>(null);
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
   const intervalsRef = useRef<NodeJS.Timeout[]>([]);
   const animationSpeedRef = useRef<number>(1);
@@ -205,70 +215,36 @@ export default function DemoPage() {
     type();
   };
 
-  // Chart creation function
-  const createChart = () => {
-    const ctx = document.getElementById(
-      'performanceChart'
-    ) as HTMLCanvasElement;
-    if (!ctx) return;
-
-    if (chartInstanceRef.current) {
-      chartInstanceRef.current.destroy();
-    }
-
-    // Start with full data immediately visible
-    chartInstanceRef.current = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: CONFIG.CHART.LABELS,
-        datasets: [
-          {
-            label: 'Peak Revenue ($K)',
-            data: CONFIG.CHART.DATA,
-            backgroundColor: '#3B82F6', // Blue-500 like landing page
-            borderColor: '#2563EB', // Blue-600 for border
-            borderWidth: 2,
-            borderRadius: 8,
-            borderSkipped: false,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: CONFIG.CHART.MAX_VALUE,
-            grid: { color: 'rgba(59, 130, 246, 0.1)' }, // Blue grid color
-            ticks: {
-              color: '#64748b',
-              font: { family: 'Inter', size: 12 },
-              stepSize: 100, // Steps of 100 for round numbers
-              callback: function (value) {
-                // Show round numbers: 100K, 200K, 300K, etc.
-                if (value === 0) return '0';
-                if (value % 100 === 0) return value + 'K';
-                return ''; // Hide non-round numbers
-              },
-            },
-          },
-          x: {
-            grid: { color: 'rgba(59, 130, 246, 0.1)' }, // Blue grid color
-            ticks: {
-              color: '#64748b',
-              font: { family: 'Inter', size: 12 },
-            },
-          },
-        },
-      },
-    });
-
-    // Chart appears with full data immediately - no animation delay needed
-  };
+  // Chart config for radial chart
+  const chartConfig = {
+    revenue: {
+      label: 'Revenue ($K)',
+    },
+    Jun: {
+      label: 'Jun',
+      color: '#BFDBFE',
+    },
+    Jul: {
+      label: 'Jul',
+      color: '#93C5FD',
+    },
+    Aug: {
+      label: 'Aug',
+      color: '#60A5FA',
+    },
+    Sep: {
+      label: 'Sep',
+      color: '#3B82F6',
+    },
+    Oct: {
+      label: 'Oct',
+      color: '#1E40AF',
+    },
+    Nov: {
+      label: 'Nov',
+      color: '#1E3A8A',
+    },
+  } satisfies ChartConfig;
 
   // Master Timeline using GSAP - recreating original timing but with GSAP control
   const buildMasterTimeline = () => {
@@ -320,15 +296,8 @@ export default function DemoPage() {
     setDemoState((prev) => ({ ...prev, currentScene: 2 }));
 
     // Start chat conversation immediately - no delay
+    // Timing is now controlled by the chat flow in showInitialAnalyzingBubble
     startChatConversation();
-
-    // Transition is now handled directly by airplane boundary detection - no waiting needed
-
-    // AI architecture is now triggered directly from analyzing bubble's onComplete callback
-
-    // Dashboard is now triggered directly from AI analysis completion
-
-    // Dashboard hiding is now handled directly in showDashboard() function
   };
 
   // Transition is now handled directly by airplane boundary detection
@@ -467,10 +436,10 @@ export default function DemoPage() {
           };
           addChatMessage(message);
 
-          // Show analyzing bubble quickly after message appears
+          // Show analyzing bubble after user can see the sent message
           addTimeout(() => {
             showInitialAnalyzingBubble();
-          }, 300);
+          }, 1200); // Increased delay to let users see the sent message
         }
       };
     };
@@ -602,191 +571,14 @@ export default function DemoPage() {
         });
       }, chatMessages);
 
-      // Start AI analysis after analyzing bubble is visible
+      // Transition smoothly to dashboard after analyzing
       addTimeout(() => {
-        startAIArchitecture();
-      }, 1800); // Time to see analyzing bubble before analysis
+        startDashboardTransition();
+      }, 2500); // Let users see the analyzing bubble, then transition
     }, 300);
   };
 
-  const startAIArchitecture = () => {
-    console.log('=== STARTING PROFESSIONAL AI ANALYSIS TRANSITION ===');
-    const chatWindow = document.getElementById('chatWindow');
-    const aiArchitecture = document.getElementById('aiArchitecture');
-    const chatMessages = document.getElementById('chatMessages');
-
-    if (!chatWindow || !aiArchitecture || !chatMessages) {
-      console.error('Missing chat or analysis elements');
-      return;
-    }
-
-    // Step 1: Clear chat animation - animate entire message container
-    const allChatMessages = chatMessages.querySelectorAll('.chat-message');
-    if (allChatMessages.length > 0) {
-      // Animate the entire chat messages container with transform and opacity simultaneously
-      chatMessages.style.transition =
-        'transform 500ms ease-in-out, opacity 500ms ease-in-out';
-      chatMessages.style.transform = 'translateY(-100%)';
-      chatMessages.style.opacity = '0';
-
-      // Wait for clear chat animation to complete, then animate chat window
-      setTimeout(() => {
-        // Reset chat messages container for next conversation
-        chatMessages.innerHTML = '';
-        chatMessages.style.transform = 'translateY(0)';
-        chatMessages.style.opacity = '1';
-        chatMessages.style.transition = '';
-
-        animateChatWindow();
-      }, 500); // Wait for clear chat animation to complete
-    } else {
-      // No messages to animate, proceed directly to chat window animation
-      animateChatWindow();
-    }
-
-    function animateChatWindow() {
-      // Step 2: Elegant chat window disappearance with scale down + fade out
-      gsap.to(chatWindow, {
-        scale: 0.85,
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power2.in',
-        onComplete: () => {
-          chatWindow.style.display = 'none';
-          console.log('Chat elegantly scaled down and hidden');
-
-          // Step 2: Immediate professional analysis card appearance
-          aiArchitecture.style.display = 'block';
-          gsap.fromTo(
-            aiArchitecture,
-            {
-              scale: 0.8,
-              opacity: 0,
-              rotationY: -10,
-            },
-            {
-              scale: 1,
-              opacity: 1,
-              rotationY: 0,
-              duration: 0.8,
-              ease: 'back.out(1.4)',
-              onComplete: () => {
-                console.log(
-                  'Professional analysis card appeared, starting enhanced 3-step sequence'
-                );
-              },
-            }
-          );
-        },
-      });
-    } // Close animateChatWindow function
-
-    // Modern Analysis - Single Progressive Screen
-    addTimeout(() => {
-      const analysisView = document.getElementById('analysisStep1');
-      if (analysisView) {
-        // Show main analysis view
-        gsap.fromTo(
-          analysisView,
-          { opacity: 0, y: 20, scale: 0.95 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.8,
-            ease: 'power2.out',
-            onComplete: () => {
-              // Start progressive step animations
-              startProgressiveAnalysis();
-            },
-          }
-        );
-      }
-    }, 300);
-
-    // Exit to Dashboard after all steps complete
-    addTimeout(() => {
-      const analysisView = document.getElementById('analysisStep1');
-
-      if (analysisView) {
-        gsap.to(analysisView, {
-          opacity: 0,
-          duration: 0.6,
-          ease: 'power2.in',
-          onComplete: () => {
-            // Smooth analysis exit without scaling
-            gsap.to(aiArchitecture, {
-              opacity: 0,
-              duration: 0.5,
-              ease: 'power2.in',
-              onComplete: () => {
-                aiArchitecture.style.display = 'none';
-                console.log('=== ANALYSIS COMPLETE: Showing dashboard ===');
-                startDashboardTransition();
-              },
-            });
-          },
-        });
-      }
-    }, 6500); // Total analysis time: 6.5 seconds (1 second longer than before)
-  };
-
-  // New Progressive Analysis Animation System
-  const startProgressiveAnalysis = () => {
-    console.log('=== STARTING PROGRESSIVE ANALYSIS ANIMATIONS ===');
-
-    // Step 1: Complete first step (Data Fetching)
-    addTimeout(() => {
-      completeAnalysisStep('step1', 'Complete');
-      startAnalysisStep('step2');
-    }, 800);
-
-    // Step 2: Complete second step (Analysis)
-    addTimeout(() => {
-      completeAnalysisStep('step2', 'Complete');
-      startAnalysisStep('step3');
-    }, 2000);
-
-    // Step 3: Complete final step (Dashboard)
-    addTimeout(() => {
-      completeAnalysisStep('step3', 'Ready');
-      // Update main title for completion instantly to avoid layout shifts
-      const title = document.getElementById('analysisTitle');
-      const subtitle = document.getElementById('analysisSubtitle');
-      if (title && subtitle) {
-        title.textContent = 'Analysis Complete';
-        subtitle.textContent = 'Revenue dashboard is ready to view';
-      }
-    }, 3200);
-  };
-
-  const startAnalysisStep = (stepId: string) => {
-    const step = document.getElementById(stepId);
-    if (!step) return;
-
-    // Activate step - instantly set opacity to avoid layout shift
-    step.style.opacity = '1';
-
-    // Update status
-    const status = step.querySelector('.step-status');
-    if (status) {
-      status.textContent = 'Processing...';
-    }
-  };
-
-  const completeAnalysisStep = (stepId: string, completionText: string) => {
-    const step = document.getElementById(stepId);
-    if (!step) return;
-
-    const status = step.querySelector('.step-status');
-
-    if (status) {
-      // Update status instantly to avoid any layout shifts
-      status.textContent = completionText;
-      status.className =
-        'step-status text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-lg w-[90px] text-center';
-    }
-  };
+  // Removed AI analysis - going directly to dashboard
 
   const continueConversationAfterDashboard = () => {
     console.log('=== CONTINUING CONVERSATION AFTER DASHBOARD ===');
@@ -1340,10 +1132,9 @@ export default function DemoPage() {
   const showDashboard = () => {
     console.log('=== DASHBOARD SHOWING ===');
 
-    // Start counters and chart immediately when dashboard appears
-    console.log('Starting counter animation and chart immediately');
+    // Start counters immediately when dashboard appears
+    console.log('Starting counter animation immediately');
     animateCounters();
-    createChart();
 
     // Hide dashboard after it has been displayed for 5 seconds
     addTimeout(() => {
@@ -1436,22 +1227,22 @@ export default function DemoPage() {
 
   const startDashboardTransition = () => {
     console.log('=== STARTING DASHBOARD TRANSITION ===');
-    const aiArchitecture = document.getElementById('aiArchitecture');
+    const chatWindow = document.getElementById('chatWindow');
     const dashboardScene = document.getElementById('dashboardScene');
 
-    if (!aiArchitecture || !dashboardScene) {
+    if (!chatWindow || !dashboardScene) {
       console.error('Missing elements for transition');
       return;
     }
 
-    // Step 1: Fade out analysis
-    gsap.to(aiArchitecture, {
+    // Step 1: Fade out chat
+    gsap.to(chatWindow, {
       opacity: 0,
       duration: 0.8,
       ease: 'power2.inOut',
       onComplete: () => {
-        aiArchitecture.style.display = 'none';
-        console.log('Analysis faded out');
+        chatWindow.style.display = 'none';
+        console.log('Chat faded out');
 
         // Step 2: Show dashboard immediately with content
         dashboardScene.style.display = 'block';
@@ -1629,9 +1420,6 @@ export default function DemoPage() {
       clearAllTimers();
       if (masterTimelineRef.current) {
         masterTimelineRef.current.kill();
-      }
-      if (chartInstanceRef.current) {
-        chartInstanceRef.current.destroy();
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -2019,128 +1807,7 @@ export default function DemoPage() {
           </div>
         </div>
 
-        {/* Modern AI Analysis - Single Progressive Screen */}
-        <div
-          id="aiArchitecture"
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0"
-          style={{ display: 'none' }}
-        >
-          <div className="w-[500px] h-[480px] bg-white flex items-center justify-center relative overflow-hidden rounded-3xl transition-all duration-300 ease-out">
-            {/* White background */}
-            <div className="absolute inset-0 bg-white"></div>
-
-            {/* Single Progressive Analysis View */}
-            <div
-              id="analysisStep1"
-              className="relative z-10 text-center px-16 py-16 opacity-0"
-            >
-              {/* AI Processing Center */}
-              <div className="mb-6">
-                <div className="relative mx-auto w-16 h-16">
-                  {/* Clean AI Core */}
-                  <div className="w-16 h-16 bg-gradient-to-br from-brand to-brand/80 rounded-2xl flex items-center justify-center relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-brand/60 to-brand/80 animate-pulse opacity-30 rounded-2xl"></div>
-
-                    {/* Simple AI Icon */}
-                    <svg
-                      width="24"
-                      height="24"
-                      fill="white"
-                      viewBox="0 0 24 24"
-                      className="relative z-10"
-                    >
-                      <path d="M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1M12,7C9.24,7 7,9.24 7,12S9.24,17 12,17S17,14.76 17,12S14.76,7 12,7M12,9C13.66,9 15,10.34 15,12S13.66,15 12,15S9,13.66 9,12S10.34,9 12,9Z" />
-                    </svg>
-
-                    {/* Simple rotating ring */}
-                    <div
-                      className="absolute inset-0 w-16 h-16 border-2 border-white/25 rounded-2xl animate-spin opacity-50"
-                      style={{ animationDuration: '6s' }}
-                    ></div>
-
-                    {/* Subtle pulse */}
-                    <div className="absolute inset-0 w-16 h-16 border border-white/20 rounded-2xl animate-ping opacity-30"></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Dynamic Status Text */}
-              <div className="mb-6">
-                <h2
-                  id="analysisTitle"
-                  className="text-2xl sm:text-3xl font-bold text-foreground mb-2 tracking-tighter leading-tight"
-                >
-                  Analyzing Revenue Data
-                </h2>
-                <p
-                  id="analysisSubtitle"
-                  className="text-sm sm:text-base text-muted-foreground leading-relaxed"
-                >
-                  BlizzardBerry AI is processing your request...
-                </p>
-              </div>
-
-              {/* Progress System */}
-              <div className="bg-white rounded-2xl p-4">
-                <div className="space-y-3">
-                  {/* Step 1: Data Fetching */}
-                  <div
-                    className="progress-step flex items-center justify-between p-2 rounded-xl bg-cyan-50 border border-cyan-200/50"
-                    id="step1"
-                  >
-                    <div>
-                      <span className="text-sm font-medium text-gray-900">
-                        Data Collection
-                      </span>
-                      <div className="text-xs text-gray-600">
-                        North America revenue streams
-                      </div>
-                    </div>
-                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[90px] text-center">
-                      Waiting...
-                    </div>
-                  </div>
-
-                  {/* Step 2: AI Analysis */}
-                  <div
-                    className="progress-step flex items-center justify-between p-2 rounded-xl bg-teal-50 border border-teal-200/50 opacity-50"
-                    id="step2"
-                  >
-                    <div>
-                      <span className="text-sm font-medium text-gray-900">
-                        AI Analytics
-                      </span>
-                      <div className="text-xs text-gray-600">
-                        Pattern recognition & insights
-                      </div>
-                    </div>
-                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[90px] text-center">
-                      Waiting...
-                    </div>
-                  </div>
-
-                  {/* Step 3: Dashboard */}
-                  <div
-                    className="progress-step flex items-center justify-between p-2 rounded-xl bg-indigo-50 border border-indigo-200/50 opacity-50"
-                    id="step3"
-                  >
-                    <div>
-                      <span className="text-sm font-medium text-gray-900">
-                        Dashboard
-                      </span>
-                      <div className="text-xs text-gray-600">
-                        Interactive visualizations
-                      </div>
-                    </div>
-                    <div className="step-status text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-lg w-[90px] text-center">
-                      Waiting...
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Removed AI Analysis screen */}
       </div>
 
       {/* Modern Revenue Dashboard */}
@@ -2204,12 +1871,33 @@ export default function DemoPage() {
                 </div>
               </div>
 
-              {/* Pure Chart */}
+              {/* Radial Chart */}
               <div className="h-80 relative" id="chartSection">
-                <canvas
-                  id="performanceChart"
-                  className="w-full h-full"
-                ></canvas>
+                <ChartContainer
+                  config={chartConfig}
+                  className="mx-auto aspect-square max-h-[280px]"
+                >
+                  <RadialBarChart
+                    data={CONFIG.CHART.DATA}
+                    startAngle={-90}
+                    endAngle={380}
+                    innerRadius={40}
+                    outerRadius={120}
+                  >
+                    <ChartTooltip
+                      cursor={false}
+                      content={<ChartTooltipContent hideLabel nameKey="month" />}
+                    />
+                    <RadialBar dataKey="revenue" background>
+                      <LabelList
+                        position="insideStart"
+                        dataKey="month"
+                        className="fill-white capitalize mix-blend-luminosity"
+                        fontSize={11}
+                      />
+                    </RadialBar>
+                  </RadialBarChart>
+                </ChartContainer>
               </div>
             </div>
           </div>
