@@ -36,12 +36,12 @@ const CONFIG = {
   },
   CHART: {
     DATA: [
-      { month: 'Jun', revenue: 650, fill: '#BFDBFE' },
-      { month: 'Jul', revenue: 720, fill: '#93C5FD' },
-      { month: 'Aug', revenue: 580, fill: '#60A5FA' },
+      { month: 'Jun', revenue: 520, fill: '#BFDBFE' },
+      { month: 'Jul', revenue: 600, fill: '#93C5FD' },
+      { month: 'Aug', revenue: 480, fill: '#60A5FA' },
       { month: 'Sep', revenue: 847, fill: '#3B82F6' },
-      { month: 'Oct', revenue: 620, fill: '#1E40AF' },
-      { month: 'Nov', revenue: 750, fill: '#1E3A8A' },
+      { month: 'Oct', revenue: 550, fill: '#1E40AF' },
+      { month: 'Nov', revenue: 630, fill: '#1E3A8A' },
     ],
   },
 };
