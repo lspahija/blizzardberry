@@ -392,60 +392,54 @@ export default function CustomerSupportVideo() {
   };
 
   const animateFinaleElements = () => {
-    // Animate finale elements in sequence like demo-niko
+    // Scene 4: Brand Finale - Sequential animation with proper timing (from demo-video)
     const finaleLogo = document.getElementById('finaleLogo');
     const finaleBrand = document.getElementById('finaleBrand');
     const finaleTagline = document.getElementById('finaleTagline');
 
-    // Reset positions
+    // Ensure all elements start hidden
     if (finaleLogo) gsap.set(finaleLogo, { scale: 0, opacity: 0 });
     if (finaleBrand) gsap.set(finaleBrand, { y: 50, opacity: 0 });
     if (finaleTagline) gsap.set(finaleTagline, { y: 30, opacity: 0 });
 
-    // Animate in sequence
+    // 1. Logo appears first (reduced delay)
     addTimeout(() => {
+      console.log('=== SCENE 4: Showing logo ===');
       if (finaleLogo) {
         gsap.to(finaleLogo, {
           scale: 1,
           opacity: 1,
           duration: 1.2,
-          ease: "elastic.out(1, 0.3)"
+          ease: 'elastic.out(1, 0.3)',
         });
       }
-    }, 200);
+    }, 300);
 
+    // 2. Brand text appears (faster)
     addTimeout(() => {
+      console.log('=== SCENE 4: Showing brand text ===');
       if (finaleBrand) {
         gsap.to(finaleBrand, {
           y: 0,
           opacity: 1,
           duration: 0.8,
-          ease: "power3.out"
+          ease: 'power3.out',
         });
       }
-      
-      // Animate the gradient line at the same time as the brand text
-      const gradientLine = document.getElementById('finaleGradientLine');
-      if (gradientLine) {
-        gsap.to(gradientLine, {
-          scaleX: 1, 
-          opacity: 1, 
-          duration: 0.8, 
-          ease: "power2.out"
-        });
-      }
-    }, 1000);
+    }, 1800);
 
+    // 3. Tagline appears (faster)
     addTimeout(() => {
+      console.log('=== SCENE 4: Showing tagline ===');
       if (finaleTagline) {
         gsap.to(finaleTagline, {
           y: 0,
           opacity: 1,
           duration: 0.6,
-          ease: "power2.out"
+          ease: 'power2.out',
         });
       }
-    }, 1800); // Slightly delayed after brand + line
+    }, 2800);
   };
 
   const startTypingIntro = () => {
@@ -688,35 +682,47 @@ export default function CustomerSupportVideo() {
         </div>
       </div>
 
-      {/* Demo-Niko Finale Scene */}
-      <div 
+      {/* Scene 4: Brand Finale - BlizzardBerry Style */}
+      <div
         id="finaleContainer"
-        className={`fixed inset-0 bg-white flex flex-col items-center justify-center transition-opacity duration-500 ${
+        className={`fixed inset-0 opacity-0 flex flex-col items-center justify-center bg-white transition-opacity duration-500 ${
           videoState.currentPhase === 'finale' ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         style={{ display: 'none' }}
       >
         {/* Logo with modern styling */}
-        <div id="finaleLogo" className="relative z-10 mb-12 opacity-0" style={{ transform: 'scale(0)' }}>
+        <div id="finaleLogo" className="relative z-10 mb-8 opacity-0">
           <div className="relative">
-            <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center shadow-2xl" style={{ animation: 'logoPulse 3s infinite' }}>
-              <Image src="/image/logo.png" alt="BlizzardBerry Logo" width={80} height={80} priority unoptimized />
+            <div
+              className="w-48 h-48 bg-white rounded-3xl flex items-center justify-center"
+              style={{ animation: 'logoPulse 3s infinite' }}
+            >
+              <Image
+                src="/image/logo.png"
+                alt="BlizzardBerry Logo"
+                width={120}
+                height={120}
+                priority
+                unoptimized
+              />
             </div>
             
             {/* Pulse ring effects */}
-            <div className="absolute inset-0 w-32 h-32 border-2 border-brand/40 rounded-3xl" style={{ animation: 'ringPulse 3s infinite ease-out' }}></div>
-            <div className="absolute inset-0 w-32 h-32 border border-secondary/30 rounded-3xl" style={{ animation: 'ringPulse 3s infinite ease-out 1s' }}></div>
+            <div className="absolute inset-0 w-48 h-48 border-2 border-brand/40 rounded-3xl" style={{ animation: 'ringPulse 3s infinite ease-out' }}></div>
           </div>
         </div>
-        
+
         {/* Brand text with modern styling */}
-        <div className="text-center mb-12">
-          <h1 id="finaleBrand" className="text-7xl font-bold text-foreground mb-4 tracking-tight opacity-0" style={{ transform: 'translateY(50px)' }}>
+        <div id="finaleBrand" className="text-center mb-8 opacity-0">
+          <h1 className="text-7xl font-bold text-foreground mb-8 tracking-tight">
             BlizzardBerry
           </h1>
-          <div id="finaleGradientLine" className="h-2 w-48 bg-gradient-to-r from-[#F43F5E] to-[#1D4ED8] rounded-full mx-auto mb-6 opacity-0" style={{ transform: 'scaleX(0)' }}></div>
-          <div id="finaleTagline" className="text-2xl text-muted-foreground font-semibold opacity-0 tracking-wide" style={{ transform: 'translateY(30px)' }}>
-            AN AI AGENT FOR EVERY APP
+          <div className="h-2 w-48 bg-gradient-to-r from-[#F43F5E] to-[#1D4ED8] rounded-full mx-auto mb-9"></div>
+          <div
+            id="finaleTagline"
+            className="text-xl text-muted-foreground font-normal opacity-0 tracking-wide"
+          >
+            An AI-powered natural language interface for every app
           </div>
         </div>
       </div>
