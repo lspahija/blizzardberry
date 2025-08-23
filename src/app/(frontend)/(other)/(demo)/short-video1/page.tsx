@@ -181,38 +181,92 @@ export default function CustomerSupportVideo() {
       // Clear any existing messages to ensure proper order
       chatMessages.innerHTML = '';
       
-      const messageDiv = document.createElement('div');
-      messageDiv.className = 'flex justify-end chat-message';
-      messageDiv.innerHTML = `
-        <div class="max-w-md px-5 py-3 rounded-2xl bg-brand text-primary-foreground">
-          <div class="text-base leading-relaxed">I need to cancel my order #1234.</div>
-        </div>
-      `;
-      chatMessages.appendChild(messageDiv);
-      
-      // Animate message in
-      gsap.fromTo(messageDiv, 
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
-      );
+      addChatMessageWithSlide({
+        type: 'sent',
+        text: 'I need to cancel my order #1234.'
+      });
 
       // Add processing bubble directly after user message appears
       addTimeout(() => {
         addProcessingBubble();
-      }, 800); // Wait for user message animation to complete
+      }, 1000); // Wait for user message animation to complete
     }
   };
 
-  const addProcessingBubble = () => {
+  const addChatMessageWithSlide = (message: { type: string; text: string }, isMultiline = false) => {
     const chatMessages = document.getElementById('chatMessages');
     if (!chatMessages) return;
 
-    const analyzingDiv = document.createElement('div');
-    analyzingDiv.className = 'flex justify-start chat-message';
-    analyzingDiv.id = 'analyzingBubble';
+    // Get existing messages for smooth sliding animation
+    const existingMessages = Array.from(chatMessages.querySelectorAll('.chat-message'));
     
-    analyzingDiv.innerHTML = `
-      <div class="bg-muted px-5 py-3 rounded-3xl max-w-md">
+    // Format text for multiline with bullet points
+    let formattedText = message.text;
+    if (isMultiline) {
+      formattedText = message.text
+        .split('\n')
+        .map(line => line.trim())
+        .join('<br>');
+    }
+
+    // Create the new message
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
+    messageDiv.innerHTML = `
+      <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
+        message.type === 'sent' 
+          ? 'bg-brand text-primary-foreground hover:scale-[1.02]' 
+          : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
+      }">
+        <div class="text-base leading-relaxed">${formattedText}</div>
+      </div>
+    `;
+
+    // Add to DOM
+    chatMessages.appendChild(messageDiv);
+
+    // Calculate the space needed for the new message
+    const messageHeight = messageDiv.offsetHeight;
+    const gap = 16; // gap-4 = 1rem = 16px
+    const totalMove = messageHeight + gap;
+
+    // Smooth sliding animation - all messages move up, new message slides in from bottom
+    gsap.context(() => {
+      // Start new message below its final position
+      gsap.set(messageDiv, { 
+        y: 60,  
+        opacity: 0,
+        scale: 0.95
+      });
+      
+      // Animate existing messages up
+      existingMessages.forEach((el, i) => {
+        gsap.to(el, {
+          y: -totalMove,
+          duration: 0.8,
+          delay: i * 0.02, // Subtle stagger for wave effect
+          ease: "power2.out"
+        });
+      });
+      
+      // Animate new message into position
+      gsap.to(messageDiv, {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 0.8,
+        delay: 0.1, // Slight delay for better effect
+        ease: "back.out(1.7)",
+        clearProps: "all"
+      });
+      
+    }, chatMessages);
+  };
+
+  const addProcessingBubble = () => {
+    addChatMessageWithSlide({
+      type: 'received',
+      text: `
         <div class="flex items-center space-x-3">
           <div class="flex space-x-1">
             <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce"></div>
@@ -221,16 +275,15 @@ export default function CustomerSupportVideo() {
           </div>
           <div class="text-base text-muted-foreground">Processing cancellation...</div>
         </div>
-      </div>
-    `;
-    
-    chatMessages.appendChild(analyzingDiv);
-    
-    // Animate in smoothly below the user message
-    gsap.fromTo(analyzingDiv, 
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
-    );
+      `
+    });
+
+    // Store reference for later removal
+    const allMessages = document.querySelectorAll('.chat-message');
+    const processingBubble = allMessages[allMessages.length - 1];
+    if (processingBubble) {
+      processingBubble.id = 'analyzingBubble';
+    }
   };
 
   const showProcessing = () => {
@@ -240,91 +293,82 @@ export default function CustomerSupportVideo() {
   };
 
   const showResult = () => {
-    // Remove analyzing bubble with smooth fade
+    // Remove analyzing bubble with smooth fade and slide up
     const analyzingBubble = document.getElementById('analyzingBubble');
     if (analyzingBubble) {
       gsap.to(analyzingBubble, {
         opacity: 0,
-        y: -20,
-        scale: 0.9,
-        duration: 0.5,
+        y: -30,
+        scale: 0.8,
+        duration: 0.6,
         ease: "power2.in",
         onComplete: () => {
           if (analyzingBubble.parentNode) {
             analyzingBubble.parentNode.removeChild(analyzingBubble);
           }
+          
+          // Add success response after processing bubble is removed
+          addSuccessResponse();
         }
       });
+    } else {
+      // Fallback if bubble not found
+      addSuccessResponse();
     }
+  };
 
-    // Beautiful success response with celebration
-    addTimeout(() => {
-      const chatMessages = document.getElementById('chatMessages');
-      if (chatMessages) {
-        const responseDiv = document.createElement('div');
-        responseDiv.className = 'flex justify-start chat-message';
-        responseDiv.id = 'successResponse';
-        
-        responseDiv.innerHTML = `
-          <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 text-foreground px-6 py-4 rounded-2xl max-w-lg shadow-lg">
-            <div class="text-base leading-relaxed">
-              <div class="flex items-center mb-3">
-                <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 shadow-sm">
-                  <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <span class="font-bold text-green-700 text-lg">Order Canceled!</span>
+  const addSuccessResponse = () => {
+    const successMessage = {
+      type: 'received',
+      text: `
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 text-foreground px-6 py-4 rounded-2xl max-w-lg shadow-lg">
+          <div class="text-base leading-relaxed">
+            <div class="flex items-center mb-3">
+              <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 shadow-sm celebration-checkmark">
+                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                </svg>
               </div>
-              <div class="bg-white/70 rounded-lg p-3 mb-3">
-                <p class="font-semibold text-gray-800">Order #1234</p>
-                <p class="text-sm text-gray-600">Premium headphones - $127.99</p>
-              </div>
-              <div class="flex items-center justify-between text-sm">
-                <span class="text-gray-600">Refund:</span>
-                <span class="font-bold text-green-700">$127.99</span>
-              </div>
-              <p class="text-xs text-gray-500 mt-2">Processing time: 3-5 business days</p>
+              <span class="font-bold text-green-700 text-lg">Order Canceled!</span>
             </div>
+            <div class="bg-white/70 rounded-lg p-3 mb-3">
+              <p class="font-semibold text-gray-800">Order #1234</p>
+              <p class="text-sm text-gray-600">Premium headphones - $127.99</p>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-gray-600">Refund:</span>
+              <span class="font-bold text-green-700">$127.99</span>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">Processing time: 3-5 business days</p>
           </div>
-        `;
+        </div>
+      `
+    };
+
+    addChatMessageWithSlide(successMessage);
+
+    // Add celebration effects after the message slides in
+    addTimeout(() => {
+      const lastMessage = document.querySelector('.chat-message:last-child');
+      if (lastMessage) {
+        // Create celebration particles
+        for (let i = 0; i < 6; i++) {
+          createCelebrationParticle(lastMessage as HTMLElement);
+        }
         
-        chatMessages.appendChild(responseDiv);
-        
-        // Beautiful entrance animation with celebration
-        gsap.fromTo(responseDiv, 
-          { opacity: 0, y: 30, scale: 0.8, rotationX: -15 },
-          { 
-            opacity: 1, 
-            y: 0, 
-            scale: 1,
-            rotationX: 0,
-            duration: 1.2, 
-            ease: "elastic.out(1, 0.6)" 
-          }
-        );
-        
-        // Celebrate with confetti-like effect
-        addTimeout(() => {
-          // Create celebration particles
-          for (let i = 0; i < 6; i++) {
-            createCelebrationParticle(responseDiv);
-          }
-          
-          // Gentle pulse on the checkmark
-          const checkmark = responseDiv.querySelector('.bg-green-500');
-          if (checkmark) {
-            gsap.to(checkmark, {
-              scale: 1.3,
-              duration: 0.3,
-              yoyo: true,
-              repeat: 1,
-              ease: "power2.inOut"
-            });
-          }
-        }, 600);
+        // Gentle pulse on the checkmark
+        const checkmark = lastMessage.querySelector('.celebration-checkmark');
+        if (checkmark) {
+          gsap.to(checkmark, {
+            scale: 1.3,
+            duration: 0.3,
+            yoyo: true,
+            repeat: 1,
+            ease: "power2.inOut"
+          });
+        }
       }
-    }, 600);
+    }, 1000); // After slide animation completes
   };
 
   const createCelebrationParticle = (container: HTMLElement) => {
