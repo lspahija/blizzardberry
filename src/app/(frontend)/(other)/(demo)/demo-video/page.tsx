@@ -40,7 +40,7 @@ const CONFIG = {
     SCENE_DURATION: 48000,
     TYPING_SPEED: 50,
     AIRPLANE_DURATION: 250,
-    DASHBOARD_DISPLAY: 5000,
+    DASHBOARD_DISPLAY: 3000,
     TICKETS_DISPLAY: 5000,
     SCENE4_TOTAL: 6800,
   },
@@ -669,7 +669,7 @@ export default function DemoPage() {
         addChatMessage(
           {
             type: 'received',
-            text: 'We had 3 tickets today:\n\n• 2 Resolved\n• 1 Open\n\nWould you like to see the full details?',
+            text: 'We had 3 tickets today:\n\n• <strong>2 Resolved</strong>\n• <strong>1 Open</strong>\n\nWould you like to see the full details?',
           },
           true
         );
