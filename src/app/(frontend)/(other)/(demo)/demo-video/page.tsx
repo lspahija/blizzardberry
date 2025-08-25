@@ -1895,13 +1895,13 @@ export default function DemoPage() {
               </div>
 
               {/* Hero Metrics - Prominent Display */}
-              <div className="grid grid-cols-2 gap-8 mb-12" id="statsGrid">
+              <div className="flex justify-center gap-12 mb-12" id="statsGrid">
                 <div className="text-center">
                   <div className="text-5xl sm:text-6xl font-bold text-foreground mb-1 flex items-baseline justify-center">
                     <span className="text-3xl sm:text-4xl text-muted-foreground mr-1">
                       $
                     </span>
-                    <span className="metric-number" data-target="847">
+                    <span className="metric-number" data-target="347">
                       0
                     </span>
                     <span className="text-2xl sm:text-3xl text-muted-foreground ml-1">
@@ -1909,7 +1909,7 @@ export default function DemoPage() {
                     </span>
                   </div>
                   <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-medium">
-                    Peak Revenue
+                    Average Revenue
                   </div>
                   <div className="h-0.5 w-16 bg-indigo-500 mx-auto mt-3 rounded-full"></div>
                 </div>
@@ -1955,6 +1955,13 @@ export default function DemoPage() {
                         dataKey="month"
                         className="fill-white capitalize mix-blend-luminosity"
                         fontSize={11}
+                      />
+                      <LabelList
+                        position="insideEnd"
+                        dataKey="revenue"
+                        className="fill-white font-medium"
+                        fontSize={10}
+                        formatter={(value: number) => `$${value}K`}
                       />
                     </RadialBar>
                   </RadialBarChart>
