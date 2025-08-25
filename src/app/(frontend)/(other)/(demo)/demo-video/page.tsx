@@ -1907,13 +1907,13 @@ export default function DemoPage() {
               <div className="flex justify-center gap-12 mb-8" id="statsGrid">
                 <div className="text-center">
                   <div className="text-5xl sm:text-6xl font-bold text-foreground mb-1 flex items-baseline justify-center">
-                    <span className="text-3xl sm:text-4xl text-muted-foreground mr-1">
+                    <span className="text-4xl sm:text-5xl text-muted-foreground mr-1">
                       $
                     </span>
                     <span className="metric-number" data-target="347">
                       0
                     </span>
-                    <span className="text-2xl sm:text-3xl text-muted-foreground ml-1">
+                    <span className="text-4xl sm:text-5xl text-muted-foreground ml-1">
                       K
                     </span>
                   </div>
@@ -1928,7 +1928,7 @@ export default function DemoPage() {
                     <span className="metric-number" data-target="18">
                       0
                     </span>
-                    <span className="text-2xl sm:text-3xl text-muted-foreground">
+                    <span className="text-4xl sm:text-5xl text-muted-foreground">
                       %
                     </span>
                   </div>
