@@ -867,7 +867,7 @@ export default function CustomerSupportVideo() {
             id="finaleTagline"
             className="text-xl text-muted-foreground font-normal opacity-0 tracking-wide"
           >
-            An AI-powered natural language interface for every app
+            An AI-powered natural language interface for every web app
           </div>
         </div>
       </div>
