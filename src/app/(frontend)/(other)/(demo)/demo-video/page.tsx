@@ -50,7 +50,15 @@ const CONFIG = {
     SLIDE_DURATION: 0.5,
   },
   CHART: {
-    DATA: [
+    GLOBAL_DATA: [
+      { month: 'Jun', revenue: 320, fill: '#FECACA' },
+      { month: 'Jul', revenue: 280, fill: '#FCA5A5' },
+      { month: 'Aug', revenue: 450, fill: '#F87171' },
+      { month: 'Sep', revenue: 380, fill: '#EF4444' },
+      { month: 'Oct', revenue: 520, fill: '#DC2626' },
+      { month: 'Nov', revenue: 290, fill: '#B91C1C' },
+    ],
+    NA_DATA: [
       { month: 'Jun', revenue: 520, fill: '#BFDBFE' },
       { month: 'Jul', revenue: 600, fill: '#93C5FD' },
       { month: 'Aug', revenue: 480, fill: '#60A5FA' },
@@ -230,7 +238,38 @@ export default function DemoPage() {
     type();
   };
 
-  // Chart config for radial chart
+  // Chart config for radial chart - Global (Pink/Red)
+  const globalChartConfig = {
+    revenue: {
+      label: 'Revenue ($K)',
+    },
+    Jun: {
+      label: 'Jun',
+      color: '#FECACA',
+    },
+    Jul: {
+      label: 'Jul',
+      color: '#FCA5A5',
+    },
+    Aug: {
+      label: 'Aug',
+      color: '#F87171',
+    },
+    Sep: {
+      label: 'Sep',
+      color: '#EF4444',
+    },
+    Oct: {
+      label: 'Oct',
+      color: '#DC2626',
+    },
+    Nov: {
+      label: 'Nov',
+      color: '#B91C1C',
+    },
+  } satisfies ChartConfig;
+
+  // Chart config for radial chart - North America (Blue)
   const chartConfig = {
     revenue: {
       label: 'Revenue ($K)',
@@ -586,10 +625,10 @@ export default function DemoPage() {
         });
       }, chatMessages);
 
-      // Transition smoothly to dashboard after analyzing
+      // Transition smoothly to Global dashboard first after analyzing
       addTimeout(() => {
-        startDashboardTransition();
-      }, 2500); // Let users see the analyzing bubble, then transition
+        startGlobalDashboardTransition();
+      }, 2500); // Let users see the analyzing bubble, then transition to Global
     }, 300);
   };
 
@@ -1188,16 +1227,35 @@ export default function DemoPage() {
     addTimeout(typeChar, 200);
   };
 
-  const showDashboard = () => {
-    console.log('=== DASHBOARD SHOWING ===');
+  const showGlobalDashboard = () => {
+    console.log('=== GLOBAL DASHBOARD SHOWING ===');
 
-    // Start counters immediately when dashboard appears
-    console.log('Starting counter animation immediately');
+    // Set all global counters immediately (no animation)
+    const globalCounters = document.querySelectorAll('#globalDashboardScene .metric-number');
+    globalCounters.forEach((counter) => {
+      const target = parseInt(counter.getAttribute('data-target') || '0');
+      counter.textContent = target.toLocaleString();
+    });
+
+    console.log('Global dashboard counters set immediately');
+
+    // Hide Global dashboard after 3 seconds and transition to North America
+    addTimeout(() => {
+      console.log('=== TRANSITIONING FROM GLOBAL TO NORTH AMERICA ===');
+      startDashboardTransition();
+    }, 3000); // Shorter display time for Global
+  };
+
+  const showDashboard = () => {
+    console.log('=== NORTH AMERICA DASHBOARD SHOWING ===');
+
+    // Start counters with animation when North America dashboard appears
+    console.log('Starting North America counter animation immediately');
     animateCounters();
 
     // Hide dashboard after it has been displayed for 5 seconds
     addTimeout(() => {
-      console.log('=== HIDING DASHBOARD, RETURNING TO CHAT ===');
+      console.log('=== HIDING NORTH AMERICA DASHBOARD, RETURNING TO CHAT ===');
       const dashboardScene = document.getElementById('dashboardScene');
       const chatWindow = document.getElementById('chatWindow');
 
@@ -1284,13 +1342,13 @@ export default function DemoPage() {
     }, CONFIG.TIMINGS.DASHBOARD_DISPLAY);
   };
 
-  const startDashboardTransition = () => {
-    console.log('=== STARTING DASHBOARD TRANSITION ===');
+  const startGlobalDashboardTransition = () => {
+    console.log('=== STARTING GLOBAL DASHBOARD TRANSITION ===');
     const chatWindow = document.getElementById('chatWindow');
-    const dashboardScene = document.getElementById('dashboardScene');
+    const globalDashboardScene = document.getElementById('globalDashboardScene');
 
-    if (!chatWindow || !dashboardScene) {
-      console.error('Missing elements for transition');
+    if (!chatWindow || !globalDashboardScene) {
+      console.error('Missing elements for Global dashboard transition');
       return;
     }
 
@@ -1301,12 +1359,55 @@ export default function DemoPage() {
       ease: 'power2.inOut',
       onComplete: () => {
         chatWindow.style.display = 'none';
-        console.log('Chat faded out');
+        console.log('Chat faded out for Global dashboard');
 
-        // Step 2: Show dashboard immediately with content
+        // Step 2: Show Global dashboard immediately with content (no animations)
+        globalDashboardScene.style.display = 'block';
+        globalDashboardScene.style.visibility = 'visible';
+        console.log('Global Dashboard scene display set to block and visible');
+        gsap.fromTo(
+          globalDashboardScene,
+          { opacity: 0, scale: 0.95 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.6,
+            ease: 'power2.out',
+            onComplete: () => {
+              console.log('Global Dashboard scene appeared');
+              // Show Global dashboard without animations - everything loads immediately
+              showGlobalDashboard();
+            },
+          }
+        );
+      },
+    });
+  };
+
+  const startDashboardTransition = () => {
+    console.log('=== STARTING NORTH AMERICA DASHBOARD TRANSITION ===');
+    const globalDashboardScene = document.getElementById('globalDashboardScene');
+    const dashboardScene = document.getElementById('dashboardScene');
+
+    if (!globalDashboardScene || !dashboardScene) {
+      console.error('Missing elements for NA dashboard transition');
+      return;
+    }
+
+    // Step 1: Fade out Global dashboard
+    gsap.to(globalDashboardScene, {
+      opacity: 0,
+      scale: 0.95,
+      duration: 0.6,
+      ease: 'power2.inOut',
+      onComplete: () => {
+        globalDashboardScene.style.display = 'none';
+        console.log('Global dashboard faded out');
+
+        // Step 2: Show North America dashboard with animations
         dashboardScene.style.display = 'block';
         dashboardScene.style.visibility = 'visible';
-        console.log('Dashboard scene display set to block and visible');
+        console.log('North America Dashboard scene display set to block and visible');
         gsap.fromTo(
           dashboardScene,
           { opacity: 0, scale: 0.95 },
@@ -1316,7 +1417,7 @@ export default function DemoPage() {
             duration: 0.6,
             ease: 'power2.out',
             onComplete: () => {
-              console.log('Dashboard scene appeared and animation complete');
+              console.log('North America Dashboard scene appeared and animation complete');
               // Start animations immediately while dashboard is fully visible
               showDashboard();
             },
@@ -1714,6 +1815,17 @@ export default function DemoPage() {
           transform: translateY(20px);
         }
         
+        /* Disable all animations for Global Dashboard */
+        #globalDashboardScene .recharts-radial-bar-sector,
+        #globalDashboardScene .recharts-radial-bar {
+          animation: none !important;
+          transition: none !important;
+        }
+        
+        #globalDashboardScene .recharts-radial-bar-sector {
+          opacity: 1 !important;
+        }
+        
         @keyframes slideUpFadeIn {
           from {
             opacity: 0;
@@ -1869,7 +1981,111 @@ export default function DemoPage() {
         {/* Removed AI Analysis screen */}
       </div>
 
-      {/* Modern Revenue Dashboard */}
+      {/* Global Revenue Dashboard */}
+      <div
+        id="globalDashboardScene"
+        className="fixed inset-0 z-50 opacity-0"
+        style={{ display: 'none' }}
+      >
+        <div className="absolute inset-0 bg-white"></div>
+
+        {/* Fixed Size Global Dashboard Widget */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div
+            id="globalDashboardWindow"
+            className="w-[600px] h-[680px] bg-white overflow-hidden rounded-3xl transition-all duration-300 ease-out flex flex-col relative"
+          >
+            <div className="p-6">
+              {/* Minimalist Header */}
+              <div className="text-center mb-12" id="globalDashboardHeader">
+                <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-2 tracking-tighter leading-tight">
+                  Revenue
+                </h1>
+                <p className="text-sm text-muted-foreground uppercase tracking-wider font-medium">
+                  Global
+                </p>
+              </div>
+
+              {/* Hero Metrics - Prominent Display */}
+              <div className="flex justify-center gap-12 mb-12" id="globalStatsGrid">
+                <div className="text-center">
+                  <div className="text-5xl sm:text-6xl font-bold text-foreground mb-1 flex items-baseline justify-center">
+                    <span className="text-3xl sm:text-4xl text-muted-foreground mr-1">
+                      $
+                    </span>
+                    <span className="metric-number" data-target="377">
+                      0
+                    </span>
+                    <span className="text-2xl sm:text-3xl text-muted-foreground ml-1">
+                      K
+                    </span>
+                  </div>
+                  <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-medium">
+                    Average Revenue
+                  </div>
+                  <div className="h-0.5 w-16 bg-brand mx-auto mt-3 rounded-full"></div>
+                </div>
+
+                <div className="text-center">
+                  <div className="text-5xl sm:text-6xl font-bold text-foreground mb-1">
+                    <span className="metric-number" data-target="22">
+                      0
+                    </span>
+                    <span className="text-2xl sm:text-3xl text-muted-foreground">
+                      %
+                    </span>
+                  </div>
+                  <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-medium">
+                    Growth Rate
+                  </div>
+                  <div className="h-0.5 w-16 bg-brand mx-auto mt-3 rounded-full"></div>
+                </div>
+              </div>
+
+              {/* Radial Chart */}
+              <div className="h-80 relative" id="globalChartSection">
+                <ChartContainer
+                  config={globalChartConfig}
+                  className="mx-auto aspect-square max-h-[280px]"
+                >
+                  <RadialBarChart
+                    data={CONFIG.CHART.GLOBAL_DATA}
+                    startAngle={-90}
+                    endAngle={380}
+                    innerRadius={40}
+                    outerRadius={120}
+                    isAnimationActive={false}
+                  >
+                    <ChartTooltip
+                      cursor={false}
+                      content={
+                        <ChartTooltipContent hideLabel nameKey="month" />
+                      }
+                    />
+                    <RadialBar dataKey="revenue" background isAnimationActive={false}>
+                      <LabelList
+                        position="insideStart"
+                        dataKey="month"
+                        className="fill-white capitalize mix-blend-luminosity"
+                        fontSize={11}
+                      />
+                      <LabelList
+                        position="insideEnd"
+                        dataKey="revenue"
+                        className="fill-white font-medium"
+                        fontSize={10}
+                        formatter={(value: number) => `$${value}K`}
+                      />
+                    </RadialBar>
+                  </RadialBarChart>
+                </ChartContainer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* North America Revenue Dashboard */}
       <div
         id="dashboardScene"
         className="fixed inset-0 z-50 opacity-0"
@@ -1937,7 +2153,7 @@ export default function DemoPage() {
                   className="mx-auto aspect-square max-h-[280px]"
                 >
                   <RadialBarChart
-                    data={CONFIG.CHART.DATA}
+                    data={CONFIG.CHART.NA_DATA}
                     startAngle={-90}
                     endAngle={380}
                     innerRadius={40}
