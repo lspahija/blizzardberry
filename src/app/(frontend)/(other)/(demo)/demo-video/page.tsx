@@ -674,7 +674,7 @@ export default function DemoPage() {
           true
         );
       }, 1800); // Show typing for 1.8 seconds
-    }, slideOutDelay + 5500); // Adjusted to slideOutDelay + timing
+    }, slideOutDelay + 4200); // Reduced delay for faster typing indicator appearance
 
     // User responds YES (key moment - make it prominent)
     addTimeout(() => {
@@ -1904,7 +1904,7 @@ export default function DemoPage() {
               </div>
 
               {/* Hero Metrics - Prominent Display */}
-              <div className="flex justify-center gap-12 mb-12" id="statsGrid">
+              <div className="flex justify-center gap-12 mb-8" id="statsGrid">
                 <div className="text-center">
                   <div className="text-5xl sm:text-6xl font-bold text-foreground mb-1 flex items-baseline justify-center">
                     <span className="text-3xl sm:text-4xl text-muted-foreground mr-1">
