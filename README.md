@@ -1,15 +1,11 @@
 # Vision
 
-**Empower anybody to super-easily add a natural language interface to their app. Support voice. 
-The end-user of the app should be able to perform actions on the app just by communicating their intentions via the interface.
-The interface should be powered by easily pluggable AI models so that new models can be supported as soon as they're released.**
+**Empower anybody to super-easily add a natural language interface to existing software. Support voice. 
+Liberate people from staring at screens. Allow them to perform actions on a computer just by stating their intentions.**
 
 There is a lot of useful software out there, but the vast majority does not have a natural language interface. 
 The goal of this project is to enable all software to have a natural language interface. 
-Make onboarding so easy that it becomes a no-brainer for app owners to add a natural language interface to their app.
-
-Code quality and architecture of this project are imperative! 
-They are considered a competitive advantage and must allow for rapid iteration and extensibility. 
+Make onboarding so easy that it becomes a no-brainer for anybody to add a natural language interface to an app.
 
 e.g. it must be easy to:
 - add new AI models (as AI models improve, the usefulness of this product should automatically improve in parallel)
@@ -21,9 +17,6 @@ e.g. it must be easy to:
 The website design is based on this: https://gitingest.com/
 
 this looks good: https://bland.com/
-
-https://basecamp.com/
-https://www.hey.com/
 
 # Running the Project Locally
 
