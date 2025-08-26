@@ -143,7 +143,7 @@ export async function createWidgetDOM() {
       parts: [
         {
           type: 'text',
-          text: "Hi! I'm your AI Assistant, here to help with any questions or tasks. Just let me know what you need!",
+          text: "Hi! I'm your AI Agent, here to help with any questions or tasks. Just let me know what you need!",
         },
       ],
     });

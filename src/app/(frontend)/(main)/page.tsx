@@ -143,8 +143,8 @@ export default function LandingPage() {
             className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 max-w-2xl z-10 leading-relaxed"
             variants={itemVariants}
           >
-            Go beyond a simple chatbot. Our agents can complete tasks, manage
-            accounts, and navigate your app.
+            Your agent can complete tasks, manage accounts, and navigate your
+            app!
           </motion.p>
           <motion.div
             className="flex flex-col sm:flex-row items-center gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-4 sm:px-0"
@@ -193,13 +193,13 @@ export default function LandingPage() {
             variants={itemVariants}
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
-              From Finding to <em>Doing</em>.
+              A new kind of user interface
             </h2>
             <p className="text-lg sm:text-xl text-muted-foreground">
-              Standard search bars and chatbots find information.
+              Traditional GUIs will soon be a thing of the past.
               <br />
-              Our AI agent gets things done. Transform user interaction from a
-              frustrating search into an effortless action.
+              Users want to interact with your app using natural language. Our
+              AI agent translates conversations into actions.
             </p>
           </motion.div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
