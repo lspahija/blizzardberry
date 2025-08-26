@@ -144,7 +144,7 @@ export default function LandingPage() {
             variants={itemVariants}
           >
             Your agent can complete tasks, manage accounts, and navigate your
-            app!
+            web app!
           </motion.p>
           <motion.div
             className="flex flex-col sm:flex-row items-center gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-4 sm:px-0"
