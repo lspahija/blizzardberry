@@ -1941,10 +1941,15 @@ export default function DemoPage() {
 
               {/* Pie Chart */}
               <div className="h-64 relative flex justify-center" id="chartSection">
-                <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px] pb-0">
-                  <PieChart>
+                <ChartContainer config={chartConfig} className="h-full w-full max-w-lg">
+                  <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                     <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-                    <Pie data={CONFIG.CHART.DATA} dataKey="revenue" nameKey="month" />
+                    <Pie 
+                      data={CONFIG.CHART.DATA} 
+                      dataKey="revenue" 
+                      nameKey="month" 
+                      label={({ month }) => month}
+                    />
                   </PieChart>
                 </ChartContainer>
               </div>
