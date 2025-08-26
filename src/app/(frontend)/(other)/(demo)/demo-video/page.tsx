@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import Image from 'next/image';
-import { LabelList, RadialBar, RadialBarChart } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import {
   ChartConfig,
   ChartContainer,
@@ -51,12 +51,12 @@ const CONFIG = {
   },
   CHART: {
     DATA: [
-      { month: 'Jun', revenue: 520, fill: '#BFDBFE' },
-      { month: 'Jul', revenue: 600, fill: '#93C5FD' },
-      { month: 'Aug', revenue: 480, fill: '#60A5FA' },
-      { month: 'Sep', revenue: 847, fill: '#3B82F6' },
-      { month: 'Oct', revenue: 550, fill: '#1E40AF' },
-      { month: 'Nov', revenue: 630, fill: '#1E3A8A' },
+      { month: 'Jun', revenue: 465 },
+      { month: 'Jul', revenue: 520 },
+      { month: 'Aug', revenue: 480 },
+      { month: 'Sep', revenue: 640 },
+      { month: 'Oct', revenue: 585 },
+      { month: 'Nov', revenue: 720 },
     ],
   },
 };
@@ -230,34 +230,11 @@ export default function DemoPage() {
     type();
   };
 
-  // Chart config for radial chart
+  // Chart config for bar chart
   const chartConfig = {
     revenue: {
       label: 'Revenue ($K)',
-    },
-    Jun: {
-      label: 'Jun',
-      color: '#BFDBFE',
-    },
-    Jul: {
-      label: 'Jul',
-      color: '#93C5FD',
-    },
-    Aug: {
-      label: 'Aug',
-      color: '#60A5FA',
-    },
-    Sep: {
-      label: 'Sep',
-      color: '#3B82F6',
-    },
-    Oct: {
-      label: 'Oct',
-      color: '#1E40AF',
-    },
-    Nov: {
-      label: 'Nov',
-      color: '#1E3A8A',
+      color: '#2563eb', // blue-600
     },
   } satisfies ChartConfig;
 
@@ -1939,41 +1916,30 @@ export default function DemoPage() {
                 </div>
               </div>
 
-              {/* Radial Chart */}
-              <div className="h-80 relative" id="chartSection">
-                <ChartContainer
-                  config={chartConfig}
-                  className="mx-auto aspect-square max-h-[280px]"
-                >
-                  <RadialBarChart
-                    data={CONFIG.CHART.DATA}
-                    startAngle={-90}
-                    endAngle={380}
-                    innerRadius={40}
-                    outerRadius={120}
-                  >
+              {/* Bar Chart */}
+              <div className="h-64 relative flex justify-center" id="chartSection">
+                <ChartContainer config={chartConfig} className="h-full w-full max-w-lg">
+                  <BarChart accessibilityLayer data={CONFIG.CHART.DATA} margin={{ top: 20, right: 40, bottom: 20, left: 40 }}>
+                    <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis
+                      dataKey="month"
+                      tickLine={false}
+                      tickMargin={10}
+                      axisLine={false}
+                      tickFormatter={(value) => value.slice(0, 3)}
+                      fontSize={12}
+                    />
                     <ChartTooltip
                       cursor={false}
-                      content={
-                        <ChartTooltipContent hideLabel nameKey="month" />
-                      }
+                      content={<ChartTooltipContent hideLabel />}
                     />
-                    <RadialBar dataKey="revenue" background>
-                      <LabelList
-                        position="insideStart"
-                        dataKey="month"
-                        className="fill-white capitalize mix-blend-luminosity"
-                        fontSize={11}
-                      />
-                      <LabelList
-                        position="insideEnd"
-                        dataKey="revenue"
-                        className="fill-white font-medium"
-                        fontSize={10}
-                        formatter={(value: number) => `$${value}K`}
-                      />
-                    </RadialBar>
-                  </RadialBarChart>
+                    <Bar 
+                      dataKey="revenue" 
+                      fill="var(--color-revenue)" 
+                      radius={[4, 4, 0, 0]}
+                      maxBarSize={40}
+                    />
+                  </BarChart>
                 </ChartContainer>
               </div>
             </div>
