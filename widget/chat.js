@@ -79,9 +79,6 @@ export async function processChatMessage(messageText) {
       }
     }
 
-    // Add the assistant's response if there's text and either:
-    // 1. No tool calls were made, OR
-    // 2. search_knowledge_base tool was used
     const hasSearchTool = toolResults?.some(toolResult => toolResult.toolName === 'search_knowledge_base');
     const hasOtherTools = toolResults?.some(toolResult => toolResult.toolName !== 'search_knowledge_base');
     
