@@ -1888,7 +1888,7 @@ export default function DemoPage() {
                     <span className="text-4xl sm:text-5xl text-muted-foreground mr-1">
                       $
                     </span>
-                    <span className="metric-number" data-target="347">
+                    <span className="metric-number" data-target="846">
                       0
                     </span>
                     <span className="text-4xl sm:text-5xl text-muted-foreground ml-1">
