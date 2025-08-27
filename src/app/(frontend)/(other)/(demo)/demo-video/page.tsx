@@ -1327,6 +1327,7 @@ export default function DemoPage() {
         },
       });
     });
+
   };
 
   // Scene 4: Brand Finale - Sequential animation with proper timing
@@ -1932,7 +1933,12 @@ export default function DemoPage() {
                       cursor={false}
                       content={<ChartTooltipContent hideLabel />}
                     />
-                    <Bar dataKey="revenue" fill="#2563eb" radius={8} />
+                    <Bar 
+                      dataKey="revenue" 
+                      fill="#2563eb" 
+                      radius={8}
+                      animationDuration={2500}
+                    />
                   </BarChart>
                 </ChartContainer>
               </div>
