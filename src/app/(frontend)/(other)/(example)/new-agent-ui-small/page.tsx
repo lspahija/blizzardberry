@@ -9,7 +9,7 @@ const EtherealMistComponent = () => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: '400px',
-        height: '300px',
+        height: '200px',
         background: 'radial-gradient(circle at 20% 30%, rgba(255, 69, 0, 0.6) 0%, rgba(255, 165, 0, 0.4) 30%, rgba(138, 43, 226, 0.3) 60%, rgba(0, 191, 255, 0.2) 80%, transparent 100%)',
         opacity: 0.7,
         filter: 'blur(15px)',
