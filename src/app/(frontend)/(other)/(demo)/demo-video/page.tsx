@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import Image from 'next/image';
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import {
   ChartConfig,
   ChartContainer,
@@ -1888,7 +1888,7 @@ export default function DemoPage() {
                     <span className="text-4xl sm:text-5xl text-muted-foreground mr-1">
                       $
                     </span>
-                    <span className="metric-number" data-target="846">
+                    <span className="metric-number" data-target="593">
                       0
                     </span>
                     <span className="text-4xl sm:text-5xl text-muted-foreground ml-1">
@@ -1920,7 +1920,7 @@ export default function DemoPage() {
               {/* Bar Chart */}
               <div className="h-64 relative flex justify-center" id="chartSection">
                 <ChartContainer config={chartConfig} className="h-full w-full max-w-lg">
-                  <BarChart data={CONFIG.CHART.DATA} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                  <BarChart data={CONFIG.CHART.DATA} margin={{ top: 20, right: 20, bottom: 20, left: 40 }}>
                     <CartesianGrid vertical={false} />
                     <XAxis
                       dataKey="month"
@@ -1928,6 +1928,12 @@ export default function DemoPage() {
                       tickMargin={10}
                       axisLine={false}
                       tickFormatter={(value) => value.slice(0, 3)}
+                    />
+                    <YAxis
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(value) => `${value}K`}
+                      domain={[0, 800]}
                     />
                     <ChartTooltip
                       cursor={false}
