@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import Image from 'next/image';
-import { Pie, PieChart } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import {
   ChartConfig,
   ChartContainer,
@@ -51,12 +51,12 @@ const CONFIG = {
   },
   CHART: {
     DATA: [
-      { month: 'Jun', revenue: 465, fill: '#2563eb' },
-      { month: 'Jul', revenue: 520, fill: '#3b82f6' },
-      { month: 'Aug', revenue: 480, fill: '#60a5fa' },
-      { month: 'Sep', revenue: 640, fill: '#1d4ed8' },
-      { month: 'Oct', revenue: 585, fill: '#1e40af' },
-      { month: 'Nov', revenue: 720, fill: '#1e3a8a' },
+      { month: 'Jun', revenue: 465 },
+      { month: 'Jul', revenue: 520 },
+      { month: 'Aug', revenue: 480 },
+      { month: 'Sep', revenue: 640 },
+      { month: 'Oct', revenue: 585 },
+      { month: 'Nov', revenue: 720 },
     ],
   },
 };
@@ -230,34 +230,11 @@ export default function DemoPage() {
     type();
   };
 
-  // Chart config for pie chart
+  // Chart config for bar chart
   const chartConfig = {
     revenue: {
       label: 'Revenue ($K)',
-    },
-    jun: {
-      label: 'Jun',
-      color: 'var(--chart-1)',
-    },
-    jul: {
-      label: 'Jul',
-      color: 'var(--chart-2)',
-    },
-    aug: {
-      label: 'Aug',
-      color: 'var(--chart-3)',
-    },
-    sep: {
-      label: 'Sep',
-      color: 'var(--chart-4)',
-    },
-    oct: {
-      label: 'Oct',
-      color: 'var(--chart-5)',
-    },
-    nov: {
-      label: 'Nov',
-      color: 'var(--chart-6)',
+      color: 'hsl(var(--primary))',
     },
   } satisfies ChartConfig;
 
@@ -1939,18 +1916,24 @@ export default function DemoPage() {
                 </div>
               </div>
 
-              {/* Pie Chart */}
+              {/* Bar Chart */}
               <div className="h-64 relative flex justify-center" id="chartSection">
                 <ChartContainer config={chartConfig} className="h-full w-full max-w-lg">
-                  <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                    <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-                    <Pie 
-                      data={CONFIG.CHART.DATA} 
-                      dataKey="revenue" 
-                      nameKey="month" 
-                      label={({ month }) => month}
+                  <BarChart data={CONFIG.CHART.DATA} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="month"
+                      tickLine={false}
+                      tickMargin={10}
+                      axisLine={false}
+                      tickFormatter={(value) => value.slice(0, 3)}
                     />
-                  </PieChart>
+                    <ChartTooltip
+                      cursor={false}
+                      content={<ChartTooltipContent hideLabel />}
+                    />
+                    <Bar dataKey="revenue" fill="#2563eb" radius={8} />
+                  </BarChart>
                 </ChartContainer>
               </div>
             </div>
