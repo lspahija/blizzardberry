@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     const hasSearchTool = llmResponse.toolCalls?.some(toolCall => toolCall.toolName === 'search_knowledge_base');
     const hasOtherTools = llmResponse.toolCalls?.some(toolCall => toolCall.toolName !== 'search_knowledge_base');
     
-    if (llmResponse.text && hasSearchTool && !hasOtherTools) {
+    if (llmResponse.text && (!llmResponse.toolCalls || llmResponse.toolCalls.length === 0 || hasSearchTool) && !hasOtherTools) {
       await addMessage(usedChatId, 'assistant', llmResponse.text);
     }
 
