@@ -37,10 +37,10 @@ export async function POST(req: Request) {
       idempotencyKey
     );
 
-    const isToolCall =
-      llmResponse.toolCalls && llmResponse.toolCalls.length > 0;
-
-    if (llmResponse.text && !isToolCall) {
+    const hasSearchTool = llmResponse.toolCalls?.some(toolCall => toolCall.toolName === 'search_knowledge_base');
+    const hasOtherTools = llmResponse.toolCalls?.some(toolCall => toolCall.toolName !== 'search_knowledge_base');
+    
+    if (llmResponse.text && (!llmResponse.toolCalls || llmResponse.toolCalls.length === 0 || hasSearchTool) && !hasOtherTools) {
       await addMessage(usedChatId, 'assistant', llmResponse.text);
     }
 

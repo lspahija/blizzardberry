@@ -79,7 +79,10 @@ export async function processChatMessage(messageText) {
       }
     }
 
-    if (text && (!toolResults || toolResults.length === 0)) {
+    const hasSearchTool = toolResults?.some(toolResult => toolResult.toolName === 'search_knowledge_base');
+    const hasOtherTools = toolResults?.some(toolResult => toolResult.toolName !== 'search_knowledge_base');
+    
+    if (text && (!toolResults || toolResults.length === 0 || hasSearchTool) && !hasOtherTools) {
       state.messages.push({
         id: generateId(),
         role: 'assistant',
