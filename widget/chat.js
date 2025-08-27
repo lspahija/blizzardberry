@@ -19,15 +19,15 @@ export async function handleError(messageText) {
     role: 'assistant',
     parts: [{ type: 'text', text: messageText }],
   });
-  
+
   // Check widget state in real-time to avoid race conditions
   syncWidgetState();
-  
+
   if (!state.isWidgetOpen) {
     state.unreadMessages++;
     updateNotificationBadge();
   }
-  
+
   await persistMessage(state.messages[state.messages.length - 1]);
   updateChatUI();
 }
@@ -85,10 +85,10 @@ export async function processChatMessage(messageText) {
         role: 'assistant',
         parts: [{ type: 'text', text }],
       });
-      
+
       // Check widget state in real-time to avoid race conditions
       syncWidgetState();
-      
+
       if (!state.isWidgetOpen) {
         state.unreadMessages++;
         updateNotificationBadge();

@@ -67,7 +67,7 @@ function ActionFormContent() {
   const handleSuccessClose = () => {
     posthog.capture('action_creation_completed', {
       agent_id: agentId,
-      action_type: baseAction.executionContext
+      action_type: baseAction.executionContext,
     });
     router.push(`/agents/${agentId}`);
   };
@@ -75,12 +75,15 @@ function ActionFormContent() {
   const handleContinueToAgent = () => {
     posthog.capture('action_creation_completed', {
       agent_id: agentId,
-      action_type: baseAction.executionContext
+      action_type: baseAction.executionContext,
     });
     router.push(`/agents/${agentId}`);
   };
 
-  if (createdClientAction && baseAction.executionContext === ExecutionContext.CLIENT) {
+  if (
+    createdClientAction &&
+    baseAction.executionContext === ExecutionContext.CLIENT
+  ) {
     return (
       <motion.div
         className="max-w-4xl mx-auto px-4 py-16"
@@ -132,34 +135,37 @@ function ActionFormContent() {
           setDataInputs={setDataInputs}
           onNext={handleNextStep}
           onBack={handleBack}
-          isClientAction={baseAction.executionContext === ExecutionContext.CLIENT}
+          isClientAction={
+            baseAction.executionContext === ExecutionContext.CLIENT
+          }
           onCreateAction={handleCreateAction}
           isCreatingAction={isCreatingAction}
         />
       )}
 
-      {step === 3 && baseAction.executionContext === ExecutionContext.SERVER && (
-        <ExecutionStep
-          baseAction={baseAction}
-          dataInputs={dataInputs}
-          apiUrl={apiUrl}
-          setApiUrl={setApiUrl}
-          apiMethod={apiMethod}
-          setApiMethod={setApiMethod}
-          headers={headers}
-          setHeaders={setHeaders}
-          apiBody={apiBody}
-          setApiBody={setApiBody}
-          isEditorInteracted={isEditorInteracted}
-          setIsEditorInteracted={setIsEditorInteracted}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          onCreate={handleCreateAction}
-          onBack={handleBack}
-          isCreatingAction={isCreatingAction}
-          showSuccess={showSuccess}
-        />
-      )}
+      {step === 3 &&
+        baseAction.executionContext === ExecutionContext.SERVER && (
+          <ExecutionStep
+            baseAction={baseAction}
+            dataInputs={dataInputs}
+            apiUrl={apiUrl}
+            setApiUrl={setApiUrl}
+            apiMethod={apiMethod}
+            setApiMethod={setApiMethod}
+            headers={headers}
+            setHeaders={setHeaders}
+            apiBody={apiBody}
+            setApiBody={setApiBody}
+            isEditorInteracted={isEditorInteracted}
+            setIsEditorInteracted={setIsEditorInteracted}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            onCreate={handleCreateAction}
+            onBack={handleBack}
+            isCreatingAction={isCreatingAction}
+            showSuccess={showSuccess}
+          />
+        )}
     </motion.div>
   );
 }

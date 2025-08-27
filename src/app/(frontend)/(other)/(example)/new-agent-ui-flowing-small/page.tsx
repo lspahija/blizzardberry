@@ -13,7 +13,7 @@ const EtherealMistComponent = () => {
         opacity: 0.7,
         filter: 'blur(15px)',
         borderRadius: '80px',
-        overflow: 'hidden'
+        overflow: 'hidden',
       }}
     >
       {/* First gradient layer */}
@@ -24,9 +24,10 @@ const EtherealMistComponent = () => {
           left: 0,
           width: '100%',
           height: '100%',
-          background: 'linear-gradient(135deg, rgba(255, 69, 0, 0.6), rgba(255, 165, 0, 0.4), rgba(138, 43, 226, 0.3), rgba(0, 191, 255, 0.5), rgba(255, 69, 0, 0.6))',
+          background:
+            'linear-gradient(135deg, rgba(255, 69, 0, 0.6), rgba(255, 165, 0, 0.4), rgba(138, 43, 226, 0.3), rgba(0, 191, 255, 0.5), rgba(255, 69, 0, 0.6))',
           backgroundSize: '600% 600%',
-          animation: 'gradient 15s ease infinite'
+          animation: 'gradient 15s ease infinite',
         }}
       />
       {/* Second gradient layer for more flow */}
@@ -37,11 +38,12 @@ const EtherealMistComponent = () => {
           left: 0,
           width: '100%',
           height: '100%',
-          background: 'linear-gradient(-45deg, rgba(0, 191, 255, 0.5), rgba(138, 43, 226, 0.3), rgba(255, 165, 0, 0.4), rgba(255, 69, 0, 0.6), rgba(0, 191, 255, 0.5))',
+          background:
+            'linear-gradient(-45deg, rgba(0, 191, 255, 0.5), rgba(138, 43, 226, 0.3), rgba(255, 165, 0, 0.4), rgba(255, 69, 0, 0.6), rgba(0, 191, 255, 0.5))',
           backgroundSize: '600% 600%',
           animation: 'gradientReverse 20s ease infinite',
           opacity: 0.6,
-          mixBlendMode: 'screen'
+          mixBlendMode: 'screen',
         }}
       />
       {/* Shimmering slivers */}
@@ -52,11 +54,12 @@ const EtherealMistComponent = () => {
           left: 0,
           width: '100%',
           height: '100%',
-          background: 'linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.2) 50%, transparent 60%)',
+          background:
+            'linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.2) 50%, transparent 60%)',
           backgroundSize: '200% 200%',
           animation: 'shimmer 10s linear infinite',
           mixBlendMode: 'overlay',
-          opacity: 0.3
+          opacity: 0.3,
         }}
       />
     </div>
@@ -107,7 +110,13 @@ const EtherealMistWithStyles = () => (
 
 export default function MistPage() {
   return (
-    <div style={{ width: '100vw', height: '100vh', backgroundColor: 'transparent' }}>
+    <div
+      style={{
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: 'transparent',
+      }}
+    >
       <EtherealMistWithStyles />
     </div>
   );

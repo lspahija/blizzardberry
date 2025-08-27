@@ -6,7 +6,9 @@ import { VideoRenderer } from './components/VideoRenderer';
 import { GeneratedVideo } from './types';
 
 export default function GenerateVideoAdPage() {
-  const [generatedVideo, setGeneratedVideo] = useState<GeneratedVideo | null>(null);
+  const [generatedVideo, setGeneratedVideo] = useState<GeneratedVideo | null>(
+    null
+  );
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleVideoGenerated = (video: GeneratedVideo) => {
@@ -28,14 +30,15 @@ export default function GenerateVideoAdPage() {
             Prompt-to-Video Generator
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Transform any business idea into a compelling demo video. 
-            Just describe what you want to showcase and our AI will generate the video automatically.
+            Transform any business idea into a compelling demo video. Just
+            describe what you want to showcase and our AI will generate the
+            video automatically.
           </p>
         </div>
 
         <div className="max-w-6xl mx-auto">
           {!generatedVideo ? (
-            <VideoGenerator 
+            <VideoGenerator
               onVideoGenerated={handleVideoGenerated}
               isGenerating={isGenerating}
               setIsGenerating={setIsGenerating}
@@ -45,9 +48,12 @@ export default function GenerateVideoAdPage() {
               {/* Controls */}
               <div className="flex justify-between items-center p-4 bg-card rounded-xl border">
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground">Generated Video</h3>
+                  <h3 className="text-lg font-semibold text-foreground">
+                    Generated Video
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    {generatedVideo.businessDomain.companyName} • {generatedVideo.template.name}
+                    {generatedVideo.businessDomain.companyName} •{' '}
+                    {generatedVideo.template.name}
                   </p>
                 </div>
                 <button

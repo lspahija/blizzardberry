@@ -40,10 +40,7 @@ import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
-import {
-  AgentModel,
-  AGENT_MODELS,
-} from '@/app/api/lib/model/agent/agent';
+import { AgentModel, AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { Framework, getAgentScript } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import posthog from 'posthog-js';
@@ -86,7 +83,7 @@ export default function NewAgentPage() {
     if (creatingAgent) return;
     posthog.capture('agent_code_copied', {
       agent_id: agentId,
-      framework: selectedFramework
+      framework: selectedFramework,
     });
     navigator.clipboard.writeText(getAgentScript(selectedFramework, agentId));
     setCopied(true);
@@ -95,7 +92,7 @@ export default function NewAgentPage() {
 
   const handleContinue = () => {
     posthog.capture('agent_configuration_started', {
-      agent_id: agentId
+      agent_id: agentId,
     });
     router.push(`/agents/${agentId}`);
   };
@@ -134,7 +131,7 @@ export default function NewAgentPage() {
       posthog.capture('agent_creation_validation_failed', {
         missing_fields: Object.keys(newErrors),
         name_provided: !!name.trim(),
-        domain_provided: !!websiteDomain.trim()
+        domain_provided: !!websiteDomain.trim(),
       });
       return;
     }
@@ -143,7 +140,7 @@ export default function NewAgentPage() {
       name: name.trim(),
       website_domain: websiteDomain.trim(),
       model,
-      prompt_count: prompts.filter((p) => p.trim()).length
+      prompt_count: prompts.filter((p) => p.trim()).length,
     });
 
     try {
@@ -153,22 +150,22 @@ export default function NewAgentPage() {
         model,
         prompts: prompts.filter((p) => p.trim()),
       });
-      
+
       posthog.capture('agent_creation_success', {
         agent_id: newAgentId,
         name: name.trim(),
         website_domain: websiteDomain.trim(),
         model,
-        prompt_count: prompts.filter((p) => p.trim()).length
+        prompt_count: prompts.filter((p) => p.trim()).length,
       });
-      
+
       setAgentId(newAgentId);
     } catch (error) {
       posthog.capture('agent_creation_failed', {
         name: name.trim(),
         website_domain: websiteDomain.trim(),
         model,
-        error: (error as Error).message
+        error: (error as Error).message,
       });
       console.error('Error creating agent:', error);
     }
@@ -499,11 +496,13 @@ export default function NewAgentPage() {
                             <SelectValue placeholder="Select a model" />
                           </SelectTrigger>
                           <SelectContent>
-                            {Object.entries(AGENT_MODELS).map(([modelValue, displayName]) => (
-                              <SelectItem key={modelValue} value={modelValue}>
-                                {displayName}
-                              </SelectItem>
-                            ))}
+                            {Object.entries(AGENT_MODELS).map(
+                              ([modelValue, displayName]) => (
+                                <SelectItem key={modelValue} value={modelValue}>
+                                  {displayName}
+                                </SelectItem>
+                              )
+                            )}
                           </SelectContent>
                         </Select>
                       </div>

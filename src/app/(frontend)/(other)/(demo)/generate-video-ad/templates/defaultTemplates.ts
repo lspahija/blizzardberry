@@ -4,7 +4,8 @@ export const defaultVideoTemplates: VideoTemplate[] = [
   {
     id: 'saas-dashboard-demo',
     name: 'SaaS Dashboard Demo',
-    description: 'Perfect for showcasing business intelligence, analytics, and dashboard-driven products. Features chat-to-dashboard flow with data visualization.',
+    description:
+      'Perfect for showcasing business intelligence, analytics, and dashboard-driven products. Features chat-to-dashboard flow with data visualization.',
     config: {
       timings: {
         sceneDuration: 48000,
@@ -33,15 +34,15 @@ export const defaultVideoTemplates: VideoTemplate[] = [
                 type: 'user',
                 content: '',
                 delay: 1000,
-                useBusinessQuery: 'primary'
+                useBusinessQuery: 'primary',
               },
               {
                 type: 'typing',
                 content: 'Analyzing...',
-                delay: 2500
+                delay: 2500,
               },
-            ]
-          }
+            ],
+          },
         },
         {
           id: 'dashboard-display',
@@ -52,8 +53,8 @@ export const defaultVideoTemplates: VideoTemplate[] = [
             showHeader: true,
             animateCounters: true,
             chartType: 'radial',
-            metricsLayout: 'horizontal'
-          }
+            metricsLayout: 'horizontal',
+          },
         },
         {
           id: 'chat-continuation',
@@ -69,20 +70,21 @@ export const defaultVideoTemplates: VideoTemplate[] = [
                 type: 'user',
                 content: '',
                 delay: 2000,
-                useBusinessQuery: 'secondary'
+                useBusinessQuery: 'secondary',
               },
               {
                 type: 'assistant',
-                content: 'We had 3 tickets today:\n\n• 2 Resolved\n• 1 Open\n\nWould you like to see the full details?',
-                delay: 3000
+                content:
+                  'We had 3 tickets today:\n\n• 2 Resolved\n• 1 Open\n\nWould you like to see the full details?',
+                delay: 3000,
               },
               {
                 type: 'user',
                 content: 'Yes, please!',
-                delay: 2000
-              }
-            ]
-          }
+                delay: 2000,
+              },
+            ],
+          },
         },
         {
           id: 'table-display',
@@ -93,8 +95,8 @@ export const defaultVideoTemplates: VideoTemplate[] = [
             title: 'Support Tickets',
             showStats: true,
             animateRows: true,
-            rowAnimation: 'slide'
-          }
+            rowAnimation: 'slide',
+          },
         },
         {
           id: 'brand-finale',
@@ -105,21 +107,22 @@ export const defaultVideoTemplates: VideoTemplate[] = [
             showLogo: true,
             showTagline: true,
             logoSize: 120,
-            textSize: 'large'
-          }
-        }
+            textSize: 'large',
+          },
+        },
       ],
       styling: {
         backgroundColor: '#ffffff',
         chatWindowSize: { width: 600, height: 680 },
-        borderRadius: '24px'
-      }
-    }
+        borderRadius: '24px',
+      },
+    },
   },
   {
     id: 'simple-chat-demo',
     name: 'Simple Chat Demo',
-    description: 'Streamlined template focusing on conversational AI interaction. Great for chatbots, virtual assistants, and simple query-response demos.',
+    description:
+      'Streamlined template focusing on conversational AI interaction. Great for chatbots, virtual assistants, and simple query-response demos.',
     config: {
       timings: {
         sceneDuration: 25000,
@@ -147,31 +150,33 @@ export const defaultVideoTemplates: VideoTemplate[] = [
                 type: 'user',
                 content: '',
                 delay: 1000,
-                useBusinessQuery: 'primary'
+                useBusinessQuery: 'primary',
               },
               {
                 type: 'typing',
                 content: 'Processing...',
-                delay: 2000
+                delay: 2000,
               },
               {
                 type: 'assistant',
-                content: 'Here\'s the information you requested. Our AI can help with various business queries and provide instant insights.',
-                delay: 1500
+                content:
+                  "Here's the information you requested. Our AI can help with various business queries and provide instant insights.",
+                delay: 1500,
               },
               {
                 type: 'user',
                 content: '',
                 delay: 2000,
-                useBusinessQuery: 'secondary'
+                useBusinessQuery: 'secondary',
               },
               {
                 type: 'assistant',
-                content: 'Absolutely! Our system provides real-time answers to help you make better business decisions.',
-                delay: 2000
-              }
-            ]
-          }
+                content:
+                  'Absolutely! Our system provides real-time answers to help you make better business decisions.',
+                delay: 2000,
+              },
+            ],
+          },
         },
         {
           id: 'brand-finale',
@@ -182,21 +187,22 @@ export const defaultVideoTemplates: VideoTemplate[] = [
             showLogo: true,
             showTagline: true,
             logoSize: 100,
-            textSize: 'medium'
-          }
-        }
+            textSize: 'medium',
+          },
+        },
       ],
       styling: {
         backgroundColor: '#f8fafc',
         chatWindowSize: { width: 500, height: 600 },
-        borderRadius: '16px'
-      }
-    }
+        borderRadius: '16px',
+      },
+    },
   },
   {
     id: 'analytics-focused',
     name: 'Analytics Focused',
-    description: 'Heavy emphasis on data visualization and metrics. Perfect for analytics platforms, reporting tools, and data-driven products.',
+    description:
+      'Heavy emphasis on data visualization and metrics. Perfect for analytics platforms, reporting tools, and data-driven products.',
     config: {
       timings: {
         sceneDuration: 35000,
@@ -224,15 +230,15 @@ export const defaultVideoTemplates: VideoTemplate[] = [
                 type: 'user',
                 content: '',
                 delay: 1500,
-                useBusinessQuery: 'primary'
+                useBusinessQuery: 'primary',
               },
               {
                 type: 'typing',
                 content: 'Analyzing data...',
-                delay: 3000
-              }
-            ]
-          }
+                delay: 3000,
+              },
+            ],
+          },
         },
         {
           id: 'primary-dashboard',
@@ -243,8 +249,8 @@ export const defaultVideoTemplates: VideoTemplate[] = [
             showHeader: true,
             animateCounters: true,
             chartType: 'radial',
-            metricsLayout: 'grid'
-          }
+            metricsLayout: 'grid',
+          },
         },
         {
           id: 'secondary-dashboard',
@@ -255,8 +261,8 @@ export const defaultVideoTemplates: VideoTemplate[] = [
             showHeader: false,
             animateCounters: true,
             chartType: 'bar',
-            metricsLayout: 'vertical'
-          }
+            metricsLayout: 'vertical',
+          },
         },
         {
           id: 'brand-finale',
@@ -267,15 +273,15 @@ export const defaultVideoTemplates: VideoTemplate[] = [
             showLogo: true,
             showTagline: true,
             logoSize: 110,
-            textSize: 'large'
-          }
-        }
+            textSize: 'large',
+          },
+        },
       ],
       styling: {
         backgroundColor: '#ffffff',
         chatWindowSize: { width: 700, height: 750 },
-        borderRadius: '20px'
-      }
-    }
-  }
+        borderRadius: '20px',
+      },
+    },
+  },
 ];

@@ -59,7 +59,7 @@ export default function ContinueSubscriptionPage() {
 
           posthog.capture('subscription_continuation_started', {
             tier: intent.data.tier,
-            billing_cycle: intent.data.billingCycle || 'monthly'
+            billing_cycle: intent.data.billingCycle || 'monthly',
           });
 
           const data = await subscribe({
@@ -73,7 +73,7 @@ export default function ContinueSubscriptionPage() {
             posthog.capture('subscription_checkout_redirect', {
               tier: intent.data.tier,
               billing_cycle: intent.data.billingCycle || 'monthly',
-              checkout_session_id: data.checkoutSessionId
+              checkout_session_id: data.checkoutSessionId,
             });
 
             const returnUrl = new URL('/upgrade', window.location.origin);
@@ -91,7 +91,7 @@ export default function ContinueSubscriptionPage() {
           } else if (data.success) {
             posthog.capture('subscription_updated_directly', {
               tier: intent.data.tier,
-              billing_cycle: intent.data.billingCycle || 'monthly'
+              billing_cycle: intent.data.billingCycle || 'monthly',
             });
 
             setStatus('success');
@@ -107,11 +107,11 @@ export default function ContinueSubscriptionPage() {
           const data = await buyCredits();
 
           posthog.capture('credits_checkout_redirect', {
-            checkout_session_id: data.checkoutSessionId
+            checkout_session_id: data.checkoutSessionId,
           });
 
           sessionStorage.removeItem('subscriptionIntent');
-          
+
           const returnUrl = new URL('/upgrade', window.location.origin);
           returnUrl.searchParams.set('checkout', 'true');
           returnUrl.searchParams.set('clientSecret', data.clientSecret);
@@ -123,9 +123,9 @@ export default function ContinueSubscriptionPage() {
         }
       } catch (error) {
         console.error('Error continuing subscription:', error);
-        
+
         posthog.capture('subscription_continuation_failed', {
-          error: (error as Error).message
+          error: (error as Error).message,
         });
 
         setStatus('error');
@@ -137,7 +137,7 @@ export default function ContinueSubscriptionPage() {
         );
 
         sessionStorage.removeItem('subscriptionIntent');
-        
+
         setTimeout(() => {
           router.push('/upgrade');
         }, 3000);

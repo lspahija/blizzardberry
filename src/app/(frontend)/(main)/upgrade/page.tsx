@@ -27,7 +27,11 @@ import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
 import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/app/(frontend)/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/app/(frontend)/components/ui/tooltip';
 import { PricingFAQ } from '@/app/(frontend)/components/ui/pricing-faq';
 import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 
@@ -476,11 +480,15 @@ export default function UpgradePage() {
                               </TooltipTrigger>
                               <TooltipContent>
                                 <div className="min-w-[200px] max-w-[300px]">
-                                  <p className="font-semibold mb-2">Premium Models:</p>
+                                  <p className="font-semibold mb-2">
+                                    Premium Models:
+                                  </p>
                                   <ul className="list-disc pl-4 space-y-1">
-                                    {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
-                                      <li key={model}>{displayName}</li>
-                                    ))}
+                                    {Object.entries(AGENT_MODELS).map(
+                                      ([model, displayName]) => (
+                                        <li key={model}>{displayName}</li>
+                                      )
+                                    )}
                                   </ul>
                                 </div>
                               </TooltipContent>
@@ -580,11 +588,15 @@ export default function UpgradePage() {
                           </TooltipTrigger>
                           <TooltipContent>
                             <div className="min-w-[200px] max-w-[300px]">
-                              <p className="font-semibold mb-2">Premium Models:</p>
+                              <p className="font-semibold mb-2">
+                                Premium Models:
+                              </p>
                               <ul className="list-disc pl-4 space-y-1">
-                                {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
-                                  <li key={model}>{displayName}</li>
-                                ))}
+                                {Object.entries(AGENT_MODELS).map(
+                                  ([model, displayName]) => (
+                                    <li key={model}>{displayName}</li>
+                                  )
+                                )}
                               </ul>
                             </div>
                           </TooltipContent>
@@ -673,7 +685,7 @@ export default function UpgradePage() {
 
       {/* Checkout Modal */}
       {showCheckout && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/60 flex items-center justify-center p-2 sm:p-4 z-[100] backdrop-blur-sm"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
@@ -790,7 +802,6 @@ export default function UpgradePage() {
           </div>
         </div>
       )}
-
     </>
   );
 }

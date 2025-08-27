@@ -4,12 +4,12 @@ import { config } from './config';
 
 export async function fetchSuggestedPrompts() {
   try {
-    const res = await fetch(`${config.baseUrl}/api/agents/${config.agentId}/prompts`);
+    const res = await fetch(
+      `${config.baseUrl}/api/agents/${config.agentId}/prompts`
+    );
     if (!res.ok) return;
     const data = await res.json();
-    const prompts = (data.prompts || [])
-      .map((p) => p.content)
-      .filter(Boolean);
+    const prompts = (data.prompts || []).map((p) => p.content).filter(Boolean);
     setSuggestedPrompts(prompts);
   } catch (e) {
     console.error('Error fetching suggested prompts:', e);

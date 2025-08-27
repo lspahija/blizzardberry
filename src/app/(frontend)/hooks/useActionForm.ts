@@ -55,7 +55,9 @@ export const useActionForm = (isEditing = false) => {
   const [activeTab, setActiveTab] = useState('headers');
   const [isCreatingAction, setIsCreatingAction] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [createdClientAction, setCreatedClientAction] = useState<Action | null>(null);
+  const [createdClientAction, setCreatedClientAction] = useState<Action | null>(
+    null
+  );
 
   useEffect(() => {
     console.log('createdClientAction state changed:', createdClientAction);
@@ -84,12 +86,12 @@ export const useActionForm = (isEditing = false) => {
           typeParam === 'server'
             ? ExecutionContext.SERVER
             : ExecutionContext.CLIENT;
-        
+
         setBaseAction((prev) => ({
           ...prev,
           executionContext: newExecutionContext,
         }));
-        
+
         const actionTypeParam =
           newExecutionContext === ExecutionContext.SERVER ? 'server' : 'client';
         router.replace(
@@ -105,7 +107,14 @@ export const useActionForm = (isEditing = false) => {
         );
       }
     }
-  }, [searchParams, router, agentId, baseAction.executionContext, showSuccess, isEditing]);
+  }, [
+    searchParams,
+    router,
+    agentId,
+    baseAction.executionContext,
+    showSuccess,
+    isEditing,
+  ]);
 
   const updateUrl = (newStep: number) => {
     // Don't update URL if we're showing success
@@ -133,15 +142,19 @@ export const useActionForm = (isEditing = false) => {
 
   const handleNextStep = () => {
     if (showSuccess) return;
-    
+
     if (baseAction.executionContext === ExecutionContext.CLIENT && step === 2) {
-      return; 
-    }
-    
-    if (isEditing && baseAction.executionContext === ExecutionContext.CLIENT && step === 2) {
       return;
     }
-    
+
+    if (
+      isEditing &&
+      baseAction.executionContext === ExecutionContext.CLIENT &&
+      step === 2
+    ) {
+      return;
+    }
+
     if (step < 3) {
       updateUrl(step + 1);
     }
@@ -167,7 +180,7 @@ export const useActionForm = (isEditing = false) => {
       agent_id: agentId,
       execution_context: baseAction.executionContext,
       action_name: baseAction.name,
-      data_inputs_count: dataInputs.filter(input => input.name).length
+      data_inputs_count: dataInputs.filter((input) => input.name).length,
     });
 
     let action: Action;
@@ -272,7 +285,7 @@ export const useActionForm = (isEditing = false) => {
         agent_id: agentId,
         execution_context: baseAction.executionContext,
         action_name: baseAction.name,
-        action_id: createdAction.actionId
+        action_id: createdAction.actionId,
       });
 
       if (baseAction.executionContext === ExecutionContext.CLIENT) {
@@ -292,10 +305,14 @@ export const useActionForm = (isEditing = false) => {
               })),
           },
         };
-        
+
         setCreatedClientAction(clientAction);
-        window.history.replaceState(null, '', `/agents/${agentId}/actions/new?type=client&step=2`);
-        
+        window.history.replaceState(
+          null,
+          '',
+          `/agents/${agentId}/actions/new?type=client&step=2`
+        );
+
         setTimeout(() => {
           setCreatedClientAction(clientAction);
         }, 100);
@@ -310,12 +327,12 @@ export const useActionForm = (isEditing = false) => {
       }
     } catch (error) {
       console.error('Error creating action:', error);
-      
+
       posthog.capture('action_creation_failed', {
         agent_id: agentId,
         execution_context: baseAction.executionContext,
         action_name: baseAction.name,
-        error: (error as Error).message
+        error: (error as Error).message,
       });
 
       if ((error as Error).message !== 'Action limit reached') {

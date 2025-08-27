@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import { agentAuth } from '@/app/api/lib/auth/agentAuth';
-import { deleteAction, updateAction, getAction } from '@/app/api/lib/store/actionStore';
+import {
+  deleteAction,
+  updateAction,
+  getAction,
+} from '@/app/api/lib/store/actionStore';
 import { Action } from '@/app/api/lib/model/action/baseAction';
 
 export async function GET(
@@ -95,19 +99,19 @@ export async function PATCH(
     const { name, description, executionContext, executionModel } = body;
 
     const updateData: any = {};
-    
+
     if (name !== undefined) {
       updateData.name = name;
     }
-    
+
     if (description !== undefined) {
       updateData.description = description;
     }
-    
+
     if (executionContext !== undefined) {
       updateData.execution_context = executionContext;
     }
-    
+
     if (executionModel !== undefined) {
       updateData.execution_model = executionModel;
     }
@@ -116,10 +120,15 @@ export async function PATCH(
       await updateAction(actionId, agentId, updateData);
     }
 
-    return NextResponse.json({ 
-      success: true,
-      updatedFields: Object.keys(body).filter(key => body[key] !== undefined)
-    }, { status: 200 });
+    return NextResponse.json(
+      {
+        success: true,
+        updatedFields: Object.keys(body).filter(
+          (key) => body[key] !== undefined
+        ),
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Error updating action:', error);
     return NextResponse.json(

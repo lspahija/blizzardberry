@@ -222,7 +222,7 @@ export default function ExecutionStep({
       setBodyError('GET requests cannot have a body');
       return;
     }
-    
+
     onCreate();
   };
 
@@ -245,7 +245,8 @@ export default function ExecutionStep({
       >
         <Info className="h-6 w-6 text-accent mr-3" />
         <span className="text-foreground text-base">
-          Configure the API endpoint that the AI Agent will call to retrieve or update data.
+          Configure the API endpoint that the AI Agent will call to retrieve or
+          update data.
         </span>
       </div>
       <div className="relative mb-12 ml-0">
@@ -263,7 +264,10 @@ export default function ExecutionStep({
                 </CardTitle>
               </div>
               <p className="text-sm text-gray-600 mt-2">
-                The API endpoint that should be called by the AI Agent to retrieve data or to send updates. You can include data inputs (variables) collected from the user in the URL, headers, and request body.
+                The API endpoint that should be called by the AI Agent to
+                retrieve data or to send updates. You can include data inputs
+                (variables) collected from the user in the URL, headers, and
+                request body.
               </p>
             </div>
           </CardHeader>
@@ -310,7 +314,7 @@ export default function ExecutionStep({
                 </div>
               </div>
             )}
-            
+
             {/* Method and URL row, left-aligned */}
             <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-6 items-center">
               <div className="w-full md:w-[120px]">
@@ -367,7 +371,7 @@ export default function ExecutionStep({
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-8">
               <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2">
                 <List className="h-4 w-4 text-[#FE4A60]" />
@@ -405,7 +409,7 @@ export default function ExecutionStep({
                 Add Header
               </Button>
             </div>
-            
+
             <div className="mt-8">
               <Label
                 htmlFor="apiBody"
@@ -472,7 +476,7 @@ export default function ExecutionStep({
                 </div>
               </div>
             </div>
-            
+
             <div className="flex space-x-4">
               <Button
                 variant="outline"

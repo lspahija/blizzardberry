@@ -219,7 +219,10 @@ export default function Layout({ children }) {
                     asChild
                     className="bg-brand text-primary-foreground hover:bg-brand/90 text-base font-semibold px-6 py-3 w-auto"
                   >
-                    <Link href="/dashboard" className="inline-flex items-center">
+                    <Link
+                      href="/dashboard"
+                      className="inline-flex items-center"
+                    >
                       <Play className="mr-2 h-5 w-5" />
                       Get Started
                     </Link>
@@ -569,62 +572,77 @@ export default function Layout({ children }) {
                         Server Actions
                       </h4>
                       <p className="text-muted-foreground mb-4">
-                        Use server actions when you have an API endpoint that can handle the request:
+                        Use server actions when you have an API endpoint that
+                        can handle the request:
                       </p>
                       <ul className="space-y-2 text-sm text-muted-foreground">
                         <li className="flex items-start">
                           <span className="text-brand mr-2 font-bold">•</span>
-                          <strong>You have an existing API endpoint</strong> - agent calls it directly
+                          <strong>You have an existing API endpoint</strong> -
+                          agent calls it directly
                         </li>
                         <li className="flex items-start">
                           <span className="text-brand mr-2 font-bold">•</span>
-                          <strong>Zero code implementation</strong> - just provide your API endpoint
+                          <strong>Zero code implementation</strong> - just
+                          provide your API endpoint
                         </li>
                         <li className="flex items-start">
                           <span className="text-brand mr-2 font-bold">•</span>
-                          <strong>Secure and reliable</strong> - runs on your backend infrastructure
+                          <strong>Secure and reliable</strong> - runs on your
+                          backend infrastructure
                         </li>
                       </ul>
                       <div className="mt-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
                         <p className="text-sm text-green-700 dark:text-green-300">
-                          ✅ <strong>Easy setup:</strong> Just provide your API endpoint and the agent handles the rest!
+                          ✅ <strong>Easy setup:</strong> Just provide your API
+                          endpoint and the agent handles the rest!
                         </p>
                       </div>
                     </div>
-                    
+
                     <div>
                       <h4 className="font-semibold text-foreground mb-3 flex items-center text-lg">
                         <Code className="h-5 w-5 text-brand mr-2" />
                         Client Actions
                       </h4>
                       <p className="text-muted-foreground mb-4">
-                        Use client actions when you don't have an API or need browser-specific functionality:
+                        Use client actions when you don't have an API or need
+                        browser-specific functionality:
                       </p>
                       <ul className="space-y-2 text-sm text-muted-foreground">
                         <li className="flex items-start">
                           <span className="text-brand mr-2 font-bold">•</span>
-                          <strong>No API endpoint needed</strong> - works directly in the browser
+                          <strong>No API endpoint needed</strong> - works
+                          directly in the browser
                         </li>
                         <li className="flex items-start">
                           <span className="text-brand mr-2 font-bold">•</span>
-                          <strong>Custom JavaScript required</strong> - copy and paste provided code
+                          <strong>Custom JavaScript required</strong> - copy and
+                          paste provided code
                         </li>
                         <li className="flex items-start">
                           <span className="text-brand mr-2 font-bold">•</span>
-                          <strong>Full browser control</strong> - manipulate UI, forms, and page behavior
+                          <strong>Full browser control</strong> - manipulate UI,
+                          forms, and page behavior
                         </li>
                       </ul>
                       <div className="mt-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                         <p className="text-sm text-blue-700 dark:text-blue-300">
-                          🔧 <strong>Manual setup:</strong> You'll receive ready-to-use JavaScript code to add to your website.
+                          🔧 <strong>Manual setup:</strong> You'll receive
+                          ready-to-use JavaScript code to add to your website.
                         </p>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="mt-8 bg-brand/5 border border-brand/20 rounded-lg p-6">
                     <p className="text-muted-foreground text-center">
-                      <strong className="text-foreground">💡 Key Difference:</strong> Server actions work automatically through API calls, while client actions need custom JavaScript code in your website.
+                      <strong className="text-foreground">
+                        💡 Key Difference:
+                      </strong>{' '}
+                      Server actions work automatically through API calls, while
+                      client actions need custom JavaScript code in your
+                      website.
                     </p>
                   </div>
                 </CardContent>
@@ -943,7 +961,10 @@ export default function Layout({ children }) {
                     asChild
                     className="bg-brand text-primary-foreground hover:bg-brand/90 text-base font-semibold px-8 py-3 w-auto"
                   >
-                    <Link href="/dashboard" className="inline-flex items-center">
+                    <Link
+                      href="/dashboard"
+                      className="inline-flex items-center"
+                    >
                       <Play className="mr-2 h-5 w-5" />
                       Create an Agent
                     </Link>

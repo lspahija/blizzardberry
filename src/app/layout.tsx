@@ -15,16 +15,19 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'BlizzardBerry - AI Agent Platform',
-  description: 'Transform any app into an AI-powered experience. Add natural language interfaces for customer support, help desks, and user interactions. Let users control your software simply by typing. Super easy integration, powerful results.',
-  keywords: 'natural language interface, AI agent, chatbot, customer support, help desk, app integration, AI models, pluggable AI, software automation, customer service automation, AI agent platform',
+  description:
+    'Transform any app into an AI-powered experience. Add natural language interfaces for customer support, help desks, and user interactions. Let users control your software simply by typing. Super easy integration, powerful results.',
+  keywords:
+    'natural language interface, AI agent, chatbot, customer support, help desk, app integration, AI models, pluggable AI, software automation, customer service automation, AI agent platform',
   authors: [{ name: 'BlizzardBerry' }],
   creator: 'BlizzardBerry',
   publisher: 'BlizzardBerry',
-  
+
   // Open Graph / Facebook
   openGraph: {
     title: 'BlizzardBerry - AI Agent Platform',
-    description: 'Transform any app into an AI-powered experience. Add natural language interfaces for customer support, help desks, and user interactions. Let users control your software simply by typing. Super easy integration, powerful results.',
+    description:
+      'Transform any app into an AI-powered experience. Add natural language interfaces for customer support, help desks, and user interactions. Let users control your software simply by typing. Super easy integration, powerful results.',
     url: 'https://blizzardberry.com',
     siteName: 'BlizzardBerry',
     images: [
@@ -38,16 +41,17 @@ export const metadata: Metadata = {
     locale: 'en_US',
     type: 'website',
   },
-  
+
   // Twitter
   twitter: {
     card: 'summary_large_image',
     title: 'BlizzardBerry - AI Agent Platform',
-    description: 'Transform any app into an AI-powered experience. Add natural language interfaces for customer support, help desks, and user interactions. Let users control your software simply by typing. Super easy integration, powerful results.',
+    description:
+      'Transform any app into an AI-powered experience. Add natural language interfaces for customer support, help desks, and user interactions. Let users control your software simply by typing. Super easy integration, powerful results.',
     images: ['https://blizzardberry.com/image/social-preview.png'],
     creator: '@BlizzardBerry',
   },
-  
+
   // Additional SEO
   robots: {
     index: true,

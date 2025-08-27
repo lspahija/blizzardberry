@@ -14,7 +14,7 @@ function initializeConfig() {
   const agentScript = document.currentScript;
   const baseUrl = new URL(agentScript.src).origin;
   const agentId = extractAgentId();
-  
+
   console.log('BlizzardBerry Agent initialized:', { agentId, baseUrl });
 
   const userConfig = window.agentUserConfig;

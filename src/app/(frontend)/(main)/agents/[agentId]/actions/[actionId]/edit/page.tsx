@@ -8,9 +8,21 @@ import GeneralStep from '@/app/(frontend)/components/GeneralStep';
 import ExecutionStep from '@/app/(frontend)/components/ExecutionStep';
 import { Loader2 } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
-import { Action, ExecutionContext, Parameter, ParameterType } from '@/app/api/lib/model/action/baseAction';
-import { BackendAction, BackendModel, HttpMethod } from '@/app/api/lib/model/action/backendAction';
-import { FrontendAction, FrontendModel } from '@/app/api/lib/model/action/frontendAction';
+import {
+  Action,
+  ExecutionContext,
+  Parameter,
+  ParameterType,
+} from '@/app/api/lib/model/action/baseAction';
+import {
+  BackendAction,
+  BackendModel,
+  HttpMethod,
+} from '@/app/api/lib/model/action/backendAction';
+import {
+  FrontendAction,
+  FrontendModel,
+} from '@/app/api/lib/model/action/frontendAction';
 import { toast } from 'sonner';
 
 const containerVariants = {
@@ -71,11 +83,13 @@ function ActionEditContent() {
   // Fetch the action to edit
   useEffect(() => {
     if (isInitialized) return; // Prevent re-initialization
-    
+
     async function fetchAction() {
       try {
         console.log('Fetching action data for editing...');
-        const response = await fetch(`/api/agents/${agentId}/actions/${actionId}`);
+        const response = await fetch(
+          `/api/agents/${agentId}/actions/${actionId}`
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch action');
         }
@@ -97,26 +111,37 @@ function ActionEditContent() {
         if (action.executionContext === ExecutionContext.SERVER) {
           const backendAction = action as BackendAction;
           const parameters = backendAction.executionModel.parameters || [];
-          
+
           if (parameters.length === 0) {
-            setDataInputs([{ name: '', type: 'Text', description: '', isArray: false}]);
+            setDataInputs([
+              { name: '', type: 'Text', description: '', isArray: false },
+            ]);
           } else {
-            setDataInputs(parameters.map(param => ({
-              name: param.name,
-              type: param.type.charAt(0).toUpperCase() + param.type.slice(1),
-              description: param.description || '',
-              isArray: param.isArray || false,
-            })));
+            setDataInputs(
+              parameters.map((param) => ({
+                name: param.name,
+                type: param.type.charAt(0).toUpperCase() + param.type.slice(1),
+                description: param.description || '',
+                isArray: param.isArray || false,
+              }))
+            );
           }
 
           // Set API details
           setApiUrl(backendAction.executionModel.request.url);
           setApiMethod(backendAction.executionModel.request.method);
-          
+
           if (backendAction.executionModel.request.headers) {
-            const headerEntries = Object.entries(backendAction.executionModel.request.headers);
+            const headerEntries = Object.entries(
+              backendAction.executionModel.request.headers
+            );
             if (headerEntries.length > 0) {
-              setHeaders(headerEntries.map(([key, value]) => ({ key, value: String(value) })));
+              setHeaders(
+                headerEntries.map(([key, value]) => ({
+                  key,
+                  value: String(value),
+                }))
+              );
             } else {
               setHeaders([{ key: '', value: '' }]);
             }
@@ -125,27 +150,32 @@ function ActionEditContent() {
           }
 
           if (backendAction.executionModel.request.body) {
-            setApiBody(JSON.stringify(backendAction.executionModel.request.body, null, 2));
+            setApiBody(
+              JSON.stringify(backendAction.executionModel.request.body, null, 2)
+            );
           } else {
             setApiBody('');
           }
         } else {
           const frontendAction = action as FrontendAction;
           const parameters = frontendAction.executionModel.parameters || [];
-          
-          if (parameters.length === 0) {
-            setDataInputs([{ name: '', type: 'Text', description: '', isArray: false}]);
-          } else {
-            setDataInputs(parameters.map(param => ({
-              name: param.name,
-              type: param.type.charAt(0).toUpperCase() + param.type.slice(1),
-              description: param.description || '',
-              isArray: param.isArray || false,
-            })));
-          }
 
+          if (parameters.length === 0) {
+            setDataInputs([
+              { name: '', type: 'Text', description: '', isArray: false },
+            ]);
+          } else {
+            setDataInputs(
+              parameters.map((param) => ({
+                name: param.name,
+                type: param.type.charAt(0).toUpperCase() + param.type.slice(1),
+                description: param.description || '',
+                isArray: param.isArray || false,
+              }))
+            );
+          }
         }
-        
+
         console.log('Form data populated successfully');
         setIsInitialized(true);
       } catch (error) {
@@ -158,7 +188,18 @@ function ActionEditContent() {
     }
 
     fetchAction();
-  }, [agentId, actionId, setBaseAction, setDataInputs, setApiUrl, setApiMethod, setHeaders, setApiBody, router, isInitialized]);
+  }, [
+    agentId,
+    actionId,
+    setBaseAction,
+    setDataInputs,
+    setApiUrl,
+    setApiMethod,
+    setHeaders,
+    setApiBody,
+    router,
+    isInitialized,
+  ]);
 
   const handleUpdateAction = async () => {
     setIsUpdatingAction(true);
@@ -196,7 +237,8 @@ function ActionEditContent() {
       const requestModel = {
         url: apiUrl,
         method: apiMethod as HttpMethod,
-        headers: Object.keys(requestHeaders).length > 0 ? requestHeaders : undefined,
+        headers:
+          Object.keys(requestHeaders).length > 0 ? requestHeaders : undefined,
         body: requestBody,
       };
 
@@ -233,13 +275,16 @@ function ActionEditContent() {
     }
 
     try {
-      const response = await fetch(`/api/agents/${agentId}/actions/${actionId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(action),
-      });
+      const response = await fetch(
+        `/api/agents/${agentId}/actions/${actionId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(action),
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Failed to update action');
@@ -260,7 +305,16 @@ function ActionEditContent() {
   };
 
   // Debug logging
-  console.log('Edit page render - step:', step, 'baseAction:', baseAction, 'dataInputs:', dataInputs, 'isInitialized:', isInitialized);
+  console.log(
+    'Edit page render - step:',
+    step,
+    'baseAction:',
+    baseAction,
+    'dataInputs:',
+    dataInputs,
+    'isInitialized:',
+    isInitialized
+  );
 
   if (loadingAction) {
     return (
@@ -298,34 +352,37 @@ function ActionEditContent() {
           setDataInputs={setDataInputs}
           onNext={handleNextStep}
           onBack={handleBack}
-          isClientAction={baseAction.executionContext === ExecutionContext.CLIENT}
+          isClientAction={
+            baseAction.executionContext === ExecutionContext.CLIENT
+          }
           isCreatingAction={isUpdatingAction}
         />
       )}
 
-      {step === 3 && baseAction.executionContext === ExecutionContext.SERVER && (
-        <ExecutionStep
-          baseAction={baseAction}
-          dataInputs={dataInputs}
-          apiUrl={apiUrl}
-          setApiUrl={setApiUrl}
-          apiMethod={apiMethod}
-          setApiMethod={setApiMethod}
-          headers={headers}
-          setHeaders={setHeaders}
-          apiBody={apiBody}
-          setApiBody={setApiBody}
-          isEditorInteracted={isEditorInteracted}
-          setIsEditorInteracted={setIsEditorInteracted}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          onCreate={handleUpdateAction}
-          onBack={handleBack}
-          isCreatingAction={isUpdatingAction}
-          showSuccess={showSuccess}
-          isEditing={true}
-        />
-      )}
+      {step === 3 &&
+        baseAction.executionContext === ExecutionContext.SERVER && (
+          <ExecutionStep
+            baseAction={baseAction}
+            dataInputs={dataInputs}
+            apiUrl={apiUrl}
+            setApiUrl={setApiUrl}
+            apiMethod={apiMethod}
+            setApiMethod={setApiMethod}
+            headers={headers}
+            setHeaders={setHeaders}
+            apiBody={apiBody}
+            setApiBody={setApiBody}
+            isEditorInteracted={isEditorInteracted}
+            setIsEditorInteracted={setIsEditorInteracted}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            onCreate={handleUpdateAction}
+            onBack={handleBack}
+            isCreatingAction={isUpdatingAction}
+            showSuccess={showSuccess}
+            isEditing={true}
+          />
+        )}
     </motion.div>
   );
 }
@@ -344,4 +401,4 @@ export default function EditActionPage() {
       </Suspense>
     </div>
   );
-} 
+}

@@ -28,7 +28,11 @@ import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
 import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/app/(frontend)/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/app/(frontend)/components/ui/tooltip';
 import { PricingFAQ } from '@/app/(frontend)/components/ui/pricing-faq';
 import posthog from 'posthog-js';
 
@@ -83,7 +87,7 @@ export default function PricingPage() {
     posthog.capture('pricing_plan_selected', {
       tier,
       billing_cycle: billingCycle,
-      is_logged_in: isLoggedIn
+      is_logged_in: isLoggedIn,
     });
 
     if (tier === 'free') {
@@ -97,7 +101,7 @@ export default function PricingPage() {
         const data = await subscribe({ tier: 'free', billingCycle });
         posthog.capture('subscription_success', {
           tier: 'free',
-          billing_cycle: billingCycle
+          billing_cycle: billingCycle,
         });
         toast.success('Free tier activated! Redirecting to dashboard...');
         setTimeout(() => router.push('/dashboard'), 1000);
@@ -106,7 +110,7 @@ export default function PricingPage() {
         posthog.capture('subscription_failed', {
           tier: 'free',
           billing_cycle: billingCycle,
-          error: (err as Error).message
+          error: (err as Error).message,
         });
         return;
       }
@@ -115,7 +119,7 @@ export default function PricingPage() {
     if (!isLoggedIn) {
       posthog.capture('pricing_login_required', {
         tier,
-        billing_cycle: billingCycle
+        billing_cycle: billingCycle,
       });
       const subscriptionIntent = {
         tier,
@@ -135,7 +139,7 @@ export default function PricingPage() {
       posthog.capture('checkout_initiated', {
         tier,
         billing_cycle: billingCycle,
-        checkout_session_id: data.checkoutSessionId
+        checkout_session_id: data.checkoutSessionId,
       });
       setClientSecret(data.clientSecret);
       setCheckoutSessionId(data.checkoutSessionId || '');
@@ -144,7 +148,7 @@ export default function PricingPage() {
       posthog.capture('checkout_failed', {
         tier,
         billing_cycle: billingCycle,
-        error: (err as Error).message
+        error: (err as Error).message,
       });
     } finally {
       setCheckoutLoading(false);
@@ -155,7 +159,7 @@ export default function PricingPage() {
     posthog.capture('credits_purchase_clicked', {
       is_logged_in: isLoggedIn,
       credits_amount: pricing.oneTimePurchase.credits,
-      price: pricing.oneTimePurchase.price
+      price: pricing.oneTimePurchase.price,
     });
 
     if (!isLoggedIn) {
@@ -177,7 +181,7 @@ export default function PricingPage() {
       posthog.capture('credits_checkout_initiated', {
         credits_amount: pricing.oneTimePurchase.credits,
         price: pricing.oneTimePurchase.price,
-        checkout_session_id: data.checkoutSessionId
+        checkout_session_id: data.checkoutSessionId,
       });
       setClientSecret(data.clientSecret);
       setCheckoutSessionId(data.checkoutSessionId || '');
@@ -186,7 +190,7 @@ export default function PricingPage() {
       posthog.capture('credits_checkout_failed', {
         credits_amount: pricing.oneTimePurchase.credits,
         price: pricing.oneTimePurchase.price,
-        error: (err as Error).message
+        error: (err as Error).message,
       });
     } finally {
       setCheckoutLoading(false);
@@ -196,10 +200,10 @@ export default function PricingPage() {
   const handleEnterpriseSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormStatus('Submitting...');
-    
+
     posthog.capture('enterprise_form_submitted', {
       email: emailAddress,
-      message_length: message.length
+      message_length: message.length,
     });
 
     try {
@@ -217,7 +221,7 @@ export default function PricingPage() {
         throw new Error(data.error || 'Failed to send inquiry');
       }
       posthog.capture('enterprise_form_success', {
-        email: emailAddress
+        email: emailAddress,
       });
       setFormStatus('Inquiry sent successfully!');
       setEmailAddress('');
@@ -229,7 +233,7 @@ export default function PricingPage() {
     } catch (err) {
       posthog.capture('enterprise_form_failed', {
         email: emailAddress,
-        error: (err as Error).message
+        error: (err as Error).message,
       });
       setFormStatus('Error: ' + (err as Error).message);
     }
@@ -239,7 +243,6 @@ export default function PricingPage() {
     () => Promise.resolve(clientSecret),
     [clientSecret]
   );
-
 
   // Enhanced descriptions for each tier
   const tierDescriptions = {
@@ -271,7 +274,8 @@ export default function PricingPage() {
               Pricing
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-8 mb-6 sm:mb-8">
-              Choose the perfect plan for your AI agent needs.<br />
+              Choose the perfect plan for your AI agent needs.
+              <br />
               Start free and scale as you grow.
             </p>
 
@@ -287,7 +291,7 @@ export default function PricingPage() {
                   onClick={() => {
                     posthog.capture('billing_cycle_changed', {
                       from: billingCycle,
-                      to: 'monthly'
+                      to: 'monthly',
                     });
                     setBillingCycle('monthly');
                   }}
@@ -303,7 +307,7 @@ export default function PricingPage() {
                   onClick={() => {
                     posthog.capture('billing_cycle_changed', {
                       from: billingCycle,
-                      to: 'yearly'
+                      to: 'yearly',
                     });
                     setBillingCycle('yearly');
                   }}
@@ -461,11 +465,15 @@ export default function PricingPage() {
                                 </TooltipTrigger>
                                 <TooltipContent>
                                   <div className="min-w-[200px] max-w-[300px]">
-                                    <p className="font-semibold mb-2">Premium Models:</p>
+                                    <p className="font-semibold mb-2">
+                                      Premium Models:
+                                    </p>
                                     <ul className="list-disc pl-4 space-y-1">
-                                      {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
-                                        <li key={model}>{displayName}</li>
-                                      ))}
+                                      {Object.entries(AGENT_MODELS).map(
+                                        ([model, displayName]) => (
+                                          <li key={model}>{displayName}</li>
+                                        )
+                                      )}
                                     </ul>
                                   </div>
                                 </TooltipContent>
@@ -578,11 +586,15 @@ export default function PricingPage() {
                           </TooltipTrigger>
                           <TooltipContent>
                             <div className="min-w-[200px] max-w-[300px]">
-                              <p className="font-semibold mb-2">Premium Models:</p>
+                              <p className="font-semibold mb-2">
+                                Premium Models:
+                              </p>
                               <ul className="list-disc pl-4 space-y-1">
-                                {Object.entries(AGENT_MODELS).map(([model, displayName]) => (
-                                  <li key={model}>{displayName}</li>
-                                ))}
+                                {Object.entries(AGENT_MODELS).map(
+                                  ([model, displayName]) => (
+                                    <li key={model}>{displayName}</li>
+                                  )
+                                )}
                               </ul>
                             </div>
                           </TooltipContent>
@@ -674,7 +686,7 @@ export default function PricingPage() {
 
       {/* Checkout Modal */}
       {showCheckout && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/60 flex items-center justify-center p-2 sm:p-4 z-[100] backdrop-blur-sm"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
@@ -791,7 +803,6 @@ export default function PricingPage() {
           </div>
         </div>
       )}
-
     </>
   );
 }

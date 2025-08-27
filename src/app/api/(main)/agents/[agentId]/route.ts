@@ -112,15 +112,15 @@ export async function PATCH(
     const { name, websiteDomain, model, prompts } = body;
 
     const updateData: any = {};
-    
+
     if (name !== undefined) {
       updateData.name = name;
     }
-    
+
     if (websiteDomain !== undefined) {
       updateData.website_domain = websiteDomain;
     }
-    
+
     if (model !== undefined) {
       updateData.model = model;
     }
@@ -133,10 +133,15 @@ export async function PATCH(
       await updatePrompts(agentId, prompts);
     }
 
-    return NextResponse.json({ 
-      success: true,
-      updatedFields: Object.keys(body).filter(key => body[key] !== undefined)
-    }, { status: 200 });
+    return NextResponse.json(
+      {
+        success: true,
+        updatedFields: Object.keys(body).filter(
+          (key) => body[key] !== undefined
+        ),
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Error updating agent:', error);
     return NextResponse.json(

@@ -142,10 +142,7 @@ export function useAgents() {
   );
 
   const handlePatchAgent = useCallback(
-    async (
-      agentId: string,
-      updates: Partial<UpdateAgentParams>
-    ) => {
+    async (agentId: string, updates: Partial<UpdateAgentParams>) => {
       setUpdatingAgent(true);
       try {
         const response = await fetch(`/api/agents/${agentId}`, {
@@ -162,7 +159,7 @@ export function useAgents() {
 
         const result = await response.json();
         await fetchAgents();
-        
+
         return result;
       } catch (error) {
         console.error('Error updating agent:', error);

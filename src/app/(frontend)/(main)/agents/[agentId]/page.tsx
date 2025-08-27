@@ -61,10 +61,7 @@ import { Suspense } from 'react';
 import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import { toast } from 'sonner';
-import {
-  AgentModel,
-  AGENT_MODELS,
-} from '@/app/api/lib/model/agent/agent';
+import { AgentModel, AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 
 export default function AgentDetailsWrapper({
   params: paramsPromise,
@@ -104,7 +101,9 @@ function AgentDetails({
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState('');
   const [editWebsiteDomain, setEditWebsiteDomain] = useState('');
-  const [editModel, setEditModel] = useState<AgentModel>('google/gemini-2.0-flash-001');
+  const [editModel, setEditModel] = useState<AgentModel>(
+    'google/gemini-2.0-flash-001'
+  );
   const [editPrompts, setEditPrompts] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -131,13 +130,17 @@ function AgentDetails({
   const [documentToDelete, setDocumentToDelete] = useState<
     (typeof documents)[0] | null
   >(null);
-  const [isDeletePromptDialogOpen, setIsDeletePromptDialogOpen] = useState(false);
+  const [isDeletePromptDialogOpen, setIsDeletePromptDialogOpen] =
+    useState(false);
   const [promptToDelete, setPromptToDelete] = useState<
     (typeof prompts)[0] | null
   >(null);
   const [isNavigatingToNewAction, setIsNavigatingToNewAction] = useState(false);
-  const [isNavigatingToNewDocument, setIsNavigatingToNewDocument] = useState(false);
-  const [isNavigatingToEditAction, setIsNavigatingToEditAction] = useState<string | null>(null);
+  const [isNavigatingToNewDocument, setIsNavigatingToNewDocument] =
+    useState(false);
+  const [isNavigatingToEditAction, setIsNavigatingToEditAction] = useState<
+    string | null
+  >(null);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -161,7 +164,9 @@ function AgentDetails({
         // Initialize edit state
         setEditName(data.agent?.name || '');
         setEditWebsiteDomain(data.agent?.websiteDomain || '');
-        setEditModel(data.agent?.model as AgentModel || 'google/gemini-2.0-flash-001');
+        setEditModel(
+          (data.agent?.model as AgentModel) || 'google/gemini-2.0-flash-001'
+        );
       } catch (error) {
         console.error('Error fetching agent:', error);
       } finally {
@@ -247,19 +252,19 @@ function AgentDetails({
 
   const saveChanges = async () => {
     if (!agent) return;
-    
+
     try {
       setIsSaving(true);
       const filteredPrompts = editPrompts.filter((p) => p.trim());
-      const updatePayload: any = { 
-        name: editName, 
-        websiteDomain: editWebsiteDomain, 
-        model: editModel 
+      const updatePayload: any = {
+        name: editName,
+        websiteDomain: editWebsiteDomain,
+        model: editModel,
       };
       updatePayload.prompts = filteredPrompts;
-      
+
       await handleUpdateAgent(agent.id, updatePayload);
-      
+
       try {
         const response = await fetch(`/api/agents/${params.agentId}`);
         if (response.ok) {
@@ -275,9 +280,9 @@ function AgentDetails({
           model: editModel,
         });
       }
-      
+
       await fetchPrompts();
-      
+
       setIsEditing(false);
       toast.success('Agent updated successfully!');
     } catch (error) {
@@ -293,7 +298,8 @@ function AgentDetails({
   };
 
   const removePrompt = (index: number) => {
-    if (editPrompts.length > 1) setEditPrompts(editPrompts.filter((_, i) => i !== index));
+    if (editPrompts.length > 1)
+      setEditPrompts(editPrompts.filter((_, i) => i !== index));
   };
 
   const updatePrompt = (index: number, value: string) => {
@@ -436,7 +442,7 @@ function AgentDetails({
                 </p>
               )}
             </div>
-            
+
             <div>
               <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
                 <Settings className="h-4 w-4 text-destructive" />
@@ -451,11 +457,13 @@ function AgentDetails({
                     <SelectValue placeholder="Select a model" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(AGENT_MODELS).map(([modelValue, displayName]) => (
-                      <SelectItem key={modelValue} value={modelValue}>
-                        {displayName}
-                      </SelectItem>
-                    ))}
+                    {Object.entries(AGENT_MODELS).map(
+                      ([modelValue, displayName]) => (
+                        <SelectItem key={modelValue} value={modelValue}>
+                          {displayName}
+                        </SelectItem>
+                      )
+                    )}
                   </SelectContent>
                 </Select>
               ) : (
@@ -464,7 +472,7 @@ function AgentDetails({
                 </p>
               )}
             </div>
-            
+
             <div>
               <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
                 Created:
@@ -481,7 +489,8 @@ function AgentDetails({
                   Suggested Prompts (Optional)
                 </Label>
                 <p className="text-sm text-muted-foreground mt-1 ml-6">
-                  These are example prompts users can choose from or use as inspiration when interacting with your agent.
+                  These are example prompts users can choose from or use as
+                  inspiration when interacting with your agent.
                 </p>
                 <div className="mt-4 ml-6 space-y-4">
                   {editPrompts.map((prompt, index) => (
@@ -495,7 +504,8 @@ function AgentDetails({
                           rows={3}
                         />
                       </div>
-                      {(editPrompts.length > 1 || (index === 0 && prompt.trim())) && (
+                      {(editPrompts.length > 1 ||
+                        (index === 0 && prompt.trim())) && (
                         <Button
                           type="button"
                           variant="destructive"
@@ -542,7 +552,10 @@ function AgentDetails({
                 </Label>
                 <div className="space-y-2 mt-2">
                   {prompts.map((prompt, idx) => (
-                    <div key={prompt.id} className="p-2 bg-muted/30 rounded-md border border-border/50 ml-6">
+                    <div
+                      key={prompt.id}
+                      className="p-2 bg-muted/30 rounded-md border border-border/50 ml-6"
+                    >
                       <p className="text-xs text-foreground leading-relaxed whitespace-pre-wrap">
                         {prompt.content}
                       </p>
@@ -678,10 +691,13 @@ function AgentDetails({
                         </div>
                       </div>
                       <p className="text-sm text-gray-600 mb-4">
-                        💡 <strong>Why agentUserConfig?</strong> It provides user information to agents for personalized experiences.
+                        💡 <strong>Why agentUserConfig?</strong> It provides
+                        user information to agents for personalized experiences.
                       </p>
                       <p className="text-sm text-gray-600 mb-4">
-                        💡 <strong>Why return values?</strong> The AI agent uses your return value to provide helpful responses to users and confirm actions were executed.
+                        💡 <strong>Why return values?</strong> The AI agent uses
+                        your return value to provide helpful responses to users
+                        and confirm actions were executed.
                       </p>
                       <div className="relative">
                         <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
@@ -901,20 +917,20 @@ function AgentDetails({
                         <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-6">
                           <li>Copy the code snippet above</li>
                           <li>
-                          {selectedFramework === Framework.NEXT_JS ? (
-                            <>
-                              Paste the code in your layout.tsx or page
-                              component
-                            </>
-                          ) : (
-                            <>
-                              Paste the code before the closing{' '}
-                              <code className="bg-muted px-1 rounded">
-                                &lt;/body&gt;
-                              </code>{' '}
-                              tag
-                            </>
-                          )}
+                            {selectedFramework === Framework.NEXT_JS ? (
+                              <>
+                                Paste the code in your layout.tsx or page
+                                component
+                              </>
+                            ) : (
+                              <>
+                                Paste the code before the closing{' '}
+                                <code className="bg-muted px-1 rounded">
+                                  &lt;/body&gt;
+                                </code>{' '}
+                                tag
+                              </>
+                            )}
                           </li>
                           <li>Save and publish your website changes</li>
                           <li>

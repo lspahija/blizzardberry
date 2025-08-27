@@ -4,7 +4,15 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import Image from 'next/image';
-import { LabelList, RadialBar, RadialBarChart, BarChart, Bar, XAxis, YAxis } from 'recharts';
+import {
+  LabelList,
+  RadialBar,
+  RadialBarChart,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import {
   ChartConfig,
   ChartContainer,
@@ -37,7 +45,11 @@ interface VideoRendererProps {
   scenes: GeneratedScene[];
 }
 
-export function VideoRenderer({ template, businessDomain, scenes }: VideoRendererProps) {
+export function VideoRenderer({
+  template,
+  businessDomain,
+  scenes,
+}: VideoRendererProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -46,21 +58,27 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
 
   // Create chart data from metrics
   const chartData = businessDomain.metrics
-    .filter(m => typeof m.value === 'number')
+    .filter((m) => typeof m.value === 'number')
     .slice(0, 6)
     .map((metric, index) => ({
       name: metric.label,
       value: metric.value as number,
-      fill: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'][index] || '#3B82F6'
+      fill:
+        ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'][
+          index
+        ] || '#3B82F6',
     }));
 
-  const chartConfig = chartData.reduce((config, data) => ({
-    ...config,
-    [data.name]: {
-      label: data.name,
-      color: data.fill,
-    }
-  }), {} as ChartConfig);
+  const chartConfig = chartData.reduce(
+    (config, data) => ({
+      ...config,
+      [data.name]: {
+        label: data.name,
+        color: data.fill,
+      },
+    }),
+    {} as ChartConfig
+  );
 
   // Build and play timeline
   const buildTimeline = () => {
@@ -72,7 +90,7 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
       onComplete: () => {
         setIsPlaying(false);
         setProgress(100);
-      }
+      },
     });
 
     let currentTime = 0;
@@ -80,17 +98,25 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
     scenes.forEach((scene, index) => {
       // Scene entrance
       tl.addLabel(`scene${index}`, currentTime / 1000)
-        .call(() => {
-          setCurrentSceneIndex(index);
-          showScene(scene, index);
-        }, undefined, `scene${index}`)
-        
+        .call(
+          () => {
+            setCurrentSceneIndex(index);
+            showScene(scene, index);
+          },
+          undefined,
+          `scene${index}`
+        )
+
         // Scene exit
-        .call(() => {
-          if (index < scenes.length - 1) {
-            hideScene(scene, index);
-          }
-        }, undefined, `scene${index}+=${scene.duration / 1000}`);
+        .call(
+          () => {
+            if (index < scenes.length - 1) {
+              hideScene(scene, index);
+            }
+          },
+          undefined,
+          `scene${index}+=${scene.duration / 1000}`
+        );
 
       currentTime += scene.duration;
     });
@@ -121,7 +147,7 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
       duration: template.config.timings.transitionSpeed / 1000,
       onComplete: () => {
         sceneElement.style.display = 'none';
-      }
+      },
     });
   };
 
@@ -156,27 +182,37 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
   const executeDemoScene = (scene: GeneratedScene, element: HTMLElement) => {
     if (!scene.content.query || !scene.content.response) return;
 
-    const inputElement = element.querySelector('.scene-input') as HTMLInputElement;
+    const inputElement = element.querySelector(
+      '.scene-input'
+    ) as HTMLInputElement;
     const messagesElement = element.querySelector('.scene-messages');
 
     if (inputElement && messagesElement) {
       // Type query
-      typeText(inputElement, scene.content.query, template.config.timings.typingSpeed, () => {
-        // Add user message
-        setTimeout(() => {
-          addMessage(messagesElement, scene.content.query!, 'user');
-          
-          // Show typing indicator, then response
+      typeText(
+        inputElement,
+        scene.content.query,
+        template.config.timings.typingSpeed,
+        () => {
+          // Add user message
           setTimeout(() => {
-            addMessage(messagesElement, scene.content.response!, 'assistant');
-          }, 1500);
-        }, 500);
-      });
+            addMessage(messagesElement, scene.content.query!, 'user');
+
+            // Show typing indicator, then response
+            setTimeout(() => {
+              addMessage(messagesElement, scene.content.response!, 'assistant');
+            }, 1500);
+          }, 500);
+        }
+      );
     }
   };
 
   // Execute dashboard scene
-  const executeDashboardScene = (scene: GeneratedScene, element: HTMLElement) => {
+  const executeDashboardScene = (
+    scene: GeneratedScene,
+    element: HTMLElement
+  ) => {
     setTimeout(() => {
       // Animate metrics
       const metricElements = element.querySelectorAll('.metric-value');
@@ -203,14 +239,20 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
   // Execute generic scene
   const executeGenericScene = (scene: GeneratedScene, element: HTMLElement) => {
     // Basic fade in animation for generic scenes
-    gsap.fromTo(element.children, 
+    gsap.fromTo(
+      element.children,
       { opacity: 0, y: 20 },
       { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, delay: 0.3 }
     );
   };
 
   // Utility functions
-  const typeText = (element: HTMLInputElement, text: string, speed: number, callback?: () => void) => {
+  const typeText = (
+    element: HTMLInputElement,
+    text: string,
+    speed: number,
+    callback?: () => void
+  ) => {
     element.value = '';
     let i = 0;
     const type = () => {
@@ -225,14 +267,16 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
     type();
   };
 
-  const addMessage = (container: Element, text: string, type: 'user' | 'assistant') => {
+  const addMessage = (
+    container: Element,
+    text: string,
+    type: 'user' | 'assistant'
+  ) => {
     const messageDiv = document.createElement('div');
     messageDiv.className = `flex ${type === 'user' ? 'justify-end' : 'justify-start'} mb-4`;
     messageDiv.innerHTML = `
       <div class="max-w-md px-4 py-2 rounded-lg ${
-        type === 'user' 
-          ? 'bg-blue-500 text-white' 
-          : 'bg-gray-200 text-gray-800'
+        type === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
       }">
         ${text}
       </div>
@@ -240,7 +284,8 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
     container.appendChild(messageDiv);
 
     // Animate message in
-    gsap.fromTo(messageDiv, 
+    gsap.fromTo(
+      messageDiv,
       { opacity: 0, y: 20 },
       { opacity: 1, y: 0, duration: 0.4 }
     );
@@ -254,7 +299,7 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
       ease: 'power2.out',
       onUpdate: () => {
         element.textContent = Math.ceil(obj.value).toLocaleString();
-      }
+      },
     });
   };
 
@@ -321,15 +366,15 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
             </button>
           </div>
         </div>
-        
+
         {/* Progress bar */}
         <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
-          <div 
+          <div
             className="bg-brand h-2 rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
-        
+
         {/* Scene indicators */}
         <div className="flex gap-2 mt-2 flex-wrap">
           {scenes.map((scene, index) => (
@@ -343,14 +388,14 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
           ))}
         </div>
       </CardHeader>
-      
+
       <CardContent>
-        <div 
+        <div
           ref={containerRef}
           className="relative w-full bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg overflow-hidden"
-          style={{ 
+          style={{
             height: template.config.styling.windowSize.height,
-            backgroundColor: template.config.styling.backgroundColor 
+            backgroundColor: template.config.styling.backgroundColor,
           }}
         >
           {/* Render all scenes */}
@@ -374,11 +419,13 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
                   </p>
                 </div>
               )}
-              
+
               {scene.type === 'demo' && (
                 <div className="w-full max-w-lg">
                   <div className="bg-white rounded-lg border shadow-lg p-6">
-                    <h3 className="text-lg font-semibold mb-4">{scene.content.title}</h3>
+                    <h3 className="text-lg font-semibold mb-4">
+                      {scene.content.title}
+                    </h3>
                     <div className="space-y-4">
                       <input
                         className="scene-input w-full px-4 py-2 border rounded-lg"
@@ -392,7 +439,7 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
                   </div>
                 </div>
               )}
-              
+
               {scene.type === 'dashboard' && (
                 <div className="w-full">
                   <div className="bg-white rounded-lg border shadow-lg p-6">
@@ -402,22 +449,32 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
                       </h2>
                       <p className="text-gray-600">{scene.content.subtitle}</p>
                     </div>
-                    
+
                     {/* Metrics Grid */}
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
                       {scene.content.metrics?.slice(0, 3).map((metric, idx) => (
-                        <div key={idx} className="text-center p-4 bg-gray-50 rounded-lg">
+                        <div
+                          key={idx}
+                          className="text-center p-4 bg-gray-50 rounded-lg"
+                        >
                           <div className="text-3xl font-bold text-blue-600 mb-2">
                             {metric.type === 'currency' && '$'}
-                            <span className="metric-value" data-value={metric.value}>0</span>
+                            <span
+                              className="metric-value"
+                              data-value={metric.value}
+                            >
+                              0
+                            </span>
                             {metric.type === 'percentage' && '%'}
                             {metric.type === 'currency' && 'K'}
                           </div>
-                          <div className="text-sm text-gray-600">{metric.label}</div>
+                          <div className="text-sm text-gray-600">
+                            {metric.label}
+                          </div>
                         </div>
                       ))}
                     </div>
-                    
+
                     {/* Chart */}
                     {chartData.length > 0 && (
                       <div className="h-64">
@@ -434,14 +491,14 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
                   </div>
                 </div>
               )}
-              
+
               {scene.type === 'data' && (
                 <div className="w-full">
                   <div className="bg-white rounded-lg border shadow-lg p-6">
                     <h2 className="text-2xl font-bold text-gray-800 mb-6">
                       {scene.content.title}
                     </h2>
-                    
+
                     {/* Stats */}
                     <div className="grid grid-cols-3 gap-4 mb-6">
                       <div className="text-center p-3 bg-blue-50 rounded">
@@ -452,18 +509,23 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
                       </div>
                       <div className="text-center p-3 bg-green-50 rounded">
                         <div className="text-xl font-bold text-green-600">
-                          {scene.content.data?.filter((item: any) => item.status?.toLowerCase() === 'resolved').length || 0}
+                          {scene.content.data?.filter(
+                            (item: any) =>
+                              item.status?.toLowerCase() === 'resolved'
+                          ).length || 0}
                         </div>
                         <div className="text-sm text-gray-600">Resolved</div>
                       </div>
                       <div className="text-center p-3 bg-orange-50 rounded">
                         <div className="text-xl font-bold text-orange-600">
-                          {scene.content.data?.filter((item: any) => item.status?.toLowerCase() === 'open').length || 0}
+                          {scene.content.data?.filter(
+                            (item: any) => item.status?.toLowerCase() === 'open'
+                          ).length || 0}
                         </div>
                         <div className="text-sm text-gray-600">Open</div>
                       </div>
                     </div>
-                    
+
                     {/* Data Table */}
                     <div className="overflow-hidden">
                       <Table>
@@ -477,25 +539,35 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
                         </TableHeader>
                         <TableBody>
                           {scene.content.data?.map((item: any, idx: number) => (
-                            <TableRow 
-                              key={item.id} 
+                            <TableRow
+                              key={item.id}
                               className="data-row"
-                              style={{ 
-                                opacity: 0, 
+                              style={{
+                                opacity: 0,
                                 transform: 'translateX(-20px)',
-                                transition: 'all 0.5s ease'
+                                transition: 'all 0.5s ease',
                               }}
                             >
-                              <TableCell className="font-mono text-sm">{item.id}</TableCell>
-                              <TableCell>
-                                <div className="font-medium">{item.title}</div>
-                                <div className="text-sm text-gray-500">{item.description}</div>
+                              <TableCell className="font-mono text-sm">
+                                {item.id}
                               </TableCell>
                               <TableCell>
-                                <Badge variant={
-                                  item.status?.toLowerCase() === 'open' ? 'destructive' :
-                                  item.status?.toLowerCase() === 'resolved' ? 'default' : 'secondary'
-                                }>
+                                <div className="font-medium">{item.title}</div>
+                                <div className="text-sm text-gray-500">
+                                  {item.description}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={
+                                    item.status?.toLowerCase() === 'open'
+                                      ? 'destructive'
+                                      : item.status?.toLowerCase() ===
+                                          'resolved'
+                                        ? 'default'
+                                        : 'secondary'
+                                  }
+                                >
                                   {item.status}
                                 </Badge>
                               </TableCell>
@@ -510,7 +582,7 @@ export function VideoRenderer({ template, businessDomain, scenes }: VideoRendere
                   </div>
                 </div>
               )}
-              
+
               {scene.type === 'outro' && (
                 <div className="text-center">
                   <div className="brand-logo mb-6">

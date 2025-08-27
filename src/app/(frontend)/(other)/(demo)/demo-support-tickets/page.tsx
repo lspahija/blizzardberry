@@ -149,11 +149,15 @@ export default function DemoSupportTicketsPage() {
                   <TableRow key={ticket.id} className="hover:bg-muted/50">
                     <TableCell>
                       <div className="flex items-center space-x-2">
-                        <div className={`w-2 h-2 ${ticket.statusColor} rounded-full`}></div>
+                        <div
+                          className={`w-2 h-2 ${ticket.statusColor} rounded-full`}
+                        ></div>
                         <span className="font-semibold">{ticket.id}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="font-medium">{ticket.subject}</TableCell>
+                    <TableCell className="font-medium">
+                      {ticket.subject}
+                    </TableCell>
                     <TableCell>{getStatusBadge(ticket.status)}</TableCell>
                     <TableCell>{getPriorityBadge(ticket.priority)}</TableCell>
                   </TableRow>

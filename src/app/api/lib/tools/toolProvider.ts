@@ -127,21 +127,23 @@ function substitutePlaceholders(
   return result;
 }
 
-function filterPlaceholderValues(params: Record<string, any>): Record<string, any> {
+function filterPlaceholderValues(
+  params: Record<string, any>
+): Record<string, any> {
   const filteredParams: Record<string, any> = {};
   for (const [key, value] of Object.entries(params)) {
     if (value === undefined) {
       continue;
     }
-    
+
     if (typeof value === 'string' && value.match(/^{{.*}}$/)) {
       continue;
     }
-    
+
     if (Array.isArray(value) && value.length === 0) {
       continue;
     }
-    
+
     filteredParams[key] = value;
   }
   return filteredParams;
@@ -177,9 +179,10 @@ function substituteRequestModel(
         substitutedBody[key] = value;
       }
     }
-    
+
     const filteredBody = filterPlaceholderValues(substitutedBody);
-    substitutedBody = Object.keys(filteredBody).length > 0 ? filteredBody : undefined;
+    substitutedBody =
+      Object.keys(filteredBody).length > 0 ? filteredBody : undefined;
   }
 
   return {

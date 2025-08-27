@@ -5,7 +5,7 @@ export interface BusinessDomain {
   tagline: string;
   description: string;
   industry: string;
-  
+
   // Extracted data points
   queries: string[];
   metrics: {
@@ -13,7 +13,7 @@ export interface BusinessDomain {
     value: string | number;
     type: 'currency' | 'percentage' | 'count' | 'text';
   }[];
-  
+
   // Generated dashboard data
   dashboardData?: {
     title: string;
@@ -31,7 +31,7 @@ export interface VideoTemplate {
   id: string;
   name: string;
   description: string;
-  
+
   config: {
     totalDuration: number;
     scenes: SceneTemplate[];
@@ -51,7 +51,7 @@ export interface SceneTemplate {
   id: string;
   type: 'intro' | 'demo' | 'dashboard' | 'data' | 'outro';
   duration: number;
-  
+
   // Generic scene configuration
   config: {
     showHeader?: boolean;

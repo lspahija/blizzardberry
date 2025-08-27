@@ -1,4 +1,4 @@
-import { toCamelCase } from "./actionUtils";
+import { toCamelCase } from './actionUtils';
 
 export enum Framework {
   NEXT_JS = 'next.js',
@@ -19,9 +19,13 @@ export const getScriptTag = (framework: Framework, config: ScriptConfig) => {
   switch (framework) {
     case Framework.NEXT_JS:
       return `<Script id="${id}" strategy="afterInteractive">
-${content ? `  {\`
+${
+  content
+    ? `  {\`
 ${content}
-  \`}` : ''}
+  \`}`
+    : ''
+}
 </Script>`;
     case Framework.REACT:
     case Framework.VUE:
@@ -86,7 +90,7 @@ export const getActionsScript = (
         .filter((i) => i.name)
         .map((i) => i.name)
         .join(', ');
-      
+
       if (framework === Framework.NEXT_JS) {
         return `    ${functionNameCamelCase}: async (agentUserConfig, params) => {
       // Your custom action logic here
@@ -103,17 +107,17 @@ export const getActionsScript = (
     })
     .join(',\n');
 
-    if (framework === Framework.NEXT_JS) {
-      const content = `  window.agentActions = {\n${functionsCode}\n  };`;
-      return getScriptTag(framework, {
-        id: 'blizzardberry-actions',
-        content,
-      });
-    } else {
-      const content = `window.agentActions = {\n${functionsCode}\n};`;
-      return getScriptTag(framework, {
-        id: 'blizzardberry-actions',
-        content,
-      });
-    }
+  if (framework === Framework.NEXT_JS) {
+    const content = `  window.agentActions = {\n${functionsCode}\n  };`;
+    return getScriptTag(framework, {
+      id: 'blizzardberry-actions',
+      content,
+    });
+  } else {
+    const content = `window.agentActions = {\n${functionsCode}\n};`;
+    return getScriptTag(framework, {
+      id: 'blizzardberry-actions',
+      content,
+    });
+  }
 };

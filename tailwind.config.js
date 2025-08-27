@@ -26,39 +26,41 @@ module.exports = {
       },
       backgroundImage: {
         'gradient-primary': 'linear-gradient(135deg, #F43F5E 0%, #E11D48 100%)',
-        'gradient-secondary': 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
+        'gradient-secondary':
+          'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
         'gradient-brand': 'linear-gradient(135deg, #E11D48 0%, #F43F5E 100%)',
         'gradient-success': 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-        'gradient-background': 'linear-gradient(135deg, #F9FAFB 0%, #FEF2F2 50%, #FFF1F2 100%)',
+        'gradient-background':
+          'linear-gradient(135deg, #F9FAFB 0%, #FEF2F2 50%, #FFF1F2 100%)',
       },
       boxShadow: {
-        'soft': '0 30px 60px rgba(244, 63, 94, 0.12)',
-        'medium': '0 10px 30px rgba(244, 63, 94, 0.15)',
-        'hard': '0 30px 60px rgba(244, 63, 94, 0.2)',
+        soft: '0 30px 60px rgba(244, 63, 94, 0.12)',
+        medium: '0 10px 30px rgba(244, 63, 94, 0.15)',
+        hard: '0 30px 60px rgba(244, 63, 94, 0.2)',
       },
       animation: {
-        'fast': '0.3s ease-out',
-        'normal': '0.6s ease-out',
-        'slow': '0.8s ease-out',
+        fast: '0.3s ease-out',
+        normal: '0.6s ease-out',
+        slow: '0.8s ease-out',
       },
       transitionTimingFunction: {
-        'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
-        'bounce': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        smooth: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        bounce: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
       borderRadius: {
-        'small': '8px',
-        'medium': '12px',
-        'large': '24px',
+        small: '8px',
+        medium: '12px',
+        large: '24px',
       },
       keyframes: {
         logoBreathing: {
-          '0%, 100%': { 
-            transform: 'scale(1)', 
-            boxShadow: '0 0 30px rgba(244, 63, 94, 0.3)' 
+          '0%, 100%': {
+            transform: 'scale(1)',
+            boxShadow: '0 0 30px rgba(244, 63, 94, 0.3)',
           },
-          '50%': { 
-            transform: 'scale(1.05)', 
-            boxShadow: '0 0 50px rgba(244, 63, 94, 0.5)' 
+          '50%': {
+            transform: 'scale(1.05)',
+            boxShadow: '0 0 50px rgba(244, 63, 94, 0.5)',
           },
         },
         floatingParticles: {
@@ -84,10 +86,11 @@ module.exports = {
       animation: {
         'logo-breathing': 'logoBreathing 2s infinite',
         'floating-particles': 'floatingParticles 4s ease-in-out infinite',
-        'slide-up-from-bottom': 'slideUpFromBottom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+        'slide-up-from-bottom':
+          'slideUpFromBottom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
         'data-flow': 'dataFlow 3s ease-in-out',
       },
     },
   },
   plugins: [],
-}
+};

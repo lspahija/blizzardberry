@@ -42,7 +42,7 @@ export default function ContactPage() {
 
     posthog.capture('contact_form_submitted', {
       email,
-      message_length: message.length
+      message_length: message.length,
     });
 
     try {
@@ -61,7 +61,7 @@ export default function ContactPage() {
       }
 
       posthog.capture('contact_form_success', {
-        email
+        email,
       });
 
       setFormStatus('Message sent successfully!');
@@ -71,7 +71,7 @@ export default function ContactPage() {
     } catch (err) {
       posthog.capture('contact_form_failed', {
         email,
-        error: (err as Error).message
+        error: (err as Error).message,
       });
       setFormStatus('Error: ' + (err as Error).message);
     } finally {

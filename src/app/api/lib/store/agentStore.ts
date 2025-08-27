@@ -62,7 +62,8 @@ export async function updateAgent(
 ) {
   const updateData: any = {};
   if (data.name !== undefined) updateData.name = data.name;
-  if (data.website_domain !== undefined) updateData.website_domain = data.website_domain;
+  if (data.website_domain !== undefined)
+    updateData.website_domain = data.website_domain;
   if (data.model !== undefined) updateData.model = data.model;
 
   if (Object.keys(updateData).length === 0) {

@@ -75,39 +75,39 @@ export default function AddDocument({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const combinedText = fileContent || text;
-    
+
     posthog.capture('document_creation_started', {
       agent_id: params.agentId,
       has_file_content: !!fileContent,
       has_text: !!text,
       content_length: combinedText.length,
-      metadata_fields_count: metadataFields.length
+      metadata_fields_count: metadataFields.length,
     });
 
     const result = await handleCreateDocument(combinedText, metadataFields);
-    
+
     if (result) {
       posthog.capture('document_creation_success', {
         agent_id: params.agentId,
         content_length: combinedText.length,
-        metadata_fields_count: metadataFields.length
+        metadata_fields_count: metadataFields.length,
       });
     } else if (error) {
       posthog.capture('document_creation_failed', {
         agent_id: params.agentId,
-        error: error
+        error: error,
       });
     }
   };
 
   const handleFileDrop = (fileText: string) => {
     if (isSubmitting) return;
-    
+
     posthog.capture('document_file_uploaded', {
       agent_id: params.agentId,
-      file_size: fileText.length
+      file_size: fileText.length,
     });
-    
+
     setFileContent(fileText);
   };
 
@@ -227,12 +227,16 @@ export default function AddDocument({
                       onChange={(e) => setText(e.target.value)}
                       required={!fileContent}
                       className={`mt-2 block w-full rounded-md border-[2px] shadow-sm text-base p-2 transition-all duration-200 ${
-                        fileContent 
-                          ? 'border-muted bg-muted/50 text-muted-foreground cursor-not-allowed opacity-60' 
+                        fileContent
+                          ? 'border-muted bg-muted/50 text-muted-foreground cursor-not-allowed opacity-60'
                           : 'border-border focus:border-brand focus:ring-brand'
                       }`}
                       rows={10}
-                      placeholder={fileContent ? 'Document content loaded from file' : 'Enter the document text here...'}
+                      placeholder={
+                        fileContent
+                          ? 'Document content loaded from file'
+                          : 'Enter the document text here...'
+                      }
                       disabled={isSubmitting || !!fileContent}
                     />
                     {fileContent && (
@@ -240,7 +244,9 @@ export default function AddDocument({
                         <div className="bg-background/90 backdrop-blur-sm px-4 py-2 rounded-lg border border-border shadow-lg">
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <FileText className="h-4 w-4" />
-                            <span className="font-medium">File uploaded - text input disabled</span>
+                            <span className="font-medium">
+                              File uploaded - text input disabled
+                            </span>
                           </div>
                         </div>
                       </div>

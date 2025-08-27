@@ -726,11 +726,12 @@ export default function DemoPage() {
     // We'll create this with proper React components in the DOM
     chatWindow.className =
       'w-[600px] h-[680px] bg-white flex flex-col transition-all duration-300 ease-out relative overflow-hidden';
-    
+
     // Create the tickets dashboard structure with shadcn components
     const ticketsContent = document.createElement('div');
-    ticketsContent.className = 'w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-5';
-    
+    ticketsContent.className =
+      'w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-5';
+
     ticketsContent.innerHTML = `
       <!-- Header -->
       <div class="text-center mb-4 mt-2">
@@ -843,7 +844,7 @@ export default function DemoPage() {
         </div>
       </div>
     `;
-    
+
     chatWindow.innerHTML = '';
     chatWindow.appendChild(ticketsContent);
 
@@ -1327,7 +1328,6 @@ export default function DemoPage() {
         },
       });
     });
-
   };
 
   // Scene 4: Brand Finale - Sequential animation with proper timing
@@ -1918,9 +1918,18 @@ export default function DemoPage() {
               </div>
 
               {/* Bar Chart */}
-              <div className="h-64 relative flex justify-center" id="chartSection">
-                <ChartContainer config={chartConfig} className="h-full w-full max-w-lg">
-                  <BarChart data={CONFIG.CHART.DATA} margin={{ top: 20, right: 20, bottom: 20, left: 40 }}>
+              <div
+                className="h-64 relative flex justify-center"
+                id="chartSection"
+              >
+                <ChartContainer
+                  config={chartConfig}
+                  className="h-full w-full max-w-lg"
+                >
+                  <BarChart
+                    data={CONFIG.CHART.DATA}
+                    margin={{ top: 20, right: 20, bottom: 20, left: 40 }}
+                  >
                     <CartesianGrid vertical={false} />
                     <XAxis
                       dataKey="month"
@@ -1939,9 +1948,9 @@ export default function DemoPage() {
                       cursor={false}
                       content={<ChartTooltipContent hideLabel />}
                     />
-                    <Bar 
-                      dataKey="revenue" 
-                      fill="#2563eb" 
+                    <Bar
+                      dataKey="revenue"
+                      fill="#2563eb"
                       radius={8}
                       animationDuration={2500}
                     />

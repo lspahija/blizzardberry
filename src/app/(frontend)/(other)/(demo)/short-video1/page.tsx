@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
@@ -9,13 +9,19 @@ gsap.registerPlugin(TextPlugin);
 
 interface VideoState {
   isRunning: boolean;
-  currentPhase: 'intro' | 'chat' | 'processing' | 'result' | 'finale' | 'complete';
+  currentPhase:
+    | 'intro'
+    | 'chat'
+    | 'processing'
+    | 'result'
+    | 'finale'
+    | 'complete';
 }
 
 export default function CustomerSupportVideo() {
   const [videoState, setVideoState] = useState<VideoState>({
     isRunning: false,
-    currentPhase: 'intro'
+    currentPhase: 'intro',
   });
 
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
@@ -28,11 +34,16 @@ export default function CustomerSupportVideo() {
   };
 
   const clearAllTimers = () => {
-    timeoutsRef.current.forEach(timeout => clearTimeout(timeout));
+    timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
     timeoutsRef.current = [];
   };
 
-  const typeText = (element: HTMLInputElement | null, text: string, speed = 50, callback?: () => void) => {
+  const typeText = (
+    element: HTMLInputElement | null,
+    text: string,
+    speed = 50,
+    callback?: () => void
+  ) => {
     if (!element) return;
     element.value = '';
     let i = 0;
@@ -56,46 +67,66 @@ export default function CustomerSupportVideo() {
       repeat: -1,
       onComplete: () => {
         // Auto-restart
-        setVideoState(prev => ({ ...prev, currentPhase: 'intro' }));
+        setVideoState((prev) => ({ ...prev, currentPhase: 'intro' }));
         clearAllTimers();
-      }
+      },
     });
 
     // Phase 1: Beautiful Intro with typing effect (4s)
     timeline
       .call(() => {
-        setVideoState(prev => ({ ...prev, currentPhase: 'intro' }));
+        setVideoState((prev) => ({ ...prev, currentPhase: 'intro' }));
         startTypingIntro();
       })
 
-    // Phase 2: Chat Interface appears smoothly (3s for full interaction)
-      .call(() => {
-        setVideoState(prev => ({ ...prev, currentPhase: 'chat' }));
-        showChatInterface();
-      }, [], 4)
+      // Phase 2: Chat Interface appears smoothly (3s for full interaction)
+      .call(
+        () => {
+          setVideoState((prev) => ({ ...prev, currentPhase: 'chat' }));
+          showChatInterface();
+        },
+        [],
+        4
+      )
 
-    // Phase 3: Processing phase (3s for longer processing feel)  
-      .call(() => {
-        setVideoState(prev => ({ ...prev, currentPhase: 'processing' }));
-        showProcessing();
-      }, [], 7)
+      // Phase 3: Processing phase (3s for longer processing feel)
+      .call(
+        () => {
+          setVideoState((prev) => ({ ...prev, currentPhase: 'processing' }));
+          showProcessing();
+        },
+        [],
+        7
+      )
 
-    // Phase 4: Beautiful Result Display (3s for full celebration)
-      .call(() => {
-        setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
-        showResult();
-      }, [], 10)
+      // Phase 4: Beautiful Result Display (3s for full celebration)
+      .call(
+        () => {
+          setVideoState((prev) => ({ ...prev, currentPhase: 'result' }));
+          showResult();
+        },
+        [],
+        10
+      )
 
-    // Phase 5: Demo-Niko Finale (4s)
-      .call(() => {
-        setVideoState(prev => ({ ...prev, currentPhase: 'finale' }));
-        showFinale();
-      }, [], 13)
+      // Phase 5: Demo-Niko Finale (4s)
+      .call(
+        () => {
+          setVideoState((prev) => ({ ...prev, currentPhase: 'finale' }));
+          showFinale();
+        },
+        [],
+        13
+      )
 
-    // Phase 6: Complete and restart (1s pause)
-      .call(() => {
-        setVideoState(prev => ({ ...prev, currentPhase: 'complete' }));
-      }, [], 17);
+      // Phase 6: Complete and restart (1s pause)
+      .call(
+        () => {
+          setVideoState((prev) => ({ ...prev, currentPhase: 'complete' }));
+        },
+        [],
+        17
+      );
 
     masterTimelineRef.current = timeline;
     timeline.play();
@@ -106,36 +137,40 @@ export default function CustomerSupportVideo() {
     const introContainer = document.querySelector('[data-phase="intro"]');
     const chatContainer = document.getElementById('chatContainer');
     const userInput = document.getElementById('userInput') as HTMLInputElement;
-    
+
     if (introContainer && chatContainer) {
       // Prepare chat container positioned below intro
       chatContainer.style.display = 'flex';
       chatContainer.style.opacity = '1';
       gsap.set(chatContainer, { y: '100vh' }); // Start below screen
-      
+
       // Animate both containers: intro scrolls up, chat scrolls up into view
       const timeline = gsap.timeline();
-      
+
       timeline
         // Scroll intro up and out of view
         .to(introContainer, {
           y: '-100vh',
           duration: 1.2,
-          ease: "power2.inOut"
+          ease: 'power2.inOut',
         })
-        // Simultaneously scroll chat up into view  
-        .to(chatContainer, {
-          y: 0,
-          duration: 1.2,
-          ease: "power2.inOut"
-        }, 0); // Start at same time as intro animation
+        // Simultaneously scroll chat up into view
+        .to(
+          chatContainer,
+          {
+            y: 0,
+            duration: 1.2,
+            ease: 'power2.inOut',
+          },
+          0
+        ); // Start at same time as intro animation
 
       // Start typing user message after scroll animation
       addTimeout(() => {
         if (userInput) {
           userInput.disabled = false;
           userInput.focus();
-          typeText(userInput, "I need to cancel my order #1234.", 60, () => {
+          typeText(userInput, 'I need to cancel my order #1234.', 60, () => {
             // Show airplane animation and send with natural pause
             addTimeout(() => {
               triggerAirplane();
@@ -156,10 +191,10 @@ export default function CustomerSupportVideo() {
         rotation: -6,
         scale: 1.1,
         duration: 0.3,
-        ease: "power1.out",
+        ease: 'power1.out',
         onComplete: () => {
           transitionToProcessing();
-        }
+        },
       });
     }
   };
@@ -168,22 +203,22 @@ export default function CustomerSupportVideo() {
     const chatContainer = document.getElementById('chatContainer');
     const conversationState = document.getElementById('conversationState');
     const chatMessages = document.getElementById('chatMessages');
-    
+
     // Hide input, show conversation with message
     const initialState = document.getElementById('initialState');
     if (initialState && conversationState) {
       initialState.style.display = 'none';
       conversationState.style.display = 'flex';
     }
-    
+
     // Add user message first
     if (chatMessages) {
       // Clear any existing messages to ensure proper order
       chatMessages.innerHTML = '';
-      
+
       addChatMessageWithSlide({
         type: 'sent',
-        text: 'I need to cancel my order #1234.'
+        text: 'I need to cancel my order #1234.',
       });
 
       // Add processing bubble directly after user message appears
@@ -193,19 +228,24 @@ export default function CustomerSupportVideo() {
     }
   };
 
-  const addChatMessageWithSlide = (message: { type: string; text: string }, isMultiline = false) => {
+  const addChatMessageWithSlide = (
+    message: { type: string; text: string },
+    isMultiline = false
+  ) => {
     const chatMessages = document.getElementById('chatMessages');
     if (!chatMessages) return;
 
     // Get existing messages for smooth sliding animation
-    const existingMessages = Array.from(chatMessages.querySelectorAll('.chat-message'));
-    
+    const existingMessages = Array.from(
+      chatMessages.querySelectorAll('.chat-message')
+    );
+
     // Format text for multiline with bullet points
     let formattedText = message.text;
     if (isMultiline) {
       formattedText = message.text
         .split('\n')
-        .map(line => line.trim())
+        .map((line) => line.trim())
         .join('<br>');
     }
 
@@ -214,8 +254,8 @@ export default function CustomerSupportVideo() {
     messageDiv.className = `flex ${message.type === 'sent' ? 'justify-end' : 'justify-start'} chat-message`;
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
-        message.type === 'sent' 
-          ? 'bg-brand text-primary-foreground hover:scale-[1.02]' 
+        message.type === 'sent'
+          ? 'bg-brand text-primary-foreground hover:scale-[1.02]'
           : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
@@ -233,22 +273,22 @@ export default function CustomerSupportVideo() {
     // Smooth sliding animation - all messages move up, new message slides in from bottom
     gsap.context(() => {
       // Start new message below its final position
-      gsap.set(messageDiv, { 
-        y: 60,  
+      gsap.set(messageDiv, {
+        y: 60,
         opacity: 0,
-        scale: 0.95
+        scale: 0.95,
       });
-      
+
       // Animate existing messages up
       existingMessages.forEach((el, i) => {
         gsap.to(el, {
           y: -totalMove,
           duration: 0.8,
           delay: i * 0.02, // Subtle stagger for wave effect
-          ease: "power2.out"
+          ease: 'power2.out',
         });
       });
-      
+
       // Animate new message into position
       gsap.to(messageDiv, {
         y: 0,
@@ -256,10 +296,9 @@ export default function CustomerSupportVideo() {
         scale: 1,
         duration: 0.8,
         delay: 0.1, // Slight delay for better effect
-        ease: "back.out(1.7)",
-        clearProps: "all"
+        ease: 'back.out(1.7)',
+        clearProps: 'all',
       });
-      
     }, chatMessages);
   };
 
@@ -275,7 +314,7 @@ export default function CustomerSupportVideo() {
           </div>
           <div class="text-base text-muted-foreground">Processing cancellation...</div>
         </div>
-      `
+      `,
     });
 
     // Store reference for later removal
@@ -301,15 +340,15 @@ export default function CustomerSupportVideo() {
         y: -30,
         scale: 0.8,
         duration: 0.6,
-        ease: "power2.in",
+        ease: 'power2.in',
         onComplete: () => {
           if (analyzingBubble.parentNode) {
             analyzingBubble.parentNode.removeChild(analyzingBubble);
           }
-          
+
           // Add success response after processing bubble is removed
           addSuccessResponse();
-        }
+        },
       });
     } else {
       // Fallback if bubble not found
@@ -342,7 +381,7 @@ export default function CustomerSupportVideo() {
             <p class="text-xs text-gray-500 mt-2">Processing time: 3-5 business days</p>
           </div>
         </div>
-      `
+      `,
     };
 
     addChatMessageWithSlide(successMessage);
@@ -355,7 +394,7 @@ export default function CustomerSupportVideo() {
         for (let i = 0; i < 6; i++) {
           createCelebrationParticle(lastMessage as HTMLElement);
         }
-        
+
         // Gentle pulse on the checkmark
         const checkmark = lastMessage.querySelector('.celebration-checkmark');
         if (checkmark) {
@@ -364,7 +403,7 @@ export default function CustomerSupportVideo() {
             duration: 0.3,
             yoyo: true,
             repeat: 1,
-            ease: "power2.inOut"
+            ease: 'power2.inOut',
           });
         }
       }
@@ -374,16 +413,18 @@ export default function CustomerSupportVideo() {
   const createCelebrationParticle = (container: HTMLElement) => {
     const particle = document.createElement('div');
     particle.className = 'absolute w-2 h-2 rounded-full pointer-events-none';
-    particle.style.background = ['#10B981', '#F43F5E', '#1D4ED8'][Math.floor(Math.random() * 3)];
-    
+    particle.style.background = ['#10B981', '#F43F5E', '#1D4ED8'][
+      Math.floor(Math.random() * 3)
+    ];
+
     const rect = container.getBoundingClientRect();
     particle.style.left = `${rect.left + rect.width / 2}px`;
     particle.style.top = `${rect.top + rect.height / 2}px`;
     particle.style.position = 'fixed';
     particle.style.zIndex = '1000';
-    
+
     document.body.appendChild(particle);
-    
+
     // Animate particle
     gsap.to(particle, {
       x: (Math.random() - 0.5) * 200,
@@ -391,12 +432,12 @@ export default function CustomerSupportVideo() {
       scale: 0,
       opacity: 0,
       duration: 1.5,
-      ease: "power2.out",
+      ease: 'power2.out',
       onComplete: () => {
         if (particle.parentNode) {
           particle.parentNode.removeChild(particle);
         }
-      }
+      },
     });
   };
 
@@ -404,29 +445,33 @@ export default function CustomerSupportVideo() {
     // Beautiful scroll-up animation from chat to finale
     const chatContainer = document.getElementById('chatContainer');
     const finaleContainer = document.getElementById('finaleContainer');
-    
+
     if (chatContainer && finaleContainer) {
       // Prepare finale container positioned below chat
       finaleContainer.style.display = 'flex';
       finaleContainer.style.opacity = '1';
       gsap.set(finaleContainer, { y: '100vh' }); // Start below screen
-      
+
       // Animate both containers: chat scrolls up, finale scrolls up into view
       const timeline = gsap.timeline();
-      
+
       timeline
         // Scroll chat up and out of view
         .to(chatContainer, {
           y: '-100vh',
           duration: 1.2,
-          ease: "power2.inOut"
+          ease: 'power2.inOut',
         })
-        // Simultaneously scroll finale up into view  
-        .to(finaleContainer, {
-          y: 0,
-          duration: 1.2,
-          ease: "power2.inOut"
-        }, 0); // Start at same time as chat animation
+        // Simultaneously scroll finale up into view
+        .to(
+          finaleContainer,
+          {
+            y: 0,
+            duration: 1.2,
+            ease: 'power2.inOut',
+          },
+          0
+        ); // Start at same time as chat animation
 
       // Start finale animations after scroll completes
       addTimeout(() => {
@@ -488,36 +533,39 @@ export default function CustomerSupportVideo() {
 
   const startTypingIntro = () => {
     // Beautiful reveal animation - elements are already positioned and hidden
-    const mainTextElement = document.getElementById('typingMainText') as HTMLElement;
-    const subtextElement = document.getElementById('typingSubtext') as HTMLElement;
-    
+    const mainTextElement = document.getElementById(
+      'typingMainText'
+    ) as HTMLElement;
+    const subtextElement = document.getElementById(
+      'typingSubtext'
+    ) as HTMLElement;
+
     // Animate first line in with beautiful entrance
     addTimeout(() => {
       if (mainTextElement) {
         gsap.to(mainTextElement, {
-          opacity: 1, 
-          y: 0, 
+          opacity: 1,
+          y: 0,
           scale: 1,
-          duration: 1.2, 
-          ease: "elastic.out(1, 0.5)" 
+          duration: 1.2,
+          ease: 'elastic.out(1, 0.5)',
         });
       }
     }, 300);
-    
+
     // Animate second line in after first line starts
     addTimeout(() => {
       if (subtextElement) {
         gsap.to(subtextElement, {
-          opacity: 1, 
-          y: 0, 
+          opacity: 1,
+          y: 0,
           scale: 1,
-          duration: 1.0, 
-          ease: "back.out(1.7)" 
+          duration: 1.0,
+          ease: 'back.out(1.7)',
         });
       }
     }, 1500);
   };
-
 
   useEffect(() => {
     // Auto-start demo after component mount
@@ -609,48 +657,57 @@ export default function CustomerSupportVideo() {
 
       {/* Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-muted z-40">
-        <div 
-          className="h-full bg-gradient-to-r from-brand to-secondary transition-all duration-300 ease-out" 
-          style={{ 
-            width: videoState.currentPhase === 'intro' ? '24%' : 
-                   videoState.currentPhase === 'chat' ? '41%' :
-                   videoState.currentPhase === 'processing' ? '59%' :
-                   videoState.currentPhase === 'result' ? '76%' :
-                   videoState.currentPhase === 'finale' ? '100%' : '0%'
+        <div
+          className="h-full bg-gradient-to-r from-brand to-secondary transition-all duration-300 ease-out"
+          style={{
+            width:
+              videoState.currentPhase === 'intro'
+                ? '24%'
+                : videoState.currentPhase === 'chat'
+                  ? '41%'
+                  : videoState.currentPhase === 'processing'
+                    ? '59%'
+                    : videoState.currentPhase === 'result'
+                      ? '76%'
+                      : videoState.currentPhase === 'finale'
+                        ? '100%'
+                        : '0%',
           }}
         />
       </div>
 
       {/* Clean Intro Phase - White Background with BlizzardBerry Colors */}
-      <div 
+      <div
         data-phase="intro"
         className={`fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-8 transition-opacity duration-500 ${
-          videoState.currentPhase === 'intro' ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          videoState.currentPhase === 'intro'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none'
         }`}
       >
         {/* Subtle background pattern */}
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-50"></div>
-        
+
         {/* Main reveal text - Properly stacked */}
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <div className="mb-4">
-            <h1 
-              id="typingMainText" 
+            <h1
+              id="typingMainText"
               className="text-7xl font-bold tracking-tight opacity-0"
               style={{
                 background: 'linear-gradient(135deg, #F43F5E, #1D4ED8)',
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 color: 'transparent',
-                transform: 'translateY(50px) scale(0.9)'
+                transform: 'translateY(50px) scale(0.9)',
               }}
             >
               Discover the New Way
             </h1>
           </div>
-          
+
           <div className="relative">
-            <p 
+            <p
               id="typingSubtext"
               className="text-3xl font-medium tracking-wide opacity-0"
               style={{
@@ -658,43 +715,66 @@ export default function CustomerSupportVideo() {
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 color: 'transparent',
-                transform: 'translateY(40px) scale(0.95)'
+                transform: 'translateY(40px) scale(0.95)',
               }}
             >
               to interact with the web!
             </p>
-            
+
             {/* Animated cursor - hidden */}
-            <span className="inline-block w-1 h-8 bg-brand ml-1 typing-cursor align-middle" id="typingCursor" style={{ display: 'none' }}></span>
+            <span
+              className="inline-block w-1 h-8 bg-brand ml-1 typing-cursor align-middle"
+              id="typingCursor"
+              style={{ display: 'none' }}
+            ></span>
           </div>
         </div>
-        
+
         {/* Subtle decorative elements */}
         <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-brand/20 rounded-full animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-secondary/20 rounded-full animate-bounce" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-primary/20 rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-1/4 right-1/3 w-1 h-1 bg-brand/30 rounded-full animate-bounce" style={{ animationDelay: '0.5s' }}></div>
+        <div
+          className="absolute top-1/3 right-1/4 w-3 h-3 bg-secondary/20 rounded-full animate-bounce"
+          style={{ animationDelay: '1s' }}
+        ></div>
+        <div
+          className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-primary/20 rounded-full animate-pulse"
+          style={{ animationDelay: '2s' }}
+        ></div>
+        <div
+          className="absolute bottom-1/4 right-1/3 w-1 h-1 bg-brand/30 rounded-full animate-bounce"
+          style={{ animationDelay: '0.5s' }}
+        ></div>
       </div>
 
       {/* Chat Interface - Demo-Niko Style */}
-      <div 
+      <div
         id="chatContainer"
         className={`fixed inset-0 bg-white transition-opacity duration-300 ${
-          videoState.currentPhase === 'chat' || videoState.currentPhase === 'processing' || videoState.currentPhase === 'result' ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          videoState.currentPhase === 'chat' ||
+          videoState.currentPhase === 'processing' ||
+          videoState.currentPhase === 'result'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none'
         }`}
         style={{ display: 'none' }}
       >
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <div className="w-[600px] h-[680px] bg-white flex flex-col transition-all duration-300 ease-out relative overflow-hidden">
-            
             {/* Initial State: Centered Input */}
-            <div id="initialState" className="flex-1 flex items-center justify-center px-6">
+            <div
+              id="initialState"
+              className="flex-1 flex items-center justify-center px-6"
+            >
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-foreground mb-2">Customer Support</h2>
-                  <p className="text-muted-foreground">How can we help you today?</p>
+                  <h2 className="text-3xl font-bold text-foreground mb-2">
+                    Customer Support
+                  </h2>
+                  <p className="text-muted-foreground">
+                    How can we help you today?
+                  </p>
                 </div>
-                
+
                 <div className="flex gap-3 items-center">
                   <div className="flex-1 relative overflow-visible">
                     <input
@@ -704,10 +784,19 @@ export default function CustomerSupportVideo() {
                       className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-full focus:outline-none transition-all duration-300"
                       disabled
                     />
-                    <button id="sendButton" className="group absolute right-3 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
+                    <button
+                      id="sendButton"
+                      className="group absolute right-3 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300"
+                    >
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
-                        <svg width="20" height="20" fill="#ef4444" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">
-                          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        <svg
+                          width="20"
+                          height="20"
+                          fill="#ef4444"
+                          viewBox="0 0 24 24"
+                          className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300"
+                        >
+                          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                         </svg>
                       </div>
                     </button>
@@ -717,8 +806,15 @@ export default function CustomerSupportVideo() {
             </div>
 
             {/* Conversation State: Messages */}
-            <div id="conversationState" className="flex-1 flex items-center justify-center" style={{ display: 'none' }}>
-              <div id="chatMessages" className="w-full max-w-2xl px-6 flex flex-col gap-4">
+            <div
+              id="conversationState"
+              className="flex-1 flex items-center justify-center"
+              style={{ display: 'none' }}
+            >
+              <div
+                id="chatMessages"
+                className="w-full max-w-2xl px-6 flex flex-col gap-4"
+              >
                 {/* Messages will be dynamically added here */}
               </div>
             </div>
@@ -730,7 +826,9 @@ export default function CustomerSupportVideo() {
       <div
         id="finaleContainer"
         className={`fixed inset-0 opacity-0 flex flex-col items-center justify-center bg-white transition-opacity duration-500 ${
-          videoState.currentPhase === 'finale' ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          videoState.currentPhase === 'finale'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none'
         }`}
         style={{ display: 'none' }}
       >
@@ -750,9 +848,12 @@ export default function CustomerSupportVideo() {
                 unoptimized
               />
             </div>
-            
+
             {/* Pulse ring effects */}
-            <div className="absolute inset-0 w-48 h-48 border-2 border-brand/40 rounded-3xl" style={{ animation: 'ringPulse 3s infinite ease-out' }}></div>
+            <div
+              className="absolute inset-0 w-48 h-48 border-2 border-brand/40 rounded-3xl"
+              style={{ animation: 'ringPulse 3s infinite ease-out' }}
+            ></div>
           </div>
         </div>
 

@@ -26,10 +26,19 @@ import { useState } from 'react';
 import { Framework } from '@/app/(frontend)/lib/scriptUtils';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import Link from 'next/link';
-import { Action, ExecutionContext } from '@/app/api/lib/model/action/baseAction';
+import {
+  Action,
+  ExecutionContext,
+} from '@/app/api/lib/model/action/baseAction';
 import { getRegisterToolsExample, toCamelCase } from '../lib/actionUtils';
 import { Label } from '@/app/(frontend)/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/(frontend)/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/app/(frontend)/components/ui/select';
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },
@@ -73,7 +82,8 @@ export default function ClientActionImplementation({
       >
         <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-accent mr-2 md:mr-3 mt-1 md:mt-0 flex-shrink-0" />
         <span className="text-foreground text-sm md:text-base">
-          Your client action has been created successfully! Now you need to implement the function in your application.
+          Your client action has been created successfully! Now you need to
+          implement the function in your application.
         </span>
       </div>
 
@@ -91,7 +101,8 @@ export default function ClientActionImplementation({
               </CardTitle>
             </div>
             <p className="text-xs md:text-sm text-muted-foreground mt-1">
-              Copy the code below and implement it in your application to make your action work.
+              Copy the code below and implement it in your application to make
+              your action work.
             </p>
           </CardHeader>
           <CardContent className="space-y-6 p-4 md:p-6">
@@ -113,7 +124,9 @@ export default function ClientActionImplementation({
                           key={index}
                           className="bg-[#FFFDF8] px-3 py-2 border-[2px] border-gray-900 rounded-lg shadow-sm"
                         >
-                          <div className="font-mono text-sm text-gray-900">{input.name}</div>
+                          <div className="font-mono text-sm text-gray-900">
+                            {input.name}
+                          </div>
                           <div className="text-xs text-gray-500 font-medium">
                             {input.type}
                             {input.isArray ? '[]' : ''}
@@ -131,7 +144,8 @@ export default function ClientActionImplementation({
                 Framework
               </Label>
               <p className="text-sm text-gray-600 mt-1">
-                Select the framework you're using to implement the client-side function.
+                Select the framework you're using to implement the client-side
+                function.
               </p>
               <div className="mt-2">
                 <Select
@@ -144,12 +158,8 @@ export default function ClientActionImplementation({
                     <SelectValue placeholder="Select framework" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value={Framework.ANGULAR}>
-                      Angular
-                    </SelectItem>
-                    <SelectItem value={Framework.NEXT_JS}>
-                      Next.js
-                    </SelectItem>
+                    <SelectItem value={Framework.ANGULAR}>Angular</SelectItem>
+                    <SelectItem value={Framework.NEXT_JS}>Next.js</SelectItem>
                     <SelectItem value={Framework.REACT}>React</SelectItem>
                     <SelectItem value={Framework.VANILLA}>
                       Vanilla JS
@@ -166,10 +176,13 @@ export default function ClientActionImplementation({
                 Implementation Code
               </Label>
               <p className="text-sm text-gray-600 mb-4">
-                💡 <strong>Why agentUserConfig?</strong> It provides user information to agents for personalized experiences.
+                💡 <strong>Why agentUserConfig?</strong> It provides user
+                information to agents for personalized experiences.
               </p>
               <p className="text-sm text-gray-600 mb-4">
-                💡 <strong>Why return values?</strong> The AI agent uses your return value to provide helpful responses to users and confirm actions were executed.
+                💡 <strong>Why return values?</strong> The AI agent uses your
+                return value to provide helpful responses to users and confirm
+                actions were executed.
               </p>
               <div className="relative">
                 <SyntaxHighlighter
@@ -217,17 +230,22 @@ export default function ClientActionImplementation({
               </h3>
               <ul className="list-disc list-inside text-muted-foreground space-y-2 text-base">
                 <li>
-                  Copy the code above and implement your function in your application
+                  Copy the code above and implement your function in your
+                  application
                 </li>
                 <li>
                   {selectedFramework === Framework.NEXT_JS ? (
                     <>Add the code to your layout.tsx or page component</>
                   ) : (
-                    <>Add the code between the <code>&lt;body&gt;</code> tags of your website's HTML</>
+                    <>
+                      Add the code between the <code>&lt;body&gt;</code> tags of
+                      your website's HTML
+                    </>
                   )}
                 </li>
                 <li>
-                  The code will be available to your agent as a client-side action
+                  The code will be available to your agent as a client-side
+                  action
                 </li>
                 <li>
                   Need help? Visit our{' '}
@@ -255,4 +273,4 @@ export default function ClientActionImplementation({
       </div>
     </motion.div>
   );
-} 
+}

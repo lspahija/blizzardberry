@@ -466,7 +466,9 @@ function DropzoneComponent({
 
           <div className="flex flex-col items-center space-y-2">
             <div className="relative">
-              {!isProcessing && <Upload className="h-8 w-8 text-muted-foreground" />}
+              {!isProcessing && (
+                <Upload className="h-8 w-8 text-muted-foreground" />
+              )}
               {isProcessing && (
                 <div className="flex items-center justify-center">
                   <Loader2 className="h-8 w-8 animate-spin text-brand" />

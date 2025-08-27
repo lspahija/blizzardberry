@@ -1,7 +1,12 @@
 'use client';
 
 import { VideoTemplate } from '../types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/app/(frontend)/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/app/(frontend)/components/ui/card';
 import { Badge } from '@/app/(frontend)/components/ui/badge';
 
 interface VideoTemplateSelectorProps {
@@ -10,10 +15,10 @@ interface VideoTemplateSelectorProps {
   onTemplateChange: (template: VideoTemplate) => void;
 }
 
-export function VideoTemplateSelector({ 
-  templates, 
-  selectedTemplate, 
-  onTemplateChange 
+export function VideoTemplateSelector({
+  templates,
+  selectedTemplate,
+  onTemplateChange,
 }: VideoTemplateSelectorProps) {
   return (
     <Card>
@@ -40,11 +45,11 @@ export function VideoTemplateSelector({
                 <Badge className="bg-brand text-white">Active</Badge>
               )}
             </div>
-            
+
             <p className="text-sm text-muted-foreground mb-3">
               {template.description}
             </p>
-            
+
             {/* Template Stats */}
             <div className="space-y-2 text-xs text-muted-foreground">
               <div className="flex justify-between">
@@ -53,22 +58,30 @@ export function VideoTemplateSelector({
               </div>
               <div className="flex justify-between">
                 <span>Duration:</span>
-                <span>{Math.round(template.config.timings.sceneDuration / 1000)}s</span>
+                <span>
+                  {Math.round(template.config.timings.sceneDuration / 1000)}s
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>Style:</span>
-                <span className="capitalize">{template.config.styling.borderRadius === '24px' ? 'Modern' : 'Classic'}</span>
+                <span className="capitalize">
+                  {template.config.styling.borderRadius === '24px'
+                    ? 'Modern'
+                    : 'Classic'}
+                </span>
               </div>
             </div>
-            
+
             {/* Scene Flow Preview */}
             <div className="mt-3 pt-3 border-t border-muted">
-              <div className="text-xs font-medium text-foreground mb-2">Flow:</div>
+              <div className="text-xs font-medium text-foreground mb-2">
+                Flow:
+              </div>
               <div className="flex flex-wrap gap-1">
                 {template.config.scenes.map((scene, index) => (
-                  <Badge 
-                    key={scene.id} 
-                    variant="outline" 
+                  <Badge
+                    key={scene.id}
+                    variant="outline"
                     className="text-xs py-0"
                   >
                     {index + 1}. {scene.name}

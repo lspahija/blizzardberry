@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { BusinessDomain, VideoTemplate } from '../types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/app/(frontend)/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/app/(frontend)/components/ui/card';
 import { Badge } from '@/app/(frontend)/components/ui/badge';
 
 interface BusinessDomainFormProps {
@@ -12,11 +17,11 @@ interface BusinessDomainFormProps {
   existingDomain?: BusinessDomain | null;
 }
 
-export function BusinessDomainForm({ 
-  selectedTemplate, 
-  onGenerate, 
-  isGenerating, 
-  existingDomain 
+export function BusinessDomainForm({
+  selectedTemplate,
+  onGenerate,
+  isGenerating,
+  existingDomain,
 }: BusinessDomainFormProps) {
   const [formData, setFormData] = useState<BusinessDomain>({
     companyName: '',
@@ -37,17 +42,17 @@ export function BusinessDomainForm({
           title: 'Payment Processing Error',
           description: 'Customer unable to complete checkout',
           status: 'Open',
-          priority: 'High'
+          priority: 'High',
         },
         {
           id: '#12846',
           title: 'Billing Question',
           description: 'Invoice clarification needed',
           status: 'Resolved',
-          priority: 'Low'
-        }
-      ]
-    }
+          priority: 'Low',
+        },
+      ],
+    },
   });
 
   // Load existing domain data if provided
@@ -71,25 +76,29 @@ export function BusinessDomainForm({
   const addMetric = () => {
     setFormData({
       ...formData,
-      metrics: [...formData.metrics, { label: '', value: 0, type: 'count' }]
+      metrics: [...formData.metrics, { label: '', value: 0, type: 'count' }],
     });
   };
 
   const removeMetric = (index: number) => {
     setFormData({
       ...formData,
-      metrics: formData.metrics.filter((_, i) => i !== index)
+      metrics: formData.metrics.filter((_, i) => i !== index),
     });
   };
 
-  const handleDashboardItemChange = (index: number, field: string, value: string) => {
+  const handleDashboardItemChange = (
+    index: number,
+    field: string,
+    value: string
+  ) => {
     if (!formData.dashboardData) return;
-    
+
     const updatedItems = [...formData.dashboardData.items];
     updatedItems[index] = { ...updatedItems[index], [field]: value };
     setFormData({
       ...formData,
-      dashboardData: { ...formData.dashboardData, items: updatedItems }
+      dashboardData: { ...formData.dashboardData, items: updatedItems },
     });
   };
 
@@ -101,15 +110,18 @@ export function BusinessDomainForm({
           <Badge variant="secondary">{selectedTemplate.name}</Badge>
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Fill in your business information to generate a personalized demo video
+          Fill in your business information to generate a personalized demo
+          video
         </p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Company Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-foreground">Company Information</h3>
-            
+            <h3 className="text-lg font-medium text-foreground">
+              Company Information
+            </h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
@@ -118,13 +130,15 @@ export function BusinessDomainForm({
                 <input
                   type="text"
                   value={formData.companyName}
-                  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, companyName: e.target.value })
+                  }
                   className="w-full px-4 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                   placeholder="Your Company Name"
                   required
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Tagline *
@@ -132,7 +146,9 @@ export function BusinessDomainForm({
                 <input
                   type="text"
                   value={formData.tagline}
-                  onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, tagline: e.target.value })
+                  }
                   className="w-full px-4 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                   placeholder="An AI-powered solution for..."
                   required
@@ -146,7 +162,9 @@ export function BusinessDomainForm({
               </label>
               <textarea
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
                 rows={3}
                 className="w-full px-4 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                 placeholder="Briefly describe what your company does..."
@@ -160,7 +178,9 @@ export function BusinessDomainForm({
               </label>
               <textarea
                 value={formData.valueProposition}
-                onChange={(e) => setFormData({ ...formData, valueProposition: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, valueProposition: e.target.value })
+                }
                 rows={2}
                 className="w-full px-4 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                 placeholder="What makes you unique? What problems do you solve?"
@@ -171,11 +191,13 @@ export function BusinessDomainForm({
 
           {/* Demo Queries */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-foreground">Demo Queries</h3>
+            <h3 className="text-lg font-medium text-foreground">
+              Demo Queries
+            </h3>
             <p className="text-sm text-muted-foreground">
               These are the questions that will be asked in your demo video
             </p>
-            
+
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
                 Primary Query *
@@ -183,7 +205,9 @@ export function BusinessDomainForm({
               <input
                 type="text"
                 value={formData.primaryQuery}
-                onChange={(e) => setFormData({ ...formData, primaryQuery: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, primaryQuery: e.target.value })
+                }
                 className="w-full px-4 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                 placeholder="Show me revenue numbers for North America"
                 required
@@ -197,7 +221,9 @@ export function BusinessDomainForm({
               <input
                 type="text"
                 value={formData.secondaryQuery || ''}
-                onChange={(e) => setFormData({ ...formData, secondaryQuery: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, secondaryQuery: e.target.value })
+                }
                 className="w-full px-4 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                 placeholder="How many support tickets did we have today?"
               />
@@ -207,7 +233,9 @@ export function BusinessDomainForm({
           {/* Metrics */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium text-foreground">Metrics to Showcase</h3>
+              <h3 className="text-lg font-medium text-foreground">
+                Metrics to Showcase
+              </h3>
               <button
                 type="button"
                 onClick={addMetric}
@@ -216,9 +244,12 @@ export function BusinessDomainForm({
                 Add Metric
               </button>
             </div>
-            
+
             {formData.metrics.map((metric, index) => (
-              <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-muted rounded-lg">
+              <div
+                key={index}
+                className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-muted rounded-lg"
+              >
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
                     Label
@@ -226,12 +257,14 @@ export function BusinessDomainForm({
                   <input
                     type="text"
                     value={metric.label}
-                    onChange={(e) => handleMetricChange(index, 'label', e.target.value)}
+                    onChange={(e) =>
+                      handleMetricChange(index, 'label', e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                     placeholder="Revenue"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
                     Value
@@ -239,19 +272,23 @@ export function BusinessDomainForm({
                   <input
                     type="number"
                     value={metric.value}
-                    onChange={(e) => handleMetricChange(index, 'value', Number(e.target.value))}
+                    onChange={(e) =>
+                      handleMetricChange(index, 'value', Number(e.target.value))
+                    }
                     className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                     placeholder="347"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
                     Type
                   </label>
                   <select
                     value={metric.type}
-                    onChange={(e) => handleMetricChange(index, 'type', e.target.value)}
+                    onChange={(e) =>
+                      handleMetricChange(index, 'type', e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                   >
                     <option value="count">Count</option>
@@ -259,7 +296,7 @@ export function BusinessDomainForm({
                     <option value="percentage">Percentage</option>
                   </select>
                 </div>
-                
+
                 <div className="flex items-end">
                   {formData.metrics.length > 1 && (
                     <button
@@ -278,8 +315,10 @@ export function BusinessDomainForm({
           {/* Dashboard Data */}
           {formData.dashboardData && (
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-foreground">Dashboard/Table Data</h3>
-              
+              <h3 className="text-lg font-medium text-foreground">
+                Dashboard/Table Data
+              </h3>
+
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Table Title
@@ -287,10 +326,15 @@ export function BusinessDomainForm({
                 <input
                   type="text"
                   value={formData.dashboardData.title}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    dashboardData: { ...formData.dashboardData!, title: e.target.value }
-                  })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      dashboardData: {
+                        ...formData.dashboardData!,
+                        title: e.target.value,
+                      },
+                    })
+                  }
                   className="w-full px-4 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                   placeholder="Support Tickets"
                 />
@@ -301,12 +345,21 @@ export function BusinessDomainForm({
                   Table Items
                 </label>
                 {formData.dashboardData.items.map((item, index) => (
-                  <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-muted rounded-lg">
+                  <div
+                    key={index}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-muted rounded-lg"
+                  >
                     <div>
                       <input
                         type="text"
                         value={item.title}
-                        onChange={(e) => handleDashboardItemChange(index, 'title', e.target.value)}
+                        onChange={(e) =>
+                          handleDashboardItemChange(
+                            index,
+                            'title',
+                            e.target.value
+                          )
+                        }
                         className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                         placeholder="Item title"
                       />
@@ -315,7 +368,13 @@ export function BusinessDomainForm({
                       <input
                         type="text"
                         value={item.status}
-                        onChange={(e) => handleDashboardItemChange(index, 'status', e.target.value)}
+                        onChange={(e) =>
+                          handleDashboardItemChange(
+                            index,
+                            'status',
+                            e.target.value
+                          )
+                        }
                         className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                         placeholder="Status"
                       />
@@ -324,7 +383,13 @@ export function BusinessDomainForm({
                       <input
                         type="text"
                         value={item.description}
-                        onChange={(e) => handleDashboardItemChange(index, 'description', e.target.value)}
+                        onChange={(e) =>
+                          handleDashboardItemChange(
+                            index,
+                            'description',
+                            e.target.value
+                          )
+                        }
                         className="w-full px-3 py-2 border border-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50"
                         placeholder="Description"
                       />

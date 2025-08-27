@@ -188,9 +188,14 @@ export default function UserConfig() {
                   <ul className="list-disc list-inside text-muted-foreground space-y-2 text-base">
                     <li>
                       {selectedFramework === Framework.NEXT_JS ? (
-                        <>Add this script to your layout.tsx or page component</>
+                        <>
+                          Add this script to your layout.tsx or page component
+                        </>
                       ) : (
-                        <>Add this script to your website's HTML, ideally just before the closing <code>&lt;/body&gt;</code> tag</>
+                        <>
+                          Add this script to your website's HTML, ideally just
+                          before the closing <code>&lt;/body&gt;</code> tag
+                        </>
                       )}
                     </li>
                     <li>Update the values with your actual user information</li>
