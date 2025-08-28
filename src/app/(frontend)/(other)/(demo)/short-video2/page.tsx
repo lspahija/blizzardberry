@@ -74,27 +74,27 @@ export default function AddressUpdateVideo() {
         showChatInterface();
       }, [], 4)
 
-    // Phase 3: Processing phase (12s for analysis + initial chat)  
+    // Phase 3: Processing phase (3s for processing bubble)  
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'processing' }));
         showProcessing();
       }, [], 7)
 
-    // Phase 4: Result Display (14s for slower conversation timing)
+    // Phase 4: Result Display (16s for conversation + success overlay)
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
-      }, [], 19)
+      }, [], 10)
 
     // Phase 5: Demo-Niko Finale (4s)
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'finale' }));
         showFinale();
-      }, [], 33)
+      }, [], 26)
 
     // Phase 6: Complete and restart (2s pause)
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'complete' }));
-      }, [], 37);
+      }, [], 30);
 
     masterTimelineRef.current = timeline;
     timeline.play();
@@ -186,14 +186,19 @@ export default function AddressUpdateVideo() {
         text: 'I recently moved to San Francisco and need to update my address'
       });
 
-      // Add processing bubble directly after user message appears
+      // Add processing bubble and then continue directly to AI response
       addTimeout(() => {
         addProcessingBubble();
         
-        // Start analysis AFTER processing bubble has been visible for 2 seconds
+        // Continue directly to AI response after processing bubble
         addTimeout(() => {
-          console.log('2 seconds passed, starting analysis from processing bubble');
-          showAnalysisAnimation();
+          console.log('Processing complete, continuing to AI response');
+          // Remove processing bubble and continue with conversation
+          const processingBubble = document.getElementById('processingBubble');
+          if (processingBubble && processingBubble.parentNode) {
+            processingBubble.parentNode.removeChild(processingBubble);
+          }
+          continueWithAIResponse();
         }, 2000); // Wait 2 seconds after processing bubble appears
       }, 1000); // Wait for user message animation to complete
     }
@@ -236,33 +241,35 @@ export default function AddressUpdateVideo() {
     const gap = 16; // gap-4 = 1rem = 16px
     const totalMove = messageHeight + gap;
 
-    // Smooth sliding animation - all messages move up, new message slides in from bottom
+    // Ultra-smooth sliding animation with enhanced easing
     gsap.context(() => {
-      // Start new message below its final position
+      // Start new message below its final position with subtle scale
       gsap.set(messageDiv, { 
-        y: 60,  
+        y: 80,  
         opacity: 0,
-        scale: 0.95
+        scale: 0.92,
+        rotationX: 15
       });
       
-      // Animate existing messages up
+      // Animate existing messages up with smooth stagger
       existingMessages.forEach((el, i) => {
         gsap.to(el, {
           y: -totalMove,
-          duration: 0.8,
-          delay: i * 0.02, // Subtle stagger for wave effect
-          ease: "power2.out"
+          duration: 1.0,
+          delay: i * 0.04, // More pronounced stagger for elegant wave
+          ease: "power3.out"
         });
       });
       
-      // Animate new message into position
+      // Animate new message into position with elegant entrance
       gsap.to(messageDiv, {
         y: 0,
         opacity: 1,
         scale: 1,
-        duration: 0.8,
-        delay: 0.1, // Slight delay for better effect
-        ease: "back.out(1.7)",
+        rotationX: 0,
+        duration: 1.0,
+        delay: 0.15, // Slightly longer delay for better choreography
+        ease: "power3.out",
         clearProps: "all"
       });
       
@@ -293,8 +300,8 @@ export default function AddressUpdateVideo() {
   };
 
   const showProcessing = () => {
-    // Analysis is now triggered directly from transitionToProcessing after 2 seconds
-    console.log('Processing phase started - analysis will be triggered from chat');
+    // Processing phase - simplified flow without analysis overlay
+    console.log('Processing phase started - will continue directly to AI response');
   };
 
   const showAnalysisAnimation = () => {
@@ -627,11 +634,11 @@ export default function AddressUpdateVideo() {
   };
 
   const continueWithAIResponse = () => {
-    console.log('=== Starting AI response flow after analysis ===');
+    console.log('=== Starting AI response flow after processing ===');
     
-    // Wait a moment after analysis before first AI response
+    // Wait a moment after processing before first AI response
     addTimeout(() => {
-      console.log('Adding first AI response after analysis pause');
+      console.log('Adding first AI response after processing pause');
       addChatMessageWithSlide({
         type: 'received',
         text: 'I can see you recently moved from New York to San Francisco! Let me help you update your bank account with your new address. What\'s your new address?'
@@ -652,62 +659,14 @@ export default function AddressUpdateVideo() {
             text: 'Perfect! Let me update your bank account with this new address.'
           });
 
-          // Final success message
+          // Show success animation overlay with smooth chat transition
           addTimeout(() => {
-            console.log('Adding final success message');
-          const successMessage = {
-            type: 'received',
-            text: `
-              <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 text-foreground px-6 py-4 rounded-2xl max-w-lg shadow-lg">
-                <div class="text-base leading-relaxed">
-                  <div class="flex items-center mb-3">
-                    <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 shadow-sm celebration-checkmark">
-                      <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <span class="font-bold text-green-700 text-lg">Your bank account address has been successfully updated!</span>
-                  </div>
-                  <div class="bg-white/70 rounded-lg p-3 mb-3">
-                    <p class="font-semibold text-gray-800">Updated Address</p>
-                    <p class="text-sm text-gray-600">1847 Union St, San Francisco, CA 94123</p>
-                  </div>
-                  <div class="flex items-center justify-between text-sm">
-                    <span class="text-gray-600">Account Updated:</span>
-                    <span class="font-bold text-green-700">Bank of America</span>
-                  </div>
-                  <p class="text-xs text-gray-500 mt-2">Your bank account address has been successfully updated</p>
-                </div>
-              </div>
-            `
-          };
-
-          addChatMessageWithSlide(successMessage);
-
-          // Add celebration effects
-          addTimeout(() => {
-            const lastMessage = document.querySelector('.chat-message:last-child');
-            if (lastMessage) {
-              for (let i = 0; i < 6; i++) {
-                createCelebrationParticle(lastMessage as HTMLElement);
-              }
-              
-              const checkmark = lastMessage.querySelector('.celebration-checkmark');
-              if (checkmark) {
-                gsap.to(checkmark, {
-                  scale: 1.3,
-                  duration: 0.3,
-                  yoyo: true,
-                  repeat: 1,
-                  ease: "power2.inOut"
-                });
-              }
-            }
-          }, 800);
-          }, 2500); // Allow 4 seconds visibility before finale starts
+            console.log('Starting smooth transition from chat to success overlay');
+            transitionToSuccessOverlay();
+          }, 2000);
         }, 2800); // Slower confirmation for readability 
       }, 2500); // Slower user response for readability
-    }, 1800); // Wait for processing bubble sequence with more breathing room
+    }, 500); // Wait briefly after processing bubble removal
   };
 
   const showResult = () => {
@@ -715,9 +674,165 @@ export default function AddressUpdateVideo() {
     console.log('Result phase started - chat flow continues from analysis');
   };
 
-  // This function is no longer used - replaced by analysis animation flow
-  const addSuccessResponse = () => {
-    console.log('addSuccessResponse called but handled by analysis flow');
+  const transitionToSuccessOverlay = () => {
+    console.log('=== Starting cinematic chat to success transition ===');
+    const chatContainer = document.getElementById('chatContainer');
+    const chatMessages = document.getElementById('chatMessages');
+    
+    if (!chatContainer || !chatMessages) return;
+    
+    // Step 1: Elegant chat fade and scale down
+    const messages = chatMessages.querySelectorAll('.chat-message');
+    const chatTl = gsap.timeline();
+    
+    // Animate messages out with staggered effect
+    chatTl.to(messages, {
+      y: -20,
+      opacity: 0.3,
+      scale: 0.95,
+      duration: 0.8,
+      stagger: -0.05, // Reverse stagger for wave effect
+      ease: "power3.inOut"
+    })
+    
+    // Blur and scale chat container
+    .to(chatContainer, {
+      scale: 0.95,
+      opacity: 0.4,
+      filter: 'blur(12px)',
+      duration: 1.0,
+      ease: "power3.inOut"
+    }, "-=0.6")
+    
+    // Start success overlay after chat starts fading
+    .call(() => {
+      showSuccessOverlay();
+    }, [], "-=0.3");
+  };
+
+  const showSuccessOverlay = () => {
+    console.log('=== Showing success overlay animation ===');
+    const chatContainer = document.getElementById('chatContainer');
+    if (!chatContainer) return;
+
+    // Create success overlay
+    const successOverlay = document.createElement('div');
+    successOverlay.className = 'fixed inset-0 bg-white z-50 flex items-center justify-center';
+    successOverlay.id = 'successOverlay';
+    successOverlay.innerHTML = `
+      <div class="max-w-md mx-auto px-8 text-center">
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-3xl p-8 shadow-2xl">
+          <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 success-checkmark">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-green-700 mb-4">Address Updated Successfully!</h3>
+          <div class="bg-white/80 rounded-xl p-4 mb-4">
+            <p class="font-semibold text-gray-800 mb-2">New Address</p>
+            <p class="text-gray-600">1847 Union St<br>San Francisco, CA 94123</p>
+          </div>
+          <div class="text-sm text-gray-600">
+            <span class="font-semibold">Bank of America</span> account updated
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Add to DOM with cinematic entrance animation
+    document.body.appendChild(successOverlay);
+    
+    // Initial state - completely hidden with 3D perspective
+    gsap.set(successOverlay, { 
+      opacity: 0,
+      backdropFilter: 'blur(0px)',
+      background: 'rgba(255, 255, 255, 0)'
+    });
+    
+    const content = successOverlay.querySelector('.bg-gradient-to-r');
+    const checkmark = successOverlay.querySelector('.success-checkmark');
+    
+    if (content) {
+      gsap.set(content, { 
+        scale: 0.7, 
+        y: 80,
+        opacity: 0,
+        rotationY: 15,
+        transformPerspective: 1000
+      });
+    }
+    
+    // Cinematic entrance timeline
+    const tl = gsap.timeline();
+    
+    // Step 1: Backdrop emergence
+    tl.to(successOverlay, {
+      opacity: 1,
+      background: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(8px)',
+      duration: 0.8,
+      ease: "power3.out"
+    })
+    
+    // Step 2: Content grand entrance with 3D perspective
+    .to(content, {
+      scale: 1,
+      y: 0,
+      opacity: 1,
+      rotationY: 0,
+      duration: 1.2,
+      ease: "power4.out",
+      onComplete: () => {
+        // Subtle breathing animation
+        gsap.to(content, {
+          scale: 1.02,
+          duration: 2,
+          yoyo: true,
+          repeat: -1,
+          ease: "sine.inOut"
+        });
+      }
+    }, "-=0.4")
+    
+    // Step 3: Final backdrop solidification
+    .to(successOverlay, {
+      background: 'rgba(255, 255, 255, 1)',
+      backdropFilter: 'blur(0px)',
+      duration: 0.6,
+      ease: "power2.out"
+    }, "-=0.8");
+    
+    // Enhanced checkmark celebration
+    if (checkmark) {
+      tl.to(checkmark, {
+        scale: 1.3,
+        rotation: 360,
+        duration: 0.6,
+        ease: "back.out(2)",
+        onComplete: () => {
+          // Subtle pulse animation
+          gsap.to(checkmark, {
+            scale: 1.15,
+            duration: 1.5,
+            yoyo: true,
+            repeat: -1,
+            ease: "sine.inOut"
+          });
+        }
+      }, "-=0.6");
+    }
+    
+    // Add celebration particles
+    addTimeout(() => {
+      if (content) {
+        for (let i = 0; i < 8; i++) {
+          createCelebrationParticle(content as HTMLElement);
+        }
+      }
+    }, 800);
+    
+    // Don't auto-remove overlay - let finale transition handle it
+    // The showFinale function will handle the smooth transition
   };
 
   const createCelebrationParticle = (container: HTMLElement) => {
@@ -750,37 +865,56 @@ export default function AddressUpdateVideo() {
   };
 
   const showFinale = () => {
-    // Beautiful scroll-up animation from chat to finale
+    // Smooth transition from success overlay to finale (similar to chat transition)
+    const successOverlay = document.getElementById('successOverlay');
     const chatContainer = document.getElementById('chatContainer');
     const finaleContainer = document.getElementById('finaleContainer');
     
-    if (chatContainer && finaleContainer) {
-      // Prepare finale container positioned below chat
+    if (finaleContainer) {
+      // Prepare finale container
       finaleContainer.style.display = 'flex';
       finaleContainer.style.opacity = '1';
-      gsap.set(finaleContainer, { y: '100vh' }); // Start below screen
+      gsap.set(finaleContainer, { opacity: 0, scale: 0.95 });
       
-      // Animate both containers: chat scrolls up, finale scrolls up into view
       const timeline = gsap.timeline();
       
-      timeline
-        // Scroll chat up and out of view
-        .to(chatContainer, {
-          y: '-100vh',
-          duration: 1.2,
-          ease: "power2.inOut"
-        })
-        // Simultaneously scroll finale up into view  
-        .to(finaleContainer, {
-          y: 0,
-          duration: 1.2,
-          ease: "power2.inOut"
-        }, 0); // Start at same time as chat animation
-
-      // Start finale animations after scroll completes
-      addTimeout(() => {
-        animateFinaleElements();
-      }, 1400); // After scroll animation completes
+      // If success overlay still exists, fade it out smoothly
+      if (successOverlay) {
+        timeline.to(successOverlay, {
+          opacity: 0,
+          scale: 0.9,
+          filter: 'blur(8px)',
+          duration: 0.8,
+          ease: "power3.inOut",
+          onComplete: () => {
+            if (successOverlay.parentNode) {
+              successOverlay.parentNode.removeChild(successOverlay);
+            }
+          }
+        });
+      }
+      
+      // Also ensure chat container is properly hidden
+      if (chatContainer) {
+        timeline.to(chatContainer, {
+          opacity: 0,
+          scale: 0.95,
+          filter: 'blur(12px)',
+          duration: 0.6,
+          ease: "power3.inOut"
+        }, successOverlay ? "-=0.4" : 0);
+      }
+      
+      // Fade in finale container smoothly
+      timeline.to(finaleContainer, {
+        opacity: 1,
+        scale: 1,
+        duration: 1.0,
+        ease: "power3.out",
+        onComplete: () => {
+          animateFinaleElements();
+        }
+      }, "-=0.3");
     }
   };
 
@@ -961,10 +1095,10 @@ export default function AddressUpdateVideo() {
         <div 
           className="h-full bg-gradient-to-r from-brand to-secondary transition-all duration-300 ease-out" 
           style={{ 
-            width: videoState.currentPhase === 'intro' ? '12%' : 
-                   videoState.currentPhase === 'chat' ? '21%' :
-                   videoState.currentPhase === 'processing' ? '56%' :
-                   videoState.currentPhase === 'result' ? '88%' :
+            width: videoState.currentPhase === 'intro' ? '13%' : 
+                   videoState.currentPhase === 'chat' ? '23%' :
+                   videoState.currentPhase === 'processing' ? '33%' :
+                   videoState.currentPhase === 'result' ? '87%' :
                    videoState.currentPhase === 'finale' ? '100%' : '0%'
           }}
         />
