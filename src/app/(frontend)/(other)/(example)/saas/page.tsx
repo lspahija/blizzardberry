@@ -279,7 +279,6 @@ export default function ExampleSaaSLandingPage() {
             fontFamily:
               '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
             textAlign: 'center',
-            textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)',
             whiteSpace: 'nowrap',
             zIndex: 10,
             letterSpacing: '0.5px',
