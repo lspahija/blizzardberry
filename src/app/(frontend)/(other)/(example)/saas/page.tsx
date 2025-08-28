@@ -185,13 +185,112 @@ export default function ExampleSaaSLandingPage() {
           Ready to Transform Your Workflow?
         </h2>
         <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto">
-          Discover how TaskFlow can boost your team’s productivity and project
+          Discover how TaskFlow can boost your team's productivity and project
           success.
         </p>
         <Button size="lg" variant="secondary" asChild>
           <Link href="/example/get-started">Get Started</Link>
         </Button>
       </div>
+
+      {/* Ethereal Mist Component */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          width: '250px',
+          height: '120px',
+          opacity: 0.9,
+          filter: 'blur(10px)',
+          borderRadius: '50px',
+          overflow: 'hidden',
+          pointerEvents: 'none',
+          zIndex: 1000,
+        }}
+      >
+        {/* First gradient layer */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background:
+              'linear-gradient(135deg, rgba(255, 69, 0, 0.6), rgba(255, 165, 0, 0.4), rgba(138, 43, 226, 0.3), rgba(0, 191, 255, 0.5), rgba(255, 69, 0, 0.6))',
+            backgroundSize: '600% 600%',
+            animation: 'gradient 15s ease infinite',
+          }}
+        />
+        {/* Second gradient layer for more flow */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background:
+              'linear-gradient(-45deg, rgba(0, 191, 255, 0.5), rgba(138, 43, 226, 0.3), rgba(255, 165, 0, 0.4), rgba(255, 69, 0, 0.6), rgba(0, 191, 255, 0.5))',
+            backgroundSize: '600% 600%',
+            animation: 'gradientReverse 20s ease infinite',
+            opacity: 0.6,
+            mixBlendMode: 'screen',
+          }}
+        />
+        {/* Shimmering slivers */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background:
+              'linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.2) 50%, transparent 60%)',
+            backgroundSize: '200% 200%',
+            animation: 'shimmer 10s linear infinite',
+            mixBlendMode: 'overlay',
+            opacity: 0.3,
+          }}
+        />
+      </div>
+
+      <style jsx>{`
+        @keyframes gradient {
+          0% {
+            background-position: 0% 0%;
+          }
+          50% {
+            background-position: 100% 100%;
+          }
+          100% {
+            background-position: 0% 0%;
+          }
+        }
+
+        @keyframes gradientReverse {
+          0% {
+            background-position: 100% 100%;
+          }
+          50% {
+            background-position: 0% 0%;
+          }
+          100% {
+            background-position: 100% 100%;
+          }
+        }
+
+        @keyframes shimmer {
+          0% {
+            background-position: -200% -200%;
+          }
+          100% {
+            background-position: 200% 200%;
+          }
+        }
+      `}</style>
     </div>
   );
 }
