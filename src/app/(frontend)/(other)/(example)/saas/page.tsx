@@ -9,8 +9,7 @@ import {
 } from '@/app/(frontend)/components/ui/card';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Briefcase, Users, BarChart, Clock } from 'lucide-react';
-import { notFound } from 'next/navigation';
+import { BarChart, Briefcase, Clock, Users } from 'lucide-react';
 import { useState } from 'react';
 
 export default function ExampleSaaSLandingPage() {
