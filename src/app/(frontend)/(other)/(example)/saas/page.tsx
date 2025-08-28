@@ -17,10 +17,6 @@ export default function ExampleSaaSLandingPage() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  if (process.env.NODE_ENV === 'production') {
-    notFound();
-  }
-
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -204,11 +200,12 @@ export default function ExampleSaaSLandingPage() {
           bottom: '20px',
           right: '20px',
           width: '250px',
-          height: (isExpanded || isHovered) ? '160px' : '120px',
+          height: isExpanded || isHovered ? '160px' : '120px',
           pointerEvents: 'auto',
           zIndex: 1000,
           transition: 'all 0.3s ease',
-          transform: (isExpanded || isHovered) ? 'translateY(-40px)' : 'translateY(0)',
+          transform:
+            isExpanded || isHovered ? 'translateY(-40px)' : 'translateY(0)',
           cursor: 'pointer',
         }}
         onMouseEnter={() => setIsHovered(true)}
@@ -294,18 +291,25 @@ export default function ExampleSaaSLandingPage() {
             lineHeight: '1.3',
             padding: '0 10px',
             maxWidth: '230px',
-            overflow: (isExpanded || isHovered) ? 'visible' : 'hidden',
-            height: (isExpanded || isHovered) ? 'auto' : '28px',
+            overflow: isExpanded || isHovered ? 'visible' : 'hidden',
+            height: isExpanded || isHovered ? 'auto' : '28px',
             transition: 'all 0.3s ease',
             pointerEvents: 'none',
           }}
-          className={`mist-text ${(isExpanded || isHovered) ? 'expanded' : ''}`}
+          className={`mist-text ${isExpanded || isHovered ? 'expanded' : ''}`}
         >
-          <div style={{ 
-            transition: 'all 0.3s ease',
-            transform: (isExpanded || isHovered) ? 'translateY(-15px)' : 'translateY(0px)',
-          }} className="text-content">
-            Hi! I'm your AI Agent<br />
+          <div
+            style={{
+              transition: 'all 0.3s ease',
+              transform:
+                isExpanded || isHovered
+                  ? 'translateY(-15px)'
+                  : 'translateY(0px)',
+            }}
+            className="text-content"
+          >
+            Hi! I'm your AI Agent
+            <br />
             How can I help you today?
           </div>
         </div>
