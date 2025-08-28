@@ -755,7 +755,7 @@ export default function AddressUpdateVideo() {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 class="text-2xl font-bold text-green-700 mb-4">Address Updated Successfully!</h3>
+          <h3 class="text-2xl font-bold text-green-700 mb-4">Account Updated Successfully</h3>
           
           <div class="bg-gray-50 rounded-xl p-4 mb-6 text-left">
             <div class="text-sm text-gray-600 mb-2">New Address</div>
