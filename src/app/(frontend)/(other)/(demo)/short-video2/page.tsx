@@ -709,7 +709,7 @@ export default function AddressUpdateVideo() {
           transitionToSuccessOverlay();
         }, 1200); // Slightly faster transition
       }, 2200); // Faster confirmation timing
-    }, 1800); // Much earlier user response for better flow
+    }, 1400); // Even faster user response for better flow
   };
 
   const continueWithAIResponse = () => {
