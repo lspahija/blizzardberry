@@ -316,7 +316,7 @@ export default function AddressUpdateVideo() {
             <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
             <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
-          <div class="text-base text-muted-foreground">Updating your details...</div>
+          <div class="text-base text-muted-foreground">Checking your details...</div>
         </div>
       `
     });
@@ -1200,7 +1200,7 @@ export default function AddressUpdateVideo() {
             <div id="initialState" className="flex-1 flex items-center justify-center px-6">
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-foreground mb-2">How can I help you today?</h2>
+                  <h2 className="text-3xl font-bold text-foreground mb-2">Pacific Trust Bank<br/>Customer Support</h2>
                 </div>
                 
                 <div className="flex gap-3 items-center">
@@ -1209,9 +1209,10 @@ export default function AddressUpdateVideo() {
                       id="userInput"
                       placeholder="Tell me what you need..."
                       className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none h-17 leading-normal"
+                      spellCheck={false}
                       disabled
                     />
-                    <button id="sendButton" className="group absolute right-3 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
+                    <button id="sendButton" className="group absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
                         <svg width="20" height="20" fill="#ef4444" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
