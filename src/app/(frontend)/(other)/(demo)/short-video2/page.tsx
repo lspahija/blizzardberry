@@ -840,54 +840,54 @@ export default function AddressUpdateVideo() {
     // Create smooth entrance timeline
     const tl = gsap.timeline();
     
-    // 1. Background fade in
+    // 1. Background fade in - slower and smoother
     tl.to(dashboardOverlay, {
       opacity: 1,
       scale: 1,
-      duration: 0.5,
+      duration: 0.8,
       ease: "power2.out"
     })
     
-    // 2. Content card entrance
+    // 2. Content card entrance - more relaxed
     .to(content, {
       y: 0,
       opacity: 1,
       scale: 1,
-      duration: 0.7,
-      ease: "power2.out"
-    }, "-=0.2")
+      duration: 1.0,
+      ease: "power3.out"
+    }, "-=0.4")
     
-    // 3. Success icon appears
+    // 3. Success icon appears - gentler bounce
     .to(icon, {
       scale: 1,
       opacity: 1,
-      duration: 0.5,
-      ease: "back.out(1.7)"
-    }, "-=0.3")
+      duration: 0.8,
+      ease: "back.out(1.4)"
+    }, "-=0.2")
     
-    // 4. Title appears
+    // 4. Title appears - slower and elegant
     .to(title, {
       y: 0,
       opacity: 1,
-      duration: 0.6,
+      duration: 0.9,
       ease: "power2.out"
-    }, "-=0.2")
+    }, "-=0.4")
     
-    // 5. Subtitle appears
+    // 5. Subtitle appears - gentle timing
     .to(subtitle, {
       y: 0,
       opacity: 1,
-      duration: 0.5,
+      duration: 0.8,
       ease: "power2.out"
-    }, "-=0.3")
+    }, "-=0.5")
     
-    // 6. Address card appears
+    // 6. Address card appears - smooth and relaxed
     .to(addressCard, {
       y: 0,
       opacity: 1,
-      duration: 0.6,
-      ease: "power2.out"
-    }, "-=0.2")
+      duration: 1.0,
+      ease: "power3.out"
+    }, "-=0.4")
     
     // 7. Celebration effect
     .call(() => {
