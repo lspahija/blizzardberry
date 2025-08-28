@@ -746,21 +746,38 @@ export default function AddressUpdateVideo() {
     dashboardOverlay.className = 'fixed inset-0 bg-white z-50 flex items-center justify-center';
     dashboardOverlay.id = 'successDashboard';
     
-    // Simple success message with clean card styling
+    // Professional success message with modern design
     dashboardOverlay.innerHTML = `
-      <div class="max-w-md mx-auto px-8 text-center">
-        <div class="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100">
-          <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 success-checkmark">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+      <div class="max-w-lg mx-auto px-8">
+        <div class="bg-white rounded-2xl p-10 shadow-xl border border-gray-200/50 backdrop-blur-sm">
+          <!-- Success Icon -->
+          <div class="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 success-checkmark">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 class="text-2xl font-bold text-green-700 mb-4">Account Updated Successfully</h3>
           
-          <div class="bg-gray-50 rounded-xl p-4 mb-6 text-left">
-            <div class="text-sm text-gray-600 mb-2">New Address</div>
-            <div class="font-semibold text-gray-900">1847 Union St</div>
-            <div class="font-semibold text-gray-900">San Francisco, CA 94123</div>
+          <!-- Title -->
+          <h2 class="text-3xl font-semibold text-gray-900 text-center mb-3">Address Updated</h2>
+          <p class="text-gray-600 text-center mb-8">Your account has been successfully updated with your new address.</p>
+          
+          <!-- Address Card -->
+          <div class="bg-gradient-to-r from-gray-50 to-gray-100/70 rounded-xl p-6 border border-gray-200/60">
+            <div class="flex items-start space-x-4">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-medium text-gray-900 mb-2">New Address</h4>
+                <div class="space-y-1">
+                  <div class="text-gray-700 font-medium">1847 Union St</div>
+                  <div class="text-gray-700 font-medium">San Francisco, CA 94123</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -776,68 +793,103 @@ export default function AddressUpdateVideo() {
     });
     
     const content = dashboardOverlay.querySelector('.bg-white');
-    const addressCard = dashboardOverlay.querySelector('.bg-gray-50');
+    const icon = dashboardOverlay.querySelector('.success-checkmark');
+    const title = dashboardOverlay.querySelector('h2');
+    const subtitle = dashboardOverlay.querySelector('p');
+    const addressCard = dashboardOverlay.querySelector('.bg-gradient-to-r');
     
-    // Set initial states
+    // Set initial states for staggered animation
     if (content) {
-      gsap.set(content, { y: 40, opacity: 0 });
+      gsap.set(content, { y: 60, opacity: 0, scale: 0.95 });
+    }
+    if (icon) {
+      gsap.set(icon, { scale: 0, opacity: 0 });
+    }
+    if (title) {
+      gsap.set(title, { y: 30, opacity: 0 });
+    }
+    if (subtitle) {
+      gsap.set(subtitle, { y: 20, opacity: 0 });
     }
     if (addressCard) {
-      gsap.set(addressCard, { y: 20, opacity: 0 });
+      gsap.set(addressCard, { y: 30, opacity: 0 });
     }
     
-    // Create entrance timeline
+    // Create sophisticated entrance timeline
     const tl = gsap.timeline();
     
-    // Background fade in - slower and smoother
+    // 1. Background fade in
     tl.to(dashboardOverlay, {
       opacity: 1,
       scale: 1,
-      duration: 0.8,
+      duration: 0.6,
       ease: "power2.out"
     })
     
-    // Content card slides up - slower with more elegant easing
+    // 2. Content card elegant entrance
     .to(content, {
       y: 0,
       opacity: 1,
-      duration: 1.0,
+      scale: 1,
+      duration: 0.8,
       ease: "power3.out"
-    }, "-=0.4")
+    }, "-=0.3")
     
-    // Address info appears - slower with pause
-    .to(addressCard, {
+    // 3. Success icon bounces in
+    .to(icon, {
+      scale: 1,
+      opacity: 1,
+      duration: 0.6,
+      ease: "elastic.out(1, 0.6)"
+    }, "-=0.2")
+    
+    // 4. Title slides up
+    .to(title, {
       y: 0,
       opacity: 1,
-      duration: 0.8,
+      duration: 0.5,
+      ease: "power2.out"
+    }, "-=0.3")
+    
+    // 5. Subtitle follows
+    .to(subtitle, {
+      y: 0,
+      opacity: 1,
+      duration: 0.4,
       ease: "power2.out"
     }, "-=0.2")
     
-    // Celebration
+    // 6. Address card slides in
+    .to(addressCard, {
+      y: 0,
+      opacity: 1,
+      duration: 0.6,
+      ease: "power3.out"
+    }, "-=0.1")
+    
+    // 7. Celebration effect
     .call(() => {
       addTimeout(() => {
-        const checkmark = dashboardOverlay.querySelector('.success-checkmark');
-        if (checkmark) {
-          gsap.to(checkmark, {
-            scale: 1.3,
-            rotation: 360,
-            duration: 0.5,
-            ease: "back.out(2)",
-            onComplete: () => {
-              gsap.to(checkmark, { scale: 1, duration: 0.2 });
-            }
+        // Gentle pulse effect on success icon
+        if (icon) {
+          gsap.to(icon, {
+            scale: 1.1,
+            duration: 0.3,
+            ease: "power2.out",
+            yoyo: true,
+            repeat: 1
           });
         }
         
-        // Simple particles - slower timing
+        // Subtle particles for celebration
         if (content) {
-          for (let i = 0; i < 4; i++) {
+          for (let i = 0; i < 3; i++) {
             addTimeout(() => {
               createCelebrationParticle(content as HTMLElement);
-            }, i * 400);
+            }, i * 200);
           }
         }
-      }, 800);
+      }, 400);
     });
   };
 
