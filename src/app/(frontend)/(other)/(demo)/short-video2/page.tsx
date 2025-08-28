@@ -1200,7 +1200,7 @@ export default function AddressUpdateVideo() {
             <div id="initialState" className="flex-1 flex items-center justify-center px-6">
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <p className="text-muted-foreground">How can I help you today?</p>
+                  <h2 className="text-3xl font-bold text-foreground mb-2">How can I help you today?</h2>
                 </div>
                 
                 <div className="flex gap-3 items-center">
