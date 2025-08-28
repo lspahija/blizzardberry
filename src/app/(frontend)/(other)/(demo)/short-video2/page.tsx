@@ -115,16 +115,16 @@ export default function AddressUpdateVideo() {
         setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
       }, [], 10)
 
-    // Phase 5: Demo-Niko Finale (4s)
+    // Phase 5: Demo-Niko Finale (4s) - comes earlier
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'finale' }));
         showFinale();
-      }, [], 28)
+      }, [], 25)
 
     // Phase 6: Complete and restart (2s pause)
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'complete' }));
-      }, [], 32);
+      }, [], 29);
 
     masterTimelineRef.current = timeline;
     timeline.play();
