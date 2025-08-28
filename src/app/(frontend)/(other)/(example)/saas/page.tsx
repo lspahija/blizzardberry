@@ -11,8 +11,12 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Briefcase, Users, BarChart, Clock } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { useState } from 'react';
 
 export default function ExampleSaaSLandingPage() {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
   if (process.env.NODE_ENV === 'production') {
     notFound();
   }
@@ -200,10 +204,14 @@ export default function ExampleSaaSLandingPage() {
           bottom: '20px',
           right: '20px',
           width: '250px',
-          height: '120px',
+          height: (isExpanded || isHovered) ? '140px' : '120px',
           pointerEvents: 'none',
           zIndex: 1000,
+          transition: 'all 0.3s ease',
+          transform: (isExpanded || isHovered) ? 'translateY(-20px)' : 'translateY(0)',
         }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         {/* Blurred Mist Background */}
         <div
@@ -279,12 +287,27 @@ export default function ExampleSaaSLandingPage() {
             fontFamily:
               '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
             textAlign: 'center',
-            whiteSpace: 'nowrap',
             zIndex: 10,
             letterSpacing: '0.5px',
+            lineHeight: '1.3',
+            padding: '0 10px',
+            maxWidth: '230px',
+            overflow: 'hidden',
+            height: (isExpanded || isHovered) ? '40px' : '30px',
+            transition: 'all 0.3s ease',
+            cursor: 'pointer',
+            pointerEvents: 'auto',
           }}
+          className={`mist-text ${(isExpanded || isHovered) ? 'expanded' : ''}`}
+          onClick={() => setIsExpanded(!isExpanded)}
         >
-          Hi! I'm your AI Agent
+          <div style={{ 
+            transition: 'all 0.3s ease',
+            transform: (isExpanded || isHovered) ? 'translateY(-2px)' : 'translateY(2px)',
+          }} className="text-content">
+            Hi! I'm your AI Agent<br />
+            How can I help you today?
+          </div>
         </div>
       </div>
 
@@ -320,6 +343,22 @@ export default function ExampleSaaSLandingPage() {
           100% {
             background-position: 200% 200%;
           }
+        }
+
+        .mist-text:hover {
+          height: 60px !important;
+        }
+
+        .mist-text:hover .text-content {
+          transform: translateY(-5px);
+        }
+
+        .mist-text.expanded {
+          height: 60px !important;
+        }
+
+        .mist-text.expanded .text-content {
+          transform: translateY(-5px);
         }
       `}</style>
     </div>
