@@ -42,11 +42,6 @@ export default function ExampleLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Block layout in production
-  if (process.env.NODE_ENV === 'production') {
-    return null;
-  }
-
   return (
     <>
       <style>{customStyles}</style>
