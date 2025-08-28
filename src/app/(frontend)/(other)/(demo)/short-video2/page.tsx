@@ -762,17 +762,6 @@ export default function AddressUpdateVideo() {
             <div class="font-semibold text-gray-900">1847 Union St</div>
             <div class="font-semibold text-gray-900">San Francisco, CA 94123</div>
           </div>
-          
-          <div class="flex justify-center items-center space-x-4 text-sm text-gray-600">
-            <div class="text-center">
-              <div class="text-lg font-bold text-green-600" id="accountsUpdated">1</div>
-              <div>Account</div>
-            </div>
-            <div class="text-center">
-              <div class="text-lg font-bold text-indigo-600" id="status">100%</div>
-              <div>Complete</div>
-            </div>
-          </div>
         </div>
       </div>
     `;
@@ -788,7 +777,6 @@ export default function AddressUpdateVideo() {
     
     const content = dashboardOverlay.querySelector('.bg-white');
     const addressCard = dashboardOverlay.querySelector('.bg-gray-50');
-    const statsRow = dashboardOverlay.querySelector('.flex.justify-center');
     
     // Set initial states
     if (content) {
@@ -796,9 +784,6 @@ export default function AddressUpdateVideo() {
     }
     if (addressCard) {
       gsap.set(addressCard, { y: 20, opacity: 0 });
-    }
-    if (statsRow) {
-      gsap.set(statsRow, { y: 20, opacity: 0 });
     }
     
     // Create entrance timeline
@@ -826,17 +811,6 @@ export default function AddressUpdateVideo() {
       opacity: 1,
       duration: 0.8,
       ease: "power2.out"
-    }, "-=0.2")
-    
-    // Stats appear - slower with elegant timing
-    .to(statsRow, {
-      y: 0,
-      opacity: 1,
-      duration: 0.8,
-      ease: "power2.out",
-      onComplete: () => {
-        animateCounters();
-      }
     }, "-=0.2")
     
     // Celebration
@@ -867,30 +841,6 @@ export default function AddressUpdateVideo() {
     });
   };
 
-  const animateCounters = () => {
-    // Simple counter animations
-    const accountsCounter = document.getElementById('accountsUpdated');
-    const timeCounter = document.getElementById('timesSaved');
-    const statusCounter = document.getElementById('status');
-    
-    if (accountsCounter) {
-      gsap.from(accountsCounter, { 
-        textContent: 0, 
-        duration: 1.8, 
-        ease: "power2.out",
-        snap: { textContent: 1 }
-      });
-    }
-    
-    if (timeCounter) {
-      gsap.from(timeCounter, { 
-        textContent: 0, 
-        duration: 2.0, 
-        ease: "power2.out",
-        snap: { textContent: 1 }
-      });
-    }
-  };
 
   const createCelebrationParticle = (container: HTMLElement) => {
     const particle = document.createElement('div');
