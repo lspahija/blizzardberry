@@ -688,7 +688,7 @@ export default function AddressUpdateVideo() {
   const continueWithRestOfConversation = () => {
     console.log('=== Continuing with rest of conversation ===');
     
-    // Continue with user response (slower timing for better readability)
+    // User response comes earlier for better flow
     addTimeout(() => {
       console.log('Adding user address response');
       addChatMessageWithSlide({
@@ -707,9 +707,9 @@ export default function AddressUpdateVideo() {
         addTimeout(() => {
           console.log('Starting smooth transition from chat to success overlay');
           transitionToSuccessOverlay();
-        }, 1500); // Better timing
-      }, 2800); // Slower confirmation for readability 
-    }, 2500); // Slower user response for readability
+        }, 1200); // Slightly faster transition
+      }, 2200); // Faster confirmation timing
+    }, 1800); // Much earlier user response for better flow
   };
 
   const continueWithAIResponse = () => {
