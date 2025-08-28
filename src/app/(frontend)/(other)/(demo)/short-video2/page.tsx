@@ -798,74 +798,76 @@ export default function AddressUpdateVideo() {
     const subtitle = dashboardOverlay.querySelector('p');
     const addressCard = dashboardOverlay.querySelector('.bg-gradient-to-r');
     
+    console.log('Success animation elements:', { content: !!content, icon: !!icon, title: !!title, subtitle: !!subtitle, addressCard: !!addressCard });
+    
     // Set initial states for staggered animation
     if (content) {
-      gsap.set(content, { y: 60, opacity: 0, scale: 0.95 });
+      gsap.set(content, { y: 40, opacity: 0, scale: 0.95 });
     }
     if (icon) {
       gsap.set(icon, { scale: 0, opacity: 0 });
     }
     if (title) {
-      gsap.set(title, { y: 30, opacity: 0 });
+      gsap.set(title, { y: 20, opacity: 0 });
     }
     if (subtitle) {
-      gsap.set(subtitle, { y: 20, opacity: 0 });
+      gsap.set(subtitle, { y: 15, opacity: 0 });
     }
     if (addressCard) {
-      gsap.set(addressCard, { y: 30, opacity: 0 });
+      gsap.set(addressCard, { y: 20, opacity: 0 });
     }
     
-    // Create sophisticated entrance timeline
+    // Create smooth entrance timeline
     const tl = gsap.timeline();
     
     // 1. Background fade in
     tl.to(dashboardOverlay, {
       opacity: 1,
       scale: 1,
-      duration: 0.6,
+      duration: 0.5,
       ease: "power2.out"
     })
     
-    // 2. Content card elegant entrance
+    // 2. Content card entrance
     .to(content, {
       y: 0,
       opacity: 1,
       scale: 1,
-      duration: 0.8,
-      ease: "power3.out"
-    }, "-=0.3")
+      duration: 0.7,
+      ease: "power2.out"
+    }, "-=0.2")
     
-    // 3. Success icon bounces in
+    // 3. Success icon appears
     .to(icon, {
       scale: 1,
       opacity: 1,
+      duration: 0.5,
+      ease: "back.out(1.7)"
+    }, "-=0.3")
+    
+    // 4. Title appears
+    .to(title, {
+      y: 0,
+      opacity: 1,
       duration: 0.6,
-      ease: "elastic.out(1, 0.6)"
+      ease: "power2.out"
     }, "-=0.2")
     
-    // 4. Title slides up
-    .to(title, {
+    // 5. Subtitle appears
+    .to(subtitle, {
       y: 0,
       opacity: 1,
       duration: 0.5,
       ease: "power2.out"
     }, "-=0.3")
     
-    // 5. Subtitle follows
-    .to(subtitle, {
-      y: 0,
-      opacity: 1,
-      duration: 0.4,
-      ease: "power2.out"
-    }, "-=0.2")
-    
-    // 6. Address card slides in
+    // 6. Address card appears
     .to(addressCard, {
       y: 0,
       opacity: 1,
       duration: 0.6,
-      ease: "power3.out"
-    }, "-=0.1")
+      ease: "power2.out"
+    }, "-=0.2")
     
     // 7. Celebration effect
     .call(() => {
