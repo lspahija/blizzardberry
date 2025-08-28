@@ -80,7 +80,7 @@ export default function AddressUpdateVideo() {
         showProcessing();
       }, [], 7)
 
-    // Phase 4: Result Display (11s for conversation with 3.5s success message)
+    // Phase 4: Result Display (14s for slower conversation timing)
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
       }, [], 19)
@@ -89,12 +89,12 @@ export default function AddressUpdateVideo() {
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'finale' }));
         showFinale();
-      }, [], 30)
+      }, [], 33)
 
     // Phase 6: Complete and restart (2s pause)
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'complete' }));
-      }, [], 34);
+      }, [], 37);
 
     masterTimelineRef.current = timeline;
     timeline.play();
@@ -634,10 +634,10 @@ export default function AddressUpdateVideo() {
       console.log('Adding first AI response after analysis pause');
       addChatMessageWithSlide({
         type: 'received',
-        text: 'I can see you recently moved from New York to San Francisco! What\'s your new address?'
+        text: 'I can see you recently moved from New York to San Francisco! Let me help you update your bank account with your new address. What\'s your new address?'
       });
 
-      // Continue with rest of conversation (much slower timing after analysis)
+      // Continue with rest of conversation (slower timing for better readability)
       addTimeout(() => {
         console.log('Adding user address response');
         addChatMessageWithSlide({
@@ -649,7 +649,7 @@ export default function AddressUpdateVideo() {
           console.log('Adding AI confirmation');
           addChatMessageWithSlide({
             type: 'received',
-            text: 'Perfect! Let me update all your accounts with this new address.'
+            text: 'Perfect! Let me update your bank account with this new address.'
           });
 
           // Final success message
@@ -666,17 +666,17 @@ export default function AddressUpdateVideo() {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <span class="font-bold text-green-700 text-lg">Your new address has been successfully updated!</span>
+                    <span class="font-bold text-green-700 text-lg">Your bank account address has been successfully updated!</span>
                   </div>
                   <div class="bg-white/70 rounded-lg p-3 mb-3">
                     <p class="font-semibold text-gray-800">Updated Address</p>
                     <p class="text-sm text-gray-600">1847 Union St, San Francisco, CA 94123</p>
                   </div>
                   <div class="flex items-center justify-between text-sm">
-                    <span class="text-gray-600">Services Updated:</span>
-                    <span class="font-bold text-green-700">4 accounts</span>
+                    <span class="text-gray-600">Account Updated:</span>
+                    <span class="font-bold text-green-700">Bank of America</span>
                   </div>
-                  <p class="text-xs text-gray-500 mt-2">Banking, Insurance, Utilities & Mail forwarding updated</p>
+                  <p class="text-xs text-gray-500 mt-2">Your bank account address has been successfully updated</p>
                 </div>
               </div>
             `
@@ -704,10 +704,10 @@ export default function AddressUpdateVideo() {
               }
             }
           }, 800);
-          }, 1500); // Allow 3.5 seconds visibility before finale starts
-        }, 1800); // Faster confirmation  
-      }, 1600); // Faster user response
-    }, 1300); // Wait for faster processing bubble sequence (0.6s bubble + 0.35s removal + 0.35s buffer)
+          }, 2500); // Allow 4 seconds visibility before finale starts
+        }, 2800); // Slower confirmation for readability 
+      }, 2500); // Slower user response for readability
+    }, 1800); // Wait for processing bubble sequence with more breathing room
   };
 
   const showResult = () => {
