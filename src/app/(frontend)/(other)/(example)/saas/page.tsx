@@ -205,13 +205,15 @@ export default function ExampleSaaSLandingPage() {
           right: '20px',
           width: '250px',
           height: (isExpanded || isHovered) ? '160px' : '120px',
-          pointerEvents: 'none',
+          pointerEvents: 'auto',
           zIndex: 1000,
           transition: 'all 0.3s ease',
           transform: (isExpanded || isHovered) ? 'translateY(-40px)' : 'translateY(0)',
+          cursor: 'pointer',
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => setIsExpanded(!isExpanded)}
       >
         {/* Blurred Mist Background */}
         <div
@@ -295,11 +297,9 @@ export default function ExampleSaaSLandingPage() {
             overflow: (isExpanded || isHovered) ? 'visible' : 'hidden',
             height: (isExpanded || isHovered) ? 'auto' : '28px',
             transition: 'all 0.3s ease',
-            cursor: 'pointer',
-            pointerEvents: 'auto',
+            pointerEvents: 'none',
           }}
           className={`mist-text ${(isExpanded || isHovered) ? 'expanded' : ''}`}
-          onClick={() => setIsExpanded(!isExpanded)}
         >
           <div style={{ 
             transition: 'all 0.3s ease',
