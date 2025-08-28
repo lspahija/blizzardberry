@@ -48,6 +48,36 @@ export default function AddressUpdateVideo() {
     type();
   };
 
+  const typeTextWithScroll = (element: HTMLTextAreaElement | null, text: string, speed = 50, callback?: () => void) => {
+    if (!element) return;
+    element.value = '';
+    let i = 0;
+    let hasScrolled = false;
+    
+    const type = () => {
+      if (i < text.length) {
+        element.value += text.charAt(i);
+        
+        // When we hit the first line break, scroll the text up slightly
+        if (text.charAt(i) === '\n' && !hasScrolled) {
+          hasScrolled = true;
+          // Animate the textarea content to scroll up
+          gsap.to(element, {
+            scrollTop: 8, // Small scroll to move first line up slightly
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        }
+        
+        i++;
+        addTimeout(type, speed);
+      } else if (callback) {
+        callback();
+      }
+    };
+    type();
+  };
+
   const startDemo = () => {
     clearAllTimers();
     setVideoState({ isRunning: true, currentPhase: 'intro' });
@@ -134,7 +164,7 @@ export default function AddressUpdateVideo() {
         if (userInput) {
           userInput.disabled = false;
           userInput.focus();
-          typeText(userInput, "I recently moved to San Francisco\nand need to update my address", 60, () => {
+          typeTextWithScroll(userInput, "I recently moved to San Francisco\nand need to update my address", 60, () => {
             // Show airplane animation and send with natural pause
             addTimeout(() => {
               triggerAirplane();
@@ -1178,7 +1208,7 @@ export default function AddressUpdateVideo() {
                     <textarea
                       id="userInput"
                       placeholder="Tell me what you need..."
-                      className="w-full px-6 py-5 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none h-18 leading-relaxed"
+                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none h-17 leading-normal"
                       disabled
                     />
                     <button id="sendButton" className="group absolute right-3 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
