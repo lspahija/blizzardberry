@@ -80,7 +80,7 @@ export default function AddressUpdateVideo() {
         showProcessing();
       }, [], 7)
 
-    // Phase 4: Result Display (18s for full conversation)
+    // Phase 4: Result Display (11s for conversation with 3.5s success message)
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
       }, [], 19)
@@ -89,12 +89,12 @@ export default function AddressUpdateVideo() {
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'finale' }));
         showFinale();
-      }, [], 37)
+      }, [], 30)
 
     // Phase 6: Complete and restart (2s pause)
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'complete' }));
-      }, [], 41);
+      }, [], 34);
 
     masterTimelineRef.current = timeline;
     timeline.play();
@@ -417,10 +417,6 @@ export default function AddressUpdateVideo() {
                   <div class="text-sm text-gray-600">The following services will be automatically updated</div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                  <div class="px-4 py-3 bg-white text-blue-800 text-base rounded-xl font-semibold text-center shadow-sm border border-blue-200">Banking</div>
-                  <div class="px-4 py-3 bg-white text-blue-800 text-base rounded-xl font-semibold text-center shadow-sm border border-blue-200">Insurance</div>
-                  <div class="px-4 py-3 bg-white text-blue-800 text-base rounded-xl font-semibold text-center shadow-sm border border-blue-200">Utilities</div>
-                  <div class="px-4 py-3 bg-white text-blue-800 text-base rounded-xl font-semibold text-center shadow-sm border border-blue-200">Mail Forwarding</div>
                 </div>
               </div>
             </div>
@@ -638,7 +634,7 @@ export default function AddressUpdateVideo() {
       console.log('Adding first AI response after analysis pause');
       addChatMessageWithSlide({
         type: 'received',
-        text: 'I can see you\'re moving from New York to San Francisco! What\'s your new address?'
+        text: 'I can see you recently moved from New York to San Francisco! What\'s your new address?'
       });
 
       // Continue with rest of conversation (much slower timing after analysis)
@@ -708,10 +704,10 @@ export default function AddressUpdateVideo() {
               }
             }
           }, 800);
-          }, 3000); // Even slower final message
-        }, 2800); // Much slower confirmation  
-      }, 2500); // Much slower user response
-    }, 2000); // Wait for processing bubble sequence (1s bubble + 0.5s removal + 0.5s buffer)
+          }, 1500); // Allow 3.5 seconds visibility before finale starts
+        }, 1800); // Faster confirmation  
+      }, 1600); // Faster user response
+    }, 1300); // Wait for faster processing bubble sequence (0.6s bubble + 0.35s removal + 0.35s buffer)
   };
 
   const showResult = () => {
@@ -965,10 +961,10 @@ export default function AddressUpdateVideo() {
         <div 
           className="h-full bg-gradient-to-r from-brand to-secondary transition-all duration-300 ease-out" 
           style={{ 
-            width: videoState.currentPhase === 'intro' ? '10%' : 
-                   videoState.currentPhase === 'chat' ? '17%' :
-                   videoState.currentPhase === 'processing' ? '46%' :
-                   videoState.currentPhase === 'result' ? '90%' :
+            width: videoState.currentPhase === 'intro' ? '12%' : 
+                   videoState.currentPhase === 'chat' ? '21%' :
+                   videoState.currentPhase === 'processing' ? '56%' :
+                   videoState.currentPhase === 'result' ? '88%' :
                    videoState.currentPhase === 'finale' ? '100%' : '0%'
           }}
         />
