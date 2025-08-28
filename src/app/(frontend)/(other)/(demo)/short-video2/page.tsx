@@ -804,35 +804,35 @@ export default function AddressUpdateVideo() {
     // Create entrance timeline
     const tl = gsap.timeline();
     
-    // Background fade in
+    // Background fade in - slower and smoother
     tl.to(dashboardOverlay, {
       opacity: 1,
       scale: 1,
-      duration: 0.5,
+      duration: 0.8,
       ease: "power2.out"
     })
     
-    // Content card slides up
+    // Content card slides up - slower with more elegant easing
     .to(content, {
       y: 0,
       opacity: 1,
-      duration: 0.6,
-      ease: "back.out(1.7)"
-    }, "-=0.2")
+      duration: 1.0,
+      ease: "power3.out"
+    }, "-=0.4")
     
-    // Address info appears
+    // Address info appears - slower with pause
     .to(addressCard, {
       y: 0,
       opacity: 1,
-      duration: 0.4,
+      duration: 0.8,
       ease: "power2.out"
-    }, "-=0.3")
+    }, "-=0.2")
     
-    // Stats appear
+    // Stats appear - slower with elegant timing
     .to(statsRow, {
       y: 0,
       opacity: 1,
-      duration: 0.4,
+      duration: 0.8,
       ease: "power2.out",
       onComplete: () => {
         animateCounters();
@@ -855,15 +855,15 @@ export default function AddressUpdateVideo() {
           });
         }
         
-        // Simple particles
+        // Simple particles - slower timing
         if (content) {
           for (let i = 0; i < 4; i++) {
             addTimeout(() => {
               createCelebrationParticle(content as HTMLElement);
-            }, i * 300);
+            }, i * 400);
           }
         }
-      }, 200);
+      }, 800);
     });
   };
 
@@ -876,7 +876,7 @@ export default function AddressUpdateVideo() {
     if (accountsCounter) {
       gsap.from(accountsCounter, { 
         textContent: 0, 
-        duration: 1, 
+        duration: 1.8, 
         ease: "power2.out",
         snap: { textContent: 1 }
       });
@@ -885,7 +885,7 @@ export default function AddressUpdateVideo() {
     if (timeCounter) {
       gsap.from(timeCounter, { 
         textContent: 0, 
-        duration: 1.2, 
+        duration: 2.0, 
         ease: "power2.out",
         snap: { textContent: 1 }
       });
