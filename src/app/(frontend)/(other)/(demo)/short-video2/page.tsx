@@ -110,7 +110,7 @@ export default function AddressUpdateVideo() {
         showProcessing();
       }, [], 7)
 
-    // Phase 4: Result Display (16s for conversation + success overlay)
+    // Phase 4: Result Display (18s for conversation + success message)
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
       }, [], 10)
@@ -119,12 +119,12 @@ export default function AddressUpdateVideo() {
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'finale' }));
         showFinale();
-      }, [], 26)
+      }, [], 28)
 
     // Phase 6: Complete and restart (2s pause)
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'complete' }));
-      }, [], 30);
+      }, [], 32);
 
     masterTimelineRef.current = timeline;
     timeline.play();
@@ -693,7 +693,7 @@ export default function AddressUpdateVideo() {
           addTimeout(() => {
             console.log('Starting smooth transition from chat to success overlay');
             transitionToSuccessOverlay();
-          }, 2000);
+          }, 1500); // Better timing
         }, 2800); // Slower confirmation for readability 
       }, 2500); // Slower user response for readability
     }, 500); // Wait briefly after processing bubble removal
@@ -705,164 +705,191 @@ export default function AddressUpdateVideo() {
   };
 
   const transitionToSuccessOverlay = () => {
-    console.log('=== Starting cinematic chat to success transition ===');
+    console.log('=== Starting transition to success dashboard ===');
     const chatContainer = document.getElementById('chatContainer');
     const chatMessages = document.getElementById('chatMessages');
     
     if (!chatContainer || !chatMessages) return;
     
-    // Step 1: Elegant chat fade and scale down
+    // Step 1: Fade out chat messages
     const messages = chatMessages.querySelectorAll('.chat-message');
     const chatTl = gsap.timeline();
     
-    // Animate messages out with staggered effect
+    // Animate messages out
     chatTl.to(messages, {
       y: -20,
-      opacity: 0.3,
+      opacity: 0,
       scale: 0.95,
-      duration: 0.8,
-      stagger: -0.05, // Reverse stagger for wave effect
-      ease: "power3.inOut"
+      duration: 0.6,
+      stagger: -0.03,
+      ease: "power2.inOut"
     })
     
-    // Blur and scale chat container
+    // Fade out chat container
     .to(chatContainer, {
-      scale: 0.95,
-      opacity: 0.4,
-      filter: 'blur(12px)',
-      duration: 1.0,
-      ease: "power3.inOut"
-    }, "-=0.6")
-    
-    // Start success overlay after chat starts fading
-    .call(() => {
-      showSuccessOverlay();
-    }, [], "-=0.3");
+      opacity: 0,
+      scale: 0.98,
+      duration: 0.8,
+      ease: "power2.inOut",
+      onComplete: () => {
+        chatContainer.style.display = 'none';
+        showSuccessDashboard();
+      }
+    }, "-=0.4");
   };
 
-  const showSuccessOverlay = () => {
-    console.log('=== Showing success overlay animation ===');
-    const chatContainer = document.getElementById('chatContainer');
-    if (!chatContainer) return;
-
-    // Create success overlay
-    const successOverlay = document.createElement('div');
-    successOverlay.className = 'fixed inset-0 bg-white z-50 flex items-center justify-center';
-    successOverlay.id = 'successOverlay';
-    successOverlay.innerHTML = `
+  const showSuccessDashboard = () => {
+    console.log('=== Showing success dashboard ===');
+    
+    // Create success dashboard like demo-video style
+    const dashboardOverlay = document.createElement('div');
+    dashboardOverlay.className = 'fixed inset-0 bg-white z-50 flex items-center justify-center';
+    dashboardOverlay.id = 'successDashboard';
+    
+    // Simple success message with clean card styling
+    dashboardOverlay.innerHTML = `
       <div class="max-w-md mx-auto px-8 text-center">
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-3xl p-8 shadow-2xl">
+        <div class="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100">
           <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 success-checkmark">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
             </svg>
           </div>
           <h3 class="text-2xl font-bold text-green-700 mb-4">Address Updated Successfully!</h3>
-          <div class="bg-white/80 rounded-xl p-4 mb-4">
-            <p class="font-semibold text-gray-800 mb-2">New Address</p>
-            <p class="text-gray-600">1847 Union St<br>San Francisco, CA 94123</p>
+          
+          <div class="bg-gray-50 rounded-xl p-4 mb-6 text-left">
+            <div class="text-sm text-gray-600 mb-2">New Address</div>
+            <div class="font-semibold text-gray-900">1847 Union St</div>
+            <div class="font-semibold text-gray-900">San Francisco, CA 94123</div>
           </div>
-          <div class="text-sm text-gray-600">
-            <span class="font-semibold">Pacific Trust Bank</span> account updated
+          
+          <div class="flex justify-center items-center space-x-4 text-sm text-gray-600">
+            <div class="text-center">
+              <div class="text-lg font-bold text-green-600" id="accountsUpdated">1</div>
+              <div>Account</div>
+            </div>
+            <div class="text-center">
+              <div class="text-lg font-bold text-indigo-600" id="status">100%</div>
+              <div>Complete</div>
+            </div>
           </div>
         </div>
       </div>
     `;
 
-    // Add to DOM with cinematic entrance animation
-    document.body.appendChild(successOverlay);
+    // Add to DOM with clean entrance
+    document.body.appendChild(dashboardOverlay);
     
-    // Initial state - completely hidden with 3D perspective
-    gsap.set(successOverlay, { 
+    // Simple initial state
+    gsap.set(dashboardOverlay, { 
       opacity: 0,
-      backdropFilter: 'blur(0px)',
-      background: 'rgba(255, 255, 255, 0)'
+      scale: 0.9
     });
     
-    const content = successOverlay.querySelector('.bg-gradient-to-r');
-    const checkmark = successOverlay.querySelector('.success-checkmark');
+    const content = dashboardOverlay.querySelector('.bg-white');
+    const addressCard = dashboardOverlay.querySelector('.bg-gray-50');
+    const statsRow = dashboardOverlay.querySelector('.flex.justify-center');
     
+    // Set initial states
     if (content) {
-      gsap.set(content, { 
-        scale: 0.7, 
-        y: 80,
-        opacity: 0,
-        rotationY: 15,
-        transformPerspective: 1000
+      gsap.set(content, { y: 40, opacity: 0 });
+    }
+    if (addressCard) {
+      gsap.set(addressCard, { y: 20, opacity: 0 });
+    }
+    if (statsRow) {
+      gsap.set(statsRow, { y: 20, opacity: 0 });
+    }
+    
+    // Create entrance timeline
+    const tl = gsap.timeline();
+    
+    // Background fade in
+    tl.to(dashboardOverlay, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.5,
+      ease: "power2.out"
+    })
+    
+    // Content card slides up
+    .to(content, {
+      y: 0,
+      opacity: 1,
+      duration: 0.6,
+      ease: "back.out(1.7)"
+    }, "-=0.2")
+    
+    // Address info appears
+    .to(addressCard, {
+      y: 0,
+      opacity: 1,
+      duration: 0.4,
+      ease: "power2.out"
+    }, "-=0.3")
+    
+    // Stats appear
+    .to(statsRow, {
+      y: 0,
+      opacity: 1,
+      duration: 0.4,
+      ease: "power2.out",
+      onComplete: () => {
+        animateCounters();
+      }
+    }, "-=0.2")
+    
+    // Celebration
+    .call(() => {
+      addTimeout(() => {
+        const checkmark = dashboardOverlay.querySelector('.success-checkmark');
+        if (checkmark) {
+          gsap.to(checkmark, {
+            scale: 1.3,
+            rotation: 360,
+            duration: 0.5,
+            ease: "back.out(2)",
+            onComplete: () => {
+              gsap.to(checkmark, { scale: 1, duration: 0.2 });
+            }
+          });
+        }
+        
+        // Simple particles
+        if (content) {
+          for (let i = 0; i < 4; i++) {
+            addTimeout(() => {
+              createCelebrationParticle(content as HTMLElement);
+            }, i * 300);
+          }
+        }
+      }, 200);
+    });
+  };
+
+  const animateCounters = () => {
+    // Simple counter animations
+    const accountsCounter = document.getElementById('accountsUpdated');
+    const timeCounter = document.getElementById('timesSaved');
+    const statusCounter = document.getElementById('status');
+    
+    if (accountsCounter) {
+      gsap.from(accountsCounter, { 
+        textContent: 0, 
+        duration: 1, 
+        ease: "power2.out",
+        snap: { textContent: 1 }
       });
     }
     
-    // Cinematic entrance timeline
-    const tl = gsap.timeline();
-    
-    // Step 1: Backdrop emergence
-    tl.to(successOverlay, {
-      opacity: 1,
-      background: 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(8px)',
-      duration: 0.8,
-      ease: "power3.out"
-    })
-    
-    // Step 2: Content grand entrance with 3D perspective
-    .to(content, {
-      scale: 1,
-      y: 0,
-      opacity: 1,
-      rotationY: 0,
-      duration: 1.2,
-      ease: "power4.out",
-      onComplete: () => {
-        // Subtle breathing animation
-        gsap.to(content, {
-          scale: 1.02,
-          duration: 2,
-          yoyo: true,
-          repeat: -1,
-          ease: "sine.inOut"
-        });
-      }
-    }, "-=0.4")
-    
-    // Step 3: Final backdrop solidification
-    .to(successOverlay, {
-      background: 'rgba(255, 255, 255, 1)',
-      backdropFilter: 'blur(0px)',
-      duration: 0.6,
-      ease: "power2.out"
-    }, "-=0.8");
-    
-    // Enhanced checkmark celebration
-    if (checkmark) {
-      tl.to(checkmark, {
-        scale: 1.3,
-        rotation: 360,
-        duration: 0.6,
-        ease: "back.out(2)",
-        onComplete: () => {
-          // Subtle pulse animation
-          gsap.to(checkmark, {
-            scale: 1.15,
-            duration: 1.5,
-            yoyo: true,
-            repeat: -1,
-            ease: "sine.inOut"
-          });
-        }
-      }, "-=0.6");
+    if (timeCounter) {
+      gsap.from(timeCounter, { 
+        textContent: 0, 
+        duration: 1.2, 
+        ease: "power2.out",
+        snap: { textContent: 1 }
+      });
     }
-    
-    // Add celebration particles
-    addTimeout(() => {
-      if (content) {
-        for (let i = 0; i < 8; i++) {
-          createCelebrationParticle(content as HTMLElement);
-        }
-      }
-    }, 800);
-    
-    // Don't auto-remove overlay - let finale transition handle it
-    // The showFinale function will handle the smooth transition
   };
 
   const createCelebrationParticle = (container: HTMLElement) => {
@@ -895,9 +922,8 @@ export default function AddressUpdateVideo() {
   };
 
   const showFinale = () => {
-    // Smooth transition from success overlay to finale (similar to chat transition)
-    const successOverlay = document.getElementById('successOverlay');
-    const chatContainer = document.getElementById('chatContainer');
+    // Smooth transition from success dashboard to finale
+    const successDashboard = document.getElementById('successDashboard');
     const finaleContainer = document.getElementById('finaleContainer');
     
     if (finaleContainer) {
@@ -908,34 +934,59 @@ export default function AddressUpdateVideo() {
       
       const timeline = gsap.timeline();
       
-      // If success overlay still exists, fade it out smoothly
-      if (successOverlay) {
-        timeline.to(successOverlay, {
-          opacity: 0,
-          scale: 0.9,
-          filter: 'blur(8px)',
-          duration: 0.8,
-          ease: "power3.inOut",
-          onComplete: () => {
-            if (successOverlay.parentNode) {
-              successOverlay.parentNode.removeChild(successOverlay);
-            }
-          }
-        });
-      }
-      
-      // Also ensure chat container is properly hidden
-      if (chatContainer) {
-        timeline.to(chatContainer, {
+      // Cinematic exit of success dashboard
+      if (successDashboard) {
+        const content = successDashboard.querySelector('.w-\\[600px\\]');
+        const statsCards = successDashboard.querySelectorAll('.grid > div');
+        const detailsCard = successDashboard.querySelector('.bg-white.rounded-xl.shadow-sm');
+        
+        // Create elegant exit sequence
+        const exitTl = gsap.timeline();
+        
+        // Step 1: Stats cards fade out with stagger
+        exitTl.to(statsCards, {
+          y: -30,
           opacity: 0,
           scale: 0.95,
-          filter: 'blur(12px)',
+          duration: 0.4,
+          stagger: 0.05,
+          ease: "power2.in"
+        })
+        
+        // Step 2: Details card slides down
+        .to(detailsCard, {
+          y: 40,
+          opacity: 0,
+          duration: 0.5,
+          ease: "power2.in"
+        }, "-=0.3")
+        
+        // Step 3: Main content scales and rotates out
+        .to(content, {
+          scale: 0.85,
+          rotationY: -15,
+          y: 30,
+          opacity: 0,
           duration: 0.6,
-          ease: "power3.inOut"
-        }, successOverlay ? "-=0.4" : 0);
+          ease: "power3.in"
+        }, "-=0.4")
+        
+        // Step 4: Background fade with perspective
+        .to(successDashboard, {
+          opacity: 0,
+          scale: 0.9,
+          rotationY: -25,
+          duration: 0.7,
+          ease: "power3.inOut",
+          onComplete: () => {
+            if (successDashboard.parentNode) {
+              successDashboard.parentNode.removeChild(successDashboard);
+            }
+          }
+        }, "-=0.5");
       }
       
-      // Fade in finale container smoothly
+      // Immediately fade in finale container
       timeline.to(finaleContainer, {
         opacity: 1,
         scale: 1,
@@ -944,7 +995,7 @@ export default function AddressUpdateVideo() {
         onComplete: () => {
           animateFinaleElements();
         }
-      }, "-=0.3");
+      }, "-=0.4");
     }
   };
 
@@ -1125,10 +1176,10 @@ export default function AddressUpdateVideo() {
         <div 
           className="h-full bg-gradient-to-r from-brand to-secondary transition-all duration-300 ease-out" 
           style={{ 
-            width: videoState.currentPhase === 'intro' ? '13%' : 
-                   videoState.currentPhase === 'chat' ? '23%' :
-                   videoState.currentPhase === 'processing' ? '33%' :
-                   videoState.currentPhase === 'result' ? '87%' :
+            width: videoState.currentPhase === 'intro' ? '12%' : 
+                   videoState.currentPhase === 'chat' ? '22%' :
+                   videoState.currentPhase === 'processing' ? '31%' :
+                   videoState.currentPhase === 'result' ? '88%' :
                    videoState.currentPhase === 'finale' ? '100%' : '0%'
           }}
         />
@@ -1200,74 +1251,7 @@ export default function AddressUpdateVideo() {
             <div id="initialState" className="flex-1 flex items-center justify-center px-6">
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  {/* Pacific Trust Bank Logo */}
-                  <div className="mb-6">
-                    <div className="mx-auto w-36 h-36 bg-gradient-to-br from-slate-800 via-blue-700 to-blue-500 rounded-3xl shadow-2xl flex items-center justify-center mb-4 relative overflow-hidden">
-                      {/* Luxury background shine */}
-                      <div className="absolute inset-0 opacity-10">
-                        <div className="w-full h-full bg-gradient-radial from-white via-transparent to-transparent"></div>
-                      </div>
-                      
-                      {/* Modern Banking Icon */}
-                      <div className="relative z-10 flex items-center justify-center">
-                        <div className="relative">
-                          {/* Premium Banking Logo */}
-                          <div className="w-28 h-28 bg-gradient-to-br from-blue-800 via-blue-700 to-blue-600 rounded-2xl shadow-2xl flex items-center justify-center relative overflow-hidden">
-                            
-                            {/* Elegant Background Pattern */}
-                            <div className="absolute inset-0">
-                              {/* Subtle crosshatch pattern */}
-                              <div className="absolute inset-2 border border-white/10 rounded-xl"></div>
-                              <div className="absolute top-4 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"></div>
-                              <div className="absolute bottom-4 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"></div>
-                              <div className="absolute top-4 bottom-4 left-4 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent"></div>
-                              <div className="absolute top-4 bottom-4 right-4 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent"></div>
-                            </div>
-                            
-                            {/* Banking Symbol */}
-                            <div className="relative z-10 text-center">
-                              {/* Main PT */}
-                              <div className="text-white font-bold text-3xl mb-1" style={{
-                                fontFamily: 'Georgia, serif',
-                                letterSpacing: '0.15em',
-                                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                              }}>
-                                PT
-                              </div>
-                              
-                              {/* BANK subtitle */}
-                              <div className="text-white/80 font-semibold text-xs tracking-widest" style={{
-                                fontFamily: 'system-ui, sans-serif'
-                              }}>
-                                BANK
-                              </div>
-                              
-                              {/* Decorative line */}
-                              <div className="w-10 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent mx-auto mt-1"></div>
-                            </div>
-                            
-                            {/* Premium borders */}
-                            <div className="absolute inset-0 rounded-2xl ring-1 ring-white/25"></div>
-                            <div className="absolute inset-0.5 rounded-2xl ring-1 ring-white/10"></div>
-                          </div>
-                          
-                          {/* Sophisticated glow */}
-                          <div className="absolute inset-0 rounded-2xl bg-blue-400/20 blur-xl scale-110 -z-10"></div>
-                        </div>
-                      </div>
-                      
-                      {/* Premium metallic border */}
-                      <div className="absolute inset-0 rounded-3xl ring-2 ring-gradient-to-br ring-white/20"></div>
-                      <div className="absolute inset-1 rounded-3xl ring-1 ring-white/10"></div>
-                    </div>
-                  </div>
-                  
-                  <h2 className="text-3xl font-bold mb-2" style={{
-                    background: 'linear-gradient(135deg, #2563eb, #14b8a6)',
-                    WebkitBackgroundClip: 'text',
-                    backgroundClip: 'text',
-                    color: 'transparent'
-                  }}>
+                  <h2 className="text-3xl font-bold text-muted-foreground mb-2">
                     Pacific Trust Bank<br/>Customer Support
                   </h2>
                 </div>
