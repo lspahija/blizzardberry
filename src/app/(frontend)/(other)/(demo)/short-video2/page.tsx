@@ -1200,7 +1200,76 @@ export default function AddressUpdateVideo() {
             <div id="initialState" className="flex-1 flex items-center justify-center px-6">
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-foreground mb-2">Pacific Trust Bank<br/>Customer Support</h2>
+                  {/* Pacific Trust Bank Logo */}
+                  <div className="mb-6">
+                    <div className="mx-auto w-36 h-36 bg-gradient-to-br from-slate-800 via-blue-700 to-blue-500 rounded-3xl shadow-2xl flex items-center justify-center mb-4 relative overflow-hidden">
+                      {/* Luxury background shine */}
+                      <div className="absolute inset-0 opacity-10">
+                        <div className="w-full h-full bg-gradient-radial from-white via-transparent to-transparent"></div>
+                      </div>
+                      
+                      {/* Modern Banking Icon */}
+                      <div className="relative z-10 flex items-center justify-center">
+                        <div className="relative">
+                          {/* Premium Banking Logo */}
+                          <div className="w-28 h-28 bg-gradient-to-br from-blue-800 via-blue-700 to-blue-600 rounded-2xl shadow-2xl flex items-center justify-center relative overflow-hidden">
+                            
+                            {/* Elegant Background Pattern */}
+                            <div className="absolute inset-0">
+                              {/* Subtle crosshatch pattern */}
+                              <div className="absolute inset-2 border border-white/10 rounded-xl"></div>
+                              <div className="absolute top-4 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"></div>
+                              <div className="absolute bottom-4 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"></div>
+                              <div className="absolute top-4 bottom-4 left-4 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent"></div>
+                              <div className="absolute top-4 bottom-4 right-4 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent"></div>
+                            </div>
+                            
+                            {/* Banking Symbol */}
+                            <div className="relative z-10 text-center">
+                              {/* Main PT */}
+                              <div className="text-white font-bold text-3xl mb-1" style={{
+                                fontFamily: 'Georgia, serif',
+                                letterSpacing: '0.15em',
+                                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                              }}>
+                                PT
+                              </div>
+                              
+                              {/* BANK subtitle */}
+                              <div className="text-white/80 font-semibold text-xs tracking-widest" style={{
+                                fontFamily: 'system-ui, sans-serif'
+                              }}>
+                                BANK
+                              </div>
+                              
+                              {/* Decorative line */}
+                              <div className="w-10 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent mx-auto mt-1"></div>
+                            </div>
+                            
+                            {/* Premium borders */}
+                            <div className="absolute inset-0 rounded-2xl ring-1 ring-white/25"></div>
+                            <div className="absolute inset-0.5 rounded-2xl ring-1 ring-white/10"></div>
+                          </div>
+                          
+                          {/* Sophisticated glow */}
+                          <div className="absolute inset-0 rounded-2xl bg-blue-400/20 blur-xl scale-110 -z-10"></div>
+                        </div>
+                      </div>
+                      
+                      {/* Premium metallic border */}
+                      <div className="absolute inset-0 rounded-3xl ring-2 ring-gradient-to-br ring-white/20"></div>
+                      <div className="absolute inset-1 rounded-3xl ring-1 ring-white/10"></div>
+                    </div>
+                  </div>
+                  
+                  <h2 className="text-3xl font-bold mb-2" style={{
+                    background: 'linear-gradient(135deg, #2563eb, #14b8a6)',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    color: 'transparent'
+                  }}>
+                    Pacific Trust Bank<br/>Customer Support
+                  </h2>
                 </div>
                 
                 <div className="flex gap-3 items-center">
