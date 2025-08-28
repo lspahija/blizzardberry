@@ -656,7 +656,7 @@ export default function AddressUpdateVideo() {
           console.log('Adding AI confirmation');
           addChatMessageWithSlide({
             type: 'received',
-            text: 'Perfect! Let me update your bank account with this new address.'
+            text: 'Perfect! Let me update your Pacific Trust Bank account with this new address.'
           });
 
           // Show success animation overlay with smooth chat transition
@@ -733,7 +733,7 @@ export default function AddressUpdateVideo() {
             <p class="text-gray-600">1847 Union St<br>San Francisco, CA 94123</p>
           </div>
           <div class="text-sm text-gray-600">
-            <span class="font-semibold">Bank of America</span> account updated
+            <span class="font-semibold">Pacific Trust Bank</span> account updated
           </div>
         </div>
       </div>
