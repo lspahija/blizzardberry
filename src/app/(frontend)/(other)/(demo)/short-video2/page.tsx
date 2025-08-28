@@ -1178,7 +1178,7 @@ export default function AddressUpdateVideo() {
                     <textarea
                       id="userInput"
                       placeholder="Tell me what you need..."
-                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none h-16"
+                      className="w-full px-6 py-5 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none h-18 leading-relaxed"
                       disabled
                     />
                     <button id="sendButton" className="group absolute right-3 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
