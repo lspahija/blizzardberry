@@ -641,7 +641,7 @@ export default function AddressUpdateVideo() {
       console.log('Adding first AI response after processing pause');
       addChatMessageWithSlide({
         type: 'received',
-        text: 'I can see you recently moved from New York to San Francisco! Let me help you update your bank account with your new address. What\'s your new address?'
+        text: 'I can see you recently moved from New York to San Francisco! What\'s your new address?'
       });
 
       // Continue with rest of conversation (slower timing for better readability)
