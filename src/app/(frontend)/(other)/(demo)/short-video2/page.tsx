@@ -222,13 +222,35 @@ export default function AddressUpdateVideo() {
         
         // Continue directly to AI response after processing bubble
         addTimeout(() => {
-          console.log('Processing complete, continuing to AI response');
-          // Remove processing bubble and continue with conversation
+          console.log('Processing complete, transforming bubble to AI response');
+          // Transform processing bubble to AI response instead of removing
           const processingBubble = document.getElementById('processingBubble');
-          if (processingBubble && processingBubble.parentNode) {
-            processingBubble.parentNode.removeChild(processingBubble);
+          if (processingBubble) {
+            const messageContent = processingBubble.querySelector('.max-w-md > div');
+            if (messageContent) {
+              // Smoothly transform the processing bubble to first AI message
+              gsap.to(messageContent, {
+                opacity: 0,
+                duration: 0.3,
+                ease: "power2.out",
+                onComplete: () => {
+                  messageContent.innerHTML = `<div class="text-base leading-relaxed">I can see you recently moved from New York to San Francisco! What's your new address?</div>`;
+                  gsap.to(messageContent, {
+                    opacity: 1,
+                    duration: 0.4,
+                    ease: "power2.out"
+                  });
+                }
+              });
+              // Remove ID so it's treated as normal message
+              processingBubble.removeAttribute('id');
+            }
           }
-          continueWithAIResponse();
+          
+          // Continue with rest of conversation
+          addTimeout(() => {
+            continueWithRestOfConversation();
+          }, 1000);
         }, 2000); // Wait 2 seconds after processing bubble appears
       }, 1000); // Wait for user message animation to complete
     }
@@ -663,40 +685,38 @@ export default function AddressUpdateVideo() {
     }, 4200); // Show analysis for 4.2 seconds
   };
 
+  const continueWithRestOfConversation = () => {
+    console.log('=== Continuing with rest of conversation ===');
+    
+    // Continue with user response (slower timing for better readability)
+    addTimeout(() => {
+      console.log('Adding user address response');
+      addChatMessageWithSlide({
+        type: 'sent',
+        text: '1847 Union St, San Francisco, CA 94123'
+      });
+
+      addTimeout(() => {
+        console.log('Adding AI confirmation');
+        addChatMessageWithSlide({
+          type: 'received',
+          text: 'Perfect! Let me update your Pacific Trust Bank account with this new address.'
+        });
+
+        // Show success animation overlay with smooth chat transition
+        addTimeout(() => {
+          console.log('Starting smooth transition from chat to success overlay');
+          transitionToSuccessOverlay();
+        }, 1500); // Better timing
+      }, 2800); // Slower confirmation for readability 
+    }, 2500); // Slower user response for readability
+  };
+
   const continueWithAIResponse = () => {
     console.log('=== Starting AI response flow after processing ===');
     
-    // Wait a moment after processing before first AI response
-    addTimeout(() => {
-      console.log('Adding first AI response after processing pause');
-      addChatMessageWithSlide({
-        type: 'received',
-        text: 'I can see you recently moved from New York to San Francisco! What\'s your new address?'
-      });
-
-      // Continue with rest of conversation (slower timing for better readability)
-      addTimeout(() => {
-        console.log('Adding user address response');
-        addChatMessageWithSlide({
-          type: 'sent',
-          text: '1847 Union St, San Francisco, CA 94123'
-        });
-
-        addTimeout(() => {
-          console.log('Adding AI confirmation');
-          addChatMessageWithSlide({
-            type: 'received',
-            text: 'Perfect! Let me update your Pacific Trust Bank account with this new address.'
-          });
-
-          // Show success animation overlay with smooth chat transition
-          addTimeout(() => {
-            console.log('Starting smooth transition from chat to success overlay');
-            transitionToSuccessOverlay();
-          }, 1500); // Better timing
-        }, 2800); // Slower confirmation for readability 
-      }, 2500); // Slower user response for readability
-    }, 500); // Wait briefly after processing bubble removal
+    // This function is kept for compatibility but now calls the new one
+    continueWithRestOfConversation();
   };
 
   const showResult = () => {
