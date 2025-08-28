@@ -204,11 +204,11 @@ export default function ExampleSaaSLandingPage() {
           bottom: '20px',
           right: '20px',
           width: '250px',
-          height: (isExpanded || isHovered) ? '140px' : '120px',
+          height: (isExpanded || isHovered) ? '160px' : '120px',
           pointerEvents: 'none',
           zIndex: 1000,
           transition: 'all 0.3s ease',
-          transform: (isExpanded || isHovered) ? 'translateY(-20px)' : 'translateY(0)',
+          transform: (isExpanded || isHovered) ? 'translateY(-40px)' : 'translateY(0)',
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -292,8 +292,8 @@ export default function ExampleSaaSLandingPage() {
             lineHeight: '1.3',
             padding: '0 10px',
             maxWidth: '230px',
-            overflow: 'hidden',
-            height: (isExpanded || isHovered) ? '40px' : '30px',
+            overflow: (isExpanded || isHovered) ? 'visible' : 'hidden',
+            height: (isExpanded || isHovered) ? 'auto' : '28px',
             transition: 'all 0.3s ease',
             cursor: 'pointer',
             pointerEvents: 'auto',
@@ -303,7 +303,7 @@ export default function ExampleSaaSLandingPage() {
         >
           <div style={{ 
             transition: 'all 0.3s ease',
-            transform: (isExpanded || isHovered) ? 'translateY(-2px)' : 'translateY(2px)',
+            transform: (isExpanded || isHovered) ? 'translateY(-15px)' : 'translateY(0px)',
           }} className="text-content">
             Hi! I'm your AI Agent<br />
             How can I help you today?
