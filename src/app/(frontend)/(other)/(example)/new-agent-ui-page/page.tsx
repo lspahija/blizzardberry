@@ -35,12 +35,17 @@ export default function NewAgentUIPage() {
           pointerEvents: 'auto',
           zIndex: 1000,
           transition: 'all 0.3s ease',
-          transform:
-            isExpanded ? 'translateY(-200px)' : isHovered ? 'translateY(-40px)' : 'translateY(0)',
+          transform: 'translateY(0)',
           cursor: isExpanded ? 'default' : 'pointer',
         }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={() => {
+          setIsHovered(true);
+          setIsExpanded(true);
+        }}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setIsExpanded(false);
+        }}
         onClick={() => setIsExpanded(!isExpanded)}
       >
         {/* Blurred Mist Background */}
