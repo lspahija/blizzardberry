@@ -161,7 +161,7 @@ export default function NewAgentUIPage() {
         }
 
         .mist-text:not(.expanded) {
-          mask-image: linear-gradient(to bottom, black 70%, transparent);
+          mask-image: linear-gradient(to bottom, black 25%, transparent);
         }
       `}</style>
     </div>
