@@ -106,8 +106,6 @@ export default function NewAgentUIPage() {
             lineHeight: '1.3',
             padding: '0 10px',
             maxWidth: '230px',
-            overflow: isExpanded || isHovered ? 'visible' : 'hidden',
-            height: isExpanded || isHovered ? 'auto' : '28px',
             transition: 'all 0.3s ease',
             pointerEvents: 'none',
           }}
@@ -162,20 +160,8 @@ export default function NewAgentUIPage() {
           }
         }
 
-        .mist-text:hover {
-          height: 60px !important;
-        }
-
-        .mist-text:hover .text-content {
-          transform: translateY(-5px);
-        }
-
-        .mist-text.expanded {
-          height: 60px !important;
-        }
-
-        .mist-text.expanded .text-content {
-          transform: translateY(-5px);
+        .mist-text:not(.expanded) {
+          mask-image: linear-gradient(to bottom, black 70%, transparent);
         }
       `}</style>
     </div>
