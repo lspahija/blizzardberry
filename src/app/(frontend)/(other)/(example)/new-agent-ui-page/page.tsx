@@ -22,6 +22,17 @@ export default function NewAgentUIPage() {
   ]);
   const [inputText, setInputText] = useState('');
 
+  // Calculate dynamic height based on content
+  const getExpandedHeight = () => {
+    const baseHeight = 120; // Header + input area
+    const messageHeight = 40; // Approximate height per message
+    const maxHeight = 500;
+    const minHeight = 200;
+    
+    const contentHeight = baseHeight + (messages.length * messageHeight);
+    return Math.min(Math.max(contentHeight, minHeight), maxHeight);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Ethereal Mist Component Container */}
@@ -31,7 +42,7 @@ export default function NewAgentUIPage() {
           bottom: '20px',
           right: '20px',
           width: isExpanded ? '400px' : '250px',
-          height: isExpanded ? '500px' : isHovered ? '160px' : '120px',
+          height: isExpanded ? `${getExpandedHeight()}px` : isHovered ? '160px' : '120px',
           pointerEvents: 'auto',
           zIndex: 1000,
           transition: 'all 0.3s ease',
