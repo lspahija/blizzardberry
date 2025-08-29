@@ -37,6 +37,7 @@ export default function NewAgentUIPage() {
     <div className="min-h-screen bg-background">
       {/* Ethereal Mist Component Container */}
       <div
+        className={`agent-widget ${isExpanded ? 'expanded' : ''}`}
         style={{
           position: 'fixed',
           bottom: '20px',
@@ -271,6 +272,15 @@ export default function NewAgentUIPage() {
           );
           max-height: 55px;
           overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+          .agent-widget.expanded {
+            left: 20px !important;
+            right: 20px !important;
+            width: calc(100vw - 40px) !important;
+            max-width: none !important;
+          }
         }
       `}</style>
     </div>
