@@ -123,9 +123,7 @@ export default function NewAgentUIPage() {
             }}
             className="text-content"
           >
-            Hi! I'm your AI Agent
-            <br />
-            How can I help you today?
+            Hi! I'm your AI Agent. How can I help you today?
           </div>
         </div>
       </div>
