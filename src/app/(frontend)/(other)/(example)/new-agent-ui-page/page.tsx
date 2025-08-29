@@ -92,9 +92,9 @@ export default function NewAgentUIPage() {
         <div
           style={{
             position: 'absolute',
-            top: '25%',
+            top: isExpanded || isHovered ? '50%' : '25%',
             left: '50%',
-            transform: 'translate(-50%, 0)',
+            transform: isExpanded || isHovered ? 'translate(-50%, -50%)' : 'translate(-50%, 0)',
             color: 'white',
             fontSize: '14px',
             fontWeight: '600',
