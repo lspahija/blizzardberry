@@ -2,9 +2,25 @@
 
 import { useState } from 'react';
 
+interface Message {
+  id: string;
+  text: string;
+  sender: 'agent' | 'user';
+  timestamp: Date;
+}
+
 export default function NewAgentUIPage() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      text: "Hi! I'm your AI Agent. How can I help you today?",
+      sender: 'agent',
+      timestamp: new Date(),
+    },
+  ]);
+  const [inputText, setInputText] = useState('');
 
   return (
     <div className="min-h-screen bg-background">
@@ -14,14 +30,14 @@ export default function NewAgentUIPage() {
           position: 'fixed',
           bottom: '20px',
           right: '20px',
-          width: '250px',
-          height: isExpanded || isHovered ? '160px' : '120px',
+          width: isExpanded ? '400px' : '250px',
+          height: isExpanded ? '500px' : isHovered ? '160px' : '120px',
           pointerEvents: 'auto',
           zIndex: 1000,
           transition: 'all 0.3s ease',
           transform:
-            isExpanded || isHovered ? 'translateY(-40px)' : 'translateY(0)',
-          cursor: 'pointer',
+            isExpanded ? 'translateY(-200px)' : isHovered ? 'translateY(-40px)' : 'translateY(0)',
+          cursor: isExpanded ? 'default' : 'pointer',
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -92,35 +108,107 @@ export default function NewAgentUIPage() {
         <div
           style={{
             position: 'absolute',
-            top: isExpanded || isHovered ? '50%' : '25%',
-            left: '50%',
-            transform: isExpanded || isHovered ? 'translate(-50%, -50%)' : 'translate(-50%, 0)',
+            top: isExpanded ? '0' : isHovered ? '50%' : '25%',
+            left: isExpanded ? '0' : '50%',
+            width: isExpanded ? '100%' : 'auto',
+            height: isExpanded ? '100%' : 'auto',
+            transform: isExpanded ? 'none' : isHovered ? 'translate(-50%, -50%)' : 'translate(-50%, 0)',
             color: 'white',
             fontSize: '14px',
             fontWeight: '600',
             fontFamily:
               '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-            textAlign: 'center',
+            textAlign: isExpanded ? 'left' : 'center',
             zIndex: 10,
             letterSpacing: '0.5px',
             lineHeight: '1.3',
-            padding: '0 10px',
-            maxWidth: '230px',
+            padding: isExpanded ? '0' : '0 10px',
+            maxWidth: isExpanded ? 'none' : '230px',
             transition: 'all 0.3s ease',
-            pointerEvents: 'none',
+            pointerEvents: isExpanded ? 'auto' : 'none',
           }}
           className={`mist-text ${isExpanded || isHovered ? 'expanded' : ''}`}
         >
-          <div
-            style={{
-              transition: 'all 0.3s ease',
-              transform: 'translateY(0px)',
-            }}
-            className="text-content"
-          >
-            Hi! I'm your AI Agent. How can I help you today? Making this really
-            long la la la la
-          </div>
+          {!isExpanded ? (
+            <div
+              style={{
+                transition: 'all 0.3s ease',
+                transform: 'translateY(0px)',
+              }}
+              className="text-content"
+            >
+              {messages.filter(m => m.sender === 'agent').slice(-1)[0]?.text}
+            </div>
+          ) : (
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                padding: '20px',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div
+                style={{
+                  flex: 1,
+                  overflowY: 'auto',
+                  marginBottom: '10px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                }}
+              >
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    style={{
+                      alignSelf: message.sender === 'agent' ? 'flex-start' : 'flex-end',
+                      maxWidth: '80%',
+                      padding: '8px 12px',
+                      borderRadius: '12px',
+                      backgroundColor: message.sender === 'agent' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
+                      fontSize: '12px',
+                      lineHeight: '1.4',
+                    }}
+                  >
+                    {message.text}
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', gap: '5px' }}>
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder="Type a message..."
+                  style={{
+                    flex: 1,
+                    padding: '8px 12px',
+                    borderRadius: '20px',
+                    border: 'none',
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    color: 'white',
+                    fontSize: '12px',
+                    outline: 'none',
+                  }}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && inputText.trim()) {
+                      const newMessage: Message = {
+                        id: Date.now().toString(),
+                        text: inputText.trim(),
+                        sender: 'user',
+                        timestamp: new Date(),
+                      };
+                      setMessages([...messages, newMessage]);
+                      setInputText('');
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
