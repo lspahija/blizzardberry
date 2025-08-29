@@ -92,9 +92,9 @@ export default function NewAgentUIPage() {
         <div
           style={{
             position: 'absolute',
-            top: '50%',
+            top: '25%',
             left: '50%',
-            transform: 'translate(-50%, -50%)',
+            transform: 'translate(-50%, 0)',
             color: 'white',
             fontSize: '14px',
             fontWeight: '600',
@@ -114,14 +114,12 @@ export default function NewAgentUIPage() {
           <div
             style={{
               transition: 'all 0.3s ease',
-              transform:
-                isExpanded || isHovered
-                  ? 'translateY(-15px)'
-                  : 'translateY(0px)',
+              transform: 'translateY(0px)',
             }}
             className="text-content"
           >
-            Hi! I'm your AI Agent. How can I help you today?
+            Hi! I'm your AI Agent. How can I help you today? Making this really
+            long la la la la
           </div>
         </div>
       </div>
@@ -161,7 +159,14 @@ export default function NewAgentUIPage() {
         }
 
         .mist-text:not(.expanded) {
-          mask-image: linear-gradient(to bottom, black 25%, transparent);
+          mask-image: linear-gradient(
+            to bottom,
+            black 0px,
+            black 30px,
+            transparent 55px
+          );
+          max-height: 55px;
+          overflow: hidden;
         }
       `}</style>
     </div>
