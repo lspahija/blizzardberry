@@ -28,8 +28,8 @@ export default function NewAgentUIPage() {
     const messageHeight = 40; // Approximate height per message
     const maxHeight = 500;
     const minHeight = 200;
-    
-    const contentHeight = baseHeight + (messages.length * messageHeight);
+
+    const contentHeight = baseHeight + messages.length * messageHeight;
     return Math.min(Math.max(contentHeight, minHeight), maxHeight);
   };
 
@@ -43,7 +43,11 @@ export default function NewAgentUIPage() {
           bottom: '20px',
           right: '20px',
           width: isExpanded ? '400px' : '250px',
-          height: isExpanded ? `${getExpandedHeight()}px` : isHovered ? '160px' : '120px',
+          height: isExpanded
+            ? `${getExpandedHeight()}px`
+            : isHovered
+              ? '160px'
+              : '120px',
           pointerEvents: 'auto',
           zIndex: 1000,
           transition: 'all 0.3s ease',
@@ -132,7 +136,11 @@ export default function NewAgentUIPage() {
             left: isExpanded ? '0' : '50%',
             width: isExpanded ? '100%' : 'auto',
             height: isExpanded ? '100%' : 'auto',
-            transform: isExpanded ? 'none' : isHovered ? 'translate(-50%, -50%)' : 'translate(-50%, 0)',
+            transform: isExpanded
+              ? 'none'
+              : isHovered
+                ? 'translate(-50%, -50%)'
+                : 'translate(-50%, 0)',
             color: 'white',
             fontSize: '14px',
             fontWeight: '600',
@@ -157,7 +165,7 @@ export default function NewAgentUIPage() {
               }}
               className="text-content"
             >
-              {messages.filter(m => m.sender === 'agent').slice(-1)[0]?.text}
+              {messages.filter((m) => m.sender === 'agent').slice(-1)[0]?.text}
             </div>
           ) : (
             <div
@@ -184,11 +192,15 @@ export default function NewAgentUIPage() {
                   <div
                     key={message.id}
                     style={{
-                      alignSelf: message.sender === 'agent' ? 'flex-start' : 'flex-end',
+                      alignSelf:
+                        message.sender === 'agent' ? 'flex-start' : 'flex-end',
                       maxWidth: '80%',
                       padding: '8px 12px',
                       borderRadius: '12px',
-                      backgroundColor: message.sender === 'agent' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.03)',
+                      backgroundColor:
+                        message.sender === 'agent'
+                          ? 'rgba(255,255,255,0.05)'
+                          : 'rgba(255,255,255,0.03)',
                       fontSize: '12px',
                       lineHeight: '1.4',
                     }}
@@ -204,7 +216,7 @@ export default function NewAgentUIPage() {
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder="Type a message..."
                   style={{
-                    flex: 1,
+                    width: '350px',
                     padding: '8px 12px',
                     borderRadius: '20px',
                     border: 'none',
