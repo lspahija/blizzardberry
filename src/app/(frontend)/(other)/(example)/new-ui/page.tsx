@@ -53,6 +53,12 @@ export default function NewAgentUIPage() {
           transition: 'all 0.3s ease',
           transform: 'translateY(0)',
           cursor: isExpanded ? 'default' : 'pointer',
+          // ---- Safari-safe clipping (added) ----
+          borderRadius: '50px',
+          overflow: 'hidden',
+          clipPath: 'inset(0 round 50px)',
+          WebkitClipPath: 'inset(0 round 50px)',
+          isolation: 'isolate',
         }}
         onMouseEnter={() => {
           setIsHovered(true);
