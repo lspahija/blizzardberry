@@ -184,7 +184,7 @@ export default function NewAgentUIPage() {
                       maxWidth: '80%',
                       padding: '8px 12px',
                       borderRadius: '12px',
-                      backgroundColor: message.sender === 'agent' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
+                      backgroundColor: message.sender === 'agent' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.03)',
                       fontSize: '12px',
                       lineHeight: '1.4',
                     }}
