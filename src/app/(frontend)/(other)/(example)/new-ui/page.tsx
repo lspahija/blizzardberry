@@ -72,6 +72,9 @@ export default function NewAgentUIPage() {
             filter: 'blur(10px)',
             borderRadius: '50px',
             overflow: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            WebkitTransform: 'translateZ(0)',
+            transform: 'translateZ(0)',
           }}
         >
           {/* First gradient layer */}
