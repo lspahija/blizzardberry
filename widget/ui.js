@@ -21,7 +21,7 @@ export function renderMessagePart(part, messageId) {
 }
 
 export function updateChatUI() {
-  const chatBody = getElementById('chatWidgetBody');
+  const chatBody = getElementById('messages-container');
   const latestMessageEl = getElementById('latest-message');
   
   const filteredMessages = state.messages

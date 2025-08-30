@@ -21,8 +21,17 @@ export function expandWidget() {
     collapsedView.style.display = 'none';
     expandedView.style.display = 'flex';
     
-    // Set dynamic height
-    widget.style.setProperty('--expanded-height', '720px');
+    // Set dynamic height based on messages
+    const messageCount = state.messages.length;
+    const baseHeight = 200;
+    const messageHeight = 50;
+    const maxHeight = 500;
+    const minHeight = 300;
+    
+    const contentHeight = baseHeight + messageCount * messageHeight;
+    const expandedHeight = Math.min(Math.max(contentHeight, minHeight), maxHeight);
+    
+    widget.style.setProperty('--expanded-height', `${expandedHeight}px`);
     
     // Focus input field after expansion
     setTimeout(() => getElementById('chatWidgetInputField')?.focus(), 100);
@@ -106,24 +115,32 @@ export async function createWidgetDOM() {
             </div>
           </div>
           <div id="expanded-view" class="expanded-view" style="display: none;">
-            <div id="chatWidgetHeader">
-              <div>AI Agent</div>
-              <button id="chatWidgetCloseButton">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M6 9l6 6 6-6" />
-                  </svg>
-              </button>
+            <div id="messages-container" class="messages-container">
+              <div class="message assistant-message">
+                Hi! I'm your AI Agent. How can I help you today?
+              </div>
             </div>
-            <div id="chatWidgetBody" class="messages-container">
+            <div class="input-container">
+              <input 
+                type="text" 
+                id="chatWidgetInputField"
+                placeholder="Type a message..."
+                class="message-input"
+              />
+              <button id="chatWidgetSendButton" class="send-button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+              </button>
             </div>
           </div>
         </div>
       `,
     });
 
-    // Add event listeners for the header elements
-    widget.querySelector('#chatWidgetCloseButton')
-      ?.addEventListener('click', toggleChatWidget);
+    // Add event listeners for the send button
+    widget.querySelector('#chatWidgetSendButton')
+      ?.addEventListener('click', handleSubmit);
     
     // Add click listener to widget to expand when clicked
     widget.addEventListener('click', () => {
@@ -134,29 +151,14 @@ export async function createWidgetDOM() {
 
     await fetchSuggestedPrompts();
 
-    // Create input area and add it to expanded view
-    const expandedView = widget.querySelector('#expanded-view');
-    const inputContainer = createElement('div', {
-      className: 'input-container',
-      innerHTML: `
-        <input 
-          type="text" 
-          id="chatWidgetInputField"
-          placeholder="Type a message..."
-          class="message-input"
-        />
-      `,
-    });
-
-    const inputField = inputContainer.querySelector('#chatWidgetInputField');
-    inputField.addEventListener('keypress', (e) => {
+    // Add event listener for input field
+    const inputField = widget.querySelector('#chatWidgetInputField');
+    inputField?.addEventListener('keypress', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         handleSubmit();
       }
     });
-    
-    expandedView.appendChild(inputContainer);
 
     // Add suggested prompts if available (keep for backward compatibility but won't be visible in collapsed state)
     const suggestedPrompts = getSuggestedPrompts();
