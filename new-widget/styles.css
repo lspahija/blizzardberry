@@ -13,7 +13,7 @@ body {
 }
 
 .agent-widget {
-    --shadow-intensity: 1.5; /* Adjust this: 0.5 = lighter, 2 = stronger */
+    --shadow-intensity: 1; /* Adjust this: 0.5 = lighter, 2 = stronger */
     position: fixed;
     bottom: 20px;
     right: 20px;
