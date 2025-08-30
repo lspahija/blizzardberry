@@ -13,6 +13,7 @@ body {
 }
 
 .agent-widget {
+    --shadow-intensity: 1.5; /* Adjust this: 0.5 = lighter, 2 = stronger */
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -26,12 +27,12 @@ body {
     border-radius: 50px;
     overflow: hidden;
     isolation: isolate;
-    /* Soft edge using box-shadow - adjust shadowIntensity to dial in */
+    /* Soft edge using box-shadow - adjust shadow-intensity to dial in */
     box-shadow: 
-        0 0 22.5px rgba(255, 140, 90, 0.375),
-        0 0 45px rgba(255, 140, 90, 0.225),
-        0 0 67.5px rgba(255, 140, 90, 0.15),
-        0 0 90px rgba(255, 140, 90, 0.075);
+        0 0 calc(15px * var(--shadow-intensity)) rgba(255, 140, 90, calc(0.25 * var(--shadow-intensity))),
+        0 0 calc(30px * var(--shadow-intensity)) rgba(255, 140, 90, calc(0.15 * var(--shadow-intensity))),
+        0 0 calc(45px * var(--shadow-intensity)) rgba(255, 140, 90, calc(0.1 * var(--shadow-intensity))),
+        0 0 calc(60px * var(--shadow-intensity)) rgba(255, 140, 90, calc(0.05 * var(--shadow-intensity)));
     -webkit-backface-visibility: hidden;
 }
 
