@@ -10,6 +10,37 @@ import { updateChatUI } from './ui';
 import { handleSubmit, processChatMessage } from './chat';
 import { config } from './config';
 
+// Widget expand/collapse functions
+export function expandWidget() {
+  const widget = getElementById('chatWidget');
+  const collapsedView = widget?.querySelector('#collapsed-view');
+  const expandedView = widget?.querySelector('#expanded-view');
+  
+  if (widget && collapsedView && expandedView) {
+    widget.classList.add('expanded');
+    collapsedView.style.display = 'none';
+    expandedView.style.display = 'flex';
+    
+    // Set dynamic height
+    widget.style.setProperty('--expanded-height', '720px');
+    
+    // Focus input field after expansion
+    setTimeout(() => getElementById('chatWidgetInputField')?.focus(), 100);
+  }
+}
+
+export function collapseWidget() {
+  const widget = getElementById('chatWidget');
+  const collapsedView = widget?.querySelector('#collapsed-view');
+  const expandedView = widget?.querySelector('#expanded-view');
+  
+  if (widget && collapsedView && expandedView) {
+    widget.classList.remove('expanded');
+    collapsedView.style.display = 'block';
+    expandedView.style.display = 'none';
+  }
+}
+
 function syncWidgetState() {
   const widget = document.getElementById('chatWidget');
   const isWidgetCurrentlyOpen = widget && !widget.classList.contains('hidden');
@@ -56,84 +87,79 @@ export async function createWidgetDOM() {
     const widget = createElement('div', {
       id: 'chatWidget',
       className: 'hidden',
-    });
-
-    const header = createElement('div', {
-      id: 'chatWidgetHeader',
       innerHTML: `
-    <div>AI Agent</div>
-    <button id="chatWidgetCloseButton">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 9l6 6 6-6" /> <!-- Downward chevron -->
-        </svg>
-    </button>
-`,
-    });
-    header
-      .querySelector('#chatWidgetCloseButton')
-      .addEventListener('click', toggleChatWidget);
-    widget.appendChild(header);
+        <!-- Blurred Mist Background -->
+        <div class="mist-background">
+          <!-- First gradient layer -->
+          <div class="gradient-layer-1"></div>
+          <!-- Second gradient layer for more flow -->
+          <div class="gradient-layer-2"></div>
+          <!-- Shimmering slivers -->
+          <div class="shimmer-layer"></div>
+        </div>
 
-    const body = createElement('div', { id: 'chatWidgetBody' });
-    widget.appendChild(body);
-
-    await fetchSuggestedPrompts();
-
-    const inputArea = createElement('div', {
-      id: 'chatWidgetInput',
-      innerHTML: `
-        <textarea id="chatWidgetInputField" placeholder="Type a message..."></textarea>
-        <button id="chatWidgetSendButton">
-<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 -960 960 960"><path fill="#FFFFFF" d="M440-160v-487L216-423l-56-57 320-320 320 320-56 57-224-224v487z"/></svg>        </button>
+        <!-- Sharp Text Overlay -->
+        <div id="text-overlay" class="text-overlay">
+          <div id="collapsed-view" class="collapsed-view">
+            <div class="text-content" id="latest-message">
+              Hi! I'm your AI Agent. How can I help you today?
+            </div>
+          </div>
+          <div id="expanded-view" class="expanded-view" style="display: none;">
+            <div id="chatWidgetHeader">
+              <div>AI Agent</div>
+              <button id="chatWidgetCloseButton">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 9l6 6 6-6" />
+                  </svg>
+              </button>
+            </div>
+            <div id="chatWidgetBody" class="messages-container">
+            </div>
+          </div>
+        </div>
       `,
     });
 
-    const inputField = inputArea.querySelector('#chatWidgetInputField');
-    inputField.addEventListener('input', () => {
-      inputField.style.height = 'auto';
-      inputField.style.height = `${Math.min(inputField.scrollHeight, 120)}px`;
+    // Add event listeners for the header elements
+    widget.querySelector('#chatWidgetCloseButton')
+      ?.addEventListener('click', toggleChatWidget);
+    
+    // Add click listener to widget to expand when clicked
+    widget.addEventListener('click', () => {
+      if (!widget.classList.contains('expanded')) {
+        expandWidget();
+      }
     });
-    inputArea
-      .querySelector('#chatWidgetSendButton')
-      .addEventListener('click', handleSubmit);
-    inputArea
-      .querySelector('#chatWidgetInputField')
-      .addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          handleSubmit();
-        }
-      });
 
+    await fetchSuggestedPrompts();
+
+    // Create input area and add it to expanded view
+    const expandedView = widget.querySelector('#expanded-view');
+    const inputContainer = createElement('div', {
+      className: 'input-container',
+      innerHTML: `
+        <input 
+          type="text" 
+          id="chatWidgetInputField"
+          placeholder="Type a message..."
+          class="message-input"
+        />
+      `,
+    });
+
+    const inputField = inputContainer.querySelector('#chatWidgetInputField');
+    inputField.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSubmit();
+      }
+    });
+    
+    expandedView.appendChild(inputContainer);
+
+    // Add suggested prompts if available (keep for backward compatibility but won't be visible in collapsed state)
     const suggestedPrompts = getSuggestedPrompts();
-    if (suggestedPrompts.length > 0) {
-      const promptBar = createElement('div', { id: 'chatWidgetPromptBar' });
-      suggestedPrompts.forEach((prompt) => {
-        const btn = createElement('button');
-        btn.type = 'button';
-        btn.textContent = truncatePrompt(prompt, 15);
-        btn.title = prompt;
-        btn.className = 'chat-widget-prompt-btn';
-        btn.addEventListener(
-          'click',
-          async () => await processChatMessage(prompt)
-        );
-        promptBar.appendChild(btn);
-      });
-      widget.appendChild(promptBar);
-    }
-
-    widget.appendChild(inputArea);
-
-    const footer = createElement('div', {
-      id: 'chatWidgetFooter',
-      innerHTML: 'Powered By BlizzardBerry',
-    });
-    footer.style.textAlign = 'center';
-    footer.style.padding = '10px';
-    footer.style.fontSize = '12px';
-    footer.style.color = '#666';
-    widget.appendChild(footer);
 
     document.body.appendChild(widget);
 
@@ -215,21 +241,32 @@ export function toggleChatWidget() {
 
   if (!toggleContainer) return;
 
-  const isHidden = widget.classList.toggle('hidden');
-  toggleContainer.classList.toggle('hidden', !isHidden);
-
-  // Update widget open state
-  state.isWidgetOpen = !isHidden;
-
-  // Clear notifications when widget is opened
-  if (!isHidden) {
+  const isHidden = widget.classList.contains('hidden');
+  
+  if (isHidden) {
+    // Show widget in collapsed state
+    widget.classList.remove('hidden');
+    toggleContainer.classList.add('hidden');
+    collapseWidget();
+    state.isWidgetOpen = true;
+    
+    // Clear notifications when widget is opened
     state.unreadMessages = 0;
     updateNotificationBadge();
-  }
-
-  if (!isHidden) {
     updateChatUI();
-    setTimeout(() => getElementById('chatWidgetInputField')?.focus(), 100);
+  } else if (widget.classList.contains('expanded')) {
+    // If expanded, first collapse, then hide after a delay
+    collapseWidget();
+    setTimeout(() => {
+      widget.classList.add('hidden');
+      toggleContainer.classList.remove('hidden');
+      state.isWidgetOpen = false;
+    }, 300); // Wait for collapse animation
+  } else {
+    // If collapsed, hide immediately
+    widget.classList.add('hidden');
+    toggleContainer.classList.remove('hidden');
+    state.isWidgetOpen = false;
   }
 }
 
