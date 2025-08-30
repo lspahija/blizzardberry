@@ -95,7 +95,7 @@ export async function createWidgetDOM() {
 
     const widget = createElement('div', {
       id: 'chatWidget',
-      className: 'hidden',
+      className: '',
       innerHTML: `
         <!-- Blurred Mist Background -->
         <div class="mist-background">
@@ -129,7 +129,8 @@ export async function createWidgetDOM() {
               />
               <button id="chatWidgetSendButton" class="send-button">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                  <path d="m3 3 3 9-3 9 19-9Z"/>
+                  <path d="m6 12 16 0"/>
                 </svg>
               </button>
             </div>
@@ -143,9 +144,41 @@ export async function createWidgetDOM() {
       ?.addEventListener('click', handleSubmit);
     
     // Add click listener to widget to expand when clicked
-    widget.addEventListener('click', () => {
+    widget.addEventListener('click', (e) => {
+      e.stopPropagation();
       if (!widget.classList.contains('expanded')) {
         expandWidget();
+      }
+    });
+
+    // Add hover listeners for expand/collapse behavior
+    widget.addEventListener('mouseenter', () => {
+      if (!widget.classList.contains('hidden')) {
+        expandWidget();
+      }
+    });
+
+    widget.addEventListener('mouseleave', () => {
+      if (!widget.classList.contains('hidden')) {
+        collapseWidget();
+      }
+    });
+
+    // Add click outside to close functionality
+    document.addEventListener('click', (e) => {
+      const isClickInsideWidget = widget.contains(e.target);
+      const isClickOnToggle = e.target.closest('#chatWidgetToggle, #chatWidgetToggleContainer');
+      
+      if (!isClickInsideWidget && !isClickOnToggle && widget.classList.contains('expanded')) {
+        collapseWidget();
+        setTimeout(() => {
+          widget.classList.add('hidden');
+          const toggleContainer = getElementById('chatWidgetToggleContainer');
+          if (toggleContainer) {
+            toggleContainer.classList.remove('hidden');
+            state.isWidgetOpen = false;
+          }
+        }, 300);
       }
     });
 
@@ -176,9 +209,10 @@ export async function createWidgetDOM() {
       ],
     });
 
-    // Create toggle button AFTER main widget exists
+    // Create toggle button AFTER main widget exists (initially hidden since widget is shown)
     const toggleContainer = createElement('div', {
       id: 'chatWidgetToggleContainer',
+      className: 'hidden',
       style: `
         position: fixed;
         bottom: 20px;
@@ -213,19 +247,11 @@ export async function createWidgetDOM() {
     document.body.appendChild(toggleContainer);
 
     state.isWidgetReady = true;
+    state.isWidgetOpen = true; // Widget is open by default now
 
-    // Check widget state in real-time to avoid race conditions during initialization
-    const isWidgetCurrentlyOpen = syncWidgetState();
-
-    if (isWidgetCurrentlyOpen) {
-      // Widget is open, so clear any notifications and show chat UI
-      state.unreadMessages = 0;
-      updateChatUI();
-    } else {
-      // Widget is closed, so set unread messages to show notification
-      state.unreadMessages = 1;
-    }
-
+    // Widget is open by default, so clear any notifications and show chat UI
+    state.unreadMessages = 0;
+    updateChatUI();
     updateNotificationBadge();
   } catch (error) {
     console.error('Error creating widget DOM:', error);
