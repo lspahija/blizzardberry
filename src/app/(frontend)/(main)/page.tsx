@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { useMemo } from 'react';
 import posthog from 'posthog-js';
+import HeroVideo from '@/app/(frontend)/components/HeroVideo';
 
 export default function LandingPage() {
   const handleHeroCtaClick = () => {
@@ -91,92 +92,108 @@ export default function LandingPage() {
         initial="hidden"
         animate="visible"
       >
-        <div className="relative flex flex-col items-center justify-center text-center pt-16 pb-24 max-w-4xl mx-auto px-6 sm:px-8 lg:px-2">
-          <svg
-            className="hidden lg:block absolute h-auto w-16 lg:w-20 flex-shrink-0 p-2 left-0 translate-y-20 lg:-translate-y-42 -translate-x-4 lg:-translate-x-8 xl:-translate-x-20"
-            viewBox="0 0 91 98"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="m35.878 14.162 1.333-5.369 1.933 5.183c4.47 11.982 14.036 21.085 25.828 24.467l5.42 1.555-5.209 2.16c-11.332 4.697-19.806 14.826-22.888 27.237l-1.333 5.369-1.933-5.183C34.56 57.599 24.993 48.496 13.201 45.114l-5.42-1.555 5.21-2.16c11.331-4.697 19.805-14.826 22.887-27.237Z"
-              className="fill-brand stroke-foreground"
-              strokeWidth="3.445"
-            ></path>
-            <path
-              d="M79.653 5.729c-2.436 5.323-9.515 15.25-18.341 12.374m9.197 16.336c2.6-5.851 10.008-16.834 18.842-13.956m-9.738-15.07c-.374 3.787 1.076 12.078 9.869 14.943M70.61 34.6c.503-4.21-.69-13.346-9.49-16.214M14.922 65.967c1.338 5.677 6.372 16.756 15.808 15.659M18.21 95.832c-1.392-6.226-6.54-18.404-15.984-17.305m12.85-12.892c-.41 3.771-3.576 11.588-12.968 12.681M18.025 96c.367-4.2 3.453-12.905 12.854-14"
-              className="stroke-foreground"
-              fill="none"
-              strokeWidth="2.548"
-              strokeLinecap="round"
-            ></path>
-          </svg>
-
-          <motion.h1
-            className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold tracking-tighter mb-6 z-10 leading-tight"
-            variants={itemVariants}
-          >
-            Give Your Users an
-            <br />
-            <span className="text-brand"> AI Agent </span>
-          </motion.h1>
-
-          <svg
-            className="hidden lg:block absolute w-16 lg:w-20 h-auto flex-shrink-0 right-0 bottom-0 -translate-y-12 lg:-translate-y-24 translate-x-15 lg:translate-x-15 xl:translate-x-15"
-            viewBox="0 0 92 80"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="m35.213 16.953.595-5.261 2.644 4.587a35.056 35.056 0 0 0 26.432 17.33l5.261.594-4.587 2.644A35.056 35.056 0 0 0 48.23 63.28l-.595 5.26-2.644-4.587a35.056 35.056 0 0 0-26.432-17.328l-5.261-.595 4.587-2.644a35.056 35.056 0 0 0 17.329-26.433Z"
-              className="fill-primary stroke-foreground"
-              strokeWidth="2.868"
-            ></path>
-            <path
-              d="M75.062 40.108c1.07 5.255 1.072 16.52-7.472 19.54m7.422-19.682c1.836 2.965 7.643 8.14 16.187 5.121-8.544 3.02-8.207 15.23-6.971 20.957-1.97-3.343-8.044-9.274-16.588-6.254M12.054 28.012c1.34-5.22 6.126-15.4 14.554-14.369M12.035 28.162c-.274-3.487-2.93-10.719-11.358-11.75C9.104 17.443 14.013 6.262 15.414.542c.226 3.888 2.784 11.92 11.212 12.95"
-              className="stroke-foreground"
-              fill="none"
-              strokeWidth="2.319"
-              strokeLinecap="round"
-            ></path>
-          </svg>
-
-          <motion.p
-            className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 max-w-2xl z-10 leading-relaxed"
-            variants={itemVariants}
-          >
-            Your agent can complete tasks, manage accounts, and navigate your
-            web app!
-          </motion.p>
-          <motion.div
-            className="flex flex-col sm:flex-row items-center gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-4 sm:px-0"
-            variants={itemVariants}
-          >
-            <div className="relative group w-full sm:w-auto">
-              <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-              <Button
-                size="lg"
-                className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
-                asChild
-                onClick={handleHeroCtaClick}
+        <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-16 pb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[600px]">
+            {/* Left Column - Text Content */}
+            <div className="relative text-center lg:text-left">
+              <svg
+                className="hidden lg:block absolute h-auto w-16 lg:w-20 flex-shrink-0 p-2 left-0 -top-8 lg:-top-16 -translate-x-4 lg:-translate-x-8"
+                viewBox="0 0 91 98"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <Link href="/login">
-                  <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  Get Started Now
-                </Link>
-              </Button>
-            </div>
-            <div className="relative group w-full sm:w-auto">
-              <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-              <Button
-                size="lg"
-                variant="outline"
-                className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
-                asChild
-                onClick={handleContactCtaClick}
+                <path
+                  d="m35.878 14.162 1.333-5.369 1.933 5.183c4.47 11.982 14.036 21.085 25.828 24.467l5.42 1.555-5.209 2.16c-11.332 4.697-19.806 14.826-22.888 27.237l-1.333 5.369-1.933-5.183C34.56 57.599 24.993 48.496 13.201 45.114l-5.42-1.555 5.21-2.16c11.331-4.697 19.805-14.826 22.887-27.237Z"
+                  className="fill-brand stroke-foreground"
+                  strokeWidth="3.445"
+                ></path>
+                <path
+                  d="M79.653 5.729c-2.436 5.323-9.515 15.25-18.341 12.374m9.197 16.336c2.6-5.851 10.008-16.834 18.842-13.956m-9.738-15.07c-.374 3.787 1.076 12.078 9.869 14.943M70.61 34.6c.503-4.21-.69-13.346-9.49-16.214M14.922 65.967c1.338 5.677 6.372 16.756 15.808 15.659M18.21 95.832c-1.392-6.226-6.54-18.404-15.984-17.305m12.85-12.892c-.41 3.771-3.576 11.588-12.968 12.681M18.025 96c.367-4.2 3.453-12.905 12.854-14"
+                  className="stroke-foreground"
+                  fill="none"
+                  strokeWidth="2.548"
+                  strokeLinecap="round"
+                ></path>
+              </svg>
+
+              <motion.h1
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter mb-6 z-10 leading-tight"
+                variants={itemVariants}
               >
-                <Link href="/contact">Talk With Us</Link>
-              </Button>
+                Give Your Users an
+                <br />
+                <span className="text-brand">AI Agent</span>
+              </motion.h1>
+
+              <motion.p
+                className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 lg:max-w-lg z-10 leading-relaxed"
+                variants={itemVariants}
+              >
+                Your agent can complete tasks, manage accounts, and navigate your web app!
+              </motion.p>
+
+              <motion.div
+                className="flex flex-col sm:flex-row items-center lg:items-start gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-4 sm:px-0"
+                variants={itemVariants}
+              >
+                <div className="relative group w-full sm:w-auto">
+                  <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                  <Button
+                    size="lg"
+                    className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
+                    asChild
+                    onClick={handleHeroCtaClick}
+                  >
+                    <Link href="/login">
+                      <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                      Get Started Now
+                    </Link>
+                  </Button>
+                </div>
+                <div className="relative group w-full sm:w-auto">
+                  <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="relative bg-background text-foreground border-[3px] border-border hover:bg-background/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
+                    asChild
+                    onClick={handleContactCtaClick}
+                  >
+                    <Link href="/contact">Talk With Us</Link>
+                  </Button>
+                </div>
+              </motion.div>
             </div>
-          </motion.div>
+
+            {/* Right Column - Video Container */}
+            <div className="relative flex items-center justify-center lg:justify-end">
+              <div className="relative w-full max-w-lg lg:max-w-none">
+                {/* Decorative SVG for right side */}
+                <svg
+                  className="hidden lg:block absolute w-16 lg:w-20 h-auto flex-shrink-0 -top-8 right-0 translate-x-4 lg:translate-x-8"
+                  viewBox="0 0 92 80"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m35.213 16.953.595-5.261 2.644 4.587a35.056 35.056 0 0 0 26.432 17.33l5.261.594-4.587 2.644A35.056 35.056 0 0 0 48.23 63.28l-.595 5.26-2.644-4.587a35.056 35.056 0 0 0-26.432-17.328l-5.261-.595 4.587-2.644a35.056 35.056 0 0 0 17.329-26.433Z"
+                    className="fill-primary stroke-foreground"
+                    strokeWidth="2.868"
+                  ></path>
+                  <path
+                    d="M75.062 40.108c1.07 5.255 1.072 16.52-7.472 19.54m7.422-19.682c1.836 2.965 7.643 8.14 16.187 5.121-8.544 3.02-8.207 15.23-6.971 20.957-1.97-3.343-8.044-9.274-16.588-6.254M12.054 28.012c1.34-5.22 6.126-15.4 14.554-14.369M12.035 28.162c-.274-3.487-2.93-10.719-11.358-11.75C9.104 17.443 14.013 6.262 15.414.542c.226 3.888 2.784 11.92 11.212 12.95"
+                    className="stroke-foreground"
+                    fill="none"
+                    strokeWidth="2.319"
+                    strokeLinecap="round"
+                  ></path>
+                </svg>
+
+                {/* Video Component */}
+                <HeroVideo
+                  videoSrc="/demo-video-lp1.mp4"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </motion.div>
 
