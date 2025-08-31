@@ -97,6 +97,8 @@ export async function createWidgetDOM() {
       id: 'chatWidget',
       className: '',
       innerHTML: `
+        <!-- Solid Background -->
+        <div class="solid-background"></div>
         <!-- Blurred Mist Background -->
         <div class="mist-background">
           <!-- First gradient layer -->
