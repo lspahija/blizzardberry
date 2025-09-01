@@ -12,7 +12,7 @@ interface VideoState {
   currentPhase: 'intro' | 'chat' | 'processing' | 'result' | 'finale' | 'complete';
 }
 
-export default function MusicAppRefundVideo() {
+export default function MusicStreamRefundVideo() {
   const [videoState, setVideoState] = useState<VideoState>({
     isRunning: false,
     currentPhase: 'intro'
@@ -48,221 +48,237 @@ export default function MusicAppRefundVideo() {
     type();
   };
 
-  const addUserMessage = (text: string) => {
-    const messagesContainer = document.querySelector('.chat-messages-area');
-    if (messagesContainer) {
-      const messageDiv = document.createElement('div');
-      messageDiv.className = 'flex justify-end mb-3';
-      messageDiv.innerHTML = `
-        <div class="bg-blue-600 text-white rounded-lg p-3 max-w-[80%] shadow-lg">
-          <p class="text-sm">${text}</p>
-        </div>
-      `;
-      messagesContainer.appendChild(messageDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-  };
-
-  const addBotMessage = (text: string) => {
-    const messagesContainer = document.querySelector('.chat-messages-area');
-    if (messagesContainer) {
-      const messageDiv = document.createElement('div');
-      messageDiv.className = 'flex justify-start mb-3';
-      messageDiv.innerHTML = `
-        <div class="bg-gray-100 rounded-lg p-3 max-w-[80%] shadow-sm">
-          <p class="text-sm text-gray-800">${text}</p>
-        </div>
-      `;
-      messagesContainer.appendChild(messageDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-  };
-
-  const startVideo = () => {
+  const startDemo = () => {
+    console.log('=== STARTING MUSICSTREAM DEMO ===');
     if (videoState.isRunning) return;
     
     clearAllTimers();
     setVideoState(prev => ({ ...prev, isRunning: true, currentPhase: 'intro' }));
 
-    // Reset all elements to initial state
-    const allElements = document.querySelectorAll('[data-animate]');
-    allElements.forEach(el => {
-      gsap.set(el, { opacity: 0, y: 20, scale: 0.9 });
-    });
-
-    // Start the video sequence
-    runVideoSequence();
-  };
-
-  const runVideoSequence = () => {
-    // Phase 1: Show app interface
-    setVideoState(prev => ({ ...prev, currentPhase: 'intro' }));
-    
+    // Phase 1: Intro with typing text
     addTimeout(() => {
-      gsap.to('[data-animate="app-interface"]', {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.8,
-        ease: "power2.out"
-      });
-    }, 500);
-
-    // Phase 2: Start chat interaction
-    addTimeout(() => {
-      setVideoState(prev => ({ ...prev, currentPhase: 'chat' }));
+      console.log('=== INTRO PHASE ===');
+      const typingContainer = document.getElementById('typingContainer');
+      const cursor = document.getElementById('typingCursor');
       
-      gsap.to('[data-animate="chat-container"]', {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.6,
-        ease: "power2.out"
-      });
-
-      // Type user message
-      addTimeout(() => {
-        const input = document.querySelector('[data-input="user-message"]') as HTMLInputElement;
-        typeText(input, "Hi, I'd like to request a refund for my last payment.", 30, () => {
-          // Simulate sending message and show user message in chat
-          addTimeout(() => {
-            if (input) input.value = '';
-            addUserMessage("Hi, I'd like to request a refund for my last payment.");
-            showBotResponse();
-          }, 800);
+      if (typingContainer && cursor) {
+        cursor.style.display = 'inline-block';
+        
+        // Type intro text
+        gsap.to(typingContainer, {
+          duration: 2.5,
+          text: "Need help with your MusicStream account?",
+          ease: "none",
+          onComplete: () => {
+            cursor.style.display = 'none';
+            
+            addTimeout(() => {
+              showChatInterface();
+            }, 1500);
+          }
         });
-      }, 1000);
-    }, 2000);
-  };
-
-  const showBotResponse = () => {
-    setVideoState(prev => ({ ...prev, currentPhase: 'processing' }));
-
-    // Show typing indicator
-    gsap.to('[data-animate="typing-indicator"]', {
-      opacity: 1,
-      duration: 0.3
-    });
-
-    addTimeout(() => {
-      // Hide typing indicator and add bot response
-      gsap.to('[data-animate="typing-indicator"]', { opacity: 0, duration: 0.3 });
-      
-      addBotMessage("I'd be happy to help you with your refund request. This seems like a complex billing matter that requires human expertise. Let me connect you with our billing specialist who can review your account details and process your refund.");
-
-      setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
-      
-      // Show connecting to agent message
-      addTimeout(() => {
-        addBotMessage("🔄 Connecting you to Agent Sarah from our billing team...");
-        
-        // Show human agent response
-        addTimeout(() => {
-          addAgentMessage();
-        }, 2000);
-        
-        // Show finale
-        addTimeout(() => {
-          showFinale();
-        }, 6000);
-      }, 2000);
-    }, 2500);
-  };
-
-  const addAgentMessage = () => {
-    const messagesContainer = document.querySelector('.chat-messages-area');
-    if (messagesContainer) {
-      const messageDiv = document.createElement('div');
-      messageDiv.className = 'flex justify-start mb-3';
-      messageDiv.innerHTML = `
-        <div class="bg-green-50 border border-green-200 rounded-lg p-3 max-w-[80%] shadow-sm">
-          <div class="flex items-center mb-2">
-            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-2">
-              <span class="text-white text-xs font-semibold">SA</span>
-            </div>
-            <div>
-              <p class="text-sm font-semibold text-green-800">Agent Sarah</p>
-              <p class="text-xs text-green-600">Billing Specialist</p>
-            </div>
-          </div>
-          <p class="text-sm text-gray-800">Hi! I've reviewed your account and I can see your premium subscription charge from last week. I can absolutely process that refund for you. It will be back in your account within 3-5 business days. Is there anything else I can help you with regarding your MusicStream account?</p>
-        </div>
-      `;
-      messagesContainer.appendChild(messageDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      
-      // Animate the agent message entrance
-      gsap.fromTo(messageDiv, 
-        { opacity: 0, x: -20 },
-        { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }
-      );
-    }
-  };
-
-  const showFinale = () => {
-    setVideoState(prev => ({ ...prev, currentPhase: 'finale' }));
-
-    // Fade out chat interface
-    gsap.to('[data-animate="app-interface"], [data-animate="chat-container"]', {
-      opacity: 0.3,
-      scale: 0.95,
-      duration: 0.8
-    });
-
-    // Show BlizzardBerry logo and branding
-    addTimeout(() => {
-      gsap.to('[data-animate="finale-logo"]', {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 1,
-        ease: "back.out(1.7)"
-      });
-
-      gsap.to('[data-animate="finale-text"]', {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        delay: 0.3,
-        ease: "power2.out"
-      });
-
-      // Complete the video
-      addTimeout(() => {
-        setVideoState(prev => ({ ...prev, currentPhase: 'complete', isRunning: false }));
-      }, 3000);
+      }
     }, 1000);
   };
 
-  const resetVideo = () => {
-    clearAllTimers();
-    if (masterTimelineRef.current) {
-      masterTimelineRef.current.kill();
+  const showChatInterface = () => {
+    console.log('=== SHOWING CHAT INTERFACE ===');
+    setVideoState(prev => ({ ...prev, currentPhase: 'chat' }));
+    
+    const chatContainer = document.getElementById('chatContainer');
+    if (chatContainer) {
+      chatContainer.style.display = 'block';
+      
+      gsap.fromTo(chatContainer, 
+        { opacity: 0 },
+        { opacity: 1, duration: 0.5, ease: "power2.out" }
+      );
+      
+      // Start typing user message
+      addTimeout(() => {
+        startUserMessage();
+      }, 800);
     }
+  };
 
-    setVideoState({
-      isRunning: false,
-      currentPhase: 'intro'
-    });
-
-    // Reset all animations
-    const allElements = document.querySelectorAll('[data-animate]');
-    allElements.forEach(el => {
-      gsap.set(el, { clearProps: "all" });
-    });
-
-    // Clear input fields
-    const inputs = document.querySelectorAll('input, textarea');
-    inputs.forEach(input => {
-      if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
-        input.value = '';
+  const startUserMessage = () => {
+    console.log('=== USER TYPING MESSAGE ===');
+    const userInput = document.getElementById('userInput') as HTMLTextAreaElement;
+    
+    if (userInput) {
+      // Show initial state
+      const initialState = document.getElementById('initialState');
+      if (initialState) {
+        initialState.style.display = 'flex';
       }
-    });
+      
+      // Type user message
+      typeText(userInput, "Hi, I'd like to request a refund for my last payment.", 60, () => {
+        addTimeout(() => {
+          // Transition to conversation view
+          transitionToConversation();
+        }, 1000);
+      });
+    }
+  };
+
+  const transitionToConversation = () => {
+    console.log('=== TRANSITIONING TO CONVERSATION ===');
+    
+    const initialState = document.getElementById('initialState');
+    const conversationState = document.getElementById('conversationState');
+    
+    if (initialState && conversationState) {
+      // Hide initial state and show conversation
+      gsap.to(initialState, {
+        opacity: 0,
+        duration: 0.3,
+        onComplete: () => {
+          initialState.style.display = 'none';
+          conversationState.style.display = 'flex';
+          
+          gsap.fromTo(conversationState,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.3 }
+          );
+          
+          // Add user message
+          addUserMessageToChat("Hi, I'd like to request a refund for my last payment.");
+          
+          addTimeout(() => {
+            showBotResponse();
+          }, 1500);
+        }
+      });
+    }
+  };
+
+  const addUserMessageToChat = (text: string) => {
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'flex justify-end chat-message';
+      messageDiv.innerHTML = `
+        <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-4 rounded-3xl max-w-sm shadow-lg">
+          <div class="text-base font-medium">${text}</div>
+        </div>
+      `;
+      chatMessages.appendChild(messageDiv);
+    }
+  };
+
+  const addBotMessageToChat = (text: string, isAgent = false) => {
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'flex justify-start chat-message';
+      
+      const bgColor = isAgent ? 'bg-green-50 border border-green-200' : 'bg-muted';
+      const agentInfo = isAgent ? `
+        <div class="flex items-center mb-2">
+          <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
+            <span class="text-white text-xs font-bold">SA</span>
+          </div>
+          <div>
+            <div class="text-sm font-semibold text-green-800">Agent Sarah</div>
+            <div class="text-xs text-green-600">Billing Specialist</div>
+          </div>
+        </div>
+      ` : '';
+      
+      messageDiv.innerHTML = `
+        <div class="${bgColor} px-6 py-4 rounded-3xl max-w-md shadow-sm">
+          ${agentInfo}
+          <div class="text-base text-foreground leading-relaxed">${text}</div>
+        </div>
+      `;
+      chatMessages.appendChild(messageDiv);
+      
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  };
+
+  const showBotResponse = () => {
+    console.log('=== SHOWING BOT RESPONSE ===');
+    setVideoState(prev => ({ ...prev, currentPhase: 'processing' }));
+    
+    // Add bot response
+    addBotMessageToChat("I'd be happy to help you with your refund request. This seems like a complex billing matter that requires human expertise. Let me connect you with our billing specialist who can review your account details and process your refund.");
+    
+    addTimeout(() => {
+      // Connect to agent message
+      addBotMessageToChat("🔄 Connecting you to Agent Sarah from our billing team...");
+      
+      addTimeout(() => {
+        // Agent response
+        setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
+        addBotMessageToChat("Hi! I've reviewed your account and I can see your premium subscription charge from last week. I can absolutely process that refund for you. It will be back in your account within 3-5 business days. Is there anything else I can help you with regarding your MusicStream account?", true);
+        
+        addTimeout(() => {
+          showFinale();
+        }, 4000);
+      }, 2500);
+    }, 3000);
+  };
+
+  const showFinale = () => {
+    console.log('=== SHOWING FINALE ===');
+    setVideoState(prev => ({ ...prev, currentPhase: 'finale' }));
+    
+    const chatContainer = document.getElementById('chatContainer');
+    const finaleContainer = document.getElementById('finaleContainer');
+    
+    if (chatContainer && finaleContainer) {
+      // Fade out chat
+      gsap.to(chatContainer, {
+        opacity: 0,
+        duration: 0.8,
+        onComplete: () => {
+          chatContainer.style.display = 'none';
+          finaleContainer.style.display = 'flex';
+          
+          // Show finale
+          gsap.to(finaleContainer, {
+            opacity: 1,
+            duration: 0.8
+          });
+          
+          // Animate logo
+          const logo = document.getElementById('finaleLogo');
+          if (logo) {
+            gsap.to(logo, {
+              opacity: 1,
+              scale: 1,
+              duration: 1,
+              ease: "back.out(1.7)"
+            });
+          }
+          
+          // Animate brand text
+          const brand = document.getElementById('finaleBrand');
+          if (brand) {
+            gsap.to(brand, {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              delay: 0.3,
+              ease: "power2.out"
+            });
+          }
+          
+          // Complete
+          addTimeout(() => {
+            setVideoState(prev => ({ ...prev, currentPhase: 'complete', isRunning: false }));
+          }, 3000);
+        }
+      });
+    }
   };
 
   useEffect(() => {
     // Auto-start demo after component mount
-    addTimeout(startVideo, 500);
+    addTimeout(startDemo, 500);
 
     return () => {
       clearAllTimers();
@@ -274,173 +290,207 @@ export default function MusicAppRefundVideo() {
 
   return (
     <div className="w-full h-screen bg-gradient-to-br from-background via-muted/10 to-muted/30 overflow-hidden relative">
-      {/* Main Video Content */}
-      <div className="absolute inset-0">
+      <style>{`
+        @keyframes logoPulse {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+          }
+        }
         
-        <div className="relative w-full h-full">
+        @keyframes ringPulse {
+          0%, 49% {
+            transform: scale(1);
+            opacity: 0;
+          }
+          50% {
+            transform: scale(1);
+            opacity: 0.6;
+          }
+          100% {
+            transform: scale(1.4);
+            opacity: 0;
+          }
+        }
+        
+        .chat-message {
+          animation: slideUpFadeIn 250ms ease-out forwards;
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        
+        @keyframes slideUpFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes typingCursor {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
+        
+        .typing-cursor {
+          animation: typingCursor 1s infinite;
+        }
+      `}</style>
+
+      {/* Progress Bar */}
+      <div className="fixed top-0 left-0 w-full h-1 bg-muted z-40">
+        <div 
+          className="h-full bg-gradient-to-r from-purple-600 to-pink-600 transition-all duration-300 ease-out" 
+          style={{ 
+            width: videoState.currentPhase === 'intro' ? '12%' : 
+                   videoState.currentPhase === 'chat' ? '22%' :
+                   videoState.currentPhase === 'processing' ? '31%' :
+                   videoState.currentPhase === 'result' ? '88%' :
+                   videoState.currentPhase === 'finale' ? '100%' : '0%'
+          }}
+        />
+      </div>
+
+      {/* Clean Intro Phase - White Background with MusicStream Colors */}
+      <div 
+        data-phase="intro"
+        className={`fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-8 transition-opacity duration-500 ${
+          videoState.currentPhase === 'intro' ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        {/* Main intro content */}
+        <div className="mb-16">
+          {/* MusicStream branding */}
+          <div className="mb-8">
+            <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl text-white">♪</span>
+            </div>
+            <h1 className="text-2xl font-bold text-muted-foreground mb-2">MusicStream</h1>
+            <div className="text-sm text-muted-foreground/70">Premium Music Service</div>
+          </div>
           
-          {/* MusicStream App Interface */}
-          <div 
-            data-animate="app-interface" 
-            className="absolute inset-0 opacity-0"
-            style={{ transform: 'translateY(20px) scale(0.9)' }}
-          >
-            {/* App header */}
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-bold">♪</span>
-                </div>
-                <span className="font-semibold">MusicStream</span>
-              </div>
-              <div className="flex items-center space-x-4">
-                <span className="text-sm bg-white/20 px-3 py-1 rounded-full">Premium</span>
-                <div className="flex space-x-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Main music app content */}
-            <div className="p-8 h-full bg-gradient-to-br from-purple-50 to-pink-50">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">Your Music Library</h1>
-              <p className="text-gray-600 mb-8">Premium subscription - Unlimited streaming</p>
-              
-              {/* Mock music content */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg p-6 shadow-lg">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                      <span className="text-white text-xl">♪</span>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold">Recently Played</h3>
-                      <p className="text-gray-600">Your latest tracks</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg p-6 shadow-lg">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
-                      <span className="text-white text-xl">★</span>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold">Your Playlists</h3>
-                      <p className="text-gray-600">47 curated playlists</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* Typing text */}
+          <div className="text-4xl font-bold text-foreground mb-4 h-16 flex items-center justify-center">
+            <span id="typingContainer"></span>
+            
+            {/* Animated cursor - hidden */}
+            <span className="inline-block w-1 h-8 bg-purple-600 ml-1 typing-cursor align-middle" id="typingCursor" style={{ display: 'none' }}></span>
           </div>
+        </div>
+        
+        {/* Subtle decorative elements */}
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-purple-600/20 rounded-full animate-pulse"></div>
+        <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-pink-600/20 rounded-full animate-bounce" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-purple-600/20 rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-1/4 right-1/3 w-1 h-1 bg-pink-600/30 rounded-full animate-bounce" style={{ animationDelay: '0.5s' }}></div>
+      </div>
 
-          {/* Chat Interface - Full Center Focus */}
-          <div 
-            data-animate="chat-container" 
-            className="absolute inset-4 bg-white rounded-2xl shadow-2xl opacity-0 flex flex-col"
-            style={{ transform: 'translateY(20px) scale(0.9)' }}
-            id="chatContainer"
-          >
-            {/* Chat header */}
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-bold">♪</span>
-                </div>
-                <div>
-                  <span className="font-semibold">MusicStream Support</span>
-                  <div className="text-xs opacity-80">AI-Powered Customer Service</div>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-xs">Online</span>
-              </div>
-            </div>
-
-            {/* Chat messages */}
-            <div className="flex-1 p-6 overflow-y-auto chat-messages-area">
-              <div className="text-center text-gray-500 text-sm mb-4 p-3 bg-gray-50 rounded-lg">
-                <span className="font-medium">Welcome to MusicStream Support</span>
-                <div className="text-xs mt-1">We're here to help with your premium subscription</div>
-              </div>
-
-              {/* Initial bot message */}
-              <div className="flex justify-start mb-4">
-                <div className="bg-gray-100 rounded-lg p-4 max-w-[80%] shadow-sm">
-                  <div className="flex items-center mb-2">
-                    <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center mr-2">
-                      <span className="text-white text-xs font-bold">AI</span>
-                    </div>
-                    <span className="text-sm font-semibold text-gray-800">MusicStream Assistant</span>
+      {/* Chat Interface - MusicStream Style */}
+      <div 
+        id="chatContainer"
+        className={`fixed inset-0 bg-white transition-opacity duration-300 ${
+          videoState.currentPhase === 'chat' || videoState.currentPhase === 'processing' || videoState.currentPhase === 'result' ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        style={{ display: 'none' }}
+      >
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="w-[600px] h-[680px] bg-white flex flex-col transition-all duration-300 ease-out relative overflow-hidden">
+            
+            {/* Initial State: Centered Input */}
+            <div id="initialState" className="flex-1 flex items-center justify-center px-6">
+              <div className="w-full max-w-md">
+                <div className="text-center mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl text-white">♪</span>
                   </div>
-                  <p className="text-sm text-gray-800">Hi! I'm here to help you with any questions about your MusicStream account. How can I assist you today?</p>
+                  <h2 className="text-3xl font-bold text-muted-foreground mb-2">
+                    MusicStream<br/>Customer Support
+                  </h2>
                 </div>
-              </div>
-
-              {/* Typing indicator */}
-              <div data-animate="typing-indicator" className="opacity-0 flex justify-start mb-4">
-                <div className="bg-gray-100 rounded-lg p-4 max-w-[80%] shadow-sm">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                    <span className="text-sm text-gray-600">AI is typing...</span>
+                
+                <div className="flex gap-3 items-center">
+                  <div className="flex-1 relative overflow-visible">
+                    <textarea
+                      id="userInput"
+                      placeholder="Tell me what you need..."
+                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none h-17 leading-normal"
+                      spellCheck={false}
+                      disabled
+                    />
+                    <button id="sendButton" className="group absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
+                      <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
+                        <svg width="20" height="20" fill="#a855f7" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">
+                          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                      </div>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Chat input */}
-            <div className="p-4 border-t bg-gray-50 rounded-b-2xl">
-              <div className="flex space-x-3">
-                <input
-                  data-input="user-message"
-                  type="text"
-                  placeholder="Type your message here..."
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 text-sm"
-                  readOnly
-                />
-                <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 font-medium shadow-lg transition-all">
-                  Send
-                </button>
-              </div>
-            </div>
-          </div>
-
-
-          {/* Finale - Logo and Branding */}
-          <div className="absolute inset-0 flex items-center justify-center bg-white/95">
-            <div className="text-center">
-              {/* Logo */}
-              <div 
-                data-animate="finale-logo"
-                className="opacity-0"
-                style={{ transform: 'translateY(20px) scale(0.9)' }}
-              >
-                <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                  <span className="text-4xl font-bold text-white">BB</span>
-                </div>
-              </div>
-
-              {/* Text */}
-              <div 
-                data-animate="finale-text"
-                className="opacity-0"
-                style={{ transform: 'translateY(20px)' }}
-              >
-                <h1 className="text-4xl font-bold text-gray-800 mb-2">BlizzardBerry</h1>
-                <p className="text-xl text-gray-600 mb-4">AI Agents That Get Things Done</p>
-                <p className="text-gray-500">Transform user interaction from search to action.</p>
+            {/* Conversation State: Messages */}
+            <div id="conversationState" className="flex-1 flex items-center justify-center overflow-y-auto" style={{ display: 'none' }}>
+              <div id="chatMessages" className="w-full max-w-2xl px-6 flex flex-col gap-4 py-8">
+                {/* Messages will be dynamically added here */}
               </div>
             </div>
           </div>
         </div>
-        
+      </div>
+
+      {/* Scene 4: Brand Finale - BlizzardBerry Style */}
+      <div
+        id="finaleContainer"
+        className={`fixed inset-0 opacity-0 flex flex-col items-center justify-center bg-white transition-opacity duration-500 ${
+          videoState.currentPhase === 'finale' ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        style={{ display: 'none' }}
+      >
+        {/* Logo with modern styling */}
+        <div id="finaleLogo" className="relative z-10 mb-8 opacity-0">
+          <div className="relative">
+            <div
+              className="w-48 h-48 bg-white rounded-3xl flex items-center justify-center"
+              style={{ animation: 'logoPulse 3s infinite' }}
+            >
+              <Image
+                src="/image/logo.png"
+                alt="BlizzardBerry Logo"
+                width={120}
+                height={120}
+                priority
+                unoptimized
+              />
+            </div>
+            
+            {/* Pulse ring effects */}
+            <div className="absolute inset-0 w-48 h-48 border-2 border-purple-600/40 rounded-3xl" style={{ animation: 'ringPulse 3s infinite ease-out' }}></div>
+          </div>
+        </div>
+
+        {/* Brand text with modern styling */}
+        <div id="finaleBrand" className="text-center mb-8 opacity-0">
+          <h1 className="text-7xl font-bold text-foreground mb-8 tracking-tight">
+            BlizzardBerry
+          </h1>
+          <div className="h-2 w-48 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full mx-auto mb-9"></div>
+          
+          <p className="text-2xl text-muted-foreground mb-4 tracking-wide">
+            AI Agents That Get Things Done
+          </p>
+          
+          <p className="text-lg text-muted-foreground/80 max-w-xl mx-auto leading-relaxed">
+            Transform user interaction from search to action.
+          </p>
+        </div>
       </div>
     </div>
   );
