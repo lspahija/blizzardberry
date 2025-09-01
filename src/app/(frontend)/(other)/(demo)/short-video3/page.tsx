@@ -53,51 +53,24 @@ export default function MusicStreamRefundVideo() {
     if (videoState.isRunning) return;
     
     clearAllTimers();
-    setVideoState(prev => ({ ...prev, isRunning: true, currentPhase: 'intro' }));
+    setVideoState(prev => ({ ...prev, isRunning: true, currentPhase: 'chat' }));
 
-    // Phase 1: Intro with typing text
-    addTimeout(() => {
-      console.log('=== INTRO PHASE ===');
-      const typingContainer = document.getElementById('typingContainer');
-      const cursor = document.getElementById('typingCursor');
-      
-      if (typingContainer && cursor) {
-        cursor.style.display = 'inline-block';
-        
-        // Type intro text
-        gsap.to(typingContainer, {
-          duration: 2.5,
-          text: "Need help with your MusicStream account?",
-          ease: "none",
-          onComplete: () => {
-            cursor.style.display = 'none';
-            
-            addTimeout(() => {
-              showChatInterface();
-            }, 1500);
-          }
-        });
-      }
-    }, 1000);
+    // Show chat interface immediately
+    showChatInterface();
   };
 
   const showChatInterface = () => {
     console.log('=== SHOWING CHAT INTERFACE ===');
-    setVideoState(prev => ({ ...prev, currentPhase: 'chat' }));
     
     const chatContainer = document.getElementById('chatContainer');
     if (chatContainer) {
       chatContainer.style.display = 'block';
+      chatContainer.style.opacity = '1';
       
-      gsap.fromTo(chatContainer, 
-        { opacity: 0 },
-        { opacity: 1, duration: 0.5, ease: "power2.out" }
-      );
-      
-      // Start typing user message
+      // Start typing user message immediately
       addTimeout(() => {
         startUserMessage();
-      }, 800);
+      }, 500);
     }
   };
 
@@ -349,55 +322,18 @@ export default function MusicStreamRefundVideo() {
         <div 
           className="h-full bg-gradient-to-r from-purple-600 to-pink-600 transition-all duration-300 ease-out" 
           style={{ 
-            width: videoState.currentPhase === 'intro' ? '12%' : 
-                   videoState.currentPhase === 'chat' ? '22%' :
+            width: videoState.currentPhase === 'chat' ? '22%' :
                    videoState.currentPhase === 'processing' ? '31%' :
                    videoState.currentPhase === 'result' ? '88%' :
-                   videoState.currentPhase === 'finale' ? '100%' : '0%'
+                   videoState.currentPhase === 'finale' ? '100%' : '22%'
           }}
         />
-      </div>
-
-      {/* Clean Intro Phase - White Background with MusicStream Colors */}
-      <div 
-        data-phase="intro"
-        className={`fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-8 transition-opacity duration-500 ${
-          videoState.currentPhase === 'intro' ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-      >
-        {/* Main intro content */}
-        <div className="mb-16">
-          {/* MusicStream branding */}
-          <div className="mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl text-white">♪</span>
-            </div>
-            <h1 className="text-2xl font-bold text-muted-foreground mb-2">MusicStream</h1>
-            <div className="text-sm text-muted-foreground/70">Premium Music Service</div>
-          </div>
-          
-          {/* Typing text */}
-          <div className="text-4xl font-bold text-foreground mb-4 h-16 flex items-center justify-center">
-            <span id="typingContainer"></span>
-            
-            {/* Animated cursor - hidden */}
-            <span className="inline-block w-1 h-8 bg-purple-600 ml-1 typing-cursor align-middle" id="typingCursor" style={{ display: 'none' }}></span>
-          </div>
-        </div>
-        
-        {/* Subtle decorative elements */}
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-purple-600/20 rounded-full animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-pink-600/20 rounded-full animate-bounce" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-purple-600/20 rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-1/4 right-1/3 w-1 h-1 bg-pink-600/30 rounded-full animate-bounce" style={{ animationDelay: '0.5s' }}></div>
       </div>
 
       {/* Chat Interface - MusicStream Style */}
       <div 
         id="chatContainer"
-        className={`fixed inset-0 bg-white transition-opacity duration-300 ${
-          videoState.currentPhase === 'chat' || videoState.currentPhase === 'processing' || videoState.currentPhase === 'result' ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
+        className="fixed inset-0 bg-white"
         style={{ display: 'none' }}
       >
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
