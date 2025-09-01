@@ -722,10 +722,10 @@ export default function DemoPage() {
       return;
     }
 
-    // Position chat window container to match revenue dashboard (top-60%)
+    // Position chat window container to match revenue dashboard (top-55%)
     const chatContainer = chatWindow.parentElement;
     if (chatContainer) {
-      chatContainer.className = 'absolute top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2';
+      chatContainer.className = 'absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2';
     }
 
     // Replace chat window content with tickets dashboard using React components
@@ -1871,7 +1871,7 @@ export default function DemoPage() {
         <div className="absolute inset-0 bg-white"></div>
 
         {/* Fixed Size Dashboard Widget */}
-        <div className="absolute top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <div
             id="dashboardWindow"
             className="w-[600px] h-[680px] bg-white overflow-hidden rounded-3xl transition-all duration-300 ease-out flex flex-col relative"
