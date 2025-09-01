@@ -220,11 +220,15 @@ export default function MusicStreamRefundVideo() {
     `);
 
     // Store reference for later removal
-    const allMessages = document.querySelectorAll('.chat-message');
-    const processingBubble = allMessages[allMessages.length - 1];
-    if (processingBubble) {
-      processingBubble.id = 'processingBubble';
-    }
+    addTimeout(() => {
+      const allMessages = document.querySelectorAll('.chat-message');
+      if (allMessages && allMessages.length > 0) {
+        const processingBubble = allMessages[allMessages.length - 1];
+        if (processingBubble) {
+          processingBubble.id = 'processingBubble';
+        }
+      }
+    }, 100);
   };
 
   const showBotResponse = () => {
@@ -301,42 +305,54 @@ export default function MusicStreamRefundVideo() {
     const processingBubble = document.getElementById('processingBubble');
     const chatContainer = document.getElementById('chatContainer');
     
+    // Create cinematic transition timeline
+    const tl = gsap.timeline();
+    
+    // Step 1: Elegant chat container zoom out and fade
+    tl.to(chatContainer, {
+      scale: 0.9,
+      opacity: 0.3,
+      filter: 'blur(8px)',
+      duration: 0.8,
+      ease: "power2.out"
+    });
+    
     // Create analysis overlay
     const analysisOverlay = document.createElement('div');
     analysisOverlay.id = 'subscriptionAnalysis';
-    analysisOverlay.className = 'fixed inset-0 bg-white flex flex-col items-center justify-center z-50';
+    analysisOverlay.className = 'fixed inset-0 bg-gradient-to-br from-white via-gray-50/80 to-white flex flex-col items-center justify-center z-50';
     analysisOverlay.style.opacity = '0';
     
     analysisOverlay.innerHTML = `
-      <div class="w-[500px] bg-white rounded-2xl border border-gray-200 shadow-2xl p-8 transform scale-95">
-        <div class="text-center mb-6">
-          <div class="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <span class="text-2xl text-white">♪</span>
+      <div class="w-[500px] bg-white rounded-3xl border border-gray-100 shadow-2xl p-10 transform perspective-1000">
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 bg-gradient-to-br from-brand to-brand/80 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
+            <span class="text-3xl text-white">♪</span>
           </div>
-          <h3 class="text-2xl font-bold text-foreground mb-2">MusicStream Premium</h3>
-          <p class="text-muted-foreground">Current Subscription Status</p>
+          <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream Premium</h3>
+          <p class="text-muted-foreground text-lg">Current Subscription Status</p>
         </div>
         
-        <div class="space-y-4 mb-6">
-          <div class="flex justify-between items-center py-3 px-4 bg-muted/50 rounded-xl">
-            <span class="text-muted-foreground">Account Holder</span>
-            <span class="font-semibold text-foreground">Sarah Johnson</span>
+        <div class="space-y-4 mb-8">
+          <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
+            <span class="text-muted-foreground font-medium">Account Holder</span>
+            <span class="font-bold text-foreground">Sarah Johnson</span>
           </div>
-          <div class="flex justify-between items-center py-3 px-4 bg-muted/50 rounded-xl">
-            <span class="text-muted-foreground">Plan Type</span>
-            <span class="font-semibold text-foreground">Premium Monthly</span>
+          <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
+            <span class="text-muted-foreground font-medium">Plan Type</span>
+            <span class="font-bold text-foreground">Premium Monthly</span>
           </div>
-          <div class="flex justify-between items-center py-3 px-4 bg-muted/50 rounded-xl">
-            <span class="text-muted-foreground">Current Period</span>
-            <span class="font-semibold text-foreground">Feb 15 - Mar 15, 2024</span>
+          <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
+            <span class="text-muted-foreground font-medium">Current Period</span>
+            <span class="font-bold text-foreground">Aug 3 - Sep 3, 2025</span>
           </div>
-          <div class="flex justify-between items-center py-3 px-4 bg-orange-50 border border-orange-200 rounded-xl">
-            <span class="text-orange-700">Status</span>
-            <span class="font-semibold text-orange-800">Expires in 2 days</span>
+          <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-2xl transform">
+            <span class="text-orange-700 font-medium">Status</span>
+            <span class="font-bold text-orange-800">Expires in 2 days</span>
           </div>
         </div>
         
-        <button id="extendButton" class="w-full bg-brand text-primary-foreground py-4 rounded-xl font-semibold text-lg hover:scale-[1.02] transition-transform">
+        <button id="extendButton" class="w-full bg-gradient-to-r from-brand to-brand/90 text-primary-foreground py-5 rounded-2xl font-bold text-xl hover:scale-[1.02] transition-all duration-300 shadow-lg transform">
           Extend for Another Month
         </button>
       </div>
@@ -344,29 +360,77 @@ export default function MusicStreamRefundVideo() {
     
     document.body.appendChild(analysisOverlay);
     
-    // Animate overlay in
-    gsap.to(analysisOverlay, {
+    // Step 2: Dramatic overlay entrance
+    tl.to(analysisOverlay, {
       opacity: 1,
-      duration: 0.5,
+      duration: 0.6,
       ease: "power2.out"
-    });
+    }, "-=0.4");
     
+    // Step 3: Card dramatic entrance
     const card = analysisOverlay.querySelector('.w-\\[500px\\]');
     if (card) {
-      gsap.to(card, {
+      gsap.set(card, { scale: 0.7, rotationY: 15, opacity: 0 });
+      
+      tl.to(card, {
         scale: 1,
-        duration: 0.6,
-        delay: 0.1,
-        ease: "back.out(1.7)"
-      });
+        rotationY: 0,
+        opacity: 1,
+        duration: 1,
+        ease: "elastic.out(1, 0.6)"
+      }, "-=0.2");
+      
+      // Step 4: Sequential info card animations
+      const infoCards = card.querySelectorAll('.space-y-4 > div');
+      if (infoCards && infoCards.length > 0) {
+        infoCards.forEach((infoCard, i) => {
+          gsap.set(infoCard, { x: 50, opacity: 0 });
+          tl.to(infoCard, {
+            x: 0,
+            opacity: 1,
+            duration: 0.5,
+            ease: "power2.out"
+          }, `-=${0.8 - (i * 0.1)}`);
+        });
+      }
+      
+      // Step 5: Button dramatic entrance
+      const button = card.querySelector('#extendButton');
+      if (button) {
+        gsap.set(button, { y: 30, opacity: 0, scale: 0.9 });
+        tl.to(button, {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.7,
+          ease: "back.out(1.7)"
+        }, "-=0.3");
+      }
     }
     
-    // Handle extend button click
+    // Handle extend button click with enhanced timing
     const extendButton = document.getElementById('extendButton');
     if (extendButton) {
+      // Add subtle hover effect animation
+      extendButton.addEventListener('mouseenter', () => {
+        gsap.to(extendButton, {
+          scale: 1.05,
+          duration: 0.2,
+          ease: "power2.out"
+        });
+      });
+      
+      extendButton.addEventListener('mouseleave', () => {
+        gsap.to(extendButton, {
+          scale: 1,
+          duration: 0.2,
+          ease: "power2.out"
+        });
+      });
+      
       addTimeout(() => {
         extendButton.click();
-      }, 3000); // Auto-click after 3 seconds
+      }, 3500); // Slightly longer for dramatic effect
       
       extendButton.addEventListener('click', () => {
         handleSubscriptionExtension(analysisOverlay);
@@ -396,32 +460,76 @@ export default function MusicStreamRefundVideo() {
         extendButton.className = 'w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-lg';
         
         addTimeout(() => {
-          // Animate overlay out
-          gsap.to(analysisOverlay, {
+          // Professional exit sequence
+          const exitTl = gsap.timeline();
+          
+          // Step 1: Card transforms and exits
+          const card = analysisOverlay.querySelector('.w-\\[500px\\]');
+          if (card) {
+            exitTl.to(card, {
+              scale: 0.85,
+              rotationY: -15,
+              opacity: 0,
+              duration: 0.8,
+              ease: "power2.in"
+            });
+          }
+          
+          // Step 2: Overlay fades with blur effect
+          exitTl.to(analysisOverlay, {
             opacity: 0,
-            scale: 0.95,
+            filter: 'blur(10px)',
             duration: 0.5,
             ease: "power2.in",
             onComplete: () => {
               document.body.removeChild(analysisOverlay);
               returnToChatWithSuccess();
             }
-          });
+          }, "-=0.3");
         }, 1500);
       }, 1000);
     }
   };
   
   const returnToChatWithSuccess = () => {
-    // Remove processing bubble
-    const processingBubble = document.getElementById('processingBubble');
-    if (processingBubble) {
-      processingBubble.remove();
+    const chatContainer = document.getElementById('chatContainer');
+    
+    // Step 1: Restore chat container
+    if (chatContainer) {
+      gsap.to(chatContainer, {
+        scale: 1,
+        opacity: 1,
+        filter: 'blur(0px)',
+        duration: 1,
+        ease: "power3.out"
+      });
     }
     
-    // Add success message
-    setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
-    addBotMessageToChat("Perfect! I've successfully extended Sarah's premium subscription for another month until April 15th, 2024. Your premium features will continue uninterrupted. Enjoy your music!");
+    // Step 2: Remove processing bubble
+    const processingBubble = document.getElementById('processingBubble');
+    if (processingBubble) {
+      gsap.to(processingBubble, {
+        scale: 0.8,
+        opacity: 0,
+        y: -20,
+        duration: 0.4,
+        ease: "power2.out",
+        onComplete: () => {
+          processingBubble.remove();
+        }
+      });
+    }
+    
+    // Step 3: Add success message
+    addTimeout(() => {
+      setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
+      addBotMessageToChat("Perfect! I've successfully extended your premium subscription for another month until Oct 3rd, 2025.");
+      
+      // Add follow-up message
+      addTimeout(() => {
+        addBotMessageToChat("Enjoy your music!");
+      }, 2000);
+    }, 500);
     
     addTimeout(() => {
       showFinale();
