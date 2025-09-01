@@ -16,9 +16,9 @@
     isolation: isolate;
     /* Soft edge using smoothed layered shadows */
     box-shadow: 
-        0 0 calc(20px * var(--shadow-intensity)) rgba(255, 140, 90, calc(0.4 * var(--shadow-intensity))),
-        0 0 calc(40px * var(--shadow-intensity)) rgba(255, 140, 90, calc(0.2 * var(--shadow-intensity))),
-        0 0 calc(80px * var(--shadow-intensity)) rgba(255, 140, 90, calc(0.1 * var(--shadow-intensity)));
+        0 0 calc(20px * var(--shadow-intensity)) rgba(225, 29, 72, calc(0.4 * var(--shadow-intensity))),
+        0 0 calc(40px * var(--shadow-intensity)) rgba(225, 29, 72, calc(0.2 * var(--shadow-intensity))),
+        0 0 calc(80px * var(--shadow-intensity)) rgba(225, 29, 72, calc(0.1 * var(--shadow-intensity)));
     -webkit-backface-visibility: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -68,7 +68,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(255, 69, 0, 0.6), rgba(255, 165, 0, 0.4), rgba(138, 43, 226, 0.3), rgba(0, 191, 255, 0.5), rgba(255, 69, 0, 0.6));
+    background: linear-gradient(135deg, rgba(225, 29, 72, 0.6), rgba(59, 130, 246, 0.4), rgba(16, 185, 129, 0.4), rgba(6, 182, 212, 0.5), rgba(225, 29, 72, 0.6));
     background-size: 600% 600%;
     animation: gradient 15s ease infinite;
 }
@@ -79,7 +79,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(-45deg, rgba(0, 191, 255, 0.5), rgba(138, 43, 226, 0.3), rgba(255, 165, 0, 0.4), rgba(255, 69, 0, 0.6), rgba(0, 191, 255, 0.5));
+    background: linear-gradient(-45deg, rgba(6, 182, 212, 0.5), rgba(99, 102, 241, 0.3), rgba(16, 185, 129, 0.4), rgba(225, 29, 72, 0.6), rgba(6, 182, 212, 0.5));
     background-size: 600% 600%;
     animation: gradientReverse 20s ease infinite;
     opacity: 0.6;
