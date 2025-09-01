@@ -21,30 +21,47 @@ export function renderMessagePart(part, messageId) {
 }
 
 export function updateChatUI() {
-  const chatBody = getElementById('chatWidgetBody');
-  let html = state.messages
-    .filter((message) => !message.parts[0].text.startsWith('ACTION_RESULT:'))
+  const chatBody = getElementById('messages-container');
+  const latestMessageEl = getElementById('latest-message');
+  
+  const filteredMessages = state.messages
+    .filter((message) => !message.parts[0].text.startsWith('ACTION_RESULT:'));
+    
+  let html = filteredMessages
     .map(
       (message) => `
-      <div class="message-container ${message.role === 'user' ? 'user-container' : 'assistant-container'}">
         <div class="message ${message.role === 'user' ? 'user-message' : 'assistant-message'}">
           ${message.parts.map((part) => renderMessagePart(part, message.id)).join('')}
         </div>
-      </div>
-    `
+      `
     )
     .join('');
 
   if (state.isProcessing) {
     html += `
-      <div class="message-container assistant-container">
-        <div class="message assistant-message typing-indicator">
-          <span></span><span></span><span></span>
-        </div>
+      <div class="message assistant-message typing-indicator">
+        <span></span><span></span><span></span>
       </div>
     `;
   }
 
-  chatBody.innerHTML = html;
-  chatBody.scrollTop = chatBody.scrollHeight;
+  if (chatBody) {
+    chatBody.innerHTML = html;
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+  
+  // Update collapsed view with latest assistant message
+  if (latestMessageEl) {
+    const assistantMessages = filteredMessages.filter(msg => msg.role === 'assistant');
+    if (assistantMessages.length > 0) {
+      const latestAssistantMessage = assistantMessages[assistantMessages.length - 1];
+      const messageText = latestAssistantMessage.parts.map(part => 
+        part.type === 'text' ? part.text : ''
+      ).join('').trim();
+      
+      // Remove any <think> tags for display in collapsed view
+      const cleanText = messageText.replace(/<think>[\s\S]*?<\/think>\n\n?/g, '').trim();
+      latestMessageEl.innerHTML = convertBoldFormatting(cleanText || "Hi! I'm your AI Agent. How can I help you today?");
+    }
+  }
 }
