@@ -261,6 +261,9 @@ export default function MusicAppRefundVideo() {
   };
 
   useEffect(() => {
+    // Auto-start demo after component mount
+    addTimeout(startVideo, 500);
+
     return () => {
       clearAllTimers();
       if (masterTimelineRef.current) {
@@ -270,34 +273,9 @@ export default function MusicAppRefundVideo() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-      {/* Video Container */}
-      <div className="relative w-full max-w-4xl mx-auto">
-        
-        {/* Control Panel */}
-        <div className="absolute top-4 left-4 z-20 flex gap-2">
-          <button
-            onClick={startVideo}
-            disabled={videoState.isRunning}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg shadow-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-          >
-            {videoState.isRunning ? 'Playing...' : 'Start Video'}
-          </button>
-          <button
-            onClick={resetVideo}
-            className="px-4 py-2 bg-gray-600 text-white rounded-lg shadow-lg hover:bg-gray-700 transition-all"
-          >
-            Reset
-          </button>
-        </div>
-
-        {/* Status Indicator */}
-        <div className="absolute top-4 right-4 z-20 px-3 py-1 bg-black/80 text-white text-sm rounded-full">
-          Phase: {videoState.currentPhase}
-        </div>
-
-        {/* Main Video Content */}
-        <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
+    <div className="w-full h-screen bg-gradient-to-br from-background via-muted/10 to-muted/30 overflow-hidden relative">
+      {/* Main Video Content */}
+      <div className="absolute inset-0">
           
           {/* MusicStream App Interface */}
           <div 
@@ -459,21 +437,6 @@ export default function MusicAppRefundVideo() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mt-4 w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-          <div 
-            className="bg-blue-600 h-2 rounded-full transition-all duration-1000 ease-out"
-            style={{
-              width: videoState.currentPhase === 'intro' ? '20%' :
-                     videoState.currentPhase === 'chat' ? '40%' :
-                     videoState.currentPhase === 'processing' ? '60%' :
-                     videoState.currentPhase === 'result' ? '80%' :
-                     videoState.currentPhase === 'finale' ? '90%' :
-                     videoState.currentPhase === 'complete' ? '100%' : '0%'
-            }}
-          />
         </div>
       </div>
     </div>
