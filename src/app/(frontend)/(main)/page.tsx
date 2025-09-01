@@ -125,14 +125,14 @@ export default function LandingPage() {
               </motion.h1>
 
               <motion.p
-                className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 lg:max-w-lg z-10 leading-relaxed"
+                className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 lg:max-w-lg z-10 leading-relaxed text-center"
                 variants={itemVariants}
               >
                 Your agent can complete tasks, manage accounts, and navigate your web app!
               </motion.p>
 
               <motion.div
-                className="flex flex-col sm:flex-row items-center lg:items-start gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-4 sm:px-0"
+                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-4 sm:px-0"
                 variants={itemVariants}
               >
                 <div className="relative group w-full sm:w-auto">
