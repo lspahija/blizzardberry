@@ -121,7 +121,7 @@ export default function LandingPage() {
               >
                 Give Your Users an
                 <br />
-                <span className="text-brand">AI Agent</span>
+                <span className="text-brand block text-center">AI Agent</span>
               </motion.h1>
 
               <motion.p
