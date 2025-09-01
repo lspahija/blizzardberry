@@ -725,12 +725,12 @@ export default function DemoPage() {
     // Replace chat window content with tickets dashboard using React components
     // We'll create this with proper React components in the DOM
     chatWindow.className =
-      'w-[600px] h-[680px] bg-white flex flex-col transition-all duration-300 ease-out relative overflow-hidden';
+      'w-[480px] h-[540px] bg-white flex flex-col transition-all duration-300 ease-out relative overflow-hidden';
 
     // Create the tickets dashboard structure with shadcn components
     const ticketsContent = document.createElement('div');
     ticketsContent.className =
-      'w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-5';
+      'w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-4';
 
     ticketsContent.innerHTML = `
       <!-- Header -->
