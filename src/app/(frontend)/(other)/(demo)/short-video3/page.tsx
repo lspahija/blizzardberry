@@ -12,7 +12,7 @@ interface VideoState {
   currentPhase: 'intro' | 'chat' | 'processing' | 'result' | 'finale' | 'complete';
 }
 
-export default function ShortVideo3() {
+export default function MusicAppRefundVideo() {
   const [videoState, setVideoState] = useState<VideoState>({
     isRunning: false,
     currentPhase: 'intro'
@@ -46,6 +46,36 @@ export default function ShortVideo3() {
       }
     };
     type();
+  };
+
+  const addUserMessage = (text: string) => {
+    const messagesContainer = document.querySelector('.chat-messages-area');
+    if (messagesContainer) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'flex justify-end mb-3';
+      messageDiv.innerHTML = `
+        <div class="bg-blue-600 text-white rounded-lg p-3 max-w-[80%] shadow-lg">
+          <p class="text-sm">${text}</p>
+        </div>
+      `;
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  };
+
+  const addBotMessage = (text: string) => {
+    const messagesContainer = document.querySelector('.chat-messages-area');
+    if (messagesContainer) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'flex justify-start mb-3';
+      messageDiv.innerHTML = `
+        <div class="bg-gray-100 rounded-lg p-3 max-w-[80%] shadow-sm">
+          <p class="text-sm text-gray-800">${text}</p>
+        </div>
+      `;
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
   };
 
   const startVideo = () => {
@@ -93,10 +123,11 @@ export default function ShortVideo3() {
       // Type user message
       addTimeout(() => {
         const input = document.querySelector('[data-input="user-message"]') as HTMLInputElement;
-        typeText(input, "Hello! I need help with something", 30, () => {
-          // Simulate sending message
+        typeText(input, "Hi, I'd like to request a refund for my last payment.", 30, () => {
+          // Simulate sending message and show user message in chat
           addTimeout(() => {
             if (input) input.value = '';
+            addUserMessage("Hi, I'd like to request a refund for my last payment.");
             showBotResponse();
           }, 800);
         });
@@ -114,34 +145,58 @@ export default function ShortVideo3() {
     });
 
     addTimeout(() => {
-      // Hide typing indicator and show response
+      // Hide typing indicator and add bot response
       gsap.to('[data-animate="typing-indicator"]', { opacity: 0, duration: 0.3 });
       
-      gsap.to('[data-animate="bot-response"]', {
-        opacity: 1,
-        y: 0,
-        duration: 0.5,
-        ease: "power2.out"
-      });
+      addBotMessage("I'd be happy to help you with your refund request. This seems like a complex billing matter that requires human expertise. Let me connect you with our billing specialist who can review your account details and process your refund.");
 
       setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
       
-      // Show result/action
+      // Show connecting to agent message
       addTimeout(() => {
-        gsap.to('[data-animate="action-result"]', {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.6,
-          ease: "power2.out"
-        });
-
+        addBotMessage("🔄 Connecting you to Agent Sarah from our billing team...");
+        
+        // Show human agent response
+        addTimeout(() => {
+          addAgentMessage();
+        }, 2000);
+        
         // Show finale
         addTimeout(() => {
           showFinale();
-        }, 3000);
+        }, 6000);
       }, 2000);
     }, 2500);
+  };
+
+  const addAgentMessage = () => {
+    const messagesContainer = document.querySelector('.chat-messages-area');
+    if (messagesContainer) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'flex justify-start mb-3';
+      messageDiv.innerHTML = `
+        <div class="bg-green-50 border border-green-200 rounded-lg p-3 max-w-[80%] shadow-sm">
+          <div class="flex items-center mb-2">
+            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-2">
+              <span class="text-white text-xs font-semibold">SA</span>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-green-800">Agent Sarah</p>
+              <p class="text-xs text-green-600">Billing Specialist</p>
+            </div>
+          </div>
+          <p class="text-sm text-gray-800">Hi! I've reviewed your account and I can see your premium subscription charge from last week. I can absolutely process that refund for you. It will be back in your account within 3-5 business days. Is there anything else I can help you with regarding your MusicStream account?</p>
+        </div>
+      `;
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      
+      // Animate the agent message entrance
+      gsap.fromTo(messageDiv, 
+        { opacity: 0, x: -20 },
+        { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }
+      );
+    }
   };
 
   const showFinale = () => {
@@ -244,116 +299,139 @@ export default function ShortVideo3() {
         {/* Main Video Content */}
         <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
           
-          {/* App Interface */}
+          {/* MusicStream App Interface */}
           <div 
             data-animate="app-interface" 
             className="absolute inset-0 opacity-0"
             style={{ transform: 'translateY(20px) scale(0.9)' }}
           >
-            {/* Mock app header */}
-            <div className="bg-slate-800 text-white p-4 flex items-center justify-between">
+            {/* App header */}
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-bold">A</span>
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-bold">♪</span>
                 </div>
-                <span className="font-semibold">My Application</span>
+                <span className="font-semibold">MusicStream</span>
               </div>
-              <div className="flex space-x-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm bg-white/20 px-3 py-1 rounded-full">Premium</span>
+                <div className="flex space-x-2">
+                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                </div>
               </div>
             </div>
 
-            {/* Main app content */}
-            <div className="p-8 h-full bg-gradient-to-br from-blue-50 to-indigo-100">
-              <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to Your Dashboard</h1>
-              <p className="text-gray-600 mb-8">Manage your account and get things done.</p>
+            {/* Main music app content */}
+            <div className="p-8 h-full bg-gradient-to-br from-purple-50 to-pink-50">
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">Your Music Library</h1>
+              <p className="text-gray-600 mb-8">Premium subscription - Unlimited streaming</p>
               
-              {/* Mock content cards */}
+              {/* Mock music content */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white rounded-lg p-6 shadow-lg">
-                  <h3 className="text-xl font-semibold mb-2">Quick Actions</h3>
-                  <p className="text-gray-600">Access commonly used features</p>
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-xl">♪</span>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold">Recently Played</h3>
+                      <p className="text-gray-600">Your latest tracks</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="bg-white rounded-lg p-6 shadow-lg">
-                  <h3 className="text-xl font-semibold mb-2">Recent Activity</h3>
-                  <p className="text-gray-600">See what's been happening</p>
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-xl">★</span>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold">Your Playlists</h3>
+                      <p className="text-gray-600">47 curated playlists</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Chat Interface */}
+          {/* Chat Interface - Full Center Focus */}
           <div 
             data-animate="chat-container" 
-            className="absolute bottom-4 right-4 w-80 h-96 bg-white rounded-xl shadow-2xl opacity-0 flex flex-col"
+            className="absolute inset-4 bg-white rounded-2xl shadow-2xl opacity-0 flex flex-col"
             style={{ transform: 'translateY(20px) scale(0.9)' }}
+            id="chatContainer"
           >
             {/* Chat header */}
-            <div className="bg-blue-600 text-white p-3 rounded-t-xl flex items-center justify-between">
-              <span className="font-semibold">AI Assistant</span>
-              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-bold">♪</span>
+                </div>
+                <div>
+                  <span className="font-semibold">MusicStream Support</span>
+                  <div className="text-xs opacity-80">AI-Powered Customer Service</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-xs">Online</span>
+              </div>
             </div>
 
             {/* Chat messages */}
-            <div className="flex-1 p-4 space-y-3 overflow-y-auto">
-              <div className="text-center text-gray-500 text-sm">
-                Chat started
+            <div className="flex-1 p-6 overflow-y-auto chat-messages-area">
+              <div className="text-center text-gray-500 text-sm mb-4 p-3 bg-gray-50 rounded-lg">
+                <span className="font-medium">Welcome to MusicStream Support</span>
+                <div className="text-xs mt-1">We're here to help with your premium subscription</div>
               </div>
 
-              {/* Bot response (initially hidden) */}
-              <div data-animate="bot-response" className="opacity-0" style={{ transform: 'translateY(20px)' }}>
-                <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
-                  <p className="text-sm">Hi! I'm your AI assistant. How can I help you today?</p>
+              {/* Initial bot message */}
+              <div className="flex justify-start mb-4">
+                <div className="bg-gray-100 rounded-lg p-4 max-w-[80%] shadow-sm">
+                  <div className="flex items-center mb-2">
+                    <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center mr-2">
+                      <span className="text-white text-xs font-bold">AI</span>
+                    </div>
+                    <span className="text-sm font-semibold text-gray-800">MusicStream Assistant</span>
+                  </div>
+                  <p className="text-sm text-gray-800">Hi! I'm here to help you with any questions about your MusicStream account. How can I assist you today?</p>
                 </div>
               </div>
 
               {/* Typing indicator */}
-              <div data-animate="typing-indicator" className="opacity-0">
-                <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              <div data-animate="typing-indicator" className="opacity-0 flex justify-start mb-4">
+                <div className="bg-gray-100 rounded-lg p-4 max-w-[80%] shadow-sm">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    </div>
+                    <span className="text-sm text-gray-600">AI is typing...</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Chat input */}
-            <div className="p-3 border-t">
-              <div className="flex space-x-2">
+            <div className="p-4 border-t bg-gray-50 rounded-b-2xl">
+              <div className="flex space-x-3">
                 <input
                   data-input="user-message"
                   type="text"
-                  placeholder="Type a message..."
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  placeholder="Type your message here..."
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 text-sm"
                   readOnly
                 />
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 font-medium shadow-lg transition-all">
                   Send
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Action Result (e.g., success message, data display) */}
-          <div 
-            data-animate="action-result"
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-100 border-l-4 border-green-500 p-6 rounded-lg shadow-lg opacity-0"
-            style={{ transform: 'translateY(20px) scale(0.9) translateX(-50%) translateY(-50%)' }}
-          >
-            <div className="flex items-center">
-              <svg className="w-6 h-6 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <div>
-                <h3 className="text-lg font-semibold text-green-800">Task Completed!</h3>
-                <p className="text-green-700">Your request has been processed successfully.</p>
-              </div>
-            </div>
-          </div>
 
           {/* Finale - Logo and Branding */}
           <div className="absolute inset-0 flex items-center justify-center bg-white/95">
