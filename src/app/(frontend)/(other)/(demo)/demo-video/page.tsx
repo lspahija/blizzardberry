@@ -741,7 +741,7 @@ export default function DemoPage() {
     ticketsContent.innerHTML = `
       <!-- Header -->
       <div class="text-center mb-3 mt-1">
-        <h1 class="text-2xl font-bold text-foreground mb-1 tracking-tight" id="header-title" style="opacity: 0; transform: translateY(-20px);">Support Tickets</h1>
+        <h1 class="text-3xl font-bold text-foreground mb-1 tracking-tight" id="header-title" style="opacity: 0; transform: translateY(-20px);">Support Tickets</h1>
         <p class="text-xs text-muted-foreground font-medium" id="header-subtitle" style="opacity: 0; transform: translateY(-15px);">Today's Overview</p>
       </div>
 
