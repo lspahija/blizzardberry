@@ -153,6 +153,42 @@ export async function createWidgetDOM() {
       }
     });
 
+    // Add touch event listeners for better mobile support
+    let touchStartTime = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    widget.addEventListener('touchstart', (e) => {
+      touchStartTime = Date.now();
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    }, { passive: true });
+
+    widget.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const touchEndTime = Date.now();
+      const touchDuration = touchEndTime - touchStartTime;
+      
+      // Only trigger if it's a quick tap (less than 300ms) and not a long press
+      if (touchDuration < 300 && !widget.classList.contains('expanded')) {
+        const touch = e.changedTouches[0];
+        const touchEndX = touch.clientX;
+        const touchEndY = touch.clientY;
+        
+        // Check if touch didn't move much (less than 10px in any direction)
+        const moveDistance = Math.sqrt(
+          Math.pow(touchEndX - touchStartX, 2) + Math.pow(touchEndY - touchStartY, 2)
+        );
+        
+        if (moveDistance < 10) {
+          expandWidget();
+        }
+      }
+    });
+
     // Add hover listeners for expand/collapse behavior
     widget.addEventListener('mouseenter', () => {
       if (!widget.classList.contains('hidden')) {
@@ -166,21 +202,14 @@ export async function createWidgetDOM() {
       }
     });
 
-    // Add click outside to close functionality
+    // Add click outside to collapse functionality (don't hide the widget)
     document.addEventListener('click', (e) => {
       const isClickInsideWidget = widget.contains(e.target);
       const isClickOnToggle = e.target.closest('#chatWidgetToggle, #chatWidgetToggleContainer');
       
       if (!isClickInsideWidget && !isClickOnToggle && widget.classList.contains('expanded')) {
         collapseWidget();
-        setTimeout(() => {
-          widget.classList.add('hidden');
-          const toggleContainer = getElementById('chatWidgetToggleContainer');
-          if (toggleContainer) {
-            toggleContainer.classList.remove('hidden');
-            state.isWidgetOpen = false;
-          }
-        }, 300);
+        // Don't hide the widget, just keep it collapsed
       }
     });
 
@@ -211,42 +240,7 @@ export async function createWidgetDOM() {
       ],
     });
 
-    // Create toggle button AFTER main widget exists (initially hidden since widget is shown)
-    const toggleContainer = createElement('div', {
-      id: 'chatWidgetToggleContainer',
-      className: 'hidden',
-      style: `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1001;
-      `,
-    });
-
-    const toggle = createElement('div', {
-      id: 'chatWidgetToggle',
-      style: `
-        width: 60px;
-        height: 60px;
-        border-radius: 30px;
-        background: black;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        font-size: 24px;
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      `,
-      innerHTML: `<svg width="32" height="32" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-<path d="M7.5 8.25H16.5M7.5 11.25H12M2.25 12.7593C2.25 14.3604 3.37341 15.754 4.95746 15.987C6.08596 16.1529 7.22724 16.2796 8.37985 16.3655C8.73004 16.3916 9.05017 16.5753 9.24496 16.8674L12 21L14.755 16.8675C14.9498 16.5753 15.2699 16.3917 15.6201 16.3656C16.7727 16.2796 17.914 16.153 19.0425 15.9871C20.6266 15.7542 21.75 14.3606 21.75 12.7595V6.74056C21.75 5.13946 20.6266 3.74583 19.0425 3.51293C16.744 3.17501 14.3926 3 12.0003 3C9.60776 3 7.25612 3.17504 4.95747 3.51302C3.37342 3.74593 2.25 5.13956 2.25 6.74064V12.7593Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>`,
-    });
-
-    toggleContainer.appendChild(toggle);
-    toggle.addEventListener('click', toggleChatWidget);
-    document.body.appendChild(toggleContainer);
+    // No toggle button needed - widget stays as widget in all states
 
     state.isWidgetReady = true;
     state.isWidgetOpen = true; // Widget is open by default now
@@ -262,41 +256,19 @@ export async function createWidgetDOM() {
 
 export function toggleChatWidget() {
   const widget = getElementById('chatWidget');
-  const toggleContainer = getElementById('chatWidgetToggleContainer');
 
   if (!widget) {
     createLoadingWidget();
     return;
   }
 
-  if (!toggleContainer) return;
-
-  const isHidden = widget.classList.contains('hidden');
-  
-  if (isHidden) {
-    // Show widget in collapsed state
-    widget.classList.remove('hidden');
-    toggleContainer.classList.add('hidden');
+  // Simply toggle between expanded and collapsed states
+  if (widget.classList.contains('expanded')) {
+    // If expanded, collapse it
     collapseWidget();
-    state.isWidgetOpen = true;
-    
-    // Clear notifications when widget is opened
-    state.unreadMessages = 0;
-    updateNotificationBadge();
-    updateChatUI();
-  } else if (widget.classList.contains('expanded')) {
-    // If expanded, first collapse, then hide after a delay
-    collapseWidget();
-    setTimeout(() => {
-      widget.classList.add('hidden');
-      toggleContainer.classList.remove('hidden');
-      state.isWidgetOpen = false;
-    }, 300); // Wait for collapse animation
   } else {
-    // If collapsed, hide immediately
-    widget.classList.add('hidden');
-    toggleContainer.classList.remove('hidden');
-    state.isWidgetOpen = false;
+    // If collapsed, expand it
+    expandWidget();
   }
 }
 
@@ -304,11 +276,6 @@ export function createLoadingWidget() {
   if (getElementById('chatWidgetLoading')) {
     return;
   }
-
-  const toggleContainer = getElementById('chatWidgetToggleContainer');
-  if (!toggleContainer) return;
-
-  toggleContainer.classList.add('hidden');
 
   const loadingWidget = createElement('div', {
     id: 'chatWidgetLoading',
@@ -337,7 +304,6 @@ export function createLoadingWidget() {
     .querySelector('#chatWidgetLoadingCloseButton')
     .addEventListener('click', () => {
       loadingWidget.remove();
-      toggleContainer.classList.remove('hidden');
     });
 
   document.body.appendChild(loadingWidget);
@@ -358,7 +324,6 @@ export function createLoadingWidget() {
     } else {
       console.error('Widget initialization timeout');
       loadingWidget.remove();
-      toggleContainer.classList.remove('hidden');
     }
   };
 

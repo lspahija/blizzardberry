@@ -21,6 +21,11 @@
         0 0 calc(80px * var(--shadow-intensity)) rgba(225, 29, 72, calc(0.1 * var(--shadow-intensity)));
     -webkit-backface-visibility: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Ensure touch events work properly on mobile */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #chatWidget:hover {
@@ -118,6 +123,13 @@
     max-width: 230px;
     transition: all 0.3s ease;
     pointer-events: none;
+}
+
+/* Allow pointer events on mobile for collapsed state */
+@media (max-width: 768px) {
+    #chatWidget:not(.expanded) .text-overlay {
+        pointer-events: none;
+    }
 }
 
 #chatWidget:hover .text-overlay {
@@ -423,6 +435,29 @@
         height: 120px;
         bottom: 20px;
         right: 20px;
+        /* Ensure the widget is fully tappable on mobile */
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    /* Ensure all child elements allow touch events to bubble up in collapsed state */
+    #chatWidget:not(.expanded) * {
+        pointer-events: none;
+    }
+    
+    /* The main widget container should always be tappable */
+    #chatWidget:not(.expanded) {
+        pointer-events: auto;
+    }
+    
+    /* Re-enable pointer events for interactive elements in expanded state */
+    #chatWidget.expanded * {
+        pointer-events: auto;
+    }
+    
+    #chatWidget.expanded .message-input,
+    #chatWidget.expanded .send-button {
+        pointer-events: auto;
     }
 }
 
