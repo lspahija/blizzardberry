@@ -456,7 +456,7 @@ export default function MusicStreamRefundVideo() {
       
       addTimeout(() => {
         // Show success state
-        extendButton.textContent = '✓ Extended Successfully!';
+        extendButton.textContent = 'Extended Successfully!';
         extendButton.className = 'w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-lg';
         
         addTimeout(() => {
