@@ -189,7 +189,7 @@ export default function LandingPage() {
 
                 {/* Video Component */}
                 <HeroVideo
-                  videoSrc="/demo-video-lp1.mp4"
+                  videoSrc="/video-for-landing-page-new.mp4"
                 />
               </div>
             </div>
