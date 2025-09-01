@@ -28,8 +28,12 @@ export default function MusicStreamRefundVideo() {
   };
 
   const clearAllTimers = () => {
-    timeoutsRef.current.forEach(timeout => clearTimeout(timeout));
-    timeoutsRef.current = [];
+    if (timeoutsRef.current && Array.isArray(timeoutsRef.current)) {
+      timeoutsRef.current.forEach(timeout => {
+        if (timeout) clearTimeout(timeout);
+      });
+      timeoutsRef.current = [];
+    }
   };
 
   const typeTextWithScroll = (element: HTMLTextAreaElement | null, text: string, speed = 50, callback?: () => void) => {
@@ -102,7 +106,7 @@ export default function MusicStreamRefundVideo() {
       // Type user message  
       userInput.disabled = false;
       userInput.focus();
-      typeTextWithScroll(userInput, "Hi, I'd like to extend my premium\nsubscription for another month.", 60, () => {
+      typeTextWithScroll(userInput, "Hi, I'd like to upgrade from basic\nto premium plan.", 60, () => {
         // Show airplane animation and send with natural pause
         addTimeout(() => {
           triggerAirplane();
@@ -151,7 +155,7 @@ export default function MusicStreamRefundVideo() {
           );
           
           // Add user message
-          addUserMessageToChat("Hi, I'd like to extend my premium subscription for another month.");
+          addUserMessageToChat("Hi, I'd like to upgrade from basic to premium plan.");
           
           addTimeout(() => {
             showBotResponse();
@@ -221,12 +225,16 @@ export default function MusicStreamRefundVideo() {
 
     // Store reference for later removal
     addTimeout(() => {
-      const allMessages = document.querySelectorAll('.chat-message');
-      if (allMessages && allMessages.length > 0) {
-        const processingBubble = allMessages[allMessages.length - 1];
-        if (processingBubble) {
-          processingBubble.id = 'processingBubble';
+      try {
+        const allMessages = document.querySelectorAll('.chat-message');
+        if (allMessages && allMessages.length > 0) {
+          const processingBubble = allMessages[allMessages.length - 1];
+          if (processingBubble && processingBubble.nodeType === Node.ELEMENT_NODE) {
+            processingBubble.id = 'processingBubble';
+          }
         }
+      } catch (error) {
+        console.warn('Error setting processing bubble ID:', error);
       }
     }, 100);
   };
@@ -340,20 +348,16 @@ export default function MusicStreamRefundVideo() {
           </div>
           <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
             <span class="text-muted-foreground font-medium">Plan Type</span>
-            <span class="font-bold text-foreground">Premium Monthly</span>
+            <span class="font-bold text-foreground">Basic Plan</span>
           </div>
           <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
-            <span class="text-muted-foreground font-medium">Current Period</span>
-            <span class="font-bold text-foreground">Aug 3 - Sep 3, 2025</span>
-          </div>
-          <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-2xl transform">
-            <span class="text-orange-700 font-medium">Status</span>
-            <span class="font-bold text-orange-800">Expires in 2 days</span>
+            <span class="text-muted-foreground font-medium">Features</span>
+            <span class="font-bold text-foreground">Limited Access</span>
           </div>
         </div>
         
         <button id="extendButton" class="w-full bg-gradient-to-r from-brand to-brand/90 text-primary-foreground py-5 rounded-2xl font-bold text-xl hover:scale-[1.02] transition-all duration-300 shadow-lg transform">
-          Extend for Another Month
+          Upgrade to Premium
         </button>
       </div>
     `;
@@ -368,8 +372,8 @@ export default function MusicStreamRefundVideo() {
     }, "-=0.4");
     
     // Step 3: Card dramatic entrance
-    const card = analysisOverlay.querySelector('.w-\\[500px\\]');
-    if (card) {
+    const card = analysisOverlay?.querySelector?.('.w-\\[500px\\]');
+    if (card && card.nodeType === Node.ELEMENT_NODE) {
       gsap.set(card, { scale: 0.7, rotationY: 15, opacity: 0 });
       
       tl.to(card, {
@@ -381,22 +385,28 @@ export default function MusicStreamRefundVideo() {
       }, "-=0.2");
       
       // Step 4: Sequential info card animations
-      const infoCards = card.querySelectorAll('.space-y-4 > div');
-      if (infoCards && infoCards.length > 0) {
-        infoCards.forEach((infoCard, i) => {
-          gsap.set(infoCard, { x: 50, opacity: 0 });
-          tl.to(infoCard, {
-            x: 0,
-            opacity: 1,
-            duration: 0.5,
-            ease: "power2.out"
-          }, `-=${0.8 - (i * 0.1)}`);
-        });
+      try {
+        const infoCards = card.querySelectorAll('.space-y-4 > div');
+        if (infoCards && infoCards.length > 0) {
+          Array.from(infoCards).forEach((infoCard, i) => {
+            if (infoCard && infoCard.nodeType === Node.ELEMENT_NODE) {
+              gsap.set(infoCard, { x: 50, opacity: 0 });
+              tl.to(infoCard, {
+                x: 0,
+                opacity: 1,
+                duration: 0.5,
+                ease: "power2.out"
+              }, `-=${0.8 - (i * 0.1)}`);
+            }
+          });
+        }
+      } catch (error) {
+        console.warn('Error animating info cards:', error);
       }
       
       // Step 5: Button dramatic entrance
       const button = card.querySelector('#extendButton');
-      if (button) {
+      if (button && button.nodeType === Node.ELEMENT_NODE) {
         gsap.set(button, { y: 30, opacity: 0, scale: 0.9 });
         tl.to(button, {
           y: 0,
@@ -455,8 +465,28 @@ export default function MusicStreamRefundVideo() {
       extendButton.disabled = true;
       
       addTimeout(() => {
-        // Show success state
-        extendButton.textContent = 'Extended Successfully!';
+        // Update plan information dynamically
+        const planTypeElement = analysisOverlay?.querySelector?.('.space-y-4 > div:nth-child(2) span:last-child');
+        const featuresElement = analysisOverlay?.querySelector?.('.space-y-4 > div:nth-child(3) span:last-child');
+        
+        if (planTypeElement) {
+          planTypeElement.textContent = 'Premium Plan';
+        }
+        if (featuresElement) {
+          featuresElement.textContent = 'Full Access';
+        }
+        
+        // Show success state with timestamp
+        const now = new Date();
+        const timestamp = now.toLocaleString('en-US', { 
+          month: 'short', 
+          day: 'numeric', 
+          year: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        });
+        extendButton.innerHTML = `Upgraded Successfully!<br><small style="font-size: 14px; opacity: 0.9;">${timestamp}</small>`;
         extendButton.className = 'w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-lg';
         
         addTimeout(() => {
@@ -464,7 +494,7 @@ export default function MusicStreamRefundVideo() {
           const exitTl = gsap.timeline();
           
           // Step 1: Card transforms and exits
-          const card = analysisOverlay.querySelector('.w-\\[500px\\]');
+          const card = analysisOverlay?.querySelector?.('.w-\\[500px\\]');
           if (card) {
             exitTl.to(card, {
               scale: 0.85,
@@ -523,12 +553,13 @@ export default function MusicStreamRefundVideo() {
     // Step 3: Add success message
     addTimeout(() => {
       setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
-      addBotMessageToChat("Perfect! I've successfully extended your premium subscription for another month until Oct 3rd, 2025.");
+      addBotMessageToChat("Perfect! I've successfully upgraded your account to Premium.");
       
-      // Add follow-up message
+      // Add welcome message after short delay
       addTimeout(() => {
-        addBotMessageToChat("Enjoy your music!");
+        addBotMessageToChat("Enjoy your enhanced music experience!");
       }, 2000);
+      
     }, 500);
     
     addTimeout(() => {
