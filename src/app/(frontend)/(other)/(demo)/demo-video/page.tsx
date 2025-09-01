@@ -1865,7 +1865,7 @@ export default function DemoPage() {
         <div className="absolute inset-0 bg-white"></div>
 
         {/* Fixed Size Dashboard Widget */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <div
             id="dashboardWindow"
             className="w-[600px] h-[680px] bg-white overflow-hidden rounded-3xl transition-all duration-300 ease-out flex flex-col relative"
