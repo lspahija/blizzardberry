@@ -730,37 +730,37 @@ export default function DemoPage() {
     // Create the tickets dashboard structure with shadcn components
     const ticketsContent = document.createElement('div');
     ticketsContent.className =
-      'w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-5';
+      'w-full h-full bg-gradient-to-br from-muted/30 via-card to-muted/10 overflow-hidden p-3';
 
     ticketsContent.innerHTML = `
       <!-- Header -->
-      <div class="text-center mb-4 mt-2">
-        <h1 class="text-3xl font-bold text-foreground mb-2 tracking-tight" id="header-title" style="opacity: 0; transform: translateY(-20px);">Support Tickets</h1>
-        <p class="text-sm text-muted-foreground font-medium" id="header-subtitle" style="opacity: 0; transform: translateY(-15px);">Today's Overview</p>
+      <div class="text-center mb-3 mt-1">
+        <h1 class="text-2xl font-bold text-foreground mb-1 tracking-tight" id="header-title" style="opacity: 0; transform: translateY(-20px);">Support Tickets</h1>
+        <p class="text-xs text-muted-foreground font-medium" id="header-subtitle" style="opacity: 0; transform: translateY(-15px);">Today's Overview</p>
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-3 gap-3 mb-6" id="stats-grid">
+      <div class="grid grid-cols-3 gap-2 mb-4" id="stats-grid">
         <div class="stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
-          <div class="bg-card text-card-foreground flex flex-col gap-3 rounded-xl border py-4 px-3 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+          <div class="bg-card text-card-foreground flex flex-col gap-2 rounded-xl border py-3 px-2 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 hover:-translate-y-1">
             <div class="text-center">
-              <div class="text-2xl font-bold mb-1 ticket-stat text-indigo-600" data-target="3" style="opacity: 0;">0</div>
+              <div class="text-xl font-bold mb-1 ticket-stat text-indigo-600" data-target="3" style="opacity: 0;">0</div>
               <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Total</div>
             </div>
           </div>
         </div>
         <div class="stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
-          <div class="bg-card text-card-foreground flex flex-col gap-3 rounded-xl border py-4 px-3 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+          <div class="bg-card text-card-foreground flex flex-col gap-2 rounded-xl border py-3 px-2 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 hover:-translate-y-1">
             <div class="text-center">
-              <div class="text-2xl font-bold mb-1 ticket-stat text-emerald-600" data-target="2" style="opacity: 0;">0</div>
+              <div class="text-xl font-bold mb-1 ticket-stat text-emerald-600" data-target="2" style="opacity: 0;">0</div>
               <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Resolved</div>
             </div>
           </div>
         </div>
         <div class="stats-card" style="opacity: 0; transform: translateY(30px) scale(0.9);">
-          <div class="bg-card text-card-foreground flex flex-col gap-3 rounded-xl border py-4 px-3 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+          <div class="bg-card text-card-foreground flex flex-col gap-2 rounded-xl border py-3 px-2 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 hover:-translate-y-1">
             <div class="text-center">
-              <div class="text-2xl font-bold mb-1 ticket-stat text-orange-600" data-target="1" style="opacity: 0;">0</div>
+              <div class="text-xl font-bold mb-1 ticket-stat text-orange-600" data-target="1" style="opacity: 0;">0</div>
               <div class="text-xs text-muted-foreground font-medium" style="opacity: 0;">Open</div>
             </div>
           </div>
@@ -768,73 +768,73 @@ export default function DemoPage() {
       </div>
 
       <!-- Tickets Table -->
-      <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm" id="tickets-section" style="opacity: 0; transform: translateY(20px);">
-        <div class="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
-          <div class="leading-none font-semibold" id="tickets-title" style="opacity: 0;">Recent Tickets</div>
+      <div class="bg-card text-card-foreground flex flex-col gap-4 rounded-xl border py-4 shadow-sm" id="tickets-section" style="opacity: 0; transform: translateY(20px);">
+        <div class="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1 px-4">
+          <div class="leading-none font-semibold text-sm" id="tickets-title" style="opacity: 0;">Recent Tickets</div>
         </div>
-        <div class="px-6">
+        <div class="px-4">
           <div class="relative w-full overflow-x-auto">
-            <table class="w-full caption-bottom text-sm">
+            <table class="w-full caption-bottom text-xs">
               <thead class="[&_tr]:border-b">
                 <tr class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors">
-                  <th class="text-foreground h-12 px-4 text-left align-middle font-medium">ID</th>
-                  <th class="text-foreground h-12 px-4 text-left align-middle font-medium">Subject</th>
-                  <th class="text-foreground h-12 px-4 text-left align-middle font-medium">Status</th>
-                  <th class="text-foreground h-12 px-4 text-left align-middle font-medium">Priority</th>
+                  <th class="text-foreground h-8 px-2 text-left align-middle font-medium">ID</th>
+                  <th class="text-foreground h-8 px-2 text-left align-middle font-medium">Subject</th>
+                  <th class="text-foreground h-8 px-2 text-left align-middle font-medium">Status</th>
+                  <th class="text-foreground h-8 px-2 text-left align-middle font-medium">Priority</th>
                 </tr>
               </thead>
               <tbody class="[&_tr:last-child]:border-0">
                 <tr class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors ticket-row" style="opacity: 0; transform: translateX(-50px);">
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <div class="flex items-center space-x-2">
                       <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
                       <span class="font-semibold">#12847</span>
                     </div>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <div class="font-medium">Payment Processing Error</div>
                     <div class="text-sm text-muted-foreground">Customer unable to complete checkout</div>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <span class="inline-flex items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium bg-orange-100 text-orange-800">Open</span>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <span class="inline-flex items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium bg-red-100 text-red-800">High</span>
                   </td>
                 </tr>
                 <tr class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors ticket-row" style="opacity: 0; transform: translateX(-50px);">
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <div class="flex items-center space-x-2">
                       <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
                       <span class="font-semibold">#12846</span>
                     </div>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <div class="font-medium">Billing Question</div>
                     <div class="text-sm text-muted-foreground">Invoice clarification needed</div>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <span class="inline-flex items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800">Resolved</span>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <span class="inline-flex items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium bg-blue-100 text-blue-800">Low</span>
                   </td>
                 </tr>
                 <tr class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors ticket-row" style="opacity: 0; transform: translateX(-50px);">
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <div class="flex items-center space-x-2">
                       <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
                       <span class="font-semibold">#12845</span>
                     </div>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <div class="font-medium">Feature Request</div>
                     <div class="text-sm text-muted-foreground">Dark mode toggle requested</div>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <span class="inline-flex items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800">Resolved</span>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="p-2 align-middle">
                     <span class="inline-flex items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium bg-blue-100 text-blue-800">Low</span>
                   </td>
                 </tr>
