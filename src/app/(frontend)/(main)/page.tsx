@@ -121,11 +121,11 @@ export default function LandingPage() {
               >
                 Give Your Users an
                 <br />
-                <span className="text-brand block text-center">AI Agent</span>
+                <span className="text-brand block">AI Agent</span>
               </motion.h1>
 
               <motion.p
-                className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 lg:max-w-lg z-10 leading-relaxed text-center"
+                className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 lg:max-w-lg z-10 leading-relaxed"
                 variants={itemVariants}
               >
                 Your agent can complete tasks, manage accounts, and navigate your web app!
