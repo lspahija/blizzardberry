@@ -169,7 +169,7 @@ export default function LandingPage() {
               <div className="relative w-full max-w-3xl lg:max-w-4xl">
                 {/* Decorative SVG for right side */}
                 <svg
-                  className="hidden lg:block absolute w-16 lg:w-20 h-auto flex-shrink-0 -top-6 right-0 translate-x-4 lg:translate-x-8"
+                  className="hidden lg:block absolute w-16 lg:w-20 h-auto flex-shrink-0 -bottom-6 right-0 translate-x-6 translate-y-6 lg:translate-x-12 lg:translate-y-8"
                   viewBox="0 0 92 80"
                   xmlns="http://www.w3.org/2000/svg"
                 >
