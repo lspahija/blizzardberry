@@ -32,13 +32,27 @@ export default function MusicStreamRefundVideo() {
     timeoutsRef.current = [];
   };
 
-  const typeText = (element: HTMLInputElement | HTMLTextAreaElement | null, text: string, speed = 50, callback?: () => void) => {
+  const typeTextWithScroll = (element: HTMLTextAreaElement | null, text: string, speed = 50, callback?: () => void) => {
     if (!element) return;
     element.value = '';
     let i = 0;
+    let hasScrolled = false;
+    
     const type = () => {
       if (i < text.length) {
         element.value += text.charAt(i);
+        
+        // When we hit the first line break, scroll the text up slightly
+        if (text.charAt(i) === '\n' && !hasScrolled) {
+          hasScrolled = true;
+          // Animate the textarea content to scroll up
+          gsap.to(element, {
+            scrollTop: 8, // Small scroll to move first line up slightly
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        }
+        
         i++;
         addTimeout(type, speed);
       } else if (callback) {
@@ -85,12 +99,33 @@ export default function MusicStreamRefundVideo() {
         initialState.style.display = 'flex';
       }
       
-      // Type user message
-      typeText(userInput, "Hi, I'd like to request a refund for my last payment.", 60, () => {
+      // Type user message  
+      userInput.disabled = false;
+      userInput.focus();
+      typeTextWithScroll(userInput, "Hi, I'd like to extend my premium\nsubscription for another month.", 60, () => {
+        // Show airplane animation and send with natural pause
         addTimeout(() => {
-          // Transition to conversation view
+          triggerAirplane();
+        }, 800);
+      });
+    }
+  };
+
+  const triggerAirplane = () => {
+    const sendButton = document.getElementById('sendButton');
+    if (sendButton) {
+      // Airplane animation like in demo-niko
+      gsap.to(sendButton, {
+        x: 300,
+        y: -15,
+        rotation: -6,
+        scale: 1.1,
+        duration: 0.4, // Slightly slower airplane
+        ease: "power1.out",
+        onComplete: () => {
+          console.log('Airplane animation complete, transitioning to processing');
           transitionToConversation();
-        }, 1000);
+        }
       });
     }
   };
@@ -116,7 +151,7 @@ export default function MusicStreamRefundVideo() {
           );
           
           // Add user message
-          addUserMessageToChat("Hi, I'd like to request a refund for my last payment.");
+          addUserMessageToChat("Hi, I'd like to extend my premium subscription for another month.");
           
           addTimeout(() => {
             showBotResponse();
@@ -132,7 +167,7 @@ export default function MusicStreamRefundVideo() {
       const messageDiv = document.createElement('div');
       messageDiv.className = 'flex justify-end chat-message';
       messageDiv.innerHTML = `
-        <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-4 rounded-3xl max-w-sm shadow-lg">
+        <div class="bg-brand text-primary-foreground px-6 py-4 rounded-3xl max-w-sm shadow-lg">
           <div class="text-base font-medium">${text}</div>
         </div>
       `;
@@ -172,27 +207,225 @@ export default function MusicStreamRefundVideo() {
     }
   };
 
+  const addProcessingBubble = () => {
+    addBotMessageToChat(`
+      <div class="flex items-center space-x-3">
+        <div class="flex space-x-1">
+          <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce"></div>
+          <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+          <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+        </div>
+        <div class="text-base text-muted-foreground">Analyzing subscription...</div>
+      </div>
+    `);
+
+    // Store reference for later removal
+    const allMessages = document.querySelectorAll('.chat-message');
+    const processingBubble = allMessages[allMessages.length - 1];
+    if (processingBubble) {
+      processingBubble.id = 'processingBubble';
+    }
+  };
+
   const showBotResponse = () => {
     console.log('=== SHOWING BOT RESPONSE ===');
     setVideoState(prev => ({ ...prev, currentPhase: 'processing' }));
     
-    // Add bot response
-    addBotMessageToChat("I'd be happy to help you with your refund request. This seems like a complex billing matter that requires human expertise. Let me connect you with our billing specialist who can review your account details and process your refund.");
+    // Add processing bubble directly
+    addProcessingBubble();
     
     addTimeout(() => {
-      // Connect to agent message
-      addBotMessageToChat("🔄 Connecting you to Agent Sarah from our billing team...");
+      // Start subscription analysis
+      showSubscriptionAnalysis();
+    }, 2000);
+  };
+
+  const animateFinaleElements = () => {
+    // Scene 4: Brand Finale - Sequential animation with proper timing (from demo-video)
+    const finaleLogo = document.getElementById('finaleLogo');
+    const finaleBrand = document.getElementById('finaleBrand');
+    const finaleTagline = document.getElementById('finaleTagline');
+
+    // Ensure all elements start hidden
+    if (finaleLogo) gsap.set(finaleLogo, { scale: 0, opacity: 0 });
+    if (finaleBrand) gsap.set(finaleBrand, { y: 50, opacity: 0 });
+    if (finaleTagline) gsap.set(finaleTagline, { y: 30, opacity: 0 });
+
+    // 1. Logo appears first (reduced delay)
+    addTimeout(() => {
+      console.log('=== SCENE 4: Showing logo ===');
+      if (finaleLogo) {
+        gsap.to(finaleLogo, {
+          scale: 1,
+          opacity: 1,
+          duration: 1.2,
+          ease: 'elastic.out(1, 0.3)',
+        });
+      }
+    }, 300);
+
+    // 2. Brand text appears (faster)
+    addTimeout(() => {
+      console.log('=== SCENE 4: Showing brand text ===');
+      if (finaleBrand) {
+        gsap.to(finaleBrand, {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+        });
+      }
+    }, 1800);
+
+    // 3. Tagline appears (faster)
+    addTimeout(() => {
+      console.log('=== SCENE 4: Showing tagline ===');
+      if (finaleTagline) {
+        gsap.to(finaleTagline, {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: 'power2.out',
+        });
+      }
+    }, 2800);
+
+    // Complete
+    addTimeout(() => {
+      setVideoState(prev => ({ ...prev, currentPhase: 'complete', isRunning: false }));
+    }, 4000);
+  };
+
+  const showSubscriptionAnalysis = () => {
+    console.log('=== STARTING SUBSCRIPTION ANALYSIS ===');
+    const processingBubble = document.getElementById('processingBubble');
+    const chatContainer = document.getElementById('chatContainer');
+    
+    // Create analysis overlay
+    const analysisOverlay = document.createElement('div');
+    analysisOverlay.id = 'subscriptionAnalysis';
+    analysisOverlay.className = 'fixed inset-0 bg-white flex flex-col items-center justify-center z-50';
+    analysisOverlay.style.opacity = '0';
+    
+    analysisOverlay.innerHTML = `
+      <div class="w-[500px] bg-white rounded-2xl border border-gray-200 shadow-2xl p-8 transform scale-95">
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl text-white">♪</span>
+          </div>
+          <h3 class="text-2xl font-bold text-foreground mb-2">MusicStream Premium</h3>
+          <p class="text-muted-foreground">Current Subscription Status</p>
+        </div>
+        
+        <div class="space-y-4 mb-6">
+          <div class="flex justify-between items-center py-3 px-4 bg-muted/50 rounded-xl">
+            <span class="text-muted-foreground">Account Holder</span>
+            <span class="font-semibold text-foreground">Sarah Johnson</span>
+          </div>
+          <div class="flex justify-between items-center py-3 px-4 bg-muted/50 rounded-xl">
+            <span class="text-muted-foreground">Plan Type</span>
+            <span class="font-semibold text-foreground">Premium Monthly</span>
+          </div>
+          <div class="flex justify-between items-center py-3 px-4 bg-muted/50 rounded-xl">
+            <span class="text-muted-foreground">Current Period</span>
+            <span class="font-semibold text-foreground">Feb 15 - Mar 15, 2024</span>
+          </div>
+          <div class="flex justify-between items-center py-3 px-4 bg-orange-50 border border-orange-200 rounded-xl">
+            <span class="text-orange-700">Status</span>
+            <span class="font-semibold text-orange-800">Expires in 2 days</span>
+          </div>
+        </div>
+        
+        <button id="extendButton" class="w-full bg-brand text-primary-foreground py-4 rounded-xl font-semibold text-lg hover:scale-[1.02] transition-transform">
+          Extend for Another Month
+        </button>
+      </div>
+    `;
+    
+    document.body.appendChild(analysisOverlay);
+    
+    // Animate overlay in
+    gsap.to(analysisOverlay, {
+      opacity: 1,
+      duration: 0.5,
+      ease: "power2.out"
+    });
+    
+    const card = analysisOverlay.querySelector('.w-\\[500px\\]');
+    if (card) {
+      gsap.to(card, {
+        scale: 1,
+        duration: 0.6,
+        delay: 0.1,
+        ease: "back.out(1.7)"
+      });
+    }
+    
+    // Handle extend button click
+    const extendButton = document.getElementById('extendButton');
+    if (extendButton) {
+      addTimeout(() => {
+        extendButton.click();
+      }, 3000); // Auto-click after 3 seconds
+      
+      extendButton.addEventListener('click', () => {
+        handleSubscriptionExtension(analysisOverlay);
+      });
+    }
+  };
+  
+  const handleSubscriptionExtension = (analysisOverlay: HTMLElement) => {
+    const extendButton = document.getElementById('extendButton');
+    if (extendButton) {
+      // Button click animation
+      gsap.to(extendButton, {
+        scale: 0.95,
+        duration: 0.1,
+        yoyo: true,
+        repeat: 1,
+        ease: "power2.inOut"
+      });
+      
+      // Update button text
+      extendButton.textContent = 'Processing...';
+      extendButton.disabled = true;
       
       addTimeout(() => {
-        // Agent response
-        setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
-        addBotMessageToChat("Hi! I've reviewed your account and I can see your premium subscription charge from last week. I can absolutely process that refund for you. It will be back in your account within 3-5 business days. Is there anything else I can help you with regarding your MusicStream account?", true);
+        // Show success state
+        extendButton.textContent = '✓ Extended Successfully!';
+        extendButton.className = 'w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-lg';
         
         addTimeout(() => {
-          showFinale();
-        }, 4000);
-      }, 2500);
-    }, 3000);
+          // Animate overlay out
+          gsap.to(analysisOverlay, {
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.5,
+            ease: "power2.in",
+            onComplete: () => {
+              document.body.removeChild(analysisOverlay);
+              returnToChatWithSuccess();
+            }
+          });
+        }, 1500);
+      }, 1000);
+    }
+  };
+  
+  const returnToChatWithSuccess = () => {
+    // Remove processing bubble
+    const processingBubble = document.getElementById('processingBubble');
+    if (processingBubble) {
+      processingBubble.remove();
+    }
+    
+    // Add success message
+    setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
+    addBotMessageToChat("Perfect! I've successfully extended Sarah's premium subscription for another month until April 15th, 2024. Your premium features will continue uninterrupted. Enjoy your music!");
+    
+    addTimeout(() => {
+      showFinale();
+    }, 4000);
   };
 
   const showFinale = () => {
@@ -217,33 +450,7 @@ export default function MusicStreamRefundVideo() {
             duration: 0.8
           });
           
-          // Animate logo
-          const logo = document.getElementById('finaleLogo');
-          if (logo) {
-            gsap.to(logo, {
-              opacity: 1,
-              scale: 1,
-              duration: 1,
-              ease: "back.out(1.7)"
-            });
-          }
-          
-          // Animate brand text
-          const brand = document.getElementById('finaleBrand');
-          if (brand) {
-            gsap.to(brand, {
-              opacity: 1,
-              y: 0,
-              duration: 0.8,
-              delay: 0.3,
-              ease: "power2.out"
-            });
-          }
-          
-          // Complete
-          addTimeout(() => {
-            setVideoState(prev => ({ ...prev, currentPhase: 'complete', isRunning: false }));
-          }, 3000);
+          animateFinaleElements();
         }
       });
     }
@@ -320,7 +527,7 @@ export default function MusicStreamRefundVideo() {
       {/* Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-muted z-40">
         <div 
-          className="h-full bg-gradient-to-r from-purple-600 to-pink-600 transition-all duration-300 ease-out" 
+          className="h-full bg-gradient-to-r from-brand to-secondary transition-all duration-300 ease-out" 
           style={{ 
             width: videoState.currentPhase === 'chat' ? '22%' :
                    videoState.currentPhase === 'processing' ? '31%' :
@@ -343,7 +550,7 @@ export default function MusicStreamRefundVideo() {
             <div id="initialState" className="flex-1 flex items-center justify-center px-6">
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <span className="text-2xl text-white">♪</span>
                   </div>
                   <h2 className="text-3xl font-bold text-muted-foreground mb-2">
@@ -362,7 +569,7 @@ export default function MusicStreamRefundVideo() {
                     />
                     <button id="sendButton" className="group absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
-                        <svg width="20" height="20" fill="#a855f7" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-brand">
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         </svg>
                       </div>
@@ -408,7 +615,7 @@ export default function MusicStreamRefundVideo() {
             </div>
             
             {/* Pulse ring effects */}
-            <div className="absolute inset-0 w-48 h-48 border-2 border-purple-600/40 rounded-3xl" style={{ animation: 'ringPulse 3s infinite ease-out' }}></div>
+            <div className="absolute inset-0 w-48 h-48 border-2 border-brand/40 rounded-3xl" style={{ animation: 'ringPulse 3s infinite ease-out' }}></div>
           </div>
         </div>
 
@@ -417,15 +624,13 @@ export default function MusicStreamRefundVideo() {
           <h1 className="text-7xl font-bold text-foreground mb-8 tracking-tight">
             BlizzardBerry
           </h1>
-          <div className="h-2 w-48 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full mx-auto mb-9"></div>
-          
-          <p className="text-2xl text-muted-foreground mb-4 tracking-wide">
-            AI Agents That Get Things Done
-          </p>
-          
-          <p className="text-lg text-muted-foreground/80 max-w-xl mx-auto leading-relaxed">
-            Transform user interaction from search to action.
-          </p>
+          <div className="h-2 w-48 bg-gradient-to-r from-[#F43F5E] to-[#1D4ED8] rounded-full mx-auto mb-9"></div>
+          <div
+            id="finaleTagline"
+            className="text-xl text-muted-foreground font-normal opacity-0 tracking-wide"
+          >
+            An AI-powered natural language interface for every web app
+          </div>
         </div>
       </div>
     </div>
