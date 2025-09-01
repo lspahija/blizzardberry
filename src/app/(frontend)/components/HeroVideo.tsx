@@ -54,14 +54,14 @@ export default function HeroVideo({
 
   return (
     <motion.div
-      className={`relative aspect-[13/10] rounded-2xl border-[3px] border-border shadow-2xl overflow-hidden ${className}`}
+      className={`relative aspect-[13/10] rounded-2xl border-[2px] border-border shadow-2xl overflow-hidden ${className}`}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
       <video
         ref={setVideoRef}
-        className="w-full h-full object-cover scale-125 translate-y-2"
+        className="w-full h-full object-cover scale-[1.35] -translate-y-1"
         poster={posterSrc}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}

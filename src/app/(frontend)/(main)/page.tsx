@@ -92,7 +92,7 @@ export default function LandingPage() {
         initial="hidden"
         animate="visible"
       >
-        <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-16 pb-24">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[600px]">
             {/* Left Column - Text Content */}
             <div className="relative text-center lg:text-left">
@@ -166,7 +166,7 @@ export default function LandingPage() {
 
             {/* Right Column - Video Container */}
             <div className="relative flex items-center justify-center lg:justify-end">
-              <div className="relative w-full max-w-lg lg:max-w-none">
+              <div className="relative w-full max-w-3xl lg:max-w-4xl">
                 {/* Decorative SVG for right side */}
                 <svg
                   className="hidden lg:block absolute w-16 lg:w-20 h-auto flex-shrink-0 -top-6 right-0 translate-x-4 lg:translate-x-8"
