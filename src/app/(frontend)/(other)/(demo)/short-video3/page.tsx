@@ -276,6 +276,8 @@ export default function MusicAppRefundVideo() {
     <div className="w-full h-screen bg-gradient-to-br from-background via-muted/10 to-muted/30 overflow-hidden relative">
       {/* Main Video Content */}
       <div className="absolute inset-0">
+        
+        <div className="relative w-full h-full">
           
           {/* MusicStream App Interface */}
           <div 
@@ -438,6 +440,7 @@ export default function MusicAppRefundVideo() {
             </div>
           </div>
         </div>
+        
       </div>
     </div>
   );
