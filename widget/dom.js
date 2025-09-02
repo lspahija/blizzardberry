@@ -128,6 +128,9 @@ export async function createWidgetDOM() {
                 id="chatWidgetInputField"
                 placeholder="Type a message..."
                 class="message-input"
+                autocomplete="off"
+                autocorrect="on"
+                autocapitalize="sentences"
               />
               <button id="chatWidgetSendButton" class="send-button">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -166,14 +169,21 @@ export async function createWidgetDOM() {
     }, { passive: true });
 
     widget.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+      // Don't prevent default if the touch target is an input field
+      const target = e.target || e.changedTouches[0];
+      const isInputElement = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
+      
+      if (!isInputElement) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       
       const touchEndTime = Date.now();
       const touchDuration = touchEndTime - touchStartTime;
       
       // Only trigger if it's a quick tap (less than 300ms) and not a long press
-      if (touchDuration < 300 && !widget.classList.contains('expanded')) {
+      // and not touching an input element
+      if (touchDuration < 300 && !widget.classList.contains('expanded') && !isInputElement) {
         const touch = e.changedTouches[0];
         const touchEndX = touch.clientX;
         const touchEndY = touch.clientY;
@@ -223,6 +233,25 @@ export async function createWidgetDOM() {
         handleSubmit();
       }
     });
+
+    // Add specific touch handling for input field to ensure mobile keyboard appears
+    if (inputField) {
+      inputField.addEventListener('touchstart', (e) => {
+        e.stopPropagation(); // Prevent widget touch handlers from interfering
+      }, { passive: true });
+      
+      inputField.addEventListener('touchend', (e) => {
+        e.stopPropagation(); // Prevent widget touch handlers from interfering
+        // Allow default behavior for focusing the input
+      });
+      
+      // Ensure input field can be focused on mobile
+      inputField.addEventListener('click', (e) => {
+        e.stopPropagation();
+        inputField.focus();
+      });
+    }
+
 
     // Add suggested prompts if available (keep for backward compatibility but won't be visible in collapsed state)
     const suggestedPrompts = getSuggestedPrompts();
