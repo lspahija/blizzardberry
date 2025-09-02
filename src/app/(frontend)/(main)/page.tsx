@@ -128,8 +128,7 @@ export default function LandingPage() {
                 className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 lg:max-w-lg z-10 leading-relaxed"
                 variants={itemVariants}
               >
-                Your agent can complete tasks, manage accounts, and navigate
-                your web app!
+                Add an agent to your web app with one JavaScript snippet
               </motion.p>
 
               <motion.div
