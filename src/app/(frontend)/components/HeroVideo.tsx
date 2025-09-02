@@ -15,7 +15,7 @@ export default function HeroVideo({
   posterSrc, 
   className = "" 
 }: HeroVideoProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [videoRef, setVideoRef] = useState<HTMLVideoElement | null>(null);
 
   const togglePlay = () => {
