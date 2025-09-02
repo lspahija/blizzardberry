@@ -116,12 +116,11 @@ export default function LandingPage() {
               </svg>
 
               <motion.h1
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter mb-4 z-10 leading-tight"
+                className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter mb-4 z-10 leading-tight"
                 variants={itemVariants}
               >
-                Give Your Users an
-                <br />
-                <span className="text-brand block">AI Agent</span>
+                Give Your Users an{' '}
+                <span className="text-brand whitespace-nowrap">AI Agent</span>
               </motion.h1>
 
               <motion.p
