@@ -144,10 +144,10 @@ export function LandingNavbar() {
           >
             Contact
           </Link>
-          <div className="flex flex-col space-y-3 pt-8 mt-8 border-t border-border">
+          <div className="flex flex-col space-y-3 pt-8 mt-8 border-t border-border px-4">
             <RetroButton
               variant="outline"
-              className="bg-background text-foreground hover:bg-background/90 w-full font-medium h-10"
+              className="bg-background text-foreground hover:bg-background/90 font-medium h-10 w-full"
               asChild
               shadowColor="foreground"
             >
@@ -156,7 +156,7 @@ export function LandingNavbar() {
               </Link>
             </RetroButton>
             <RetroButton
-              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full font-medium h-10"
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium h-10 w-full"
               asChild
               shadowColor="foreground"
             >
