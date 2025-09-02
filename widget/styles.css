@@ -466,12 +466,10 @@
     #chatWidget.expanded .send-button {
         pointer-events: auto;
     }
-}
-
-/* Hide send button on mobile devices */
-@media (max-width: 768px) {
+    
+    /* Hide send button on mobile devices */
     .send-button {
-        display: none !important;
+        display: none;
     }
 }
 
