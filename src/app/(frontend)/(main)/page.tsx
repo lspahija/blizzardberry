@@ -128,7 +128,8 @@ export default function LandingPage() {
                 className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 lg:max-w-lg z-10 leading-relaxed"
                 variants={itemVariants}
               >
-                Your agent can complete tasks, manage accounts, and navigate your web app!
+                Your agent can complete tasks, manage accounts, and navigate
+                your web app!
               </motion.p>
 
               <motion.div
@@ -188,9 +189,7 @@ export default function LandingPage() {
                 </svg>
 
                 {/* Video Component */}
-                <HeroVideo
-                  videoSrc="/video-for-landing-page-new.mp4"
-                />
+                <HeroVideo videoSrc="/video-for-landing-page-new.mp4" />
               </div>
             </div>
           </div>
@@ -213,8 +212,6 @@ export default function LandingPage() {
               A new kind of user interface
             </h2>
             <p className="text-lg sm:text-xl text-muted-foreground">
-              Traditional GUIs will soon be a thing of the past.
-              <br />
               Users want to interact with your app using natural language. Our
               AI agent translates conversations into actions.
             </p>
