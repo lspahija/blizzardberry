@@ -148,28 +148,29 @@ export default function NewAgentUIPage() {
         <div
           style={{
             position: 'absolute',
-            top: isExpanded ? '0' : isHovered ? '50%' : '25%',
-            left: isExpanded ? '0' : '50%',
-            width: isExpanded ? '100%' : 'auto',
-            height: isExpanded ? '100%' : 'auto',
-            transform: isExpanded
-              ? 'none'
-              : isHovered
-                ? 'translate(-50%, -50%)'
-                : 'translate(-50%, 0)',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
             color: 'white',
             fontSize: '14px',
             fontWeight: '600',
             fontFamily:
               '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-            textAlign: isExpanded ? 'left' : 'center',
             zIndex: 10,
             letterSpacing: '0.5px',
             lineHeight: '1.3',
-            padding: isExpanded ? '0' : '0 10px',
-            maxWidth: isExpanded ? 'none' : '230px',
             transition: 'all 0.3s ease',
             pointerEvents: isExpanded ? 'auto' : 'none',
+            padding: isExpanded ? '0' : '0 10px',
+
+            // --- CENTERING & WRAPPING LOGIC ---
+            // The three properties below are essential for centering.
+            display: isExpanded ? 'block' : 'flex',
+            justifyContent: isExpanded ? 'initial' : 'center', // Centers horizontally
+            alignItems: isExpanded ? 'initial' : 'center', // Centers vertically
+            textAlign: isExpanded ? 'left' : 'center',
+            maxWidth: isExpanded ? 'none' : '180px', // Controls line wrapping
           }}
           className={`mist-text ${isExpanded || isHovered ? 'expanded' : ''}`}
         >
@@ -177,7 +178,6 @@ export default function NewAgentUIPage() {
             <div
               style={{
                 transition: 'all 0.3s ease',
-                transform: 'translateY(0px)',
               }}
               className="text-content"
             >
