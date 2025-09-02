@@ -131,7 +131,7 @@ export default function LandingPage() {
               </motion.p>
 
               <motion.div
-                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-4 sm:px-0"
+                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:space-x-4 z-10 w-full sm:w-auto px-12 sm:px-0"
                 variants={itemVariants}
               >
                 <div className="relative group w-full sm:w-auto">
