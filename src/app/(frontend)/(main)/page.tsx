@@ -92,8 +92,8 @@ export default function LandingPage() {
         initial="hidden"
         animate="visible"
       >
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[600px]">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[400px]">
             {/* Left Column - Text Content */}
             <div className="relative text-center lg:text-left">
               <svg
@@ -116,7 +116,7 @@ export default function LandingPage() {
               </svg>
 
               <motion.h1
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter mb-6 z-10 leading-tight"
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter mb-4 z-10 leading-tight"
                 variants={itemVariants}
               >
                 Give Your Users an
@@ -125,7 +125,7 @@ export default function LandingPage() {
               </motion.h1>
 
               <motion.p
-                className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 lg:max-w-lg z-10 leading-relaxed"
+                className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 lg:max-w-lg z-10 leading-relaxed"
                 variants={itemVariants}
               >
                 Your agent can complete tasks, manage accounts, and navigate your web app!
