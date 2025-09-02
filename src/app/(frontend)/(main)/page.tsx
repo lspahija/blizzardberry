@@ -92,8 +92,8 @@ export default function LandingPage() {
         initial="hidden"
         animate="visible"
       >
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[400px]">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 sm:pt-16 sm:pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 items-center min-h-[300px] sm:min-h-[400px]">
             {/* Left Column - Text Content */}
             <div className="relative text-center lg:text-left">
               <svg
