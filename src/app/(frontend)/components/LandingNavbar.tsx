@@ -36,7 +36,7 @@ export function LandingNavbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur border-b border-border shadow-md px-8 sm:px-16 py-5 pt-6 pb-4 pl-8 pr-8 sm:pl-16 sm:pr-16">
+      <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur border-b border-border shadow-md px-8 sm:px-16 py-3 pl-8 pr-8 sm:pl-16 sm:pr-16">
         <div className="max-w-7xl mx-auto w-full flex flex-row items-center justify-between">
           <div className="flex items-center flex-shrink-0 min-w-[160px]">
             <Link href="/" className="flex items-center">
