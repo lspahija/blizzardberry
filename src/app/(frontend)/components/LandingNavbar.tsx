@@ -125,26 +125,26 @@ export function LandingNavbar() {
         >
           <Link
             href="/docs"
-            className="block text-center text-foreground hover:-translate-y-0.5 transition-transform mt-4"
+            className="block text-center text-lg font-medium text-foreground hover:-translate-y-0.5 transition-transform mt-4"
             onClick={handleNavigation}
           >
             Docs
           </Link>
           <Link
             href="/pricing"
-            className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
+            className="block text-center text-lg font-medium text-foreground hover:-translate-y-0.5 transition-transform"
             onClick={handleNavigation}
           >
             Pricing
           </Link>
           <Link
             href="/contact"
-            className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
+            className="block text-center text-lg font-medium text-foreground hover:-translate-y-0.5 transition-transform"
             onClick={handleNavigation}
           >
             Contact
           </Link>
-          <div className="flex flex-col space-y-3 pt-6 mt-4 border-t border-border">
+          <div className="flex flex-col space-y-3 pt-8 mt-8 border-t border-border">
             <RetroButton
               variant="outline"
               className="bg-background text-foreground hover:bg-background/90 w-full font-medium h-10"
