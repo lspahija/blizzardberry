@@ -93,7 +93,7 @@ export default function LandingPage() {
         animate="visible"
       >
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 sm:pt-16 sm:pb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 items-center min-h-[300px] sm:min-h-[400px]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-8 lg:gap-16 items-center min-h-[300px] sm:min-h-[400px]">
             {/* Left Column - Text Content */}
             <div className="relative text-center lg:text-left">
               <svg
@@ -116,7 +116,7 @@ export default function LandingPage() {
               </svg>
 
               <motion.h1
-                className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter mb-4 z-10 leading-tight"
+                className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter mb-6 sm:mb-4 z-10 leading-tight"
                 variants={itemVariants}
               >
                 Give Your Users an{' '}
@@ -124,7 +124,7 @@ export default function LandingPage() {
               </motion.h1>
 
               <motion.p
-                className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 lg:max-w-lg z-10 leading-relaxed"
+                className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-6 lg:mb-8 lg:max-w-lg z-10 leading-relaxed"
                 variants={itemVariants}
               >
                 Add an agent to your web app with a single snippet of JavaScript
