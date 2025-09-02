@@ -730,7 +730,7 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-2 text-center">
           <motion.div variants={itemVariants}>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 sm:mb-8 leading-tight">
-              Ready to Transform Your Webapp?
+              Ready to Transform Your Web App?
             </h2>
             <p className="text-lg sm:text-xl text-muted-foreground mb-8 sm:mb-10">
               Create your first AI agent in minutes and transform how users
