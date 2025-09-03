@@ -1,6 +1,7 @@
 'use client';
 
 import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
+import { Button } from '@/app/(frontend)/components/ui/button';
 import {
   Card,
   CardContent,
@@ -208,25 +209,27 @@ export default function Layout({ children }) {
                 BlizzardBerry
                 <span className="text-brand"> Documentation</span>
               </h1>
-              <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+              <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
                 Learn how to add powerful AI agents to your website in minutes.
                 Create custom actions, upload knowledge documents, and provide
                 natural language interfaces to your users.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <div className="w-fit">
-                  <RetroButton
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-12 sm:px-0">
+                <div className="relative group w-full sm:w-auto">
+                  <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                  <Button
+                    size="lg"
+                    className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 w-full sm:w-auto text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-5 rounded-lg"
                     asChild
-                    className="bg-brand text-primary-foreground hover:bg-brand/90 text-base font-semibold px-6 py-3 w-auto"
                   >
                     <Link
                       href="/dashboard"
                       className="inline-flex items-center"
                     >
-                      <Play className="mr-2 h-5 w-5" />
+                      <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                       Get Started
                     </Link>
-                  </RetroButton>
+                  </Button>
                 </div>
               </div>
             </motion.div>
