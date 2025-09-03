@@ -203,7 +203,7 @@ export default function Layout({ children }) {
           initial="hidden"
           animate="visible"
         >
-          <div className="max-w-6xl mx-auto px-4 py-16">
+          <div className="max-w-6xl mx-auto px-4 pt-12 pb-12 sm:pt-16 sm:pb-16">
             <motion.div className="text-center" variants={itemVariants}>
               <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
                 BlizzardBerry
