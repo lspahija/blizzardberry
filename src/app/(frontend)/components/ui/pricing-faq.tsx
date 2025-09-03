@@ -33,38 +33,41 @@ export function PricingFAQ() {
   return (
     <div className="bg-card p-6 sm:p-8 md:p-12 border-[3px] border-border rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:-translate-x-1 relative z-1">
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
-              Frequently Asked Questions
-            </h2>
-          </div>
+        <div className="text-center mb-8 sm:mb-10">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-base sm:text-lg text-muted-foreground">
+            Common questions about our pricing and credits
+          </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {faqData.map((item, index) => (
             <div
               key={index}
-              className="border border-border rounded-xl overflow-hidden bg-background"
+              className="border-[2px] border-border rounded-xl overflow-hidden bg-background hover:border-brand/30 transition-all duration-200"
             >
               <button
-                className="w-full p-4 sm:p-6 text-left flex items-center justify-between hover:bg-muted/50 transition-colors duration-200"
+                className="w-full p-5 sm:p-6 text-left flex items-center justify-between hover:bg-muted/30 transition-colors duration-200 group"
                 onClick={() => toggleItem(index)}
               >
-                <span className="text-base sm:text-lg font-semibold text-foreground pr-4">
+                <span className="text-base sm:text-lg font-semibold text-foreground pr-4 group-hover:text-brand transition-colors duration-200">
                   {item.question}
                 </span>
                 <ChevronDown
-                  className={`h-5 w-5 text-muted-foreground transition-transform duration-200 flex-shrink-0 ${
-                    openItems.includes(index) ? 'rotate-180' : ''
+                  className={`h-5 w-5 text-muted-foreground transition-all duration-200 flex-shrink-0 group-hover:text-brand ${
+                    openItems.includes(index) ? 'rotate-180 text-brand' : ''
                   }`}
                 />
               </button>
               {openItems.includes(index) && (
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6">
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                    {item.answer}
-                  </p>
+                <div className="border-t border-border/50 bg-muted/10">
+                  <div className="px-5 sm:px-6 py-4 sm:py-5">
+                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                      {item.answer}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>

@@ -625,56 +625,55 @@ export default function PricingPage() {
 
           {/* Additional Credits Section */}
           {status !== 'loading' && (
-            <div className="bg-card p-6 sm:p-8 md:p-12 border-[3px] border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:-translate-x-1 relative z-1">
-              <div className="max-w-2xl mx-auto">
+            <div className="bg-card p-6 sm:p-8 border-[3px] border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:-translate-x-1 relative z-1">
+              <div className="max-w-lg mx-auto">
                 <h2
                   id="buy-credits"
-                  className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-foreground"
+                  className="text-xl sm:text-2xl font-bold mb-3 text-foreground"
                 >
                   Need More Credits?
                 </h2>
-                <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-muted-foreground">
-                  Buy additional credits anytime. They never expire and are
-                  perfect for scaling your AI agents.
+                <p className="text-sm sm:text-base mb-6 text-muted-foreground">
+                  Buy additional credits anytime. They never expire.
                 </p>
 
-                <div className="bg-background p-4 sm:p-6 rounded-xl border border-border mb-6 sm:mb-8 flex flex-col md:flex-row items-center justify-center gap-4">
-                  <div className="text-center md:text-left">
-                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground block">
+                <div className="bg-background p-4 sm:p-5 rounded-xl border border-border mb-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <div className="text-center">
+                    <span className="text-2xl sm:text-3xl font-bold text-foreground block">
                       {pricing.oneTimePurchase.credits.toLocaleString()}
                     </span>
-                    <span className="text-base sm:text-lg text-muted-foreground">
+                    <span className="text-sm text-muted-foreground">
                       credits
                     </span>
                   </div>
-                  <div className="text-xl sm:text-2xl text-muted-foreground">
-                    for
-                  </div>
-                  <div className="text-center md:text-left">
-                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground-muted block">
+                  <div className="text-lg text-muted-foreground">for</div>
+                  <div className="text-center">
+                    <span className="text-2xl sm:text-3xl font-bold text-foreground block">
                       ${pricing.oneTimePurchase.price}
                     </span>
-                    <span className="text-base sm:text-lg text-muted-foreground">
+                    <span className="text-sm text-muted-foreground">
                       one-time
                     </span>
                   </div>
                 </div>
 
-                <RetroButton
-                  className={`py-3 sm:py-4 px-6 sm:px-8 bg-brand text-primary-foreground font-semibold hover:bg-brand/90 text-sm sm:text-base ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
-                  onClick={handleBuyCredits}
-                  disabled={isLoading}
-                  shadowColor="foreground"
-                >
-                  {isLoading ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
-                      Processing...
-                    </div>
-                  ) : (
-                    'Buy Credits Now'
-                  )}
-                </RetroButton>
+                <div className="relative group inline-block">
+                  <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+                  <button
+                    className={`relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 text-base px-6 py-3 rounded-lg font-semibold ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                    onClick={handleBuyCredits}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Processing...
+                      </div>
+                    ) : (
+                      'Buy Credits Now'
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           )}
