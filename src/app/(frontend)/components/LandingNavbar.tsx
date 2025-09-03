@@ -39,7 +39,7 @@ export function LandingNavbar() {
       <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur border-b border-border shadow-md px-8 sm:px-16 py-3 pl-8 pr-8 sm:pl-16 sm:pr-16">
         <div className="max-w-7xl mx-auto w-full flex flex-row items-center justify-between">
           <div className="flex items-center flex-shrink-0 min-w-[160px]">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center" onClick={handleNavigation}>
               <Image
                 src="/image/logo.png"
                 alt="BlizzardBerry Logo"
