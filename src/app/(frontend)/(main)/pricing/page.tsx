@@ -637,23 +637,12 @@ export default function PricingPage() {
                   Buy additional credits anytime. They never expire.
                 </p>
 
-                <div className="bg-background p-4 sm:p-5 rounded-xl border border-border mb-6 flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <div className="text-center">
-                    <span className="text-2xl sm:text-3xl font-bold text-foreground block">
-                      {pricing.oneTimePurchase.credits.toLocaleString()}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      credits
-                    </span>
+                <div className="bg-background p-5 rounded-xl border border-border mb-6 text-center">
+                  <div className="text-xl sm:text-2xl font-semibold text-foreground">
+                    {pricing.oneTimePurchase.credits.toLocaleString()} credits for ${pricing.oneTimePurchase.price}
                   </div>
-                  <div className="text-lg text-muted-foreground">for</div>
-                  <div className="text-center">
-                    <span className="text-2xl sm:text-3xl font-bold text-foreground block">
-                      ${pricing.oneTimePurchase.price}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      one-time
-                    </span>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    One-time purchase
                   </div>
                 </div>
 
