@@ -148,32 +148,143 @@ export async function createWidgetDOM() {
     widget.querySelector('#chatWidgetSendButton')
       ?.addEventListener('click', handleSubmit);
     
-    // Add click listener to widget to expand when clicked
-    widget.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (!widget.classList.contains('expanded')) {
-        expandWidget();
+    // Add drag functionality
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let widgetStartX = 0;
+    let widgetStartY = 0;
+    let hasMoved = false;
+
+    widget.addEventListener('mousedown', (e) => {
+      // Don't drag if clicking on input field or send button
+      if (e.target.closest('.message-input, .send-button')) return;
+      
+      isDragging = true;
+      hasMoved = false;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      
+      // Get current position
+      const rect = widget.getBoundingClientRect();
+      widgetStartX = rect.left;
+      widgetStartY = rect.top;
+      
+      widget.style.transition = 'none'; // Disable transition during drag
+      widget.style.cursor = 'grabbing';
+      
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      
+      const deltaX = e.clientX - dragStartX;
+      const deltaY = e.clientY - dragStartY;
+      
+      // Mark as moved if dragged more than 5px
+      if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+        hasMoved = true;
+      }
+      
+      const newX = widgetStartX + deltaX;
+      const newY = widgetStartY + deltaY;
+      
+      // Keep widget within viewport bounds
+      const maxX = window.innerWidth - widget.offsetWidth;
+      const maxY = window.innerHeight - widget.offsetHeight;
+      
+      const boundedX = Math.max(0, Math.min(newX, maxX));
+      const boundedY = Math.max(0, Math.min(newY, maxY));
+      
+      widget.style.left = boundedX + 'px';
+      widget.style.top = boundedY + 'px';
+      widget.style.right = 'auto';
+      widget.style.bottom = 'auto';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        widget.style.transition = 'all 0.3s ease'; // Re-enable transition
+        widget.style.cursor = 'pointer';
       }
     });
 
-    // Add touch event listeners for better mobile support
+    // Add click listener to widget to expand when clicked (only if not dragged)
+    widget.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!hasMoved && !widget.classList.contains('expanded')) {
+        expandWidget();
+      }
+      hasMoved = false; // Reset for next interaction
+    });
+
+    // Add touch event listeners for drag support on mobile
     let touchStartTime = 0;
     let touchStartX = 0;
     let touchStartY = 0;
+    let isTouchDragging = false;
+    let touchWidgetStartX = 0;
+    let touchWidgetStartY = 0;
+    let touchHasMoved = false;
 
     widget.addEventListener('touchstart', (e) => {
+      // Don't drag if touching input field or send button
+      if (e.target.closest('.message-input, .send-button')) return;
+      
       touchStartTime = Date.now();
       const touch = e.touches[0];
       touchStartX = touch.clientX;
       touchStartY = touch.clientY;
+      touchHasMoved = false;
+      
+      // Set up drag state
+      isTouchDragging = true;
+      const rect = widget.getBoundingClientRect();
+      touchWidgetStartX = rect.left;
+      touchWidgetStartY = rect.top;
+      
+      widget.style.transition = 'none';
     }, { passive: true });
+
+    widget.addEventListener('touchmove', (e) => {
+      if (!isTouchDragging) return;
+      
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+      
+      // Mark as moved if dragged more than 10px (larger threshold for touch)
+      if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+        touchHasMoved = true;
+        e.preventDefault(); // Prevent scrolling when dragging
+      }
+      
+      if (touchHasMoved) {
+        const newX = touchWidgetStartX + deltaX;
+        const newY = touchWidgetStartY + deltaY;
+        
+        // Keep widget within viewport bounds
+        const maxX = window.innerWidth - widget.offsetWidth;
+        const maxY = window.innerHeight - widget.offsetHeight;
+        
+        const boundedX = Math.max(0, Math.min(newX, maxX));
+        const boundedY = Math.max(0, Math.min(newY, maxY));
+        
+        widget.style.left = boundedX + 'px';
+        widget.style.top = boundedY + 'px';
+        widget.style.right = 'auto';
+        widget.style.bottom = 'auto';
+      }
+    });
 
     widget.addEventListener('touchend', (e) => {
       // Don't prevent default if the touch target is an input field
       const target = e.target || e.changedTouches[0];
       const isInputElement = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
       
-      if (!isInputElement) {
+      if (!isInputElement && !touchHasMoved) {
         e.preventDefault();
         e.stopPropagation();
       }
@@ -181,22 +292,15 @@ export async function createWidgetDOM() {
       const touchEndTime = Date.now();
       const touchDuration = touchEndTime - touchStartTime;
       
-      // Only trigger if it's a quick tap (less than 300ms) and not a long press
-      // and not touching an input element
-      if (touchDuration < 300 && !widget.classList.contains('expanded') && !isInputElement) {
-        const touch = e.changedTouches[0];
-        const touchEndX = touch.clientX;
-        const touchEndY = touch.clientY;
-        
-        // Check if touch didn't move much (less than 10px in any direction)
-        const moveDistance = Math.sqrt(
-          Math.pow(touchEndX - touchStartX, 2) + Math.pow(touchEndY - touchStartY, 2)
-        );
-        
-        if (moveDistance < 10) {
-          expandWidget();
-        }
+      // Only trigger expand if it's a quick tap and widget wasn't dragged
+      if (touchDuration < 300 && !touchHasMoved && !widget.classList.contains('expanded') && !isInputElement) {
+        expandWidget();
       }
+      
+      // Reset drag state
+      isTouchDragging = false;
+      widget.style.transition = 'all 0.3s ease';
+      touchHasMoved = false;
     });
 
     // Add hover listeners for expand/collapse behavior
