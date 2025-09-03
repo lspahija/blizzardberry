@@ -38,6 +38,10 @@
     cursor: default;
 }
 
+#chatWidget:active {
+    cursor: grabbing;
+}
+
 /* Solid Background Layer */
 .solid-background {
     position: absolute;
