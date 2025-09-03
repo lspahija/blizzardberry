@@ -235,6 +235,18 @@ export async function createWidgetDOM() {
       // Don't drag if touching input field or send button
       if (e.target.closest('.message-input, .send-button')) return;
       
+      // On mobile, only allow dragging when widget is collapsed
+      const isMobile = window.innerWidth <= 768;
+      const isExpanded = widget.classList.contains('expanded');
+      
+      if (isMobile && isExpanded) {
+        // Don't prevent default - allow normal scrolling in expanded chat
+        return;
+      }
+      
+      // Always prevent page scrolling when touching the widget (except expanded mobile)
+      e.preventDefault();
+      
       touchStartTime = Date.now();
       const touch = e.touches[0];
       touchStartX = touch.clientX;
@@ -248,10 +260,22 @@ export async function createWidgetDOM() {
       touchWidgetStartY = rect.top;
       
       widget.style.transition = 'none';
-    }, { passive: true });
+    }, { passive: false });
 
     widget.addEventListener('touchmove', (e) => {
       if (!isTouchDragging) return;
+      
+      // On mobile, only allow dragging when widget is collapsed
+      const isMobile = window.innerWidth <= 768;
+      const isExpanded = widget.classList.contains('expanded');
+      
+      if (isMobile && isExpanded) {
+        // Don't prevent default - allow normal scrolling in expanded chat
+        return;
+      }
+      
+      // Always prevent page scrolling when touching the widget (except expanded mobile)
+      e.preventDefault();
       
       const touch = e.touches[0];
       const deltaX = touch.clientX - touchStartX;
@@ -260,7 +284,6 @@ export async function createWidgetDOM() {
       // Mark as moved if dragged more than 10px (larger threshold for touch)
       if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
         touchHasMoved = true;
-        e.preventDefault(); // Prevent scrolling when dragging
       }
       
       if (touchHasMoved) {
@@ -281,7 +304,7 @@ export async function createWidgetDOM() {
         widget.style.right = 'auto';
         widget.style.bottom = 'auto';
       }
-    });
+    }, { passive: false });
 
     widget.addEventListener('touchend', (e) => {
       // Don't prevent default if the touch target is an input field
