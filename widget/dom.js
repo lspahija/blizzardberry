@@ -190,9 +190,11 @@ export async function createWidgetDOM() {
       const newX = widgetStartX + deltaX;
       const newY = widgetStartY + deltaY;
       
-      // Keep widget within viewport bounds
-      const maxX = window.innerWidth - widget.offsetWidth;
-      const maxY = window.innerHeight - widget.offsetHeight;
+      // Use collapsed dimensions for boundary calculations (250x120 from CSS)
+      const collapsedWidth = 250;
+      const collapsedHeight = 120;
+      const maxX = window.innerWidth - collapsedWidth;
+      const maxY = window.innerHeight - collapsedHeight;
       
       const boundedX = Math.max(0, Math.min(newX, maxX));
       const boundedY = Math.max(0, Math.min(newY, maxY));
@@ -265,9 +267,11 @@ export async function createWidgetDOM() {
         const newX = touchWidgetStartX + deltaX;
         const newY = touchWidgetStartY + deltaY;
         
-        // Keep widget within viewport bounds
-        const maxX = window.innerWidth - widget.offsetWidth;
-        const maxY = window.innerHeight - widget.offsetHeight;
+        // Use collapsed dimensions for boundary calculations (200x100 on mobile from CSS)
+        const collapsedWidth = window.innerWidth <= 768 ? 200 : 250;
+        const collapsedHeight = window.innerWidth <= 768 ? 100 : 120;
+        const maxX = window.innerWidth - collapsedWidth;
+        const maxY = window.innerHeight - collapsedHeight;
         
         const boundedX = Math.max(0, Math.min(newX, maxX));
         const boundedY = Math.max(0, Math.min(newY, maxY));
