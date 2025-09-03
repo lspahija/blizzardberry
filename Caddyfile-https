@@ -1,0 +1,4 @@
+blizzardberry.com {
+    reverse_proxy localhost:3000
+    tls ./blizzardberry.com.pem ./blizzardberry.com-key.pem
+}
