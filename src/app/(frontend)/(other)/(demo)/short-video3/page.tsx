@@ -9,13 +9,13 @@ gsap.registerPlugin(TextPlugin);
 
 interface VideoState {
   isRunning: boolean;
-  currentPhase: 'intro' | 'chat' | 'processing' | 'result' | 'finale' | 'complete';
+  currentPhase: 'chat' | 'processing' | 'result' | 'finale' | 'complete';
 }
 
 export default function MusicStreamRefundVideo() {
   const [videoState, setVideoState] = useState<VideoState>({
     isRunning: false,
-    currentPhase: 'intro'
+    currentPhase: 'chat'
   });
 
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
@@ -106,7 +106,7 @@ export default function MusicStreamRefundVideo() {
       // Type user message  
       userInput.disabled = false;
       userInput.focus();
-      typeTextWithScroll(userInput, "Hi, I'd like to upgrade from basic\nto premium plan.", 60, () => {
+      typeTextWithScroll(userInput, "I want to cancel my MusicStream\nsubscription and get a refund", 60, () => {
         // Show airplane animation and send with natural pause
         addTimeout(() => {
           triggerAirplane();
@@ -155,7 +155,7 @@ export default function MusicStreamRefundVideo() {
           );
           
           // Add user message
-          addUserMessageToChat("Hi, I'd like to upgrade from basic to premium plan.");
+          addUserMessageToChat("I want to cancel my MusicStream subscription and get a refund");
           
           addTimeout(() => {
             showBotResponse();
@@ -247,8 +247,8 @@ export default function MusicStreamRefundVideo() {
     addProcessingBubble();
     
     addTimeout(() => {
-      // Start subscription analysis
-      showSubscriptionAnalysis();
+      // Start cancellation analysis
+      showCancellationAnalysis();
     }, 2000);
   };
 
@@ -305,11 +305,26 @@ export default function MusicStreamRefundVideo() {
     // Complete
     addTimeout(() => {
       setVideoState(prev => ({ ...prev, currentPhase: 'complete', isRunning: false }));
+      
+      // Auto-restart after completion
+      addTimeout(() => {
+        // Reset all UI elements
+        const chatMessages = document.getElementById('chatMessages');
+        const analysisOverlay = document.getElementById('cancellationAnalysis');
+        const finaleContainer = document.getElementById('finaleContainer');
+        
+        if (chatMessages) chatMessages.innerHTML = '';
+        if (analysisOverlay) analysisOverlay.remove();
+        if (finaleContainer) finaleContainer.style.display = 'none';
+        
+        // Restart demo
+        startDemo();
+      }, 2000);
     }, 4000);
   };
 
-  const showSubscriptionAnalysis = () => {
-    console.log('=== STARTING SUBSCRIPTION ANALYSIS ===');
+  const showCancellationAnalysis = () => {
+    console.log('=== STARTING CANCELLATION ANALYSIS ===');
     const processingBubble = document.getElementById('processingBubble');
     const chatContainer = document.getElementById('chatContainer');
     
@@ -327,18 +342,18 @@ export default function MusicStreamRefundVideo() {
     
     // Create analysis overlay
     const analysisOverlay = document.createElement('div');
-    analysisOverlay.id = 'subscriptionAnalysis';
+    analysisOverlay.id = 'cancellationAnalysis';
     analysisOverlay.className = 'fixed inset-0 bg-gradient-to-br from-white via-gray-50/80 to-white flex flex-col items-center justify-center z-50';
     analysisOverlay.style.opacity = '0';
     
     analysisOverlay.innerHTML = `
       <div class="w-[500px] bg-white rounded-3xl border border-gray-100 shadow-2xl p-10 transform perspective-1000">
         <div class="text-center mb-8">
-          <div class="w-20 h-20 bg-gradient-to-br from-brand to-brand/80 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
-            <span class="text-3xl text-white">♪</span>
+          <div class="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
+            <span class="text-3xl text-white">✗</span>
           </div>
-          <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream Premium</h3>
-          <p class="text-muted-foreground text-lg">Current Subscription Status</p>
+          <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream Cancellation</h3>
+          <p class="text-muted-foreground text-lg">Processing Your Request</p>
         </div>
         
         <div class="space-y-4 mb-8">
@@ -347,17 +362,17 @@ export default function MusicStreamRefundVideo() {
             <span class="font-bold text-foreground">Sarah Johnson</span>
           </div>
           <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
-            <span class="text-muted-foreground font-medium">Plan Type</span>
-            <span class="font-bold text-foreground">Basic Plan</span>
+            <span class="text-muted-foreground font-medium">Current Plan</span>
+            <span class="font-bold text-foreground">Premium Plan</span>
           </div>
           <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
-            <span class="text-muted-foreground font-medium">Features</span>
-            <span class="font-bold text-foreground">Limited Access</span>
+            <span class="text-muted-foreground font-medium">Remaining Days</span>
+            <span class="font-bold text-foreground">14 Days</span>
           </div>
         </div>
         
-        <button id="extendButton" class="w-full bg-gradient-to-r from-brand to-brand/90 text-primary-foreground py-5 rounded-2xl font-bold text-xl hover:scale-[1.02] transition-all duration-300 shadow-lg transform">
-          Upgrade to Premium
+        <button id="cancelButton" class="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-5 rounded-2xl font-bold text-xl hover:scale-[1.02] transition-all duration-300 shadow-lg transform">
+          Process Cancellation & Refund
         </button>
       </div>
     `;
@@ -405,7 +420,7 @@ export default function MusicStreamRefundVideo() {
       }
       
       // Step 5: Button dramatic entrance
-      const button = card.querySelector('#extendButton');
+      const button = card.querySelector('#cancelButton');
       if (button && button.nodeType === Node.ELEMENT_NODE) {
         gsap.set(button, { y: 30, opacity: 0, scale: 0.9 });
         tl.to(button, {
@@ -419,19 +434,19 @@ export default function MusicStreamRefundVideo() {
     }
     
     // Handle extend button click with enhanced timing
-    const extendButton = document.getElementById('extendButton');
-    if (extendButton) {
+    const cancelButton = document.getElementById('cancelButton');
+    if (cancelButton) {
       // Add subtle hover effect animation
-      extendButton.addEventListener('mouseenter', () => {
-        gsap.to(extendButton, {
+      cancelButton.addEventListener('mouseenter', () => {
+        gsap.to(cancelButton, {
           scale: 1.05,
           duration: 0.2,
           ease: "power2.out"
         });
       });
       
-      extendButton.addEventListener('mouseleave', () => {
-        gsap.to(extendButton, {
+      cancelButton.addEventListener('mouseleave', () => {
+        gsap.to(cancelButton, {
           scale: 1,
           duration: 0.2,
           ease: "power2.out"
@@ -439,20 +454,20 @@ export default function MusicStreamRefundVideo() {
       });
       
       addTimeout(() => {
-        extendButton.click();
+        cancelButton.click();
       }, 3500); // Slightly longer for dramatic effect
       
-      extendButton.addEventListener('click', () => {
+      cancelButton.addEventListener('click', () => {
         handleSubscriptionExtension(analysisOverlay);
       });
     }
   };
   
   const handleSubscriptionExtension = (analysisOverlay: HTMLElement) => {
-    const extendButton = document.getElementById('extendButton');
-    if (extendButton) {
+    const cancelButton = document.getElementById('cancelButton');
+    if (cancelButton) {
       // Button click animation
-      gsap.to(extendButton, {
+      gsap.to(cancelButton, {
         scale: 0.95,
         duration: 0.1,
         yoyo: true,
@@ -461,8 +476,8 @@ export default function MusicStreamRefundVideo() {
       });
       
       // Update button text
-      extendButton.textContent = 'Processing...';
-      extendButton.disabled = true;
+      cancelButton.textContent = 'Processing...';
+      cancelButton.disabled = true;
       
       addTimeout(() => {
         // Update plan information dynamically
@@ -486,8 +501,8 @@ export default function MusicStreamRefundVideo() {
           minute: '2-digit',
           hour12: true
         });
-        extendButton.innerHTML = `Upgraded Successfully!<br><small style="font-size: 14px; opacity: 0.9;">${timestamp}</small>`;
-        extendButton.className = 'w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-lg';
+        cancelButton.innerHTML = `Cancellation Complete!<br><small style="font-size: 14px; opacity: 0.9;">Refund: $12.99</small>`;
+        cancelButton.className = 'w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-lg';
         
         addTimeout(() => {
           // Professional exit sequence
