@@ -49,7 +49,7 @@
         action: 'submit',
         target: event.target?.tagName || 'unknown',
         targetId: event.target?.id || null,
-        action: event.target?.action || null,
+        formAction: event.target?.action || null,
         timestamp: Date.now()
       };
       sendLog(logData);
