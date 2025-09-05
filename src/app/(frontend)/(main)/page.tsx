@@ -572,29 +572,13 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  {/* Mock conversation */}
-                  <div className="bg-muted/50 rounded-2xl p-3 sm:p-4 space-y-3">
-                    <div className="flex items-start space-x-2">
-                      <div className="bg-blue-500 text-white rounded-full p-1 flex-shrink-0">
-                        <Users className="h-3 w-3" />
-                      </div>
-                      <div className="bg-background rounded-lg px-3 py-2 max-w-[160px] sm:max-w-[200px] border-[2px] border-border">
-                        <p className="text-xs sm:text-sm">
-                          Hi! I need to cancel my order #1234
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-2 justify-end">
-                      <div className="bg-blue-500 text-white rounded-lg px-3 py-2 max-w-[180px] sm:max-w-[200px]">
-                        <p className="text-xs sm:text-sm">
-                          Done! Your order has been cancelled and you&apos;ll
-                          receive a full refund within 3-5 days.
-                        </p>
-                      </div>
-                      <div className="bg-blue-500 text-white rounded-full p-1 flex-shrink-0">
-                        <CheckCircle2 className="h-3 w-3" />
-                      </div>
-                    </div>
+                  {/* Live demo video */}
+                  <div className="bg-muted/50 rounded-2xl overflow-hidden">
+                    <iframe
+                      src="/short-video1"
+                      className="w-full h-[300px] sm:h-[350px] border-0"
+                      title="Customer Support Demo"
+                    />
                   </div>
                 </CardHeader>
               </Card>
