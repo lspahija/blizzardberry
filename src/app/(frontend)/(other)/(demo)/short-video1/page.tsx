@@ -758,7 +758,7 @@ export default function CustomerSupportVideo() {
                         <svg
                           width="20"
                           height="20"
-                          fill="#ef4444"
+                          fill="#3b82f6"
                           viewBox="0 0 24 24"
                           className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300"
                         >
