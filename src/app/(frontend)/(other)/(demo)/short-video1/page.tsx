@@ -61,71 +61,61 @@ export default function CustomerSupportVideo() {
 
   const startDemo = () => {
     clearAllTimers();
-    setVideoState({ isRunning: true, currentPhase: 'intro' });
+    setVideoState({ isRunning: true, currentPhase: 'chat' });
 
     const timeline = gsap.timeline({
       repeat: -1,
       onComplete: () => {
         // Auto-restart
-        setVideoState((prev) => ({ ...prev, currentPhase: 'intro' }));
+        setVideoState((prev) => ({ ...prev, currentPhase: 'chat' }));
         clearAllTimers();
       },
     });
 
-    // Phase 1: Beautiful Intro with typing effect (4s)
+    // Phase 1: Start directly with Chat Interface
     timeline
       .call(() => {
-        setVideoState((prev) => ({ ...prev, currentPhase: 'intro' }));
-        startTypingIntro();
+        setVideoState((prev) => ({ ...prev, currentPhase: 'chat' }));
+        showChatInterface();
       })
 
-      // Phase 2: Chat Interface appears smoothly (3s for full interaction)
-      .call(
-        () => {
-          setVideoState((prev) => ({ ...prev, currentPhase: 'chat' }));
-          showChatInterface();
-        },
-        [],
-        4
-      )
-
-      // Phase 3: Processing phase (3s for longer processing feel)
+      // Phase 2: Processing phase (3s for longer processing feel)
       .call(
         () => {
           setVideoState((prev) => ({ ...prev, currentPhase: 'processing' }));
           showProcessing();
         },
         [],
-        7
+        3
       )
 
-      // Phase 4: Beautiful Result Display (3s for full celebration)
+      // Phase 3: Beautiful Result Display (3s for full celebration)
       .call(
         () => {
           setVideoState((prev) => ({ ...prev, currentPhase: 'result' }));
           showResult();
         },
         [],
-        10
+        6
       )
 
-      // Phase 5: Demo-Niko Finale (4s)
+      // Phase 4: Demo-Niko Finale (4s)
       .call(
         () => {
           setVideoState((prev) => ({ ...prev, currentPhase: 'finale' }));
           showFinale();
         },
         [],
-        13
+        9
       )
 
-      // Phase 6: Complete and restart (1s pause)
+      // Phase 5: Complete and restart (1s pause)
       .call(
         () => {
           setVideoState((prev) => ({ ...prev, currentPhase: 'complete' }));
         },
         [],
-        17
+        13
       );
 
     masterTimelineRef.current = timeline;
@@ -133,39 +123,17 @@ export default function CustomerSupportVideo() {
   };
 
   const showChatInterface = () => {
-    // Beautiful scroll-up animation from intro to chat
-    const introContainer = document.querySelector('[data-phase="intro"]');
+    // Show chat interface directly without intro animation
     const chatContainer = document.getElementById('chatContainer');
     const userInput = document.getElementById('userInput') as HTMLInputElement;
 
-    if (introContainer && chatContainer) {
-      // Prepare chat container positioned below intro
+    if (chatContainer) {
+      // Show chat container immediately
       chatContainer.style.display = 'flex';
       chatContainer.style.opacity = '1';
-      gsap.set(chatContainer, { y: '100vh' }); // Start below screen
+      gsap.set(chatContainer, { y: 0 }); // Position at center
 
-      // Animate both containers: intro scrolls up, chat scrolls up into view
-      const timeline = gsap.timeline();
-
-      timeline
-        // Scroll intro up and out of view
-        .to(introContainer, {
-          y: '-100vh',
-          duration: 1.2,
-          ease: 'power2.inOut',
-        })
-        // Simultaneously scroll chat up into view
-        .to(
-          chatContainer,
-          {
-            y: 0,
-            duration: 1.2,
-            ease: 'power2.inOut',
-          },
-          0
-        ); // Start at same time as intro animation
-
-      // Start typing user message after scroll animation
+      // Start typing user message immediately
       addTimeout(() => {
         if (userInput) {
           userInput.disabled = false;
@@ -177,7 +145,7 @@ export default function CustomerSupportVideo() {
             }, 500);
           });
         }
-      }, 1400); // After scroll animation completes
+      }, 300); // Small delay to ensure everything is ready
     }
   };
 
@@ -661,17 +629,15 @@ export default function CustomerSupportVideo() {
           className="h-full bg-gradient-to-r from-brand to-secondary transition-all duration-300 ease-out"
           style={{
             width:
-              videoState.currentPhase === 'intro'
-                ? '24%'
-                : videoState.currentPhase === 'chat'
-                  ? '41%'
-                  : videoState.currentPhase === 'processing'
-                    ? '59%'
-                    : videoState.currentPhase === 'result'
-                      ? '76%'
-                      : videoState.currentPhase === 'finale'
-                        ? '100%'
-                        : '0%',
+              videoState.currentPhase === 'chat'
+                ? '25%'
+                : videoState.currentPhase === 'processing'
+                  ? '50%'
+                  : videoState.currentPhase === 'result'
+                    ? '75%'
+                    : videoState.currentPhase === 'finale'
+                      ? '100%'
+                      : '0%',
           }}
         />
       </div>
@@ -874,7 +840,7 @@ export default function CustomerSupportVideo() {
 
       {/* Phase indicator dots */}
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-50">
-        {['intro', 'chat', 'processing', 'result', 'finale'].map((phase) => (
+        {['chat', 'processing', 'result', 'finale'].map((phase) => (
           <div
             key={phase}
             className={`w-2 h-2 rounded-full transition-colors duration-300 ${
