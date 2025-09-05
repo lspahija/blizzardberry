@@ -223,7 +223,7 @@ export default function CustomerSupportVideo() {
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
         message.type === 'sent'
-          ? 'bg-brand text-primary-foreground hover:scale-[1.02]'
+          ? 'bg-blue-500 text-white hover:scale-[1.02]'
           : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
@@ -276,9 +276,9 @@ export default function CustomerSupportVideo() {
       text: `
         <div class="flex items-center space-x-3">
           <div class="flex space-x-1">
-            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
           <div class="text-base text-muted-foreground">Processing cancellation...</div>
         </div>
