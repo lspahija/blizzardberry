@@ -106,7 +106,7 @@ export default function MusicStreamRefundVideo() {
       // Type user message  
       userInput.disabled = false;
       userInput.focus();
-      typeTextWithScroll(userInput, "I want to cancel my MusicStream\nsubscription and get a refund", 60, () => {
+      typeTextWithScroll(userInput, "Hi, I'd like to upgrade from basic\nto premium plan.", 60, () => {
         // Show airplane animation and send with natural pause
         addTimeout(() => {
           triggerAirplane();
@@ -155,7 +155,7 @@ export default function MusicStreamRefundVideo() {
           );
           
           // Add user message
-          addUserMessageToChat("I want to cancel my MusicStream subscription and get a refund");
+          addUserMessageToChat("Hi, I'd like to upgrade from basic to premium plan.");
           
           addTimeout(() => {
             showBotResponse();
@@ -247,8 +247,8 @@ export default function MusicStreamRefundVideo() {
     addProcessingBubble();
     
     addTimeout(() => {
-      // Start cancellation analysis
-      showCancellationAnalysis();
+      // Start subscription analysis
+      showSubscriptionAnalysis();
     }, 2000);
   };
 
@@ -310,7 +310,7 @@ export default function MusicStreamRefundVideo() {
       addTimeout(() => {
         // Reset all UI elements
         const chatMessages = document.getElementById('chatMessages');
-        const analysisOverlay = document.getElementById('cancellationAnalysis');
+        const analysisOverlay = document.getElementById('subscriptionAnalysis');
         const finaleContainer = document.getElementById('finaleContainer');
         
         if (chatMessages) chatMessages.innerHTML = '';
@@ -323,8 +323,8 @@ export default function MusicStreamRefundVideo() {
     }, 4000);
   };
 
-  const showCancellationAnalysis = () => {
-    console.log('=== STARTING CANCELLATION ANALYSIS ===');
+  const showSubscriptionAnalysis = () => {
+    console.log('=== STARTING SUBSCRIPTION ANALYSIS ===');
     const processingBubble = document.getElementById('processingBubble');
     const chatContainer = document.getElementById('chatContainer');
     
@@ -342,18 +342,18 @@ export default function MusicStreamRefundVideo() {
     
     // Create analysis overlay
     const analysisOverlay = document.createElement('div');
-    analysisOverlay.id = 'cancellationAnalysis';
+    analysisOverlay.id = 'subscriptionAnalysis';
     analysisOverlay.className = 'fixed inset-0 bg-gradient-to-br from-white via-gray-50/80 to-white flex flex-col items-center justify-center z-50';
     analysisOverlay.style.opacity = '0';
     
     analysisOverlay.innerHTML = `
       <div class="w-[500px] bg-white rounded-3xl border border-gray-100 shadow-2xl p-10 transform perspective-1000">
         <div class="text-center mb-8">
-          <div class="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
-            <span class="text-3xl text-white">✗</span>
+          <div class="w-20 h-20 bg-gradient-to-br from-brand to-brand/80 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
+            <span class="text-3xl text-white">♪</span>
           </div>
-          <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream Cancellation</h3>
-          <p class="text-muted-foreground text-lg">Processing Your Request</p>
+          <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream Premium</h3>
+          <p class="text-muted-foreground text-lg">Current Subscription Status</p>
         </div>
         
         <div class="space-y-4 mb-8">
@@ -362,17 +362,17 @@ export default function MusicStreamRefundVideo() {
             <span class="font-bold text-foreground">Sarah Johnson</span>
           </div>
           <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
-            <span class="text-muted-foreground font-medium">Current Plan</span>
-            <span class="font-bold text-foreground">Premium Plan</span>
+            <span class="text-muted-foreground font-medium">Plan Type</span>
+            <span class="font-bold text-foreground">Basic Plan</span>
           </div>
           <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
-            <span class="text-muted-foreground font-medium">Remaining Days</span>
-            <span class="font-bold text-foreground">14 Days</span>
+            <span class="text-muted-foreground font-medium">Features</span>
+            <span class="font-bold text-foreground">Limited Access</span>
           </div>
         </div>
         
-        <button id="cancelButton" class="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-5 rounded-2xl font-bold text-xl hover:scale-[1.02] transition-all duration-300 shadow-lg transform">
-          Process Cancellation & Refund
+        <button id="extendButton" class="w-full bg-gradient-to-r from-brand to-brand/90 text-primary-foreground py-5 rounded-2xl font-bold text-xl hover:scale-[1.02] transition-all duration-300 shadow-lg transform">
+          Upgrade to Premium
         </button>
       </div>
     `;
@@ -420,7 +420,7 @@ export default function MusicStreamRefundVideo() {
       }
       
       // Step 5: Button dramatic entrance
-      const button = card.querySelector('#cancelButton');
+      const button = card.querySelector('#extendButton');
       if (button && button.nodeType === Node.ELEMENT_NODE) {
         gsap.set(button, { y: 30, opacity: 0, scale: 0.9 });
         tl.to(button, {
@@ -434,19 +434,19 @@ export default function MusicStreamRefundVideo() {
     }
     
     // Handle extend button click with enhanced timing
-    const cancelButton = document.getElementById('cancelButton');
-    if (cancelButton) {
+    const extendButton = document.getElementById('extendButton');
+    if (extendButton) {
       // Add subtle hover effect animation
-      cancelButton.addEventListener('mouseenter', () => {
-        gsap.to(cancelButton, {
+      extendButton.addEventListener('mouseenter', () => {
+        gsap.to(extendButton, {
           scale: 1.05,
           duration: 0.2,
           ease: "power2.out"
         });
       });
       
-      cancelButton.addEventListener('mouseleave', () => {
-        gsap.to(cancelButton, {
+      extendButton.addEventListener('mouseleave', () => {
+        gsap.to(extendButton, {
           scale: 1,
           duration: 0.2,
           ease: "power2.out"
@@ -454,20 +454,20 @@ export default function MusicStreamRefundVideo() {
       });
       
       addTimeout(() => {
-        cancelButton.click();
+        extendButton.click();
       }, 3500); // Slightly longer for dramatic effect
       
-      cancelButton.addEventListener('click', () => {
+      extendButton.addEventListener('click', () => {
         handleSubscriptionExtension(analysisOverlay);
       });
     }
   };
   
   const handleSubscriptionExtension = (analysisOverlay: HTMLElement) => {
-    const cancelButton = document.getElementById('cancelButton');
-    if (cancelButton) {
+    const extendButton = document.getElementById('extendButton');
+    if (extendButton) {
       // Button click animation
-      gsap.to(cancelButton, {
+      gsap.to(extendButton, {
         scale: 0.95,
         duration: 0.1,
         yoyo: true,
@@ -476,8 +476,8 @@ export default function MusicStreamRefundVideo() {
       });
       
       // Update button text
-      cancelButton.textContent = 'Processing...';
-      cancelButton.disabled = true;
+      extendButton.textContent = 'Processing...';
+      extendButton.disabled = true;
       
       addTimeout(() => {
         // Update plan information dynamically
@@ -501,8 +501,8 @@ export default function MusicStreamRefundVideo() {
           minute: '2-digit',
           hour12: true
         });
-        cancelButton.innerHTML = `Cancellation Complete!<br><small style="font-size: 14px; opacity: 0.9;">Refund: $12.99</small>`;
-        cancelButton.className = 'w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-lg';
+        extendButton.innerHTML = `Upgraded Successfully!<br><small style="font-size: 14px; opacity: 0.9;">${timestamp}</small>`;
+        extendButton.className = 'w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-lg';
         
         addTimeout(() => {
           // Professional exit sequence
