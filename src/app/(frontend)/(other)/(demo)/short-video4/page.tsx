@@ -12,7 +12,7 @@ interface VideoState {
   currentPhase: 'intro' | 'chat' | 'processing' | 'result' | 'finale' | 'complete';
 }
 
-export default function AddressUpdateVideo() {
+export default function EcommerceShoppingVideo() {
   const [videoState, setVideoState] = useState<VideoState>({
     isRunning: false,
     currentPhase: 'chat'
@@ -113,12 +113,12 @@ export default function AddressUpdateVideo() {
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'finale' }));
         showFinale();
-      }, [], 21)
+      }, [], 20)
 
     // Phase 5: Complete and restart (2s pause)
       .call(() => {
         setVideoState(prev => ({ ...prev, currentPhase: 'complete' }));
-      }, [], 25);
+      }, [], 24);
 
     masterTimelineRef.current = timeline;
     timeline.play();
@@ -140,7 +140,7 @@ export default function AddressUpdateVideo() {
         if (userInput) {
           userInput.disabled = false;
           userInput.focus();
-          typeTextWithScroll(userInput, "I recently moved to San Francisco\nand need to update my address", 60, () => {
+          typeTextWithScroll(userInput, "Find me a floral dress under $150\nin size medium with long sleeves", 60, () => {
             // Show airplane animation and send with natural pause
             addTimeout(() => {
               triggerAirplane();
@@ -189,7 +189,7 @@ export default function AddressUpdateVideo() {
       
       addChatMessageWithSlide({
         type: 'sent',
-        text: 'I recently moved to San Francisco and need to update my address'
+        text: 'Find me a floral dress under $150 in size medium with long sleeves'
       });
 
       // Add processing bubble and then continue directly to AI response
@@ -210,7 +210,7 @@ export default function AddressUpdateVideo() {
                 duration: 0.3,
                 ease: "power2.out",
                 onComplete: () => {
-                  messageContent.innerHTML = `<div class="text-base leading-relaxed">I can see you recently moved from New York to San Francisco! What's your new address?</div>`;
+                  messageContent.innerHTML = `<div class="text-base leading-relaxed">Found 3 beautiful floral maxi dresses under $150 in size medium with long sleeves:</div>`;
                   gsap.to(messageContent, {
                     opacity: 1,
                     duration: 0.4,
@@ -225,7 +225,7 @@ export default function AddressUpdateVideo() {
           
           // Continue with rest of conversation
           addTimeout(() => {
-            continueWithRestOfConversation();
+            continueWithSearchResults();
           }, 1000);
         }, 2000); // Wait 2 seconds after processing bubble appears
       }, 1000); // Wait for user message animation to complete
@@ -314,7 +314,7 @@ export default function AddressUpdateVideo() {
             <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
             <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
-          <div class="text-base text-muted-foreground">Checking your details...</div>
+          <div class="text-base text-muted-foreground">Searching products...</div>
         </div>
       `
     });
@@ -332,127 +332,95 @@ export default function AddressUpdateVideo() {
     console.log('Processing phase started - will continue directly to AI response');
   };
 
-  const showAnalysisAnimation = () => {
-    // ULTRA-SMOOTH cinematic transition to analysis
-    console.log('=== Starting CINEMATIC analysis transition ===');
-    const processingBubble = document.getElementById('processingBubble');
+  const continueWithSearchResults = () => {
+    console.log('=== Showing search results ===');
+    
+    // Show overlay with 3 product options
+    addTimeout(() => {
+      console.log('Adding product overlay');
+      showProductOverlay();
+    }, 800); // Show overlay after AI message
+  };
+
+  const showProductOverlay = () => {
     const chatContainer = document.getElementById('chatContainer');
     const chatMessages = document.getElementById('chatMessages');
     
-    // Create timeline for synchronized animations
-    const tl = gsap.timeline();
-    
-    // Step 1: Elegant processing bubble transformation
-    if (processingBubble) {
-      tl.to(processingBubble, {
-        scale: 1.1,
-        duration: 0.2,
-        ease: "power2.out"
-      })
-      .to(processingBubble, {
-        opacity: 0,
-        scale: 0.8,
-        y: -20,
-        duration: 0.4,
-        ease: "power3.inOut",
-        onComplete: () => {
-          if (processingBubble.parentNode) {
-            processingBubble.parentNode.removeChild(processingBubble);
-          }
-        }
-      }, "-=0.1");
-    }
-    
-    // Step 2: Chat messages elegant fade and slide
+    // Blur the chat in background
     if (chatMessages) {
-      const messages = chatMessages.querySelectorAll('.chat-message');
-      tl.to(messages, {
-        y: -15,
-        opacity: 0.3,
-        scale: 0.98,
-        duration: 0.6,
-        stagger: -0.03, // Reverse stagger for wave effect
-        ease: "power2.inOut"
-      }, "-=0.3");
-    }
-    
-    // Step 3: Chat container cinematic zoom and blur
-    if (chatContainer) {
-      tl.to(chatContainer, {
-        scale: 0.96,
-        opacity: 0.2,
+      gsap.to(chatMessages, {
         filter: 'blur(8px)',
-        duration: 0.8,
-        ease: "power3.inOut"
-      }, "-=0.5");
+        opacity: 0.3,
+        duration: 0.6,
+        ease: "power2.out"
+      });
     }
     
-    // Step 4: Analysis overlay grand entrance
-    tl.call(() => {
-      console.log('Starting CINEMATIC analysis entrance');
-      addAnalysisVisualization();
-    }, [], "-=0.2");
-  };
-
-  const addAnalysisVisualization = () => {
-    console.log('=== Adding analysis visualization as OVERLAY ===');
-    const chatContainer = document.getElementById('chatContainer');
-    console.log('Chat container found:', !!chatContainer);
-    if (!chatContainer) {
-      console.error('Chat container not found!');
-      return;
-    }
-
-    // Clear any existing analysis
-    const existingAnalysis = document.getElementById('analysisOverlay');
-    if (existingAnalysis) {
-      console.log('Removing existing analysis overlay');
-      existingAnalysis.remove();
-    }
-
-    // Create FULL SCREEN analysis overlay
-    const analysisOverlay = document.createElement('div');
-    analysisOverlay.className = 'fixed inset-0 bg-white z-50 flex items-center justify-center';
-    analysisOverlay.id = 'analysisOverlay';
-    analysisOverlay.innerHTML = `
-      <div class="max-w-2xl mx-auto px-8">
-        <div class="bg-white rounded-3xl p-10 shadow-2xl border border-gray-200">
-          <div class="text-center">
-            <div class="text-3xl font-bold text-gray-800 mb-2">Profile Analysis</div>
-            <div class="text-lg text-gray-600 mb-8">Processing your relocation request...</div>
-            
-            <div class="space-y-4">
-              <!-- Current Location -->
-              <div id="currentLocation" class="flex items-center justify-between bg-gray-50 rounded-2xl p-6 opacity-0 border border-gray-100">
-                <div class="flex items-center space-x-4">
-                  <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <span class="text-lg font-medium text-gray-700">Previous Address</span>
-                </div>
-                <span class="text-lg font-bold text-gray-900">New York, NY</span>
+    // Create realistic cursor first - position it at center of screen initially
+    const cursor = document.createElement('div');
+    cursor.className = 'absolute w-6 h-6 pointer-events-none z-30';
+    cursor.style.transform = 'translate(-2px, -2px)';
+    cursor.innerHTML = `
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 2L20 12.5L14 14.5L11.5 20L8 2Z" fill="white" stroke="black" stroke-width="1"/>
+      </svg>
+    `;
+    cursor.id = 'animatedCursor';
+    
+    // Position cursor at center of screen initially
+    gsap.set(cursor, {
+      left: window.innerWidth / 2,
+      top: window.innerHeight / 2,
+      opacity: 1
+    });
+    document.body.appendChild(cursor);
+    
+    // Create product overlay
+    const productOverlay = document.createElement('div');
+    productOverlay.id = 'productOverlay';
+    productOverlay.className = 'absolute inset-0 flex items-center justify-center z-10';
+    productOverlay.innerHTML = `
+      <div class="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
+        <h3 class="text-2xl font-bold text-center mb-6">Choose your dress</h3>
+        <div class="space-y-4">
+          <!-- Option 1 -->
+          <div id="product1" class="bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-blue-500 transition-all cursor-pointer hover:shadow-lg">
+            <div class="flex items-start space-x-4">
+              <div class="w-16 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                <img src="/images/dress1.jpg" alt="Vintage Floral Maxi Dress" class="w-full h-full object-cover" />
               </div>
-              
-              <!-- Arrow Animation -->
-              <div class="flex justify-center py-4">
-                <div id="moveArrow" class="text-5xl opacity-0 transform scale-75 text-gray-400">→</div>
+              <div class="flex-1">
+                <h4 class="font-medium text-gray-900 mb-1">Vintage Floral Maxi Dress</h4>
+                <p class="text-xs text-gray-600 mb-2">Size M • Long sleeves • Button front</p>
+                <div class="text-lg font-bold text-blue-600">$138</div>
               </div>
-              
-              <!-- New Location -->
-              <div id="newLocation" class="flex items-center justify-between bg-green-50 rounded-2xl p-6 opacity-0 border border-green-100">
-                <div class="flex items-center space-x-4">
-                  <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span class="text-lg font-medium text-gray-700">New Address</span>
-                </div>
-                <span class="text-lg font-bold text-green-700">San Francisco, CA</span>
+            </div>
+          </div>
+          
+          <!-- Option 2 -->
+          <div id="product2" class="bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-blue-500 transition-all cursor-pointer hover:shadow-lg">
+            <div class="flex items-start space-x-4">
+              <div class="w-16 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                <img src="/images/dress2.jpg" alt="Faded Green Floral Dress" class="w-full h-full object-cover" />
               </div>
-              
-              <!-- Services to Update -->
-              <div id="servicesToUpdate" class="bg-blue-50 rounded-2xl p-6 opacity-0 border border-blue-100">
-                <div class="text-center mb-4">
-                  <div class="text-lg font-semibold text-gray-800 mb-2">Accounts to Update</div>
-                  <div class="text-sm text-gray-600">The following services will be automatically updated</div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                </div>
+              <div class="flex-1">
+                <h4 class="font-medium text-gray-900 mb-1">Faded Green Floral Dress</h4>
+                <p class="text-xs text-gray-600 mb-2">Size M • Long sleeves • Wrap style</p>
+                <div class="text-lg font-bold text-blue-600">$145</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Option 3 -->
+          <div id="product3" class="bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-blue-500 transition-all cursor-pointer hover:shadow-lg">
+            <div class="flex items-start space-x-4">
+              <div class="w-16 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                <img src="/images/dress3.jpeg" alt="Elegant Floral Maxi Dress" class="w-full h-full object-cover" />
+              </div>
+              <div class="flex-1">
+                <h4 class="font-medium text-gray-900 mb-1">Elegant Floral Maxi Dress</h4>
+                <p class="text-xs text-gray-600 mb-2">Size M • Long sleeves • A-line cut</p>
+                <div class="text-lg font-bold text-blue-600">$129</div>
               </div>
             </div>
           </div>
@@ -460,232 +428,111 @@ export default function AddressUpdateVideo() {
       </div>
     `;
 
-    // Add overlay with ULTRA-SMOOTH cinematic entrance
-    console.log('Adding CINEMATIC analysis overlay');
-    document.body.appendChild(analysisOverlay);
+    if (chatContainer) {
+      chatContainer.appendChild(productOverlay);
+      
+      // Set initial overlay state - hidden and slightly scaled down
+      gsap.set(productOverlay, { opacity: 0, scale: 0.95 });
+      
+      // Simple overlay animation first
+      gsap.to(productOverlay, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        onComplete: () => {
+          // After overlay is fully visible, move cursor
+          const product1 = document.getElementById('product1');
+          if (product1 && cursor) {
+            const rect = product1.getBoundingClientRect();
+            const targetX = rect.left + rect.width / 2;
+            const targetY = rect.top + rect.height / 2;
+            
+            // Smooth cursor movement to product1
+            gsap.to(cursor, {
+              left: targetX,
+              top: targetY,
+              duration: 0.8,
+              ease: "power2.inOut",
+              onComplete: () => {
+                // Hover effect
+                product1.style.borderColor = '#3B82F6';
+                product1.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+                
+                // Click after short hover
+                addTimeout(() => {
+                  // Click animation on product
+                  gsap.to(product1, {
+                    scale: 0.95,
+                    duration: 0.1,
+                    yoyo: true,
+                    repeat: 1,
+                    onComplete: () => {
+                      // Remove cursor safely
+                      if (cursor && cursor.parentNode) {
+                        cursor.remove();
+                      }
+                      hideProductOverlay();
+                    }
+                  });
+                }, 600);
+              }
+            });
+          }
+        }
+      });
+    }
+  };
+
+  const hideProductOverlay = () => {
+    const productOverlay = document.getElementById('productOverlay');
+    const chatMessages = document.getElementById('chatMessages');
     
-    // Create sophisticated entrance timeline
-    const entranceTl = gsap.timeline();
-    
-    // Initial state: completely invisible and scaled
-    gsap.set(analysisOverlay, { 
-      opacity: 0,
-      backdropFilter: 'blur(0px)',
-      background: 'rgba(255, 255, 255, 0)'
-    });
-    
-    const innerContent = analysisOverlay.querySelector('.bg-white');
-    if (innerContent) {
-      gsap.set(innerContent, { 
-        scale: 0.85,
-        y: 60,
-        opacity: 0,
-        rotationY: 5,
-        transformPerspective: 1000
+    // Restore chat to normal state
+    if (chatMessages) {
+      gsap.to(chatMessages, {
+        filter: 'blur(0px)',
+        opacity: 1,
+        duration: 0.6,
+        ease: "power2.out"
       });
     }
     
-    // Step 1: Elegant backdrop emergence
-    entranceTl.to(analysisOverlay, {
-      opacity: 1,
-      background: 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(12px)',
-      duration: 0.8,
-      ease: "power3.out"
-    })
-    
-    // Step 2: Content grand entrance with perspective
-    .to(innerContent, {
-      scale: 1,
-      y: 0,
-      opacity: 1,
-      rotationY: 0,
-      duration: 1.0,
-      ease: "power4.out",
-      onComplete: () => {
-        console.log('CINEMATIC content entrance complete');
-        
-        // Step 3: Subtle breathing animation
-        gsap.to(innerContent, {
-          scale: 1.01,
-          duration: 2,
-          yoyo: true,
-          repeat: -1,
-          ease: "sine.inOut"
-        });
-      }
-    }, "-=0.4");
-    
-    // Step 3: Background final polish
-    entranceTl.to(analysisOverlay, {
-      background: 'rgba(255, 255, 255, 1)',
-      duration: 0.4,
-      ease: "power2.out"
-    }, "-=0.6");
-
-    // Animate analysis steps (faster)
-    addTimeout(() => {
-      // Show current location
-      const currentLoc = document.getElementById('currentLocation');
-      if (currentLoc) {
-        gsap.to(currentLoc, { opacity: 1, duration: 0.3 });
-      }
-    }, 400);
-
-    addTimeout(() => {
-      // Show arrow
-      const arrow = document.getElementById('moveArrow');
-      if (arrow) {
-        gsap.to(arrow, { 
-          opacity: 1, 
-          scale: 1, 
-          duration: 0.3,
-          ease: "elastic.out(1, 0.5)"
-        });
-      }
-    }, 700);
-
-    addTimeout(() => {
-      // Show new location
-      const newLoc = document.getElementById('newLocation');
-      if (newLoc) {
-        gsap.to(newLoc, { opacity: 1, duration: 0.3 });
-      }
-    }, 1000);
-
-    addTimeout(() => {
-      // Show services
-      const services = document.getElementById('servicesToUpdate');
-      if (services) {
-        gsap.to(services, { opacity: 1, duration: 0.3 });
-        
-        // Animate service tags (faster)
-        const tags = services.querySelectorAll('span');
-        tags.forEach((tag, i) => {
-          gsap.set(tag, { opacity: 0, x: -10 });
-          gsap.to(tag, {
-            opacity: 1,
-            x: 0,
-            duration: 0.2,
-            delay: i * 0.05,
-            ease: "power2.out"
-          });
-        });
-      }
-    }, 1300);
-
-    // ULTRA-SMOOTH CINEMATIC exit and chat restoration
-    addTimeout(() => {
-      console.log('Starting CINEMATIC analysis exit with perfect chat restoration');
-      
-      // Create master timeline for perfect synchronization
-      const exitTl = gsap.timeline();
-      const innerContent = analysisOverlay.querySelector('.bg-white');
-      const chatContainer = document.getElementById('chatContainer');
-      const chatMessages = document.getElementById('chatMessages');
-      
-      // Step 1: Content elegant exit with 3D perspective
-      if (innerContent) {
-        exitTl.to(innerContent, {
-          scale: 0.9,
-          y: -40,
-          opacity: 0,
-          rotationY: -5,
-          duration: 0.6,
-          ease: "power3.inOut"
-        });
-      }
-      
-      // Step 2: Overlay sophisticated fade with backdrop
-      exitTl.to(analysisOverlay, {
+    if (productOverlay) {
+      gsap.to(productOverlay, {
         opacity: 0,
-        background: 'rgba(255, 255, 255, 0)',
-        backdropFilter: 'blur(0px)',
-        duration: 0.7,
-        ease: "power3.inOut",
+        scale: 0.9,
+        duration: 0.5,
+        ease: "power2.in",
         onComplete: () => {
-          if (analysisOverlay.parentNode) {
-            analysisOverlay.parentNode.removeChild(analysisOverlay);
-          }
+          productOverlay.remove();
+          // Continue with user selection message
+          continueWithUserSelection();
         }
-      }, "-=0.3");
-      
-      // Step 3: SIMULTANEOUS chat restoration (starts before overlay fully gone)
-      if (chatContainer && chatMessages) {
-        // Chat container restoration
-        exitTl.to(chatContainer, {
-          scale: 1,
-          opacity: 1,
-          filter: 'blur(0px)',
-          duration: 0.8,
-          ease: "power3.out"
-        }, "-=0.5");
-        
-        // Messages restoration with cinematic stagger
-        const messages = chatMessages.querySelectorAll('.chat-message');
-        exitTl.fromTo(messages, {
-          y: 20,
-          opacity: 0.3,
-          scale: 0.98
-        }, {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          stagger: 0.04,
-          ease: "power4.out"
-        }, "-=0.6");
-        
-        // Elegant focus ring
-        exitTl.to(chatContainer, {
-          boxShadow: '0 0 40px rgba(59, 130, 246, 0.08), 0 0 0 1px rgba(59, 130, 246, 0.05)',
-          duration: 0.4,
-          ease: "power2.out"
-        }, "-=0.2")
-        .to(chatContainer, {
-          boxShadow: '0 0 0px rgba(59, 130, 246, 0), 0 0 0 0px rgba(59, 130, 246, 0)',
-          duration: 0.8,
-          delay: 0.4,
-          ease: "power2.out",
-          onComplete: () => {
-            console.log('CINEMATIC chat restoration complete - BUTTERY SMOOTH!');
-            continueWithAIResponse();
-          }
-        });
-      } else {
-        // Fallback
-        exitTl.call(() => {
-          continueWithAIResponse();
-        });
-      }
-    }, 4200); // Show analysis for 4.2 seconds
+      });
+    }
+  };
+
+  const continueWithUserSelection = () => {
+    // Skip user message, go directly to AI confirmation
+    addTimeout(() => {
+      console.log('AI confirms selection and adds to cart');
+      addChatMessageWithSlide({
+        type: 'received',
+        text: 'Perfect choice! Added the Vintage Floral Maxi Dress to your cart.'
+      });
+
+      // Show success animation overlay with smooth chat transition
+      addTimeout(() => {
+        console.log('Starting smooth transition from chat to success overlay');
+        transitionToSuccessOverlay();
+      }, 1200); // Wait for confirmation message
+    }, 300); // Quick transition from overlay to chat
   };
 
   const continueWithRestOfConversation = () => {
-    console.log('=== Continuing with rest of conversation ===');
-    
-    // User response comes earlier for better flow
-    addTimeout(() => {
-      console.log('Adding user address response');
-      addChatMessageWithSlide({
-        type: 'sent',
-        text: '1847 Union St, San Francisco, CA 94123'
-      });
-
-      addTimeout(() => {
-        console.log('Adding AI confirmation');
-        addChatMessageWithSlide({
-          type: 'received',
-          text: 'Perfect! Let me update your Pacific Trust Bank account with this new address.'
-        });
-
-        // Show success animation overlay with smooth chat transition
-        addTimeout(() => {
-          console.log('Starting smooth transition from chat to success overlay');
-          transitionToSuccessOverlay();
-        }, 1200); // Slightly faster transition
-      }, 2200); // Faster confirmation timing
-    }, 1400); // Even faster user response for better flow
+    // This function is kept for compatibility but now calls the new one
+    continueWithSearchResults();
   };
 
   const continueWithAIResponse = () => {
@@ -737,12 +584,12 @@ export default function AddressUpdateVideo() {
   const showSuccessDashboard = () => {
     console.log('=== Showing success dashboard ===');
     
-    // Create success dashboard like demo-video style
+    // Create success dashboard for e-commerce
     const dashboardOverlay = document.createElement('div');
     dashboardOverlay.className = 'fixed inset-0 bg-white z-50 flex items-center justify-center';
     dashboardOverlay.id = 'successDashboard';
     
-    // Professional success message with modern design
+    // E-commerce success message with modern design
     dashboardOverlay.innerHTML = `
       <div class="max-w-lg mx-auto px-8">
         <div class="bg-white rounded-2xl p-10 shadow-xl border border-gray-200/50 backdrop-blur-sm">
@@ -754,24 +601,19 @@ export default function AddressUpdateVideo() {
           </div>
           
           <!-- Title -->
-          <h2 class="text-3xl font-semibold text-gray-900 text-center mb-3">Address Updated</h2>
-          <p class="text-gray-600 text-center mb-8">Your account has been successfully updated with your new address.</p>
+          <h2 class="text-3xl font-semibold text-gray-900 text-center mb-3">Added to Cart</h2>
+          <p class="text-gray-600 text-center mb-8">Your item has been successfully added to your shopping cart.</p>
           
-          <!-- Address Card -->
+          <!-- Product Card -->
           <div class="bg-gradient-to-r from-gray-50 to-gray-100/70 rounded-xl p-6 border border-gray-200/60">
             <div class="flex items-start space-x-4">
-              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
+              <div class="w-16 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                <img src="/images/dress1.jpg" alt="Vintage Floral Maxi Dress" class="w-full h-full object-cover" />
               </div>
               <div class="flex-1">
-                <h4 class="font-medium text-gray-900 mb-2">New Address</h4>
-                <div class="space-y-1">
-                  <div class="text-gray-700 font-medium">1847 Union St</div>
-                  <div class="text-gray-700 font-medium">San Francisco, CA 94123</div>
-                </div>
+                <h4 class="font-medium text-gray-900 mb-1">Vintage Floral Maxi Dress</h4>
+                <div class="text-sm text-gray-600 mb-2">Size M • Long sleeves • Button front</div>
+                <div class="text-xl font-bold text-gray-900">$138</div>
               </div>
             </div>
           </div>
@@ -792,9 +634,9 @@ export default function AddressUpdateVideo() {
     const icon = dashboardOverlay.querySelector('.success-checkmark');
     const title = dashboardOverlay.querySelector('h2');
     const subtitle = dashboardOverlay.querySelector('p');
-    const addressCard = dashboardOverlay.querySelector('.bg-gradient-to-r');
+    const productCard = dashboardOverlay.querySelector('.bg-gradient-to-r');
     
-    console.log('Success animation elements:', { content: !!content, icon: !!icon, title: !!title, subtitle: !!subtitle, addressCard: !!addressCard });
+    console.log('Success animation elements:', { content: !!content, icon: !!icon, title: !!title, subtitle: !!subtitle, productCard: !!productCard });
     
     // Set initial states for staggered animation
     if (content) {
@@ -809,8 +651,8 @@ export default function AddressUpdateVideo() {
     if (subtitle) {
       gsap.set(subtitle, { y: 15, opacity: 0 });
     }
-    if (addressCard) {
-      gsap.set(addressCard, { y: 20, opacity: 0 });
+    if (productCard) {
+      gsap.set(productCard, { y: 20, opacity: 0 });
     }
     
     // Create smooth entrance timeline
@@ -857,8 +699,8 @@ export default function AddressUpdateVideo() {
       ease: "power2.out"
     }, "-=0.5")
     
-    // 6. Address card appears - smooth and relaxed
-    .to(addressCard, {
+    // 6. Product card appears - smooth and relaxed
+    .to(productCard, {
       y: 0,
       opacity: 1,
       duration: 1.0,
@@ -890,7 +732,6 @@ export default function AddressUpdateVideo() {
       }, 400);
     });
   };
-
 
   const createCelebrationParticle = (container: HTMLElement) => {
     const particle = document.createElement('div');
@@ -936,42 +777,22 @@ export default function AddressUpdateVideo() {
       
       // Cinematic exit of success dashboard
       if (successDashboard) {
-        const content = successDashboard.querySelector('.w-\\[600px\\]');
-        const statsCards = successDashboard.querySelectorAll('.grid > div');
-        const detailsCard = successDashboard.querySelector('.bg-white.rounded-xl.shadow-sm');
+        const content = successDashboard.querySelector('.bg-white');
         
         // Create elegant exit sequence
         const exitTl = gsap.timeline();
         
-        // Step 1: Stats cards fade out with stagger
-        exitTl.to(statsCards, {
-          y: -30,
-          opacity: 0,
-          scale: 0.95,
-          duration: 0.4,
-          stagger: 0.05,
-          ease: "power2.in"
-        })
-        
-        // Step 2: Details card slides down
-        .to(detailsCard, {
-          y: 40,
-          opacity: 0,
-          duration: 0.5,
-          ease: "power2.in"
-        }, "-=0.3")
-        
-        // Step 3: Main content scales and rotates out
-        .to(content, {
+        // Step 1: Content scales and rotates out
+        exitTl.to(content, {
           scale: 0.85,
           rotationY: -15,
           y: 30,
           opacity: 0,
           duration: 0.6,
           ease: "power3.in"
-        }, "-=0.4")
+        })
         
-        // Step 4: Background fade with perspective
+        // Step 2: Background fade with perspective
         .to(successDashboard, {
           opacity: 0,
           scale: 0.9,
@@ -1049,39 +870,6 @@ export default function AddressUpdateVideo() {
       }
     }, 2800);
   };
-
-  const startTypingIntro = () => {
-    // Beautiful reveal animation - elements are already positioned and hidden
-    const mainTextElement = document.getElementById('typingMainText') as HTMLElement;
-    const subtextElement = document.getElementById('typingSubtext') as HTMLElement;
-    
-    // Animate first line in with beautiful entrance
-    addTimeout(() => {
-      if (mainTextElement) {
-        gsap.to(mainTextElement, {
-          opacity: 1, 
-          y: 0, 
-          scale: 1,
-          duration: 1.2, 
-          ease: "elastic.out(1, 0.5)" 
-        });
-      }
-    }, 300);
-    
-    // Animate second line in after first line starts
-    addTimeout(() => {
-      if (subtextElement) {
-        gsap.to(subtextElement, {
-          opacity: 1, 
-          y: 0, 
-          scale: 1,
-          duration: 1.0, 
-          ease: "back.out(1.7)" 
-        });
-      }
-    }, 1500);
-  };
-
 
   useEffect(() => {
     // Auto-start demo after component mount
@@ -1184,58 +972,7 @@ export default function AddressUpdateVideo() {
         />
       </div>
 
-      {/* Clean Intro Phase - White Background with BlizzardBerry Colors */}
-      <div 
-        data-phase="intro"
-        className={`fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-8 transition-opacity duration-500 ${
-          videoState.currentPhase === 'intro' ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-      >
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-50"></div>
-        
-        {/* Main reveal text - Properly stacked */}
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <div className="mb-4">
-            <h1 
-              id="typingMainText" 
-              className="text-7xl font-bold tracking-tight opacity-0"
-              style={{
-                background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-                transform: 'translateY(50px) scale(0.9)'
-              }}
-            >
-              
-            </h1>
-          </div>
-          
-          <div className="relative">
-            <p 
-              id="typingSubtext"
-              className="text-3xl font-medium tracking-wide opacity-0 text-muted-foreground"
-              style={{
-                transform: 'translateY(40px) scale(0.95)'
-              }}
-            >
-              
-            </p>
-            
-            {/* Animated cursor - hidden */}
-            <span className="inline-block w-1 h-8 bg-blue-500 ml-1 typing-cursor align-middle" id="typingCursor" style={{ display: 'none' }}></span>
-          </div>
-        </div>
-        
-        {/* Subtle decorative elements */}
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-500/20 rounded-full animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-secondary/20 rounded-full animate-bounce" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-primary/20 rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-1/4 right-1/3 w-1 h-1 bg-blue-500/30 rounded-full animate-bounce" style={{ animationDelay: '0.5s' }}></div>
-      </div>
-
-      {/* Chat Interface - Demo-Niko Style */}
+      {/* Chat Interface - E-commerce Style */}
       <div 
         id="chatContainer"
         className={`fixed inset-0 bg-white transition-opacity duration-300 ${
@@ -1251,7 +988,7 @@ export default function AddressUpdateVideo() {
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
                   <h2 className="text-3xl font-bold text-muted-foreground mb-2">
-                    Pacific Trust Bank<br/>Customer Support
+                    StyleBot<br/>Smart Shopping Assistant
                   </h2>
                 </div>
                 
@@ -1259,7 +996,7 @@ export default function AddressUpdateVideo() {
                   <div className="flex-1 relative overflow-visible">
                     <textarea
                       id="userInput"
-                      placeholder="Tell me what you need..."
+                      placeholder="What are you shopping for today?"
                       className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none h-17 leading-normal"
                       spellCheck={false}
                       disabled
