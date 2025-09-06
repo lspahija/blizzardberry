@@ -254,7 +254,7 @@ export default function EcommerceShoppingVideo() {
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
         message.type === 'sent' 
-          ? 'bg-blue-500 text-white hover:scale-[1.02]' 
+          ? 'bg-teal-500 text-white hover:scale-[1.02]' 
           : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
@@ -310,9 +310,9 @@ export default function EcommerceShoppingVideo() {
       text: `
         <div class="flex items-center space-x-3">
           <div class="flex space-x-1">
-            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-teal-500/60 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-teal-500/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-teal-500/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
           <div class="text-base text-muted-foreground">Searching products...</div>
         </div>
@@ -384,7 +384,7 @@ export default function EcommerceShoppingVideo() {
         <h3 class="text-2xl font-bold text-center mb-6">Choose your dress</h3>
         <div class="space-y-4">
           <!-- Option 1 -->
-          <div id="product1" class="bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-blue-500 transition-all cursor-pointer hover:shadow-lg">
+          <div id="product1" class="bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-teal-500 transition-all cursor-pointer hover:shadow-lg">
             <div class="flex items-start space-x-4">
               <div class="w-16 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                 <img src="/images/dress1.jpg" alt="Vintage Floral Maxi Dress" class="w-full h-full object-cover" />
@@ -392,13 +392,13 @@ export default function EcommerceShoppingVideo() {
               <div class="flex-1">
                 <h4 class="font-medium text-gray-900 mb-1">Vintage Floral Maxi Dress</h4>
                 <p class="text-xs text-gray-600 mb-2">Size M • Long sleeves • Button front</p>
-                <div class="text-lg font-bold text-blue-600">$138</div>
+                <div class="text-lg font-bold text-teal-600">$138</div>
               </div>
             </div>
           </div>
           
           <!-- Option 2 -->
-          <div id="product2" class="bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-blue-500 transition-all cursor-pointer hover:shadow-lg">
+          <div id="product2" class="bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-teal-500 transition-all cursor-pointer hover:shadow-lg">
             <div class="flex items-start space-x-4">
               <div class="w-16 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                 <img src="/images/dress2.jpg" alt="Faded Green Floral Dress" class="w-full h-full object-cover" />
@@ -406,13 +406,13 @@ export default function EcommerceShoppingVideo() {
               <div class="flex-1">
                 <h4 class="font-medium text-gray-900 mb-1">Faded Green Floral Dress</h4>
                 <p class="text-xs text-gray-600 mb-2">Size M • Long sleeves • Wrap style</p>
-                <div class="text-lg font-bold text-blue-600">$145</div>
+                <div class="text-lg font-bold text-teal-600">$145</div>
               </div>
             </div>
           </div>
           
           <!-- Option 3 -->
-          <div id="product3" class="bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-blue-500 transition-all cursor-pointer hover:shadow-lg">
+          <div id="product3" class="bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-teal-500 transition-all cursor-pointer hover:shadow-lg">
             <div class="flex items-start space-x-4">
               <div class="w-16 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                 <img src="/images/dress3.jpeg" alt="Elegant Floral Maxi Dress" class="w-full h-full object-cover" />
@@ -420,7 +420,7 @@ export default function EcommerceShoppingVideo() {
               <div class="flex-1">
                 <h4 class="font-medium text-gray-900 mb-1">Elegant Floral Maxi Dress</h4>
                 <p class="text-xs text-gray-600 mb-2">Size M • Long sleeves • A-line cut</p>
-                <div class="text-lg font-bold text-blue-600">$129</div>
+                <div class="text-lg font-bold text-teal-600">$129</div>
               </div>
             </div>
           </div>
@@ -456,7 +456,7 @@ export default function EcommerceShoppingVideo() {
               ease: "power2.inOut",
               onComplete: () => {
                 // Hover effect
-                product1.style.borderColor = '#3B82F6';
+                product1.style.borderColor = '#14B8A6';
                 product1.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
                 
                 // Click after short hover
@@ -594,8 +594,8 @@ export default function EcommerceShoppingVideo() {
       <div class="max-w-lg mx-auto px-8">
         <div class="bg-white rounded-2xl p-10 shadow-xl border border-gray-200/50 backdrop-blur-sm">
           <!-- Success Icon -->
-          <div class="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 success-checkmark">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+          <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8 success-checkmark">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -736,7 +736,7 @@ export default function EcommerceShoppingVideo() {
   const createCelebrationParticle = (container: HTMLElement) => {
     const particle = document.createElement('div');
     particle.className = 'absolute w-2 h-2 rounded-full pointer-events-none';
-    particle.style.background = ['#10B981', '#3B82F6', '#1D4ED8'][Math.floor(Math.random() * 3)];
+    particle.style.background = ['#10B981', '#14B8A6', '#0D9488'][Math.floor(Math.random() * 3)];
     
     const rect = container.getBoundingClientRect();
     particle.style.left = `${rect.left + rect.width / 2}px`;
@@ -962,7 +962,7 @@ export default function EcommerceShoppingVideo() {
       {/* Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-muted z-40">
         <div 
-          className="h-full bg-gradient-to-r from-blue-500 to-secondary transition-all duration-300 ease-out" 
+          className="h-full bg-gradient-to-r from-teal-500 to-secondary transition-all duration-300 ease-out" 
           style={{ 
             width: videoState.currentPhase === 'chat' ? '25%' :
                    videoState.currentPhase === 'processing' ? '40%' :
@@ -1003,7 +1003,7 @@ export default function EcommerceShoppingVideo() {
                     />
                     <button id="sendButton" className="group absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
-                        <svg width="20" height="20" fill="#3B82F6" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">
+                        <svg width="20" height="20" fill="#14B8A6" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         </svg>
                       </div>
@@ -1074,7 +1074,7 @@ export default function EcommerceShoppingVideo() {
           <div
             key={phase}
             className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-              videoState.currentPhase === phase ? 'bg-blue-500' : 'bg-gray-300'
+              videoState.currentPhase === phase ? 'bg-teal-500' : 'bg-gray-300'
             }`}
           />
         ))}
