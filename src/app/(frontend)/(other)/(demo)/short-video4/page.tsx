@@ -988,7 +988,7 @@ export default function EcommerceShoppingVideo() {
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
                   <h2 className="text-3xl font-bold text-muted-foreground mb-2">
-                    StyleBot<br/>Smart Shopping Assistant
+                    Fashion Finds<br/>AI Agent
                   </h2>
                 </div>
                 
