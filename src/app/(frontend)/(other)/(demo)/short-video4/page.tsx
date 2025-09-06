@@ -140,7 +140,7 @@ export default function EcommerceShoppingVideo() {
         if (userInput) {
           userInput.disabled = false;
           userInput.focus();
-          typeTextWithScroll(userInput, "Find me a floral dress under $150\nin size medium with long sleeves", 60, () => {
+          typeTextWithScroll(userInput, "Find me a floral dress under $150\nin size medium with long sleeves.", 60, () => {
             // Show airplane animation and send with natural pause
             addTimeout(() => {
               triggerAirplane();
@@ -189,7 +189,7 @@ export default function EcommerceShoppingVideo() {
       
       addChatMessageWithSlide({
         type: 'sent',
-        text: 'Find me a floral dress under $150 in size medium with long sleeves'
+        text: 'Find me a floral dress under $150 in size medium with long sleeves.'
       });
 
       // Add processing bubble and then continue directly to AI response
