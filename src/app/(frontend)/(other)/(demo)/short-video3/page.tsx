@@ -171,7 +171,7 @@ export default function MusicStreamRefundVideo() {
       const messageDiv = document.createElement('div');
       messageDiv.className = 'flex justify-end chat-message';
       messageDiv.innerHTML = `
-        <div class="bg-green-500 text-white px-6 py-4 rounded-3xl max-w-sm shadow-lg">
+        <div class="bg-cyan-500 text-white px-6 py-4 rounded-3xl max-w-sm shadow-lg">
           <div class="text-base font-medium">${text}</div>
         </div>
       `;
@@ -185,15 +185,15 @@ export default function MusicStreamRefundVideo() {
       const messageDiv = document.createElement('div');
       messageDiv.className = 'flex justify-start chat-message';
       
-      const bgColor = isAgent ? 'bg-green-50 border border-green-200' : 'bg-muted';
+      const bgColor = isAgent ? 'bg-cyan-50 border border-cyan-200' : 'bg-muted';
       const agentInfo = isAgent ? `
         <div class="flex items-center mb-2">
-          <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
+          <div class="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center mr-3">
             <span class="text-white text-xs font-bold">SA</span>
           </div>
           <div>
-            <div class="text-sm font-semibold text-green-800">Agent Sarah</div>
-            <div class="text-xs text-green-600">Billing Specialist</div>
+            <div class="text-sm font-semibold text-cyan-800">Agent Sarah</div>
+            <div class="text-xs text-cyan-600">Billing Specialist</div>
           </div>
         </div>
       ` : '';
@@ -215,9 +215,9 @@ export default function MusicStreamRefundVideo() {
     addBotMessageToChat(`
       <div class="flex items-center space-x-3">
         <div class="flex space-x-1">
-          <div class="w-2 h-2 bg-green-500/60 rounded-full animate-bounce"></div>
-          <div class="w-2 h-2 bg-green-500/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-          <div class="w-2 h-2 bg-green-500/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+          <div class="w-2 h-2 bg-cyan-500/60 rounded-full animate-bounce"></div>
+          <div class="w-2 h-2 bg-cyan-500/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+          <div class="w-2 h-2 bg-cyan-500/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
         </div>
         <div class="text-base text-muted-foreground">Analyzing subscription...</div>
       </div>
@@ -349,8 +349,9 @@ export default function MusicStreamRefundVideo() {
     analysisOverlay.innerHTML = `
       <div class="w-[500px] bg-white rounded-3xl border border-gray-100 shadow-2xl p-10 transform perspective-1000">
         <div class="text-center mb-8">
-          <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600/80 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
-            <span class="text-3xl text-white">♪</span>
+          <div class="relative w-24 h-24 bg-gradient-to-br from-cyan-400 via-cyan-500 to-cyan-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
+            <div class="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
+            <span class="text-5xl text-white relative z-10 font-medium">♪</span>
           </div>
           <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream Premium</h3>
           <p class="text-muted-foreground text-lg">Current Subscription Status</p>
@@ -371,7 +372,7 @@ export default function MusicStreamRefundVideo() {
           </div>
         </div>
         
-        <button id="extendButton" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-5 rounded-2xl font-bold text-xl hover:scale-[1.02] transition-all duration-300 shadow-lg transform">
+        <button id="extendButton" class="w-full bg-gradient-to-r from-cyan-500 to-cyan-600 text-white py-5 rounded-2xl font-bold text-xl hover:scale-[1.02] transition-all duration-300 shadow-lg transform">
           Upgrade to Premium
         </button>
       </div>
@@ -502,7 +503,7 @@ export default function MusicStreamRefundVideo() {
           hour12: true
         });
         extendButton.innerHTML = `Upgraded Successfully!<br><small style="font-size: 14px; opacity: 0.9;">${timestamp}</small>`;
-        extendButton.className = 'w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-lg';
+        extendButton.className = 'w-full bg-cyan-600 text-white py-4 rounded-xl font-semibold text-lg';
         
         addTimeout(() => {
           // Professional exit sequence
@@ -681,7 +682,7 @@ export default function MusicStreamRefundVideo() {
       {/* Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-muted z-40">
         <div 
-          className="h-full bg-gradient-to-r from-green-500 to-secondary transition-all duration-300 ease-out" 
+          className="h-full bg-gradient-to-r from-cyan-500 to-secondary transition-all duration-300 ease-out" 
           style={{ 
             width: videoState.currentPhase === 'chat' ? '22%' :
                    videoState.currentPhase === 'processing' ? '31%' :
@@ -704,8 +705,9 @@ export default function MusicStreamRefundVideo() {
             <div id="initialState" className="flex-1 flex items-center justify-center px-6">
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <div className="w-16 h-16 bg-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl text-white">♪</span>
+                  <div className="relative w-20 h-20 bg-gradient-to-br from-cyan-400 via-cyan-500 to-cyan-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
+                    <span className="text-5xl text-white relative z-10 font-medium">♪</span>
                   </div>
                   <h2 className="text-3xl font-bold text-muted-foreground mb-2">
                     MusicStream<br/>Customer Support
@@ -723,7 +725,7 @@ export default function MusicStreamRefundVideo() {
                     />
                     <button id="sendButton" className="group absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
-                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-green-500">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-cyan-500">
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         </svg>
                       </div>
