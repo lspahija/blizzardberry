@@ -194,6 +194,7 @@ export default function LandingPage() {
         </div>
       </motion.div>
 
+
       <motion.section
         className="py-12 sm:py-16 bg-muted/30"
         variants={containerVariants}
@@ -210,109 +211,10 @@ export default function LandingPage() {
               A new kind of user interface
             </h2>
             <p className="text-lg sm:text-xl text-muted-foreground">
-              Users want to interact with your app using natural language. Our
-              AI agent translates conversations into actions.
+              Users want to interact with your app using natural language. Our AI agent translates conversations into actions.
             </p>
           </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
-            {[
-              {
-                icon: Zap,
-                title: 'From Intent to Action, Instantly',
-                text: "Our agent doesn't just talk; it acts. It securely connects to your app's APIs to turn user requests directly into results.",
-                bullets: [
-                  'Execute commands like "Upgrade my account."',
-                  'Connect users to key functions and workflows.',
-                  'Create the most direct path from request to conversion.',
-                ],
-              },
-              {
-                icon: Code,
-                title: 'Learns Your App in Minutes',
-                text: 'Forget building complex, manual conversation flows. Our agent learns everything it needs to know directly from your existing content.',
-                bullets: [
-                  'Instantly train on your documentation or knowledge base.',
-                  'Becomes a product expert, ready to answer any question.',
-                  'Embed anywhere on your site with a single line of code.',
-                ],
-              },
-              {
-                icon: Rocket,
-                title: 'Drive Adoption, Not Just Support Tickets',
-                text: 'Turn user assistance from a cost center into an engine for growth. Our agent helps users succeed while reducing your support burden.',
-                bullets: [
-                  'Provide 24/7 self-service to solve user problems.',
-                  'Proactively guide users to discover and adopt features.',
-                  'Increase engagement, retention, and user success.',
-                ],
-              },
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2, margin: '-20px' }}
-                style={{ willChange: 'auto' }}
-                className="group"
-              >
-                <Card className="border-[3px] border-border bg-card rounded-2xl shadow-lg h-full transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-1">
-                  <CardHeader className="pb-4">
-                    <item.icon className="w-8 h-8 sm:w-10 sm:h-10 text-brand mb-3 sm:mb-4" />
-                    <CardTitle className="text-xl sm:text-2xl font-semibold leading-tight">
-                      {item.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-1">
-                    <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4">
-                      {item.text}
-                    </p>
-                    {item.bullets && (
-                      <ul className="space-y-2">
-                        {item.bullets.map((bullet, bulletIndex) => (
-                          <li
-                            key={bulletIndex}
-                            className="flex items-start space-x-3"
-                          >
-                            <div className="w-1.5 h-1.5 bg-brand rounded-full flex-shrink-0 mt-2" />
-                            <span className="text-sm sm:text-base text-muted-foreground">
-                              {bullet}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
-
-      {/* Features Section - Redesigned with alternating layout */}
-      <motion.section
-        className="py-20 sm:py-28 bg-gradient-to-b from-background to-muted/10"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1, margin: '-50px' }}
-      >
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <motion.div
-            className="text-center mb-16 sm:mb-20"
-            variants={itemVariants}
-          >
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 sm:mb-8 leading-tight">
-              Everything You Need
-            </h2>
-            <p className="text-xl sm:text-2xl text-muted-foreground/80 max-w-4xl mx-auto font-medium">
-              A complete platform to build, deploy, and manage intelligent AI
-              agents that work seamlessly with your existing systems
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center mb-20 sm:mb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center mb-12 sm:mb-16">
             {/* Custom Actions */}
             <div className="lg:col-span-7">
               <Card className="group border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-brand/30 relative">
