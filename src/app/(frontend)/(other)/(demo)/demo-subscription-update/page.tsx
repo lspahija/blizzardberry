@@ -164,8 +164,8 @@ export default function MusicStreamRefundVideo() {
       const messageDiv = document.createElement('div');
       messageDiv.className = 'flex justify-end chat-message';
       messageDiv.innerHTML = `
-        <div class="bg-cyan-500/60 text-white px-6 py-4 rounded-3xl max-w-sm shadow-lg">
-          <div class="text-base font-medium">${text}</div>
+        <div class="bg-cyan-500/20 text-foreground px-6 py-4 rounded-3xl max-w-sm shadow-lg">
+          <div class="text-base font-medium text-foreground">${text}</div>
         </div>
       `;
       chatMessages.appendChild(messageDiv);
@@ -342,7 +342,7 @@ export default function MusicStreamRefundVideo() {
     analysisOverlay.innerHTML = `
       <div class="w-[500px] bg-white rounded-3xl border border-gray-100 shadow-2xl p-10 transform perspective-1000">
         <div class="text-center mb-8">
-          <div class="relative w-24 h-24 bg-gradient-to-br from-cyan-400/60 via-cyan-500/60 to-cyan-600/60 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
+          <div class="relative w-24 h-24 bg-gradient-to-br from-cyan-400/20 via-cyan-500/20 to-cyan-600/40 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
             <div class="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
             <svg class="w-12 h-12 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
               <path d="M9 18V5l12-2v13"/>
@@ -500,7 +500,7 @@ export default function MusicStreamRefundVideo() {
           hour12: true
         });
         extendButton.innerHTML = `Upgraded Successfully!<br><small style="font-size: 14px; opacity: 0.9;">${timestamp}</small>`;
-        extendButton.className = 'w-full bg-cyan-600 text-white py-4 rounded-xl font-semibold text-lg';
+        extendButton.className = 'w-full bg-cyan-600/20 text-black py-4 rounded-xl font-semibold text-lg';
         
         addTimeout(() => {
           // Professional exit sequence
@@ -679,7 +679,7 @@ export default function MusicStreamRefundVideo() {
       {/* Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-muted z-40">
         <div 
-          className="h-full bg-gradient-to-r from-cyan-400/60 to-secondary transition-all duration-300 ease-out" 
+          className="h-full bg-gradient-to-r from-cyan-400/20 to-secondary transition-all duration-300 ease-out" 
           style={{ 
             width: videoState.currentPhase === 'chat' ? '22%' :
                    videoState.currentPhase === 'processing' ? '31%' :
@@ -702,7 +702,7 @@ export default function MusicStreamRefundVideo() {
             <div id="initialState" className="flex-1 flex items-center justify-center px-6">
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-cyan-400/60 via-cyan-500/60 to-cyan-600/60 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+                  <div className="relative w-20 h-20 bg-gradient-to-br from-cyan-400/20 via-cyan-500/20 to-cyan-600/40 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
                     <svg className="w-10 h-10 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                       <path d="M9 18V5l12-2v13"/>
@@ -732,7 +732,7 @@ export default function MusicStreamRefundVideo() {
                     />
                     <button id="sendButton" className="group absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
-                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-cyan-600">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-cyan-500/40">
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         </svg>
                       </div>
