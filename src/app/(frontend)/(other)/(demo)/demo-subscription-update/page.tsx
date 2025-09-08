@@ -344,9 +344,10 @@ export default function MusicStreamRefundVideo() {
         <div class="text-center mb-8">
           <div class="relative w-24 h-24 bg-gradient-to-br from-cyan-400/60 via-cyan-500/60 to-cyan-600/60 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
             <div class="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
-            <svg class="w-10 h-10 text-white relative z-10" fill="currentColor" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <polygon points="10,8 16,12 10,16"/>
+            <svg class="w-10 h-10 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M9 18V5l12-2v13"/>
+              <circle cx="6" cy="18" r="3"/>
+              <circle cx="18" cy="16" r="3"/>
             </svg>
           </div>
           <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream Premium</h3>
@@ -703,9 +704,10 @@ export default function MusicStreamRefundVideo() {
                 <div className="text-center mb-8">
                   <div className="relative w-20 h-20 bg-gradient-to-br from-cyan-400/60 via-cyan-500/60 to-cyan-600/60 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
-                    <svg className="w-8 h-8 text-white relative z-10" fill="currentColor" viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="10"/>
-                      <polygon points="10,8 16,12 10,16"/>
+                    <svg className="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                      <path d="M9 18V5l12-2v13"/>
+                      <circle cx="6" cy="18" r="3"/>
+                      <circle cx="18" cy="16" r="3"/>
                     </svg>
                   </div>
                   <h2 className="text-3xl font-bold text-muted-foreground mb-2">
