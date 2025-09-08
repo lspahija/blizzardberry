@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Play, Pause } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { useState } from 'react';
 
 interface HeroVideoProps {
@@ -15,19 +15,7 @@ export default function HeroVideo({
   posterSrc, 
   className = "" 
 }: HeroVideoProps) {
-  const [isPlaying, setIsPlaying] = useState(true);
   const [videoRef, setVideoRef] = useState<HTMLVideoElement | null>(null);
-
-  const togglePlay = () => {
-    if (videoRef) {
-      if (isPlaying) {
-        videoRef.pause();
-      } else {
-        videoRef.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
 
   if (!videoSrc) {
     // Placeholder when no video is provided
@@ -54,18 +42,15 @@ export default function HeroVideo({
 
   return (
     <motion.div
-      className={`relative aspect-[13/10] rounded-2xl border-[3px] border-border shadow-2xl overflow-hidden ${className}`}
+      className={`relative aspect-[13/10] rounded-2xl border-[2px] border-border shadow-2xl overflow-hidden ${className}`}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
       <video
         ref={setVideoRef}
-        className="w-full h-full object-cover scale-125 translate-y-2"
+        className="w-full h-full object-cover"
         poster={posterSrc}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onEnded={() => setIsPlaying(false)}
         playsInline
         preload="metadata"
         autoPlay
@@ -76,19 +61,6 @@ export default function HeroVideo({
         Your browser does not support the video tag.
       </video>
       
-      {/* Custom Play/Pause Overlay */}
-      <div 
-        className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
-        onClick={togglePlay}
-      >
-        <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
-          {isPlaying ? (
-            <Pause className="w-8 h-8 text-gray-800" />
-          ) : (
-            <Play className="w-8 h-8 text-gray-800 ml-1" />
-          )}
-        </div>
-      </div>
 
       {/* Loading indicator */}
       {!videoRef && (
