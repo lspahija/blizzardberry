@@ -17,9 +17,12 @@ export function expandWidget() {
   const expandedView = widget?.querySelector('#expanded-view');
   
   if (widget && collapsedView && expandedView) {
-    widget.classList.add('expanded');
-    collapsedView.style.display = 'none';
-    expandedView.style.display = 'flex';
+    // Get current position and dimensions before expansion
+    const rect = widget.getBoundingClientRect();
+    const currentLeft = rect.left;
+    const currentTop = rect.top;
+    const currentWidth = rect.width;
+    const currentHeight = rect.height;
     
     // Set dynamic height based on messages
     const messageCount = state.messages.length;
@@ -33,6 +36,42 @@ export function expandWidget() {
     
     widget.style.setProperty('--expanded-height', `${expandedHeight}px`);
     
+    // Expand the widget
+    widget.classList.add('expanded');
+    collapsedView.style.display = 'none';
+    expandedView.style.display = 'flex';
+    
+    // Calculate position adjustment to keep the widget in a similar visual position
+    // We want to maintain the bottom-right corner position when expanding
+    const expandedWidth = 400; // from CSS
+    const widthDiff = expandedWidth - currentWidth;
+    const heightDiff = expandedHeight - currentHeight;
+    
+    // Adjust position to maintain bottom-right reference point
+    let newLeft = currentLeft - widthDiff;
+    let newTop = currentTop - heightDiff;
+    
+    // Apply relaxed boundary constraints for the expanded widget
+    // Allow widget to go off-screen but keep minimum draggable area visible
+    const minVisibleWidth = Math.min(100, expandedWidth);
+    const minVisibleHeight = Math.min(50, expandedHeight);
+    
+    const minX = -expandedWidth + minVisibleWidth;
+    const maxX = window.innerWidth - minVisibleWidth;
+    const minY = -expandedHeight + minVisibleHeight;
+    const maxY = window.innerHeight - minVisibleHeight;
+    
+    newLeft = Math.max(minX, Math.min(newLeft, maxX));
+    newTop = Math.max(minY, Math.min(newTop, maxY));
+    
+    // Only adjust position if widget has been moved from default position
+    if (widget.style.left !== '' || widget.style.top !== '') {
+      widget.style.left = newLeft + 'px';
+      widget.style.top = newTop + 'px';
+      widget.style.right = 'auto';
+      widget.style.bottom = 'auto';
+    }
+    
     // Focus input field after expansion
     setTimeout(() => getElementById('chatWidgetInputField')?.focus(), 100);
   }
@@ -44,9 +83,48 @@ export function collapseWidget() {
   const expandedView = widget?.querySelector('#expanded-view');
   
   if (widget && collapsedView && expandedView) {
+    // Get current position and dimensions before collapsing
+    const rect = widget.getBoundingClientRect();
+    const currentLeft = rect.left;
+    const currentTop = rect.top;
+    const currentWidth = rect.width;
+    const currentHeight = rect.height;
+    
+    // Collapse the widget
     widget.classList.remove('expanded');
     collapsedView.style.display = 'block';
     expandedView.style.display = 'none';
+    
+    // Calculate position adjustment to maintain bottom-right reference point
+    const collapsedWidth = window.innerWidth <= 768 ? 200 : 250; // from CSS
+    const collapsedHeight = window.innerWidth <= 768 ? 100 : 120; // from CSS
+    const widthDiff = currentWidth - collapsedWidth;
+    const heightDiff = currentHeight - collapsedHeight;
+    
+    // Adjust position to maintain bottom-right reference point
+    let newLeft = currentLeft + widthDiff;
+    let newTop = currentTop + heightDiff;
+    
+    // Apply relaxed boundary constraints for the collapsed widget
+    // Allow widget to go off-screen but keep minimum draggable area visible
+    const minVisibleWidth = Math.min(100, collapsedWidth);
+    const minVisibleHeight = Math.min(50, collapsedHeight);
+    
+    const minX = -collapsedWidth + minVisibleWidth;
+    const maxX = window.innerWidth - minVisibleWidth;
+    const minY = -collapsedHeight + minVisibleHeight;
+    const maxY = window.innerHeight - minVisibleHeight;
+    
+    newLeft = Math.max(minX, Math.min(newLeft, maxX));
+    newTop = Math.max(minY, Math.min(newTop, maxY));
+    
+    // Only adjust position if widget has been moved from default position
+    if (widget.style.left !== '' || widget.style.top !== '') {
+      widget.style.left = newLeft + 'px';
+      widget.style.top = newTop + 'px';
+      widget.style.right = 'auto';
+      widget.style.bottom = 'auto';
+    }
   }
 }
 
@@ -187,17 +265,27 @@ export async function createWidgetDOM() {
         hasMoved = true;
       }
       
+      // Get current widget dimensions
+      const rect = widget.getBoundingClientRect();
+      const currentWidth = rect.width;
+      const currentHeight = rect.height;
+      
+      // Calculate new position from current top-left
       const newX = widgetStartX + deltaX;
       const newY = widgetStartY + deltaY;
       
-      // Use collapsed dimensions for boundary calculations (250x120 from CSS)
-      const collapsedWidth = 250;
-      const collapsedHeight = 120;
-      const maxX = window.innerWidth - collapsedWidth;
-      const maxY = window.innerHeight - collapsedHeight;
+      // Apply relaxed boundary constraints - allow widget to go off-screen
+      // but keep at least 100px of draggable area visible
+      const minVisibleWidth = Math.min(100, currentWidth);
+      const minVisibleHeight = Math.min(50, currentHeight);
       
-      const boundedX = Math.max(0, Math.min(newX, maxX));
-      const boundedY = Math.max(0, Math.min(newY, maxY));
+      const minX = -currentWidth + minVisibleWidth;
+      const maxX = window.innerWidth - minVisibleWidth;
+      const minY = -currentHeight + minVisibleHeight;
+      const maxY = window.innerHeight - minVisibleHeight;
+      
+      const boundedX = Math.max(minX, Math.min(newX, maxX));
+      const boundedY = Math.max(minY, Math.min(newY, maxY));
       
       widget.style.left = boundedX + 'px';
       widget.style.top = boundedY + 'px';
@@ -290,14 +378,23 @@ export async function createWidgetDOM() {
         const newX = touchWidgetStartX + deltaX;
         const newY = touchWidgetStartY + deltaY;
         
-        // Use collapsed dimensions for boundary calculations (200x100 on mobile from CSS)
-        const collapsedWidth = window.innerWidth <= 768 ? 200 : 250;
-        const collapsedHeight = window.innerWidth <= 768 ? 100 : 120;
-        const maxX = window.innerWidth - collapsedWidth;
-        const maxY = window.innerHeight - collapsedHeight;
+        // Get current widget dimensions for accurate boundary calculations
+        const rect = widget.getBoundingClientRect();
+        const currentWidth = rect.width;
+        const currentHeight = rect.height;
         
-        const boundedX = Math.max(0, Math.min(newX, maxX));
-        const boundedY = Math.max(0, Math.min(newY, maxY));
+        // Apply relaxed boundary constraints - allow widget to go off-screen
+        // but keep at least 100px of draggable area visible (or 80px on mobile)
+        const minVisibleWidth = Math.min(window.innerWidth <= 768 ? 80 : 100, currentWidth);
+        const minVisibleHeight = Math.min(50, currentHeight);
+        
+        const minX = -currentWidth + minVisibleWidth;
+        const maxX = window.innerWidth - minVisibleWidth;
+        const minY = -currentHeight + minVisibleHeight;
+        const maxY = window.innerHeight - minVisibleHeight;
+        
+        const boundedX = Math.max(minX, Math.min(newX, maxX));
+        const boundedY = Math.max(minY, Math.min(newY, maxY));
         
         widget.style.left = boundedX + 'px';
         widget.style.top = boundedY + 'px';
