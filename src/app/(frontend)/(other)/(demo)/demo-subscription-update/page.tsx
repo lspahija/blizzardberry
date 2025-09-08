@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
@@ -15,7 +15,7 @@ interface VideoState {
 export default function MusicStreamRefundVideo() {
   const [videoState, setVideoState] = useState<VideoState>({
     isRunning: false,
-    currentPhase: 'chat'
+    currentPhase: 'chat',
   });
 
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
@@ -29,27 +29,32 @@ export default function MusicStreamRefundVideo() {
 
   const clearAllTimers = () => {
     if (timeoutsRef.current && Array.isArray(timeoutsRef.current)) {
-      timeoutsRef.current.forEach(timeout => {
+      timeoutsRef.current.forEach((timeout) => {
         if (timeout) clearTimeout(timeout);
       });
       timeoutsRef.current = [];
     }
   };
 
-  const typeTextWithScroll = (element: HTMLTextAreaElement | null, text: string, speed = 50, callback?: () => void) => {
+  const typeTextWithScroll = (
+    element: HTMLTextAreaElement | null,
+    text: string,
+    speed = 50,
+    callback?: () => void
+  ) => {
     if (!element) return;
     element.value = '';
     element.style.height = '60px'; // Reset to minimum height
     let i = 0;
-    
+
     const type = () => {
       if (i < text.length) {
         element.value += text.charAt(i);
-        
+
         // Auto-expand textarea as text is typed
         element.style.height = '60px'; // Reset to minimum
         element.style.height = Math.min(element.scrollHeight, 120) + 'px'; // Expand smoothly
-        
+
         i++;
         addTimeout(type, speed);
       } else if (callback) {
@@ -62,9 +67,13 @@ export default function MusicStreamRefundVideo() {
   const startDemo = () => {
     console.log('=== STARTING MUSICSTREAM DEMO ===');
     if (videoState.isRunning) return;
-    
+
     clearAllTimers();
-    setVideoState(prev => ({ ...prev, isRunning: true, currentPhase: 'chat' }));
+    setVideoState((prev) => ({
+      ...prev,
+      isRunning: true,
+      currentPhase: 'chat',
+    }));
 
     // Show chat interface immediately
     showChatInterface();
@@ -72,12 +81,12 @@ export default function MusicStreamRefundVideo() {
 
   const showChatInterface = () => {
     console.log('=== SHOWING CHAT INTERFACE ===');
-    
+
     const chatContainer = document.getElementById('chatContainer');
     if (chatContainer) {
       chatContainer.style.display = 'block';
       chatContainer.style.opacity = '1';
-      
+
       // Start typing user message immediately
       addTimeout(() => {
         startUserMessage();
@@ -87,24 +96,31 @@ export default function MusicStreamRefundVideo() {
 
   const startUserMessage = () => {
     console.log('=== USER TYPING MESSAGE ===');
-    const userInput = document.getElementById('userInput') as HTMLTextAreaElement;
-    
+    const userInput = document.getElementById(
+      'userInput'
+    ) as HTMLTextAreaElement;
+
     if (userInput) {
       // Show initial state
       const initialState = document.getElementById('initialState');
       if (initialState) {
         initialState.style.display = 'flex';
       }
-      
-      // Type user message  
+
+      // Type user message
       userInput.disabled = false;
       userInput.focus();
-      typeTextWithScroll(userInput, "Hi, I'd like to upgrade to premium plan", 60, () => {
-        // Show airplane animation and send with natural pause
-        addTimeout(() => {
-          triggerAirplane();
-        }, 800);
-      });
+      typeTextWithScroll(
+        userInput,
+        "Hi, I'd like to upgrade to the premium plan",
+        60,
+        () => {
+          // Show airplane animation and send with natural pause
+          addTimeout(() => {
+            triggerAirplane();
+          }, 800);
+        }
+      );
     }
   };
 
@@ -118,21 +134,23 @@ export default function MusicStreamRefundVideo() {
         rotation: -6,
         scale: 1.1,
         duration: 0.4, // Slightly slower airplane
-        ease: "power1.out",
+        ease: 'power1.out',
         onComplete: () => {
-          console.log('Airplane animation complete, transitioning to processing');
+          console.log(
+            'Airplane animation complete, transitioning to processing'
+          );
           transitionToConversation();
-        }
+        },
       });
     }
   };
 
   const transitionToConversation = () => {
     console.log('=== TRANSITIONING TO CONVERSATION ===');
-    
+
     const initialState = document.getElementById('initialState');
     const conversationState = document.getElementById('conversationState');
-    
+
     if (initialState && conversationState) {
       // Hide initial state and show conversation
       gsap.to(initialState, {
@@ -141,19 +159,20 @@ export default function MusicStreamRefundVideo() {
         onComplete: () => {
           initialState.style.display = 'none';
           conversationState.style.display = 'flex';
-          
-          gsap.fromTo(conversationState,
+
+          gsap.fromTo(
+            conversationState,
             { opacity: 0 },
             { opacity: 1, duration: 0.3 }
           );
-          
+
           // Add user message
-          addUserMessageToChat("Hi, I'd like to upgrade to premium plan");
-          
+          addUserMessageToChat("Hi, I'd like to upgrade to the premium plan");
+
           addTimeout(() => {
             showBotResponse();
           }, 1500);
-        }
+        },
       });
     }
   };
@@ -165,7 +184,7 @@ export default function MusicStreamRefundVideo() {
       messageDiv.className = 'flex justify-end chat-message';
       messageDiv.innerHTML = `
         <div class="bg-cyan-500/15 px-6 py-4 rounded-3xl max-w-sm shadow-lg">
-          <div class="text-base font-medium text-cyan-800 dark:text-cyan-200">${text}</div>
+          <div class="text-base leading-relaxed text-cyan-800 dark:text-cyan-200">${text}</div>
         </div>
       `;
       chatMessages.appendChild(messageDiv);
@@ -177,9 +196,12 @@ export default function MusicStreamRefundVideo() {
     if (chatMessages) {
       const messageDiv = document.createElement('div');
       messageDiv.className = 'flex justify-start chat-message';
-      
-      const bgColor = isAgent ? 'bg-cyan-50 border border-cyan-200' : 'bg-muted';
-      const agentInfo = isAgent ? `
+
+      const bgColor = isAgent
+        ? 'bg-cyan-50 border border-cyan-200'
+        : 'bg-muted';
+      const agentInfo = isAgent
+        ? `
         <div class="flex items-center mb-2">
           <div class="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center mr-3">
             <span class="text-white text-xs font-bold">SA</span>
@@ -189,8 +211,9 @@ export default function MusicStreamRefundVideo() {
             <div class="text-xs text-cyan-600 dark:text-cyan-400">Billing Specialist</div>
           </div>
         </div>
-      ` : '';
-      
+      `
+        : '';
+
       messageDiv.innerHTML = `
         <div class="${bgColor} px-6 py-4 rounded-3xl max-w-md shadow-sm">
           ${agentInfo}
@@ -198,7 +221,7 @@ export default function MusicStreamRefundVideo() {
         </div>
       `;
       chatMessages.appendChild(messageDiv);
-      
+
       // Scroll to bottom
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
@@ -222,7 +245,10 @@ export default function MusicStreamRefundVideo() {
         const allMessages = document.querySelectorAll('.chat-message');
         if (allMessages && allMessages.length > 0) {
           const processingBubble = allMessages[allMessages.length - 1];
-          if (processingBubble && processingBubble.nodeType === Node.ELEMENT_NODE) {
+          if (
+            processingBubble &&
+            processingBubble.nodeType === Node.ELEMENT_NODE
+          ) {
             processingBubble.id = 'processingBubble';
           }
         }
@@ -234,11 +260,11 @@ export default function MusicStreamRefundVideo() {
 
   const showBotResponse = () => {
     console.log('=== SHOWING BOT RESPONSE ===');
-    setVideoState(prev => ({ ...prev, currentPhase: 'processing' }));
-    
+    setVideoState((prev) => ({ ...prev, currentPhase: 'processing' }));
+
     // Add processing bubble directly
     addProcessingBubble();
-    
+
     addTimeout(() => {
       // Start subscription analysis
       showSubscriptionAnalysis();
@@ -297,19 +323,23 @@ export default function MusicStreamRefundVideo() {
 
     // Complete
     addTimeout(() => {
-      setVideoState(prev => ({ ...prev, currentPhase: 'complete', isRunning: false }));
-      
+      setVideoState((prev) => ({
+        ...prev,
+        currentPhase: 'complete',
+        isRunning: false,
+      }));
+
       // Auto-restart after completion
       addTimeout(() => {
         // Reset all UI elements
         const chatMessages = document.getElementById('chatMessages');
         const analysisOverlay = document.getElementById('subscriptionAnalysis');
         const finaleContainer = document.getElementById('finaleContainer');
-        
+
         if (chatMessages) chatMessages.innerHTML = '';
         if (analysisOverlay) analysisOverlay.remove();
         if (finaleContainer) finaleContainer.style.display = 'none';
-        
+
         // Restart demo
         startDemo();
       }, 2000);
@@ -320,25 +350,26 @@ export default function MusicStreamRefundVideo() {
     console.log('=== STARTING SUBSCRIPTION ANALYSIS ===');
     const processingBubble = document.getElementById('processingBubble');
     const chatContainer = document.getElementById('chatContainer');
-    
+
     // Create cinematic transition timeline
     const tl = gsap.timeline();
-    
+
     // Step 1: Elegant chat container zoom out and fade
     tl.to(chatContainer, {
       scale: 0.9,
       opacity: 0.3,
       filter: 'blur(8px)',
       duration: 0.8,
-      ease: "power2.out"
+      ease: 'power2.out',
     });
-    
+
     // Create analysis overlay
     const analysisOverlay = document.createElement('div');
     analysisOverlay.id = 'subscriptionAnalysis';
-    analysisOverlay.className = 'fixed inset-0 bg-gradient-to-br from-white via-gray-50/80 to-white flex flex-col items-center justify-center z-50';
+    analysisOverlay.className =
+      'fixed inset-0 bg-gradient-to-br from-white via-gray-50/80 to-white flex flex-col items-center justify-center z-50';
     analysisOverlay.style.opacity = '0';
-    
+
     analysisOverlay.innerHTML = `
       <div class="w-[500px] bg-white rounded-3xl border border-gray-100 shadow-2xl p-10 transform perspective-1000">
         <div class="text-center mb-8">
@@ -373,29 +404,37 @@ export default function MusicStreamRefundVideo() {
         </div>
       </div>
     `;
-    
+
     document.body.appendChild(analysisOverlay);
-    
+
     // Step 2: Dramatic overlay entrance
-    tl.to(analysisOverlay, {
-      opacity: 1,
-      duration: 0.6,
-      ease: "power2.out"
-    }, "-=0.4");
-    
+    tl.to(
+      analysisOverlay,
+      {
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power2.out',
+      },
+      '-=0.4'
+    );
+
     // Step 3: Card dramatic entrance
     const card = analysisOverlay?.querySelector?.('.w-\\[500px\\]');
     if (card && card.nodeType === Node.ELEMENT_NODE) {
       gsap.set(card, { scale: 0.7, rotationY: 15, opacity: 0 });
-      
-      tl.to(card, {
-        scale: 1,
-        rotationY: 0,
-        opacity: 1,
-        duration: 1,
-        ease: "elastic.out(1, 0.6)"
-      }, "-=0.2");
-      
+
+      tl.to(
+        card,
+        {
+          scale: 1,
+          rotationY: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'elastic.out(1, 0.6)',
+        },
+        '-=0.2'
+      );
+
       // Step 4: Sequential info card animations
       try {
         const infoCards = card.querySelectorAll('.space-y-4 > div');
@@ -403,38 +442,46 @@ export default function MusicStreamRefundVideo() {
           Array.from(infoCards).forEach((infoCard, i) => {
             if (infoCard && infoCard.nodeType === Node.ELEMENT_NODE) {
               gsap.set(infoCard, { x: 50, opacity: 0 });
-              tl.to(infoCard, {
-                x: 0,
-                opacity: 1,
-                duration: 0.5,
-                ease: "power2.out"
-              }, `-=${0.8 - (i * 0.1)}`);
+              tl.to(
+                infoCard,
+                {
+                  x: 0,
+                  opacity: 1,
+                  duration: 0.5,
+                  ease: 'power2.out',
+                },
+                `-=${0.8 - i * 0.1}`
+              );
             }
           });
         }
       } catch (error) {
         console.warn('Error animating info cards:', error);
       }
-      
+
       // Step 5: Button dramatic entrance
       const button = card.querySelector('#extendButton');
       if (button && button.nodeType === Node.ELEMENT_NODE) {
         gsap.set(button, { y: 30, opacity: 0, scale: 0.9 });
-        tl.to(button, {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.7,
-          ease: "back.out(1.7)"
-        }, "-=0.3");
+        tl.to(
+          button,
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.7,
+            ease: 'back.out(1.7)',
+          },
+          '-=0.3'
+        );
       }
     }
-    
+
     // Auto-close overlay after 2-3 seconds and return to chat
     addTimeout(() => {
       // Professional exit sequence
       const exitTl = gsap.timeline();
-      
+
       // Step 1: Card transforms and exits
       const card = analysisOverlay?.querySelector?.('.w-\\[500px\\]');
       if (card) {
@@ -443,24 +490,28 @@ export default function MusicStreamRefundVideo() {
           rotationY: -15,
           opacity: 0,
           duration: 0.8,
-          ease: "power2.in"
+          ease: 'power2.in',
         });
       }
-      
+
       // Step 2: Overlay fades with blur effect
-      exitTl.to(analysisOverlay, {
-        opacity: 0,
-        filter: 'blur(10px)',
-        duration: 0.5,
-        ease: "power2.in",
-        onComplete: () => {
-          document.body.removeChild(analysisOverlay);
-          returnToChatWithSuccess();
-        }
-      }, "-=0.3");
+      exitTl.to(
+        analysisOverlay,
+        {
+          opacity: 0,
+          filter: 'blur(10px)',
+          duration: 0.5,
+          ease: 'power2.in',
+          onComplete: () => {
+            document.body.removeChild(analysisOverlay);
+            returnToChatWithSuccess();
+          },
+        },
+        '-=0.3'
+      );
     }, 3500); // 3.5 seconds display time
   };
-  
+
   const handleSubscriptionExtension = (analysisOverlay: HTMLElement) => {
     const extendButton = document.getElementById('extendButton');
     if (extendButton) {
@@ -470,42 +521,47 @@ export default function MusicStreamRefundVideo() {
         duration: 0.1,
         yoyo: true,
         repeat: 1,
-        ease: "power2.inOut"
+        ease: 'power2.inOut',
       });
-      
+
       // Update button text
       extendButton.textContent = 'Processing...';
       extendButton.disabled = true;
-      
+
       addTimeout(() => {
         // Update plan information dynamically
-        const planTypeElement = analysisOverlay?.querySelector?.('.space-y-4 > div:nth-child(2) span:last-child');
-        const featuresElement = analysisOverlay?.querySelector?.('.space-y-4 > div:nth-child(3) span:last-child');
-        
+        const planTypeElement = analysisOverlay?.querySelector?.(
+          '.space-y-4 > div:nth-child(2) span:last-child'
+        );
+        const featuresElement = analysisOverlay?.querySelector?.(
+          '.space-y-4 > div:nth-child(3) span:last-child'
+        );
+
         if (planTypeElement) {
           planTypeElement.textContent = 'Premium Plan';
         }
         if (featuresElement) {
           featuresElement.textContent = 'Full Access';
         }
-        
+
         // Show success state with timestamp
         const now = new Date();
-        const timestamp = now.toLocaleString('en-US', { 
-          month: 'short', 
-          day: 'numeric', 
+        const timestamp = now.toLocaleString('en-US', {
+          month: 'short',
+          day: 'numeric',
           year: 'numeric',
           hour: 'numeric',
           minute: '2-digit',
-          hour12: true
+          hour12: true,
         });
         extendButton.innerHTML = `Upgraded Successfully!<br><small style="font-size: 14px; opacity: 0.9;">${timestamp}</small>`;
-        extendButton.className = 'w-full bg-cyan-500/15 text-cyan-800 dark:text-cyan-200 py-4 rounded-xl font-semibold text-lg';
-        
+        extendButton.className =
+          'w-full bg-cyan-500/15 text-cyan-800 dark:text-cyan-200 py-4 rounded-xl font-semibold text-lg';
+
         addTimeout(() => {
           // Professional exit sequence
           const exitTl = gsap.timeline();
-          
+
           // Step 1: Card transforms and exits
           const card = analysisOverlay?.querySelector?.('.w-\\[500px\\]');
           if (card) {
@@ -514,29 +570,33 @@ export default function MusicStreamRefundVideo() {
               rotationY: -15,
               opacity: 0,
               duration: 0.8,
-              ease: "power2.in"
+              ease: 'power2.in',
             });
           }
-          
+
           // Step 2: Overlay fades with blur effect
-          exitTl.to(analysisOverlay, {
-            opacity: 0,
-            filter: 'blur(10px)',
-            duration: 0.5,
-            ease: "power2.in",
-            onComplete: () => {
-              document.body.removeChild(analysisOverlay);
-              returnToChatWithSuccess();
-            }
-          }, "-=0.3");
+          exitTl.to(
+            analysisOverlay,
+            {
+              opacity: 0,
+              filter: 'blur(10px)',
+              duration: 0.5,
+              ease: 'power2.in',
+              onComplete: () => {
+                document.body.removeChild(analysisOverlay);
+                returnToChatWithSuccess();
+              },
+            },
+            '-=0.3'
+          );
         }, 1500);
       }, 1000);
     }
   };
-  
+
   const returnToChatWithSuccess = () => {
     const chatContainer = document.getElementById('chatContainer');
-    
+
     // Step 1: Restore chat container
     if (chatContainer) {
       gsap.to(chatContainer, {
@@ -544,10 +604,10 @@ export default function MusicStreamRefundVideo() {
         opacity: 1,
         filter: 'blur(0px)',
         duration: 1,
-        ease: "power3.out"
+        ease: 'power3.out',
       });
     }
-    
+
     // Step 2: Remove processing bubble
     const processingBubble = document.getElementById('processingBubble');
     if (processingBubble) {
@@ -556,25 +616,26 @@ export default function MusicStreamRefundVideo() {
         opacity: 0,
         y: -20,
         duration: 0.4,
-        ease: "power2.out",
+        ease: 'power2.out',
         onComplete: () => {
           processingBubble.remove();
-        }
+        },
       });
     }
-    
+
     // Step 3: Add success message
     addTimeout(() => {
-      setVideoState(prev => ({ ...prev, currentPhase: 'result' }));
-      addBotMessageToChat("Perfect! I've successfully upgraded your account to Premium.");
-      
+      setVideoState((prev) => ({ ...prev, currentPhase: 'result' }));
+      addBotMessageToChat(
+        "Perfect! I've successfully upgraded your account to Premium."
+      );
+
       // Add welcome message after short delay
       addTimeout(() => {
-        addBotMessageToChat("Enjoy your enhanced music experience!");
+        addBotMessageToChat('Enjoy your enhanced music experience!');
       }, 2000);
-      
     }, 500);
-    
+
     addTimeout(() => {
       showFinale();
     }, 4000);
@@ -582,11 +643,11 @@ export default function MusicStreamRefundVideo() {
 
   const showFinale = () => {
     console.log('=== SHOWING FINALE ===');
-    setVideoState(prev => ({ ...prev, currentPhase: 'finale' }));
-    
+    setVideoState((prev) => ({ ...prev, currentPhase: 'finale' }));
+
     const chatContainer = document.getElementById('chatContainer');
     const finaleContainer = document.getElementById('finaleContainer');
-    
+
     if (chatContainer && finaleContainer) {
       // Fade out chat
       gsap.to(chatContainer, {
@@ -595,15 +656,15 @@ export default function MusicStreamRefundVideo() {
         onComplete: () => {
           chatContainer.style.display = 'none';
           finaleContainer.style.display = 'flex';
-          
+
           // Show finale
           gsap.to(finaleContainer, {
             opacity: 1,
-            duration: 0.8
+            duration: 0.8,
           });
-          
+
           animateFinaleElements();
-        }
+        },
       });
     }
   };
@@ -678,43 +739,59 @@ export default function MusicStreamRefundVideo() {
 
       {/* Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-muted z-40">
-        <div 
-          className="h-full bg-gradient-to-r from-cyan-400/20 to-secondary transition-all duration-300 ease-out" 
-          style={{ 
-            width: videoState.currentPhase === 'chat' ? '22%' :
-                   videoState.currentPhase === 'processing' ? '31%' :
-                   videoState.currentPhase === 'result' ? '88%' :
-                   videoState.currentPhase === 'finale' ? '100%' : '22%'
+        <div
+          className="h-full bg-gradient-to-r from-cyan-400/20 to-secondary transition-all duration-300 ease-out"
+          style={{
+            width:
+              videoState.currentPhase === 'chat'
+                ? '22%'
+                : videoState.currentPhase === 'processing'
+                  ? '31%'
+                  : videoState.currentPhase === 'result'
+                    ? '88%'
+                    : videoState.currentPhase === 'finale'
+                      ? '100%'
+                      : '22%',
           }}
         />
       </div>
 
       {/* Chat Interface - MusicStream Style */}
-      <div 
+      <div
         id="chatContainer"
         className="fixed inset-0 bg-white"
         style={{ display: 'none' }}
       >
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <div className="w-[600px] h-[680px] bg-white flex flex-col transition-all duration-300 ease-out relative overflow-hidden">
-            
             {/* Initial State: Centered Input */}
-            <div id="initialState" className="flex-1 flex items-center justify-center px-6">
+            <div
+              id="initialState"
+              className="flex-1 flex items-center justify-center px-6"
+            >
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
                   <div className="relative w-20 h-20 bg-gradient-to-br from-cyan-400/20 via-cyan-500/20 to-cyan-600/40 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
-                    <svg className="w-10 h-10 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                      <path d="M9 18V5l12-2v13"/>
-                      <circle cx="6" cy="18" r="3"/>
-                      <circle cx="18" cy="16" r="3"/>
+                    <svg
+                      className="w-10 h-10 text-white relative z-10"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                    >
+                      <path d="M9 18V5l12-2v13" />
+                      <circle cx="6" cy="18" r="3" />
+                      <circle cx="18" cy="16" r="3" />
                     </svg>
                   </div>
                   <h2 className="text-4xl font-bold text-muted-foreground mb-2">
-                    MusicStream<br/>Customer Support
+                    MusicStream
+                    <br />
+                    Customer Support
                   </h2>
                 </div>
-                
+
                 <div className="flex gap-3 items-center">
                   <div className="flex-1 relative overflow-visible">
                     <textarea
@@ -727,13 +804,23 @@ export default function MusicStreamRefundVideo() {
                       onInput={(e) => {
                         const textarea = e.target as HTMLTextAreaElement;
                         textarea.style.height = '60px'; // Reset to minimum height
-                        textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px'; // Expand up to max
+                        textarea.style.height =
+                          Math.min(textarea.scrollHeight, 120) + 'px'; // Expand up to max
                       }}
                     />
-                    <button id="sendButton" className="group absolute right-3 top-1/2 transform -translate-y-[60%] p-2 hover:scale-110 transition-all duration-300">
+                    <button
+                      id="sendButton"
+                      className="group absolute right-3 top-1/2 transform -translate-y-[60%] p-2 hover:scale-110 transition-all duration-300"
+                    >
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
-                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-cyan-600 dark:text-cyan-400">
-                          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        <svg
+                          width="20"
+                          height="20"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-cyan-600 dark:text-cyan-400"
+                        >
+                          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                         </svg>
                       </div>
                     </button>
@@ -743,8 +830,15 @@ export default function MusicStreamRefundVideo() {
             </div>
 
             {/* Conversation State: Messages */}
-            <div id="conversationState" className="flex-1 flex items-center justify-center overflow-y-auto" style={{ display: 'none' }}>
-              <div id="chatMessages" className="w-full max-w-2xl px-6 flex flex-col gap-4 py-8">
+            <div
+              id="conversationState"
+              className="flex-1 flex items-center justify-center overflow-y-auto"
+              style={{ display: 'none' }}
+            >
+              <div
+                id="chatMessages"
+                className="w-full max-w-2xl px-6 flex flex-col gap-4 py-8"
+              >
                 {/* Messages will be dynamically added here */}
               </div>
             </div>
@@ -756,7 +850,9 @@ export default function MusicStreamRefundVideo() {
       <div
         id="finaleContainer"
         className={`fixed inset-0 opacity-0 flex flex-col items-center justify-center bg-white transition-opacity duration-500 ${
-          videoState.currentPhase === 'finale' ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          videoState.currentPhase === 'finale'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none'
         }`}
         style={{ display: 'none' }}
       >
@@ -776,9 +872,12 @@ export default function MusicStreamRefundVideo() {
                 unoptimized
               />
             </div>
-            
+
             {/* Pulse ring effects */}
-            <div className="absolute inset-0 w-48 h-48 border-2 border-brand/40 rounded-3xl" style={{ animation: 'ringPulse 3s infinite ease-out' }}></div>
+            <div
+              className="absolute inset-0 w-48 h-48 border-2 border-brand/40 rounded-3xl"
+              style={{ animation: 'ringPulse 3s infinite ease-out' }}
+            ></div>
           </div>
         </div>
 
