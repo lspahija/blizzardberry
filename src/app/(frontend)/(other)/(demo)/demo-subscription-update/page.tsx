@@ -164,8 +164,8 @@ export default function MusicStreamRefundVideo() {
       const messageDiv = document.createElement('div');
       messageDiv.className = 'flex justify-end chat-message';
       messageDiv.innerHTML = `
-        <div class="bg-cyan-500/20 px-6 py-4 rounded-3xl max-w-sm shadow-lg">
-          <div class="text-base font-medium text-foreground">${text}</div>
+        <div class="bg-cyan-500/15 px-6 py-4 rounded-3xl max-w-sm shadow-lg">
+          <div class="text-base font-medium text-cyan-800 dark:text-cyan-200">${text}</div>
         </div>
       `;
       chatMessages.appendChild(messageDiv);
@@ -185,8 +185,8 @@ export default function MusicStreamRefundVideo() {
             <span class="text-white text-xs font-bold">SA</span>
           </div>
           <div>
-            <div class="text-sm font-semibold text-cyan-700">Agent Sarah</div>
-            <div class="text-xs text-cyan-600">Billing Specialist</div>
+            <div class="text-sm font-semibold text-cyan-700 dark:text-cyan-300">Agent Sarah</div>
+            <div class="text-xs text-cyan-600 dark:text-cyan-400">Billing Specialist</div>
           </div>
         </div>
       ` : '';
@@ -208,9 +208,9 @@ export default function MusicStreamRefundVideo() {
     addBotMessageToChat(`
       <div class="flex items-center space-x-3">
         <div class="flex space-x-1">
-          <div class="w-2 h-2 bg-cyan-600/60 rounded-full animate-bounce"></div>
-          <div class="w-2 h-2 bg-cyan-600/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-          <div class="w-2 h-2 bg-cyan-600/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+          <div class="w-2 h-2 bg-cyan-500/15 rounded-full animate-bounce"></div>
+          <div class="w-2 h-2 bg-cyan-500/15 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+          <div class="w-2 h-2 bg-cyan-500/15 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
         </div>
         <div class="text-base text-muted-foreground">Checking plan options...</div>
       </div>
@@ -500,7 +500,7 @@ export default function MusicStreamRefundVideo() {
           hour12: true
         });
         extendButton.innerHTML = `Upgraded Successfully!<br><small style="font-size: 14px; opacity: 0.9;">${timestamp}</small>`;
-        extendButton.className = 'w-full bg-cyan-600/20 text-black py-4 rounded-xl font-semibold text-lg';
+        extendButton.className = 'w-full bg-cyan-500/15 text-cyan-800 dark:text-cyan-200 py-4 rounded-xl font-semibold text-lg';
         
         addTimeout(() => {
           // Professional exit sequence
@@ -732,7 +732,7 @@ export default function MusicStreamRefundVideo() {
                     />
                     <button id="sendButton" className="group absolute right-3 top-1/2 transform -translate-y-[60%] p-2 hover:scale-110 transition-all duration-300">
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
-                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-cyan-500/40">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-cyan-600 dark:text-cyan-400">
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         </svg>
                       </div>

@@ -247,7 +247,7 @@ export default function EcommerceShoppingVideo() {
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
         message.type === 'sent' 
-          ? 'bg-indigo-500/20 text-foreground hover:scale-[1.02]' 
+          ? 'bg-emerald-500/15 text-emerald-800 hover:scale-[1.02]' 
           : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
@@ -303,9 +303,9 @@ export default function EcommerceShoppingVideo() {
       text: `
         <div class="flex items-center space-x-3">
           <div class="flex space-x-1">
-            <div class="w-2 h-2 bg-indigo-500/60 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-indigo-500/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-            <div class="w-2 h-2 bg-indigo-500/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-emerald-500/15 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-emerald-500/15 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-emerald-500/15 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
           <div class="text-base text-muted-foreground">Searching products...</div>
         </div>
@@ -385,7 +385,7 @@ export default function EcommerceShoppingVideo() {
               <div class="flex-1">
                 <h4 class="font-medium text-gray-900 mb-1">Vintage Floral Maxi Dress</h4>
                 <p class="text-xs text-gray-600 mb-2">Size M • Long sleeves • Button front</p>
-                <div class="text-lg font-bold text-indigo-500/80">$138</div>
+                <div class="text-lg font-bold text-emerald-600 dark:text-emerald-400">$138</div>
               </div>
             </div>
           </div>
@@ -399,7 +399,7 @@ export default function EcommerceShoppingVideo() {
               <div class="flex-1">
                 <h4 class="font-medium text-gray-900 mb-1">Faded Green Floral Dress</h4>
                 <p class="text-xs text-gray-600 mb-2">Size M • Long sleeves • Wrap style</p>
-                <div class="text-lg font-bold text-indigo-500/80">$145</div>
+                <div class="text-lg font-bold text-emerald-600 dark:text-emerald-400">$145</div>
               </div>
             </div>
           </div>
@@ -413,7 +413,7 @@ export default function EcommerceShoppingVideo() {
               <div class="flex-1">
                 <h4 class="font-medium text-gray-900 mb-1">Elegant Floral Maxi Dress</h4>
                 <p class="text-xs text-gray-600 mb-2">Size M • Long sleeves • A-line cut</p>
-                <div class="text-lg font-bold text-indigo-500/80">$129</div>
+                <div class="text-lg font-bold text-emerald-600 dark:text-emerald-400">$129</div>
               </div>
             </div>
           </div>
@@ -578,7 +578,7 @@ export default function EcommerceShoppingVideo() {
       <div class="max-w-lg mx-auto px-8">
         <div class="bg-white rounded-2xl p-10 shadow-xl border border-gray-200/50 backdrop-blur-sm">
           <!-- Success Icon -->
-          <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8 success-checkmark">
+          <div class="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 success-checkmark">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
@@ -993,7 +993,7 @@ export default function EcommerceShoppingVideo() {
                     />
                     <button id="sendButton" className="group absolute right-3 top-1/2 transform -translate-y-[60%] p-2 hover:scale-110 transition-all duration-300">
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
-                        <svg width="20" height="20" fill="#6366f1" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-emerald-600 dark:text-emerald-400">
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         </svg>
                       </div>
@@ -1064,7 +1064,7 @@ export default function EcommerceShoppingVideo() {
           <div
             key={phase}
             className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-              videoState.currentPhase === phase ? 'bg-indigo-500/60' : 'bg-gray-300'
+              videoState.currentPhase === phase ? 'bg-emerald-500' : 'bg-gray-300'
             }`}
           />
         ))}

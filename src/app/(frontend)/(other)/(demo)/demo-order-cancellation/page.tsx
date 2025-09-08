@@ -230,7 +230,7 @@ export default function CustomerSupportVideo() {
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
         message.type === 'sent'
-          ? 'bg-blue-500/40 text-foreground hover:scale-[1.02]'
+          ? 'bg-blue-500/15 text-blue-800 hover:scale-[1.02]'
           : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
@@ -283,9 +283,9 @@ export default function CustomerSupportVideo() {
       text: `
         <div class="flex items-center space-x-3">
           <div class="flex space-x-1">
-            <div class="w-2 h-2 bg-blue-500/40 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-blue-500/40 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-            <div class="w-2 h-2 bg-blue-500/40 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-blue-500/15 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-blue-500/15 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-blue-500/15 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
           <div class="text-base text-muted-foreground">Processing cancellation...</div>
         </div>
@@ -338,12 +338,12 @@ export default function CustomerSupportVideo() {
         <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 text-foreground px-6 py-4 rounded-2xl max-w-lg shadow-lg">
           <div class="text-base leading-relaxed">
             <div class="flex items-center mb-3">
-              <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 shadow-sm celebration-checkmark">
+              <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3 shadow-sm celebration-checkmark">
                 <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span class="font-bold text-green-700 text-lg">Order Canceled!</span>
+              <span class="font-bold text-blue-700 text-lg">Order Canceled!</span>
             </div>
             <div class="bg-white/70 rounded-lg p-3 mb-3">
               <p class="font-semibold text-gray-800">Order #9373</p>
@@ -351,7 +351,7 @@ export default function CustomerSupportVideo() {
             </div>
             <div class="flex items-center justify-between text-sm">
               <span class="text-gray-600">Refund:</span>
-              <span class="font-bold text-green-700">$127.99</span>
+              <span class="font-bold text-blue-700">$127.99</span>
             </div>
             <p class="text-xs text-gray-500 mt-2">Processing time: 3-5 business days</p>
           </div>
@@ -772,7 +772,7 @@ export default function CustomerSupportVideo() {
                           height="20"
                           fill="currentColor"
                           viewBox="0 0 24 24"
-                          className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-blue-500/40"
+                          className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-blue-600 dark:text-blue-400"
                         >
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                         </svg>
