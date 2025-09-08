@@ -55,7 +55,7 @@ export default function PricingPage() {
   const [message, setMessage] = useState<string>('');
   const [formStatus, setFormStatus] = useState<string>('');
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
-    'monthly'
+    'yearly'
   );
 
   useEffect(() => {
@@ -284,6 +284,22 @@ export default function PricingPage() {
               <div className="flex justify-center gap-3 sm:gap-4 mb-8 sm:mb-12">
                 <button
                   className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border-2 font-semibold transition-all duration-200 text-sm sm:text-base ${
+                    billingCycle === 'yearly'
+                      ? 'bg-blue-100 text-foreground border-blue-300 shadow-md'
+                      : 'bg-background text-foreground border-border hover:bg-muted hover:border-muted-foreground/20'
+                  }`}
+                  onClick={() => {
+                    posthog.capture('billing_cycle_changed', {
+                      from: billingCycle,
+                      to: 'yearly',
+                    });
+                    setBillingCycle('yearly');
+                  }}
+                >
+                  Yearly
+                </button>
+                <button
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border-2 font-semibold transition-all duration-200 text-sm sm:text-base ${
                     billingCycle === 'monthly'
                       ? 'bg-blue-100 text-foreground border-blue-300 shadow-md'
                       : 'bg-background text-foreground border-border hover:bg-muted hover:border-muted-foreground/20'
@@ -297,25 +313,6 @@ export default function PricingPage() {
                   }}
                 >
                   Monthly
-                </button>
-                <button
-                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border-2 font-semibold transition-all duration-200 flex items-center gap-2 text-sm sm:text-base ${
-                    billingCycle === 'yearly'
-                      ? 'bg-blue-100 text-foreground border-blue-300 shadow-md'
-                      : 'bg-background text-foreground border-border hover:bg-muted hover:border-muted-foreground/20'
-                  }`}
-                  onClick={() => {
-                    posthog.capture('billing_cycle_changed', {
-                      from: billingCycle,
-                      to: 'yearly',
-                    });
-                    setBillingCycle('yearly');
-                  }}
-                >
-                  <span>Yearly</span>
-                  <span className="inline-block rounded-full bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 ml-2">
-                    Save 20%
-                  </span>
                 </button>
               </div>
             )}
@@ -347,12 +344,6 @@ export default function PricingPage() {
                     }`}
                     style={{ minHeight: 480, minWidth: '0' }}
                   >
-                    {/* -20% badge for yearly */}
-                    {billingCycle === 'yearly' && (
-                      <span className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200 z-10">
-                        -20%
-                      </span>
-                    )}
                     {key === 'standard' && (
                       <div className="absolute -top-4 sm:-top-6 left-1/2 transform -translate-x-1/2 z-10">
                         <span
@@ -386,30 +377,14 @@ export default function PricingPage() {
                         </h2>
                       </div>
                       <div className="mb-2 flex items-end gap-2">
-                        {billingCycle === 'yearly' ? (
-                          <div className="flex flex-row items-end gap-0.5">
-                            <span className="text-lg sm:text-xl font-semibold text-muted-foreground line-through mr-2">
-                              ${tier.monthlyPrice}
-                            </span>
-                            <span className="flex flex-row items-end gap-0.5">
-                              <span className="text-3xl sm:text-4xl font-bold text-foreground">
-                                ${(tier.yearlyPrice / 12).toFixed(0)}
-                              </span>
-                              <span className="text-sm sm:text-base text-muted-foreground mb-1 align-bottom mr-1">
-                                /month
-                              </span>
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="flex flex-row items-end gap-0.5">
-                            <span className="text-3xl sm:text-4xl font-bold text-foreground">
-                              ${tier.monthlyPrice}
-                            </span>
-                            <span className="text-sm sm:text-base text-muted-foreground mb-1 align-bottom mr-1">
-                              /month
-                            </span>
-                          </div>
-                        )}
+                        <div className="flex flex-row items-end gap-0.5">
+                          <span className="text-3xl sm:text-4xl font-bold text-foreground">
+                            ${billingCycle === 'yearly' ? (tier.yearlyPrice / 12).toFixed(0) : tier.monthlyPrice}
+                          </span>
+                          <span className="text-sm sm:text-base text-muted-foreground mb-1 align-bottom mr-1">
+                            /month
+                          </span>
+                        </div>
                       </div>
                       {billingCycle === 'yearly' && (
                         <p className="text-xs text-muted-foreground mt-1">
