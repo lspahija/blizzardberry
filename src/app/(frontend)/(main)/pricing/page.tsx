@@ -281,7 +281,7 @@ export default function PricingPage() {
 
             {/* Billing Toggle */}
             {status !== 'loading' && (
-              <div className="flex justify-center gap-3 sm:gap-4 mb-8 sm:mb-12">
+              <div className="flex justify-center gap-3 sm:gap-4 mb-6 sm:mb-12">
                 <button
                   className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl border-2 font-semibold transition-all duration-200 text-sm sm:text-base ${
                     billingCycle === 'yearly'
@@ -324,7 +324,7 @@ export default function PricingPage() {
               Loading pricing options...
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 [@media(min-width:1400px)]:grid-cols-5 gap-6 mb-16 sm:mb-20 pt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 [@media(min-width:1400px)]:grid-cols-5 gap-6 mb-16 sm:mb-20 pt-2 sm:pt-6">
               {Object.entries(pricing.tiers)
                 .filter(([key]) => !isLoggedIn || key !== 'free')
                 .map(([key, tier], idx, arr) => (
