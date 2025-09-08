@@ -495,7 +495,7 @@ export default function PricingPage() {
                     )}
                     <div className="mt-auto flex justify-center">
                       <RetroButton
-                        className={`w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold text-sm sm:text-base ${
+                        className={`w-full py-3 sm:py-4 px-4 sm:px-6 font-semibold text-sm sm:text-base ${
                           key === 'standard'
                             ? 'bg-brand text-primary-foreground hover:bg-brand/90'
                             : 'bg-background text-foreground hover:bg-muted hover:text-foreground'
@@ -646,23 +646,20 @@ export default function PricingPage() {
                   </div>
                 </div>
 
-                <div className="relative group inline-block">
-                  <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
-                  <button
-                    className={`relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 text-base px-6 py-3 rounded-lg font-semibold ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
-                    onClick={handleBuyCredits}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <div className="flex items-center justify-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Processing...
-                      </div>
-                    ) : (
-                      'Buy Credits Now'
-                    )}
-                  </button>
-                </div>
+                <RetroButton 
+                  onClick={handleBuyCredits} 
+                  disabled={isLoading}
+                  className="w-full py-3 sm:py-4 px-4 sm:px-6 font-semibold text-sm sm:text-base bg-brand text-primary-foreground hover:bg-brand/90"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Processing...
+                    </div>
+                  ) : (
+                    'Buy Credits Now'
+                  )}
+                </RetroButton>
               </div>
             </div>
           )}
