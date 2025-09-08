@@ -164,7 +164,7 @@ export default function MusicStreamRefundVideo() {
       const messageDiv = document.createElement('div');
       messageDiv.className = 'flex justify-end chat-message';
       messageDiv.innerHTML = `
-        <div class="bg-cyan-500/20 text-foreground px-6 py-4 rounded-3xl max-w-sm shadow-lg">
+        <div class="bg-cyan-500/20 px-6 py-4 rounded-3xl max-w-sm shadow-lg">
           <div class="text-base font-medium text-foreground">${text}</div>
         </div>
       `;
@@ -212,7 +212,7 @@ export default function MusicStreamRefundVideo() {
           <div class="w-2 h-2 bg-cyan-600/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
           <div class="w-2 h-2 bg-cyan-600/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
         </div>
-        <div class="text-base text-muted-foreground">Analyzing subscription...</div>
+        <div class="text-base text-muted-foreground">Checking plan options...</div>
       </div>
     `);
 
@@ -363,11 +363,11 @@ export default function MusicStreamRefundVideo() {
         
         <div class="w-full text-center py-5 rounded-2xl">
           <div class="flex items-center justify-center space-x-3">
-            <span class="text-xl font-bold text-muted-foreground">Upgrading plan</span>
+            <span class="text-xl font-bold text-gray-500">Upgrading plan</span>
             <div class="flex space-x-1">
-              <div class="w-2 h-2 bg-black rounded-full animate-bounce"></div>
-              <div class="w-2 h-2 bg-black rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-              <div class="w-2 h-2 bg-black rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+              <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+              <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+              <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
             </div>
           </div>
         </div>
