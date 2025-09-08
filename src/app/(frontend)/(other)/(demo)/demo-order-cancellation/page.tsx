@@ -359,15 +359,15 @@ export default function CustomerSupportVideo() {
     const successMessage = {
       type: 'received',
       text: `
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 text-foreground px-6 py-4 rounded-2xl max-w-lg shadow-lg">
+        <div class="bg-gradient-to-r from-teal-50 to-cyan-50 border-l-4 border-teal-500 text-foreground px-6 py-4 rounded-2xl max-w-lg shadow-lg">
           <div class="text-base leading-relaxed">
             <div class="flex items-center mb-3">
-              <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3 shadow-sm celebration-checkmark">
+              <div class="w-6 h-6 bg-teal-600 rounded-full flex items-center justify-center mr-3 shadow-sm celebration-checkmark">
                 <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span class="font-bold text-blue-700 text-lg">Order Canceled!</span>
+              <span class="font-bold text-teal-600 dark:text-teal-400 text-lg">Order Canceled!</span>
             </div>
             <div class="bg-white/70 rounded-lg p-3 mb-3">
               <p class="font-semibold text-gray-800">Order #9373</p>
@@ -375,7 +375,7 @@ export default function CustomerSupportVideo() {
             </div>
             <div class="flex items-center justify-between text-sm">
               <span class="text-gray-600">Refund:</span>
-              <span class="font-bold text-blue-700">$127.99</span>
+              <span class="font-bold text-teal-600 dark:text-teal-400">$127.99</span>
             </div>
             <p class="text-xs text-gray-500 mt-2">Processing time: 3-5 business days</p>
           </div>
