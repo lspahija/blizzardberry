@@ -371,11 +371,10 @@ export default function MusicStreamRefundVideo() {
     analysisOverlay.style.opacity = '0';
 
     analysisOverlay.innerHTML = `
-      <div class="w-[500px] bg-white rounded-3xl border border-gray-100 shadow-2xl p-10 transform perspective-1000">
-        <div class="text-center mb-8">
-          <div class="relative w-24 h-24 bg-gradient-to-br from-cyan-400/20 via-cyan-500/20 to-cyan-600/40 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
-            <div class="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
-            <svg class="w-12 h-12 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+      <div class="w-[520px] bg-white rounded-3xl border border-gray-100 shadow-2xl p-12 transform perspective-1000">
+        <div class="text-center mb-10">
+          <div class="w-24 h-24 bg-cyan-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <svg class="w-12 h-12 text-white transform translate-x-[-1px] translate-y-[1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
               <path d="M9 18V5l12-2v13"/>
               <circle cx="6" cy="18" r="3"/>
               <circle cx="18" cy="16" r="3"/>
@@ -385,22 +384,28 @@ export default function MusicStreamRefundVideo() {
           <p class="text-muted-foreground text-lg">Account Management</p>
         </div>
         
-        <div class="space-y-4 mb-8">
-          <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
-            <span class="text-muted-foreground font-medium">Account Holder</span>
-            <span class="font-bold text-foreground">Sarah Johnson</span>
+        <div class="space-y-4 mb-10">
+          <div class="flex justify-between items-center py-5 px-8 bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl border border-slate-200">
+            <span class="text-slate-600 font-medium text-lg">Account Holder</span>
+            <span class="font-bold text-slate-800 text-lg">Sarah Johnson</span>
           </div>
         </div>
         
-        <div class="w-full text-center py-5 rounded-2xl">
-          <div class="flex items-center justify-center space-x-3">
-            <span class="text-xl font-bold text-gray-500">Upgrading plan</span>
-            <div class="flex space-x-1">
-              <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-              <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-              <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+        <div class="w-full bg-gradient-to-r from-cyan-50 to-blue-50 border border-cyan-200 text-center py-8 rounded-2xl">
+          <div class="flex items-center justify-center space-x-4 mb-2">
+            <div class="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+              </svg>
             </div>
+            <span class="text-2xl font-bold text-cyan-700">Upgrading to Premium</span>
           </div>
+          <div class="flex justify-center items-center space-x-2 mt-4">
+            <div class="w-3 h-3 bg-cyan-500 rounded-full animate-bounce"></div>
+            <div class="w-3 h-3 bg-cyan-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-3 h-3 bg-cyan-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+          </div>
+          <p class="text-cyan-600 mt-3 text-sm font-medium">Processing your upgrade...</p>
         </div>
       </div>
     `;
@@ -771,10 +776,9 @@ export default function MusicStreamRefundVideo() {
             >
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-cyan-400/20 via-cyan-500/20 to-cyan-600/40 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
+                  <div className="w-20 h-20 bg-cyan-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
                     <svg
-                      className="w-10 h-10 text-white relative z-10"
+                      className="w-10 h-10 text-white transform translate-x-[-1px] translate-y-[1px]"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
