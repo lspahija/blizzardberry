@@ -1253,7 +1253,7 @@ export default function AddressUpdateVideo() {
                     <textarea
                       id="userInput"
                       placeholder="Tell me what you need..."
-                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none min-h-[60px] max-h-[120px] leading-normal overflow-hidden"
+                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-full focus:outline-none transition-all duration-300 resize-none min-h-[60px] max-h-[120px] leading-normal overflow-hidden"
                       spellCheck={false}
                       disabled
                       rows={1}
@@ -1263,7 +1263,7 @@ export default function AddressUpdateVideo() {
                         textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px'; // Expand up to max
                       }}
                     />
-                    <button id="sendButton" className="group absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
+                    <button id="sendButton" className="group absolute right-3 top-1/2 transform -translate-y-[60%] p-2 hover:scale-110 transition-all duration-300">
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
                         <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-green-600">
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>

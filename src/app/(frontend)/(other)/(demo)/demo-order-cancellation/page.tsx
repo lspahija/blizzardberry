@@ -753,7 +753,7 @@ export default function CustomerSupportVideo() {
                     <textarea
                       id="userInput"
                       placeholder="Describe your issue..."
-                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none min-h-[60px] max-h-[120px] leading-normal overflow-hidden"
+                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-full focus:outline-none transition-all duration-300 resize-none min-h-[60px] max-h-[120px] leading-normal overflow-hidden"
                       disabled
                       rows={1}
                       onInput={(e) => {
@@ -764,7 +764,7 @@ export default function CustomerSupportVideo() {
                     />
                     <button
                       id="sendButton"
-                      className="group absolute right-3 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300"
+                      className="group absolute right-3 top-1/2 transform -translate-y-[60%] p-2 hover:scale-110 transition-all duration-300"
                     >
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
                         <svg
