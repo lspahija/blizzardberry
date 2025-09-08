@@ -86,14 +86,14 @@ export default function CustomerSupportVideo() {
         showChatInterface();
       })
 
-      // Phase 2: Processing phase (3s for longer processing feel)
+      // Phase 2: Processing phase (extended for conversation)
       .call(
         () => {
           setVideoState((prev) => ({ ...prev, currentPhase: 'processing' }));
           showProcessing();
         },
         [],
-        3
+        5 // Extended to allow for agent question + user response + processing
       )
 
       // Phase 3: Beautiful Result Display (3s for full celebration)
@@ -103,7 +103,7 @@ export default function CustomerSupportVideo() {
           showResult();
         },
         [],
-        6
+        8
       )
 
       // Phase 4: Demo-Niko Finale (4s)
@@ -113,7 +113,7 @@ export default function CustomerSupportVideo() {
           showFinale();
         },
         [],
-        9
+        11
       )
 
       // Phase 5: Complete and restart (1s pause)
@@ -122,7 +122,7 @@ export default function CustomerSupportVideo() {
           setVideoState((prev) => ({ ...prev, currentPhase: 'complete' }));
         },
         [],
-        13
+        15
       );
 
     masterTimelineRef.current = timeline;
@@ -145,7 +145,7 @@ export default function CustomerSupportVideo() {
         if (userInput) {
           userInput.disabled = false;
           userInput.focus();
-          typeTextWithScroll(userInput, 'I need to cancel my order #9373', 60, () => {
+          typeTextWithScroll(userInput, 'I need to cancel my order', 60, () => {
             // Show airplane animation and send with natural pause
             addTimeout(() => {
               triggerAirplane();
@@ -193,12 +193,12 @@ export default function CustomerSupportVideo() {
 
       addChatMessageWithSlide({
         type: 'sent',
-        text: 'I need to cancel my order #9373',
+        text: 'I need to cancel my order',
       });
 
-      // Add processing bubble directly after user message appears
+      // Add agent's question for order number
       addTimeout(() => {
-        addProcessingBubble();
+        addAgentQuestion();
       }, 1000); // Wait for user message animation to complete
     }
   };
@@ -275,6 +275,30 @@ export default function CustomerSupportVideo() {
         clearProps: 'all',
       });
     }, chatMessages);
+  };
+
+  const addAgentQuestion = () => {
+    addChatMessageWithSlide({
+      type: 'received',
+      text: 'I can help you cancel your order. Could you please provide your order number?',
+    });
+
+    // Add user's response with order number after agent question
+    addTimeout(() => {
+      addUserOrderNumber();
+    }, 1500);
+  };
+
+  const addUserOrderNumber = () => {
+    addChatMessageWithSlide({
+      type: 'sent',
+      text: '#9373',
+    });
+
+    // Add processing bubble after user provides order number
+    addTimeout(() => {
+      addProcessingBubble();
+    }, 1000);
   };
 
   const addProcessingBubble = () => {
