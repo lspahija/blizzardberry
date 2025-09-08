@@ -373,7 +373,7 @@ export default function CustomerSupportVideo() {
               <p class="font-semibold text-gray-800">Order #9373</p>
               <p class="text-sm text-gray-600">Premium headphones - $127.99</p>
             </div>
-            <div class="flex items-center justify-between text-sm">
+            <div class="flex items-center justify-start gap-3 text-sm">
               <span class="text-gray-600">Refund:</span>
               <span class="font-bold text-teal-600 dark:text-teal-400">$127.99</span>
             </div>
