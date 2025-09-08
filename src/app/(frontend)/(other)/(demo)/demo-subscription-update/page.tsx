@@ -361,8 +361,15 @@ export default function MusicStreamRefundVideo() {
           </div>
         </div>
         
-        <div class="w-full text-center py-5 rounded-2xl font-bold text-xl text-muted-foreground">
-          Upgrading plan...
+        <div class="w-full text-center py-5 rounded-2xl">
+          <div class="flex items-center justify-center space-x-3">
+            <span class="text-xl font-bold text-muted-foreground">Upgrading plan</span>
+            <div class="flex space-x-1">
+              <div class="w-2 h-2 bg-black rounded-full animate-bounce"></div>
+              <div class="w-2 h-2 bg-black rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+              <div class="w-2 h-2 bg-black rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -423,34 +430,35 @@ export default function MusicStreamRefundVideo() {
       }
     }
     
-    // Handle extend button click with enhanced timing
-    const extendButton = document.getElementById('extendButton');
-    if (extendButton) {
-      // Add subtle hover effect animation
-      extendButton.addEventListener('mouseenter', () => {
-        gsap.to(extendButton, {
-          scale: 1.05,
-          duration: 0.2,
-          ease: "power2.out"
+    // Auto-close overlay after 2-3 seconds and return to chat
+    addTimeout(() => {
+      // Professional exit sequence
+      const exitTl = gsap.timeline();
+      
+      // Step 1: Card transforms and exits
+      const card = analysisOverlay?.querySelector?.('.w-\\[500px\\]');
+      if (card) {
+        exitTl.to(card, {
+          scale: 0.85,
+          rotationY: -15,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.in"
         });
-      });
+      }
       
-      extendButton.addEventListener('mouseleave', () => {
-        gsap.to(extendButton, {
-          scale: 1,
-          duration: 0.2,
-          ease: "power2.out"
-        });
-      });
-      
-      addTimeout(() => {
-        extendButton.click();
-      }, 3500); // Slightly longer for dramatic effect
-      
-      extendButton.addEventListener('click', () => {
-        handleSubscriptionExtension(analysisOverlay);
-      });
-    }
+      // Step 2: Overlay fades with blur effect
+      exitTl.to(analysisOverlay, {
+        opacity: 0,
+        filter: 'blur(10px)',
+        duration: 0.5,
+        ease: "power2.in",
+        onComplete: () => {
+          document.body.removeChild(analysisOverlay);
+          returnToChatWithSuccess();
+        }
+      }, "-=0.3");
+    }, 3500); // 3.5 seconds display time
   };
   
   const handleSubscriptionExtension = (analysisOverlay: HTMLElement) => {
@@ -702,7 +710,7 @@ export default function MusicStreamRefundVideo() {
                       <circle cx="18" cy="16" r="3"/>
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-bold text-muted-foreground mb-2">
+                  <h2 className="text-4xl font-bold text-muted-foreground mb-2">
                     MusicStream<br/>Customer Support
                   </h2>
                 </div>
