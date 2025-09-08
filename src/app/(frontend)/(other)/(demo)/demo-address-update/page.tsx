@@ -247,7 +247,7 @@ export default function AddressUpdateVideo() {
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
         message.type === 'sent' 
-          ? 'bg-green-500/15 text-foreground hover:scale-[1.02]' 
+          ? 'bg-teal-500/15 text-foreground hover:scale-[1.02]' 
           : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
@@ -303,9 +303,9 @@ export default function AddressUpdateVideo() {
       text: `
         <div class="flex items-center space-x-3">
           <div class="flex space-x-1">
-            <div class="w-2 h-2 bg-green-500/15 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-green-500/15 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-            <div class="w-2 h-2 bg-green-500/15 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-teal-500/15 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-teal-500/15 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-teal-500/15 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
           <div class="text-base text-muted-foreground">Checking your details...</div>
         </div>
@@ -432,7 +432,7 @@ export default function AddressUpdateVideo() {
               <!-- New Location -->
               <div id="newLocation" class="flex items-center justify-between bg-green-50 rounded-2xl p-6 opacity-0 border border-green-100">
                 <div class="flex items-center space-x-4">
-                  <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <div class="w-3 h-3 bg-teal-500 rounded-full animate-pulse"></div>
                   <span class="text-lg font-medium text-gray-700">New Address</span>
                 </div>
                 <span class="text-lg font-bold text-green-700">San Francisco, CA</span>
@@ -740,7 +740,7 @@ export default function AddressUpdateVideo() {
       <div class="max-w-lg mx-auto px-8">
         <div class="bg-white rounded-2xl p-10 shadow-xl border border-gray-200/50 backdrop-blur-sm">
           <!-- Success Icon -->
-          <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8 success-checkmark">
+          <div class="w-12 h-12 bg-teal-500 rounded-full flex items-center justify-center mx-auto mb-8 success-checkmark">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
@@ -753,8 +753,8 @@ export default function AddressUpdateVideo() {
           <!-- Address Card -->
           <div class="bg-gradient-to-r from-gray-50 to-gray-100/70 rounded-xl p-6 border border-gray-200/60">
             <div class="flex items-start space-x-4">
-              <div class="w-10 h-10 bg-green-500/15 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="w-10 h-10 bg-teal-500/15 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
@@ -888,7 +888,7 @@ export default function AddressUpdateVideo() {
   const createCelebrationParticle = (container: HTMLElement) => {
     const particle = document.createElement('div');
     particle.className = 'absolute w-2 h-2 rounded-full pointer-events-none';
-    particle.style.background = ['#10B981', '#3B82F6', '#1D4ED8'][Math.floor(Math.random() * 3)];
+    particle.style.background = ['#14B8A6', '#3B82F6', '#1D4ED8'][Math.floor(Math.random() * 3)];
     
     const rect = container.getBoundingClientRect();
     particle.style.left = `${rect.left + rect.width / 2}px`;
@@ -1265,7 +1265,7 @@ export default function AddressUpdateVideo() {
                     />
                     <button id="sendButton" className="group absolute right-3 top-1/2 transform -translate-y-[60%] p-2 hover:scale-110 transition-all duration-300">
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
-                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-green-600">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-teal-600 dark:text-teal-400">
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         </svg>
                       </div>
