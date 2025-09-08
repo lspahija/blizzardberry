@@ -226,7 +226,7 @@ export default function ContactPage() {
         <div className="container mx-auto max-w-6xl px-4">
           <motion.div className="text-center" variants={itemVariants}>
             <p className="text-muted-foreground">
-              Or email us directly at:{' '}
+              Or email us directly at{' '}
               <a
                 href="mailto:support@blizzardberry.com"
                 className="text-brand hover:underline font-medium"

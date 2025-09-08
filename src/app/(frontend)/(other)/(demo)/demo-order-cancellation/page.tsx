@@ -38,18 +38,25 @@ export default function CustomerSupportVideo() {
     timeoutsRef.current = [];
   };
 
-  const typeText = (
-    element: HTMLInputElement | null,
+  const typeTextWithScroll = (
+    element: HTMLTextAreaElement | null,
     text: string,
     speed = 50,
     callback?: () => void
   ) => {
     if (!element) return;
     element.value = '';
+    element.style.height = '60px'; // Reset to minimum height
     let i = 0;
+    
     const type = () => {
       if (i < text.length) {
         element.value += text.charAt(i);
+        
+        // Auto-expand textarea as text is typed
+        element.style.height = '60px'; // Reset to minimum
+        element.style.height = Math.min(element.scrollHeight, 120) + 'px'; // Expand smoothly
+        
         i++;
         addTimeout(type, speed);
       } else if (callback) {
@@ -61,71 +68,61 @@ export default function CustomerSupportVideo() {
 
   const startDemo = () => {
     clearAllTimers();
-    setVideoState({ isRunning: true, currentPhase: 'intro' });
+    setVideoState({ isRunning: true, currentPhase: 'chat' });
 
     const timeline = gsap.timeline({
       repeat: -1,
       onComplete: () => {
         // Auto-restart
-        setVideoState((prev) => ({ ...prev, currentPhase: 'intro' }));
+        setVideoState((prev) => ({ ...prev, currentPhase: 'chat' }));
         clearAllTimers();
       },
     });
 
-    // Phase 1: Beautiful Intro with typing effect (4s)
+    // Phase 1: Start directly with Chat Interface
     timeline
       .call(() => {
-        setVideoState((prev) => ({ ...prev, currentPhase: 'intro' }));
-        startTypingIntro();
+        setVideoState((prev) => ({ ...prev, currentPhase: 'chat' }));
+        showChatInterface();
       })
 
-      // Phase 2: Chat Interface appears smoothly (3s for full interaction)
-      .call(
-        () => {
-          setVideoState((prev) => ({ ...prev, currentPhase: 'chat' }));
-          showChatInterface();
-        },
-        [],
-        4
-      )
-
-      // Phase 3: Processing phase (3s for longer processing feel)
+      // Phase 2: Processing phase (extended for conversation)
       .call(
         () => {
           setVideoState((prev) => ({ ...prev, currentPhase: 'processing' }));
           showProcessing();
         },
         [],
-        7
+        5 // Extended to allow for agent question + user response + processing
       )
 
-      // Phase 4: Beautiful Result Display (3s for full celebration)
+      // Phase 3: Beautiful Result Display (3s for full celebration)
       .call(
         () => {
           setVideoState((prev) => ({ ...prev, currentPhase: 'result' }));
           showResult();
         },
         [],
-        10
+        8
       )
 
-      // Phase 5: Demo-Niko Finale (4s)
+      // Phase 4: Demo-Niko Finale (4s)
       .call(
         () => {
           setVideoState((prev) => ({ ...prev, currentPhase: 'finale' }));
           showFinale();
         },
         [],
-        13
+        11
       )
 
-      // Phase 6: Complete and restart (1s pause)
+      // Phase 5: Complete and restart (1s pause)
       .call(
         () => {
           setVideoState((prev) => ({ ...prev, currentPhase: 'complete' }));
         },
         [],
-        17
+        15
       );
 
     masterTimelineRef.current = timeline;
@@ -133,51 +130,29 @@ export default function CustomerSupportVideo() {
   };
 
   const showChatInterface = () => {
-    // Beautiful scroll-up animation from intro to chat
-    const introContainer = document.querySelector('[data-phase="intro"]');
+    // Show chat interface directly without intro animation
     const chatContainer = document.getElementById('chatContainer');
-    const userInput = document.getElementById('userInput') as HTMLInputElement;
+    const userInput = document.getElementById('userInput') as HTMLTextAreaElement;
 
-    if (introContainer && chatContainer) {
-      // Prepare chat container positioned below intro
+    if (chatContainer) {
+      // Show chat container immediately
       chatContainer.style.display = 'flex';
       chatContainer.style.opacity = '1';
-      gsap.set(chatContainer, { y: '100vh' }); // Start below screen
+      gsap.set(chatContainer, { y: 0 }); // Position at center
 
-      // Animate both containers: intro scrolls up, chat scrolls up into view
-      const timeline = gsap.timeline();
-
-      timeline
-        // Scroll intro up and out of view
-        .to(introContainer, {
-          y: '-100vh',
-          duration: 1.2,
-          ease: 'power2.inOut',
-        })
-        // Simultaneously scroll chat up into view
-        .to(
-          chatContainer,
-          {
-            y: 0,
-            duration: 1.2,
-            ease: 'power2.inOut',
-          },
-          0
-        ); // Start at same time as intro animation
-
-      // Start typing user message after scroll animation
+      // Start typing user message immediately
       addTimeout(() => {
         if (userInput) {
           userInput.disabled = false;
           userInput.focus();
-          typeText(userInput, 'I need to cancel my order #1234.', 60, () => {
+          typeTextWithScroll(userInput, 'I need to cancel my order', 60, () => {
             // Show airplane animation and send with natural pause
             addTimeout(() => {
               triggerAirplane();
             }, 500);
           });
         }
-      }, 1400); // After scroll animation completes
+      }, 300); // Small delay to ensure everything is ready
     }
   };
 
@@ -218,12 +193,12 @@ export default function CustomerSupportVideo() {
 
       addChatMessageWithSlide({
         type: 'sent',
-        text: 'I need to cancel my order #1234.',
+        text: 'I need to cancel my order',
       });
 
-      // Add processing bubble directly after user message appears
+      // Add agent's question for order number
       addTimeout(() => {
-        addProcessingBubble();
+        addAgentQuestion();
       }, 1000); // Wait for user message animation to complete
     }
   };
@@ -255,7 +230,7 @@ export default function CustomerSupportVideo() {
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
         message.type === 'sent'
-          ? 'bg-brand text-primary-foreground hover:scale-[1.02]'
+          ? 'bg-blue-500/15 text-blue-800 hover:scale-[1.02]'
           : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
@@ -302,15 +277,39 @@ export default function CustomerSupportVideo() {
     }, chatMessages);
   };
 
+  const addAgentQuestion = () => {
+    addChatMessageWithSlide({
+      type: 'received',
+      text: 'I can help you cancel your order. Could you please provide your order number?',
+    });
+
+    // Add user's response with order number after agent question
+    addTimeout(() => {
+      addUserOrderNumber();
+    }, 1500);
+  };
+
+  const addUserOrderNumber = () => {
+    addChatMessageWithSlide({
+      type: 'sent',
+      text: '#9373',
+    });
+
+    // Add processing bubble after user provides order number
+    addTimeout(() => {
+      addProcessingBubble();
+    }, 1000);
+  };
+
   const addProcessingBubble = () => {
     addChatMessageWithSlide({
       type: 'received',
       text: `
         <div class="flex items-center space-x-3">
           <div class="flex space-x-1">
-            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-            <div class="w-2 h-2 bg-brand/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-blue-500/15 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-blue-500/15 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-blue-500/15 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
           <div class="text-base text-muted-foreground">Processing cancellation...</div>
         </div>
@@ -360,23 +359,23 @@ export default function CustomerSupportVideo() {
     const successMessage = {
       type: 'received',
       text: `
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 text-foreground px-6 py-4 rounded-2xl max-w-lg shadow-lg">
+        <div class="bg-gradient-to-r from-teal-50 to-cyan-50 border-l-4 border-teal-500 text-foreground px-6 py-4 rounded-2xl max-w-lg shadow-lg">
           <div class="text-base leading-relaxed">
             <div class="flex items-center mb-3">
-              <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 shadow-sm celebration-checkmark">
+              <div class="w-6 h-6 bg-teal-600 rounded-full flex items-center justify-center mr-3 shadow-sm celebration-checkmark">
                 <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span class="font-bold text-green-700 text-lg">Order Canceled!</span>
+              <span class="font-bold text-teal-600 dark:text-teal-400 text-lg">Order Canceled!</span>
             </div>
             <div class="bg-white/70 rounded-lg p-3 mb-3">
-              <p class="font-semibold text-gray-800">Order #1234</p>
+              <p class="font-semibold text-gray-800">Order #9373</p>
               <p class="text-sm text-gray-600">Premium headphones - $127.99</p>
             </div>
-            <div class="flex items-center justify-between text-sm">
+            <div class="flex items-center justify-start gap-3 text-sm">
               <span class="text-gray-600">Refund:</span>
-              <span class="font-bold text-green-700">$127.99</span>
+              <span class="font-bold text-teal-600 dark:text-teal-400">$127.99</span>
             </div>
             <p class="text-xs text-gray-500 mt-2">Processing time: 3-5 business days</p>
           </div>
@@ -661,17 +660,15 @@ export default function CustomerSupportVideo() {
           className="h-full bg-gradient-to-r from-brand to-secondary transition-all duration-300 ease-out"
           style={{
             width:
-              videoState.currentPhase === 'intro'
-                ? '24%'
-                : videoState.currentPhase === 'chat'
-                  ? '41%'
-                  : videoState.currentPhase === 'processing'
-                    ? '59%'
-                    : videoState.currentPhase === 'result'
-                      ? '76%'
-                      : videoState.currentPhase === 'finale'
-                        ? '100%'
-                        : '0%',
+              videoState.currentPhase === 'chat'
+                ? '25%'
+                : videoState.currentPhase === 'processing'
+                  ? '50%'
+                  : videoState.currentPhase === 'result'
+                    ? '75%'
+                    : videoState.currentPhase === 'finale'
+                      ? '100%'
+                      : '0%',
           }}
         />
       </div>
@@ -709,7 +706,7 @@ export default function CustomerSupportVideo() {
           <div className="relative">
             <p
               id="typingSubtext"
-              className="text-3xl font-medium tracking-wide opacity-0"
+              className="text-3xl font-medium tracking-wide opacity-0 text-muted-foreground"
               style={{
                 background: 'linear-gradient(135deg, #1D4ED8, #10B981)',
                 WebkitBackgroundClip: 'text',
@@ -767,7 +764,7 @@ export default function CustomerSupportVideo() {
             >
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-foreground mb-2">
+                  <h2 className="text-4xl font-bold text-foreground mb-2">
                     Customer Support
                   </h2>
                   <p className="text-muted-foreground">
@@ -777,24 +774,29 @@ export default function CustomerSupportVideo() {
 
                 <div className="flex gap-3 items-center">
                   <div className="flex-1 relative overflow-visible">
-                    <input
+                    <textarea
                       id="userInput"
-                      type="text"
                       placeholder="Describe your issue..."
-                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-full focus:outline-none transition-all duration-300"
+                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-full focus:outline-none transition-all duration-300 resize-none min-h-[60px] max-h-[120px] leading-normal overflow-hidden"
                       disabled
+                      rows={1}
+                      onInput={(e) => {
+                        const textarea = e.target as HTMLTextAreaElement;
+                        textarea.style.height = '60px'; // Reset to minimum height
+                        textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px'; // Expand up to max
+                      }}
                     />
                     <button
                       id="sendButton"
-                      className="group absolute right-3 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300"
+                      className="group absolute right-3 top-1/2 transform -translate-y-[60%] p-2 hover:scale-110 transition-all duration-300"
                     >
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
                         <svg
                           width="20"
                           height="20"
-                          fill="#ef4444"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
-                          className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300"
+                          className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-blue-600 dark:text-blue-400"
                         >
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                         </svg>
@@ -867,14 +869,14 @@ export default function CustomerSupportVideo() {
             id="finaleTagline"
             className="text-xl text-muted-foreground font-normal opacity-0 tracking-wide"
           >
-            An AI-powered natural language interface for every app
+            An AI-powered natural language interface for every web app
           </div>
         </div>
       </div>
 
       {/* Phase indicator dots */}
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-50">
-        {['intro', 'chat', 'processing', 'result', 'finale'].map((phase) => (
+        {['chat', 'processing', 'result', 'finale'].map((phase) => (
           <div
             key={phase}
             className={`w-2 h-2 rounded-full transition-colors duration-300 ${

@@ -1,17 +1,21 @@
 # Vision
+**Empower anybody to add a natural language interface to existing software. </br> Support voice. </br> 
+Liberate people from screens. </br> Allow them to perform actions on a computer just by stating their intentions.**
 
-**Empower anybody to super-easily add a natural language interface to existing software. Support voice. 
-Liberate people from staring at screens. Allow them to perform actions on a computer just by stating their intentions.**
+# Value Proposition
+The easiest way to get something done on a computer is to have someone else do it for you.
+</br>
+Unfortunately, that other person is not always available.
+</br>
+Our AI agent replaces that other person entirely.
 
-There is a lot of useful software out there, but the vast majority does not have a natural language interface. 
-The goal of this project is to enable all software to have a natural language interface. 
-Make onboarding so easy that it becomes a no-brainer for anybody to add a natural language interface to an app.
+Give your users the pleasure of using your software with the best possible interface: natural language.
 
-e.g. it must be easy to:
-- add new AI models (as AI models improve, the usefulness of this product should automatically improve in parallel)
-- create new SDKs for different languages so an agent can be added to any app
-- onboard new apps with minimal friction
-
+# Ultimate Requirements
+- allow AI agent to immediately find the right action and execute it (no exploration phase)
+- immediately add new AI models (as AI models improve, the usefulness of this product should automatically improve in parallel)
+- onboard new apps with minimal friction (ideally automatically)
+- support any software (web apps, desktop apps, mobile apps, terminal apps, etc)
 
 # Design
 The website design is based on this: https://gitingest.com/
@@ -19,7 +23,6 @@ The website design is based on this: https://gitingest.com/
 this looks good: https://bland.com/
 
 # Running the Project Locally
-
 This guide outlines the steps to set up and run the project locally. The project uses [git-crypt](https://github.com/AGWA/git-crypt) to encrypt sensitive files (e.g., `.env*`).
 
 ## Setup Instructions
@@ -100,11 +103,9 @@ Open your browser and visit:
 ### [See Development Notes](#Development-Notes)
 
 # Use Agent
-
 See an example SaaS app with integrated agent at http://localhost:3000/example-saas
 
 # Deploy
-
 Currently deployed to Vercel at https://blizzardberry.com/. App deploys automatically on every push to the `main` branch.
 
 

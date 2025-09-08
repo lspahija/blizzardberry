@@ -36,10 +36,10 @@ export function LandingNavbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur border-b border-border shadow-md px-8 sm:px-16 py-5 pt-6 pb-4 pl-8 pr-8 sm:pl-16 sm:pr-16">
+      <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur border-b border-border shadow-md px-8 sm:px-16 py-3 pl-8 pr-8 sm:pl-16 sm:pr-16">
         <div className="max-w-7xl mx-auto w-full flex flex-row items-center justify-between">
           <div className="flex items-center flex-shrink-0 min-w-[160px]">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center" onClick={handleNavigation}>
               <Image
                 src="/image/logo.png"
                 alt="BlizzardBerry Logo"
@@ -125,29 +125,29 @@ export function LandingNavbar() {
         >
           <Link
             href="/docs"
-            className="block text-center text-foreground hover:-translate-y-0.5 transition-transform mt-4"
+            className="block text-center text-lg font-medium text-foreground hover:-translate-y-0.5 transition-transform mt-4"
             onClick={handleNavigation}
           >
             Docs
           </Link>
           <Link
             href="/pricing"
-            className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
+            className="block text-center text-lg font-medium text-foreground hover:-translate-y-0.5 transition-transform"
             onClick={handleNavigation}
           >
             Pricing
           </Link>
           <Link
             href="/contact"
-            className="block text-center text-foreground hover:-translate-y-0.5 transition-transform"
+            className="block text-center text-lg font-medium text-foreground hover:-translate-y-0.5 transition-transform"
             onClick={handleNavigation}
           >
             Contact
           </Link>
-          <div className="flex flex-col space-y-3 pt-6 mt-4 border-t border-border">
+          <div className="flex flex-col space-y-3 pt-8 mt-8 border-t border-border px-4">
             <RetroButton
               variant="outline"
-              className="bg-background text-foreground hover:bg-background/90 w-full font-medium h-10"
+              className="bg-background text-foreground hover:bg-background/90 font-medium h-10 w-full"
               asChild
               shadowColor="foreground"
             >
@@ -156,7 +156,7 @@ export function LandingNavbar() {
               </Link>
             </RetroButton>
             <RetroButton
-              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full font-medium h-10"
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium h-10 w-full"
               asChild
               shadowColor="foreground"
             >

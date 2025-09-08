@@ -16,11 +16,16 @@
     isolation: isolate;
     /* Soft edge using smoothed layered shadows */
     box-shadow: 
-        0 0 calc(20px * var(--shadow-intensity)) rgba(255, 140, 90, calc(0.4 * var(--shadow-intensity))),
-        0 0 calc(40px * var(--shadow-intensity)) rgba(255, 140, 90, calc(0.2 * var(--shadow-intensity))),
-        0 0 calc(80px * var(--shadow-intensity)) rgba(255, 140, 90, calc(0.1 * var(--shadow-intensity)));
+        0 0 calc(20px * var(--shadow-intensity)) rgba(225, 29, 72, calc(0.4 * var(--shadow-intensity))),
+        0 0 calc(40px * var(--shadow-intensity)) rgba(225, 29, 72, calc(0.2 * var(--shadow-intensity))),
+        0 0 calc(80px * var(--shadow-intensity)) rgba(225, 29, 72, calc(0.1 * var(--shadow-intensity)));
     -webkit-backface-visibility: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Ensure touch events work properly on mobile */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #chatWidget:hover {
@@ -31,6 +36,10 @@
     width: 400px;
     height: var(--expanded-height, 720px);
     cursor: default;
+}
+
+#chatWidget:active {
+    cursor: grabbing;
 }
 
 /* Solid Background Layer */
@@ -68,7 +77,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(255, 69, 0, 0.6), rgba(255, 165, 0, 0.4), rgba(138, 43, 226, 0.3), rgba(0, 191, 255, 0.5), rgba(255, 69, 0, 0.6));
+    background: linear-gradient(135deg, rgba(225, 29, 72, 0.6), rgba(59, 130, 246, 0.4), rgba(16, 185, 129, 0.4), rgba(6, 182, 212, 0.5), rgba(225, 29, 72, 0.6));
     background-size: 600% 600%;
     animation: gradient 15s ease infinite;
 }
@@ -79,7 +88,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(-45deg, rgba(0, 191, 255, 0.5), rgba(138, 43, 226, 0.3), rgba(255, 165, 0, 0.4), rgba(255, 69, 0, 0.6), rgba(0, 191, 255, 0.5));
+    background: linear-gradient(-45deg, rgba(6, 182, 212, 0.5), rgba(99, 102, 241, 0.3), rgba(16, 185, 129, 0.4), rgba(225, 29, 72, 0.6), rgba(6, 182, 212, 0.5));
     background-size: 600% 600%;
     animation: gradientReverse 20s ease infinite;
     opacity: 0.6;
@@ -114,10 +123,17 @@
     z-index: 10;
     letter-spacing: 0.5px;
     line-height: 1.3;
-    padding: 0 10px;
+    padding: 0 8px;
     max-width: 230px;
     transition: all 0.3s ease;
     pointer-events: none;
+}
+
+/* Allow pointer events on mobile for collapsed state */
+@media (max-width: 768px) {
+    #chatWidget:not(.expanded) .text-overlay {
+        pointer-events: none;
+    }
 }
 
 #chatWidget:hover .text-overlay {
@@ -193,6 +209,13 @@
     color: white;
     font-size: 12px;
     outline: none;
+    /* Ensure mobile keyboard works properly */
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+    touch-action: manipulation;
 }
 
 .message-input::placeholder {
@@ -238,14 +261,6 @@
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
-}
-
-.role-label {
-    font-weight: 500;
-    margin-bottom: 5px;
-    font-size: 12px;
-    color: #64748b;
-    padding: 0 4px;
 }
 
 .message {
@@ -420,17 +435,45 @@
 /* Support for mobile devices */
 @media (max-width: 768px) {
     #chatWidget.expanded {
-        left: 20px !important;
-        right: 20px !important;
-        width: calc(100vw - 40px) !important;
+        left: 15px !important;
+        right: 15px !important;
+        width: calc(100vw - 30px) !important;
         max-width: none !important;
     }
     
     #chatWidget:not(.expanded) {
-        width: 250px;
-        height: 120px;
-        bottom: 20px;
-        right: 20px;
+        width: 200px;
+        height: 100px;
+        bottom: 15px;
+        right: 15px;
+        /* Ensure the widget is fully tappable on mobile */
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    /* Ensure all child elements allow touch events to bubble up in collapsed state */
+    #chatWidget:not(.expanded) * {
+        pointer-events: none;
+    }
+    
+    /* The main widget container should always be tappable */
+    #chatWidget:not(.expanded) {
+        pointer-events: auto;
+    }
+    
+    /* Re-enable pointer events for interactive elements in expanded state */
+    #chatWidget.expanded * {
+        pointer-events: auto;
+    }
+    
+    #chatWidget.expanded .message-input,
+    #chatWidget.expanded .send-button {
+        pointer-events: auto;
+    }
+    
+    /* Hide send button on mobile devices */
+    .send-button {
+        display: none;
     }
 }
 

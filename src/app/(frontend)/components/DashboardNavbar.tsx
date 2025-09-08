@@ -122,8 +122,9 @@ export function DashboardNavbar() {
           {/* Left: Logo/Title, flush left */}
           <div className="flex items-center flex-shrink-0 mr-8">
             <Link
-              href="/"
+              href="/dashboard"
               className="text-2xl font-bold text-gray-900 tracking-tight select-none hover:underline focus:underline outline-none flex items-center"
+              onClick={handleNavigation}
             >
               <Image
                 src="/image/logo.png"

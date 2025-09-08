@@ -128,6 +128,9 @@ export async function createWidgetDOM() {
                 id="chatWidgetInputField"
                 placeholder="Type a message..."
                 class="message-input"
+                autocomplete="off"
+                autocorrect="on"
+                autocapitalize="sentences"
               />
               <button id="chatWidgetSendButton" class="send-button">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -145,12 +148,186 @@ export async function createWidgetDOM() {
     widget.querySelector('#chatWidgetSendButton')
       ?.addEventListener('click', handleSubmit);
     
-    // Add click listener to widget to expand when clicked
+    // Add drag functionality
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let widgetStartX = 0;
+    let widgetStartY = 0;
+    let hasMoved = false;
+
+    widget.addEventListener('mousedown', (e) => {
+      // Don't drag if clicking on input field or send button
+      if (e.target.closest('.message-input, .send-button')) return;
+      
+      isDragging = true;
+      hasMoved = false;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      
+      // Get current position
+      const rect = widget.getBoundingClientRect();
+      widgetStartX = rect.left;
+      widgetStartY = rect.top;
+      
+      widget.style.transition = 'none'; // Disable transition during drag
+      widget.style.cursor = 'grabbing';
+      
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      
+      const deltaX = e.clientX - dragStartX;
+      const deltaY = e.clientY - dragStartY;
+      
+      // Mark as moved if dragged more than 5px
+      if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+        hasMoved = true;
+      }
+      
+      const newX = widgetStartX + deltaX;
+      const newY = widgetStartY + deltaY;
+      
+      // Use collapsed dimensions for boundary calculations (250x120 from CSS)
+      const collapsedWidth = 250;
+      const collapsedHeight = 120;
+      const maxX = window.innerWidth - collapsedWidth;
+      const maxY = window.innerHeight - collapsedHeight;
+      
+      const boundedX = Math.max(0, Math.min(newX, maxX));
+      const boundedY = Math.max(0, Math.min(newY, maxY));
+      
+      widget.style.left = boundedX + 'px';
+      widget.style.top = boundedY + 'px';
+      widget.style.right = 'auto';
+      widget.style.bottom = 'auto';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        widget.style.transition = 'all 0.3s ease'; // Re-enable transition
+        widget.style.cursor = 'pointer';
+      }
+    });
+
+    // Add click listener to widget to expand when clicked (only if not dragged)
     widget.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (!widget.classList.contains('expanded')) {
+      if (!hasMoved && !widget.classList.contains('expanded')) {
         expandWidget();
       }
+      hasMoved = false; // Reset for next interaction
+    });
+
+    // Add touch event listeners for drag support on mobile
+    let touchStartTime = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isTouchDragging = false;
+    let touchWidgetStartX = 0;
+    let touchWidgetStartY = 0;
+    let touchHasMoved = false;
+
+    widget.addEventListener('touchstart', (e) => {
+      // Don't drag if touching input field or send button
+      if (e.target.closest('.message-input, .send-button')) return;
+      
+      // On mobile, only allow dragging when widget is collapsed
+      const isMobile = window.innerWidth <= 768;
+      const isExpanded = widget.classList.contains('expanded');
+      
+      if (isMobile && isExpanded) {
+        // Don't prevent default - allow normal scrolling in expanded chat
+        return;
+      }
+      
+      // Always prevent page scrolling when touching the widget (except expanded mobile)
+      e.preventDefault();
+      
+      touchStartTime = Date.now();
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      touchHasMoved = false;
+      
+      // Set up drag state
+      isTouchDragging = true;
+      const rect = widget.getBoundingClientRect();
+      touchWidgetStartX = rect.left;
+      touchWidgetStartY = rect.top;
+      
+      widget.style.transition = 'none';
+    }, { passive: false });
+
+    widget.addEventListener('touchmove', (e) => {
+      if (!isTouchDragging) return;
+      
+      // On mobile, only allow dragging when widget is collapsed
+      const isMobile = window.innerWidth <= 768;
+      const isExpanded = widget.classList.contains('expanded');
+      
+      if (isMobile && isExpanded) {
+        // Don't prevent default - allow normal scrolling in expanded chat
+        return;
+      }
+      
+      // Always prevent page scrolling when touching the widget (except expanded mobile)
+      e.preventDefault();
+      
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+      
+      // Mark as moved if dragged more than 10px (larger threshold for touch)
+      if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+        touchHasMoved = true;
+      }
+      
+      if (touchHasMoved) {
+        const newX = touchWidgetStartX + deltaX;
+        const newY = touchWidgetStartY + deltaY;
+        
+        // Use collapsed dimensions for boundary calculations (200x100 on mobile from CSS)
+        const collapsedWidth = window.innerWidth <= 768 ? 200 : 250;
+        const collapsedHeight = window.innerWidth <= 768 ? 100 : 120;
+        const maxX = window.innerWidth - collapsedWidth;
+        const maxY = window.innerHeight - collapsedHeight;
+        
+        const boundedX = Math.max(0, Math.min(newX, maxX));
+        const boundedY = Math.max(0, Math.min(newY, maxY));
+        
+        widget.style.left = boundedX + 'px';
+        widget.style.top = boundedY + 'px';
+        widget.style.right = 'auto';
+        widget.style.bottom = 'auto';
+      }
+    }, { passive: false });
+
+    widget.addEventListener('touchend', (e) => {
+      // Don't prevent default if the touch target is an input field
+      const target = e.target || e.changedTouches[0];
+      const isInputElement = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
+      
+      if (!isInputElement && !touchHasMoved) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      const touchEndTime = Date.now();
+      const touchDuration = touchEndTime - touchStartTime;
+      
+      // Only trigger expand if it's a quick tap and widget wasn't dragged
+      if (touchDuration < 300 && !touchHasMoved && !widget.classList.contains('expanded') && !isInputElement) {
+        expandWidget();
+      }
+      
+      // Reset drag state
+      isTouchDragging = false;
+      widget.style.transition = 'all 0.3s ease';
+      touchHasMoved = false;
     });
 
     // Add hover listeners for expand/collapse behavior
@@ -166,21 +343,14 @@ export async function createWidgetDOM() {
       }
     });
 
-    // Add click outside to close functionality
+    // Add click outside to collapse functionality (don't hide the widget)
     document.addEventListener('click', (e) => {
       const isClickInsideWidget = widget.contains(e.target);
       const isClickOnToggle = e.target.closest('#chatWidgetToggle, #chatWidgetToggleContainer');
       
       if (!isClickInsideWidget && !isClickOnToggle && widget.classList.contains('expanded')) {
         collapseWidget();
-        setTimeout(() => {
-          widget.classList.add('hidden');
-          const toggleContainer = getElementById('chatWidgetToggleContainer');
-          if (toggleContainer) {
-            toggleContainer.classList.remove('hidden');
-            state.isWidgetOpen = false;
-          }
-        }, 300);
+        // Don't hide the widget, just keep it collapsed
       }
     });
 
@@ -194,6 +364,25 @@ export async function createWidgetDOM() {
         handleSubmit();
       }
     });
+
+    // Add specific touch handling for input field to ensure mobile keyboard appears
+    if (inputField) {
+      inputField.addEventListener('touchstart', (e) => {
+        e.stopPropagation(); // Prevent widget touch handlers from interfering
+      }, { passive: true });
+      
+      inputField.addEventListener('touchend', (e) => {
+        e.stopPropagation(); // Prevent widget touch handlers from interfering
+        // Allow default behavior for focusing the input
+      });
+      
+      // Ensure input field can be focused on mobile
+      inputField.addEventListener('click', (e) => {
+        e.stopPropagation();
+        inputField.focus();
+      });
+    }
+
 
     // Add suggested prompts if available (keep for backward compatibility but won't be visible in collapsed state)
     const suggestedPrompts = getSuggestedPrompts();
@@ -211,42 +400,7 @@ export async function createWidgetDOM() {
       ],
     });
 
-    // Create toggle button AFTER main widget exists (initially hidden since widget is shown)
-    const toggleContainer = createElement('div', {
-      id: 'chatWidgetToggleContainer',
-      className: 'hidden',
-      style: `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1001;
-      `,
-    });
-
-    const toggle = createElement('div', {
-      id: 'chatWidgetToggle',
-      style: `
-        width: 60px;
-        height: 60px;
-        border-radius: 30px;
-        background: black;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        font-size: 24px;
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      `,
-      innerHTML: `<svg width="32" height="32" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-<path d="M7.5 8.25H16.5M7.5 11.25H12M2.25 12.7593C2.25 14.3604 3.37341 15.754 4.95746 15.987C6.08596 16.1529 7.22724 16.2796 8.37985 16.3655C8.73004 16.3916 9.05017 16.5753 9.24496 16.8674L12 21L14.755 16.8675C14.9498 16.5753 15.2699 16.3917 15.6201 16.3656C16.7727 16.2796 17.914 16.153 19.0425 15.9871C20.6266 15.7542 21.75 14.3606 21.75 12.7595V6.74056C21.75 5.13946 20.6266 3.74583 19.0425 3.51293C16.744 3.17501 14.3926 3 12.0003 3C9.60776 3 7.25612 3.17504 4.95747 3.51302C3.37342 3.74593 2.25 5.13956 2.25 6.74064V12.7593Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>`,
-    });
-
-    toggleContainer.appendChild(toggle);
-    toggle.addEventListener('click', toggleChatWidget);
-    document.body.appendChild(toggleContainer);
+    // No toggle button needed - widget stays as widget in all states
 
     state.isWidgetReady = true;
     state.isWidgetOpen = true; // Widget is open by default now
@@ -262,41 +416,19 @@ export async function createWidgetDOM() {
 
 export function toggleChatWidget() {
   const widget = getElementById('chatWidget');
-  const toggleContainer = getElementById('chatWidgetToggleContainer');
 
   if (!widget) {
     createLoadingWidget();
     return;
   }
 
-  if (!toggleContainer) return;
-
-  const isHidden = widget.classList.contains('hidden');
-  
-  if (isHidden) {
-    // Show widget in collapsed state
-    widget.classList.remove('hidden');
-    toggleContainer.classList.add('hidden');
+  // Simply toggle between expanded and collapsed states
+  if (widget.classList.contains('expanded')) {
+    // If expanded, collapse it
     collapseWidget();
-    state.isWidgetOpen = true;
-    
-    // Clear notifications when widget is opened
-    state.unreadMessages = 0;
-    updateNotificationBadge();
-    updateChatUI();
-  } else if (widget.classList.contains('expanded')) {
-    // If expanded, first collapse, then hide after a delay
-    collapseWidget();
-    setTimeout(() => {
-      widget.classList.add('hidden');
-      toggleContainer.classList.remove('hidden');
-      state.isWidgetOpen = false;
-    }, 300); // Wait for collapse animation
   } else {
-    // If collapsed, hide immediately
-    widget.classList.add('hidden');
-    toggleContainer.classList.remove('hidden');
-    state.isWidgetOpen = false;
+    // If collapsed, expand it
+    expandWidget();
   }
 }
 
@@ -304,11 +436,6 @@ export function createLoadingWidget() {
   if (getElementById('chatWidgetLoading')) {
     return;
   }
-
-  const toggleContainer = getElementById('chatWidgetToggleContainer');
-  if (!toggleContainer) return;
-
-  toggleContainer.classList.add('hidden');
 
   const loadingWidget = createElement('div', {
     id: 'chatWidgetLoading',
@@ -337,7 +464,6 @@ export function createLoadingWidget() {
     .querySelector('#chatWidgetLoadingCloseButton')
     .addEventListener('click', () => {
       loadingWidget.remove();
-      toggleContainer.classList.remove('hidden');
     });
 
   document.body.appendChild(loadingWidget);
@@ -358,7 +484,6 @@ export function createLoadingWidget() {
     } else {
       console.error('Widget initialization timeout');
       loadingWidget.remove();
-      toggleContainer.classList.remove('hidden');
     }
   };
 

@@ -107,26 +107,26 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+    <div className="bg-background flex items-center justify-center px-4 py-20">
       <motion.div
-        className="max-w-md w-full text-center"
+        className="max-w-sm w-full text-center"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <motion.h1
-          className="text-4xl font-bold text-foreground mb-6"
+          className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight"
           variants={itemVariants}
         >
           Sign In to BlizzardBerry
         </motion.h1>
         <motion.p
-          className="text-lg text-muted-foreground mb-8"
+          className="text-lg text-muted-foreground mb-10 max-w-md mx-auto leading-relaxed"
           variants={itemVariants}
         >
-          Choose your preferred method to sign in and get started.
+          Choose your preferred method to sign in
         </motion.p>
-        <motion.div className="flex flex-col space-y-4" variants={itemVariants}>
+        <motion.div className="flex flex-col space-y-6" variants={itemVariants}>
           {error && (
             <motion.div
               className="text-destructive text-sm"
@@ -137,10 +137,11 @@ export default function LoginPage() {
               {error}
             </motion.div>
           )}
-          <div>
+          <div className="relative group">
+            <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
             <Button
               size="lg"
-              className="w-full bg-background text-foreground border-[3px] border-border rounded flex items-center justify-center transition-transform duration-150 hover:scale-105 hover:bg-secondary/90"
+              className="relative w-full bg-background text-foreground border-[3px] border-border rounded-lg flex items-center justify-center hover:bg-secondary/90"
               onClick={handleGitHubSignIn}
               disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
             >
@@ -164,10 +165,11 @@ export default function LoginPage() {
               </div>
             </Button>
           </div>
-          <div>
+          <div className="relative group">
+            <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
             <Button
               size="lg"
-              className="w-full bg-background text-foreground border-[3px] border-border rounded flex items-center justify-center transition-transform duration-150 hover:scale-105 hover:bg-secondary/90"
+              className="relative w-full bg-background text-foreground border-[3px] border-border rounded-lg flex items-center justify-center hover:bg-secondary/90"
               onClick={handleGoogleSignIn}
               disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
             >
@@ -191,8 +193,9 @@ export default function LoginPage() {
               </div>
             </Button>
           </div>
-          <div>
-            <div className="w-full bg-background border-[3px] border-border rounded p-4 flex flex-col space-y-4">
+          <div className="relative group">
+            <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+            <div className="relative w-full bg-background border-[3px] border-border rounded-lg p-4 flex flex-col space-y-3">
               <input
                 type="email"
                 id="email-resend"
@@ -203,39 +206,42 @@ export default function LoginPage() {
                   setError('');
                 }}
                 placeholder="Enter your email"
-                className="w-full px-3 py-2 text-foreground bg-background border-[2px] border-border rounded focus:outline-none focus:ring-2 focus:ring-border"
+                className="w-full px-3 py-2 text-foreground bg-background border-[2px] border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-border"
                 disabled={isGitHubLoading || isGoogleLoading || isResendLoading}
               />
-              <Button
-                size="lg"
-                className="w-full bg-background text-foreground border-[3px] border-border rounded flex items-center justify-center transition-transform duration-150 hover:scale-105 hover:bg-secondary/90"
-                onClick={handleResendSignIn}
-                disabled={
-                  isGitHubLoading ||
-                  isGoogleLoading ||
-                  isResendLoading ||
-                  !email
-                }
-              >
-                <div className="flex items-center">
-                  {isResendLoading ? (
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  ) : (
-                    <svg
-                      role="img"
-                      className="w-5 h-5 mr-2"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M20 4H4C2.897 4 2 4.897 2 6v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm0 2v.511l-8 6.223-8-6.222V6h16zM4 18V9.044l8 6.223 8-6.223V18H4z" />
-                    </svg>
-                  )}
-                  <span>
-                    {isResendLoading ? 'Sending...' : 'Sign in with Email'}
-                  </span>
-                </div>
-              </Button>
+              <div className="relative group-inner">
+                <div className="absolute inset-0 rounded-lg bg-black/40 translate-x-0.5 translate-y-0.5 transition-transform group-inner-hover:translate-x-0.25 group-inner-hover:translate-y-0.25"></div>
+                <Button
+                  size="lg"
+                  className="relative w-full bg-background text-foreground border-[3px] border-border rounded-lg flex items-center justify-center hover:bg-secondary/90"
+                  onClick={handleResendSignIn}
+                  disabled={
+                    isGitHubLoading ||
+                    isGoogleLoading ||
+                    isResendLoading ||
+                    !email
+                  }
+                >
+                  <div className="flex items-center">
+                    {isResendLoading ? (
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    ) : (
+                      <svg
+                        role="img"
+                        className="w-5 h-5 mr-2"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M20 4H4C2.897 4 2 4.897 2 6v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm0 2v.511l-8 6.223-8-6.222V6h16zM4 18V9.044l8 6.223 8-6.223V18H4z" />
+                      </svg>
+                    )}
+                    <span>
+                      {isResendLoading ? 'Sending...' : 'Sign in with Email'}
+                    </span>
+                  </div>
+                </Button>
+              </div>
             </div>
           </div>
         </motion.div>
