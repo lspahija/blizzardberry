@@ -722,6 +722,12 @@ export default function DemoPage() {
       return;
     }
 
+    // Position chat window container to match revenue dashboard (top-55%)
+    const chatContainer = chatWindow.parentElement;
+    if (chatContainer) {
+      chatContainer.className = 'absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2';
+    }
+
     // Replace chat window content with tickets dashboard using React components
     // We'll create this with proper React components in the DOM
     chatWindow.className =
