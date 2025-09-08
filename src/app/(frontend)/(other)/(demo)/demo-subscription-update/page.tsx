@@ -99,7 +99,7 @@ export default function MusicStreamRefundVideo() {
       // Type user message  
       userInput.disabled = false;
       userInput.focus();
-      typeTextWithScroll(userInput, "Hi, I'd like to upgrade to premium plan.", 60, () => {
+      typeTextWithScroll(userInput, "Hi, I'd like to upgrade to premium plan", 60, () => {
         // Show airplane animation and send with natural pause
         addTimeout(() => {
           triggerAirplane();
@@ -148,7 +148,7 @@ export default function MusicStreamRefundVideo() {
           );
           
           // Add user message
-          addUserMessageToChat("Hi, I'd like to upgrade to premium plan.");
+          addUserMessageToChat("Hi, I'd like to upgrade to premium plan");
           
           addTimeout(() => {
             showBotResponse();
