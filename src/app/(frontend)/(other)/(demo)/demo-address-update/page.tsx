@@ -296,7 +296,7 @@ export default function AddressUpdateVideo() {
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
         message.type === 'sent'
-          ? 'bg-teal-500/15 text-foreground hover:scale-[1.02]'
+          ? 'bg-teal-500/15 text-teal-800 hover:scale-[1.02]'
           : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
