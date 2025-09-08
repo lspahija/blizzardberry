@@ -379,7 +379,7 @@ export default function MusicStreamRefundVideo() {
           <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
             <div id="loadingBar" class="bg-cyan-500 h-2 rounded-full transition-all duration-2000 ease-out" style="width: 0%"></div>
           </div>
-          <p class="text-gray-600">Upgrading Your Account</p>
+          <p class="text-gray-500 font-semibold text-lg">Upgrading Your Account</p>
         </div>
       </div>
     `;
