@@ -1921,6 +1921,7 @@ export default function DemoPage() {
               <div
                 className="h-64 relative flex justify-center"
                 id="chartSection"
+                style={{ transform: 'translateX(-15px)' }}
               >
                 <ChartContainer
                   config={chartConfig}
