@@ -344,7 +344,7 @@ export default function MusicStreamRefundVideo() {
         <div class="text-center mb-8">
           <div class="relative w-24 h-24 bg-gradient-to-br from-cyan-400/60 via-cyan-500/60 to-cyan-600/60 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
             <div class="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
-            <svg class="w-10 h-10 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <svg class="w-12 h-12 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
               <path d="M9 18V5l12-2v13"/>
               <circle cx="6" cy="18" r="3"/>
               <circle cx="18" cy="16" r="3"/>
@@ -704,7 +704,7 @@ export default function MusicStreamRefundVideo() {
                 <div className="text-center mb-8">
                   <div className="relative w-20 h-20 bg-gradient-to-br from-cyan-400/60 via-cyan-500/60 to-cyan-600/60 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
-                    <svg className="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                    <svg className="w-10 h-10 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                       <path d="M9 18V5l12-2v13"/>
                       <circle cx="6" cy="18" r="3"/>
                       <circle cx="18" cy="16" r="3"/>
