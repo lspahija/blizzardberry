@@ -345,7 +345,7 @@ export default function MusicStreamRefundVideo() {
           <div class="relative w-24 h-24 bg-gradient-to-br from-cyan-400/60 via-cyan-500/60 to-cyan-600/60 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform">
             <div class="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
             <svg class="w-10 h-10 text-white relative z-10" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+              <path d="M12 3l.01 10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6.01zM18 9l.01 6.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V13h4V9h-6.01z"/>
             </svg>
           </div>
           <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream Premium</h3>
@@ -703,7 +703,7 @@ export default function MusicStreamRefundVideo() {
                   <div className="relative w-20 h-20 bg-gradient-to-br from-cyan-400/60 via-cyan-500/60 to-cyan-600/60 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-3xl"></div>
                     <svg className="w-8 h-8 text-white relative z-10" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                      <path d="M12 3l.01 10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6.01zM18 9l.01 6.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V13h4V9h-6.01z"/>
                     </svg>
                   </div>
                   <h2 className="text-3xl font-bold text-muted-foreground mb-2">
