@@ -39,23 +39,16 @@ export default function MusicStreamRefundVideo() {
   const typeTextWithScroll = (element: HTMLTextAreaElement | null, text: string, speed = 50, callback?: () => void) => {
     if (!element) return;
     element.value = '';
+    element.style.height = '60px'; // Reset to minimum height
     let i = 0;
-    let hasScrolled = false;
     
     const type = () => {
       if (i < text.length) {
         element.value += text.charAt(i);
         
-        // When we hit the first line break, scroll the text up slightly
-        if (text.charAt(i) === '\n' && !hasScrolled) {
-          hasScrolled = true;
-          // Animate the textarea content to scroll up
-          gsap.to(element, {
-            scrollTop: 8, // Small scroll to move first line up slightly
-            duration: 0.3,
-            ease: "power2.out"
-          });
-        }
+        // Auto-expand textarea as text is typed
+        element.style.height = '60px'; // Reset to minimum
+        element.style.height = Math.min(element.scrollHeight, 120) + 'px'; // Expand smoothly
         
         i++;
         addTimeout(type, speed);
@@ -719,9 +712,15 @@ export default function MusicStreamRefundVideo() {
                     <textarea
                       id="userInput"
                       placeholder="Tell me what you need..."
-                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none h-17 leading-normal"
+                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none min-h-[60px] max-h-[120px] leading-normal overflow-hidden"
                       spellCheck={false}
                       disabled
+                      rows={1}
+                      onInput={(e) => {
+                        const textarea = e.target as HTMLTextAreaElement;
+                        textarea.style.height = '60px'; // Reset to minimum height
+                        textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px'; // Expand up to max
+                      }}
                     />
                     <button id="sendButton" className="group absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
