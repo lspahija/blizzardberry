@@ -350,8 +350,8 @@ export default function MusicStreamRefundVideo() {
               <circle cx="18" cy="16" r="3"/>
             </svg>
           </div>
-          <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream Premium</h3>
-          <p class="text-muted-foreground text-lg">Current Subscription Status</p>
+          <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream</h3>
+          <p class="text-muted-foreground text-lg">Upgrading to Premium Plan</p>
         </div>
         
         <div class="space-y-4 mb-8">
@@ -360,12 +360,8 @@ export default function MusicStreamRefundVideo() {
             <span class="font-bold text-foreground">Sarah Johnson</span>
           </div>
           <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
-            <span class="text-muted-foreground font-medium">Plan Type</span>
-            <span class="font-bold text-foreground">Basic Plan</span>
-          </div>
-          <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
-            <span class="text-muted-foreground font-medium">Features</span>
-            <span class="font-bold text-foreground">Limited Access</span>
+            <span class="text-muted-foreground font-medium">Current Plan</span>
+            <span class="font-bold text-foreground">Basic</span>
           </div>
         </div>
         
