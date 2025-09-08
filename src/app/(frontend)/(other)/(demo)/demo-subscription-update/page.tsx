@@ -351,11 +351,14 @@ export default function MusicStreamRefundVideo() {
             </svg>
           </div>
           <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream</h3>
-          <p class="text-muted-foreground text-lg">Upgrading to Premium Plan</p>
+          <p class="text-muted-foreground text-lg">Upgrading plan...</p>
         </div>
         
-        <div class="text-center mb-8">
-          <p class="text-muted-foreground text-lg">Upgrading plan...</p>
+        <div class="space-y-4 mb-8">
+          <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
+            <span class="text-muted-foreground font-medium">Account Holder</span>
+            <span class="font-bold text-foreground">Sarah Johnson</span>
+          </div>
         </div>
         
         <button id="extendButton" class="w-full bg-gradient-to-r from-cyan-400/60 to-cyan-500/60 text-white py-5 rounded-2xl font-bold text-xl hover:scale-[1.02] transition-all duration-300 shadow-lg transform">
