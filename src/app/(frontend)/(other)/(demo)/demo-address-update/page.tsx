@@ -858,18 +858,18 @@ export default function AddressUpdateVideo() {
           <p class="text-gray-600 text-center mb-8">Your account has been successfully updated with your new address.</p>
           
           <!-- Address Card -->
-          <div class="bg-gradient-to-r from-gray-50 to-gray-100/70 rounded-xl p-6 border border-gray-200/60">
+          <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
             <div class="flex items-center space-x-4">
-              <div class="w-10 h-10 bg-teal-500/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
               </div>
               <div class="flex-1">
                 <div class="space-y-1">
-                  <div class="text-gray-700 font-medium">1847 Union St</div>
-                  <div class="text-gray-700 font-medium">San Francisco, CA 94123</div>
+                  <div class="text-lg font-semibold text-gray-900">1847 Union St</div>
+                  <div class="text-base text-gray-600">San Francisco, CA 94123</div>
                 </div>
               </div>
             </div>
