@@ -595,8 +595,14 @@ export default function MusicStreamRefundVideo() {
 
   const returnToChatWithSuccess = () => {
     const chatContainer = document.getElementById('chatContainer');
+    const processingBubble = document.getElementById('processingBubble');
 
-    // Step 1: Restore chat container
+    // Step 1: Immediately remove processing bubble before restoring chat
+    if (processingBubble) {
+      processingBubble.remove();
+    }
+
+    // Step 2: Restore chat container
     if (chatContainer) {
       gsap.to(chatContainer, {
         scale: 1,
@@ -607,32 +613,40 @@ export default function MusicStreamRefundVideo() {
       });
     }
 
-    // Step 2: Remove processing bubble
-    const processingBubble = document.getElementById('processingBubble');
-    if (processingBubble) {
-      gsap.to(processingBubble, {
-        scale: 0.8,
-        opacity: 0,
-        y: -20,
-        duration: 0.4,
-        ease: 'power2.out',
-        onComplete: () => {
-          processingBubble.remove();
-        },
-      });
-    }
-
-    // Step 3: Add success message
+    // Step 3: Add typing indicator then success message
     addTimeout(() => {
       setVideoState((prev) => ({ ...prev, currentPhase: 'result' }));
-      addBotMessageToChat(
-        "Perfect! I've successfully upgraded your account to the Premium tier."
-      );
 
-      // Add welcome message after short delay
+      // First show typing indicator
+      addBotMessageToChat(`
+        <div class="flex items-center space-x-3">
+          <div class="flex space-x-1">
+            <div class="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+          </div>
+        </div>
+      `);
+
+      // Remove typing indicator and show success message after delay
       addTimeout(() => {
-        addBotMessageToChat('Enjoy your enhanced music experience!');
-      }, 2000);
+        // Remove the typing indicator (last message)
+        const chatMessages = document.getElementById('chatMessages');
+        if (chatMessages) {
+          const messages = chatMessages.querySelectorAll('.chat-message');
+          if (messages.length > 0) {
+            const lastMessage = messages[messages.length - 1];
+            if (lastMessage) {
+              lastMessage.remove();
+            }
+          }
+        }
+
+        // Add the actual success message
+        addBotMessageToChat(
+          "Perfect! I've successfully upgraded your account to the Premium tier. Enjoy all the new features!"
+        );
+      }, 1500);
     }, 500);
 
     addTimeout(() => {
