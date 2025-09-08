@@ -51,23 +51,16 @@ export default function AddressUpdateVideo() {
   const typeTextWithScroll = (element: HTMLTextAreaElement | null, text: string, speed = 50, callback?: () => void) => {
     if (!element) return;
     element.value = '';
+    element.style.height = '60px'; // Reset to minimum height
     let i = 0;
-    let hasScrolled = false;
     
     const type = () => {
       if (i < text.length) {
         element.value += text.charAt(i);
         
-        // When we hit the first line break, scroll the text up slightly
-        if (text.charAt(i) === '\n' && !hasScrolled) {
-          hasScrolled = true;
-          // Animate the textarea content to scroll up
-          gsap.to(element, {
-            scrollTop: 8, // Small scroll to move first line up slightly
-            duration: 0.3,
-            ease: "power2.out"
-          });
-        }
+        // Auto-expand textarea as text is typed
+        element.style.height = '60px'; // Reset to minimum
+        element.style.height = Math.min(element.scrollHeight, 120) + 'px'; // Expand smoothly
         
         i++;
         addTimeout(type, speed);
@@ -254,7 +247,7 @@ export default function AddressUpdateVideo() {
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
         message.type === 'sent' 
-          ? 'bg-blue-500 text-white hover:scale-[1.02]' 
+          ? 'bg-green-500/15 text-foreground hover:scale-[1.02]' 
           : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
@@ -310,9 +303,9 @@ export default function AddressUpdateVideo() {
       text: `
         <div class="flex items-center space-x-3">
           <div class="flex space-x-1">
-            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-green-500/15 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-green-500/15 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-green-500/15 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
           <div class="text-base text-muted-foreground">Checking your details...</div>
         </div>
@@ -1250,7 +1243,7 @@ export default function AddressUpdateVideo() {
             <div id="initialState" className="flex-1 flex items-center justify-center px-6">
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-muted-foreground mb-2">
+                  <h2 className="text-4xl font-bold text-muted-foreground mb-2">
                     Pacific Trust Bank<br/>Customer Support
                   </h2>
                 </div>
@@ -1260,13 +1253,19 @@ export default function AddressUpdateVideo() {
                     <textarea
                       id="userInput"
                       placeholder="Tell me what you need..."
-                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none h-17 leading-normal"
+                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none min-h-[60px] max-h-[120px] leading-normal overflow-hidden"
                       spellCheck={false}
                       disabled
+                      rows={1}
+                      onInput={(e) => {
+                        const textarea = e.target as HTMLTextAreaElement;
+                        textarea.style.height = '60px'; // Reset to minimum height
+                        textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px'; // Expand up to max
+                      }}
                     />
                     <button id="sendButton" className="group absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:scale-110 transition-all duration-300">
                       <div className="transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300">
-                        <svg width="20" height="20" fill="#3B82F6" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-green-600">
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         </svg>
                       </div>
