@@ -354,15 +354,8 @@ export default function MusicStreamRefundVideo() {
           <p class="text-muted-foreground text-lg">Upgrading to Premium Plan</p>
         </div>
         
-        <div class="space-y-4 mb-8">
-          <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
-            <span class="text-muted-foreground font-medium">Account Holder</span>
-            <span class="font-bold text-foreground">Sarah Johnson</span>
-          </div>
-          <div class="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl transform">
-            <span class="text-muted-foreground font-medium">Current Plan</span>
-            <span class="font-bold text-foreground">Basic</span>
-          </div>
+        <div class="text-center mb-8">
+          <p class="text-muted-foreground text-lg">Upgrading plan...</p>
         </div>
         
         <button id="extendButton" class="w-full bg-gradient-to-r from-cyan-400/60 to-cyan-500/60 text-white py-5 rounded-2xl font-bold text-xl hover:scale-[1.02] transition-all duration-300 shadow-lg transform">
