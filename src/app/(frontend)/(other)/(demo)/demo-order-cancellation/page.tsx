@@ -38,18 +38,25 @@ export default function CustomerSupportVideo() {
     timeoutsRef.current = [];
   };
 
-  const typeText = (
-    element: HTMLInputElement | null,
+  const typeTextWithScroll = (
+    element: HTMLTextAreaElement | null,
     text: string,
     speed = 50,
     callback?: () => void
   ) => {
     if (!element) return;
     element.value = '';
+    element.style.height = '60px'; // Reset to minimum height
     let i = 0;
+    
     const type = () => {
       if (i < text.length) {
         element.value += text.charAt(i);
+        
+        // Auto-expand textarea as text is typed
+        element.style.height = '60px'; // Reset to minimum
+        element.style.height = Math.min(element.scrollHeight, 120) + 'px'; // Expand smoothly
+        
         i++;
         addTimeout(type, speed);
       } else if (callback) {
@@ -125,7 +132,7 @@ export default function CustomerSupportVideo() {
   const showChatInterface = () => {
     // Show chat interface directly without intro animation
     const chatContainer = document.getElementById('chatContainer');
-    const userInput = document.getElementById('userInput') as HTMLInputElement;
+    const userInput = document.getElementById('userInput') as HTMLTextAreaElement;
 
     if (chatContainer) {
       // Show chat container immediately
@@ -138,7 +145,7 @@ export default function CustomerSupportVideo() {
         if (userInput) {
           userInput.disabled = false;
           userInput.focus();
-          typeText(userInput, 'I need to cancel my order #1234.', 60, () => {
+          typeTextWithScroll(userInput, 'I need to cancel my order #9373', 60, () => {
             // Show airplane animation and send with natural pause
             addTimeout(() => {
               triggerAirplane();
@@ -186,7 +193,7 @@ export default function CustomerSupportVideo() {
 
       addChatMessageWithSlide({
         type: 'sent',
-        text: 'I need to cancel my order #1234.',
+        text: 'I need to cancel my order #9373',
       });
 
       // Add processing bubble directly after user message appears
@@ -223,7 +230,7 @@ export default function CustomerSupportVideo() {
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
         message.type === 'sent'
-          ? 'bg-blue-500 text-white hover:scale-[1.02]'
+          ? 'bg-blue-500/40 text-foreground hover:scale-[1.02]'
           : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
@@ -276,9 +283,9 @@ export default function CustomerSupportVideo() {
       text: `
         <div class="flex items-center space-x-3">
           <div class="flex space-x-1">
-            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-            <div class="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-blue-500/40 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-blue-500/40 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-blue-500/40 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
           <div class="text-base text-muted-foreground">Processing cancellation...</div>
         </div>
@@ -339,7 +346,7 @@ export default function CustomerSupportVideo() {
               <span class="font-bold text-green-700 text-lg">Order Canceled!</span>
             </div>
             <div class="bg-white/70 rounded-lg p-3 mb-3">
-              <p class="font-semibold text-gray-800">Order #1234</p>
+              <p class="font-semibold text-gray-800">Order #9373</p>
               <p class="text-sm text-gray-600">Premium headphones - $127.99</p>
             </div>
             <div class="flex items-center justify-between text-sm">
@@ -675,7 +682,7 @@ export default function CustomerSupportVideo() {
           <div className="relative">
             <p
               id="typingSubtext"
-              className="text-3xl font-medium tracking-wide opacity-0"
+              className="text-3xl font-medium tracking-wide opacity-0 text-muted-foreground"
               style={{
                 background: 'linear-gradient(135deg, #1D4ED8, #10B981)',
                 WebkitBackgroundClip: 'text',
@@ -733,7 +740,7 @@ export default function CustomerSupportVideo() {
             >
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-foreground mb-2">
+                  <h2 className="text-4xl font-bold text-foreground mb-2">
                     Customer Support
                   </h2>
                   <p className="text-muted-foreground">
@@ -743,12 +750,17 @@ export default function CustomerSupportVideo() {
 
                 <div className="flex gap-3 items-center">
                   <div className="flex-1 relative overflow-visible">
-                    <input
+                    <textarea
                       id="userInput"
-                      type="text"
                       placeholder="Describe your issue..."
-                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-full focus:outline-none transition-all duration-300"
+                      className="w-full px-6 py-4 pr-16 text-base bg-muted rounded-2xl focus:outline-none transition-all duration-300 resize-none min-h-[60px] max-h-[120px] leading-normal overflow-hidden"
                       disabled
+                      rows={1}
+                      onInput={(e) => {
+                        const textarea = e.target as HTMLTextAreaElement;
+                        textarea.style.height = '60px'; // Reset to minimum height
+                        textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px'; // Expand up to max
+                      }}
                     />
                     <button
                       id="sendButton"
@@ -758,9 +770,9 @@ export default function CustomerSupportVideo() {
                         <svg
                           width="20"
                           height="20"
-                          fill="#3b82f6"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
-                          className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300"
+                          className="drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 text-blue-500/40"
                         >
                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                         </svg>
