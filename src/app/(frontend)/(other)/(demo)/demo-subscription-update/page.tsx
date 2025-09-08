@@ -112,7 +112,7 @@ export default function MusicStreamRefundVideo() {
       userInput.focus();
       typeTextWithScroll(
         userInput,
-        "Hi, I'd like to upgrade to the premium plan",
+        "I'd like to upgrade to the premium plan",
         60,
         () => {
           // Show airplane animation and send with natural pause
@@ -167,7 +167,7 @@ export default function MusicStreamRefundVideo() {
           );
 
           // Add user message
-          addUserMessageToChat("Hi, I'd like to upgrade to the premium plan");
+          addUserMessageToChat("I'd like to upgrade to the premium plan");
 
           addTimeout(() => {
             showBotResponse();
@@ -371,41 +371,15 @@ export default function MusicStreamRefundVideo() {
     analysisOverlay.style.opacity = '0';
 
     analysisOverlay.innerHTML = `
-      <div class="w-[520px] bg-white rounded-3xl border border-gray-100 shadow-2xl p-12 transform perspective-1000">
-        <div class="text-center mb-10">
-          <div class="w-24 h-24 bg-cyan-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-            <svg class="w-12 h-12 text-white transform translate-x-[-1px] translate-y-[1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path d="M9 18V5l12-2v13"/>
-              <circle cx="6" cy="18" r="3"/>
-              <circle cx="18" cy="16" r="3"/>
-            </svg>
+      <div class="w-[340px] bg-white rounded-2xl shadow-xl p-8">
+        <div class="text-center">
+          <div id="planDisplay" class="w-24 h-24 bg-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-1000">
+            <span id="planText" class="text-lg font-semibold text-gray-700">Basic</span>
           </div>
-          <h3 class="text-3xl font-bold text-foreground mb-3 tracking-tight">MusicStream</h3>
-          <p class="text-muted-foreground text-lg">Account Management</p>
-        </div>
-        
-        <div class="space-y-4 mb-10">
-          <div class="flex justify-between items-center py-5 px-8 bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl border border-slate-200">
-            <span class="text-slate-600 font-medium text-lg">Account Holder</span>
-            <span class="font-bold text-slate-800 text-lg">Sarah Johnson</span>
+          <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
+            <div id="loadingBar" class="bg-cyan-500 h-2 rounded-full transition-all duration-2000 ease-out" style="width: 0%"></div>
           </div>
-        </div>
-        
-        <div class="w-full bg-gradient-to-r from-cyan-50 to-blue-50 border border-cyan-200 text-center py-8 rounded-2xl">
-          <div class="flex items-center justify-center space-x-4 mb-2">
-            <div class="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center">
-              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-              </svg>
-            </div>
-            <span class="text-2xl font-bold text-cyan-700">Upgrading to Premium</span>
-          </div>
-          <div class="flex justify-center items-center space-x-2 mt-4">
-            <div class="w-3 h-3 bg-cyan-500 rounded-full animate-bounce"></div>
-            <div class="w-3 h-3 bg-cyan-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-            <div class="w-3 h-3 bg-cyan-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
-          </div>
-          <p class="text-cyan-600 mt-3 text-sm font-medium">Processing your upgrade...</p>
+          <p class="text-gray-600">Upgrading to Premium</p>
         </div>
       </div>
     `;
@@ -482,7 +456,27 @@ export default function MusicStreamRefundVideo() {
       }
     }
 
-    // Auto-close overlay after 2-3 seconds and return to chat
+    // Start loading bar animation
+    addTimeout(() => {
+      const loadingBar = document.getElementById('loadingBar');
+      if (loadingBar) {
+        loadingBar.style.width = '100%';
+      }
+    }, 600);
+
+    // Upgrade the plan display
+    addTimeout(() => {
+      const planDisplay = document.getElementById('planDisplay');
+      const planText = document.getElementById('planText');
+
+      if (planDisplay && planText) {
+        planDisplay.style.backgroundColor = '#0891b2';
+        planText.style.color = 'white';
+        planText.textContent = 'Premium';
+      }
+    }, 1800);
+
+    // Auto-close overlay after animation completes
     addTimeout(() => {
       // Professional exit sequence
       const exitTl = gsap.timeline();
@@ -632,7 +626,7 @@ export default function MusicStreamRefundVideo() {
     addTimeout(() => {
       setVideoState((prev) => ({ ...prev, currentPhase: 'result' }));
       addBotMessageToChat(
-        "Perfect! I've successfully upgraded your account to Premium."
+        "Perfect! I've successfully upgraded your account to the Premium tier."
       );
 
       // Add welcome message after short delay
