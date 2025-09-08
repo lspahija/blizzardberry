@@ -270,10 +270,10 @@ export default function PricingPage() {
           className={`container mx-auto px-6 sm:px-8 md:px-2 lg:px-2 xl:px-8 py-12 sm:py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}
         >
           <div className="text-center mb-12 sm:mb-16">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
+            <h1 className="text-4xl sm:text-4xl md:text-6xl font-bold mb-4 text-foreground leading-tight">
               Pricing
             </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-8 mb-6 sm:mb-8">
+            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-8 mb-6 sm:mb-8 text-balance">
               Choose the perfect plan for your AI agent needs.
               <br />
               Start free and scale as you grow.
