@@ -133,7 +133,7 @@ export default function EcommerceShoppingVideo() {
         if (userInput) {
           userInput.disabled = false;
           userInput.focus();
-          typeTextWithScroll(userInput, "Find me a floral dress under $150\nin size medium with long sleeves.", 60, () => {
+          typeTextWithScroll(userInput, "Find me a floral dress under $150\nin size medium with long sleeves", 60, () => {
             // Show airplane animation and send with natural pause
             addTimeout(() => {
               triggerAirplane();
@@ -182,7 +182,7 @@ export default function EcommerceShoppingVideo() {
       
       addChatMessageWithSlide({
         type: 'sent',
-        text: 'Find me a floral dress under $150 in size medium with long sleeves.'
+        text: 'Find me a floral dress under $150 in size medium with long sleeves'
       });
 
       // Add processing bubble and then continue directly to AI response
@@ -247,7 +247,7 @@ export default function EcommerceShoppingVideo() {
     messageDiv.innerHTML = `
       <div class="max-w-md px-5 py-3 rounded-2xl transition-all duration-300 ${
         message.type === 'sent' 
-          ? 'bg-indigo-500/60 text-white hover:scale-[1.02]' 
+          ? 'bg-indigo-500/20 text-foreground hover:scale-[1.02]' 
           : 'bg-muted text-foreground hover:scale-[1.01] hover:shadow-md'
       }">
         <div class="text-base leading-relaxed">${formattedText}</div>
