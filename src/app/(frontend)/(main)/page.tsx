@@ -363,11 +363,11 @@ export default function LandingPage() {
             className="mt-10 sm:mt-12 mb-10 sm:mb-12"
             variants={itemVariants}
           >
-            <div className="text-center mb-6 sm:mb-8">
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4 leading-tight">
+            <div className="text-center mb-10 sm:mb-14">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
                 Experience the Magic
               </h3>
-              <p className="text-base sm:text-lg text-muted-foreground">
+              <p className="text-lg sm:text-xl text-muted-foreground">
                 See how AI transforms ordinary customer support into delightful experiences
               </p>
             </div>
