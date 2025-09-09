@@ -195,20 +195,15 @@ export default function ContactPage() {
                   Schedule a 30-minute call to discuss your AI agent
                   requirements and see how we can help.
                 </p>
-                <RetroButton
-                  asChild
-                  className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium px-6 h-10"
-                  shadowColor="foreground"
-                >
-                  <a
-                    href="https://calendly.com/blizzardberry/30min"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => posthog.capture('meeting_booking_clicked')}
-                  >
-                    Schedule Call
-                  </a>
-                </RetroButton>
+                <div className="calendly-inline-widget" 
+                     data-url="https://calendly.com/blizzardberry/30min" 
+                     style={{ minWidth: '320px', height: '630px' }}>
+                </div>
+                <script 
+                  type="text/javascript" 
+                  src="https://assets.calendly.com/assets/external/widget.js" 
+                  async>
+                </script>
               </CardContent>
             </Card>
           </motion.div>
