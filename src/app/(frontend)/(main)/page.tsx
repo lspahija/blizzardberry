@@ -320,6 +320,27 @@ export default function LandingPage() {
             </div>
           </div>
 
+          {/* Demo Video Section */}
+          <motion.div
+            className="mt-10 sm:mt-12 mb-10 sm:mb-12"
+            variants={itemVariants}
+          >
+            <div className="text-center mb-6 sm:mb-8">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4 leading-tight">
+                See It In Action
+              </h3>
+              <p className="text-base sm:text-lg text-muted-foreground">
+                Watch how our AI agent handles real customer interactions with ease
+              </p>
+            </div>
+            
+            <div className="flex justify-center">
+              <div className="relative w-full max-w-2xl lg:max-w-3xl">
+                <HeroVideo videoSrc="/demo-order-cancellation-video.mp4" />
+              </div>
+            </div>
+          </motion.div>
+
           {/* Knowledge Base - Reversed */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-5 space-y-4 sm:space-y-6 order-2 lg:order-1">
