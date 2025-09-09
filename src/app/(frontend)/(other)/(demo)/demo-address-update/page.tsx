@@ -1421,7 +1421,7 @@ export default function AddressUpdateVideo() {
             >
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <h2 className="text-4xl font-bold text-muted-foreground mb-2">
+                  <h2 className="text-4xl font-bold text-gray-700 mb-2">
                     Pacific Trust Bank
                     <br />
                     Customer Support

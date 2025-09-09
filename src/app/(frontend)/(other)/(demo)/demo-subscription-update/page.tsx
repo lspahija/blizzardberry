@@ -797,7 +797,7 @@ export default function MusicStreamRefundVideo() {
                       <circle cx="18" cy="16" r="3" />
                     </svg>
                   </div>
-                  <h2 className="text-4xl font-bold text-muted-foreground mb-2">
+                  <h2 className="text-4xl font-bold text-gray-700 mb-2">
                     MusicStream
                     <br />
                     Customer Support
