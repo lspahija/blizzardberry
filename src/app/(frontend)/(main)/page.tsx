@@ -21,11 +21,63 @@ import {
   Play,
   Globe,
 } from 'lucide-react';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import posthog from 'posthog-js';
 import HeroVideo from '@/app/(frontend)/components/HeroVideo';
 
 export default function LandingPage() {
+  const [selectedVideo, setSelectedVideo] = useState('order-cancellation');
+
+  const demoVideos = [
+    {
+      id: 'order-cancellation',
+      title: 'Order Cancellation',
+      description: 'Cancel orders instantly',
+      videoSrc: '/demo-order-cancellation-video.mp4',
+      color: 'blue',
+      activeClasses: 'border-blue-500 bg-blue-500/10 shadow-lg',
+      inactiveClasses:
+        'border-border bg-card hover:border-blue-500/50 hover:bg-blue-500/5',
+      numberActiveClasses: 'bg-blue-500 text-white',
+      numberInactiveClasses: 'bg-muted text-muted-foreground',
+    },
+    {
+      id: 'subscription-update',
+      title: 'Subscription Update',
+      description: 'Manage subscriptions',
+      videoSrc: '/demo-subscription-update-video.mp4',
+      color: 'cyan',
+      activeClasses: 'border-cyan-500 bg-cyan-500/10 shadow-lg',
+      inactiveClasses:
+        'border-border bg-card hover:border-cyan-500/50 hover:bg-cyan-500/5',
+      numberActiveClasses: 'bg-cyan-500 text-white',
+      numberInactiveClasses: 'bg-muted text-muted-foreground',
+    },
+    {
+      id: 'address-update',
+      title: 'Address Update',
+      description: 'Update user information',
+      videoSrc: '/demo-address-update-video.mp4',
+      color: 'teal',
+      activeClasses: 'border-teal-500 bg-teal-500/10 shadow-lg',
+      inactiveClasses:
+        'border-border bg-card hover:border-teal-500/50 hover:bg-teal-500/5',
+      numberActiveClasses: 'bg-teal-500 text-white',
+      numberInactiveClasses: 'bg-muted text-muted-foreground',
+    },
+  ];
+
+  // Auto-cycle through videos when each video ends
+  const handleVideoEnded = () => {
+    setSelectedVideo((currentVideo) => {
+      const currentIndex = demoVideos.findIndex(
+        (video) => video.id === currentVideo
+      );
+      const nextIndex = (currentIndex + 1) % demoVideos.length;
+      return demoVideos[nextIndex].id;
+    });
+  };
+
   const handleHeroCtaClick = () => {
     posthog.capture('homepage_hero_cta_clicked', {
       cta_text: 'Get Started Now',
@@ -187,13 +239,12 @@ export default function LandingPage() {
                 </svg>
 
                 {/* Video Component */}
-                <HeroVideo videoSrc="/video-for-landing-page-new.mp4" />
+                <HeroVideo videoSrc="/new-demo-video.mp4" />
               </div>
             </div>
           </div>
         </div>
       </motion.div>
-
 
       <motion.section
         className="py-12 sm:py-16 bg-muted/30"
@@ -211,7 +262,8 @@ export default function LandingPage() {
               A new kind of user interface
             </h2>
             <p className="text-lg sm:text-xl text-muted-foreground">
-              Users want to interact with your app using natural language. Our AI agent translates conversations into actions.
+              Users want to interact with your app using natural language. Our
+              AI agent translates conversations into actions.
             </p>
           </motion.div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center mb-12 sm:mb-16">
@@ -319,6 +371,88 @@ export default function LandingPage() {
               </Card>
             </div>
           </div>
+
+          {/* Interactive Demo Video Section */}
+          <motion.div
+            className="mt-10 sm:mt-12 mb-10 sm:mb-12"
+            variants={itemVariants}
+          >
+            <div className="text-center mb-10 sm:mb-14">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
+                Experience the Power of AI Agents
+              </h3>
+              <p className="text-lg sm:text-xl text-muted-foreground">
+                From customer support to e-commerce, see how our AI agents are
+                revolutionizing user experiences across industries.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+              {/* Video Player */}
+              <div className="lg:col-span-8">
+                <div className="w-full">
+                  <div className="relative aspect-[1468/1080] rounded-2xl border-[3px] border-border shadow-2xl overflow-hidden">
+                    <video
+                      key={selectedVideo}
+                      className="w-full h-full object-cover object-center"
+                      playsInline
+                      preload="metadata"
+                      autoPlay
+                      muted
+                      onEnded={handleVideoEnded}
+                    >
+                      <source
+                        src={
+                          demoVideos.find((video) => video.id === selectedVideo)
+                            ?.videoSrc
+                        }
+                        type="video/mp4"
+                      />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              </div>
+
+              {/* Video Selector Tabs */}
+              <div className="lg:col-span-4">
+                <div className="space-y-4">
+                  {demoVideos.map((video, index) => (
+                    <button
+                      key={video.id}
+                      onClick={() => setSelectedVideo(video.id)}
+                      className={`w-full text-left p-6 rounded-xl border-2 transition-all duration-200 ${
+                        selectedVideo === video.id
+                          ? video.activeClasses
+                          : video.inactiveClasses
+                      }`}
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div
+                          className={`w-12 h-12 rounded-full flex items-center justify-center text-base font-bold transition-all duration-200 shadow-sm ${
+                            selectedVideo === video.id
+                              ? video.numberActiveClasses +
+                                ' shadow-md scale-105'
+                              : video.numberInactiveClasses + ' hover:scale-105'
+                          }`}
+                        >
+                          {index + 1}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-lg text-foreground">
+                            {video.title}
+                          </h4>
+                          <p className="text-base text-muted-foreground">
+                            {video.description}
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
           {/* Knowledge Base - Reversed */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
@@ -445,133 +579,16 @@ export default function LandingPage() {
               Transform Your UX
             </h2>
             <p className="text-xl sm:text-2xl text-muted-foreground/80 max-w-4xl mx-auto font-medium">
-              From customer support to e-commerce, see how AI agents are
-              revolutionizing user experiences across different sectors
+              Offer each of your users their own human-like assistant.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20 mb-20">
-            {/* Customer Support */}
+          <div className="flex justify-center mb-20">
+            {/* E-commerce Demo Video */}
             <motion.div className="group" variants={itemVariants}>
-              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:-translate-y-1 h-full">
-                <CardHeader className="pb-6 sm:pb-8 pt-6 sm:pt-10 px-6 sm:px-10">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-0 sm:mb-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                      <div className="bg-blue-500/15 p-3 sm:p-4 rounded-3xl self-start">
-                        <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
-                          Customer Support
-                        </h3>
-                        <p className="text-base sm:text-lg text-muted-foreground/80 font-medium leading-relaxed mb-4">
-                          24/7 intelligent assistance that answers FAQs
-                          instantly, creates support tickets, processes refunds,
-                          and schedules appointments through natural
-                          conversation.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Mock conversation */}
-                  <div className="bg-muted/50 rounded-2xl p-3 sm:p-4 space-y-3">
-                    <div className="flex items-start space-x-2">
-                      <div className="bg-blue-500 text-white rounded-full p-1 flex-shrink-0">
-                        <Users className="h-3 w-3" />
-                      </div>
-                      <div className="bg-background rounded-lg px-3 py-2 max-w-[160px] sm:max-w-[200px] border-[2px] border-border">
-                        <p className="text-xs sm:text-sm">
-                          Hi! I need to cancel my order #1234
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-2 justify-end">
-                      <div className="bg-blue-500 text-white rounded-lg px-3 py-2 max-w-[180px] sm:max-w-[200px]">
-                        <p className="text-xs sm:text-sm">
-                          Done! Your order has been cancelled and you&apos;ll
-                          receive a full refund within 3-5 days.
-                        </p>
-                      </div>
-                      <div className="bg-blue-500 text-white rounded-full p-1 flex-shrink-0">
-                        <CheckCircle2 className="h-3 w-3" />
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-              </Card>
-            </motion.div>
-
-            {/* E-commerce */}
-            <motion.div className="group" variants={itemVariants}>
-              <Card className="border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:-translate-y-1 h-full">
-                <CardHeader className="pb-6 sm:pb-8 pt-6 sm:pt-10 px-6 sm:px-10">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-0 sm:mb-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                      <div className="bg-green-500/15 p-3 sm:p-4 rounded-3xl self-start">
-                        <Globe className="h-8 sm:h-10 w-8 sm:w-10 text-green-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
-                          E-commerce
-                        </h3>
-                        <p className="text-base sm:text-lg text-muted-foreground/80 font-medium leading-relaxed mb-4">
-                          Smart shopping assistance that provides intelligent
-                          product recommendations, adds items to cart, processes
-                          orders, and tracks shipments seamlessly.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Mock shopping interaction */}
-                  <div className="bg-muted/50 rounded-2xl p-3 sm:p-4 space-y-3 mb-4">
-                    <div className="flex items-start space-x-2">
-                      <div className="bg-green-500 text-white rounded-full p-1 flex-shrink-0">
-                        <Users className="h-3 w-3" />
-                      </div>
-                      <div className="bg-background rounded-lg px-3 py-2 max-w-[160px] sm:max-w-[200px] border-[2px] border-border">
-                        <p className="text-xs sm:text-sm">
-                          Find me a floral dress under $150
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-2 justify-end">
-                      <div className="bg-green-500 text-white rounded-lg px-3 py-2 max-w-[180px] sm:max-w-[200px]">
-                        <p className="text-xs sm:text-sm">
-                          Perfect! Found this lovely maxi dress. Added to your
-                          cart!
-                        </p>
-                      </div>
-                      <div className="bg-green-500 text-white rounded-full p-1 flex-shrink-0">
-                        <Zap className="h-3 w-3" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Product preview */}
-                  <div className="bg-background/50 rounded-xl p-3 mb-4 border-[2px] border-border">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-sage-400 to-sage-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <span className="text-white text-sm sm:text-lg">
-                          👗
-                        </span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-xs sm:text-sm truncate">
-                          Vintage Floral Maxi Dress
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Size M • Long sleeves • Button front
-                        </div>
-                        <div className="text-green-600 font-bold text-xs sm:text-sm">
-                          $138
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-              </Card>
+              <div className="relative w-full max-w-2xl lg:max-w-3xl scale-105">
+                <HeroVideo videoSrc="/demo-ecommerce-shopping-video.mp4" />
+              </div>
             </motion.div>
           </div>
 

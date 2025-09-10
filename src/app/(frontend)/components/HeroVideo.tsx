@@ -21,7 +21,7 @@ export default function HeroVideo({
     // Placeholder when no video is provided
     return (
       <motion.div
-        className={`relative aspect-[13/10] bg-gradient-to-br from-muted/30 to-muted/50 rounded-2xl border-[3px] border-border shadow-2xl overflow-hidden ${className}`}
+        className={`relative aspect-[1468/1080] bg-gradient-to-br from-muted/30 to-muted/50 rounded-2xl border-[3px] border-border shadow-2xl overflow-hidden ${className}`}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -42,14 +42,14 @@ export default function HeroVideo({
 
   return (
     <motion.div
-      className={`relative aspect-[13/10] rounded-2xl border-[2px] border-border shadow-2xl overflow-hidden ${className}`}
+      className={`relative aspect-[1468/1080] rounded-2xl border-[3px] border-border shadow-2xl overflow-hidden ${className}`}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
       <video
         ref={setVideoRef}
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover object-center"
         poster={posterSrc}
         playsInline
         preload="metadata"
