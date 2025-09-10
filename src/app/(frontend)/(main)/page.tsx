@@ -421,15 +421,15 @@ export default function LandingPage() {
                     <button
                       key={video.id}
                       onClick={() => setSelectedVideo(video.id)}
-                      className={`w-full text-left p-6 rounded-xl border-2 transition-all duration-200 ${
+                      className={`w-full text-left p-3 sm:p-4 lg:p-6 rounded-xl border-2 transition-all duration-200 ${
                         selectedVideo === video.id
                           ? video.activeClasses
                           : video.inactiveClasses
                       }`}
                     >
-                      <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-3 sm:space-x-4">
                         <div
-                          className={`w-12 h-12 rounded-full flex items-center justify-center text-base font-bold transition-all duration-200 shadow-sm ${
+                          className={`w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center text-sm sm:text-base font-bold transition-all duration-200 shadow-sm ${
                             selectedVideo === video.id
                               ? video.numberActiveClasses +
                                 ' shadow-md scale-105'
@@ -439,10 +439,10 @@ export default function LandingPage() {
                           {index + 1}
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-semibold text-lg text-foreground">
+                          <h4 className="font-semibold text-sm sm:text-base lg:text-lg text-foreground">
                             {video.title}
                           </h4>
-                          <p className="text-base text-muted-foreground">
+                          <p className="text-xs sm:text-sm lg:text-base text-muted-foreground">
                             {video.description}
                           </p>
                         </div>
