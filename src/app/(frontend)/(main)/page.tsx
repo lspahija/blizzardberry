@@ -271,8 +271,8 @@ export default function LandingPage() {
             <div className="lg:col-span-7">
               <Card className="group border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-brand/30 relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <CardContent className="p-6 sm:p-8 lg:p-10 xl:p-14 relative z-10">
-                  <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
+                <CardContent className="px-6 py-4 sm:px-8 sm:py-6 lg:px-10 lg:py-8 xl:px-14 xl:py-10 relative z-10">
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-4 sm:mb-6">
                     <div className="bg-brand/15 p-3 sm:p-4 rounded-3xl self-start">
                       <Zap className="h-8 sm:h-10 w-8 sm:w-10 text-brand" />
                     </div>
@@ -509,8 +509,8 @@ export default function LandingPage() {
             <div className="lg:col-span-7 order-1 lg:order-2">
               <Card className="group border-2 border-border/30 bg-gradient-to-br from-card to-card/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-2xl hover:border-blue-400/40 relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <CardContent className="p-6 sm:p-8 lg:p-10 xl:p-14 relative z-10">
-                  <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
+                <CardContent className="px-6 py-4 sm:px-8 sm:py-6 lg:px-10 lg:py-8 xl:px-14 xl:py-10 relative z-10">
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-4 sm:mb-6">
                     <div className="bg-blue-500/15 p-3 sm:p-4 rounded-3xl self-start">
                       <FileText className="h-8 sm:h-10 w-8 sm:w-10 text-blue-600" />
                     </div>
