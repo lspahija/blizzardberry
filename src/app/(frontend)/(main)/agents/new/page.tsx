@@ -160,6 +160,10 @@ export default function NewAgentPage() {
       });
 
       setAgentId(newAgentId);
+      // Scroll to top after successful agent creation
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
     } catch (error) {
       posthog.capture('agent_creation_failed', {
         name: name.trim(),
