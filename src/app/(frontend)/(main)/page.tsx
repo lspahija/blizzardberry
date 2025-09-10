@@ -376,10 +376,10 @@ export default function LandingPage() {
               {/* Video Player */}
               <div className="lg:col-span-8">
                 <div className="w-full">
-                  <div className="relative aspect-[13/10] rounded-2xl border-[2px] border-border shadow-2xl overflow-hidden">
+                  <div className="relative aspect-[13/10] rounded-2xl border-[3px] border-border shadow-2xl overflow-hidden">
                     <video
                       key={selectedVideo}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-center"
                       playsInline
                       preload="metadata"
                       autoPlay
