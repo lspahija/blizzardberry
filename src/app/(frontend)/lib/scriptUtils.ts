@@ -67,7 +67,7 @@ export const getAgentScript = (framework: Framework, agentId: string) => {
   if (framework === Framework.NEXT_JS) {
     return `<Script ${agentScriptNextJs(agentId)}/>`;
   } else {
-    return `<script ${agentScriptVanilla(agentId)}/>`;
+    return `<script ${agentScriptVanilla(agentId)}></script>`;
   }
 };
 
