@@ -36,9 +36,10 @@ export default function LandingPage() {
       videoSrc: '/demo-order-cancellation-video.mp4',
       color: 'blue',
       activeClasses: 'border-blue-500 bg-blue-500/10 shadow-lg',
-      inactiveClasses: 'border-border bg-card hover:border-blue-500/50 hover:bg-blue-500/5',
+      inactiveClasses:
+        'border-border bg-card hover:border-blue-500/50 hover:bg-blue-500/5',
       numberActiveClasses: 'bg-blue-500 text-white',
-      numberInactiveClasses: 'bg-muted text-muted-foreground'
+      numberInactiveClasses: 'bg-muted text-muted-foreground',
     },
     {
       id: 'subscription-update',
@@ -47,9 +48,10 @@ export default function LandingPage() {
       videoSrc: '/demo-subscription-update-video.mp4',
       color: 'cyan',
       activeClasses: 'border-cyan-500 bg-cyan-500/10 shadow-lg',
-      inactiveClasses: 'border-border bg-card hover:border-cyan-500/50 hover:bg-cyan-500/5',
+      inactiveClasses:
+        'border-border bg-card hover:border-cyan-500/50 hover:bg-cyan-500/5',
       numberActiveClasses: 'bg-cyan-500 text-white',
-      numberInactiveClasses: 'bg-muted text-muted-foreground'
+      numberInactiveClasses: 'bg-muted text-muted-foreground',
     },
     {
       id: 'address-update',
@@ -58,16 +60,19 @@ export default function LandingPage() {
       videoSrc: '/demo-address-update-video.mp4',
       color: 'teal',
       activeClasses: 'border-teal-500 bg-teal-500/10 shadow-lg',
-      inactiveClasses: 'border-border bg-card hover:border-teal-500/50 hover:bg-teal-500/5',
+      inactiveClasses:
+        'border-border bg-card hover:border-teal-500/50 hover:bg-teal-500/5',
       numberActiveClasses: 'bg-teal-500 text-white',
-      numberInactiveClasses: 'bg-muted text-muted-foreground'
-    }
+      numberInactiveClasses: 'bg-muted text-muted-foreground',
+    },
   ];
 
   // Auto-cycle through videos when each video ends
   const handleVideoEnded = () => {
-    setSelectedVideo(currentVideo => {
-      const currentIndex = demoVideos.findIndex(video => video.id === currentVideo);
+    setSelectedVideo((currentVideo) => {
+      const currentIndex = demoVideos.findIndex(
+        (video) => video.id === currentVideo
+      );
       const nextIndex = (currentIndex + 1) % demoVideos.length;
       return demoVideos[nextIndex].id;
     });
@@ -241,7 +246,6 @@ export default function LandingPage() {
         </div>
       </motion.div>
 
-
       <motion.section
         className="py-12 sm:py-16 bg-muted/30"
         variants={containerVariants}
@@ -258,7 +262,8 @@ export default function LandingPage() {
               A new kind of user interface
             </h2>
             <p className="text-lg sm:text-xl text-muted-foreground">
-              Users want to interact with your app using natural language. Our AI agent translates conversations into actions.
+              Users want to interact with your app using natural language. Our
+              AI agent translates conversations into actions.
             </p>
           </motion.div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center mb-12 sm:mb-16">
@@ -374,13 +379,14 @@ export default function LandingPage() {
           >
             <div className="text-center mb-10 sm:mb-14">
               <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
-                Experience the Magic
+                Experience the Power of AI Agents
               </h3>
               <p className="text-lg sm:text-xl text-muted-foreground">
-                See how AI transforms ordinary customer support into delightful experiences
+                From customer support to e-commerce, see how our AI agents are
+                revolutionizing user experiences across industries.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
               {/* Video Player */}
               <div className="lg:col-span-8">
@@ -395,13 +401,19 @@ export default function LandingPage() {
                       muted
                       onEnded={handleVideoEnded}
                     >
-                      <source src={demoVideos.find(video => video.id === selectedVideo)?.videoSrc} type="video/mp4" />
+                      <source
+                        src={
+                          demoVideos.find((video) => video.id === selectedVideo)
+                            ?.videoSrc
+                        }
+                        type="video/mp4"
+                      />
                       Your browser does not support the video tag.
                     </video>
                   </div>
                 </div>
               </div>
-              
+
               {/* Video Selector Tabs */}
               <div className="lg:col-span-4">
                 <div className="space-y-4">
@@ -416,16 +428,23 @@ export default function LandingPage() {
                       }`}
                     >
                       <div className="flex items-center space-x-4">
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-base font-bold transition-all duration-200 shadow-sm ${
-                          selectedVideo === video.id 
-                            ? video.numberActiveClasses + ' shadow-md scale-105'
-                            : video.numberInactiveClasses + ' hover:scale-105'
-                        }`}>
+                        <div
+                          className={`w-12 h-12 rounded-full flex items-center justify-center text-base font-bold transition-all duration-200 shadow-sm ${
+                            selectedVideo === video.id
+                              ? video.numberActiveClasses +
+                                ' shadow-md scale-105'
+                              : video.numberInactiveClasses + ' hover:scale-105'
+                          }`}
+                        >
                           {index + 1}
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-semibold text-lg text-foreground">{video.title}</h4>
-                          <p className="text-base text-muted-foreground">{video.description}</p>
+                          <h4 className="font-semibold text-lg text-foreground">
+                            {video.title}
+                          </h4>
+                          <p className="text-base text-muted-foreground">
+                            {video.description}
+                          </p>
                         </div>
                       </div>
                     </button>
@@ -560,8 +579,7 @@ export default function LandingPage() {
               Transform Your UX
             </h2>
             <p className="text-xl sm:text-2xl text-muted-foreground/80 max-w-4xl mx-auto font-medium">
-              From customer support to e-commerce, see how AI agents are
-              revolutionizing user experiences across different sectors
+              Offer each of your users their own human-like assistant.
             </p>
           </motion.div>
 
