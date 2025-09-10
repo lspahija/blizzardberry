@@ -404,19 +404,19 @@ export default function LandingPage() {
               
               {/* Video Selector Tabs */}
               <div className="lg:col-span-4">
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {demoVideos.map((video, index) => (
                     <button
                       key={video.id}
                       onClick={() => setSelectedVideo(video.id)}
-                      className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 ${
+                      className={`w-full text-left p-6 rounded-xl border-2 transition-all duration-200 ${
                         selectedVideo === video.id
                           ? video.activeClasses
                           : video.inactiveClasses
                       }`}
                     >
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-200 shadow-sm ${
+                      <div className="flex items-center space-x-4">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-base font-bold transition-all duration-200 shadow-sm ${
                           selectedVideo === video.id 
                             ? video.numberActiveClasses + ' shadow-md scale-105'
                             : video.numberInactiveClasses + ' hover:scale-105'
@@ -424,8 +424,8 @@ export default function LandingPage() {
                           {index + 1}
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-semibold text-foreground">{video.title}</h4>
-                          <p className="text-sm text-muted-foreground">{video.description}</p>
+                          <h4 className="font-semibold text-lg text-foreground">{video.title}</h4>
+                          <p className="text-base text-muted-foreground">{video.description}</p>
                         </div>
                       </div>
                     </button>
