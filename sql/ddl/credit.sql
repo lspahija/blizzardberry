@@ -35,12 +35,9 @@ CREATE INDEX credit_holds_id_state_idx ON credit_holds (id, state) WHERE state =
 CREATE INDEX credit_holds_expires_at_state_idx ON credit_holds (expires_at, state) WHERE state = 'ACTIVE';
 
 -- (Nice-to-have) summary view for dashboards ---------------------
-CREATE MATERIALIZED VIEW user_credit_summary AS
+CREATE VIEW user_credit_summary AS
 SELECT user_id,
        SUM(quantity_remaining)
        FILTER (WHERE expires_at IS NULL OR expires_at > now()) AS active_credits
 FROM credit_batches
 GROUP BY user_id;
-
--- Index for materialized view
-CREATE UNIQUE INDEX user_credit_summary_user_id_idx ON user_credit_summary (user_id);
