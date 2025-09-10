@@ -14,14 +14,9 @@ export async function GET(
   { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { agentId } = await params;
 
-    const data = await getAgentByUserId(agentId, session.user.id);
+    const data = await getAgentByUserId(agentId);
 
     if (!data) {
       console.error('Error fetching agent:', agentId);

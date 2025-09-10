@@ -11,11 +11,11 @@ export async function getAgent(agentId: string) {
   return agent || null;
 }
 
-export async function getAgentByUserId(agentId: string, userId: string) {
+export async function getAgentByUserId(agentId: string) {
   const [agent] = await sql`
     SELECT id, name, website_domain, model, created_by, created_at
     FROM agents
-    WHERE id = ${agentId} AND created_by = ${userId}
+    WHERE id = ${agentId}
     LIMIT 1
   `;
 

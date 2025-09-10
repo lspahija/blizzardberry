@@ -2,6 +2,20 @@ import { generateId } from './util';
 import { state, setSuggestedPrompts } from './state';
 import { config } from './config';
 
+export async function fetchAgentDetails() {
+  try {
+    const res = await fetch(
+      `${config.baseUrl}/api/agents/${config.agentId}`
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.agent;
+  } catch (e) {
+    console.error('Error fetching agent details:', e);
+    return null;
+  }
+}
+
 export async function fetchSuggestedPrompts() {
   try {
     const res = await fetch(

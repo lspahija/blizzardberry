@@ -5,7 +5,7 @@ import {
   createElement,
 } from './util';
 import { state, getSuggestedPrompts } from './state';
-import { fetchSuggestedPrompts } from './api';
+import { fetchSuggestedPrompts, fetchAgentDetails } from './api';
 import { updateChatUI } from './ui';
 import { handleSubmit, processChatMessage } from './chat';
 import { config } from './config';
@@ -137,6 +137,10 @@ function syncWidgetState() {
 
 export async function createWidgetDOM() {
   try {
+    // Fetch agent details to get the name
+    const agentDetails = await fetchAgentDetails();
+    const agentName = agentDetails?.name || 'AI Agent';
+    
     // Create message preview notification
     const messagePreview = document.createElement('div');
     messagePreview.id = 'messagePreviewNotification';
@@ -191,13 +195,13 @@ export async function createWidgetDOM() {
         <div id="text-overlay" class="text-overlay">
           <div id="collapsed-view" class="collapsed-view">
             <div class="text-content" id="latest-message">
-              Hi! I'm your AI Agent. How can I help you today?
+              Hi! I'm ${agentName}. How can I help you today?
             </div>
           </div>
           <div id="expanded-view" class="expanded-view" style="display: none;">
             <div id="messages-container" class="messages-container">
               <div class="message assistant-message">
-                Hi! I'm your AI Agent. How can I help you today?
+                Hi! I'm ${agentName}. How can I help you today?
               </div>
             </div>
             <div class="input-container">
@@ -492,7 +496,7 @@ export async function createWidgetDOM() {
       parts: [
         {
           type: 'text',
-          text: "Hi! I'm your AI Agent, here to help with any questions or tasks. Just let me know what you need!",
+          text: `Hi! I'm ${agentName}, here to help with any questions or tasks. Just let me know what you need!`,
         },
       ],
     });
