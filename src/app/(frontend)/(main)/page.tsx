@@ -21,7 +21,7 @@ import {
   Play,
   Globe,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import posthog from 'posthog-js';
 import HeroVideo from '@/app/(frontend)/components/HeroVideo';
 
@@ -63,6 +63,15 @@ export default function LandingPage() {
       numberInactiveClasses: 'bg-muted text-muted-foreground'
     }
   ];
+
+  // Auto-cycle through videos when each video ends
+  const handleVideoEnded = () => {
+    setSelectedVideo(currentVideo => {
+      const currentIndex = demoVideos.findIndex(video => video.id === currentVideo);
+      const nextIndex = (currentIndex + 1) % demoVideos.length;
+      return demoVideos[nextIndex].id;
+    });
+  };
 
   const handleHeroCtaClick = () => {
     posthog.capture('homepage_hero_cta_clicked', {
@@ -372,7 +381,7 @@ export default function LandingPage() {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
               {/* Video Player */}
               <div className="lg:col-span-8">
                 <div className="w-full">
@@ -384,7 +393,7 @@ export default function LandingPage() {
                       preload="metadata"
                       autoPlay
                       muted
-                      loop
+                      onEnded={handleVideoEnded}
                     >
                       <source src={demoVideos.find(video => video.id === selectedVideo)?.videoSrc} type="video/mp4" />
                       Your browser does not support the video tag.
