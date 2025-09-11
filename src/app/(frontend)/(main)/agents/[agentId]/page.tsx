@@ -29,6 +29,7 @@ import {
   MessageSquare,
   Plus,
   Pencil,
+  Clock,
 } from 'lucide-react';
 import {
   Action,
@@ -378,13 +379,23 @@ function AgentDetails({
             )}
           </h1>
           {!isEditing && (
-            <Button
-              onClick={startEditing}
-              className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
-            >
-              <Edit className="h-4 w-4" />
-              Edit Agent
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 shadow-md hover:bg-secondary/90"
+                onClick={() => setShowAgentCode(true)}
+                title="Show installation code for this agent"
+              >
+                <Code className="h-4 w-4" />
+                Embed Your Agent
+              </Button>
+              <Button
+                onClick={startEditing}
+                className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
+              >
+                <Edit className="h-4 w-4" />
+                Edit Agent
+              </Button>
+            </div>
           )}
         </div>
         <Card
@@ -475,6 +486,7 @@ function AgentDetails({
 
             <div>
               <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                <Clock className="h-4 w-4 text-destructive" />
                 Created:
               </Label>
               <p className="text-muted-foreground text-sm sm:text-base ml-6">
@@ -601,14 +613,6 @@ function AgentDetails({
                 Add New Document
               </>
             )}
-          </Button>
-          <Button
-            className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center hover:bg-secondary/90"
-            onClick={() => setShowAgentCode(true)}
-            title="Show installation code for this agent"
-          >
-            <Code className="h-5 w-5" />
-            Embed Your Agent
           </Button>
           {clientActions.length > 0 && (
             <Button
