@@ -1,18 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const targetUrl = searchParams.get('url')
+  const { searchParams } = new URL(request.url);
+  const targetUrl = searchParams.get('url');
 
   if (!targetUrl) {
-    return new NextResponse('URL parameter is required', { status: 400 })
+    return new NextResponse('URL parameter is required', { status: 400 });
   }
 
   try {
     // Validate URL
-    const url = new URL(targetUrl)
+    const url = new URL(targetUrl);
     if (!['http:', 'https:'].includes(url.protocol)) {
-      return new NextResponse('Invalid URL protocol', { status: 400 })
+      return new NextResponse('Invalid URL protocol', { status: 400 });
     }
 
     // Fetch the target website
@@ -20,16 +20,16 @@ export async function GET(request: NextRequest) {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; BlizzardBerry-Proxy/1.0)',
       },
-    })
+    });
 
     if (!response.ok) {
-      return new NextResponse(`Failed to fetch: ${response.statusText}`, { 
-        status: response.status 
-      })
+      return new NextResponse(`Failed to fetch: ${response.statusText}`, {
+        status: response.status,
+      });
     }
 
-    const contentType = response.headers.get('content-type') || ''
-    
+    const contentType = response.headers.get('content-type') || '';
+
     // Only process HTML content
     if (!contentType.includes('text/html')) {
       // For non-HTML content, just proxy it through
@@ -39,15 +39,15 @@ export async function GET(request: NextRequest) {
           'Content-Type': contentType,
           'Cache-Control': 'no-cache',
         },
-      })
+      });
     }
 
-    let html = await response.text()
+    let html = await response.text();
 
     // Get the current host for widget script URL
-    const host = request.headers.get('host')
-    const protocol = request.headers.get('x-forwarded-proto') || 'http'
-    const baseUrl = `${protocol}://${host}`
+    const host = request.headers.get('host');
+    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    const baseUrl = `${protocol}://${host}`;
 
     // Widget configuration and injection scripts
     const widgetInjection = `
@@ -94,29 +94,38 @@ export async function GET(request: NextRequest) {
         id="blizzardberry-agent"
         src="${baseUrl}/agent/agent.js"
         type="text/javascript"
-        data-agent-id="8b5d8bfb-f6b4-45de-9500-aa95c7046487"
+        data-agent-id="f452cd58-23aa-4a6c-87d0-e68fb7384c73"
     ></script>
-    `
+    `;
 
     // Inject the widget scripts before closing </body> tag
     if (html.includes('</body>')) {
-      html = html.replace('</body>', `${widgetInjection}\n</body>`)
+      html = html.replace('</body>', `${widgetInjection}\n</body>`);
     } else if (html.includes('</html>')) {
       // Fallback: inject before closing </html> tag if no </body>
-      html = html.replace('</html>', `${widgetInjection}\n</html>`)
+      html = html.replace('</html>', `${widgetInjection}\n</html>`);
     } else {
       // Last resort: append to end of content
-      html += widgetInjection
+      html += widgetInjection;
     }
 
     // Fix relative URLs to point to the original domain
-    const originalDomain = url.origin
-    
+    const originalDomain = url.origin;
+
     // Fix relative links, images, scripts, and stylesheets
     html = html
-      .replace(/href="(?!https?:\/\/|\/\/|#)([^"]+)"/g, `href="${originalDomain}/$1"`)
-      .replace(/src="(?!https?:\/\/|\/\/|data:)([^"]+)"/g, `src="${originalDomain}/$1"`)
-      .replace(/action="(?!https?:\/\/|\/\/|#)([^"]+)"/g, `action="${originalDomain}/$1"`)
+      .replace(
+        /href="(?!https?:\/\/|\/\/|#)([^"]+)"/g,
+        `href="${originalDomain}/$1"`
+      )
+      .replace(
+        /src="(?!https?:\/\/|\/\/|data:)([^"]+)"/g,
+        `src="${originalDomain}/$1"`
+      )
+      .replace(
+        /action="(?!https?:\/\/|\/\/|#)([^"]+)"/g,
+        `action="${originalDomain}/$1"`
+      );
 
     return new NextResponse(html, {
       status: 200,
@@ -125,13 +134,12 @@ export async function GET(request: NextRequest) {
         'Cache-Control': 'no-cache',
         'X-Frame-Options': 'SAMEORIGIN',
       },
-    })
-
+    });
   } catch (error) {
-    console.error('Proxy error:', error)
+    console.error('Proxy error:', error);
     return new NextResponse(
-      `Error proxying URL: ${error instanceof Error ? error.message : 'Unknown error'}`, 
+      `Error proxying URL: ${error instanceof Error ? error.message : 'Unknown error'}`,
       { status: 500 }
-    )
+    );
   }
 }
