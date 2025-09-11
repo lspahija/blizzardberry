@@ -178,7 +178,7 @@ export default function NewAgentPage() {
   return (
     <div className="min-h-screen bg-background">
       <motion.div
-        className="max-w-4xl mx-auto px-4 py-16"
+        className="max-w-4xl mx-auto px-4 pt-4 pb-16"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -186,7 +186,7 @@ export default function NewAgentPage() {
         {agentId ? (
           <>
             <motion.div className="text-center" variants={itemVariants}>
-              <CheckCircle2 className="w-16 h-16 text-brand mx-auto mb-4" />
+              <CheckCircle2 className="w-16 h-16 text-blue-600 mx-auto mb-8" />
               <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-12">
                 Agent Created Successfully!
               </h1>
