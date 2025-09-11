@@ -349,16 +349,6 @@ function AgentDetails({
       animate="visible"
     >
       <div className="max-w-4xl mx-auto w-full">
-        <div className="flex justify-end mb-6">
-          <Button
-            className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 shadow-md hover:bg-secondary/90"
-            onClick={() => setShowAgentCode(true)}
-            title="Show installation code for this agent"
-          >
-            <Code className="h-4 w-4" />
-            Embed Your Agent
-          </Button>
-        </div>
         <Card
           className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8"
           style={{ borderLeftColor: 'var(--color-destructive)' }}
@@ -367,18 +357,28 @@ function AgentDetails({
             <CardTitle className="text-xl sm:text-2xl font-bold text-foreground ml-6">
               Agent Details
             </CardTitle>
-            <Button
-              onClick={saveChanges}
-              disabled={isSaving}
-              className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-6 py-2 flex items-center gap-2"
-            >
-              {isSaving ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="h-4 w-4" />
-              )}
-              Save Changes
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 shadow-md hover:bg-secondary/90"
+                onClick={() => setShowAgentCode(true)}
+                title="Show installation code for this agent"
+              >
+                <Code className="h-4 w-4" />
+                Embed Your Agent
+              </Button>
+              <Button
+                onClick={saveChanges}
+                disabled={isSaving}
+                className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-6 py-2 flex items-center gap-2"
+              >
+                {isSaving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
+                Save Changes
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
