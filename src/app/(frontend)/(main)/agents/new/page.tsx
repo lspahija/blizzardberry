@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/app/(frontend)/components/ui/button';
+import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 import {
   Card,
   CardContent,
@@ -265,18 +265,20 @@ export default function NewAgentPage() {
                       >
                         {getAgentScript(selectedFramework, agentId)}
                       </SyntaxHighlighter>
-                      <Button
-                        onClick={handleCopy}
-                        className="absolute top-12 right-2 bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 shadow-md rounded-full p-2 text-xs sm:text-sm font-semibold hover:bg-secondary/90 flex items-center gap-1 sm:gap-2"
-                      >
-                        <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                        <span className="hidden sm:inline">
-                          {copied ? 'Copied!' : 'Copy Code'}
-                        </span>
-                        <span className="sm:hidden">
-                          {copied ? 'Copied!' : 'Copy'}
-                        </span>
-                      </Button>
+                      <div className="absolute top-12 right-2">
+                        <RetroButton
+                          onClick={handleCopy}
+                          className="bg-secondary text-secondary-foreground p-2 text-xs sm:text-sm font-semibold hover:bg-secondary/90 flex items-center gap-1 sm:gap-2"
+                        >
+                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="hidden sm:inline">
+                            {copied ? 'Copied!' : 'Copy Code'}
+                          </span>
+                          <span className="sm:hidden">
+                            {copied ? 'Copied!' : 'Copy'}
+                          </span>
+                        </RetroButton>
+                      </div>
                     </div>
                     <div>
                       <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
@@ -511,7 +513,7 @@ export default function NewAgentPage() {
                             </div>
                             {(prompts.length > 1 ||
                               (index === 0 && prompt.trim())) && (
-                              <Button
+                              <RetroButton
                                 type="button"
                                 variant="destructive"
                                 size="icon"
@@ -522,25 +524,25 @@ export default function NewAgentPage() {
                                     removePrompt(index);
                                   }
                                 }}
-                                className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
+                                className="ml-auto p-2 hover:bg-destructive/80 transition"
                                 disabled={creatingAgent}
                                 tabIndex={-1}
                               >
                                 <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                              </Button>
+                              </RetroButton>
                             )}
                           </div>
                         ))}
-                        <Button
+                        <RetroButton
                           type="button"
                           variant="outline"
                           onClick={addPrompt}
-                          className="border-[2px] border-border hover:bg-secondary"
+                          className="hover:bg-secondary"
                           disabled={creatingAgent || prompts.length >= 4}
                         >
                           <Plus className="h-4 w-4 mr-2" />
                           Add Another Prompt
-                        </Button>
+                        </RetroButton>
                         {prompts.length >= 4 && (
                           <p className="text-sm text-muted-foreground mt-2">
                             Maximum 4 prompts allowed.
@@ -550,8 +552,8 @@ export default function NewAgentPage() {
                     </div>
 
                     <div className="flex justify-end">
-                      <Button
-                        className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-6 py-2 flex items-center gap-2"
+                      <RetroButton
+                        className="bg-brand text-primary-foreground hover:bg-brand/90 transition-transform px-6 py-2 flex items-center gap-2"
                         onClick={onCreateAgent}
                         disabled={creatingAgent}
                       >
@@ -566,7 +568,7 @@ export default function NewAgentPage() {
                           Create Agent
                         </>
                       )}
-                      </Button>
+                      </RetroButton>
                     </div>
                   </CardContent>
                 </Card>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button } from '@/app/(frontend)/components/ui/button';
+import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
@@ -358,18 +358,18 @@ function AgentDetails({
               Agent Details
             </CardTitle>
             <div className="flex gap-3">
-              <Button
-                className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 shadow-md hover:bg-secondary/90"
+              <RetroButton
+                className="bg-secondary text-secondary-foreground transition-transform px-4 py-2 flex items-center gap-2 hover:bg-secondary/90"
                 onClick={() => setShowAgentCode(true)}
                 title="Show installation code for this agent"
               >
                 <Code className="h-4 w-4" />
                 Embed Your Agent
-              </Button>
-              <Button
+              </RetroButton>
+              <RetroButton
                 onClick={saveChanges}
                 disabled={isSaving}
-                className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-6 py-2 flex items-center gap-2"
+                className="bg-brand text-primary-foreground hover:bg-brand/90 transition-transform px-6 py-2 flex items-center gap-2"
               >
                 {isSaving ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -377,7 +377,7 @@ function AgentDetails({
                   <Save className="h-4 w-4" />
                 )}
                 Save Changes
-              </Button>
+              </RetroButton>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -466,7 +466,7 @@ function AgentDetails({
                     </div>
                     {(editPrompts.length > 1 ||
                       (index === 0 && prompt.trim())) && (
-                      <Button
+                      <RetroButton
                         type="button"
                         variant="destructive"
                         size="icon"
@@ -477,24 +477,24 @@ function AgentDetails({
                             removePrompt(index);
                           }
                         }}
-                        className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
+                        className="ml-auto p-2 hover:bg-destructive/80 transition"
                         tabIndex={-1}
                       >
                         <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                      </Button>
+                      </RetroButton>
                     )}
                   </div>
                 ))}
-                <Button
+                <RetroButton
                   type="button"
                   variant="outline"
                   onClick={addPrompt}
-                  className="border-[2px] border-border hover:bg-secondary"
+                  className="hover:bg-secondary"
                   disabled={editPrompts.length >= 4}
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Another Prompt
-                </Button>
+                </RetroButton>
                 {editPrompts.length >= 4 && (
                   <p className="text-sm text-muted-foreground mt-2">
                     Maximum 4 prompts allowed.
@@ -518,8 +518,8 @@ function AgentDetails({
                     <h3 className="text-lg font-semibold text-foreground">Actions</h3>
                   </div>
                   <div className="flex gap-2">
-                    <Button
-                      className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand/90"
+                    <RetroButton
+                      className="bg-brand text-primary-foreground transition-transform text-sm font-semibold px-3 py-1.5 hover:bg-brand/90"
                       onClick={handleNavigateToNewAction}
                       disabled={isNavigatingToNewAction}
                     >
@@ -534,16 +534,16 @@ function AgentDetails({
                           Create New
                         </>
                       )}
-                    </Button>
+                    </RetroButton>
                     {clientActions.length > 0 && (
-                      <Button
-                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-md hover:bg-secondary/90"
+                      <RetroButton
+                        className="bg-secondary text-secondary-foreground transition-transform text-sm font-semibold px-3 py-1.5 flex items-center gap-2 hover:bg-secondary/90"
                         onClick={() => setShowClientActions(true)}
                         title="Show code for client actions"
                       >
                         <Code className="h-4 w-4" />
                         Client Code
-                      </Button>
+                      </RetroButton>
                     )}
                   </div>
                 </div>
@@ -604,10 +604,10 @@ function AgentDetails({
                             </p>
                           </div>
                           <div className="flex gap-2">
-                            <Button
+                            <RetroButton
                               variant="outline"
                               size="icon"
-                              className="rounded-full p-2 hover:bg-secondary/80 transition group-hover:scale-110"
+                              className="p-2 hover:bg-secondary/80 transition group-hover:scale-110"
                               onClick={() => handleNavigateToEditAction(action.id)}
                               disabled={isNavigatingToEditAction === action.id}
                               title="Edit Action"
@@ -617,11 +617,11 @@ function AgentDetails({
                               ) : (
                                 <Pencil className="h-4 w-4 transition-transform duration-200 group-hover:scale-125" />
                               )}
-                            </Button>
-                            <Button
+                            </RetroButton>
+                            <RetroButton
                               variant="destructive"
                               size="icon"
-                              className="rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
+                              className="p-2 hover:bg-destructive/80 transition group-hover:scale-110"
                               onClick={() => {
                                 setActionToDelete(action);
                                 setIsDeleteDialogOpen(true);
@@ -634,7 +634,7 @@ function AgentDetails({
                               ) : (
                                 <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
                               )}
-                            </Button>
+                            </RetroButton>
                           </div>
                         </li>
                       ))}
@@ -650,8 +650,8 @@ function AgentDetails({
                     <FileText className="h-5 w-5 text-destructive" />
                     <h3 className="text-lg font-semibold text-foreground">Documents</h3>
                   </div>
-                  <Button
-                    className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand/90"
+                  <RetroButton
+                    className="bg-brand text-primary-foreground transition-transform text-sm font-semibold px-3 py-1.5 hover:bg-brand/90"
                     onClick={handleNavigateToNewDocument}
                     disabled={isNavigatingToNewDocument}
                   >
@@ -666,7 +666,7 @@ function AgentDetails({
                         Add New
                       </>
                     )}
-                  </Button>
+                  </RetroButton>
                 </div>
                 <div className="bg-muted/30 rounded-lg p-4 border border-border">
                   {loadingDocuments ? (
@@ -722,10 +722,10 @@ function AgentDetails({
                               </ul>
                             </div>
                           </div>
-                          <Button
+                          <RetroButton
                             variant="destructive"
                             size="icon"
-                            className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
+                            className="ml-auto p-2 hover:bg-destructive/80 transition group-hover:scale-110"
                             onClick={() => {
                               setDocumentToDelete(doc);
                               setIsDeleteDocumentDialogOpen(true);
@@ -738,7 +738,7 @@ function AgentDetails({
                             ) : (
                               <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
                             )}
-                          </Button>
+                          </RetroButton>
                         </li>
                       ))}
                     </ul>
@@ -770,15 +770,15 @@ function AgentDetails({
                           Client Actions Code
                         </CardTitle>
                       </div>
-                      <Button
+                      <RetroButton
                         variant="ghost"
                         size="icon"
                         aria-label="Close"
-                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-3 rounded-full hover:bg-destructive/10 transition"
+                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-3 hover:bg-destructive/10 transition"
                         onClick={() => setShowClientActions(false)}
                       >
                         <X className="h-5 w-5 sm:h-6 sm:w-6 text-foreground" />
-                      </Button>
+                      </RetroButton>
                     </CardHeader>
                     <CardContent className="space-y-8 mt-8">
                       <div>
@@ -857,37 +857,39 @@ function AgentDetails({
                             selectedFramework
                           )}
                         </SyntaxHighlighter>
-                        <Button
-                          onClick={() => {
-                            navigator.clipboard.writeText(
-                              getRegisterMultipleToolsExample(
-                                clientActions.map((action) => ({
-                                  functionName: action.name,
-                                  dataInputs: (
-                                    action.executionModel.parameters || []
-                                  ).map((param) => ({
-                                    name: param.name,
-                                    type: param.type,
-                                    description: param.description || '',
-                                    isArray: param.isArray || false,
+                        <div className="absolute top-11 right-2">
+                          <RetroButton
+                            onClick={() => {
+                              navigator.clipboard.writeText(
+                                getRegisterMultipleToolsExample(
+                                  clientActions.map((action) => ({
+                                    functionName: action.name,
+                                    dataInputs: (
+                                      action.executionModel.parameters || []
+                                    ).map((param) => ({
+                                      name: param.name,
+                                      type: param.type,
+                                      description: param.description || '',
+                                      isArray: param.isArray || false,
+                                    })),
                                   })),
-                                })),
-                                selectedFramework
-                              )
-                            );
-                            setCopied(true);
-                            setTimeout(() => setCopied(false), 2000);
-                          }}
-                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 hover:bg-secondary/90 px-2 py-1 sm:px-3 sm:py-1.5"
-                        >
-                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span className="hidden sm:inline text-xs sm:text-sm">
-                            {copied ? 'Copied!' : 'Copy Code'}
-                          </span>
-                          <span className="inline sm:hidden text-xs">
-                            {copied ? 'Copied!' : 'Copy'}
-                          </span>
-                        </Button>
+                                  selectedFramework
+                                )
+                              );
+                              setCopied(true);
+                              setTimeout(() => setCopied(false), 2000);
+                            }}
+                            className="bg-secondary text-foreground transition-transform flex items-center gap-2 hover:bg-secondary/90 px-2 py-1 sm:px-3 sm:py-1.5"
+                          >
+                            <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline text-xs sm:text-sm">
+                              {copied ? 'Copied!' : 'Copy Code'}
+                            </span>
+                            <span className="inline sm:hidden text-xs">
+                              {copied ? 'Copied!' : 'Copy'}
+                            </span>
+                          </RetroButton>
+                        </div>
                       </div>
                       <ul className="list-disc list-inside text-gray-600 space-y-2 mt-4 text-sm">
                         <li>
@@ -955,15 +957,15 @@ function AgentDetails({
                           Agent Installation Code
                         </CardTitle>
                       </div>
-                      <Button
+                      <RetroButton
                         variant="ghost"
                         size="icon"
                         aria-label="Close"
-                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-3 rounded-full hover:bg-destructive/10 transition"
+                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-3 hover:bg-destructive/10 transition"
                         onClick={() => setShowAgentCode(false)}
                       >
                         <X className="h-5 w-5 sm:h-6 sm:w-6 text-foreground" />
-                      </Button>
+                      </RetroButton>
                     </CardHeader>
                     <CardContent className="space-y-8 mt-8">
                       <div>
@@ -1020,22 +1022,24 @@ function AgentDetails({
                         >
                           {getAgentScript(selectedFramework, params.agentId)}
                         </SyntaxHighlighter>
-                        <Button
-                          onClick={() =>
-                            handleCopy(
-                              getAgentScript(selectedFramework, params.agentId)
-                            )
-                          }
-                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 px-2 py-1 sm:px-3 sm:py-1.5"
-                        >
-                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span className="hidden sm:inline text-xs sm:text-sm">
-                            {copied ? 'Copied!' : 'Copy Code'}
-                          </span>
-                          <span className="inline sm:hidden text-xs">
-                            {copied ? 'Copied!' : 'Copy'}
-                          </span>
-                        </Button>
+                        <div className="absolute top-11 right-2">
+                          <RetroButton
+                            onClick={() =>
+                              handleCopy(
+                                getAgentScript(selectedFramework, params.agentId)
+                              )
+                            }
+                            className="bg-secondary text-foreground transition-transform flex items-center gap-2 px-2 py-1 sm:px-3 sm:py-1.5"
+                          >
+                            <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline text-xs sm:text-sm">
+                              {copied ? 'Copied!' : 'Copy Code'}
+                            </span>
+                            <span className="inline sm:hidden text-xs">
+                              {copied ? 'Copied!' : 'Copy'}
+                            </span>
+                          </RetroButton>
+                        </div>
                       </div>
                       <div>
                         <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">

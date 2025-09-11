@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession, signOut } from 'next-auth/react';
-import { Button } from '@/app/(frontend)/components/ui/button';
+import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import {
@@ -188,8 +188,8 @@ export default function Dashboard() {
             </h1>
           </div>
           <div className="mb-8 sm:mb-12 flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <Button
-              className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 w-full sm:w-auto"
+            <RetroButton
+              className="bg-brand text-primary-foreground transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 hover:bg-brand/90 w-full sm:w-auto"
               onClick={handleCreateAgent}
               disabled={isCreatingAgent}
             >
@@ -204,9 +204,9 @@ export default function Dashboard() {
                   Create New Agent
                 </>
               )}
-            </Button>
-            <Button
-              className="bg-secondary text-secondary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90 w-full sm:w-auto"
+            </RetroButton>
+            <RetroButton
+              className="bg-secondary text-secondary-foreground transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 hover:bg-secondary/90 w-full sm:w-auto"
               onClick={handleNavigateToUserConfig}
               disabled={isNavigatingToUserConfig}
             >
@@ -218,7 +218,7 @@ export default function Dashboard() {
               ) : (
                 'User Configuration'
               )}
-            </Button>
+            </RetroButton>
           </div>
 
           {loadingAgents ? (
@@ -262,7 +262,7 @@ export default function Dashboard() {
                           <Loader2 className="h-5 w-5 animate-spin text-brand flex-shrink-0" />
                         ) : (
                           <div className="flex gap-2">
-                            <Button
+                            <RetroButton
                               variant="destructive"
                               size="icon"
                               onClick={(e) => {
@@ -270,7 +270,7 @@ export default function Dashboard() {
                                 e.stopPropagation();
                                 handleOpenDeleteDialog(agent.id);
                               }}
-                              className="rounded-full p-2 hover:bg-destructive/80 transition-all duration-200 hover:scale-110"
+                              className="p-2 hover:bg-destructive/80 transition-all duration-200"
                               title="Delete Agent"
                               disabled={deletingAgentId === agent.id}
                             >
@@ -279,7 +279,7 @@ export default function Dashboard() {
                               ) : (
                                 <Trash2 className="h-4 w-4" />
                               )}
-                            </Button>
+                            </RetroButton>
                           </div>
                         )}
                       </div>
