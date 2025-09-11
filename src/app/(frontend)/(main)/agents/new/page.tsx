@@ -17,8 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   CheckCircle2,
@@ -46,6 +46,7 @@ import posthog from 'posthog-js';
 
 export default function NewAgentPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [name, setName] = useState('');
   const [websiteDomain, setWebsiteDomain] = useState('');
   const [model, setModel] = useState<AgentModel>('google/gemini-2.0-flash-001');
@@ -58,6 +59,19 @@ export default function NewAgentPage() {
   const [prompts, setPrompts] = useState<string[]>(['']);
   const { selectedFramework, setSelectedFramework } = useFramework();
   const { handleCreateAgent, creatingAgent } = useAgents();
+
+  // Check for success state from URL parameters on component mount
+  useEffect(() => {
+    const successAgentId = searchParams.get('success');
+    const successName = searchParams.get('name');
+    const successDomain = searchParams.get('domain');
+    
+    if (successAgentId && successName && successDomain) {
+      setAgentId(successAgentId);
+      setName(successName);
+      setWebsiteDomain(successDomain);
+    }
+  }, [searchParams]);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -94,6 +108,18 @@ export default function NewAgentPage() {
       agent_id: agentId,
     });
     router.push(`/agents/${agentId}`);
+  };
+
+  const handleCreateNewAgent = () => {
+    // Clear URL parameters and reset form state
+    router.replace('/agents/new');
+    setAgentId(null);
+    setName('');
+    setWebsiteDomain('');
+    setModel('google/gemini-2.0-flash-001');
+    setPrompts(['']);
+    setErrors({});
+    setCopied(false);
   };
 
   const addPrompt = () => {
@@ -159,6 +185,14 @@ export default function NewAgentPage() {
       });
 
       setAgentId(newAgentId);
+      
+      // Update URL with success parameters to preserve state when navigating back
+      const successUrl = new URL(window.location.href);
+      successUrl.searchParams.set('success', newAgentId);
+      successUrl.searchParams.set('name', name.trim());
+      successUrl.searchParams.set('domain', websiteDomain.trim());
+      router.replace(successUrl.pathname + successUrl.search);
+      
       // Scroll to top after successful agent creation
       setTimeout(() => {
         window.scrollTo(0, 0);
