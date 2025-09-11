@@ -327,10 +327,13 @@ export default function NewAgentPage() {
                         What's Next?
                       </Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border border-border">
-                          <Zap className="h-5 w-5 text-brand mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold text-foreground text-sm mb-1">
+                        <button
+                          onClick={() => router.push(`/agents/${agentId}/actions/new`)}
+                          className="flex items-start gap-3 p-3 bg-muted/30 hover:bg-muted/50 rounded-lg border border-border hover:border-brand/50 transition-all duration-200 cursor-pointer group"
+                        >
+                          <Zap className="h-5 w-5 text-brand mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                          <div className="text-left">
+                            <p className="font-semibold text-foreground text-sm mb-1 group-hover:text-brand transition-colors">
                               Actions
                             </p>
                             <p className="text-xs text-muted-foreground">
@@ -338,11 +341,14 @@ export default function NewAgentPage() {
                               form submissions or API calls.
                             </p>
                           </div>
-                        </div>
-                        <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border border-border">
-                          <FileText className="h-5 w-5 text-brand mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold text-foreground text-sm mb-1">
+                        </button>
+                        <button
+                          onClick={() => router.push(`/agents/${agentId}/documents/new`)}
+                          className="flex items-start gap-3 p-3 bg-muted/30 hover:bg-muted/50 rounded-lg border border-border hover:border-brand/50 transition-all duration-200 cursor-pointer group"
+                        >
+                          <FileText className="h-5 w-5 text-brand mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                          <div className="text-left">
+                            <p className="font-semibold text-foreground text-sm mb-1 group-hover:text-brand transition-colors">
                               Documents
                             </p>
                             <p className="text-xs text-muted-foreground">
@@ -350,16 +356,10 @@ export default function NewAgentPage() {
                               questions and provide better support.
                             </p>
                           </div>
-                        </div>
+                        </button>
                       </div>
                     </div>
 
-                    <Button
-                      className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/90 transition-transform duration-200 shadow-md text-lg font-semibold w-full"
-                      onClick={handleContinue}
-                    >
-                      Configure Your Agent
-                    </Button>
                   </CardContent>
                 </Card>
               </div>
