@@ -97,7 +97,8 @@ export const useActionForm = (isEditing = false) => {
         router.replace(
           `/agents/${agentId}/actions/new?type=${actionTypeParam}&step=${currentStep}`
         );
-      } else if (stepParam) {
+      } else if (stepParam && currentStep > 1) {
+        // Only add type parameter if we're not on step 1 (to allow changing action type on step 1)
         const actionTypeParam =
           baseAction.executionContext === ExecutionContext.SERVER
             ? 'server'
@@ -115,6 +116,23 @@ export const useActionForm = (isEditing = false) => {
     showSuccess,
     isEditing,
   ]);
+
+  // Handle URL updates when execution context changes
+  useEffect(() => {
+    if (!isEditing && !showSuccess) {
+      const currentTypeParam = searchParams.get('type');
+      const currentStepParam = searchParams.get('step');
+      const currentStep = parseInt(currentStepParam || '1');
+      const expectedTypeParam = baseAction.executionContext === ExecutionContext.SERVER ? 'server' : 'client';
+      
+      // Only update URL if we're not on step 1 and the type parameter doesn't match
+      if (currentStep > 1 && currentTypeParam && currentTypeParam !== expectedTypeParam) {
+        router.replace(
+          `/agents/${agentId}/actions/new?type=${expectedTypeParam}&step=${currentStep}`
+        );
+      }
+    }
+  }, [baseAction.executionContext, searchParams, router, agentId, showSuccess, isEditing]);
 
   const updateUrl = (newStep: number) => {
     // Don't update URL if we're showing success
@@ -163,7 +181,18 @@ export const useActionForm = (isEditing = false) => {
   const handleBack = () => {
     if (showSuccess) return;
     if (step > 1) {
-      updateUrl(step - 1);
+      const newStep = step - 1;
+      // When going back to step 1, remove the type parameter to allow changing action type
+      if (newStep === 1) {
+        if (isEditing) {
+          setStep(newStep);
+        } else {
+          router.push(`/agents/${agentId}/actions/new?step=${newStep}`);
+          setStep(newStep);
+        }
+      } else {
+        updateUrl(newStep);
+      }
     } else {
       if (isEditing) {
         router.push(`/agents/${agentId}`);
