@@ -505,52 +505,6 @@ function AgentDetails({
           </CardContent>
         </Card>
 
-        <div className="mb-6 flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
-          <Button
-            className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto hover:bg-brand/90"
-            onClick={handleNavigateToNewAction}
-            disabled={isNavigatingToNewAction}
-          >
-            {isNavigatingToNewAction ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Loading...
-              </>
-            ) : (
-              <>
-                <PlusCircle className="mr-2 h-5 w-5" />
-                Create New Action
-              </>
-            )}
-          </Button>
-          <Button
-            className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg w-full sm:w-auto hover:bg-brand/90"
-            onClick={handleNavigateToNewDocument}
-            disabled={isNavigatingToNewDocument}
-          >
-            {isNavigatingToNewDocument ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Loading...
-              </>
-            ) : (
-              <>
-                <PlusCircle className="mr-2 h-5 w-5" />
-                Add New Document
-              </>
-            )}
-          </Button>
-          {clientActions.length > 0 && (
-            <Button
-              className="bg-secondary text-secondary-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-base font-semibold px-4 py-2 sm:px-6 sm:py-2 rounded-lg flex items-center gap-2 shadow-md w-full sm:w-auto justify-center hover:bg-secondary/90"
-              onClick={() => setShowClientActions(true)}
-              title="Show code for client actions"
-            >
-              <Zap className="h-5 w-5" />
-              Client Actions Code
-            </Button>
-          )}
-        </div>
         {showClientActions && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-8">
             <div
@@ -888,201 +842,255 @@ function AgentDetails({
           </div>
         )}
 
-        {loadingActions ? (
-          <div className="flex justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
-          </div>
-        ) : actions.length === 0 ? (
-          <p className="text-foreground text-base sm:text-lg mb-4 flex items-center justify-center text-center">
-            <Zap className="h-6 w-6 mr-2 text-[#FE4A60]" />
-            No actions found. Create one to get started!
-          </p>
-        ) : (
-          <Card
-            className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8"
-            style={{ borderLeftColor: 'var(--color-destructive)' }}
-          >
-            <CardHeader className="flex items-center space-x-2">
-              <Zap className="h-6 w-6 text-destructive" />
-              <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
-                Actions
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-4">
-                {actions.map((action, idx) => (
-                  <li
-                    key={action.id || action.name}
-                    className="border-t pt-2 flex flex-row items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2"
-                  >
-                    <div className="flex-1">
-                      <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
-                        {action.name}
-                      </p>
-                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">
-                        <span className="font-semibold">Description:</span>{' '}
-                        {action.description}
-                      </p>
-                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">
-                        <span className="font-semibold">Context:</span>{' '}
-                        {action.executionContext}
-                      </p>
-                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">
-                        <span className="font-semibold">Model:</span>{' '}
-                        {action.executionContext === ExecutionContext.SERVER ? (
-                          <>
-                            {(
-                              action as BackendAction
-                            ).executionModel.request.method.toUpperCase()}{' '}
-                            {
-                              (action as BackendAction).executionModel.request
-                                .url
-                            }
-                          </>
-                        ) : (
-                          (action as FrontendAction).executionModel.functionName
-                        )}
-                      </p>
-                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">
-                        <span className="font-semibold">Parameters:</span>{' '}
-                        {(action.executionModel.parameters || []).length > 0
-                          ? (action.executionModel.parameters || [])
-                              .map(
-                                (param) =>
-                                  `${param.name} (${param.type}${param.isArray ? '[]' : ''})`
-                              )
-                              .join(', ')
-                          : 'None'}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full p-2 hover:bg-secondary/80 transition group-hover:scale-110"
-                        onClick={() => handleNavigateToEditAction(action.id)}
-                        disabled={isNavigatingToEditAction === action.id}
-                        title="Edit Action"
-                      >
-                        {isNavigatingToEditAction === action.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Pencil className="h-4 w-4 transition-transform duration-200 group-hover:scale-125" />
-                        )}
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="icon"
-                        className="rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
-                        onClick={() => {
-                          setActionToDelete(action);
-                          setIsDeleteDialogOpen(true);
-                        }}
-                        disabled={deletingActionId === action.id}
-                        title="Delete Action"
-                      >
-                        {deletingActionId === action.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                        )}
-                      </Button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        )}
-
-        {loadingDocuments ? (
-          <div className="flex justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
-          </div>
-        ) : documents.length === 0 ? (
-          <p className="text-foreground text-base sm:text-lg mb-4 flex items-center justify-center text-center">
-            <FileText className="h-6 w-6 mr-2 text-[#FE4A60]" />
-            No documents found. Add one to get started!
-          </p>
-        ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Actions Column */}
           <Card
             className="border-[3px] border-border bg-card rounded-xl shadow-xl border-l-8"
             style={{ borderLeftColor: 'var(--color-destructive)' }}
           >
-            <CardHeader className="flex items-center space-x-2">
-              <FileText className="h-6 w-6 text-destructive" />
-              <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
-                Documents
-              </CardTitle>
+            <CardHeader className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Zap className="h-6 w-6 text-destructive" />
+                <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
+                  Actions
+                </CardTitle>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand/90"
+                  onClick={handleNavigateToNewAction}
+                  disabled={isNavigatingToNewAction}
+                >
+                  {isNavigatingToNewAction ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Create New
+                    </>
+                  )}
+                </Button>
+                {clientActions.length > 0 && (
+                  <Button
+                    className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-md hover:bg-secondary/90"
+                    onClick={() => setShowClientActions(true)}
+                    title="Show code for client actions"
+                  >
+                    <Zap className="h-4 w-4" />
+                    Client Code
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-4">
-                {documents.map((doc, idx) => (
-                  <li
-                    key={doc.id}
-                    className="border-t pt-2 flex flex-row items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2"
-                  >
-                    <div className="flex-1">
-                      <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
-                        Document {idx + 1}
-                      </p>
-                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">
-                        <span className="font-semibold">Content:</span>{' '}
-                        {doc.content.length > 100
-                          ? `${doc.content.substring(0, 100)}...`
-                          : doc.content}
-                      </p>
-                      <div className="text-xs sm:text-sm text-muted-foreground mb-1">
-                        <span className="font-semibold">Metadata:</span>
-                        <ul>
-                          {Object.entries(doc.metadata)
-                            .filter(
-                              ([key]) =>
-                                ![
-                                  'loc',
-                                  'agent_id',
-                                  'chunk_index',
-                                  'parent_document_id',
-                                ].includes(key)
-                            )
-                            .map(([key, value]) => (
-                              <li key={key} className="mb-1">
-                                <span className="font-semibold">{key}:</span>{' '}
-                                {typeof value === 'object' && value !== null ? (
-                                  <pre className="inline">
-                                    {JSON.stringify(value, null, 2)}
-                                  </pre>
-                                ) : (
-                                  String(value)
-                                )}
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                    </div>
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
-                      onClick={() => {
-                        setDocumentToDelete(doc);
-                        setIsDeleteDocumentDialogOpen(true);
-                      }}
-                      disabled={deletingDocumentId === doc.id}
-                      title="Delete Document"
-                    >
-                      {deletingDocumentId === doc.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                      )}
-                    </Button>
-                  </li>
-                ))}
-              </ul>
+              {loadingActions ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+                </div>
+              ) : actions.length === 0 ? (
+                <p className="text-foreground text-base flex items-center justify-center text-center py-8">
+                  <Zap className="h-6 w-6 mr-2 text-[#FE4A60]" />
+                  No actions found. Create one to get started!
+                </p>
+              ) : (
+                <ul className="space-y-4">
+                    {actions.map((action, idx) => (
+                      <li
+                        key={action.id || action.name}
+                        className="border-t pt-2 flex flex-row items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2"
+                      >
+                        <div className="flex-1">
+                          <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
+                            {action.name}
+                          </p>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <span className="font-semibold">Description:</span>{' '}
+                            {action.description}
+                          </p>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <span className="font-semibold">Context:</span>{' '}
+                            {action.executionContext}
+                          </p>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <span className="font-semibold">Model:</span>{' '}
+                            {action.executionContext === ExecutionContext.SERVER ? (
+                              <>
+                                {(
+                                  action as BackendAction
+                                ).executionModel.request.method.toUpperCase()}{' '}
+                                {
+                                  (action as BackendAction).executionModel.request
+                                    .url
+                                }
+                              </>
+                            ) : (
+                              (action as FrontendAction).executionModel.functionName
+                            )}
+                          </p>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <span className="font-semibold">Parameters:</span>{' '}
+                            {(action.executionModel.parameters || []).length > 0
+                              ? (action.executionModel.parameters || [])
+                                  .map(
+                                    (param) =>
+                                      `${param.name} (${param.type}${param.isArray ? '[]' : ''})`
+                                  )
+                                  .join(', ')
+                              : 'None'}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="rounded-full p-2 hover:bg-secondary/80 transition group-hover:scale-110"
+                            onClick={() => handleNavigateToEditAction(action.id)}
+                            disabled={isNavigatingToEditAction === action.id}
+                            title="Edit Action"
+                          >
+                            {isNavigatingToEditAction === action.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Pencil className="h-4 w-4 transition-transform duration-200 group-hover:scale-125" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="icon"
+                            className="rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
+                            onClick={() => {
+                              setActionToDelete(action);
+                              setIsDeleteDialogOpen(true);
+                            }}
+                            disabled={deletingActionId === action.id}
+                            title="Delete Action"
+                          >
+                            {deletingActionId === action.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
+                            )}
+                          </Button>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+              )}
             </CardContent>
           </Card>
-        )}
+
+          {/* Documents Column */}
+          <Card
+            className="border-[3px] border-border bg-card rounded-xl shadow-xl border-l-8"
+            style={{ borderLeftColor: 'var(--color-destructive)' }}
+          >
+            <CardHeader className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <FileText className="h-6 w-6 text-destructive" />
+                <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
+                  Documents
+                </CardTitle>
+              </div>
+              <Button
+                className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand/90"
+                onClick={handleNavigateToNewDocument}
+                disabled={isNavigatingToNewDocument}
+              >
+                {isNavigatingToNewDocument ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add New
+                  </>
+                )}
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {loadingDocuments ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+                </div>
+              ) : documents.length === 0 ? (
+                <p className="text-foreground text-base flex items-center justify-center text-center py-8">
+                  <FileText className="h-6 w-6 mr-2 text-[#FE4A60]" />
+                  No documents found. Add one to get started!
+                </p>
+              ) : (
+                <ul className="space-y-4">
+                    {documents.map((doc, idx) => (
+                      <li
+                        key={doc.id}
+                        className="border-t pt-2 flex flex-row items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2"
+                      >
+                        <div className="flex-1">
+                          <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
+                            Document {idx + 1}
+                          </p>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <span className="font-semibold">Content:</span>{' '}
+                            {doc.content.length > 100
+                              ? `${doc.content.substring(0, 100)}...`
+                              : doc.content}
+                          </p>
+                          <div className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <span className="font-semibold">Metadata:</span>
+                            <ul>
+                              {Object.entries(doc.metadata)
+                                .filter(
+                                  ([key]) =>
+                                    ![
+                                      'loc',
+                                      'agent_id',
+                                      'chunk_index',
+                                      'parent_document_id',
+                                    ].includes(key)
+                                )
+                                .map(([key, value]) => (
+                                  <li key={key} className="mb-1">
+                                    <span className="font-semibold">{key}:</span>{' '}
+                                    {typeof value === 'object' && value !== null ? (
+                                      <pre className="inline">
+                                        {JSON.stringify(value, null, 2)}
+                                      </pre>
+                                    ) : (
+                                      String(value)
+                                    )}
+                                  </li>
+                                ))}
+                            </ul>
+                          </div>
+                        </div>
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
+                          onClick={() => {
+                            setDocumentToDelete(doc);
+                            setIsDeleteDocumentDialogOpen(true);
+                          }}
+                          disabled={deletingDocumentId === doc.id}
+                          title="Delete Document"
+                        >
+                          {deletingDocumentId === doc.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
+                          )}
+                        </Button>
+                      </li>
+                    ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
         <DeleteConfirmationDialog
           isOpen={isDeleteDialogOpen}
