@@ -187,7 +187,7 @@ export default function Dashboard() {
                 : 'Welcome!'}
             </h1>
           </div>
-          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <div className="mb-8 sm:mb-12 flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Button
               className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 w-full sm:w-auto"
               onClick={handleCreateAgent}
@@ -284,7 +284,7 @@ export default function Dashboard() {
                         )}
                       </div>
                     </CardHeader>
-                    <CardContent className="pt-0">
+                    <CardContent className="pt-0 -mt-1">
                       <div className="bg-muted/30 rounded-lg p-4 border border-border">
                         <div className="space-y-3">
                           <div className="flex items-center gap-3">
