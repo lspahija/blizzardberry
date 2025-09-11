@@ -26,7 +26,6 @@ import {
   ExternalLink,
   Bot,
   Globe,
-  Type,
   Settings,
   Code,
   Info,
@@ -213,8 +212,8 @@ export default function NewAgentPage() {
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div>
-                      <Label className="text-foreground text-lg font-semibold flex items-center gap-2">
-                        <Settings className="h-4 w-4 text-brand" />
+                      <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mt-4">
+                        <Code className="h-4 w-4 text-destructive" />
                         Framework
                       </Label>
                       <p className="text-sm text-muted-foreground mt-2 ml-6">
@@ -251,7 +250,7 @@ export default function NewAgentPage() {
                     </div>
                     <div className="relative">
                       <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
-                        <Code className="h-4 w-4 text-brand" />
+                        <Code className="h-4 w-4 text-destructive" />
                         Installation Code
                       </Label>
                       <SyntaxHighlighter
@@ -323,7 +322,7 @@ export default function NewAgentPage() {
 
                     <div className="space-y-4">
                       <Label className="text-foreground text-lg font-semibold flex items-center gap-2">
-                        <Settings className="h-4 w-4 text-brand" />
+                        <Settings className="h-4 w-4 text-destructive" />
                         What's Next?
                       </Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -331,7 +330,7 @@ export default function NewAgentPage() {
                           onClick={() => router.push(`/agents/${agentId}/actions/new`)}
                           className="flex items-start gap-3 p-3 bg-muted/30 hover:bg-muted/50 rounded-lg border border-border hover:border-brand/50 transition-all duration-200 cursor-pointer group"
                         >
-                          <Zap className="h-5 w-5 text-brand mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                          <Zap className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
                           <div className="text-left">
                             <p className="font-semibold text-foreground text-sm mb-1 group-hover:text-brand transition-colors">
                               Actions
@@ -346,7 +345,7 @@ export default function NewAgentPage() {
                           onClick={() => router.push(`/agents/${agentId}/documents/new`)}
                           className="flex items-start gap-3 p-3 bg-muted/30 hover:bg-muted/50 rounded-lg border border-border hover:border-brand/50 transition-all duration-200 cursor-pointer group"
                         >
-                          <FileText className="h-5 w-5 text-brand mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                          <FileText className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
                           <div className="text-left">
                             <p className="font-semibold text-foreground text-sm mb-1 group-hover:text-brand transition-colors">
                               Documents
@@ -395,43 +394,33 @@ export default function NewAgentPage() {
                       </div>
                     </div>
                   )}
-                  <CardHeader className="flex items-center space-x-2">
-                    <Bot className="h-7 w-7 text-brand" />
-                    <CardTitle className="text-2xl font-semibold text-foreground">
+                  <CardHeader className="pb-2 flex items-center justify-between">
+                    <CardTitle className="text-xl sm:text-2xl font-bold text-foreground ml-6">
                       Agent Details
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div>
-                      <Label
-                        htmlFor="name"
-                        className="text-foreground flex items-center gap-2"
-                      >
-                        <Type className="h-4 w-4 text-brand" />
-                        Agent Name
+                      <Label className="text-foreground flex items-center gap-2 text-sm font-semibold mb-2">
+                        <Bot className="h-4 w-4 text-destructive" />
+                        Name:
                       </Label>
-                      <p className="text-sm text-muted-foreground mt-1 ml-6">
-                        A unique name for your agent
-                      </p>
-                      <div className="relative mt-2">
-                        <Input
-                          id="name"
-                          value={name}
-                          onChange={(e) => {
-                            setName(e.target.value);
-                            if (errors.name) {
-                              setErrors((prev) => ({
-                                ...prev,
-                                name: undefined,
-                              }));
-                            }
-                          }}
-                          placeholder="My Customer Service Bot"
-                          className={`pl-10 border-[2px] ${errors.name ? 'border-red-500' : 'border-border'}`}
-                          disabled={creatingAgent}
-                        />
-                        <Type className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                      </div>
+                      <Input
+                        id="name"
+                        value={name}
+                        onChange={(e) => {
+                          setName(e.target.value);
+                          if (errors.name) {
+                            setErrors((prev) => ({
+                              ...prev,
+                              name: undefined,
+                            }));
+                          }
+                        }}
+                        placeholder="Agent Name"
+                        className={`border-[2px] ml-6 ${errors.name ? 'border-red-500' : 'border-border'}`}
+                        disabled={creatingAgent}
+                      />
                       {errors.name && (
                         <p className="text-sm text-red-500 mt-1 ml-6">
                           {errors.name}
@@ -440,35 +429,26 @@ export default function NewAgentPage() {
                     </div>
 
                     <div>
-                      <Label
-                        htmlFor="websiteDomain"
-                        className="text-foreground flex items-center gap-2"
-                      >
-                        <Globe className="h-4 w-4 text-brand" />
-                        Website Domain
+                      <Label className="text-foreground flex items-center gap-2 text-sm font-semibold mb-2">
+                        <Globe className="h-4 w-4 text-destructive" />
+                        Domain:
                       </Label>
-                      <p className="text-sm text-muted-foreground mt-1 ml-6">
-                        The domain where your agent will be installed
-                      </p>
-                      <div className="relative mt-2">
-                        <Input
-                          id="websiteDomain"
-                          value={websiteDomain}
-                          onChange={(e) => {
-                            setWebsiteDomain(e.target.value);
-                            if (errors.websiteDomain) {
-                              setErrors((prev) => ({
-                                ...prev,
-                                websiteDomain: undefined,
-                              }));
-                            }
-                          }}
-                          placeholder="example.com"
-                          className={`pl-10 border-[2px] ${errors.websiteDomain ? 'border-red-500' : 'border-border'}`}
-                          disabled={creatingAgent}
-                        />
-                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                      </div>
+                      <Input
+                        id="websiteDomain"
+                        value={websiteDomain}
+                        onChange={(e) => {
+                          setWebsiteDomain(e.target.value);
+                          if (errors.websiteDomain) {
+                            setErrors((prev) => ({
+                              ...prev,
+                              websiteDomain: undefined,
+                            }));
+                          }
+                        }}
+                        placeholder="example.com"
+                        className={`border-[2px] ml-6 ${errors.websiteDomain ? 'border-red-500' : 'border-border'}`}
+                        disabled={creatingAgent}
+                      />
                       {errors.websiteDomain && (
                         <p className="text-sm text-red-500 mt-1 ml-6">
                           {errors.websiteDomain}
@@ -477,18 +457,11 @@ export default function NewAgentPage() {
                     </div>
 
                     <div>
-                      <Label
-                        htmlFor="model"
-                        className="text-foreground flex items-center gap-2"
-                      >
-                        <Settings className="h-4 w-4 text-brand" />
-                        Language Model
+                      <Label className="text-foreground flex items-center gap-2 text-sm font-semibold mb-2">
+                        <Settings className="h-4 w-4 text-destructive" />
+                        Model:
                       </Label>
-                      <p className="text-sm text-muted-foreground mt-1 ml-6">
-                        Select the language model to power your agent
-                      </p>
-                      <div className="relative mt-2">
-                        <Settings className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                      <div className="ml-6">
                         <Select
                           value={model}
                           onValueChange={(value) =>
@@ -496,7 +469,7 @@ export default function NewAgentPage() {
                           }
                           disabled={creatingAgent}
                         >
-                          <SelectTrigger className="pl-10 border-[2px] border-border">
+                          <SelectTrigger className="border-[2px] border-border">
                             <SelectValue placeholder="Select a model" />
                           </SelectTrigger>
                           <SelectContent>
@@ -513,13 +486,13 @@ export default function NewAgentPage() {
                     </div>
 
                     <div>
-                      <Label className="text-foreground flex items-center gap-2">
+                      <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
                         <MessageSquare className="h-4 w-4 text-brand" />
-                        Suggested Prompts (Optional)
+                        Example Prompts (Optional)
                       </Label>
                       <p className="text-sm text-muted-foreground mt-1 ml-6">
-                        These are example prompts users can choose from or use
-                        as inspiration when interacting with your agent.
+                        Add a few example questions to help guide your users and
+                        showcase your agent's capabilities.
                       </p>
                       <div className="mt-4 ml-6 space-y-4">
                         {prompts.map((prompt, index) => (
