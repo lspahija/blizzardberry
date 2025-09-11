@@ -63,9 +63,7 @@ export default function GeneralStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-      <div
-        className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 border-blue-600 p-3 md:p-4 rounded-lg shadow-md"
-      >
+      <div className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 border-blue-600 p-3 md:p-4 rounded-lg shadow-md">
         <Info className="h-5 w-5 md:h-6 md:w-6 text-blue-600 mr-2 md:mr-3 mt-1 md:mt-0 flex-shrink-0" />
         <span className="text-foreground text-sm md:text-base">
           Fill out the general information for your action. This helps the AI
@@ -142,53 +140,77 @@ export default function GeneralStep({
               )}
             </div>
             <div>
-              <Label className="text-foreground text-base md:text-lg font-semibold">
+              <Label className="text-foreground text-base md:text-lg font-semibold flex items-center gap-2">
+                <Settings className="h-4 w-4 text-destructive" />
                 Action Type
               </Label>
+              <p className="text-xs md:text-sm text-muted-foreground mt-1 ml-6">
+                Choose where your action will be executed
+              </p>
               <RadioGroup
                 value={baseAction.executionContext}
                 onValueChange={(value: ExecutionContext) =>
                   setBaseAction({ ...baseAction, executionContext: value })
                 }
-                className="flex flex-col sm:flex-row sm:space-x-4 mt-2 space-y-4 sm:space-y-0"
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
               >
-                <div className="flex items-start space-x-2">
+                <div className="relative">
                   <RadioGroupItem
                     value={ExecutionContext.SERVER}
                     id="server"
-                    className="mt-5"
+                    className="absolute top-4 left-4 z-10"
                   />
-                  <Label htmlFor="server" className="text-foreground">
-                    Server Action
-                    <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                      This action will be executed on the server. There is no
-                      need to write any client-side code.
+                  <Label
+                    htmlFor="server"
+                    className={`block p-4 pl-12 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                      baseAction.executionContext === ExecutionContext.SERVER
+                        ? 'border-destructive bg-destructive/5'
+                        : 'border-border hover:border-destructive/50'
+                    }`}
+                  >
+                    <div className="font-semibold text-foreground mb-2">
+                      Server Action
+                    </div>
+                    <p className="text-xs md:text-sm text-muted-foreground">
+                      Executed on the server. No client-side code needed.
                     </p>
                   </Label>
                 </div>
-                <div className="flex items-start space-x-2">
+                <div className="relative">
                   <RadioGroupItem
                     value={ExecutionContext.CLIENT}
                     id="client"
-                    className="mt-5"
+                    className="absolute top-4 left-4 z-10"
                   />
-                  <Label htmlFor="client" className="text-foreground">
-                    Client Action
-                    <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                      This action will be executed on the client. You will need
-                      to write some client-side code. Explore the docs.
+                  <Label
+                    htmlFor="client"
+                    className={`block p-4 pl-12 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                      baseAction.executionContext === ExecutionContext.CLIENT
+                        ? 'border-destructive bg-destructive/5'
+                        : 'border-border hover:border-destructive/50'
+                    }`}
+                  >
+                    <div className="font-semibold text-foreground mb-2">
+                      Client Action
+                    </div>
+                    <p className="text-xs md:text-sm text-muted-foreground">
+                      Executed purely on the client. Requires a tiny code
+                      snippet.
                     </p>
                   </Label>
                 </div>
               </RadioGroup>
             </div>
-            <Button
-              className="bg-destructive text-white border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand transition-transform duration-200 shadow-md text-base md:text-lg font-semibold w-full"
-              onClick={handleNext}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              Save and Continue
-            </Button>
+            <div className="pt-6">
+              <Button
+                type="button"
+                className="bg-destructive text-white border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand transition-transform duration-200 shadow-md text-base md:text-lg font-semibold"
+                onClick={handleNext}
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Save and Continue
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
