@@ -92,15 +92,6 @@ export default function UserConfig() {
           </h1>
         </div>
 
-        {/* Info/tip box */}
-        <div className="mb-12 flex items-center bg-muted border-l-4 border-blue-600 p-4 rounded-lg shadow-md">
-          <Info className="h-6 w-6 text-blue-600 mr-3" />
-          <span className="text-foreground text-base">
-            Add this script to your website to provide user context to all your
-            agents. You can customize the keys as needed.
-          </span>
-        </div>
-
         <motion.div variants={cardVariants}>
           <div className="relative mb-12">
             <div className="absolute inset-0 bg-foreground rounded-lg translate-x-1 translate-y-1"></div>
