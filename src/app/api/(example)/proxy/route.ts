@@ -52,6 +52,11 @@ export async function GET(request: NextRequest) {
     // Widget configuration and injection scripts
     const widgetInjection = `
     <!-- BlizzardBerry Widget Injection -->
+    <script id="blizzardberry-debug" type="text/javascript">
+        console.log('BlizzardBerry proxy: Starting widget injection for:', window.location.href);
+        console.log('BlizzardBerry proxy: Base URL:', '${baseUrl}');
+    </script>
+    
     <script id="blizzardberry-config" type="text/javascript">
         window.agentUserConfig = {
             userId: "proxy_user_" + Date.now(),
@@ -60,9 +65,12 @@ export async function GET(request: NextRequest) {
             userMetadata: {
                 name: "Proxy User",
                 email: "proxy@example.com",
-                company: "Proxy Test"
+                company: "Proxy Test",
+                originalUrl: "${targetUrl}",
+                proxyMode: true
             }
         };
+        console.log('BlizzardBerry proxy config loaded:', window.agentUserConfig);
     </script>
 
     <script id="blizzardberry-actions" type="text/javascript">
@@ -72,7 +80,11 @@ export async function GET(request: NextRequest) {
                 return { 
                     status: 'success', 
                     message: 'Proxy test action executed successfully',
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    proxyInfo: {
+                        originalUrl: '${targetUrl}',
+                        proxyUrl: window.location.href
+                    }
                 };
             },
             
@@ -82,7 +94,23 @@ export async function GET(request: NextRequest) {
                     data: {
                         title: document.title,
                         url: window.location.href,
-                        domain: window.location.hostname
+                        domain: window.location.hostname,
+                        originalUrl: '${targetUrl}',
+                        userAgent: navigator.userAgent
+                    }
+                };
+            },
+            
+            debugProxy: async (userConfig) => {
+                return {
+                    status: 'success',
+                    data: {
+                        proxyMode: true,
+                        originalUrl: '${targetUrl}',
+                        currentUrl: window.location.href,
+                        agentScript: '${baseUrl}/agent/agent.js',
+                        userConfig: userConfig,
+                        timestamp: new Date().toISOString()
                     }
                 };
             }
@@ -95,7 +123,13 @@ export async function GET(request: NextRequest) {
         src="${baseUrl}/agent/agent.js"
         type="text/javascript"
         data-agent-id="f452cd58-23aa-4a6c-87d0-e68fb7384c73"
+        onload="console.log('BlizzardBerry widget script loaded successfully')"
+        onerror="console.error('BlizzardBerry widget script failed to load')"
     ></script>
+    
+    <script id="blizzardberry-proxy-ready" type="text/javascript">
+        console.log('BlizzardBerry proxy: Widget injection complete');
+    </script>
     `;
 
     // Inject the widget scripts before closing </body> tag
@@ -133,6 +167,8 @@ export async function GET(request: NextRequest) {
         'Content-Type': 'text/html; charset=utf-8',
         'Cache-Control': 'no-cache',
         'X-Frame-Options': 'SAMEORIGIN',
+        // Remove restrictive headers that might block widget loading
+        'Content-Security-Policy': 'default-src * \'unsafe-inline\' \'unsafe-eval\' data: blob:; script-src * \'unsafe-inline\' \'unsafe-eval\'; style-src * \'unsafe-inline\';',
       },
     });
   } catch (error) {
