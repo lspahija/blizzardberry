@@ -281,7 +281,7 @@ export default function NewAgentPage() {
                     </div>
                     <div>
                       <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
-                        <Info className="h-4 w-4 text-accent" />
+                        <Info className="h-4 w-4 text-blue-600" />
                         Installation Instructions
                       </Label>
                       <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-6">

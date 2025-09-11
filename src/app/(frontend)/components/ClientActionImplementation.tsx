@@ -77,10 +77,9 @@ export default function ClientActionImplementation({
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
       <div
-        className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 p-3 md:p-4 rounded-lg shadow-md"
-        style={{ borderLeftColor: 'var(--color-accent)' }}
+        className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 border-blue-600 p-3 md:p-4 rounded-lg shadow-md"
       >
-        <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-accent mr-2 md:mr-3 mt-1 md:mt-0 flex-shrink-0" />
+        <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-blue-600 mr-2 md:mr-3 mt-1 md:mt-0 flex-shrink-0" />
         <span className="text-foreground text-sm md:text-base">
           Your client action has been created successfully! Now you need to
           implement the function in your application.
