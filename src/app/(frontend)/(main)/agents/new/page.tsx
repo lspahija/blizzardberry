@@ -330,14 +330,14 @@ export default function NewAgentPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button
                           onClick={() => router.push(`/agents/${agentId}/actions/new`)}
-                          className="flex items-start gap-3 p-3 bg-muted/30 hover:bg-muted/50 rounded-lg border border-border hover:border-brand/50 transition-all duration-200 cursor-pointer group"
+                          className="flex items-start gap-3 p-4 bg-card hover:bg-muted/50 rounded-lg border-2 border-border hover:border-brand transition-all duration-200 cursor-pointer group"
                         >
-                          <Zap className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                          <Zap className="h-5 w-5 text-brand mt-0.5 flex-shrink-0 group-hover:scale-105 transition-transform" />
                           <div className="text-left">
-                            <p className="font-semibold text-foreground text-sm mb-1 group-hover:text-brand transition-colors">
+                            <p className="font-semibold text-foreground text-base mb-1 group-hover:text-brand transition-colors">
                               Actions
                             </p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-sm text-muted-foreground">
                               Create custom actions your agent can perform, like
                               form submissions or API calls.
                             </p>
@@ -345,14 +345,14 @@ export default function NewAgentPage() {
                         </button>
                         <button
                           onClick={() => router.push(`/agents/${agentId}/documents/new`)}
-                          className="flex items-start gap-3 p-3 bg-muted/30 hover:bg-muted/50 rounded-lg border border-border hover:border-brand/50 transition-all duration-200 cursor-pointer group"
+                          className="flex items-start gap-3 p-4 bg-card hover:bg-muted/50 rounded-lg border-2 border-border hover:border-brand transition-all duration-200 cursor-pointer group"
                         >
-                          <FileText className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                          <FileText className="h-5 w-5 text-brand mt-0.5 flex-shrink-0 group-hover:scale-105 transition-transform" />
                           <div className="text-left">
-                            <p className="font-semibold text-foreground text-sm mb-1 group-hover:text-brand transition-colors">
+                            <p className="font-semibold text-foreground text-base mb-1 group-hover:text-brand transition-colors">
                               Documents
                             </p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-sm text-muted-foreground">
                               Add knowledge files to help your agent answer
                               questions and provide better support.
                             </p>
