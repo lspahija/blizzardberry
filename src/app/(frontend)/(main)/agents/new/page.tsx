@@ -310,6 +310,8 @@ export default function NewAgentPage() {
                           Need help? Visit our{' '}
                           <Link
                             href="/docs"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-destructive hover:underline"
                           >
                             documentation{' '}
