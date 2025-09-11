@@ -251,7 +251,7 @@ export default function Dashboard() {
                     className="border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl border-l-8 border-l-brand transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
                     onClick={() => handleNavigateToAgent(agent.id)}
                   >
-                    <CardHeader className="pb-2">
+                    <CardHeader className="pb-1">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2 min-w-0 flex-1">
                           <Bot className="h-5 w-5 text-brand flex-shrink-0" />
