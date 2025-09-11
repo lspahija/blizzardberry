@@ -549,11 +549,12 @@ export default function NewAgentPage() {
                       </div>
                     </div>
 
-                    <Button
-                      className="bg-brand text-primary-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand/90 transition-transform duration-200 shadow-md text-lg font-semibold w-full"
-                      onClick={onCreateAgent}
-                      disabled={creatingAgent}
-                    >
+                    <div className="flex justify-end">
+                      <Button
+                        className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-6 py-2 flex items-center gap-2"
+                        onClick={onCreateAgent}
+                        disabled={creatingAgent}
+                      >
                       {creatingAgent ? (
                         <>
                           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -565,7 +566,8 @@ export default function NewAgentPage() {
                           Create Agent
                         </>
                       )}
-                    </Button>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
