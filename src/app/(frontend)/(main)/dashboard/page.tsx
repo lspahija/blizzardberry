@@ -6,8 +6,6 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
 import { Loader2, PlusCircle, Trash2, Bot, Globe, Settings, Clock } from 'lucide-react';
@@ -234,7 +232,6 @@ export default function Dashboard() {
             <div className="space-y-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
-                  <Bot className="h-6 w-6 sm:h-7 sm:w-7 text-brand" />
                   <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                     Your Agents
                   </h2>
@@ -250,43 +247,20 @@ export default function Dashboard() {
                     key={agent.id}
                     className="border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl border-l-8 border-l-brand transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
                     onClick={() => handleNavigateToAgent(agent.id)}
-                  >
-                    <CardHeader className="pb-1">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2 min-w-0 flex-1">
-                          <CardTitle className="text-lg font-bold text-foreground group-hover:text-brand transition-colors">
-                            {agent.name}
-                          </CardTitle>
-                        </div>
-                        {navigatingToAgentId === agent.id ? (
-                          <Loader2 className="h-5 w-5 animate-spin text-brand flex-shrink-0" />
-                        ) : (
-                          <div className="flex gap-2">
-                            <Button
-                              variant="destructive"
-                              size="icon"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                handleOpenDeleteDialog(agent.id);
-                              }}
-                              className="rounded-full p-2 hover:bg-destructive/80 transition-all duration-200 hover:scale-110"
-                              title="Delete Agent"
-                              disabled={deletingAgentId === agent.id}
-                            >
-                              {deletingAgentId === agent.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <Trash2 className="h-4 w-4" />
-                              )}
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-0 -mt-1">
-                      <div className="bg-muted/30 rounded-lg p-4 border border-border">
+                  >                    
+                    <CardContent className="pt-4 pb-0">
+                      <div className="bg-muted/30 rounded-lg p-3 border border-border">
                         <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <Bot className="h-4 w-4 text-brand flex-shrink-0" />
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs text-muted-foreground font-medium mb-1">Name</p>
+                              <p className="text-sm text-foreground font-semibold group-hover:text-brand transition-colors">
+                                {agent.name}
+                              </p>
+                            </div>
+                          </div>
+                          
                           <div className="flex items-center gap-3">
                             <Globe className="h-4 w-4 text-brand flex-shrink-0" />
                             <div className="min-w-0 flex-1">
@@ -319,13 +293,33 @@ export default function Dashboard() {
                         </div>
                       </div>
                       
-                      <div className="flex justify-between items-center pt-4">
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span>Active</span>
-                        </div>
+                      <div className="flex justify-between items-center pt-4 pb-1">
                         <div className="text-xs text-muted-foreground group-hover:text-brand transition-colors">
                           Click to manage →
+                        </div>
+                        <div className="flex items-center">
+                          {navigatingToAgentId === agent.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin text-brand" />
+                          ) : (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleOpenDeleteDialog(agent.id);
+                              }}
+                              className="h-6 w-6 rounded-full hover:bg-destructive/20 hover:text-destructive transition-all duration-200"
+                              title="Delete Agent"
+                              disabled={deletingAgentId === agent.id}
+                            >
+                              {deletingAgentId === agent.id ? (
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-3 w-3" />
+                              )}
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </CardContent>
