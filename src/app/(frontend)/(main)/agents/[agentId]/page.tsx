@@ -99,7 +99,6 @@ function AgentDetails({
   const [copied, setCopied] = useState(false);
   const { selectedFramework, setSelectedFramework } = useFramework();
 
-  const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState('');
   const [editWebsiteDomain, setEditWebsiteDomain] = useState('');
   const [editModel, setEditModel] = useState<AgentModel>(
@@ -237,20 +236,6 @@ function AgentDetails({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const startEditing = () => {
-    setIsEditing(true);
-  };
-
-  const cancelEditing = () => {
-    setIsEditing(false);
-    // Reset to original values
-    if (agent) {
-      setEditName(agent.name);
-      setEditWebsiteDomain(agent.websiteDomain);
-      setEditModel(agent.model as AgentModel);
-    }
-  };
-
   const saveChanges = async () => {
     if (!agent) return;
 
@@ -284,7 +269,6 @@ function AgentDetails({
 
       await fetchPrompts();
 
-      setIsEditing(false);
       toast.success('Agent updated successfully!');
     } catch (error) {
       console.error('Error updating agent:', error);
@@ -365,106 +349,75 @@ function AgentDetails({
       animate="visible"
     >
       <div className="max-w-4xl mx-auto w-full">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
-            {isEditing ? (
-              <Input
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-transparent border-none p-0 focus:ring-0 focus:border-none"
-                placeholder="Agent Name"
-              />
-            ) : (
-              agent.name
-            )}
-          </h1>
-          {!isEditing && (
-            <div className="flex gap-3">
-              <Button
-                className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 shadow-md hover:bg-secondary/90"
-                onClick={() => setShowAgentCode(true)}
-                title="Show installation code for this agent"
-              >
-                <Code className="h-4 w-4" />
-                Embed Your Agent
-              </Button>
-              <Button
-                onClick={startEditing}
-                className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
-              >
-                <Edit className="h-4 w-4" />
-                Edit Agent
-              </Button>
-            </div>
-          )}
+        <div className="flex justify-end mb-6">
+          <Button
+            className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 shadow-md hover:bg-secondary/90"
+            onClick={() => setShowAgentCode(true)}
+            title="Show installation code for this agent"
+          >
+            <Code className="h-4 w-4" />
+            Embed Your Agent
+          </Button>
         </div>
         <Card
           className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8"
           style={{ borderLeftColor: 'var(--color-destructive)' }}
         >
-          <CardHeader className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Bot className="h-6 w-6 text-destructive" />
-              <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">
-                Agent Details
-              </CardTitle>
-            </div>
-            {isEditing && (
-              <div className="flex gap-2">
-                <Button
-                  onClick={saveChanges}
-                  disabled={isSaving}
-                  className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-4 py-2 flex items-center gap-2"
-                >
-                  {isSaving ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Save className="h-4 w-4" />
-                  )}
-                  Save
-                </Button>
-                <Button
-                  onClick={cancelEditing}
-                  disabled={isSaving}
-                  variant="outline"
-                  className="border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2"
-                >
-                  Cancel
-                </Button>
-              </div>
-            )}
+          <CardHeader className="pb-2 flex items-center justify-between">
+            <CardTitle className="text-xl sm:text-2xl font-bold text-foreground ml-6">
+              Agent Details
+            </CardTitle>
+            <Button
+              onClick={saveChanges}
+              disabled={isSaving}
+              className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-6 py-2 flex items-center gap-2"
+            >
+              {isSaving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Save className="h-4 w-4" />
+              )}
+              Save Changes
+            </Button>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
-                <Globe className="h-4 w-4 text-destructive" />
-                Domain:
+              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold mb-2">
+                <Bot className="h-4 w-4 text-destructive" />
+                Name:
               </Label>
-              {isEditing ? (
-                <Input
-                  value={editWebsiteDomain}
-                  onChange={(e) => setEditWebsiteDomain(e.target.value)}
-                  placeholder="example.com"
-                  className="mt-1 border-[2px] border-border"
-                />
-              ) : (
-                <p className="text-muted-foreground text-sm sm:text-base ml-6">
-                  {agent.websiteDomain}
-                </p>
-              )}
+              <Input
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Agent Name"
+                className="border-[2px] border-border ml-6"
+              />
             </div>
 
             <div>
-              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold mb-2">
+                <Globe className="h-4 w-4 text-destructive" />
+                Domain:
+              </Label>
+              <Input
+                value={editWebsiteDomain}
+                onChange={(e) => setEditWebsiteDomain(e.target.value)}
+                placeholder="example.com"
+                className="border-[2px] border-border ml-6"
+              />
+            </div>
+
+            <div>
+              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold mb-2">
                 <Settings className="h-4 w-4 text-destructive" />
                 Model:
               </Label>
-              {isEditing ? (
+              <div className="ml-6">
                 <Select
                   value={editModel}
                   onValueChange={(value) => setEditModel(value as AgentModel)}
                 >
-                  <SelectTrigger className="mt-1 border-[2px] border-border">
+                  <SelectTrigger className="border-[2px] border-border">
                     <SelectValue placeholder="Select a model" />
                   </SelectTrigger>
                   <SelectContent>
@@ -477,11 +430,7 @@ function AgentDetails({
                     )}
                   </SelectContent>
                 </Select>
-              ) : (
-                <p className="text-muted-foreground text-sm sm:text-base ml-6">
-                  {AGENT_MODELS[agent.model as AgentModel] || agent.model}
-                </p>
-              )}
+              </div>
             </div>
 
             <div>
@@ -494,88 +443,65 @@ function AgentDetails({
               </p>
             </div>
 
-            {isEditing && (
-              <div>
-                <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
-                  <MessageSquare className="h-4 w-4 text-brand" />
-                  Suggested Prompts (Optional)
-                </Label>
-                <p className="text-sm text-muted-foreground mt-1 ml-6">
-                  These are example prompts users can choose from or use as
-                  inspiration when interacting with your agent.
-                </p>
-                <div className="mt-4 ml-6 space-y-4">
-                  {editPrompts.map((prompt, index) => (
-                    <div key={index} className="flex gap-2 items-center">
-                      <div className="flex-1">
-                        <Textarea
-                          value={prompt}
-                          onChange={(e) => updatePrompt(index, e.target.value)}
-                          placeholder="Enter a prompt for your agent..."
-                          className="border-[2px] border-border resize-none"
-                          rows={3}
-                        />
-                      </div>
-                      {(editPrompts.length > 1 ||
-                        (index === 0 && prompt.trim())) && (
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          onClick={() => {
-                            if (index === 0 && editPrompts.length === 1) {
-                              updatePrompt(0, '');
-                            } else {
-                              removePrompt(index);
-                            }
-                          }}
-                          className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
-                          tabIndex={-1}
-                        >
-                          <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                        </Button>
-                      )}
+            <div>
+              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                <MessageSquare className="h-4 w-4 text-brand" />
+                Example Prompts (Optional)
+              </Label>
+              <p className="text-sm text-muted-foreground mt-1 ml-6">
+                Add a few example questions to help guide your users and
+                showcase your agent's capabilities.
+              </p>
+              <div className="mt-4 ml-6 space-y-4">
+                {editPrompts.map((prompt, index) => (
+                  <div key={index} className="flex gap-2 items-center">
+                    <div className="flex-1">
+                      <Textarea
+                        value={prompt}
+                        onChange={(e) => updatePrompt(index, e.target.value)}
+                        placeholder="Show me your pricing"
+                        className="border-[2px] border-border resize-none"
+                        rows={3}
+                      />
                     </div>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={addPrompt}
-                    className="border-[2px] border-border hover:bg-secondary"
-                    disabled={editPrompts.length >= 4}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Another Prompt
-                  </Button>
-                  {editPrompts.length >= 4 && (
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Maximum 4 prompts allowed.
-                    </p>
-                  )}
-                </div>
+                    {(editPrompts.length > 1 ||
+                      (index === 0 && prompt.trim())) && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => {
+                          if (index === 0 && editPrompts.length === 1) {
+                            updatePrompt(0, '');
+                          } else {
+                            removePrompt(index);
+                          }
+                        }}
+                        className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
+                        tabIndex={-1}
+                      >
+                        <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addPrompt}
+                  className="border-[2px] border-border hover:bg-secondary"
+                  disabled={editPrompts.length >= 4}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Another Prompt
+                </Button>
+                {editPrompts.length >= 4 && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Maximum 4 prompts allowed.
+                  </p>
+                )}
               </div>
-            )}
-
-            {!isEditing && prompts.length > 0 && (
-              <div className="mt-4">
-                <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
-                  <MessageSquare className="h-4 w-4 text-brand" />
-                  Suggested Prompts:
-                </Label>
-                <div className="space-y-2 mt-2">
-                  {prompts.map((prompt, idx) => (
-                    <div
-                      key={prompt.id}
-                      className="p-2 bg-muted/30 rounded-md border border-border/50 ml-6"
-                    >
-                      <p className="text-xs text-foreground leading-relaxed whitespace-pre-wrap">
-                        {prompt.content}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            </div>
           </CardContent>
         </Card>
 
