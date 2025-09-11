@@ -53,11 +53,13 @@ export default function UserConfig() {
     user_metadata: {
       name: 'John Doe',
       email: 'user@example.com',
-      company: 'Example Company',
+      company: '{{DYNAMIC_COMPANY_VALUE}}',
     },
   };
 
-  const configExample = getAgentConfigScript(selectedFramework, configObj);
+  // Get the base script and replace the placeholder with actual function call
+  const baseScript = getAgentConfigScript(selectedFramework, configObj);
+  const configExample = baseScript.replace('"{{DYNAMIC_COMPANY_VALUE}}"', 'fetchDynamically()');
 
   const handleCopy = () => {
     navigator.clipboard.writeText(configExample);
