@@ -254,7 +254,6 @@ export default function Dashboard() {
                     <CardHeader className="pb-1">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2 min-w-0 flex-1">
-                          <Bot className="h-5 w-5 text-brand flex-shrink-0" />
                           <CardTitle className="text-lg font-bold text-foreground group-hover:text-brand transition-colors">
                             {agent.name}
                           </CardTitle>
