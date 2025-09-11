@@ -1,18 +1,18 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
 export default function ProxyPage() {
-  const [url, setUrl] = useState('')
-  const [proxyUrl, setProxyUrl] = useState('')
+  const [url, setUrl] = useState('');
+  const [proxyUrl, setProxyUrl] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (url) {
-      const encodedUrl = encodeURIComponent(url)
-      setProxyUrl(`/api/proxy?url=${encodedUrl}`)
+      const encodedUrl = encodeURIComponent(url);
+      setProxyUrl(`/api/proxy?url=${encodedUrl}`);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -22,12 +22,16 @@ export default function ProxyPage() {
             Website Proxy with BlizzardBerry Widget
           </h1>
           <p className="text-gray-600 mb-6">
-            Enter any website URL below to view it with the BlizzardBerry widget installed.
+            Enter any website URL below to view it with the BlizzardBerry widget
+            installed.
           </p>
-          
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="url"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Website URL
               </label>
               <input
@@ -35,7 +39,7 @@ export default function ProxyPage() {
                 id="url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                placeholder="https://example.com"
+                placeholder="https://stripe.com"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               />
@@ -70,5 +74,5 @@ export default function ProxyPage() {
         )}
       </div>
     </div>
-  )
+  );
 }
