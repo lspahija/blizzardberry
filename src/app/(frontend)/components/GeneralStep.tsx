@@ -78,12 +78,6 @@ export default function GeneralStep({
           className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8"
           style={{ borderLeftColor: 'var(--color-destructive)' }}
         >
-          <CardHeader className="flex items-center space-x-2 p-4 md:p-6">
-            <Settings className="h-5 w-5 md:h-7 md:w-7 text-destructive" />
-            <CardTitle className="text-xl md:text-2xl font-semibold text-foreground">
-              General
-            </CardTitle>
-          </CardHeader>
           <CardContent className="space-y-6 md:space-y-8 p-4 md:p-6">
             <div>
               <Label
