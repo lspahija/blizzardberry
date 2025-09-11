@@ -59,7 +59,10 @@ export default function UserConfig() {
 
   // Get the base script and replace the placeholder with actual function call
   const baseScript = getAgentConfigScript(selectedFramework, configObj);
-  const configExample = baseScript.replace('"{{DYNAMIC_COMPANY_VALUE}}"', 'fetchDynamically()');
+  const configExample = baseScript.replace(
+    '"{{DYNAMIC_COMPANY_VALUE}}"',
+    'fetchDynamically()'
+  );
 
   const handleCopy = () => {
     navigator.clipboard.writeText(configExample);
@@ -105,16 +108,15 @@ export default function UserConfig() {
               <CardHeader className="flex items-center space-x-2">
                 <UserCog className="h-7 w-7 text-destructive" />
                 <CardTitle className="text-2xl font-semibold text-foreground">
-                  Global User Configuration
+                  User Configuration Script
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-8">
                 <div>
                   <p className="text-muted-foreground mb-4 text-base">
-                    This configuration will be accessible to all your agents.
-                    Add this script inside your website's{' '}
-                    <code>&lt;body&gt;</code> tag to provide user context to
-                    your agents.
+                    Embed this script in your <code>&lt;body&gt;</code> to give
+                    your agents context about your users. You can customize the
+                    object with any user data you wish to share.
                   </p>
                   <div className="mb-6">
                     <Label className="text-foreground text-lg font-semibold flex items-center gap-2">
