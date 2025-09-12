@@ -61,13 +61,66 @@ export async function GET(request: NextRequest) {
     const host = request.headers.get('host');
     const protocol = request.headers.get('x-forwarded-proto') || 'http';
     const baseUrl = `${protocol}://${host}`;
+    const originalDomain = url.origin;
 
-    // Widget configuration and injection scripts
+    // FIRST: Inject widget before any URL rewriting to ensure it's always present
     const widgetInjection = `
     <!-- BlizzardBerry Widget Injection -->
     <script id="blizzardberry-debug" type="text/javascript">
         console.log('BlizzardBerry proxy: Starting widget injection for:', window.location.href);
         console.log('BlizzardBerry proxy: Base URL:', '${baseUrl}');
+    </script>
+    
+    <script id="blizzardberry-navigation-interceptor" type="text/javascript">
+        // Intercept navigation to keep it within the proxy
+        (function() {
+            const proxyBase = '${baseUrl}/api/proxy?url=';
+            const originalDomain = '${originalDomain}';
+            
+            // Intercept click events on links
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a');
+                if (link) {
+                    const href = link.getAttribute('href');
+                    console.log('Link clicked:', href, 'Current domain:', originalDomain);
+                    
+                    if (href && !href.startsWith('${baseUrl}/api/proxy') && 
+                        !href.startsWith('mailto:') && !href.startsWith('tel:') && 
+                        !href.startsWith('javascript:') && !href.startsWith('#') &&
+                        href !== '') {
+                        
+                        let fullUrl;
+                        if (href.startsWith('http')) {
+                            // Already absolute URL - only intercept same domain
+                            if (href.startsWith(originalDomain)) {
+                                fullUrl = href;
+                            } else {
+                                console.log('External link, allowing normal navigation');
+                                return; // External link, let it navigate normally
+                            }
+                        } else if (href.startsWith('/')) {
+                            fullUrl = originalDomain + href;
+                        } else if (!href.startsWith('#')) {
+                            // Relative URL
+                            const currentPath = window.location.pathname;
+                            const basePath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+                            fullUrl = originalDomain + basePath + href;
+                        } else {
+                            return; // Hash link, let it work normally
+                        }
+                        
+                        console.log('Intercepting navigation to:', fullUrl);
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const proxyUrl = proxyBase + encodeURIComponent(fullUrl);
+                        console.log('Redirecting to proxy URL:', proxyUrl);
+                        window.location.href = proxyUrl;
+                    }
+                }
+            }, true);
+            
+            console.log('BlizzardBerry navigation interceptor loaded');
+        })();
     </script>
     
     <script id="blizzardberry-config" type="text/javascript">
@@ -146,22 +199,30 @@ export async function GET(request: NextRequest) {
     `;
 
     // Inject the widget scripts before closing </body> tag
+    console.log('Injecting widget for URL:', targetUrl);
     if (html.includes('</body>')) {
       html = html.replace('</body>', `${widgetInjection}\n</body>`);
+      console.log('Widget injected before </body> tag');
     } else if (html.includes('</html>')) {
       // Fallback: inject before closing </html> tag if no </body>
       html = html.replace('</html>', `${widgetInjection}\n</html>`);
+      console.log('Widget injected before </html> tag');
     } else {
       // Last resort: append to end of content
       html += widgetInjection;
+      console.log('Widget appended to end of content');
     }
 
     // Enhanced URL rewriting to proxy all resources
-    const originalDomain = url.origin;
     const proxyResourceUrl = `${baseUrl}/api/proxy-resource?url=`;
     
     // Rewrite all URLs to go through proxy
     html = html
+      // Fix absolute URLs to the same domain
+      .replace(
+        new RegExp(`href=["']${originalDomain.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^"']*)["']`, 'gi'),
+        (match, path) => `href="${baseUrl}/api/proxy?url=${encodeURIComponent(originalDomain + path)}"`
+      )
       // Fix relative and absolute links to proxy through main proxy
       .replace(
         /href=["'](?!https?:\/\/|\/\/|#|mailto:|tel:|javascript:|data:)([^"']+)["']/gi,
