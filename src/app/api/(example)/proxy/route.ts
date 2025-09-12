@@ -15,10 +15,19 @@ export async function GET(request: NextRequest) {
       return new NextResponse('Invalid URL protocol', { status: 400 });
     }
 
-    // Fetch the target website
+    // Enhanced fetch with better headers for Google
     const response = await fetch(targetUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; BlizzardBerry-Proxy/1.0)',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Upgrade-Insecure-Requests': '1',
       },
     });
 
@@ -30,14 +39,18 @@ export async function GET(request: NextRequest) {
 
     const contentType = response.headers.get('content-type') || '';
 
-    // Only process HTML content
+    // For non-HTML content, create a proxy URL
     if (!contentType.includes('text/html')) {
-      // For non-HTML content, just proxy it through
+      const host = request.headers.get('host');
+      const protocol = request.headers.get('x-forwarded-proto') || 'http';
+      const proxyUrl = `${protocol}://${host}/api/proxy-resource?url=${encodeURIComponent(targetUrl)}`;
+      
       return new NextResponse(response.body, {
         status: response.status,
         headers: {
           'Content-Type': contentType,
-          'Cache-Control': 'no-cache',
+          'Cache-Control': 'public, max-age=3600',
+          'Access-Control-Allow-Origin': '*',
         },
       });
     }
@@ -143,22 +156,51 @@ export async function GET(request: NextRequest) {
       html += widgetInjection;
     }
 
-    // Fix relative URLs to point to the original domain
+    // Enhanced URL rewriting to proxy all resources
     const originalDomain = url.origin;
-
-    // Fix relative links, images, scripts, and stylesheets
+    const proxyResourceUrl = `${baseUrl}/api/proxy-resource?url=`;
+    
+    // Rewrite all URLs to go through proxy
     html = html
+      // Fix relative and absolute links to proxy through main proxy
       .replace(
-        /href="(?!https?:\/\/|\/\/|#)([^"]+)"/g,
-        `href="${originalDomain}/$1"`
+        /href=["'](?!https?:\/\/|\/\/|#|mailto:|tel:|javascript:|data:)([^"']+)["']/gi,
+        (match, url) => {
+          const fullUrl = url.startsWith('/') ? `${originalDomain}${url}` : `${originalDomain}/${url}`;
+          return `href="${baseUrl}/api/proxy?url=${encodeURIComponent(fullUrl)}"`;
+        }
       )
+      // Fix images, scripts, CSS through resource proxy
       .replace(
-        /src="(?!https?:\/\/|\/\/|data:)([^"]+)"/g,
-        `src="${originalDomain}/$1"`
+        /src=["'](?!https?:\/\/|\/\/|data:|javascript:)([^"']+)["']/gi,
+        (match, url) => {
+          const fullUrl = url.startsWith('/') ? `${originalDomain}${url}` : `${originalDomain}/${url}`;
+          return `src="${proxyResourceUrl}${encodeURIComponent(fullUrl)}"`;
+        }
       )
+      // Fix CSS imports
       .replace(
-        /action="(?!https?:\/\/|\/\/|#)([^"]+)"/g,
-        `action="${originalDomain}/$1"`
+        /@import\s+["'](?!https?:\/\/)([^"']+)["']/gi,
+        (match, url) => {
+          const fullUrl = url.startsWith('/') ? `${originalDomain}${url}` : `${originalDomain}/${url}`;
+          return `@import "${proxyResourceUrl}${encodeURIComponent(fullUrl)}"`;
+        }
+      )
+      // Fix CSS url() references
+      .replace(
+        /url\(["']?(?!https?:\/\/|data:|#)([^)"']+)["']?\)/gi,
+        (match, url) => {
+          const fullUrl = url.startsWith('/') ? `${originalDomain}${url}` : `${originalDomain}/${url}`;
+          return `url("${proxyResourceUrl}${encodeURIComponent(fullUrl)}")`;
+        }
+      )
+      // Fix form actions
+      .replace(
+        /action=["'](?!https?:\/\/|\/\/|#)([^"']+)["']/gi,
+        (match, url) => {
+          const fullUrl = url.startsWith('/') ? `${originalDomain}${url}` : `${originalDomain}/${url}`;
+          return `action="${baseUrl}/api/proxy?url=${encodeURIComponent(fullUrl)}"`;
+        }
       );
 
     return new NextResponse(html, {
