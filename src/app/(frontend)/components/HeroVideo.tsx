@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';
 import { useState } from 'react';
+import { useVideoIntersection } from '@/app/(frontend)/hooks/useVideoIntersection';
 
 interface HeroVideoProps {
   videoSrc?: string;
@@ -16,6 +17,7 @@ export default function HeroVideo({
   className = "" 
 }: HeroVideoProps) {
   const [videoRef, setVideoRef] = useState<HTMLVideoElement | null>(null);
+  const { containerRef } = useVideoIntersection(videoRef);
 
   if (!videoSrc) {
     // Placeholder when no video is provided
@@ -42,6 +44,7 @@ export default function HeroVideo({
 
   return (
     <motion.div
+      ref={containerRef}
       className={`relative aspect-[1468/1080] rounded-2xl border-[3px] border-border shadow-2xl overflow-hidden ${className}`}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -53,7 +56,6 @@ export default function HeroVideo({
         poster={posterSrc}
         playsInline
         preload="metadata"
-        autoPlay
         muted
         loop
       >
