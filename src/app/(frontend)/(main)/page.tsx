@@ -21,12 +21,15 @@ import {
   Play,
   Globe,
 } from 'lucide-react';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import posthog from 'posthog-js';
 import HeroVideo from '@/app/(frontend)/components/HeroVideo';
+import { useVideoIntersection } from '@/app/(frontend)/hooks/useVideoIntersection';
 
 export default function LandingPage() {
   const [selectedVideo, setSelectedVideo] = useState('order-cancellation');
+  const [demoVideoRef, setDemoVideoRef] = useState<HTMLVideoElement | null>(null);
+  const { containerRef: demoVideoContainerRef } = useVideoIntersection(demoVideoRef);
 
   const demoVideos = [
     {
@@ -391,13 +394,16 @@ export default function LandingPage() {
               {/* Video Player */}
               <div className="lg:col-span-8">
                 <div className="w-full">
-                  <div className="relative aspect-[1468/1080] rounded-2xl border-[3px] border-border shadow-2xl overflow-hidden">
+                  <div 
+                    ref={demoVideoContainerRef}
+                    className="relative aspect-[1468/1080] rounded-2xl border-[3px] border-border shadow-2xl overflow-hidden"
+                  >
                     <video
                       key={selectedVideo}
+                      ref={setDemoVideoRef}
                       className="w-full h-full object-cover object-center"
                       playsInline
                       preload="metadata"
-                      autoPlay
                       muted
                       onEnded={handleVideoEnded}
                     >
