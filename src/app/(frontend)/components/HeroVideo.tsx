@@ -17,7 +17,11 @@ export default function HeroVideo({
   className = "" 
 }: HeroVideoProps) {
   const [videoRef, setVideoRef] = useState<HTMLVideoElement | null>(null);
-  const { containerRef } = useVideoIntersection(videoRef);
+  // Hero videos need lower threshold since they're at top of page
+  const { containerRef } = useVideoIntersection(videoRef, { 
+    threshold: 0.3, // Only need 30% visible for hero videos
+    rootMargin: '0px' // No margin buffer for hero videos
+  });
 
   if (!videoSrc) {
     // Placeholder when no video is provided
