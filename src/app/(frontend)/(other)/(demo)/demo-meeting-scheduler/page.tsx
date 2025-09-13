@@ -402,7 +402,7 @@ export default function MeetingSchedulerVideo() {
       const isTargetDay = day === nextWeek.getDate();
       const isAvailableDay = availableDays.includes(day);
       const dayClasses = isToday
-        ? 'text-gray-900 font-semibold underline underline-offset-1' // Today's date (10th) - just underlined
+        ? 'text-gray-500 font-semibold underline underline-offset-1' // Today's date (10th) - light gray with underline
         : isAvailableDay 
           ? 'bg-brand/10 border border-brand/20 font-semibold text-brand hover:bg-brand/15' // All available days same styling
           : 'text-gray-400'; // Unavailable days
