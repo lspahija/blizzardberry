@@ -895,10 +895,10 @@ export default function MusicStreamRefundVideo() {
 
         {/* Brand text with modern styling */}
         <div id="finaleBrand" className="text-center mb-8 opacity-0">
-          <h1 className="text-7xl font-bold text-foreground mb-8 tracking-tight">
+          <h1 className="text-7xl font-bold text-foreground mb-16 tracking-tight">
             BlizzardBerry
           </h1>
-          <div className="h-2 w-48 bg-gradient-to-r from-[#F43F5E] to-[#1D4ED8] rounded-full mx-auto mb-9"></div>
+          <div className="h-2 w-48 bg-gradient-to-r from-[#F43F5E] to-[#1D4ED8] rounded-full mx-auto mb-20"></div>
           <div
             id="finaleTagline"
             className="text-xl text-muted-foreground font-normal opacity-0 tracking-wide"
