@@ -42,7 +42,7 @@ export async function POST(req: Request) {
 
     const holdIds = await createCreditHold(
       agent.created_by,
-      5000, // TODO: find a way to pick a sane upper bound
+      10, // TODO: find a way to pick a sane upper bound
       `chat-completion #${agentId}`,
       idempotencyKey
     );
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
         ...(await getToolsFromActions(agentId)),
         search_knowledge_base: createSearchKnowledgeBaseTool(agentId),
       },
-      stopWhen: stepCountIs(5)
+      stopWhen: stepCountIs(5),
     });
 
     // Handle token usage
@@ -70,13 +70,23 @@ export async function POST(req: Request) {
       );
     }
 
-    const toolCalls = result.steps?.flatMap(step => step.toolCalls || []) || []
-    const toolResults = result.steps?.flatMap(step => step.toolResults || []) || []
+    const toolCalls =
+      result.steps?.flatMap((step) => step.toolCalls || []) || [];
+    const toolResults =
+      result.steps?.flatMap((step) => step.toolResults || []) || [];
 
-    const hasSearchTool = toolCalls?.some(toolCall => toolCall.toolName === 'search_knowledge_base');
-    const hasOtherTools = toolCalls?.some(toolCall => toolCall.toolName !== 'search_knowledge_base');
+    const hasSearchTool = toolCalls?.some(
+      (toolCall) => toolCall.toolName === 'search_knowledge_base'
+    );
+    const hasOtherTools = toolCalls?.some(
+      (toolCall) => toolCall.toolName !== 'search_knowledge_base'
+    );
 
-    if (result.text && (toolCalls.length === 0 || hasSearchTool) && !hasOtherTools) {
+    if (
+      result.text &&
+      (toolCalls.length === 0 || hasSearchTool) &&
+      !hasOtherTools
+    ) {
       await addMessage(usedChatId, 'assistant', result.text);
     }
 
@@ -85,7 +95,7 @@ export async function POST(req: Request) {
       toolCalls: toolCalls,
       toolResults: toolResults,
       usage: result.usage,
-      chatId: usedChatId
+      chatId: usedChatId,
     });
   } catch (error) {
     console.error('Error in chat API:', error);
