@@ -133,10 +133,3 @@ pnpm test
 
 ## UI Components
 This project uses [shadcn/ui](https://ui.shadcn.com/) components
-
-## If You Want to Use a Local LLM Model From LM Studio
-1. Install [LM Studio](https://lmstudio.ai/).
-2. Download the `qwen3-8b` model in LM Studio.
-3. Enable **Developer Mode** in LM Studio.
-4. Start the LM Studio server to serve the model at `http://localhost:1234/v1`.
-5. Set the `MODEL_PROVIDER` environment variable to `lmstudio`.

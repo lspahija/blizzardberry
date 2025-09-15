@@ -13,12 +13,13 @@ export function createSearchKnowledgeBaseTool(agentId: string): Tool {
   return tool({
     description:
       'Search the knowledge base for information to answer user questions about the application',
-    parameters: z.object({
+    inputSchema: z.object({
       query: z
         .string()
         .describe('The search query to find relevant information'),
     }),
-    execute: async ({ query }) => {
+    execute: async (input, options) => {
+      const { query } = input;
       try {
         const groupedResults = await similaritySearch(query, 5, agentId);
 
@@ -66,9 +67,9 @@ export async function getToolsFromActions(agentId: string) {
 
     const executeFunction: (params: any) => Promise<any> =
       action.executionContext === ExecutionContext.SERVER
-        ? async (params) =>
+        ? async ( params ) =>
             substituteRequestModel(action.executionModel.request, params)
-        : async (params) => {
+        : async ( params ) => {
             const filteredParams = filterPlaceholderValues(params);
             return {
               functionName: action.executionModel.functionName,
@@ -78,7 +79,7 @@ export async function getToolsFromActions(agentId: string) {
 
     tools[actionName] = tool({
       description: action.description,
-      parameters: parameterSchema,
+      inputSchema: parameterSchema,
       execute: executeFunction,
     });
   }

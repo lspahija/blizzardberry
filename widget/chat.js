@@ -45,6 +45,7 @@ export async function processChatMessage(messageText) {
     role: 'user',
     parts: [{ type: 'text', text: messageText }],
   });
+  await persistMessage(state.messages[state.messages.length - 1]);
   const promptBar = document.getElementById('chatWidgetPromptBar');
   if (promptBar) promptBar.style.display = 'none';
 
@@ -68,7 +69,7 @@ export async function processChatMessage(messageText) {
           .filter((toolResult) => toolResult.toolName.startsWith('ACTION_'))
           .map((toolResult) =>
             executeAction({
-              ...toolResult.result,
+              ...toolResult.output,
               toolName: toolResult.toolName,
             })
           )
@@ -88,6 +89,7 @@ export async function processChatMessage(messageText) {
         role: 'assistant',
         parts: [{ type: 'text', text }],
       });
+      await persistMessage(state.messages[state.messages.length - 1]);
 
       // Check widget state in real-time to avoid race conditions
       syncWidgetState();

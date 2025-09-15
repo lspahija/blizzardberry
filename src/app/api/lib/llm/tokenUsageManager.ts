@@ -111,9 +111,9 @@ export function mapTokenUsageToCreditUsage(
 
   const MARKUP_PERCENTAGE = 2.5; // 150% markup
   const inputDollars =
-    (tokenUsage.promptTokens || 0) * costs.input * MARKUP_PERCENTAGE;
+    (tokenUsage.inputTokens || 0) * costs.input * MARKUP_PERCENTAGE;
   const outputDollars =
-    (tokenUsage.completionTokens || 0) * costs.output * MARKUP_PERCENTAGE;
+    (tokenUsage.outputTokens || 0) * costs.output * MARKUP_PERCENTAGE;
 
   // Convert dollars to credits and round to 4 decimal places
   return (
