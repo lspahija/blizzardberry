@@ -70,17 +70,20 @@ export async function POST(req: Request) {
       );
     }
 
-    const hasSearchTool = result.toolCalls?.some(toolCall => toolCall.toolName === 'search_knowledge_base');
-    const hasOtherTools = result.toolCalls?.some(toolCall => toolCall.toolName !== 'search_knowledge_base');
+    const toolCalls = result.steps?.flatMap(step => step.toolCalls || []) || []
+    const toolResults = result.steps?.flatMap(step => step.toolResults || []) || []
 
-    if (result.text && (!result.toolCalls || result.toolCalls.length === 0 || hasSearchTool) && !hasOtherTools) {
+    const hasSearchTool = toolCalls?.some(toolCall => toolCall.toolName === 'search_knowledge_base');
+    const hasOtherTools = toolCalls?.some(toolCall => toolCall.toolName !== 'search_knowledge_base');
+
+    if (result.text && (toolCalls.length === 0 || hasSearchTool) && !hasOtherTools) {
       await addMessage(usedChatId, 'assistant', result.text);
     }
 
     return Response.json({
       text: result.text,
-      toolCalls: result.toolCalls,
-      toolResults: result.toolResults,
+      toolCalls: toolCalls,
+      toolResults: toolResults,
       usage: result.usage,
       chatId: usedChatId
     });

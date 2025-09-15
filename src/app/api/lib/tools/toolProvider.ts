@@ -67,9 +67,9 @@ export async function getToolsFromActions(agentId: string) {
 
     const executeFunction: (params: any) => Promise<any> =
       action.executionContext === ExecutionContext.SERVER
-        ? async ({ params }) =>
+        ? async ( params ) =>
             substituteRequestModel(action.executionModel.request, params)
-        : async ({ params }) => {
+        : async ( params ) => {
             const filteredParams = filterPlaceholderValues(params);
             return {
               functionName: action.executionModel.functionName,

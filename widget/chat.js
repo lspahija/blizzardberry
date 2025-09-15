@@ -68,7 +68,7 @@ export async function processChatMessage(messageText) {
           .filter((toolResult) => toolResult.toolName.startsWith('ACTION_'))
           .map((toolResult) =>
             executeAction({
-              ...toolResult.result,
+              ...toolResult.output,
               toolName: toolResult.toolName,
             })
           )
