@@ -1,6 +1,16 @@
-import { callLLM } from '@/app/api/lib/llm/llmInvoker';
+import { generateText, stepCountIs, convertToModelMessages } from 'ai';
 import { createNewChat, addMessage } from '@/app/api/lib/store/chatStore';
 import { getAgent } from '@/app/api/lib/store/agentStore';
+import { openrouter } from '@openrouter/ai-sdk-provider';
+import {
+  createSearchKnowledgeBaseTool,
+  getToolsFromActions,
+} from '@/app/api/lib/tools/toolProvider';
+import {
+  createCreditHold,
+  recordUsedTokens,
+} from '@/app/api/lib/llm/tokenUsageManager';
+import { buildSystemMessage } from '@/app/api/lib/llm/systemMessageProvider';
 
 export async function POST(req: Request) {
   const { messages, userConfig, agentId, idempotencyKey, chatId } =
@@ -30,21 +40,50 @@ export async function POST(req: Request) {
       );
     }
 
-    const llmResponse = await callLLM(
-      messages,
-      userConfig,
-      agentId,
+    const holdIds = await createCreditHold(
+      agent.created_by,
+      5000, // TODO: find a way to pick a sane upper bound
+      `chat-completion #${agentId}`,
       idempotencyKey
     );
 
-    const hasSearchTool = llmResponse.toolCalls?.some(toolCall => toolCall.toolName === 'search_knowledge_base');
-    const hasOtherTools = llmResponse.toolCalls?.some(toolCall => toolCall.toolName !== 'search_knowledge_base');
-    
-    if (llmResponse.text && (!llmResponse.toolCalls || llmResponse.toolCalls.length === 0 || hasSearchTool) && !hasOtherTools) {
-      await addMessage(usedChatId, 'assistant', llmResponse.text);
+    const result = await generateText({
+      model: openrouter(agent.model),
+      system: buildSystemMessage(userConfig),
+      messages: convertToModelMessages(messages),
+      tools: {
+        ...(await getToolsFromActions(agentId)),
+        search_knowledge_base: createSearchKnowledgeBaseTool(agentId),
+      },
+      stopWhen: stepCountIs(5)
+    });
+
+    // Handle token usage
+    if (result.usage) {
+      await recordUsedTokens(
+        agent.created_by,
+        holdIds,
+        result.usage,
+        agent.model,
+        `chat-completion #${agentId}`,
+        idempotencyKey
+      );
     }
 
-    return Response.json({ ...llmResponse, chatId: usedChatId });
+    const hasSearchTool = result.toolCalls?.some(toolCall => toolCall.toolName === 'search_knowledge_base');
+    const hasOtherTools = result.toolCalls?.some(toolCall => toolCall.toolName !== 'search_knowledge_base');
+
+    if (result.text && (!result.toolCalls || result.toolCalls.length === 0 || hasSearchTool) && !hasOtherTools) {
+      await addMessage(usedChatId, 'assistant', result.text);
+    }
+
+    return Response.json({
+      text: result.text,
+      toolCalls: result.toolCalls,
+      toolResults: result.toolResults,
+      usage: result.usage,
+      chatId: usedChatId
+    });
   } catch (error) {
     console.error('Error in chat API:', error);
     return Response.json(
