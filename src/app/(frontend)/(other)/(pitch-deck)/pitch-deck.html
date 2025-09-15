@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlizzardBerry Pitch Deck</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background: white;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            position: relative;
+            color: white;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        /* Slide 1: Title - BlizzardBerry Landing Page Style */
+        .slide-1 {
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(225, 29, 72, 0.05) 50%, rgba(59, 130, 246, 0.05) 100%);
+            background-color: #F9FAFB;
+            position: relative;
+            overflow: hidden;
+            color: #111827;
+        }
+
+        .slide-1::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -5%;
+            width: 30%;
+            height: 120%;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 91 98' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m35.878 14.162 1.333-5.369 1.933 5.183c4.47 11.982 14.036 21.085 25.828 24.467l5.42 1.555-5.209 2.16c-11.332 4.697-19.806 14.826-22.888 27.237l-1.333 5.369-1.933-5.183C34.56 57.599 24.993 48.496 13.201 45.114l-5.42-1.555 5.21-2.16c11.331-4.697 19.805-14.826 22.887-27.237Z' fill='%23E11D48' fill-opacity='0.1'/%3E%3C/svg%3E") no-repeat;
+            transform: rotate(15deg);
+            opacity: 0.6;
+        }
+
+        .slide-1 .content {
+            position: absolute;
+            left: 8%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            max-width: 60%;
+        }
+
+        .slide-1 h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+            color: #111827;
+        }
+
+        .slide-1 .highlight {
+            color: #E11D48;
+        }
+        .slide-1 h1 {
+            color: #1F2937;
+        }
+        .slide-1 h1 .highlight {
+            color: #E11D48;
+        }
+
+        .slide-1 .subtitle {
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: #6B7280;
+            margin-bottom: 3rem;
+            line-height: 1.4;
+        }
+
+        .slide-1 .year {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+
+        .slide-1 .contact {
+            position: absolute;
+            bottom: 8%;
+            right: 8%;
+            font-size: 1.1rem;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .slide-1 .decorative-elements {
+            position: absolute;
+            top: 10%;
+            left: 5%;
+            width: 60px;
+            height: 60px;
+            opacity: 0.3;
+        }
+
+        /* Slide 2: The Mission */
+        .slide-2 {
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(225, 29, 72, 0.05) 50%, rgba(59, 130, 246, 0.05) 100%);
+            background-color: #F9FAFB;
+            position: relative;
+            overflow: hidden;
+            color: #111827;
+        }
+
+        .slide-2 .content {
+            padding: 4% 8% 15%;
+            height: 100vh;
+        }
+
+        .slide-2 h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+            text-align: center;
+        }
+
+        .slide-2 .subtitle {
+            font-size: 1.1rem;
+            color: #6B7280;
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .slide-2 .mission-overview {
+            background: white;
+            border: 3px solid #E5E7EB;
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 4px 4px 0px rgba(156, 163, 175, 0.8);
+            margin-bottom: 3rem;
+        }
+
+        .slide-2 .mission-overview h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #E11D48;
+        }
+
+        .slide-2 .mission-overview .description {
+            font-size: 0.95rem;
+            color: #374151;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .slide-2 .how-it-works {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .slide-2 .work-step {
+            background: white;
+            border: 3px solid #E5E7EB;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 4px 4px 0px rgba(156, 163, 175, 0.8);
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide-2 .work-step:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px rgba(156, 163, 175, 0.8);
+        }
+
+        .slide-2 .step-number {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: rgba(225, 29, 72, 0.1);
+            color: #E11D48;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+
+        .slide-2 .work-step h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #111827;
+            line-height: 1.3;
+        }
+
+        .slide-2 .work-step p {
+            font-size: 0.85rem;
+            color: #374151;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        /* Slide 3: Problem - Muted Background */
+        .slide-3 {
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(225, 29, 72, 0.05) 50%, rgba(59, 130, 246, 0.05) 100%);
+            background-color: #F9FAFB;
+            position: relative;
+            overflow: hidden;
+            color: #111827;
+        }
+
+        .slide-3 .content {
+            padding: 4% 8% 15%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-3 h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            color: #111827;
+            text-align: center;
+        }
+
+        .slide-3 .problems {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .slide-3 .problem {
+            background: white;
+            border: 3px solid #E5E7EB;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 4px 4px 0px rgba(156, 163, 175, 0.8);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .slide-3 .problem:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px rgba(156, 163, 175, 0.8);
+        }
+
+        .slide-3 .problem-number {
+            width: 3rem;
+            height: 3rem;
+            background: rgba(225, 29, 72, 0.1);
+            color: #E11D48;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 auto 1rem auto;
+        }
+
+        .slide-3 .problem h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .slide-3 .problem p {
+            font-size: 1rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .slide-3 .problem .stat {
+            color: #111827;
+            text-decoration: underline;
+        }
+
+        /* Slide 4: Solution */
+        .slide-4 {
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(225, 29, 72, 0.05) 50%, rgba(59, 130, 246, 0.05) 100%);
+            background-color: #F9FAFB;
+            position: relative;
+            overflow: hidden;
+            color: #111827;
+        }
+
+        .slide-4 .content {
+            padding: 4% 8% 15%;
+            height: 100vh;
+        }
+
+        .slide-4 h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #111827;
+            text-align: center;
+        }
+
+        .slide-4 .subtitle {
+            font-size: 1.3rem;
+            color: #6B7280;
+            margin-bottom: 3rem;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .slide-4 .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .slide-4 .benefit-card {
+            background: white;
+            border: 3px solid #E5E7EB;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 4px 4px 0px rgba(156, 163, 175, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .slide-4 .benefit-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px rgba(156, 163, 175, 0.8);
+        }
+
+        .slide-4 .benefit-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-4 .benefit-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .slide-4 .benefit-desc {
+            font-size: 1rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        /* Slide 5: Why This Works */
+        .slide-5 {
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(225, 29, 72, 0.05) 50%, rgba(59, 130, 246, 0.05) 100%);
+            background-color: #F9FAFB;
+            position: relative;
+            overflow: hidden;
+            color: #111827;
+        }
+
+        .slide-5 .content {
+            padding: 4% 8% 15%;
+            height: 100vh;
+        }
+
+        .slide-5 h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #111827;
+        }
+
+        .slide-5 .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .slide-5 .step {
+            background: white;
+            border: 3px solid #E5E7EB;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 1rem;
+            box-shadow: 4px 4px 0px rgba(156, 163, 175, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .slide-5 .step:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px rgba(156, 163, 175, 0.8);
+        }
+
+        .slide-5 .step-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-5 .step h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .slide-5 .step p {
+            font-size: 1rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        /* Slide 6: Ideal Client Profiles */
+        .slide-6 {
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(225, 29, 72, 0.05) 50%, rgba(59, 130, 246, 0.05) 100%);
+            background-color: #F9FAFB;
+            position: relative;
+            overflow: hidden;
+            color: #111827;
+        }
+
+        .slide-6 .content {
+            padding: 4% 8% 15%;
+            height: 100vh;
+        }
+
+        .slide-6 h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #111827;
+            text-align: center;
+        }
+
+        .slide-6 .subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            color: #6B7280;
+        }
+
+        .slide-6 .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .slide-6 .metric {
+            background: white;
+            border: 3px solid #E5E7EB;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 1rem;
+            box-shadow: 4px 4px 0px rgba(156, 163, 175, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .slide-6 .metric:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px rgba(156, 163, 175, 0.8);
+        }
+
+        .slide-6 .metric-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #E11D48;
+        }
+
+        .slide-6 .metric-label {
+            font-size: 1rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        /* Navigation Styles */
+        .navigation {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        @media print {
+            .navigation, .slide-counter { display: none; }
+            .slide { page-break-after: always; display: block !important; height: 100vh; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Slide 1: Title -->
+    <div class="slide slide-1 active">
+        <!-- Decorative star element -->
+        <div class="decorative-elements">
+            <svg viewBox="0 0 91 98" xmlns="http://www.w3.org/2000/svg">
+                <path d="m35.878 14.162 1.333-5.369 1.933 5.183c4.47 11.982 14.036 21.085 25.828 24.467l5.42 1.555-5.209 2.16c-11.332 4.697-19.806 14.826-22.888 27.237l-1.333 5.369-1.933-5.183C34.56 57.599 24.993 48.496 13.201 45.114l-5.42-1.555 5.21-2.16c11.331-4.697 19.805-14.826 22.887-27.237Z" fill="#E11D48" stroke="#111827" stroke-width="2"></path>
+            </svg>
+        </div>
+
+        <div class="content">
+            <div class="year">PITCH DECK 2025</div>
+            <h1>Blizzard<span class="highlight">Berry</span></h1>
+            <p class="subtitle">An AI-powered natural language interface for every web app.</p>
+        </div>
+
+        <div class="contact">support@blizzardberry.com</div>
+    </div>
+
+    <!-- Slide 2: The Mission -->
+    <div class="slide slide-2">
+        <div class="content">
+            <h1>Our Platform</h1>
+            <p class="subtitle">An AI-powered platform that adds an agentic natural language interface to any existing software</p>
+
+            <div class="mission-overview">
+                <h2>Turn Conversations Into Actions</h2>
+                <div class="description">
+                    BlizzardBerry transforms any existing software into an intelligent, conversational interface. Instead of navigating complex menus and forms, users simply tell the AI what they need. Our platform integrates seamlessly with your current systems through simple onboarding, enabling natural language control over all application functions instantly and reliably.
+                </div>
+            </div>
+
+            <div class="how-it-works">
+                <div class="work-step">
+                    <div class="step-number">1</div>
+                    <h3>User Speaks Naturally</h3>
+                    <p>"I need to change my flight from tomorrow to next Tuesday" or "Process a refund for order #1234"</p>
+                </div>
+
+                <div class="work-step">
+                    <div class="step-number">2</div>
+                    <h3>AI Understands Intent</h3>
+                    <p>AI agent analyzes the request, understands what the user wants to accomplish, and identifies the required actions</p>
+                </div>
+
+                <div class="work-step">
+                    <div class="step-number">3</div>
+                    <h3>Executes Tasks Directly</h3>
+                    <p>Fills forms, clicks buttons, queries databases, updates records, and completes workflows within your existing software</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Problem -->
+    <div class="slide slide-3">
+        <div class="content">
+            <h1>The Problem That Exists Today</h1>
+
+            <div class="problems">
+                <div class="problem">
+                    <div class="problem-number">1</div>
+                    <h3>Complex Navigation Kills Conversions</h3>
+                    <p>Your clients invested heavily in their software, but users still struggle with <span class="stat">complex menus, lengthy forms</span>, and finding the right feature. This leads to abandoned tasks and lost revenue.</p>
+                </div>
+
+                <div class="problem">
+                    <div class="problem-number">2</div>
+                    <h3>Support Teams Overwhelmed</h3>
+                    <p><span class="stat">High support ticket volume</span> for repetitive tasks that users should complete themselves: refunds, appointment scheduling, account changes, and form submissions.</p>
+                </div>
+
+                <div class="problem">
+                    <div class="problem-number">3</div>
+                    <h3>User Experience Friction</h3>
+                    <p>Users provide feedback about <span class="stat">"clunky" and "confusing"</span> interfaces, leading to low form completion rates, high cart abandonment, and reduced user engagement.</p>
+                </div>
+
+                <div class="problem">
+                    <div class="problem-number">4</div>
+                    <h3>Powerful Features Go Unused</h3>
+                    <p>Your clients' sophisticated software features remain undiscovered and underutilized because users can't easily find or access them through traditional interfaces.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Solution -->
+    <div class="slide slide-4">
+        <div class="content">
+            <h1>The Solution We Offer</h1>
+            <p class="subtitle">BlizzardBerry: An AI-powered platform that transforms any software into an expert-guided experience</p>
+
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="benefit-title">Client-Side Actions</div>
+                    <p class="benefit-desc">Filling forms, clicking buttons, navigating pages. Our AI performs tasks directly within the application on the user's behalf.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+                            <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                        </svg>
+                    </div>
+                    <div class="benefit-title">Server-Side Integration</div>
+                    <p class="benefit-desc">Securely connects to your client's backend to query databases, update records, and trigger internal processes.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                        </svg>
+                    </div>
+                    <div class="benefit-title">Direct Business Impact</div>
+                    <p class="benefit-desc">Increase conversions, reduce support costs, eliminate form abandonment. Turn conversation into measurable results.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="benefit-title">Natural Language UI</div>
+                    <p class="benefit-desc">A complete Natural Language UI that understands user intent and executes complex workflows through simple conversation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Why This Works -->
+    <div class="slide slide-5">
+        <div class="content">
+            <h1>Why This Works</h1>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <path d="m22 8-5 5 3 3Z"></path>
+                        </svg>
+                    </div>
+                    <h3>Expert-Guided Experience</h3>
+                    <p>The easiest way to get something done is to have an expert do it for you. Our AI becomes that always-available expert for every user.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            <path d="M13 8l2 2-2 2"></path>
+                        </svg>
+                    </div>
+                    <h3>Conversation Into Action</h3>
+                    <p>"Change my flight to next Tuesday" doesn't just show options. It initiates workflows, checks availability, and presents concrete choices to confirm.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+                            <path d="M12 2v10m0 0L8 8m4 4 4-4"></path>
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <path d="m15 21h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-4"></path>
+                        </svg>
+                    </div>
+                    <h3>Deep Action Capabilities</h3>
+                    <p>Goes beyond simple responses. Fills forms, clicks buttons, queries databases, updates records, and triggers processes both client and server side.</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+                            <path d="M14 9V5a3 3 0 0 0-6 0v4"></path>
+                            <rect x="2" y="9" width="20" height="11" rx="2" ry="2"></rect>
+                            <circle cx="12" cy="15" r="1"></circle>
+                        </svg>
+                    </div>
+                    <h3>Secure Integration</h3>
+                    <p>Protects your client's existing software investment. Enhances current systems without replacement, adding an intelligence layer to existing infrastructure.</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9,22 9,12 15,12 15,22"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Universal Accessibility</h3>
+                    <p>Every user already knows how to talk. No training, no learning curve, no abandoned flows. Natural language becomes the universal interface.</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+                            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Instant Business Results</h3>
+                    <p>Turn conversations into measurable outcomes. Increase conversions, reduce support costs, eliminate form abandonment through direct workflow execution.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Ideal Client Profiles -->
+    <div class="slide slide-6">
+        <div class="content">
+            <h1>Ideal Client Profiles</h1>
+            <p class="subtitle">Target clients with clear needs where BlizzardBerry delivers maximum impact</p>
+
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value">Customer Support</div>
+                    <div class="metric-label">Automate repetitive tasks, 24/7 service. Handle FAQs to refunds without human intervention.</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">E-commerce</div>
+                    <div class="metric-label">Reduce buying friction. Personal shopper that finds products, adds to cart, completes orders via conversation.</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">Lead Generation</div>
+                    <div class="metric-label">B2B sales automation. Engage visitors, qualify prospects, collect details, schedule demos automatically.</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">Form Automation</div>
+                    <div class="metric-label">Complex applications & registrations. Guide users through entire forms via conversation, reduce abandonment.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="previousSlide()">Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next</button>
+    </div>
+
+    <!-- Slide Counter -->
+    <div class="slide-counter">
+        <span id="currentSlide">1</span> / 6
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        const totalSlides = 6;
+
+        function showSlide(index) {
+            // Hide all slides
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Show current slide
+            document.querySelector(`.slide:nth-child(${index + 1})`).classList.add('active');
+
+            // Update counter
+            document.getElementById('currentSlide').textContent = index + 1;
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = (index === 0);
+            document.getElementById('nextBtn').disabled = (index === totalSlides - 1);
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                currentSlideIndex++;
+                showSlide(currentSlideIndex);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                showSlide(currentSlideIndex);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                nextSlide();
+            } else if (event.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
