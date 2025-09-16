@@ -25,10 +25,13 @@
             display: none;
             position: relative;
             color: white;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
         }
 
         .slide.active {
             display: block;
+            opacity: 1;
         }
 
         /* Slide 1: Title - BlizzardBerry Landing Page Style */
@@ -814,13 +817,22 @@
         const totalSlides = 6;
 
         function showSlide(index) {
-            // Hide all slides
+            // Hide all slides with fade out
             document.querySelectorAll('.slide').forEach(slide => {
-                slide.classList.remove('active');
+                slide.style.opacity = '0';
+                setTimeout(() => {
+                    slide.classList.remove('active');
+                }, 250);
             });
 
-            // Show current slide
-            document.querySelector(`.slide:nth-child(${index + 1})`).classList.add('active');
+            // Show current slide with fade in
+            setTimeout(() => {
+                const currentSlide = document.querySelector(`.slide:nth-child(${index + 1})`);
+                currentSlide.classList.add('active');
+                setTimeout(() => {
+                    currentSlide.style.opacity = '1';
+                }, 50);
+            }, 250);
 
             // Update counter
             document.getElementById('currentSlide').textContent = index + 1;
