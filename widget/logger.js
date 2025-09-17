@@ -40,7 +40,6 @@ class WidgetLogger {
         body: JSON.stringify(entry),
       })
     } catch (error) {
-      // Fallback to console if network fails
       console.error('Widget: Failed to send log to server:', error)
       console.log('Widget: Original log entry:', entry)
     }
