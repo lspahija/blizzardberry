@@ -1,5 +1,5 @@
 import { generateText, stepCountIs, convertToModelMessages } from 'ai';
-import { createNewChat, addMessage } from '@/app/api/lib/store/chatStore';
+import { createNewConversation, addMessage } from '@/app/api/lib/store/chatStore';
 import { getAgent } from '@/app/api/lib/store/agentStore';
 import { openrouter } from '@openrouter/ai-sdk-provider';
 import {
@@ -13,7 +13,7 @@ import {
 import { buildSystemMessage } from '@/app/api/lib/llm/systemMessageProvider';
 
 export async function POST(req: Request) {
-  const { messages, userConfig, agentId, idempotencyKey, chatId } =
+  const { messages, userConfig, agentId, idempotencyKey, conversationId } =
     await req.json();
 
   try {
@@ -22,9 +22,9 @@ export async function POST(req: Request) {
       return Response.json({ error: 'Agent not found' }, { status: 404 });
     }
 
-    let usedChatId = chatId;
-    if (!usedChatId) {
-      usedChatId = await createNewChat(
+    let usedConversationId = conversationId;
+    if (!usedConversationId) {
+      usedConversationId = await createNewConversation(
         agentId,
         agent.created_by,
         userConfig || {}
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage && lastMessage.role === 'user') {
       await addMessage(
-        usedChatId,
+        usedConversationId,
         'user',
         lastMessage.parts?.[0]?.text || lastMessage.content || ''
       );
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
       (toolCalls.length === 0 || hasSearchTool) &&
       !hasOtherTools
     ) {
-      await addMessage(usedChatId, 'assistant', result.text);
+      await addMessage(usedConversationId, 'assistant', result.text);
     }
 
     return Response.json({
@@ -95,12 +95,12 @@ export async function POST(req: Request) {
       toolCalls: toolCalls,
       toolResults: toolResults,
       usage: result.usage,
-      chatId: usedChatId,
+      conversationId: usedConversationId,
     });
   } catch (error) {
     console.error('Error in chat API:', error);
     return Response.json(
-      { error: 'Failed to process chat request' },
+      { error: 'Failed to process conversation request' },
       { status: 500 }
     );
   }
