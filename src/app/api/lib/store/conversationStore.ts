@@ -172,18 +172,8 @@ export async function getMessagesForConversation(
 }
 
 // Delete a conversation and all its messages
-export async function deleteConversation(conversationId: string): Promise<void> {
+export async function deleteConversation(
+  conversationId: string
+): Promise<void> {
   await sql`DELETE FROM conversations WHERE id = ${conversationId}`;
-}
-
-export async function deleteLastAssistantMessage(conversationId: string) {
-  await sql`
-    DELETE FROM messages
-    WHERE id = (
-      SELECT id FROM messages
-      WHERE conversation_id = ${conversationId} AND role = 'assistant'
-      ORDER BY sequence_order DESC
-      LIMIT 1
-    )
-  `;
 }

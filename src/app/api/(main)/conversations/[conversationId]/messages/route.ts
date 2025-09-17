@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import {
   addMessage,
-  deleteLastAssistantMessage,
   getMessagesForConversation,
 } from '@/app/api/lib/store/conversationStore.ts';
 
@@ -10,13 +9,12 @@ export async function POST(
   { params }: { params: Promise<{ conversationId: string }> }
 ) {
   const { conversationId: conversationId } = await params;
-  const { role, content, removeLastAssistantMessage } = await request.json();
+  const { role, content } = await request.json();
 
   console.log('POST new messages conversationId, request body:', {
     conversationId,
     role,
     content,
-    removeLastAssistantMessage,
   });
 
   if (!conversationId || !role || !content) {
@@ -24,10 +22,6 @@ export async function POST(
       { error: 'Missing required fields' },
       { status: 400 }
     );
-  }
-
-  if (removeLastAssistantMessage && role === 'assistant') {
-    await deleteLastAssistantMessage(conversationId);
   }
 
   await addMessage(conversationId, role, content);

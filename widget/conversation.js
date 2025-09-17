@@ -1,4 +1,4 @@
-import { generateId, getStoredConversationId, setStoredConversationId } from './util';
+import { generateId, getStoredConversationId } from './util';
 import { state } from './state';
 import { callLLM, persistMessage, fetchConversationMessages } from './api';
 import { executeAction } from './actions';
@@ -44,14 +44,15 @@ export async function hydrateConversation() {
 
   if (storedConversationId) {
     state.conversationId = storedConversationId;
-    const existingMessages = await fetchConversationMessages(storedConversationId);
+    const existingMessages =
+      await fetchConversationMessages(storedConversationId);
 
     if (existingMessages && existingMessages.length > 0) {
       // Convert API message format to widget format
-      state.messages = existingMessages.map(msg => ({
+      state.messages = existingMessages.map((msg) => ({
         id: generateId(state.conversationId),
         role: msg.role,
-        parts: [{ type: 'text', text: msg.content }]
+        parts: [{ type: 'text', text: msg.content }],
       }));
       return true; // Indicates conversation was hydrated
     }
