@@ -1,8 +1,4 @@
-import { generateText, stepCountIs, convertToModelMessages } from 'ai';
-import {
-  createNewConversation,
-  addMessage,
-} from '@/app/api/lib/store/conversationStore.ts';
+import { convertToModelMessages, generateText, stepCountIs } from 'ai';
 import { getAgent } from '@/app/api/lib/store/agentStore';
 import { openrouter } from '@openrouter/ai-sdk-provider';
 import {
@@ -23,24 +19,6 @@ export async function POST(req: Request) {
     const agent = await getAgent(agentId);
     if (!agent) {
       return Response.json({ error: 'Agent not found' }, { status: 404 });
-    }
-
-    let usedConversationId = conversationId;
-    if (!usedConversationId) {
-      usedConversationId = await createNewConversation(
-        agentId,
-        agent.created_by,
-        userConfig || {}
-      );
-    }
-
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage && lastMessage.role === 'user') {
-      await addMessage(
-        usedConversationId,
-        'user',
-        lastMessage.parts?.[0]?.text || lastMessage.content || ''
-      );
     }
 
     const holdIds = await createCreditHold(
@@ -85,20 +63,12 @@ export async function POST(req: Request) {
       (toolCall) => toolCall.toolName !== 'search_knowledge_base'
     );
 
-    if (
-      result.text &&
-      (toolCalls.length === 0 || hasSearchTool) &&
-      !hasOtherTools
-    ) {
-      await addMessage(usedConversationId, 'assistant', result.text);
-    }
-
     return Response.json({
       text: result.text,
       toolCalls: toolCalls,
       toolResults: toolResults,
       usage: result.usage,
-      conversationId: usedConversationId,
+      conversationId: conversationId,
     });
   } catch (error) {
     console.error('Error in chat API:', error);

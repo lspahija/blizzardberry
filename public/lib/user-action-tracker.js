@@ -1,4 +1,11 @@
-(function() {
+(function () {
+  const isTrackingEnabled = false; // TODO: bundle this and set via env var: https://grok.com/share/bGVnYWN5_4c911a4c-6668-455d-9806-a56a1f86b7e0
+
+  if (!isTrackingEnabled) {
+    console.log('🔍 BlizzardBerry Tracing Disabled');
+    return;
+  }
+
   // Configuration: Replace with your logging endpoint or storage mechanism
   const LOG_ENDPOINT = 'https://your-server.com/log'; // Update with your actual endpoint
   const logs = []; // Local storage for logs if no endpoint is used
@@ -24,58 +31,77 @@
   // 1. Track User Actions and Enable Logging During Them
   function traceUserActions() {
     // Track clicks and enable logging during the click handler execution
-    document.addEventListener('click', function(event) {
-      isUserAction = true;
-      const logData = {
-        type: 'user_action',
-        action: 'click',
-        target: event.target?.tagName || 'unknown',
-        targetId: event.target?.id || null,
-        targetClass: event.target?.className || null,
-        text: event.target?.textContent?.slice(0, 50) || null,
-        timestamp: Date.now()
-      };
-      sendLog(logData);
-      
-      // Reset flag after a short delay to capture subsequent calls
-      setTimeout(() => { isUserAction = false; }, 100);
-    }, true);
-
-    // Track form submissions
-    document.addEventListener('submit', function(event) {
-      isUserAction = true;
-      const logData = {
-        type: 'user_action',
-        action: 'submit',
-        target: event.target?.tagName || 'unknown',
-        targetId: event.target?.id || null,
-        formAction: event.target?.action || null,
-        timestamp: Date.now()
-      };
-      sendLog(logData);
-      
-      setTimeout(() => { isUserAction = false; }, 100);
-    }, true);
-
-    // Track other key user interactions
-    ['keydown', 'input', 'change'].forEach(eventType => {
-      document.addEventListener(eventType, function(event) {
-        // Only track if it's a meaningful interaction
-        if (eventType === 'keydown' && !['Enter', ' '].includes(event.key)) return;
-        
+    document.addEventListener(
+      'click',
+      function (event) {
         isUserAction = true;
         const logData = {
           type: 'user_action',
-          action: eventType,
+          action: 'click',
           target: event.target?.tagName || 'unknown',
           targetId: event.target?.id || null,
-          key: event.key || null,
-          timestamp: Date.now()
+          targetClass: event.target?.className || null,
+          text: event.target?.textContent?.slice(0, 50) || null,
+          timestamp: Date.now(),
         };
         sendLog(logData);
-        
-        setTimeout(() => { isUserAction = false; }, 100);
-      }, true);
+
+        // Reset flag after a short delay to capture subsequent calls
+        setTimeout(() => {
+          isUserAction = false;
+        }, 100);
+      },
+      true
+    );
+
+    // Track form submissions
+    document.addEventListener(
+      'submit',
+      function (event) {
+        isUserAction = true;
+        const logData = {
+          type: 'user_action',
+          action: 'submit',
+          target: event.target?.tagName || 'unknown',
+          targetId: event.target?.id || null,
+          formAction: event.target?.action || null,
+          timestamp: Date.now(),
+        };
+        sendLog(logData);
+
+        setTimeout(() => {
+          isUserAction = false;
+        }, 100);
+      },
+      true
+    );
+
+    // Track other key user interactions
+    ['keydown', 'input', 'change'].forEach((eventType) => {
+      document.addEventListener(
+        eventType,
+        function (event) {
+          // Only track if it's a meaningful interaction
+          if (eventType === 'keydown' && !['Enter', ' '].includes(event.key))
+            return;
+
+          isUserAction = true;
+          const logData = {
+            type: 'user_action',
+            action: eventType,
+            target: event.target?.tagName || 'unknown',
+            targetId: event.target?.id || null,
+            key: event.key || null,
+            timestamp: Date.now(),
+          };
+          sendLog(logData);
+
+          setTimeout(() => {
+            isUserAction = false;
+          }, 100);
+        },
+        true
+      );
     });
   }
 
@@ -83,7 +109,7 @@
   const originalFetch = window.fetch;
   window.fetch = function (...args) {
     const [url, options = {}] = args;
-    
+
     // Only log if this is triggered by a user action
     if (isUserAction) {
       const logData = {
@@ -92,32 +118,35 @@
         url: url.toString(),
         headers: options.headers ? JSON.stringify(options.headers) : '{}',
         body: options.body ? options.body.toString().slice(0, 500) : null,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
       sendLog(logData);
     }
-    
-    return originalFetch.apply(this, args).then(response => {
-      if (isUserAction) {
-        sendLog({
-          type: 'network_response',
-          url: url.toString(),
-          status: response.status,
-          timestamp: Date.now()
-        });
-      }
-      return response;
-    }).catch(err => {
-      if (isUserAction) {
-        sendLog({
-          type: 'network_error',
-          url: url.toString(),
-          error: err.message,
-          timestamp: Date.now()
-        });
-      }
-      throw err;
-    });
+
+    return originalFetch
+      .apply(this, args)
+      .then((response) => {
+        if (isUserAction) {
+          sendLog({
+            type: 'network_response',
+            url: url.toString(),
+            status: response.status,
+            timestamp: Date.now(),
+          });
+        }
+        return response;
+      })
+      .catch((err) => {
+        if (isUserAction) {
+          sendLog({
+            type: 'network_error',
+            url: url.toString(),
+            error: err.message,
+            timestamp: Date.now(),
+          });
+        }
+        throw err;
+      });
   };
 
   // 3. Trace Network Calls (XMLHttpRequest) - Only During User Actions
@@ -134,7 +163,7 @@
         type: 'network_call',
         method,
         url: url.toString(),
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
       return open.apply(this, [method, url, ...rest]);
     };
@@ -142,7 +171,10 @@
     xhr.setRequestHeader = function (header, value) {
       requestDetails.headers = requestDetails.headers || {};
       requestDetails.headers[header] = value;
-      return OriginalXMLHttpRequest.prototype.setRequestHeader.apply(this, [header, value]);
+      return OriginalXMLHttpRequest.prototype.setRequestHeader.apply(this, [
+        header,
+        value,
+      ]);
     };
 
     xhr.send = function (body) {
@@ -150,22 +182,22 @@
         requestDetails.body = body ? body.toString().slice(0, 500) : null;
         requestDetails.headers = JSON.stringify(requestDetails.headers || {});
         sendLog(requestDetails);
-        
+
         xhr.addEventListener('load', () => {
           sendLog({
             type: 'network_response',
             url: requestDetails.url,
             status: xhr.status,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
         });
-        
+
         xhr.addEventListener('error', () => {
           sendLog({
             type: 'network_error',
             url: requestDetails.url,
             error: 'XMLHttpRequest failed',
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
         });
       }
@@ -178,14 +210,27 @@
   // Initialize tracing
   try {
     traceUserActions();
-    sendLog({ type: 'init', message: 'User action tracing started', timestamp: Date.now() });
-    console.log('🔍 BlizzardBerry Tracing: Started. Only logs during user actions. Use window.__getLogs() to view captured events.');
+    sendLog({
+      type: 'init',
+      message: 'User action tracing started',
+      timestamp: Date.now(),
+    });
+    console.log(
+      '🔍 BlizzardBerry Tracing: Started. Only logs during user actions. Use window.__getLogs() to view captured events.'
+    );
   } catch (e) {
-    sendLog({ type: 'error', message: 'Tracing setup failed: ' + e.message, timestamp: Date.now() });
+    sendLog({
+      type: 'error',
+      message: 'Tracing setup failed: ' + e.message,
+      timestamp: Date.now(),
+    });
     console.error('🔍 BlizzardBerry Tracing: Setup failed:', e);
   }
 
   // Expose logs for debugging (optional)
   window.__getLogs = () => logs;
-  window.__clearLogs = () => { logs.length = 0; console.log('🔍 Logs cleared'); };
+  window.__clearLogs = () => {
+    logs.length = 0;
+    console.log('🔍 Logs cleared');
+  };
 })();

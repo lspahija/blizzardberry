@@ -136,7 +136,7 @@ test.describe('Backend Response Tests', () => {
       // Listen to all responses
       page.on('response', (response) => {
         const url = response.url();
-        if (url.includes('/api/chat')) {
+        if (url.includes('/api/inference')) {
           console.log(
             `🔍 API Response detected: ${url} - Status: ${response.status()}`
           );
@@ -178,19 +178,19 @@ test.describe('Backend Response Tests', () => {
           '🔍 No API response detected - checking if request was made'
         );
 
-        // Check if there are any network requests to /api/chat
+        // Check if there are any network requests to /api/inference
         const requests = await page.evaluate(() => {
           return performance
             .getEntriesByType('resource')
-            .filter((entry) => entry.name.includes('/api/chat'))
+            .filter((entry) => entry.name.includes('/api/inference'))
             .map((entry) => ({ name: entry.name, duration: entry.duration }));
         });
 
-        console.log('🔍 Network requests to /api/chat:', requests);
+        console.log('🔍 Network requests to /api/inference:', requests);
 
         if (requests.length === 0) {
           console.log(
-            '🔍 No requests to /api/chat found - the request might not be happening'
+            '🔍 No requests to /api/inference found - the request might not be happening'
           );
         }
 
@@ -370,7 +370,7 @@ test.describe('Backend Response Tests', () => {
       await expect(page.locator('#chatWidget')).toBeVisible();
 
       // Mock a malformed API response
-      await page.route('**/api/chat', async (route) => {
+      await page.route('**/api/inference', async (route) => {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',

@@ -2,7 +2,7 @@ import sql from '@/app/api/lib/store/db';
 
 export async function getAgent(agentId: string) {
   const [agent] = await sql`
-    SELECT id, created_by, model
+    SELECT id, name, created_by, model
     FROM agents
     WHERE id = ${agentId}
     LIMIT 1

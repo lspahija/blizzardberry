@@ -1,6 +1,6 @@
-import { generateId } from './util';
+import { generateId, getStoredConversationId, setStoredConversationId } from './util';
 import { state } from './state';
-import { callLLM, persistMessage } from './api';
+import { callLLM, persistMessage, fetchConversationMessages, createNewConversation } from './api';
 import { executeAction } from './actions';
 import { updateConversationUI } from './ui';
 import { updateNotificationBadge } from './dom';
@@ -19,6 +19,7 @@ export async function handleError(messageText) {
     role: 'assistant',
     parts: [{ type: 'text', text: messageText }],
   });
+  await persistMessage(state.messages[state.messages.length - 1]);
 
   // Check widget state in real-time to avoid race conditions
   syncWidgetState();
@@ -28,7 +29,6 @@ export async function handleError(messageText) {
     updateNotificationBadge();
   }
 
-  await persistMessage(state.messages[state.messages.length - 1]);
   updateConversationUI();
 }
 
@@ -36,13 +36,50 @@ export async function handleSubmit() {
   const input = document.getElementById('chatWidgetInputField');
   const text = input.value.trim();
   if (!text || state.isProcessing) return;
-  await processMessage(text);
+  await processMessage(text, 'user');
 }
 
-export async function processMessage(messageText) {
+export async function hydrateConversation() {
+  const storedConversationId = getStoredConversationId();
+
+  if (storedConversationId) {
+    state.conversationId = storedConversationId;
+    const existingMessages =
+      await fetchConversationMessages(storedConversationId);
+
+    if (existingMessages && existingMessages.length > 0) {
+      // Convert API message format to widget format
+      state.messages = existingMessages.map((msg) => ({
+        id: generateId(state.conversationId),
+        role: msg.role,
+        parts: [{ type: 'text', text: msg.content }],
+      }));
+      return true; // Indicates conversation was hydrated
+    }
+  }
+
+  // No stored conversation ID or existing messages, create a new conversation
+  const newConversation = await createNewConversation();
+  if (newConversation) {
+    state.conversationId = newConversation.conversationId;
+    setStoredConversationId(newConversation.conversationId);
+
+    // Convert API message format to widget format
+    state.messages = newConversation.messages.map((msg) => ({
+      id: generateId(state.conversationId),
+      role: msg.role,
+      parts: [{ type: 'text', text: msg.content }],
+    }));
+    return true; // Indicates conversation was hydrated with new conversation
+  }
+
+  return false; // Failed to create new conversation
+}
+
+export async function processMessage(messageText, role) {
   state.messages.push({
     id: generateId(),
-    role: 'user',
+    role: role,
     parts: [{ type: 'text', text: messageText }],
   });
   await persistMessage(state.messages[state.messages.length - 1]);
@@ -76,7 +113,7 @@ export async function processMessage(messageText) {
       );
 
       for (const result of actionResults) {
-        await processMessage(result);
+        await processMessage(result, 'assistant');
       }
     }
 

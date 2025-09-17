@@ -19,3 +19,35 @@ export function convertBoldFormatting(text) {
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n/g, '<br>');
 }
+
+export function getStoredConversationId() {
+  try {
+    // Check if we're coming from a different domain and clear sessionStorage if so
+    if (
+      document.referrer &&
+      new URL(document.referrer).hostname !== location.hostname
+    ) {
+      console.log('Referrer from different domain, clearing sessionStorage');
+      sessionStorage.clear();
+      return null;
+    }
+    const conversationId = sessionStorage.getItem('conversationId');
+    console.log('Conversation ID: ', conversationId);
+    return conversationId;
+  } catch (e) {
+    console.error('Error accessing sessionStorage:', e);
+    return null;
+  }
+}
+
+export function setStoredConversationId(conversationId) {
+  try {
+    if (conversationId) {
+      sessionStorage.setItem('conversationId', conversationId);
+    } else {
+      sessionStorage.removeItem('conversationId');
+    }
+  } catch (e) {
+    console.error('Error setting conversationId in sessionStorage:', e);
+  }
+}

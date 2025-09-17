@@ -109,7 +109,7 @@ test.describe('Credit Management Tests', () => {
     // Listen to all responses
     page.on('response', (response) => {
       const url = response.url();
-      if (url.includes('/api/chat')) {
+      if (url.includes('/api/inference')) {
         console.log(
           `🔍 API Response detected: ${url} - Status: ${response.status()}`
         );
@@ -144,15 +144,15 @@ test.describe('Credit Management Tests', () => {
     } else {
       console.log('🔍 No API response detected - checking if request was made');
 
-      // Check if there are any network requests to /api/chat
+      // Check if there are any network requests to /api/inference
       const requests = await page.evaluate(() => {
         return performance
           .getEntriesByType('resource')
-          .filter((entry) => entry.name.includes('/api/chat'))
+          .filter((entry) => entry.name.includes('/api/inference'))
           .map((entry) => ({ name: entry.name, duration: entry.duration }));
       });
 
-      console.log('🔍 Network requests to /api/chat:', requests);
+      console.log('🔍 Network requests to /api/inference:', requests);
 
       // Verify the message was sent
       const userMessage = page.locator('.user-message').first();
