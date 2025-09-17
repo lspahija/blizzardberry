@@ -1,6 +1,4 @@
 
-
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -310,7 +308,7 @@ CREATE TABLE IF NOT EXISTS "public"."agents" (
 ALTER TABLE "public"."agents" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."chats" (
+CREATE TABLE IF NOT EXISTS "public"."conversations" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "agent_id" "uuid" NOT NULL,
     "agent_owner_id" "uuid" NOT NULL,
@@ -319,7 +317,7 @@ CREATE TABLE IF NOT EXISTS "public"."chats" (
 );
 
 
-ALTER TABLE "public"."chats" OWNER TO "postgres";
+ALTER TABLE "public"."conversations" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."credit_batches" (
@@ -427,7 +425,7 @@ ALTER SEQUENCE "public"."domain_events_id_seq" OWNED BY "public"."domain_events"
 
 CREATE TABLE IF NOT EXISTS "public"."messages" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "chat_id" "uuid" NOT NULL,
+    "conversation_id" "uuid" NOT NULL,
     "role" "text" NOT NULL,
     "content" "text" NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"(),
@@ -537,7 +535,7 @@ ALTER TABLE ONLY "public"."agents"
 
 
 
-ALTER TABLE ONLY "public"."chats"
+ALTER TABLE ONLY "public"."conversations"
     ADD CONSTRAINT "chats_pkey" PRIMARY KEY ("id");
 
 
@@ -627,19 +625,19 @@ CREATE INDEX "agents_website_domain_idx" ON "public"."agents" USING "btree" ("we
 
 
 
-CREATE INDEX "chats_agent_id_idx" ON "public"."chats" USING "btree" ("agent_id");
+CREATE INDEX "conversations_agent_id_idx" ON "public"."conversations" USING "btree" ("agent_id");
 
 
 
-CREATE INDEX "chats_agent_owner_created_at_idx" ON "public"."chats" USING "btree" ("agent_id", "agent_owner_id", "created_at" DESC);
+CREATE INDEX "conversations_agent_owner_created_at_idx" ON "public"."conversations" USING "btree" ("agent_id", "agent_owner_id", "created_at" DESC);
 
 
 
-CREATE INDEX "chats_agent_owner_id_idx" ON "public"."chats" USING "btree" ("agent_owner_id");
+CREATE INDEX "conversations_agent_owner_id_idx" ON "public"."conversations" USING "btree" ("agent_owner_id");
 
 
 
-CREATE INDEX "chats_end_user_config_idx" ON "public"."chats" USING "gin" ("end_user_config");
+CREATE INDEX "conversations_end_user_config_idx" ON "public"."conversations" USING "gin" ("end_user_config");
 
 
 
@@ -707,15 +705,15 @@ CREATE INDEX "domain_events_user_id_created_at_idx" ON "public"."domain_events" 
 
 
 
-CREATE INDEX "messages_chat_id_idx" ON "public"."messages" USING "btree" ("chat_id");
+CREATE INDEX "messages_conversation_id_idx" ON "public"."messages" USING "btree" ("conversation_id");
 
 
 
-CREATE INDEX "messages_chat_id_role_sequence_idx" ON "public"."messages" USING "btree" ("chat_id", "role", "sequence_order");
+CREATE INDEX "messages_conversation_id_role_sequence_idx" ON "public"."messages" USING "btree" ("conversation_id", "role", "sequence_order");
 
 
 
-CREATE INDEX "messages_chat_id_sequence_idx" ON "public"."messages" USING "btree" ("chat_id", "sequence_order");
+CREATE INDEX "messages_conversation_id_sequence_idx" ON "public"."messages" USING "btree" ("conversation_id", "sequence_order");
 
 
 
@@ -759,12 +757,12 @@ ALTER TABLE ONLY "public"."agents"
 
 
 
-ALTER TABLE ONLY "public"."chats"
+ALTER TABLE ONLY "public"."conversations"
     ADD CONSTRAINT "chats_agent_id_fkey" FOREIGN KEY ("agent_id") REFERENCES "public"."agents"("id") ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."chats"
+ALTER TABLE ONLY "public"."conversations"
     ADD CONSTRAINT "chats_agent_owner_id_fkey" FOREIGN KEY ("agent_owner_id") REFERENCES "next_auth"."users"("id") ON DELETE CASCADE;
 
 
@@ -780,7 +778,7 @@ ALTER TABLE ONLY "public"."documents"
 
 
 ALTER TABLE ONLY "public"."messages"
-    ADD CONSTRAINT "messages_chat_id_fkey" FOREIGN KEY ("chat_id") REFERENCES "public"."chats"("id") ON DELETE CASCADE;
+    ADD CONSTRAINT "messages_chat_id_fkey" FOREIGN KEY ("conversation_id") REFERENCES "public"."conversations"("id") ON DELETE CASCADE;
 
 
 
@@ -1836,9 +1834,9 @@ GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public".
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."chats" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."chats" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."chats" TO "service_role";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."conversations" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."conversations" TO "authenticated";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."conversations" TO "service_role";
 
 
 
