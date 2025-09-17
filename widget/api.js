@@ -1,4 +1,4 @@
-import { generateId } from './util';
+import { generateId, setStoredConversationId } from './util';
 import { state, setSuggestedPrompts } from './state';
 import { config } from './config';
 
@@ -44,6 +44,20 @@ export async function persistMessage(message) {
   );
 }
 
+export async function fetchConversationMessages(conversationId) {
+  try {
+    const response = await fetch(
+      `${config.baseUrl}/api/conversations/${conversationId}/messages`
+    );
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data.messages || [];
+  } catch (e) {
+    console.error('Error fetching conversation messages:', e);
+    return null;
+  }
+}
+
 export async function callLLM() {
   const body = {
     messages: state.messages,
@@ -71,6 +85,7 @@ export async function callLLM() {
 
   if (returnedConversationId) {
     state.conversationId = returnedConversationId;
+    setStoredConversationId(returnedConversationId);
   }
 
   return res;

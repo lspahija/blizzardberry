@@ -2,7 +2,7 @@ import { generateId, getElementById, createElement } from './util';
 import { state, getSuggestedPrompts } from './state';
 import { fetchSuggestedPrompts, fetchAgentDetails } from './api';
 import { updateConversationUI } from './ui';
-import { handleSubmit } from './conversation';
+import { handleSubmit, hydrateConversation } from './conversation';
 import { config } from './config';
 
 // Widget expand/collapse functions
@@ -139,6 +139,9 @@ export async function createWidgetDOM() {
     const agentDetails = await fetchAgentDetails();
     const agentName = agentDetails?.name || 'AI Agent';
 
+    // Try to hydrate existing conversation first
+    const conversationHydrated = await hydrateConversation();
+
     // Create message preview notification
     const messagePreview = document.createElement('div');
     messagePreview.id = 'messagePreviewNotification';
@@ -193,14 +196,12 @@ export async function createWidgetDOM() {
         <div id="text-overlay" class="text-overlay">
           <div id="collapsed-view" class="collapsed-view">
             <div class="text-content" id="latest-message">
-              Hi! I'm ${agentName}. How can I help you today?
+              ${conversationHydrated ? '' : `Hi! I'm ${agentName}. How can I help you today?`}
             </div>
           </div>
           <div id="expanded-view" class="expanded-view" style="display: none;">
             <div id="messages-container" class="messages-container">
-              <div class="message assistant-message">
-                Hi! I'm ${agentName}. How can I help you today?
-              </div>
+              ${conversationHydrated ? '' : `<div class="message assistant-message">Hi! I'm ${agentName}. How can I help you today?</div>`}
             </div>
             <div class="input-container">
               <input 
@@ -515,16 +516,19 @@ export async function createWidgetDOM() {
 
     document.body.appendChild(widget);
 
-    state.messages.push({
-      id: generateId(config.agentId),
-      role: 'assistant',
-      parts: [
-        {
-          type: 'text',
-          text: `Hi! I'm ${agentName}, here to help with any questions or tasks. Just let me know what you need!`,
-        },
-      ],
-    });
+    // Only add default greeting if no conversation was hydrated
+    if (!conversationHydrated) {
+      state.messages.push({
+        id: generateId(config.agentId),
+        role: 'assistant',
+        parts: [
+          {
+            type: 'text',
+            text: `Hi! I'm ${agentName}, here to help with any questions or tasks. Just let me know what you need!`,
+          },
+        ],
+      });
+    }
 
     // No toggle button needed - widget stays as widget in all states
 

@@ -68,6 +68,7 @@ export function updateConversationUI() {
       const cleanText = messageText
         .replace(/<think>[\s\S]*?<\/think>\n\n?/g, '')
         .trim();
+      // Get agent name for fallback
       latestMessageEl.innerHTML = convertBoldFormatting(
         cleanText || "Hi! I'm your AI Agent. How can I help you today?"
       );

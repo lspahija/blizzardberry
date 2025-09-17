@@ -1,6 +1,6 @@
-import { generateId } from './util';
+import { generateId, getStoredConversationId, setStoredConversationId } from './util';
 import { state } from './state';
-import { callLLM, persistMessage } from './api';
+import { callLLM, persistMessage, fetchConversationMessages } from './api';
 import { executeAction } from './actions';
 import { updateConversationUI } from './ui';
 import { updateNotificationBadge } from './dom';
@@ -37,6 +37,27 @@ export async function handleSubmit() {
   const text = input.value.trim();
   if (!text || state.isProcessing) return;
   await processMessage(text);
+}
+
+export async function hydrateConversation() {
+  const storedConversationId = getStoredConversationId();
+
+  if (storedConversationId) {
+    state.conversationId = storedConversationId;
+    const existingMessages = await fetchConversationMessages(storedConversationId);
+
+    if (existingMessages && existingMessages.length > 0) {
+      // Convert API message format to widget format
+      state.messages = existingMessages.map(msg => ({
+        id: generateId(state.conversationId),
+        role: msg.role,
+        parts: [{ type: 'text', text: msg.content }]
+      }));
+      return true; // Indicates conversation was hydrated
+    }
+  }
+
+  return false; // No conversation to hydrate
 }
 
 export async function processMessage(messageText) {
