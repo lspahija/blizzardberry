@@ -11,12 +11,6 @@ export async function POST(
   const { conversationId: conversationId } = await params;
   const { role, content } = await request.json();
 
-  console.log('POST new messages conversationId, request body:', {
-    conversationId,
-    role,
-    content,
-  });
-
   if (!conversationId || !role || !content) {
     return NextResponse.json(
       { error: 'Missing required fields' },
