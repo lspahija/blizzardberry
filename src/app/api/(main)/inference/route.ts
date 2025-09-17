@@ -63,11 +63,18 @@ export async function POST(req: Request) {
       (toolCall) => toolCall.toolName !== 'search_knowledge_base'
     );
 
-    return NextResponse.json({
+    return Response.json({
       text: result.text,
       toolCalls: toolCalls,
       toolResults: toolResults,
       usage: result.usage,
       conversationId: conversationId,
     });
-})
+  } catch (error) {
+    console.error('Error in chat API:', error);
+    return Response.json(
+      { error: 'Failed to process conversation request' },
+      { status: 500 }
+    );
+  }
+}
