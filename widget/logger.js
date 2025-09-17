@@ -1,11 +1,9 @@
-// Simple logging utility for the widget
 class WidgetLogger {
   constructor() {
     this.endpoint = '/api/logs'
     this.sessionId = this.generateSessionId()
     this.userId = null
     
-    // Capture unhandled errors
     window.addEventListener('error', (event) => {
       this.error('Widget Unhandled Error', {
         error: event.error || new Error(event.message),
@@ -17,7 +15,6 @@ class WidgetLogger {
       })
     })
 
-    // Capture unhandled promise rejections
     window.addEventListener('unhandledrejection', (event) => {
       this.error('Widget Unhandled Promise Rejection', {
         error: event.reason instanceof Error ? event.reason : new Error(String(event.reason)),
@@ -96,16 +93,13 @@ class WidgetLogger {
   }
 }
 
-// Create global logger instance
 const widgetLogger = new WidgetLogger()
 
-// Helper function to wrap widget functions with error logging
 function withWidgetErrorLogging(fn, component, action) {
   return function(...args) {
     try {
       const result = fn.apply(this, args)
       
-      // If the result is a promise, catch any rejections
       if (result && typeof result.then === 'function') {
         result.catch(error => {
           widgetLogger.error(`Async error in ${component} ${action}`, {
@@ -131,6 +125,5 @@ function withWidgetErrorLogging(fn, component, action) {
   }
 }
 
-// Export for use in other widget files
 window.widgetLogger = widgetLogger
 window.withWidgetErrorLogging = withWidgetErrorLogging

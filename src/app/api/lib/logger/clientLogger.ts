@@ -66,7 +66,6 @@ class ClientLogger {
         body: JSON.stringify(entry),
       })
     } catch (error) {
-      // Fallback to console if network fails
       console.error('Failed to send log to server:', error)
       console.log('Original log entry:', entry)
     }

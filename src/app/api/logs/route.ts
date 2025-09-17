@@ -27,7 +27,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const logEntry = clientLogSchema.parse(body)
 
-    // Log to server console
     const serverLogger = logger.child({
       source: 'client',
       userId: logEntry.userId,
@@ -59,7 +58,6 @@ export async function POST(request: NextRequest) {
         break
     }
 
-    // Store in database
     await insertLog({
       level: logEntry.level,
       message: logEntry.message,
@@ -95,8 +93,6 @@ export async function GET(request: NextRequest) {
     const sessionId = searchParams.get('sessionId')
     const limit = parseInt(searchParams.get('limit') || '100')
     const offset = parseInt(searchParams.get('offset') || '0')
-
-    // Use the imported getLogs function
     
     const logs = await getLogs({
       level: level as 'error' | 'warn' | 'info' | 'debug' | undefined,
