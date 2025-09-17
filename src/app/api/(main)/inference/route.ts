@@ -34,15 +34,6 @@ export async function POST(req: Request) {
       );
     }
 
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage && lastMessage.role === 'user') {
-      await addMessage(
-        usedConversationId,
-        'user',
-        lastMessage.parts?.[0]?.text || lastMessage.content || ''
-      );
-    }
-
     const holdIds = await createCreditHold(
       agent.created_by,
       10, // TODO: find a way to pick a sane upper bound
@@ -84,14 +75,6 @@ export async function POST(req: Request) {
     const hasOtherTools = toolCalls?.some(
       (toolCall) => toolCall.toolName !== 'search_knowledge_base'
     );
-
-    if (
-      result.text &&
-      (toolCalls.length === 0 || hasSearchTool) &&
-      !hasOtherTools
-    ) {
-      await addMessage(usedConversationId, 'assistant', result.text);
-    }
 
     return Response.json({
       text: result.text,

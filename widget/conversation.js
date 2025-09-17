@@ -19,6 +19,7 @@ export async function handleError(messageText) {
     role: 'assistant',
     parts: [{ type: 'text', text: messageText }],
   });
+  await persistMessage(state.messages[state.messages.length - 1]);
 
   // Check widget state in real-time to avoid race conditions
   syncWidgetState();
@@ -28,7 +29,6 @@ export async function handleError(messageText) {
     updateNotificationBadge();
   }
 
-  await persistMessage(state.messages[state.messages.length - 1]);
   updateConversationUI();
 }
 
@@ -36,7 +36,7 @@ export async function handleSubmit() {
   const input = document.getElementById('chatWidgetInputField');
   const text = input.value.trim();
   if (!text || state.isProcessing) return;
-  await processMessage(text);
+  await processMessage(text, 'user');
 }
 
 export async function hydrateConversation() {
@@ -61,10 +61,10 @@ export async function hydrateConversation() {
   return false; // No conversation to hydrate
 }
 
-export async function processMessage(messageText) {
+export async function processMessage(messageText, role) {
   state.messages.push({
     id: generateId(),
-    role: 'user',
+    role: role,
     parts: [{ type: 'text', text: messageText }],
   });
   await persistMessage(state.messages[state.messages.length - 1]);
@@ -98,7 +98,7 @@ export async function processMessage(messageText) {
       );
 
       for (const result of actionResults) {
-        await processMessage(result);
+        await processMessage(result, 'assistant');
       }
     }
 
