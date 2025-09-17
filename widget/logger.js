@@ -23,6 +23,25 @@ class WidgetLogger {
   }
 
   generateSessionId() {
+    // Try to get session ID from parent window or sessionStorage
+    try {
+      if (window.parent && window.parent.sessionStorage) {
+        const parentSessionId = window.parent.sessionStorage.getItem('client_session_id')
+        if (parentSessionId) return parentSessionId
+      }
+      
+      if (sessionStorage) {
+        const existing = sessionStorage.getItem('widget_session_id')
+        if (existing) return existing
+        
+        const newSessionId = `widget_session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
+        sessionStorage.setItem('widget_session_id', newSessionId)
+        return newSessionId
+      }
+    } catch (error) {
+      // Fallback if cross-origin restrictions prevent access
+    }
+    
     return `widget_session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
   }
 

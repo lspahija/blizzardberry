@@ -3,6 +3,9 @@ import '@/app/(frontend)/globals.css';
 import { Providers } from './providers';
 import { ScrollToTop } from '@/app/(frontend)/components/ScrollToTop';
 import { ErrorBoundary } from '@/app/(frontend)/components/ErrorBoundary';
+import { LoggingProvider } from '@/app/(frontend)/components/LoggingProvider';
+import '@/app/api/lib/middleware/globalErrorHandler'; // Initialize global error handlers
+import '@/app/api/lib/middleware/nextjsErrorInterceptor'; // Enhanced error interception
 import type { Metadata } from 'next';
 
 const geistSans = Geist({
@@ -80,8 +83,10 @@ export default function RootLayout({
       >
         <Providers>
           <ErrorBoundary>
-            <ScrollToTop />
-            {children}
+            <LoggingProvider>
+              <ScrollToTop />
+              {children}
+            </LoggingProvider>
           </ErrorBoundary>
         </Providers>
       </body>

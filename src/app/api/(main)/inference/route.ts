@@ -10,7 +10,6 @@ import {
   recordUsedTokens,
 } from '@/app/api/lib/llm/tokenUsageManager';
 import { buildSystemMessage } from '@/app/api/lib/llm/systemMessageProvider';
-import { logger } from '@/app/api/lib/logger/logger';
 
 export async function POST(req: Request) {
   const { messages, userConfig, agentId, idempotencyKey, conversationId } =
@@ -64,26 +63,11 @@ export async function POST(req: Request) {
       (toolCall) => toolCall.toolName !== 'search_knowledge_base'
     );
 
-    return Response.json({
+    return NextResponse.json({
       text: result.text,
       toolCalls: toolCalls,
       toolResults: toolResults,
       usage: result.usage,
       conversationId: conversationId,
     });
-  } catch (error) {
-    logger.error({
-      error,
-      agentId,
-      conversationId,
-      idempotencyKey,
-      component: 'inference',
-      action: 'chat_completion'
-    }, 'Error in chat API');
-    
-    return Response.json(
-      { error: 'Failed to process conversation request' },
-      { status: 500 }
-    );
-  }
-}
+})

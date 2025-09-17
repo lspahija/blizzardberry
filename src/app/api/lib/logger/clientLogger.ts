@@ -49,6 +49,14 @@ class ClientLogger {
   }
 
   private generateSessionId(): string {
+    if (typeof window !== 'undefined') {
+      const existing = sessionStorage.getItem('client_session_id')
+      if (existing) return existing
+      
+      const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
+      sessionStorage.setItem('client_session_id', newSessionId)
+      return newSessionId
+    }
     return `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
   }
 
