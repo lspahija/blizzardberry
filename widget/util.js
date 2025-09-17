@@ -2,14 +2,6 @@ let counter = 0;
 
 export const generateId = (agentId) => `${agentId}-${Date.now()}-${counter++}`;
 
-export function truncatePrompt(prompt, wordLimit = 15) {
-  const words = prompt.split(/\s+/);
-  if (words.length > wordLimit) {
-    return words.slice(0, wordLimit).join(' ') + '...';
-  }
-  return prompt;
-}
-
 export function getElementById(id) {
   return document.getElementById(id);
 }

@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { getMessagesForChat, deleteChat } from '@/app/api/lib/store/chatStore';
+import {
+  getMessagesForConversation,
+  deleteConversation,
+} from '@/app/api/lib/store/conversationStore.ts';
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ chatId: string }> }
+  { params }: { params: Promise<{ conversationId: string }> }
 ) {
   try {
     const session = await auth();
@@ -12,18 +15,22 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { chatId } = await params;
+    const { conversationId } = await params;
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '100');
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    const messages = await getMessagesForChat(chatId, limit, offset);
+    const messages = await getMessagesForConversation(
+      conversationId,
+      limit,
+      offset
+    );
 
     return NextResponse.json({ messages }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching chat messages:', error);
+    console.error('Error fetching conversation messages:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch chat messages' },
+      { error: 'Failed to fetch conversation messages' },
       { status: 500 }
     );
   }
@@ -31,7 +38,7 @@ export async function GET(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ chatId: string }> }
+  { params }: { params: Promise<{ conversationId: string }> }
 ) {
   try {
     const session = await auth();
@@ -39,14 +46,14 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { chatId } = await params;
-    await deleteChat(chatId);
+    const { conversationId } = await params;
+    await deleteConversation(conversationId);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Error deleting chat:', error);
+    console.error('Error deleting conversation:', error);
     return NextResponse.json(
-      { error: 'Failed to delete chat' },
+      { error: 'Failed to delete conversation' },
       { status: 500 }
     );
   }

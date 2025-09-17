@@ -20,13 +20,14 @@ export function renderMessagePart(part, messageId) {
   return '';
 }
 
-export function updateChatUI() {
+export function updateConversationUI() {
   const chatBody = getElementById('messages-container');
   const latestMessageEl = getElementById('latest-message');
-  
-  const filteredMessages = state.messages
-    .filter((message) => !message.parts[0].text.startsWith('ACTION_RESULT:'));
-    
+
+  const filteredMessages = state.messages.filter(
+    (message) => !message.parts[0].text.startsWith('ACTION_RESULT:')
+  );
+
   let html = filteredMessages
     .map(
       (message) => `
@@ -49,19 +50,27 @@ export function updateChatUI() {
     chatBody.innerHTML = html;
     chatBody.scrollTop = chatBody.scrollHeight;
   }
-  
+
   // Update collapsed view with latest assistant message
   if (latestMessageEl) {
-    const assistantMessages = filteredMessages.filter(msg => msg.role === 'assistant');
+    const assistantMessages = filteredMessages.filter(
+      (msg) => msg.role === 'assistant'
+    );
     if (assistantMessages.length > 0) {
-      const latestAssistantMessage = assistantMessages[assistantMessages.length - 1];
-      const messageText = latestAssistantMessage.parts.map(part => 
-        part.type === 'text' ? part.text : ''
-      ).join('').trim();
-      
+      const latestAssistantMessage =
+        assistantMessages[assistantMessages.length - 1];
+      const messageText = latestAssistantMessage.parts
+        .map((part) => (part.type === 'text' ? part.text : ''))
+        .join('')
+        .trim();
+
       // Remove any <think> tags for display in collapsed view
-      const cleanText = messageText.replace(/<think>[\s\S]*?<\/think>\n\n?/g, '').trim();
-      latestMessageEl.innerHTML = convertBoldFormatting(cleanText || "Hi! I'm your AI Agent. How can I help you today?");
+      const cleanText = messageText
+        .replace(/<think>[\s\S]*?<\/think>\n\n?/g, '')
+        .trim();
+      latestMessageEl.innerHTML = convertBoldFormatting(
+        cleanText || "Hi! I'm your AI Agent. How can I help you today?"
+      );
     }
   }
 }

@@ -2,7 +2,7 @@ export const state = {
   messages: [],
   isProcessing: false,
   loggedThinkMessages: new Set(),
-  chatId: null,
+  conversationId: null,
   isWidgetReady: false,
   unreadMessages: 0,
   isWidgetOpen: false,

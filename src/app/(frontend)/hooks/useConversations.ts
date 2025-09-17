@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export interface Chat {
+export interface Conversation {
   id: string;
   agent_id: string;
   agent_owner_id: string;
@@ -13,30 +13,30 @@ export interface Chat {
 
 export interface Message {
   id: string;
-  chat_id: string;
+  conversation_id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   created_at: string;
   sequence_order: number;
 }
 
-export function useChats() {
-  const [chats, setChats] = useState<Chat[]>([]);
+export function useConversations() {
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchChats = async () => {
+  const fetchConversations = async () => {
     try {
       setLoading(true);
       setError(null);
 
       const response = await fetch('/api/chats');
       if (!response.ok) {
-        throw new Error('Failed to fetch chats');
+        throw new Error('Failed to fetch conversations');
       }
 
       const data = await response.json();
-      setChats(data.chats);
+      setConversations(data.conversations);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -44,49 +44,53 @@ export function useChats() {
     }
   };
 
-  const deleteChat = async (chatId: string) => {
+  const deleteConversation = async (conversationId: string) => {
     try {
-      const response = await fetch(`/api/chats/${chatId}`, {
+      const response = await fetch(`/api/conversations/${conversationId}`, {
         method: 'DELETE',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete chat');
+        throw new Error('Failed to delete conversation');
       }
 
-      // Remove the chat from the local state
-      setChats((prev) => prev.filter((chat) => chat.id !== chatId));
+      // Remove the conversation from the local state
+      setConversations((prev) =>
+        prev.filter((conversation) => conversation.id !== conversationId)
+      );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete chat');
+      setError(
+        err instanceof Error ? err.message : 'Failed to delete conversation'
+      );
     }
   };
 
   useEffect(() => {
-    fetchChats();
+    fetchConversations();
   }, []);
 
   return {
-    chats,
+    conversations,
     loading,
     error,
-    fetchChats,
-    deleteChat,
+    fetchConversations,
+    deleteConversation,
   };
 }
 
-export function useChatMessages(chatId: string | null) {
+export function useConversationMessages(conversationId: string | null) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchMessages = async () => {
-    if (!chatId) return;
+    if (!conversationId) return;
 
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/chats/${chatId}`);
+      const response = await fetch(`/api/conversations/${conversationId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch messages');
       }
@@ -101,12 +105,12 @@ export function useChatMessages(chatId: string | null) {
   };
 
   useEffect(() => {
-    if (chatId) {
+    if (conversationId) {
       fetchMessages();
     } else {
       setMessages([]);
     }
-  }, [chatId]);
+  }, [conversationId]);
 
   return {
     messages,

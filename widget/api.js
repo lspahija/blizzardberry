@@ -4,9 +4,7 @@ import { config } from './config';
 
 export async function fetchAgentDetails() {
   try {
-    const res = await fetch(
-      `${config.baseUrl}/api/agents/${config.agentId}`
-    );
+    const res = await fetch(`${config.baseUrl}/api/agents/${config.agentId}`);
     if (!res.ok) return null;
     const data = await res.json();
     return data.agent;
@@ -32,15 +30,18 @@ export async function fetchSuggestedPrompts() {
 }
 
 export async function persistMessage(message) {
-  if (!state.chatId) return;
-  await fetch(`${config.baseUrl}/api/chats/${state.chatId}/messages`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      role: message.role,
-      content: message.parts[0].text,
-    }),
-  });
+  if (!state.conversationId) return;
+  await fetch(
+    `${config.baseUrl}/api/conversations/${state.conversationId}/messages`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        role: message.role,
+        content: message.parts[0].text,
+      }),
+    }
+  );
 }
 
 export async function callLLM() {
@@ -50,8 +51,8 @@ export async function callLLM() {
     agentId: config.agentId,
     idempotencyKey: generateId(),
   };
-  if (state.chatId) {
-    body.chatId = state.chatId;
+  if (state.conversationId) {
+    body.conversationId = state.conversationId;
   }
   const response = await fetch(`${config.baseUrl}/api/chat`, {
     method: 'POST',
@@ -65,11 +66,11 @@ export async function callLLM() {
     toolResults,
     error,
     message,
-    chatId: returnedChatId,
+    conversationId: returnedConversationId,
   } = await response.json());
 
-  if (returnedChatId) {
-    state.chatId = returnedChatId;
+  if (returnedConversationId) {
+    state.conversationId = returnedConversationId;
   }
 
   return res;

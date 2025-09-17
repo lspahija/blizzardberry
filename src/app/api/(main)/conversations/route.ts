@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { getChatsForAgentOwner } from '@/app/api/lib/store/chatStore';
+import { getConversationsForAgentOwner } from '@/app/api/lib/store/conversationStore.ts';
 
 export async function GET(request: Request) {
   try {
@@ -13,13 +13,17 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '100');
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    const chats = await getChatsForAgentOwner(session.user.id, limit, offset);
+    const conversations = await getConversationsForAgentOwner(
+      session.user.id,
+      limit,
+      offset
+    );
 
-    return NextResponse.json({ chats }, { status: 200 });
+    return NextResponse.json({ conversations }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching chats:', error);
+    console.error('Error fetching conversations:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch chats' },
+      { error: 'Failed to fetch conversations' },
       { status: 500 }
     );
   }

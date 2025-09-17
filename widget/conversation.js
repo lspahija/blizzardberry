@@ -2,7 +2,7 @@ import { generateId } from './util';
 import { state } from './state';
 import { callLLM, persistMessage } from './api';
 import { executeAction } from './actions';
-import { updateChatUI } from './ui';
+import { updateConversationUI } from './ui';
 import { updateNotificationBadge } from './dom';
 
 function syncWidgetState() {
@@ -29,17 +29,17 @@ export async function handleError(messageText) {
   }
 
   await persistMessage(state.messages[state.messages.length - 1]);
-  updateChatUI();
+  updateConversationUI();
 }
 
 export async function handleSubmit() {
   const input = document.getElementById('chatWidgetInputField');
   const text = input.value.trim();
   if (!text || state.isProcessing) return;
-  await processChatMessage(text);
+  await processMessage(text);
 }
 
-export async function processChatMessage(messageText) {
+export async function processMessage(messageText) {
   state.messages.push({
     id: generateId(),
     role: 'user',
@@ -53,7 +53,7 @@ export async function processChatMessage(messageText) {
   if (input) input.value = '';
 
   state.isProcessing = true;
-  updateChatUI();
+  updateConversationUI();
 
   try {
     const { text, toolResults, error, message } = await callLLM();
@@ -76,14 +76,22 @@ export async function processChatMessage(messageText) {
       );
 
       for (const result of actionResults) {
-        await processChatMessage(result);
+        await processMessage(result);
       }
     }
 
-    const hasSearchTool = toolResults?.some(toolResult => toolResult.toolName === 'search_knowledge_base');
-    const hasOtherTools = toolResults?.some(toolResult => toolResult.toolName !== 'search_knowledge_base');
-    
-    if (text && (!toolResults || toolResults.length === 0 || hasSearchTool) && !hasOtherTools) {
+    const hasSearchTool = toolResults?.some(
+      (toolResult) => toolResult.toolName === 'search_knowledge_base'
+    );
+    const hasOtherTools = toolResults?.some(
+      (toolResult) => toolResult.toolName !== 'search_knowledge_base'
+    );
+
+    if (
+      text &&
+      (!toolResults || toolResults.length === 0 || hasSearchTool) &&
+      !hasOtherTools
+    ) {
       state.messages.push({
         id: generateId(),
         role: 'assistant',
@@ -101,7 +109,7 @@ export async function processChatMessage(messageText) {
     }
 
     state.isProcessing = false;
-    updateChatUI();
+    updateConversationUI();
   } catch (error) {
     await handleError('Error: Failed to get response. ' + error.message);
   }
