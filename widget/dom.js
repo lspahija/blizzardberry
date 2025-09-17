@@ -2,7 +2,7 @@ import { generateId, getElementById, createElement } from './util';
 import { state, getSuggestedPrompts } from './state';
 import { fetchSuggestedPrompts, fetchAgentDetails } from './api';
 import { updateConversationUI } from './ui';
-import { handleSubmit } from './chat';
+import { handleSubmit } from './conversation';
 import { config } from './config';
 
 // Widget expand/collapse functions
