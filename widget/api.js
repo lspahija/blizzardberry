@@ -68,7 +68,7 @@ export async function callLLM() {
   if (state.conversationId) {
     body.conversationId = state.conversationId;
   }
-  const response = await fetch(`${config.baseUrl}/api/chat`, {
+  const response = await fetch(`${config.baseUrl}/api/inference`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
