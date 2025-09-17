@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth/auth';
 import {
   getMessagesForConversation,
   deleteConversation,
-} from '@/app/api/lib/store/chatStore';
+} from '@/app/api/lib/store/conversationStore.ts';
 
 export async function GET(
   request: Request,

@@ -1,5 +1,8 @@
 import { generateText, stepCountIs, convertToModelMessages } from 'ai';
-import { createNewConversation, addMessage } from '@/app/api/lib/store/chatStore';
+import {
+  createNewConversation,
+  addMessage,
+} from '@/app/api/lib/store/conversationStore.ts';
 import { getAgent } from '@/app/api/lib/store/agentStore';
 import { openrouter } from '@openrouter/ai-sdk-provider';
 import {

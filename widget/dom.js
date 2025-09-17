@@ -1,13 +1,8 @@
-import {
-  generateId,
-  truncatePrompt,
-  getElementById,
-  createElement,
-} from './util';
+import { generateId, getElementById, createElement } from './util';
 import { state, getSuggestedPrompts } from './state';
 import { fetchSuggestedPrompts, fetchAgentDetails } from './api';
-import { updateChatUI } from './ui';
-import { handleSubmit, processChatMessage } from './chat';
+import { updateConversationUI } from './ui';
+import { handleSubmit } from './chat';
 import { config } from './config';
 
 // Widget expand/collapse functions
@@ -15,7 +10,7 @@ export function expandWidget() {
   const widget = getElementById('chatWidget');
   const collapsedView = widget?.querySelector('#collapsed-view');
   const expandedView = widget?.querySelector('#expanded-view');
-  
+
   if (widget && collapsedView && expandedView) {
     // Get current position and dimensions before expansion
     const rect = widget.getBoundingClientRect();
@@ -23,47 +18,50 @@ export function expandWidget() {
     const currentTop = rect.top;
     const currentWidth = rect.width;
     const currentHeight = rect.height;
-    
+
     // Set dynamic height based on messages
     const messageCount = state.messages.length;
     const baseHeight = 200;
     const messageHeight = 50;
     const maxHeight = 500;
     const minHeight = 300;
-    
+
     const contentHeight = baseHeight + messageCount * messageHeight;
-    const expandedHeight = Math.min(Math.max(contentHeight, minHeight), maxHeight);
-    
+    const expandedHeight = Math.min(
+      Math.max(contentHeight, minHeight),
+      maxHeight
+    );
+
     widget.style.setProperty('--expanded-height', `${expandedHeight}px`);
-    
+
     // Expand the widget
     widget.classList.add('expanded');
     collapsedView.style.display = 'none';
     expandedView.style.display = 'flex';
-    
+
     // Calculate position adjustment to keep the widget in a similar visual position
     // We want to maintain the bottom-right corner position when expanding
     const expandedWidth = 400; // from CSS
     const widthDiff = expandedWidth - currentWidth;
     const heightDiff = expandedHeight - currentHeight;
-    
+
     // Adjust position to maintain bottom-right reference point
     let newLeft = currentLeft - widthDiff;
     let newTop = currentTop - heightDiff;
-    
+
     // Apply relaxed boundary constraints for the expanded widget
     // Allow widget to go off-screen but keep minimum draggable area visible
     const minVisibleWidth = Math.min(100, expandedWidth);
     const minVisibleHeight = Math.min(50, expandedHeight);
-    
+
     const minX = -expandedWidth + minVisibleWidth;
     const maxX = window.innerWidth - minVisibleWidth;
     const minY = -expandedHeight + minVisibleHeight;
     const maxY = window.innerHeight - minVisibleHeight;
-    
+
     newLeft = Math.max(minX, Math.min(newLeft, maxX));
     newTop = Math.max(minY, Math.min(newTop, maxY));
-    
+
     // Only adjust position if widget has been moved from default position
     if (widget.style.left !== '' || widget.style.top !== '') {
       widget.style.left = newLeft + 'px';
@@ -71,7 +69,7 @@ export function expandWidget() {
       widget.style.right = 'auto';
       widget.style.bottom = 'auto';
     }
-    
+
     // Focus input field after expansion
     setTimeout(() => getElementById('chatWidgetInputField')?.focus(), 100);
   }
@@ -81,7 +79,7 @@ export function collapseWidget() {
   const widget = getElementById('chatWidget');
   const collapsedView = widget?.querySelector('#collapsed-view');
   const expandedView = widget?.querySelector('#expanded-view');
-  
+
   if (widget && collapsedView && expandedView) {
     // Get current position and dimensions before collapsing
     const rect = widget.getBoundingClientRect();
@@ -89,35 +87,35 @@ export function collapseWidget() {
     const currentTop = rect.top;
     const currentWidth = rect.width;
     const currentHeight = rect.height;
-    
+
     // Collapse the widget
     widget.classList.remove('expanded');
     collapsedView.style.display = 'block';
     expandedView.style.display = 'none';
-    
+
     // Calculate position adjustment to maintain bottom-right reference point
     const collapsedWidth = window.innerWidth <= 768 ? 200 : 250; // from CSS
     const collapsedHeight = window.innerWidth <= 768 ? 100 : 120; // from CSS
     const widthDiff = currentWidth - collapsedWidth;
     const heightDiff = currentHeight - collapsedHeight;
-    
+
     // Adjust position to maintain bottom-right reference point
     let newLeft = currentLeft + widthDiff;
     let newTop = currentTop + heightDiff;
-    
+
     // Apply relaxed boundary constraints for the collapsed widget
     // Allow widget to go off-screen but keep minimum draggable area visible
     const minVisibleWidth = Math.min(100, collapsedWidth);
     const minVisibleHeight = Math.min(50, collapsedHeight);
-    
+
     const minX = -collapsedWidth + minVisibleWidth;
     const maxX = window.innerWidth - minVisibleWidth;
     const minY = -collapsedHeight + minVisibleHeight;
     const maxY = window.innerHeight - minVisibleHeight;
-    
+
     newLeft = Math.max(minX, Math.min(newLeft, maxX));
     newTop = Math.max(minY, Math.min(newTop, maxY));
-    
+
     // Only adjust position if widget has been moved from default position
     if (widget.style.left !== '' || widget.style.top !== '') {
       widget.style.left = newLeft + 'px';
@@ -140,7 +138,7 @@ export async function createWidgetDOM() {
     // Fetch agent details to get the name
     const agentDetails = await fetchAgentDetails();
     const agentName = agentDetails?.name || 'AI Agent';
-    
+
     // Create message preview notification
     const messagePreview = document.createElement('div');
     messagePreview.id = 'messagePreviewNotification';
@@ -227,9 +225,10 @@ export async function createWidgetDOM() {
     });
 
     // Add event listeners for the send button
-    widget.querySelector('#chatWidgetSendButton')
+    widget
+      .querySelector('#chatWidgetSendButton')
       ?.addEventListener('click', handleSubmit);
-    
+
     // Add drag functionality
     let isDragging = false;
     let dragStartX = 0;
@@ -241,56 +240,56 @@ export async function createWidgetDOM() {
     widget.addEventListener('mousedown', (e) => {
       // Don't drag if clicking on input field or send button
       if (e.target.closest('.message-input, .send-button')) return;
-      
+
       isDragging = true;
       hasMoved = false;
       dragStartX = e.clientX;
       dragStartY = e.clientY;
-      
+
       // Get current position
       const rect = widget.getBoundingClientRect();
       widgetStartX = rect.left;
       widgetStartY = rect.top;
-      
+
       widget.style.transition = 'none'; // Disable transition during drag
       widget.style.cursor = 'grabbing';
-      
+
       e.preventDefault();
     });
 
     document.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
-      
+
       const deltaX = e.clientX - dragStartX;
       const deltaY = e.clientY - dragStartY;
-      
+
       // Mark as moved if dragged more than 5px
       if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
         hasMoved = true;
       }
-      
+
       // Get current widget dimensions
       const rect = widget.getBoundingClientRect();
       const currentWidth = rect.width;
       const currentHeight = rect.height;
-      
+
       // Calculate new position from current top-left
       const newX = widgetStartX + deltaX;
       const newY = widgetStartY + deltaY;
-      
+
       // Apply relaxed boundary constraints - allow widget to go off-screen
       // but keep at least 100px of draggable area visible
       const minVisibleWidth = Math.min(100, currentWidth);
       const minVisibleHeight = Math.min(50, currentHeight);
-      
+
       const minX = -currentWidth + minVisibleWidth;
       const maxX = window.innerWidth - minVisibleWidth;
       const minY = -currentHeight + minVisibleHeight;
       const maxY = window.innerHeight - minVisibleHeight;
-      
+
       const boundedX = Math.max(minX, Math.min(newX, maxX));
       const boundedY = Math.max(minY, Math.min(newY, maxY));
-      
+
       widget.style.left = boundedX + 'px';
       widget.style.top = boundedY + 'px';
       widget.style.right = 'auto';
@@ -323,108 +322,125 @@ export async function createWidgetDOM() {
     let touchWidgetStartY = 0;
     let touchHasMoved = false;
 
-    widget.addEventListener('touchstart', (e) => {
-      // Don't drag if touching input field or send button
-      if (e.target.closest('.message-input, .send-button')) return;
-      
-      // On mobile, only allow dragging when widget is collapsed
-      const isMobile = window.innerWidth <= 768;
-      const isExpanded = widget.classList.contains('expanded');
-      
-      if (isMobile && isExpanded) {
-        // Don't prevent default - allow normal scrolling in expanded chat
-        return;
-      }
-      
-      // Always prevent page scrolling when touching the widget (except expanded mobile)
-      e.preventDefault();
-      
-      touchStartTime = Date.now();
-      const touch = e.touches[0];
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-      touchHasMoved = false;
-      
-      // Set up drag state
-      isTouchDragging = true;
-      const rect = widget.getBoundingClientRect();
-      touchWidgetStartX = rect.left;
-      touchWidgetStartY = rect.top;
-      
-      widget.style.transition = 'none';
-    }, { passive: false });
+    widget.addEventListener(
+      'touchstart',
+      (e) => {
+        // Don't drag if touching input field or send button
+        if (e.target.closest('.message-input, .send-button')) return;
 
-    widget.addEventListener('touchmove', (e) => {
-      if (!isTouchDragging) return;
-      
-      // On mobile, only allow dragging when widget is collapsed
-      const isMobile = window.innerWidth <= 768;
-      const isExpanded = widget.classList.contains('expanded');
-      
-      if (isMobile && isExpanded) {
-        // Don't prevent default - allow normal scrolling in expanded chat
-        return;
-      }
-      
-      // Always prevent page scrolling when touching the widget (except expanded mobile)
-      e.preventDefault();
-      
-      const touch = e.touches[0];
-      const deltaX = touch.clientX - touchStartX;
-      const deltaY = touch.clientY - touchStartY;
-      
-      // Mark as moved if dragged more than 10px (larger threshold for touch)
-      if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
-        touchHasMoved = true;
-      }
-      
-      if (touchHasMoved) {
-        const newX = touchWidgetStartX + deltaX;
-        const newY = touchWidgetStartY + deltaY;
-        
-        // Get current widget dimensions for accurate boundary calculations
+        // On mobile, only allow dragging when widget is collapsed
+        const isMobile = window.innerWidth <= 768;
+        const isExpanded = widget.classList.contains('expanded');
+
+        if (isMobile && isExpanded) {
+          // Don't prevent default - allow normal scrolling in expanded chat
+          return;
+        }
+
+        // Always prevent page scrolling when touching the widget (except expanded mobile)
+        e.preventDefault();
+
+        touchStartTime = Date.now();
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchHasMoved = false;
+
+        // Set up drag state
+        isTouchDragging = true;
         const rect = widget.getBoundingClientRect();
-        const currentWidth = rect.width;
-        const currentHeight = rect.height;
-        
-        // Apply relaxed boundary constraints - allow widget to go off-screen
-        // but keep at least 100px of draggable area visible (or 80px on mobile)
-        const minVisibleWidth = Math.min(window.innerWidth <= 768 ? 80 : 100, currentWidth);
-        const minVisibleHeight = Math.min(50, currentHeight);
-        
-        const minX = -currentWidth + minVisibleWidth;
-        const maxX = window.innerWidth - minVisibleWidth;
-        const minY = -currentHeight + minVisibleHeight;
-        const maxY = window.innerHeight - minVisibleHeight;
-        
-        const boundedX = Math.max(minX, Math.min(newX, maxX));
-        const boundedY = Math.max(minY, Math.min(newY, maxY));
-        
-        widget.style.left = boundedX + 'px';
-        widget.style.top = boundedY + 'px';
-        widget.style.right = 'auto';
-        widget.style.bottom = 'auto';
-      }
-    }, { passive: false });
+        touchWidgetStartX = rect.left;
+        touchWidgetStartY = rect.top;
+
+        widget.style.transition = 'none';
+      },
+      { passive: false }
+    );
+
+    widget.addEventListener(
+      'touchmove',
+      (e) => {
+        if (!isTouchDragging) return;
+
+        // On mobile, only allow dragging when widget is collapsed
+        const isMobile = window.innerWidth <= 768;
+        const isExpanded = widget.classList.contains('expanded');
+
+        if (isMobile && isExpanded) {
+          // Don't prevent default - allow normal scrolling in expanded chat
+          return;
+        }
+
+        // Always prevent page scrolling when touching the widget (except expanded mobile)
+        e.preventDefault();
+
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+
+        // Mark as moved if dragged more than 10px (larger threshold for touch)
+        if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+          touchHasMoved = true;
+        }
+
+        if (touchHasMoved) {
+          const newX = touchWidgetStartX + deltaX;
+          const newY = touchWidgetStartY + deltaY;
+
+          // Get current widget dimensions for accurate boundary calculations
+          const rect = widget.getBoundingClientRect();
+          const currentWidth = rect.width;
+          const currentHeight = rect.height;
+
+          // Apply relaxed boundary constraints - allow widget to go off-screen
+          // but keep at least 100px of draggable area visible (or 80px on mobile)
+          const minVisibleWidth = Math.min(
+            window.innerWidth <= 768 ? 80 : 100,
+            currentWidth
+          );
+          const minVisibleHeight = Math.min(50, currentHeight);
+
+          const minX = -currentWidth + minVisibleWidth;
+          const maxX = window.innerWidth - minVisibleWidth;
+          const minY = -currentHeight + minVisibleHeight;
+          const maxY = window.innerHeight - minVisibleHeight;
+
+          const boundedX = Math.max(minX, Math.min(newX, maxX));
+          const boundedY = Math.max(minY, Math.min(newY, maxY));
+
+          widget.style.left = boundedX + 'px';
+          widget.style.top = boundedY + 'px';
+          widget.style.right = 'auto';
+          widget.style.bottom = 'auto';
+        }
+      },
+      { passive: false }
+    );
 
     widget.addEventListener('touchend', (e) => {
       // Don't prevent default if the touch target is an input field
       const target = e.target || e.changedTouches[0];
-      const isInputElement = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
-      
+      const isInputElement =
+        target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
+
       if (!isInputElement && !touchHasMoved) {
         e.preventDefault();
         e.stopPropagation();
       }
-      
+
       const touchEndTime = Date.now();
       const touchDuration = touchEndTime - touchStartTime;
-      
+
       // Only trigger expand if it's a quick tap and widget wasn't dragged
-      if (touchDuration < 300 && !touchHasMoved && !widget.classList.contains('expanded') && !isInputElement) {
+      if (
+        touchDuration < 300 &&
+        !touchHasMoved &&
+        !widget.classList.contains('expanded') &&
+        !isInputElement
+      ) {
         expandWidget();
       }
-      
+
       // Reset drag state
       isTouchDragging = false;
       widget.style.transition = 'all 0.3s ease';
@@ -447,9 +463,15 @@ export async function createWidgetDOM() {
     // Add click outside to collapse functionality (don't hide the widget)
     document.addEventListener('click', (e) => {
       const isClickInsideWidget = widget.contains(e.target);
-      const isClickOnToggle = e.target.closest('#chatWidgetToggle, #chatWidgetToggleContainer');
-      
-      if (!isClickInsideWidget && !isClickOnToggle && widget.classList.contains('expanded')) {
+      const isClickOnToggle = e.target.closest(
+        '#chatWidgetToggle, #chatWidgetToggleContainer'
+      );
+
+      if (
+        !isClickInsideWidget &&
+        !isClickOnToggle &&
+        widget.classList.contains('expanded')
+      ) {
         collapseWidget();
         // Don't hide the widget, just keep it collapsed
       }
@@ -468,22 +490,25 @@ export async function createWidgetDOM() {
 
     // Add specific touch handling for input field to ensure mobile keyboard appears
     if (inputField) {
-      inputField.addEventListener('touchstart', (e) => {
-        e.stopPropagation(); // Prevent widget touch handlers from interfering
-      }, { passive: true });
-      
+      inputField.addEventListener(
+        'touchstart',
+        (e) => {
+          e.stopPropagation(); // Prevent widget touch handlers from interfering
+        },
+        { passive: true }
+      );
+
       inputField.addEventListener('touchend', (e) => {
         e.stopPropagation(); // Prevent widget touch handlers from interfering
         // Allow default behavior for focusing the input
       });
-      
+
       // Ensure input field can be focused on mobile
       inputField.addEventListener('click', (e) => {
         e.stopPropagation();
         inputField.focus();
       });
     }
-
 
     // Add suggested prompts if available (keep for backward compatibility but won't be visible in collapsed state)
     const suggestedPrompts = getSuggestedPrompts();
@@ -508,7 +533,7 @@ export async function createWidgetDOM() {
 
     // Widget is open by default, so clear any notifications and show chat UI
     state.unreadMessages = 0;
-    updateChatUI();
+    updateConversationUI();
     updateNotificationBadge();
   } catch (error) {
     console.error('Error creating widget DOM:', error);
@@ -577,7 +602,7 @@ export function createLoadingWidget() {
     if (realWidget && state.isWidgetReady) {
       loadingWidget.remove();
       realWidget.classList.remove('hidden');
-      updateChatUI();
+      updateConversationUI();
       setTimeout(() => getElementById('chatWidgetInputField')?.focus(), 100);
     } else if (checkCount < maxChecks) {
       checkCount++;

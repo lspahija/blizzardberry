@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import {
   addMessage,
   deleteLastAssistantMessage,
-} from '@/app/api/lib/store/chatStore';
+} from '@/app/api/lib/store/conversationStore.ts';
 
 export async function POST(
   request,
