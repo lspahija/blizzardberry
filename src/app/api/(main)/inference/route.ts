@@ -1,8 +1,4 @@
-import { generateText, stepCountIs, convertToModelMessages } from 'ai';
-import {
-  createNewConversation,
-  addMessage,
-} from '@/app/api/lib/store/conversationStore.ts';
+import { convertToModelMessages, generateText, stepCountIs } from 'ai';
 import { getAgent } from '@/app/api/lib/store/agentStore';
 import { openrouter } from '@openrouter/ai-sdk-provider';
 import {
@@ -23,15 +19,6 @@ export async function POST(req: Request) {
     const agent = await getAgent(agentId);
     if (!agent) {
       return Response.json({ error: 'Agent not found' }, { status: 404 });
-    }
-
-    let usedConversationId = conversationId;
-    if (!usedConversationId) {
-      usedConversationId = await createNewConversation(
-        agentId,
-        agent.created_by,
-        userConfig || {}
-      );
     }
 
     const holdIds = await createCreditHold(
@@ -81,7 +68,7 @@ export async function POST(req: Request) {
       toolCalls: toolCalls,
       toolResults: toolResults,
       usage: result.usage,
-      conversationId: usedConversationId,
+      conversationId: conversationId,
     });
   } catch (error) {
     console.error('Error in chat API:', error);

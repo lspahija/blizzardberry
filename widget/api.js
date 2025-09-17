@@ -58,6 +58,28 @@ export async function fetchConversationMessages(conversationId) {
   }
 }
 
+export async function createNewConversation() {
+  try {
+    const response = await fetch(`${config.baseUrl}/api/conversations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        agentId: config.agentId,
+        endUserConfig: config.userConfig || {},
+      }),
+    });
+    if (!response.ok) return null;
+    const data = await response.json();
+    return {
+      conversationId: data.conversationId,
+      messages: data.messages || [],
+    };
+  } catch (e) {
+    console.error('Error creating new conversation:', e);
+    return null;
+  }
+}
+
 export async function callLLM() {
   const body = {
     messages: state.messages,
