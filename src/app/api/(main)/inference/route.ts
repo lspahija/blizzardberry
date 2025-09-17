@@ -10,6 +10,7 @@ import {
   recordUsedTokens,
 } from '@/app/api/lib/llm/tokenUsageManager';
 import { buildSystemMessage } from '@/app/api/lib/llm/systemMessageProvider';
+import { logger } from '@/app/api/lib/logger/logger';
 
 export async function POST(req: Request) {
   const { messages, userConfig, agentId, idempotencyKey, conversationId } =
@@ -71,7 +72,15 @@ export async function POST(req: Request) {
       conversationId: conversationId,
     });
   } catch (error) {
-    console.error('Error in chat API:', error);
+    logger.error({
+      error,
+      agentId,
+      conversationId,
+      idempotencyKey,
+      component: 'inference',
+      action: 'chat_completion'
+    }, 'Error in chat API');
+    
     return Response.json(
       { error: 'Failed to process conversation request' },
       { status: 500 }
