@@ -90,13 +90,84 @@ Navigate to the project directory and install dependencies:
 pnpm install
 ```
 
-### 7. Run the Development Server
+### 7. Set Up Supabase (Database)
+This project uses Supabase as the database. Follow these steps to set up your local development environment:
+
+#### Install Supabase CLI
+Install the Supabase CLI:
+```bash
+brew install supabase/tap/supabase
+```
+
+#### Login to Supabase
+First, authenticate with your Supabase account:
+```bash
+supabase login
+```
+This will open a browser window for you to sign in with your Supabase credentials.
+
+#### Link to the Remote Project
+Link your local environment to the remote Supabase project:
+```bash
+supabase link --project-ref pwlbhcjwuwsvszkvqexy
+```
+You'll be prompted to enter your database password (not your account password).
+
+#### Start Local Supabase
+Start the local Supabase development environment:
+```bash
+supabase start
+```
+This will:
+- Start local PostgreSQL, Auth, API, and Studio instances
+- Apply your local migrations (which should already match the remote project)
+- Load any seed data from `supabase/seed.sql`
+- Set up all the necessary services
+
+#### Pull Production Data (Optional)
+If you want to work with real production data locally:
+```bash
+supabase db dump --data-only -f supabase/seed.sql
+supabase db reset
+```
+
+#### Access Local Services
+Once Supabase is running locally, you can access:
+- **Supabase Studio**: http://localhost:54323 (database management UI)
+- **API**: http://localhost:54321
+- **Database**: localhost:54322 (PostgreSQL)
+
+#### Environment Variables
+The application will automatically connect to your local Supabase instance using the environment variables in your `.env.local` file. When you run `supabase start`, it provides the necessary connection details that should match your local environment configuration.
+
+#### Troubleshooting
+If you encounter issues:
+
+1. **"Project not found" error**: Make sure you're authenticated with Supabase:
+   ```bash
+   supabase login
+   ```
+
+2. **Port conflicts**: If ports are already in use, you can stop Supabase and restart:
+   ```bash
+   supabase stop
+   supabase start
+   ```
+
+3. **Database connection issues**: Ensure your local Supabase is running before starting the Next.js app.
+
+4. **Reset local database**: If you need a fresh start:
+   ```bash
+   supabase db reset
+   ```
+
+### 8. Run the Development Server
 Start the development server:
 ```bash
 pnpm dev
 ```
 
-### 8. Access the Application
+### 9. Access the Application
 Open your browser and visit:
 [http://localhost:3000](http://localhost:3000) to see the landing page.
 
@@ -111,10 +182,25 @@ Currently deployed to Vercel at https://blizzardberry.com/. App deploys automati
 
 # Development Notes
 
-## Connect to Supabase Database with Your Favorite Postgres Client
-- URL: `jdbc:postgresql://aws-0-us-east-2.pooler.supabase.com:5432/postgres`
-- user: `postgres.pwlbhcjwuwsvszkvqexy`
-- password: `[your Supabase password]`
+## Connect to Database with Your Favorite Postgres Client
+
+### Local Development Database
+When running `supabase start`, connect to your local database:
+- **Host**: `localhost`
+- **Port**: `54322`
+- **Database**: `postgres`
+- **User**: `postgres`
+- **Password**: `postgres`
+- **Connection URL**: `postgresql://postgres:postgres@localhost:54322/postgres`
+
+### Remote Production Database
+To connect directly to the remote Supabase database:
+- **URL**: `postgresql://postgres.pwlbhcjwuwsvszkvqexy:[YOUR_PASSWORD]@aws-0-us-east-2.pooler.supabase.com:5432/postgres`
+- **Host**: `aws-0-us-east-2.pooler.supabase.com`
+- **Port**: `5432`
+- **Database**: `postgres`
+- **User**: `postgres.pwlbhcjwuwsvszkvqexy`
+- **Password**: `[your Supabase password]`
 
 ## Autoupdate Dependencies
 - update `pnpm` with `pnpm self-update`
