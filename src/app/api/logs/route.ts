@@ -70,9 +70,15 @@ export async function POST(request: NextRequest) {
       stack_trace: logEntry.stack || logEntry.error?.stack,
       component: logEntry.component,
       action: logEntry.action,
-      error_type: logEntry.error?.type,
-      error_message: logEntry.error?.message,
-      context: logEntry.context ? JSON.stringify(logEntry.context) : null,
+      context: logEntry.context ? JSON.stringify({
+        ...logEntry.context,
+        ...(logEntry.error && {
+          error: {
+            type: logEntry.error.type,
+            message: logEntry.error.message,
+          }
+        })
+      }) : (logEntry.error ? JSON.stringify({ error: logEntry.error }) : null),
     })
 
     return NextResponse.json({ success: true })

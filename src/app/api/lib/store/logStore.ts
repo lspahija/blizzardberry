@@ -13,8 +13,6 @@ export interface LogRecord {
   stack_trace?: string
   component?: string
   action?: string
-  error_type?: string
-  error_message?: string
   context?: string // JSON string
   created_at?: Date
 }
@@ -34,14 +32,12 @@ export async function insertLog(log: LogRecord): Promise<number> {
   const result = await db`
     INSERT INTO logs (
       level, message, timestamp, source, url, user_agent, 
-      user_id, session_id, stack_trace, component, action,
-      error_type, error_message, context
+      user_id, session_id, stack_trace, component, action, context
     ) VALUES (
       ${log.level}, ${log.message}, ${log.timestamp}, ${log.source},
       ${log.url || null}, ${log.user_agent || null}, ${log.user_id || null},
       ${log.session_id || null}, ${log.stack_trace || null}, 
       ${log.component || null}, ${log.action || null},
-      ${log.error_type || null}, ${log.error_message || null},
       ${log.context ? db`${log.context}::jsonb` : null}
     ) RETURNING id
   `
@@ -125,8 +121,6 @@ export async function getLogs(query: LogQuery = {}): Promise<LogRecord[]> {
     stack_trace: row.stack_trace,
     component: row.component,
     action: row.action,
-    error_type: row.error_type,
-    error_message: row.error_message,
     context: row.context,
     created_at: row.created_at,
   }))

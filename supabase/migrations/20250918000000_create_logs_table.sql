@@ -11,8 +11,6 @@ CREATE TABLE IF NOT EXISTS logs (
   stack_trace TEXT,
   component VARCHAR(255),
   action VARCHAR(255),
-  error_type VARCHAR(255),
-  error_message TEXT,
   context JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
