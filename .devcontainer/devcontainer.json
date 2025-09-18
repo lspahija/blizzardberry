@@ -55,9 +55,14 @@
   "containerEnv": {
     "NODE_OPTIONS": "--max-old-space-size=4096",
     "CLAUDE_CONFIG_DIR": "/home/node/.claude",
-    "POWERLEVEL9K_DISABLE_GITSTATUS": "true"
+    "POWERLEVEL9K_DISABLE_GITSTATUS": "true",
+
+    // Override just the URLs that need host.docker.internal
+    "SUPABASE_URL": "http://host.docker.internal:54321",
+    "DATABASE_URL": "postgresql://postgres:postgres@host.docker.internal:54322/postgres",
+    "NEXT_PUBLIC_URL": "http://host.docker.internal:3000"
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",
-  "postCreateCommand": "pnpm install && if [ -f .env.devcontainer ]; then cp .env.devcontainer .env.local; fi"
+  "postCreateCommand": "pnpm install"
 }
