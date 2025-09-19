@@ -40,5 +40,10 @@ async function executeServerAction(actionModel) {
     headers: actionModel.headers,
     body: JSON.stringify(actionModel.body),
   });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+
   return await response.json();
 }
