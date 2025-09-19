@@ -122,10 +122,25 @@ function substitutePlaceholders(
     const placeholder = `{{${key}}}`;
     const replacement = Array.isArray(value)
       ? value.join(',')
-      : value.toString();
+      : String(value);
     result = result.replace(new RegExp(placeholder, 'g'), replacement);
   }
   return result;
+}
+
+function substituteBodyValue(
+  input: string,
+  params: Record<string, any>
+): any {
+  const placeholder = /^{{(.+)}}$/;
+  const match = input.match(placeholder);
+
+  if (match) {
+    const paramName = match[1];
+    return params[paramName];
+  }
+
+  return substitutePlaceholders(input, params);
 }
 
 function filterPlaceholderValues(
@@ -171,10 +186,10 @@ function substituteRequestModel(
     substitutedBody = {};
     for (const [key, value] of Object.entries(body)) {
       if (typeof value === 'string') {
-        substitutedBody[key] = substitutePlaceholders(value, params);
+        substitutedBody[key] = substituteBodyValue(value, params);
       } else if (Array.isArray(value)) {
         substitutedBody[key] = value.map((item) =>
-          typeof item === 'string' ? substitutePlaceholders(item, params) : item
+          typeof item === 'string' ? substituteBodyValue(item, params) : item
         );
       } else {
         substitutedBody[key] = value;
