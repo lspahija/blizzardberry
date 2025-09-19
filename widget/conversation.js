@@ -1,6 +1,15 @@
-import { generateId, getStoredConversationId, setStoredConversationId } from './util';
+import {
+  generateId,
+  getStoredConversationId,
+  setStoredConversationId,
+} from './util';
 import { state } from './state';
-import { callLLM, persistMessage, fetchConversationMessages, createNewConversation } from './api';
+import {
+  callLLM,
+  persistMessage,
+  fetchConversationMessages,
+  createNewConversation,
+} from './api';
 import { executeAction } from './actions';
 import { updateConversationUI } from './ui';
 import { updateNotificationBadge } from './dom';
@@ -113,7 +122,7 @@ export async function processMessage(messageText, role) {
       );
 
       for (const result of actionResults) {
-        await processMessage(result, 'assistant');
+        await processMessage(result, 'user');
       }
     }
 

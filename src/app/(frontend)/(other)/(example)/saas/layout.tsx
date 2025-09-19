@@ -52,6 +52,12 @@ export default function ExampleLayout({
           content="default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; img-src 'self' data: *; manifest-src 'self' *;"
         />
       </div>
+      <Script
+        id="blizzardberry-agent"
+        src="http://localhost:3000/agent/agent.js"
+        strategy="afterInteractive"
+        data-agent-id="de79fcce-57eb-42d7-83b3-d1cfc77d1f99"
+      />
     </>
   );
 }

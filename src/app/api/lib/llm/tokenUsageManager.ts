@@ -61,11 +61,23 @@ async function fetchModelPrices(): Promise<
 let DOLLAR_COSTS_PER_TOKEN: Record<
   AgentModel,
   { input: number; output: number }
->;
+> | null = null;
 
-(async () => {
-  DOLLAR_COSTS_PER_TOKEN = await fetchModelPrices();
-})();
+let costsPromise: Promise<void> | null = null;
+
+async function ensureCostsInitialized() {
+  if (DOLLAR_COSTS_PER_TOKEN) {
+    return;
+  }
+
+  if (!costsPromise) {
+    costsPromise = (async () => {
+      DOLLAR_COSTS_PER_TOKEN = await fetchModelPrices();
+    })();
+  }
+
+  await costsPromise;
+}
 
 export async function createCreditHold(
   userId: string,
@@ -91,6 +103,8 @@ export async function recordUsedTokens(
 
   console.log('Token Usage:', JSON.stringify(tokenUsage, null, 2));
 
+  await ensureCostsInitialized();
+
   await captureCredit(
     userId,
     holdIds,
@@ -104,6 +118,10 @@ export function mapTokenUsageToCreditUsage(
   tokenUsage: LanguageModelUsage,
   model: AgentModel
 ): number {
+  if (!DOLLAR_COSTS_PER_TOKEN) {
+    throw new Error('Model costs not initialized. Call ensureCostsInitialized() first.');
+  }
+
   const costs = DOLLAR_COSTS_PER_TOKEN[model];
   if (!costs) {
     throw new Error(`No dollar cost defined for model: ${model}`);
