@@ -1,10 +1,10 @@
 export async function POST(req: Request) {
   try {
-    const { fromLocation, toLocation, items } = await req.json();
+    const { sku, from, to, qty } = await req.json();
 
-    if (!fromLocation || !toLocation || !items || !Array.isArray(items)) {
+    if (!sku || !from || !to || qty === undefined) {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields: fromLocation, toLocation, items' }),
+        JSON.stringify({ error: 'Missing required fields: sku, from, to, qty' }),
         {
           headers: { 'Content-Type': 'application/json' },
           status: 400,
@@ -18,13 +18,10 @@ export async function POST(req: Request) {
     const transfer = {
       id: transferId,
       timestamp,
-      fromLocation,
-      toLocation,
-      items: items.map((item: any) => ({
-        itemId: item.itemId,
-        quantity: item.quantity,
-        name: item.name || `Item ${item.itemId}`,
-      })),
+      sku,
+      from,
+      to,
+      qty,
       status: 'pending',
       requestedBy: 'system',
     };
