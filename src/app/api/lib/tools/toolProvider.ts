@@ -48,6 +48,83 @@ export function createSearchKnowledgeBaseTool(agentId: string): Tool {
   });
 }
 
+export function createVisualizationTool(): Tool {
+  return tool({
+    description:
+      'Generate data visualizations when data would be better presented as charts or graphs. Use this when you have numerical data that shows trends, comparisons, distributions, or patterns.',
+    inputSchema: z.object({
+      data: z
+        .array(z.record(z.string(), z.any()))
+        .describe('Array of data objects to visualize'),
+      chartType: z
+        .enum(['bar', 'line', 'pie', 'area', 'scatter'])
+        .describe('Type of chart to generate'),
+      title: z.string().optional().describe('Chart title'),
+      xKey: z.string().describe('Key for x-axis data'),
+      yKey: z.string().describe('Key for y-axis data'),
+      options: z
+        .object({
+          width: z.number().optional(),
+          height: z.number().optional(),
+          colors: z.array(z.string()).optional(),
+          showLegend: z.boolean().optional(),
+          showGrid: z.boolean().optional(),
+        })
+        .optional()
+        .describe('Additional chart configuration options'),
+    }),
+    execute: async (input) => {
+      const { data, chartType, title, xKey, yKey, options = {} } = input;
+
+      try {
+        // Validate that data has the required keys
+        if (data.length === 0) {
+          return {
+            error: 'No data provided for visualization',
+            message: 'Cannot create a chart with empty data.',
+          };
+        }
+
+        const hasRequiredKeys = data.every(
+          (item) => item.hasOwnProperty(xKey) && item.hasOwnProperty(yKey)
+        );
+
+        if (!hasRequiredKeys) {
+          return {
+            error: 'Invalid data structure',
+            message: `Data must contain both "${xKey}" and "${yKey}" keys.`,
+          };
+        }
+
+        return {
+          type: 'visualization',
+          config: {
+            data,
+            chartType,
+            title: title || `${yKey} by ${xKey}`,
+            xKey,
+            yKey,
+            options: {
+              width: 600,
+              height: 400,
+              showLegend: true,
+              showGrid: true,
+              ...options,
+            },
+          },
+          message: `Generated ${chartType} chart showing ${title || `${yKey} by ${xKey}`}`,
+        };
+      } catch (error) {
+        console.error('Error creating visualization:', error);
+        return {
+          error: 'Failed to create visualization',
+          message: 'There was an error generating the chart.',
+        };
+      }
+    },
+  });
+}
+
 export async function getToolsFromActions(agentId: string) {
   const actions = await getActions(agentId);
   const tools: Record<string, Tool> = {};

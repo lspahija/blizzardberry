@@ -13,6 +13,7 @@ import {
 import { executeAction } from './actions';
 import { updateConversationUI } from './ui';
 import { updateNotificationBadge } from './dom';
+import { addVisualizationToMessage } from './visualization';
 
 function syncWidgetState() {
   const widget = document.getElementById('chatWidget');
@@ -130,13 +131,19 @@ export async function processMessage(messageText, role) {
     const hasSearchTool = toolResults?.some(
       (toolResult) => toolResult.toolName === 'search_knowledge_base'
     );
-    const hasOtherTools = toolResults?.some(
-      (toolResult) => toolResult.toolName !== 'search_knowledge_base'
+    const hasVisualizationTool = toolResults?.some(
+      (toolResult) => toolResult.toolName === 'visualize_data'
     );
+    const hasOtherTools = toolResults?.some(
+      (toolResult) => 
+        toolResult.toolName !== 'search_knowledge_base' && 
+        toolResult.toolName !== 'visualize_data'
+    );
+    
 
     if (
       text &&
-      (!toolResults || toolResults.length === 0 || hasSearchTool) &&
+      (!toolResults || toolResults.length === 0 || hasSearchTool || hasVisualizationTool) &&
       !hasOtherTools
     ) {
       state.messages.push({
@@ -145,6 +152,17 @@ export async function processMessage(messageText, role) {
         parts: [{ type: 'text', text }],
       });
       await persistMessage(state.messages[state.messages.length - 1]);
+
+      if (hasVisualizationTool && toolResults) {
+        for (const toolResult of toolResults) {
+          if (toolResult.toolName === 'visualize_data') {
+            const output = toolResult.output;
+            if (output && output.type === 'visualization') {
+              await addVisualizationToMessage(output);
+            }
+          }
+        }
+      }
 
       // Check widget state in real-time to avoid race conditions
       syncWidgetState();

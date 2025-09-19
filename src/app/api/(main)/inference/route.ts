@@ -3,6 +3,7 @@ import { getAgent } from '@/app/api/lib/store/agentStore';
 import { openrouter } from '@openrouter/ai-sdk-provider';
 import {
   createSearchKnowledgeBaseTool,
+  createVisualizationTool,
   getToolsFromActions,
 } from '@/app/api/lib/tools/toolProvider';
 import {
@@ -28,14 +29,17 @@ export async function POST(req: Request) {
       idempotencyKey
     );
 
+    const tools = {
+      ...(await getToolsFromActions(agentId)),
+      search_knowledge_base: createSearchKnowledgeBaseTool(agentId),
+      visualize_data: createVisualizationTool(),
+    };
+
     const result = await generateText({
       model: openrouter(agent.model),
       system: buildSystemMessage(userConfig),
       messages: convertToModelMessages(messages),
-      tools: {
-        ...(await getToolsFromActions(agentId)),
-        search_knowledge_base: createSearchKnowledgeBaseTool(agentId),
-      },
+      tools,
       stopWhen: stepCountIs(5),
     });
 

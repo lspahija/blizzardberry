@@ -17,6 +17,9 @@ export function renderMessagePart(part, messageId) {
   if (part.type === 'tool-invocation') {
     return '';
   }
+  if (part.type === 'html') {
+    return part.content || '';
+  }
   return '';
 }
 
