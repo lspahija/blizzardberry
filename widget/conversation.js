@@ -21,12 +21,13 @@ function syncWidgetState() {
   return isWidgetCurrentlyOpen;
 }
 
-export async function handleError(messageText) {
+export async function handleError(error) {
+  console.log('Error: Failed to get response. ' + error);
   state.isProcessing = false;
   state.messages.push({
     id: generateId(),
     role: 'assistant',
-    parts: [{ type: 'text', text: messageText }],
+    parts: [{ type: 'text', text: error }],
   });
   await persistMessage(state.messages[state.messages.length - 1]);
 
@@ -157,6 +158,6 @@ export async function processMessage(messageText, role) {
     state.isProcessing = false;
     updateConversationUI();
   } catch (error) {
-    await handleError('Error: Failed to get response. ' + error.message);
+    await handleError('Error: Failed to get response. ' + error);
   }
 }
