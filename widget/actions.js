@@ -5,6 +5,10 @@ import { config } from './config';
 
 export async function executeAction(actionModel) {
   try {
+    const actionResult = actionModel.toolName.startsWith('ACTION_CLIENT_')
+      ? await executeClientAction(actionModel)
+      : await executeServerAction(actionModel);
+
     state.messages.push({
       id: generateId(),
       role: 'assistant',
@@ -17,10 +21,6 @@ export async function executeAction(actionModel) {
     });
 
     await persistMessage(state.messages[state.messages.length - 1]);
-
-    const actionResult = actionModel.toolName.startsWith('ACTION_CLIENT_')
-      ? await executeClientAction(actionModel)
-      : await executeServerAction(actionModel);
 
     return `ACTION_RESULT: ${JSON.stringify(actionResult)}`;
   } catch (error) {
