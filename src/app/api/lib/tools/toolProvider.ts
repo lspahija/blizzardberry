@@ -80,7 +80,6 @@ export function createVisualizationTool(): Tool {
       const { data, chartType, title, xKey, yKey, options = {} } = input;
 
       try {
-        // Validate that data has the required keys
         if (data.length === 0) {
           return {
             error: 'No data provided for visualization',
@@ -88,7 +87,6 @@ export function createVisualizationTool(): Tool {
           };
         }
 
-        // If explicit keys are provided, validate presence; otherwise allow auto-inference
         if (xKey || yKey) {
           const yKeys = Array.isArray(yKey) ? yKey : yKey ? [yKey] : [];
           const hasRequiredKeys = data.every((item) => {
@@ -116,7 +114,6 @@ export function createVisualizationTool(): Tool {
                 : yKey
                 ? `${yKey} by ${xKey ?? 'auto'}`
                 : 'Visualization'),
-            // Only include keys when explicitly provided; Chart generator can infer otherwise
             ...(xKey ? { xKey } : {}),
             ...(yKey ? { yKey } : {}),
             options: {
