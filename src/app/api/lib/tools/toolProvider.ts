@@ -60,8 +60,11 @@ export function createVisualizationTool(): Tool {
         .enum(['bar', 'line', 'pie', 'area', 'scatter'])
         .describe('Type of chart to generate'),
       title: z.string().optional().describe('Chart title'),
-      xKey: z.string().describe('Key for x-axis data'),
-      yKey: z.string().describe('Key for y-axis data'),
+      xKey: z.string().optional().describe('Key for x-axis data (optional, inferred if omitted)'),
+      yKey: z
+        .union([z.string(), z.array(z.string())])
+        .optional()
+        .describe('Key(s) for y-axis/series (optional, inferred if omitted)'),
       options: z
         .object({
           width: z.number().optional(),
@@ -85,15 +88,20 @@ export function createVisualizationTool(): Tool {
           };
         }
 
-        const hasRequiredKeys = data.every(
-          (item) => item.hasOwnProperty(xKey) && item.hasOwnProperty(yKey)
-        );
-
-        if (!hasRequiredKeys) {
-          return {
-            error: 'Invalid data structure',
-            message: `Data must contain both "${xKey}" and "${yKey}" keys.`,
-          };
+        // If explicit keys are provided, validate presence; otherwise allow auto-inference
+        if (xKey || yKey) {
+          const yKeys = Array.isArray(yKey) ? yKey : yKey ? [yKey] : [];
+          const hasRequiredKeys = data.every((item) => {
+            const hasX = xKey ? Object.prototype.hasOwnProperty.call(item, xKey) : true;
+            const hasYs = yKeys.every((k) => Object.prototype.hasOwnProperty.call(item, k));
+            return hasX && hasYs;
+          });
+          if (!hasRequiredKeys) {
+            return {
+              error: 'Invalid data structure',
+              message: 'One or more specified keys are missing in the data.',
+            };
+          }
         }
 
         return {
@@ -101,9 +109,16 @@ export function createVisualizationTool(): Tool {
           config: {
             data,
             chartType,
-            title: title || `${yKey} by ${xKey}`,
-            xKey,
-            yKey,
+            title:
+              title ||
+              (Array.isArray(yKey)
+                ? `${yKey.join(', ')} by ${xKey ?? 'auto'}`
+                : yKey
+                ? `${yKey} by ${xKey ?? 'auto'}`
+                : 'Visualization'),
+            // Only include keys when explicitly provided; Chart generator can infer otherwise
+            ...(xKey ? { xKey } : {}),
+            ...(yKey ? { yKey } : {}),
             options: {
               width: 600,
               height: 400,
@@ -112,7 +127,10 @@ export function createVisualizationTool(): Tool {
               ...options,
             },
           },
-          message: `Generated ${chartType} chart showing ${title || `${yKey} by ${xKey}`}`,
+          message:
+            title
+              ? `Generated ${chartType} chart: ${title}`
+              : `Generated ${chartType} chart`,
         };
       } catch (error) {
         console.error('Error creating visualization:', error);
