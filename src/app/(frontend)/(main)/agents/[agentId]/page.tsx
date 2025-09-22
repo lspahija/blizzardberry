@@ -353,13 +353,13 @@ function AgentDetails({
           className="border-[3px] border-border bg-card mb-6 rounded-xl shadow-xl border-l-8"
           style={{ borderLeftColor: 'var(--color-destructive)' }}
         >
-          <CardHeader className="pb-2 flex items-center justify-between">
-            <CardTitle className="text-xl sm:text-2xl font-bold text-foreground ml-6">
+          <CardHeader className="pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 min-w-0">
+            <CardTitle className="text-xl sm:text-2xl font-bold text-foreground ml-6 flex-1 truncate">
               Agent Details
             </CardTitle>
-            <div className="flex gap-3">
+            <div className="flex gap-2 flex-wrap w-full sm:w-auto">
               <Button
-                className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 shadow-md hover:bg-secondary/90"
+                className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-lg px-4 py-2 flex items-center gap-2 shadow-md hover:bg-secondary/90 w-full sm:w-auto"
                 onClick={() => setShowAgentCode(true)}
                 title="Show installation code for this agent"
               >
@@ -369,7 +369,7 @@ function AgentDetails({
               <Button
                 onClick={saveChanges}
                 disabled={isSaving}
-                className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-6 py-2 flex items-center gap-2"
+                className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-6 py-2 flex items-center gap-2 w-full sm:w-auto"
               >
                 {isSaving ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -386,12 +386,14 @@ function AgentDetails({
                 <Bot className="h-4 w-4 text-destructive" />
                 Name:
               </Label>
-              <Input
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                placeholder="Agent Name"
-                className="border-[2px] border-border ml-6"
-              />
+              <div className="ml-6">
+                <Input
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Agent Name"
+                  className="border-[2px] border-border"
+                />
+              </div>
             </div>
 
             <div>
@@ -399,12 +401,14 @@ function AgentDetails({
                 <Globe className="h-4 w-4 text-destructive" />
                 Domain:
               </Label>
-              <Input
-                value={editWebsiteDomain}
-                onChange={(e) => setEditWebsiteDomain(e.target.value)}
-                placeholder="example.com"
-                className="border-[2px] border-border ml-6"
-              />
+              <div className="ml-6">
+                <Input
+                  value={editWebsiteDomain}
+                  onChange={(e) => setEditWebsiteDomain(e.target.value)}
+                  placeholder="example.com"
+                  className="border-[2px] border-border"
+                />
+              </div>
             </div>
 
             <div>
@@ -512,14 +516,14 @@ function AgentDetails({
             <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Actions Section */}
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-start sm:items-center justify-between mb-4 gap-2 flex-wrap">
                   <div className="flex items-center space-x-2">
                     <Zap className="h-5 w-5 text-destructive" />
                     <h3 className="text-lg font-semibold text-foreground">Actions</h3>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap w-full sm:w-auto">
                     <Button
-                      className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand/90"
+                      className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand/90 w-full sm:w-auto"
                       onClick={handleNavigateToNewAction}
                       disabled={isNavigatingToNewAction}
                     >
@@ -537,7 +541,7 @@ function AgentDetails({
                     </Button>
                     {clientActions.length > 0 && (
                       <Button
-                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-md hover:bg-secondary/90"
+                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-md hover:bg-secondary/90 w-full sm:w-auto"
                         onClick={() => setShowClientActions(true)}
                         title="Show code for client actions"
                       >
@@ -563,19 +567,19 @@ function AgentDetails({
                           key={action.id || action.name}
                           className="border-t pt-2 flex flex-row items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2"
                         >
-                          <div className="flex-1">
-                            <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-base sm:text-lg text-foreground font-semibold mb-1 truncate">
                               {action.name}
                             </p>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
                               <span className="font-semibold">Description:</span>{' '}
                               {action.description}
                             </p>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
                               <span className="font-semibold">Context:</span>{' '}
                               {action.executionContext}
                             </p>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
                               <span className="font-semibold">Model:</span>{' '}
                               {action.executionContext === ExecutionContext.SERVER ? (
                                 <>
@@ -591,7 +595,7 @@ function AgentDetails({
                                 (action as FrontendAction).executionModel.functionName
                               )}
                             </p>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
                               <span className="font-semibold">Parameters:</span>{' '}
                               {(action.executionModel.parameters || []).length > 0
                                 ? (action.executionModel.parameters || [])
@@ -603,7 +607,7 @@ function AgentDetails({
                                 : 'None'}
                             </p>
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 shrink-0">
                             <Button
                               variant="outline"
                               size="icon"
@@ -645,13 +649,13 @@ function AgentDetails({
 
               {/* Documents Section */}
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-start sm:items-center justify-between mb-4 gap-2 flex-wrap">
                   <div className="flex items-center space-x-2">
                     <FileText className="h-5 w-5 text-destructive" />
                     <h3 className="text-lg font-semibold text-foreground">Documents</h3>
                   </div>
                   <Button
-                    className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand/90"
+                    className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand/90 w-full sm:w-auto"
                     onClick={handleNavigateToNewDocument}
                     disabled={isNavigatingToNewDocument}
                   >
@@ -684,17 +688,17 @@ function AgentDetails({
                           key={doc.id}
                           className="border-t pt-2 flex flex-row items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2"
                         >
-                          <div className="flex-1">
+                          <div className="flex-1 min-w-0">
                             <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
                               Document {idx + 1}
                             </p>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
                               <span className="font-semibold">Content:</span>{' '}
                               {doc.content.length > 100
                                 ? `${doc.content.substring(0, 100)}...`
                                 : doc.content}
                             </p>
-                            <div className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            <div className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
                               <span className="font-semibold">Metadata:</span>
                               <ul>
                                 {Object.entries(doc.metadata)
@@ -725,7 +729,7 @@ function AgentDetails({
                           <Button
                             variant="destructive"
                             size="icon"
-                            className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
+                            className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110 shrink-0"
                             onClick={() => {
                               setDocumentToDelete(doc);
                               setIsDeleteDocumentDialogOpen(true);
