@@ -436,35 +436,35 @@ export default function UnifiedActionForm({
                   />
                 </div>
 
-                {/* Type and Array */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-sm font-medium">Type</Label>
-                    <Select
-                      value={input.type}
-                      onValueChange={(value) => updateDataInput(index, 'type', value)}
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Text">Text</SelectItem>
-                        <SelectItem value="Number">Number</SelectItem>
-                        <SelectItem value="Boolean">Boolean</SelectItem>
-                        <SelectItem value="Date">Date</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-center space-x-2 mt-6">
-                    <input
-                      type="checkbox"
-                      id={`isArray-${index}`}
-                      checked={input.isArray}
-                      onChange={(e) => updateDataInput(index, 'isArray', e.target.checked)}
-                      className="h-4 w-4"
-                    />
-                    <Label htmlFor={`isArray-${index}`} className="text-sm">Is Array</Label>
-                  </div>
+                {/* Type */}
+                <div>
+                  <Label className="text-sm font-medium">Type</Label>
+                  <Select
+                    value={input.type}
+                    onValueChange={(value) => updateDataInput(index, 'type', value)}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Text">Text</SelectItem>
+                      <SelectItem value="Number">Number</SelectItem>
+                      <SelectItem value="Boolean">Boolean</SelectItem>
+                      <SelectItem value="Date">Date</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Array checkbox */}
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id={`isArray-${index}`}
+                    checked={input.isArray}
+                    onChange={(e) => updateDataInput(index, 'isArray', e.target.checked)}
+                    className="h-4 w-4"
+                  />
+                  <Label htmlFor={`isArray-${index}`} className="text-sm font-medium">Is Array</Label>
                 </div>
               </div>
             ))}
