@@ -568,7 +568,8 @@ export default function UnifiedActionForm({
               </div>
 
               {/* Request Body */}
-              {baseAction.executionContext === ExecutionContext.SERVER && (
+              {baseAction.executionContext === ExecutionContext.SERVER &&
+               (apiMethod === 'POST' || apiMethod === 'PUT' || apiMethod === 'PATCH') && (
                 <div>
                   <Label
                     htmlFor="apiBody"
