@@ -169,7 +169,7 @@ export default function UnifiedActionForm({
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
 
-    // Validiraj osnovne informacije
+    // Validate basic information
     if (!baseAction.name.trim()) {
       newErrors.name = 'Action name is required';
     }
@@ -177,11 +177,11 @@ export default function UnifiedActionForm({
       newErrors.description = 'Description is required';
     }
 
-    // Validiraj data inputs - mora imati barem jedan
+    // Validate data inputs - must have at least one
     if (dataInputs.length === 0) {
       newErrors.dataInputs = 'At least one data input is required';
     } else {
-      // Provjeri da svi data inputi imaju ime i opis
+      // Check that all data inputs have name and description
       const invalidInputs = dataInputs.some(input => !input.name.trim() || !input.description.trim());
       if (invalidInputs) {
         newErrors.dataInputs = 'All data inputs must have name and description';
