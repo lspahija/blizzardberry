@@ -12,8 +12,9 @@ function extractAgentId() {
 
 function initializeConfig() {
   const agentScript = document.currentScript;
-  const src = agentScript.getAttribute('src');
-  const baseUrl = new URL(src).origin;
+  const srcAttr = agentScript.getAttribute('src');
+  const fullUrl = new URL(srcAttr, window.location.href);
+  const baseUrl = fullUrl.origin;
 
   const agentId = extractAgentId();
 
