@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import UnifiedActionForm from '@/app/(frontend)/components/UnifiedActionForm';
 import ClientActionImplementation from '@/app/(frontend)/components/ClientActionImplementation';
+import SuccessOverlay from '@/app/(frontend)/components/ui/success-overlay';
 import { Loader2 } from 'lucide-react'; // Import a loading icon
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
@@ -45,6 +46,7 @@ function ActionFormContent() {
     apiBody,
     setApiBody,
     isCreatingAction,
+    showSuccess,
     createdClientAction,
     handleCreateAction,
   } = useActionForm();
@@ -60,6 +62,7 @@ function ActionFormContent() {
     });
     router.push(`/agents/${agentId}`);
   };
+
 
   // Show success screen for client actions
   if (
@@ -119,6 +122,11 @@ function ActionFormContent() {
         onCreateAction={handleCreateAction}
         isCreatingAction={isCreatingAction}
       />
+
+      {/* Show success overlay for server actions */}
+      {showSuccess && baseAction.executionContext === ExecutionContext.SERVER && (
+        <SuccessOverlay />
+      )}
     </motion.div>
   );
 }
