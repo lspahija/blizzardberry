@@ -20,6 +20,7 @@
         0 0 calc(40px * var(--shadow-intensity)) rgba(225, 29, 72, calc(0.2 * var(--shadow-intensity))),
         0 0 calc(80px * var(--shadow-intensity)) rgba(225, 29, 72, calc(0.1 * var(--shadow-intensity)));
     -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     /* Ensure touch events work properly on mobile */
     -webkit-user-select: none;
@@ -67,6 +68,7 @@
     border-radius: 50px;
     overflow: hidden;
     -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
 }
@@ -286,6 +288,148 @@
     color: white;
 }
 
+/* Visualization: minimized tile and modal */
+.viz-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 10px;
+    padding: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.viz-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(148, 163, 184, 0.4);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.viz-card .viz-dim-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(31, 41, 55, 0.4), rgba(31, 41, 55, 0.6));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e5e7eb;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+}
+
+.viz-card--compact {
+    min-height: 24px;
+    padding: 8px;
+}
+
+.viz-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    color: #e5e7eb;
+    font-size: 11px;
+    line-height: 1;
+}
+
+.viz-chip-icon { font-size: 12px; line-height: 1; }
+.viz-chip-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+
+.viz-card .viz-title {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    right: 38px;
+    color: #cbd5e1;
+    font-weight: 600;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+}
+
+.viz-card .viz-expand-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e5e7eb;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    pointer-events: none;
+}
+
+.viz-modal-backdrop {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 2147483646;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.viz-modal-backdrop.visible { display: flex; }
+
+.viz-modal {
+    width: min(95vw, 1400px);
+    height: min(90vh, 1000px);
+    background: #0b0f17;
+    border: 1px solid #1f2937;
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.viz-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: #0f172a;
+    border-bottom: 1px solid #1f2937;
+    color: #e2e8f0;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.viz-modal-close {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    color: #e5e7eb;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.viz-modal-close:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(148, 163, 184, 0.4);
+}
+
+.viz-modal-content { flex: 1; position: relative; }
+.viz-modal-content canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+
 /* Tool Invocation and Results */
 .tool-invocation {
     background-color: #f1f5f9;
@@ -496,9 +640,6 @@
         font-size: 11px;
         margin-right: 6px;
     }
-}
-
-
 /* Loading Widget Styles */
 .chat-widget-loading {
     width: 380px;

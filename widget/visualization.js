@@ -13,7 +13,13 @@ window.initializeCharts = function() {
   chartElements.forEach(element => {
     const containerId = element.id.replace('chart-init-', '');
     const config = JSON.parse(element.getAttribute('data-chart-config'));
-    initializeSingleChart(containerId, config);
+      const isCompact = element.getAttribute('data-compact-preview') === 'true';
+    if (isCompact) {
+      // Don't render a preview chart; only bind click to open modal
+      attachCardClickById(containerId, config);
+    } else {
+      initializeSingleChart(containerId, config);
+    }
   });
 };
 
@@ -28,6 +34,7 @@ function initializeSingleChart(containerId, config) {
     try {
       const chart = new Chart(ctx, config);
       console.log('Chart created successfully:', chart);
+      attachCardClickToOpenModal(ctx, config);
     } catch (error) {
       console.error('Error creating chart:', error);
     }
@@ -62,11 +69,13 @@ export async function addVisualizationToMessage(visualizationResult) {
 function generateChartHTML(inputConfig) {
   const { data, chartType } = inputConfig;
   const options = inputConfig.options || {};
-  const width = options.width || 800;
-  const height = options.height || 400;
+  const width = options.width || 640;
+  const height = options.height || 220;
+  const previewHeight = Math.max(32, Math.min(height, options.previewHeight ?? 72));
   const colors = options.colors || DEFAULT_COLORS;
   const showLegend = options.showLegend !== false;
   const showGrid = options.showGrid !== false;
+  const compactPreview = options.compactPreview !== false; // default: compact preview enabled
 
   const containerId = `chart-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
@@ -93,19 +102,23 @@ function generateChartHTML(inputConfig) {
     showGrid
   );
 
+  if (compactPreview) {
+    const label = inputConfig.title ? escapeHtml(inputConfig.title) : 'Open chart';
+    return `
+      <div class="viz-card viz-card--compact" data-viz-container="${containerId}" style="width: 100%; margin: 6px 0;">
+        <div class="viz-chip"><span class="viz-chip-icon">📊</span><span class="viz-chip-text">${label}</span></div>
+        <div id="chart-init-${containerId}" data-compact-preview="true" data-chart-config='${JSON.stringify(chartConfig)}'></div>
+      </div>
+    `;
+  }
+
   return `
-      <div style="
-        width: 100%; 
-        margin: 16px 0; 
-        padding: 16px; 
-        border: 2px solid #e2e8f0; 
-        border-radius: 8px; 
-        background: #ffffff;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      ">
-        ${inputConfig.title ? `<h3 style="text-align: center; margin-bottom: 16px; font-size: 18px; font-weight: 600; color: #1f2937;">${inputConfig.title}</h3>` : ''}
-        <div style="position: relative; height: ${height}px; width: 100%;">
-          <canvas id="${containerId}" width="${width}" height="${height}"></canvas>
+      <div class="viz-card" data-viz-container="${containerId}" style="width: 100%; margin: 12px 0;">
+        ${inputConfig.title ? `<div class="viz-title">${escapeHtml(inputConfig.title)}</div>` : ''}
+        <div class="viz-expand-icon">⤢</div>
+        <div style="position: relative; height: ${previewHeight}px; width: 100%; overflow: hidden; filter: grayscale(0.9) contrast(0.9) brightness(0.9);">
+          <canvas id="${containerId}" width="${width}" height="${previewHeight}" style="position: absolute; inset: 0; width: 100% !important; height: 100% !important;"></canvas>
+          <div class="viz-dim-overlay">Click to expand</div>
         </div>
         <div id="chart-init-${containerId}" data-chart-config='${JSON.stringify(chartConfig)}'></div>
       </div>
@@ -251,4 +264,133 @@ function mapChartType(chartType) {
     case 'scatter': return 'scatter';
     default: return 'bar';
   }
+}
+
+// Modal helpers
+function getOrCreateModalShell() {
+  if (document.getElementById('vizModalBackdrop')) {
+    return '';
+  }
+  return `
+    <div id=\"vizModalBackdrop\" class=\"viz-modal-backdrop\">
+      <div class=\"viz-modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"vizModalTitle\">
+        <div class=\"viz-modal-header\">
+          <div id=\"vizModalTitle\">Visualization</div>
+          <button class=\"viz-modal-close\" id=\"vizModalCloseBtn\">Close</button>
+        </div>
+        <div class=\"viz-modal-content\">
+          <canvas id=\"vizModalCanvas\"></canvas>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function attachCardClickToOpenModal(canvasEl, chartConfig) {
+  const card = canvasEl.closest('.viz-card');
+  if (!card) return;
+  if (card.dataset.bound === '1') return;
+  card.dataset.bound = '1';
+
+  const handler = (e) => {
+    e.stopPropagation();
+    openVisualizationModal(card, chartConfig);
+  };
+  card.addEventListener('click', handler);
+}
+
+function attachCardClickById(containerId, chartConfig) {
+  const card = document.querySelector(`.viz-card[data-viz-container="${containerId}"]`);
+  if (!card || card.dataset.bound === '1') return;
+  card.dataset.bound = '1';
+  card.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openVisualizationModal(card, chartConfig);
+  });
+}
+
+function openVisualizationModal(card, chartConfig) {
+  let backdrop = document.getElementById('vizModalBackdrop');
+  if (!backdrop) {
+    const container = document.createElement('div');
+    container.innerHTML = getOrCreateModalShell();
+    const node = container.firstElementChild;
+    if (node) document.body.appendChild(node);
+    backdrop = document.getElementById('vizModalBackdrop');
+  } else if (backdrop.parentElement !== document.body) {
+    document.body.appendChild(backdrop);
+  }
+
+  const closeBtn = document.getElementById('vizModalCloseBtn');
+  const titleEl = document.getElementById('vizModalTitle');
+  const modalCanvas = document.getElementById('vizModalCanvas');
+
+  const title = card.querySelector('.viz-title')?.textContent?.trim() || 'Visualization';
+  if (titleEl) titleEl.textContent = title;
+
+  backdrop.classList.add('visible');
+  const prevOverflow = document.body.style.overflow;
+  document.body.dataset.prevOverflow = prevOverflow;
+  document.body.style.overflow = 'hidden';
+
+  if (modalCanvas.__chartInstance) {
+    try { modalCanvas.__chartInstance.destroy(); } catch (_) {}
+  }
+
+  const modalConfig = JSON.parse(JSON.stringify(chartConfig));
+  modalConfig.options = modalConfig.options || {};
+  modalConfig.options.maintainAspectRatio = false;
+  modalConfig.options.responsive = true;
+
+  // Defer to ensure layout is visible
+  setTimeout(() => {
+    try {
+      modalCanvas.__chartInstance = new Chart(modalCanvas.getContext('2d'), modalConfig);
+    } catch (err) {
+      console.error('Error creating modal chart', err);
+    }
+  }, 0);
+
+  const onKey = (ev) => {
+    if (ev.key === 'Escape') {
+      closeVisualizationModal();
+    }
+  };
+
+  const onBackdropClick = (ev) => {
+    if (ev.target === backdrop) {
+      closeVisualizationModal();
+    }
+  };
+
+  const onClose = () => closeVisualizationModal();
+
+  document.addEventListener('keydown', onKey);
+  backdrop.addEventListener('click', onBackdropClick, { once: true });
+  if (closeBtn) closeBtn.addEventListener('click', onClose, { once: true });
+
+  backdrop.__cleanup = () => {
+    document.removeEventListener('keydown', onKey);
+  };
+}
+
+function closeVisualizationModal() {
+  const backdrop = document.getElementById('vizModalBackdrop');
+  if (!backdrop) return;
+  backdrop.classList.remove('visible');
+  if (backdrop.__cleanup) {
+    try { backdrop.__cleanup(); } catch (_) {}
+    backdrop.__cleanup = null;
+  }
+  const prevOverflow = document.body.dataset.prevOverflow || '';
+  document.body.style.overflow = prevOverflow;
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
