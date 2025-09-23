@@ -41,6 +41,7 @@ export async function POST(req: Request) {
       messages: convertToModelMessages(messages),
       tools,
       stopWhen: stepCountIs(5),
+      maxOutputTokens: 1000,
     });
 
     // Handle token usage
@@ -60,13 +61,6 @@ export async function POST(req: Request) {
     const toolResults =
       result.steps?.flatMap((step) => step.toolResults || []) || [];
 
-    const hasSearchTool = toolCalls?.some(
-      (toolCall) => toolCall.toolName === 'search_knowledge_base'
-    );
-    const hasOtherTools = toolCalls?.some(
-      (toolCall) => toolCall.toolName !== 'search_knowledge_base'
-    );
-
     return Response.json({
       text: result.text,
       toolCalls: toolCalls,
@@ -75,7 +69,7 @@ export async function POST(req: Request) {
       conversationId: conversationId,
     });
   } catch (error) {
-    console.error('Error in chat API:', error);
+    console.error('Error in inference API:', error);
     return Response.json(
       { error: 'Failed to process conversation request' },
       { status: 500 }
