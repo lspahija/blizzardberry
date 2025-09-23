@@ -12,7 +12,9 @@ function extractAgentId() {
 
 function initializeConfig() {
   const agentScript = document.currentScript;
-  const baseUrl = new URL(agentScript.src).origin;
+  const src = agentScript.getAttribute('src');
+  const baseUrl = new URL(src).origin;
+
   const agentId = extractAgentId();
 
   console.log('BlizzardBerry Agent initialized:', { agentId, baseUrl });
