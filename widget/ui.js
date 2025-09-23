@@ -1,6 +1,13 @@
 import { state } from './state';
 import { convertBoldFormatting, getElementById } from './util';
 
+function stripMarkdownImages(input) {
+  if (!input) return input;
+  let output = input.replace(/!\[[^\]]*\]\([^\)]+\)/g, '');
+  output = output.replace(/\n{3,}/g, '\n\n');
+  return output;
+}
+
 export function renderMessagePart(part, messageId) {
   if (part.type === 'text') {
     const thinkMatch = part.text.match(
@@ -10,9 +17,11 @@ export function renderMessagePart(part, messageId) {
       if (!state.loggedThinkMessages.has(messageId)) {
         state.loggedThinkMessages.add(messageId);
       }
-      return `<div class="text-part">${convertBoldFormatting(thinkMatch[2].trim())}</div>`;
+      const clean = stripMarkdownImages(thinkMatch[2].trim());
+      return `<div class="text-part">${convertBoldFormatting(clean)}</div>`;
     }
-    return `<div class="text-part">${convertBoldFormatting(part.text)}</div>`;
+    const clean = stripMarkdownImages(part.text);
+    return `<div class="text-part">${convertBoldFormatting(clean)}</div>`;
   }
   if (part.type === 'tool-invocation') {
     return '';
