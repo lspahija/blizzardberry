@@ -8,6 +8,7 @@ import {
 } from '@/app/api/lib/model/action/baseAction';
 import { HttpRequest, Body } from '@/app/api/lib/model/action/backendAction';
 import { similaritySearch } from '../store/documentStore';
+import { toCamelCase } from '@/app/(frontend)/lib/actionUtils.ts';
 
 export function createSearchKnowledgeBaseTool(agentId: string): Tool {
   return tool({
@@ -60,7 +61,10 @@ export function createVisualizationTool(): Tool {
         .enum(['bar', 'line', 'pie', 'area', 'scatter'])
         .describe('Type of chart to generate'),
       title: z.string().optional().describe('Chart title'),
-      xKey: z.string().optional().describe('Key for x-axis data (optional, inferred if omitted)'),
+      xKey: z
+        .string()
+        .optional()
+        .describe('Key for x-axis data (optional, inferred if omitted)'),
       yKey: z
         .union([z.string(), z.array(z.string())])
         .optional()
@@ -90,8 +94,12 @@ export function createVisualizationTool(): Tool {
         if (xKey || yKey) {
           const yKeys = Array.isArray(yKey) ? yKey : yKey ? [yKey] : [];
           const hasRequiredKeys = data.every((item) => {
-            const hasX = xKey ? Object.prototype.hasOwnProperty.call(item, xKey) : true;
-            const hasYs = yKeys.every((k) => Object.prototype.hasOwnProperty.call(item, k));
+            const hasX = xKey
+              ? Object.prototype.hasOwnProperty.call(item, xKey)
+              : true;
+            const hasYs = yKeys.every((k) =>
+              Object.prototype.hasOwnProperty.call(item, k)
+            );
             return hasX && hasYs;
           });
           if (!hasRequiredKeys) {
@@ -112,8 +120,8 @@ export function createVisualizationTool(): Tool {
               (Array.isArray(yKey)
                 ? `${yKey.join(', ')} by ${xKey ?? 'auto'}`
                 : yKey
-                ? `${yKey} by ${xKey ?? 'auto'}`
-                : 'Visualization'),
+                  ? `${yKey} by ${xKey ?? 'auto'}`
+                  : 'Visualization'),
             ...(xKey ? { xKey } : {}),
             ...(yKey ? { yKey } : {}),
             options: {
@@ -124,10 +132,9 @@ export function createVisualizationTool(): Tool {
               ...options,
             },
           },
-          message:
-            title
-              ? `Generated ${chartType} chart: ${title}`
-              : `Generated ${chartType} chart`,
+          message: title
+            ? `Generated ${chartType} chart: ${title}`
+            : `Generated ${chartType} chart`,
         };
       } catch (error) {
         console.error('Error creating visualization:', error);
@@ -159,12 +166,12 @@ export async function getToolsFromActions(agentId: string) {
 
     const executeFunction: (params: any) => Promise<any> =
       action.executionContext === ExecutionContext.SERVER
-        ? async ( params ) =>
+        ? async (params) =>
             substituteRequestModel(action.executionModel.request, params)
-        : async ( params ) => {
+        : async (params) => {
             const filteredParams = filterPlaceholderValues(params);
             return {
-              functionName: action.executionModel.functionName,
+              functionName: toCamelCase(action.executionModel.functionName),
               params: filteredParams,
             };
           };
@@ -212,18 +219,13 @@ function substitutePlaceholders(
   let result = input;
   for (const [key, value] of Object.entries(params)) {
     const placeholder = `{{${key}}}`;
-    const replacement = Array.isArray(value)
-      ? value.join(',')
-      : String(value);
+    const replacement = Array.isArray(value) ? value.join(',') : String(value);
     result = result.replace(new RegExp(placeholder, 'g'), replacement);
   }
   return result;
 }
 
-function substituteBodyValue(
-  input: string,
-  params: Record<string, any>
-): any {
+function substituteBodyValue(input: string, params: Record<string, any>): any {
   const placeholder = /^{{(.+)}}$/;
   const match = input.match(placeholder);
 
