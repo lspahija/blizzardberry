@@ -102,11 +102,20 @@ function generateChartHTML(inputConfig) {
     showGrid
   );
 
+  if (!chartConfig.options) chartConfig.options = {};
+  chartConfig.options.backgroundColor = '#ffffff';
+  if (!chartConfig.options.plugins) chartConfig.options.plugins = {};
+
   if (compactPreview) {
     const label = inputConfig.title ? escapeHtml(inputConfig.title) : 'Open chart';
     return `
       <div class="viz-card viz-card--compact" data-viz-container="${containerId}" style="width: 100%; margin: 6px 0;">
-        <div class="viz-chip"><span class="viz-chip-icon">📊</span><span class="viz-chip-text">${label}</span></div>
+        <div class="viz-chip">
+          <svg class="viz-chip-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 17h3a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1v-5a1 1 0 1 1 2 0v3l4.586-4.586a1 1 0 0 1 1.414 1.414L7 17Zm10-10h-3a1 1 0 1 1 0-2h5a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0V8l-4.586 4.586a1 1 0 0 1-1.414-1.414L17 7Z"/>
+          </svg>
+          <span class="viz-chip-text">${label}</span>
+        </div>
         <div id="chart-init-${containerId}" data-compact-preview="true" data-chart-config='${JSON.stringify(chartConfig)}'></div>
       </div>
     `;
@@ -272,14 +281,11 @@ function getOrCreateModalShell() {
     return '';
   }
   return `
-    <div id=\"vizModalBackdrop\" class=\"viz-modal-backdrop\">
-      <div class=\"viz-modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"vizModalTitle\">
-        <div class=\"viz-modal-header\">
-          <div id=\"vizModalTitle\">Visualization</div>
-          <button class=\"viz-modal-close\" id=\"vizModalCloseBtn\">Close</button>
-        </div>
-        <div class=\"viz-modal-content\">
-          <canvas id=\"vizModalCanvas\"></canvas>
+    <div id="vizModalBackdrop" class="viz-modal-backdrop">
+      <div class="viz-modal" role="dialog" aria-modal="true">
+        <button class="viz-modal-close-icon" id="vizModalCloseBtn" aria-label="Close">×</button>
+        <div class="viz-modal-content">
+          <canvas id="vizModalCanvas"></canvas>
         </div>
       </div>
     </div>
@@ -322,11 +328,7 @@ function openVisualizationModal(card, chartConfig) {
   }
 
   const closeBtn = document.getElementById('vizModalCloseBtn');
-  const titleEl = document.getElementById('vizModalTitle');
   const modalCanvas = document.getElementById('vizModalCanvas');
-
-  const title = card.querySelector('.viz-title')?.textContent?.trim() || 'Visualization';
-  if (titleEl) titleEl.textContent = title;
 
   backdrop.classList.add('visible');
   const prevOverflow = document.body.style.overflow;
@@ -342,7 +344,6 @@ function openVisualizationModal(card, chartConfig) {
   modalConfig.options.maintainAspectRatio = false;
   modalConfig.options.responsive = true;
 
-  // Defer to ensure layout is visible
   setTimeout(() => {
     try {
       modalCanvas.__chartInstance = new Chart(modalCanvas.getContext('2d'), modalConfig);

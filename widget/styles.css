@@ -320,25 +320,26 @@
 }
 
 .viz-card--compact {
-    min-height: 24px;
+    min-height: 44px;
     padding: 8px;
 }
 
 .viz-chip {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 8px;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
     border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(148, 163, 184, 0.25);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(148, 163, 184, 0.3);
     color: #e5e7eb;
-    font-size: 11px;
-    line-height: 1;
+    font-size: 14px;
+    line-height: 1.2;
 }
 
-.viz-chip-icon { font-size: 12px; line-height: 1; }
-.viz-chip-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+.viz-chip-icon { width: 14px; height: 14px; line-height: 1; fill: #e5e7eb; opacity: 0.9; }
+.viz-chip-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: none; }
 
 .viz-card .viz-title {
     position: absolute;
@@ -391,8 +392,8 @@
 .viz-modal {
     width: min(95vw, 1400px);
     height: min(90vh, 1000px);
-    background: #0b0f17;
-    border: 1px solid #1f2937;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     border-radius: 14px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
     overflow: hidden;
@@ -400,35 +401,30 @@
     flex-direction: column;
 }
 
-.viz-modal-header {
+.viz-modal-close-icon {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.45);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 10px 12px;
-    background: #0f172a;
-    border-bottom: 1px solid #1f2937;
-    color: #e2e8f0;
-    font-size: 13px;
-    font-weight: 600;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
 }
 
-.viz-modal-close {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(148, 163, 184, 0.25);
-    color: #e5e7eb;
-    border-radius: 8px;
-    padding: 6px 10px;
-    cursor: pointer;
-    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
-}
-
-.viz-modal-close:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(148, 163, 184, 0.4);
+.viz-modal-close-icon:hover {
+    background: rgba(0, 0, 0, 0.6);
 }
 
 .viz-modal-content { flex: 1; position: relative; }
-.viz-modal-content canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+.viz-modal-content canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; background: #ffffff; }
 
 /* Tool Invocation and Results */
 .tool-invocation {
