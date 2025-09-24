@@ -201,6 +201,13 @@ function ActionEditContent() {
     isInitialized,
   ]);
 
+  useEffect(() => {
+    // Scroll to top when step changes
+    if (step === 2) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [step]);
+
   const handleUpdateAction = async () => {
     setIsUpdatingAction(true);
     let action: Action;
