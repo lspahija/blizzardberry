@@ -3,9 +3,21 @@ import { convertBoldFormatting, getElementById } from './util';
 
 function stripMarkdownImages(input) {
   if (!input) return input;
-  let output = input.replace(/!\[[^\]]*\]\([^\)]+\)/g, '');
-  output = output.replace(/\n{3,}/g, '\n\n');
-  return output;
+  let output = String(input);
+  // Remove standard markdown images (http/https and data URIs)
+  output = output.replace(/!\[[^\]]*\]\((?:data:[^\)]+|https?:\/\/[^\)]+)\)/gi, '');
+  // Remove any bare data:image URIs that might not be wrapped in markdown
+  output = output.replace(/data:image\/[a-zA-Z]+;base64,[A-Za-z0-9+/=\s]+/gi, '');
+  // Remove attachment-style placeholders like (attachment://file.png)
+  output = output.replace(/\(attachment:\/\/[^\)]+\)/gi, '');
+  output = output.replace(/^.*attachment:\/\/.*$/gmi, '');
+  // Remove leftover alt tags if parenthesis missing
+  output = output.replace(/!\[[^\]]*\]/g, '');
+  // Remove lines that are only images
+  output = output.replace(/^\s*!\[[\s\S]*?\]\([\s\S]*?\)\s*$/gm, '');
+  // Compress whitespace
+  output = output.replace(/\n{3,}/g, '\n\n').replace(/[\t ]{2,}/g, ' ');
+  return output.trim();
 }
 
 export function renderMessagePart(part, messageId) {
@@ -77,9 +89,11 @@ export function updateConversationUI() {
         .trim();
 
       // Remove any <think> tags for display in collapsed view
-      const cleanText = messageText
-        .replace(/<think>[\s\S]*?<\/think>\n\n?/g, '')
-        .trim();
+      const cleanText = stripMarkdownImages(
+        messageText
+          .replace(/<think>[\s\S]*?<\/think>\n\n?/g, '')
+          .trim()
+      );
       // Get agent name for fallback
       latestMessageEl.innerHTML = convertBoldFormatting(cleanText);
     }

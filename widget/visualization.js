@@ -108,13 +108,17 @@ function generateChartHTML(inputConfig) {
   // Add generous inner padding so the chart doesn't touch edges
   const userPadding = options.layoutPadding;
   chartConfig.options.layout = chartConfig.options.layout || {};
-  chartConfig.options.layout.padding = userPadding ?? { top: 48, right: 56, bottom: 48, left: 56 };
+  const basePadding = userPadding ?? { top: 48, right: 56, bottom: 48, left: 56 };
+  const normalizedPadding = typeof basePadding === 'number'
+    ? { top: basePadding, right: basePadding, bottom: basePadding, left: basePadding }
+    : { top: basePadding.top ?? 0, right: basePadding.right ?? 0, bottom: basePadding.bottom ?? 0, left: basePadding.left ?? 0 };
+  chartConfig.options.layout.padding = normalizedPadding;
 
   if (compactPreview) {
     const label = inputConfig.title ? escapeHtml(inputConfig.title) : 'Open chart';
     return `
       <div class="viz-card viz-card--compact" data-viz-container="${containerId}" style="width: 100%; margin: 6px 0;">
-        <div class="viz-chip">
+        <div class="viz-chip viz-chip--left">
           <svg class="viz-chip-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M7 17h3a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1v-5a1 1 0 1 1 2 0v3l4.586-4.586a1 1 0 0 1 1.414 1.414L7 17Zm10-10h-3a1 1 0 1 1 0-2h5a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0V8l-4.586 4.586a1 1 0 0 1-1.414-1.414L17 7Z"/>
           </svg>
