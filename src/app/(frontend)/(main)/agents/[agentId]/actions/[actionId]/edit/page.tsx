@@ -3,7 +3,9 @@
 import { Suspense, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
-import UnifiedActionForm from '@/app/(frontend)/components/UnifiedActionForm';
+import DataInputsStep from '@/app/(frontend)/components/DataInputsStep';
+import GeneralStep from '@/app/(frontend)/components/GeneralStep';
+import ExecutionStep from '@/app/(frontend)/components/ExecutionStep';
 import { Loader2 } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import {
@@ -44,6 +46,7 @@ const cardVariants = {
 
 function ActionEditContent() {
   const {
+    step,
     baseAction,
     setBaseAction,
     dataInputs,
@@ -56,7 +59,16 @@ function ActionEditContent() {
     setHeaders,
     apiBody,
     setApiBody,
+    isEditorInteracted,
+    setIsEditorInteracted,
+    activeTab,
+    setActiveTab,
     isCreatingAction,
+    showSuccess,
+    handleNextStep,
+    handleBack,
+    handleCreateAction,
+    handleDeleteAction,
   } = useActionForm(true);
 
   const router = useRouter();
@@ -294,7 +306,9 @@ function ActionEditContent() {
 
   // Debug logging
   console.log(
-    'Edit page render - baseAction:',
+    'Edit page render - step:',
+    step,
+    'baseAction:',
     baseAction,
     'dataInputs:',
     dataInputs,
@@ -312,35 +326,63 @@ function ActionEditContent() {
 
   return (
     <motion.div
-      className="min-h-screen bg-background"
+      className="max-w-4xl mx-auto px-4 py-16"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <motion.h1
-        className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-8 text-center pt-8"
+        className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-12 text-center"
         variants={itemVariants}
       >
         Edit Action
       </motion.h1>
 
-      <UnifiedActionForm
-        baseAction={baseAction}
-        setBaseAction={setBaseAction}
-        dataInputs={dataInputs}
-        setDataInputs={setDataInputs}
-        apiUrl={apiUrl}
-        setApiUrl={setApiUrl}
-        apiMethod={apiMethod}
-        setApiMethod={setApiMethod}
-        headers={headers}
-        setHeaders={setHeaders}
-        apiBody={apiBody}
-        setApiBody={setApiBody}
-        onCreateAction={handleUpdateAction}
-        isCreatingAction={isUpdatingAction}
-        isEditing={true}
-      />
+      {step === 1 && (
+        <GeneralStep
+          baseAction={baseAction}
+          setBaseAction={setBaseAction}
+          onNext={handleNextStep}
+        />
+      )}
+
+      {step === 2 && (
+        <DataInputsStep
+          dataInputs={dataInputs}
+          setDataInputs={setDataInputs}
+          onNext={handleNextStep}
+          onBack={handleBack}
+          isClientAction={
+            baseAction.executionContext === ExecutionContext.CLIENT
+          }
+          isCreatingAction={isUpdatingAction}
+        />
+      )}
+
+      {step === 3 &&
+        baseAction.executionContext === ExecutionContext.SERVER && (
+          <ExecutionStep
+            baseAction={baseAction}
+            dataInputs={dataInputs}
+            apiUrl={apiUrl}
+            setApiUrl={setApiUrl}
+            apiMethod={apiMethod}
+            setApiMethod={setApiMethod}
+            headers={headers}
+            setHeaders={setHeaders}
+            apiBody={apiBody}
+            setApiBody={setApiBody}
+            isEditorInteracted={isEditorInteracted}
+            setIsEditorInteracted={setIsEditorInteracted}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            onCreate={handleUpdateAction}
+            onBack={handleBack}
+            isCreatingAction={isUpdatingAction}
+            showSuccess={showSuccess}
+            isEditing={true}
+          />
+        )}
     </motion.div>
   );
 }

@@ -79,7 +79,6 @@ interface UnifiedActionFormProps {
   setApiBody: (body: string) => void;
   onCreateAction: () => void;
   isCreatingAction: boolean;
-  isEditing?: boolean;
 }
 
 export default function UnifiedActionForm({
@@ -97,7 +96,6 @@ export default function UnifiedActionForm({
   setApiBody,
   onCreateAction,
   isCreatingAction,
-  isEditing = false,
 }: UnifiedActionFormProps) {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
@@ -650,9 +648,7 @@ export default function UnifiedActionForm({
           className="bg-destructive text-white border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand transition-transform duration-200 shadow-md text-lg font-semibold px-8 py-3"
         >
           <Save className="w-5 h-5 mr-2" />
-          {isCreatingAction
-            ? (isEditing ? 'Updating Action...' : 'Creating Action...')
-            : (isEditing ? 'Update Action' : 'Create Action')}
+          {isCreatingAction ? 'Creating Action...' : 'Create Action'}
         </Button>
       </motion.div>
     </div>
