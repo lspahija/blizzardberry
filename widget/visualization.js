@@ -105,6 +105,10 @@ function generateChartHTML(inputConfig) {
   if (!chartConfig.options) chartConfig.options = {};
   chartConfig.options.backgroundColor = '#ffffff';
   if (!chartConfig.options.plugins) chartConfig.options.plugins = {};
+  // Add generous inner padding so the chart doesn't touch edges
+  const userPadding = options.layoutPadding;
+  chartConfig.options.layout = chartConfig.options.layout || {};
+  chartConfig.options.layout.padding = userPadding ?? { top: 48, right: 56, bottom: 48, left: 56 };
 
   if (compactPreview) {
     const label = inputConfig.title ? escapeHtml(inputConfig.title) : 'Open chart';
