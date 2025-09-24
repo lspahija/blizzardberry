@@ -3,7 +3,9 @@
 import { Suspense } from 'react'; // Import Suspense
 import { motion } from 'framer-motion';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
-import UnifiedActionForm from '@/app/(frontend)/components/UnifiedActionForm';
+import DataInputsStep from '@/app/(frontend)/components/DataInputsStep';
+import GeneralStep from '@/app/(frontend)/components/GeneralStep';
+import ExecutionStep from '@/app/(frontend)/components/ExecutionStep';
 import ClientActionImplementation from '@/app/(frontend)/components/ClientActionImplementation';
 import { Loader2 } from 'lucide-react'; // Import a loading icon
 import { useRouter } from 'next/navigation';
@@ -32,6 +34,7 @@ const cardVariants = {
 
 function ActionFormContent() {
   const {
+    step,
     baseAction,
     setBaseAction,
     dataInputs,
@@ -44,14 +47,30 @@ function ActionFormContent() {
     setHeaders,
     apiBody,
     setApiBody,
+    isEditorInteracted,
+    setIsEditorInteracted,
+    activeTab,
+    setActiveTab,
     isCreatingAction,
+    showSuccess,
     createdClientAction,
+    handleNextStep,
+    handleBack,
     handleCreateAction,
+    handleDeleteAction,
   } = useActionForm();
 
   const router = useRouter();
   const params = useParams();
   const agentId = params.agentId as string;
+
+  const handleSuccessClose = () => {
+    posthog.capture('action_creation_completed', {
+      agent_id: agentId,
+      action_type: baseAction.executionContext,
+    });
+    router.push(`/agents/${agentId}`);
+  };
 
   const handleContinueToAgent = () => {
     posthog.capture('action_creation_completed', {
@@ -61,7 +80,6 @@ function ActionFormContent() {
     router.push(`/agents/${agentId}`);
   };
 
-  // Show success screen for client actions
   if (
     createdClientAction &&
     baseAction.executionContext === ExecutionContext.CLIENT
@@ -91,34 +109,63 @@ function ActionFormContent() {
 
   return (
     <motion.div
-      className="min-h-screen bg-background"
+      className="max-w-4xl mx-auto px-4 py-16"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <motion.h1
-        className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-8 text-center pt-8"
+        className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-12 text-center"
         variants={itemVariants}
       >
         Create Custom Action
       </motion.h1>
 
-      <UnifiedActionForm
-        baseAction={baseAction}
-        setBaseAction={setBaseAction}
-        dataInputs={dataInputs}
-        setDataInputs={setDataInputs}
-        apiUrl={apiUrl}
-        setApiUrl={setApiUrl}
-        apiMethod={apiMethod}
-        setApiMethod={setApiMethod}
-        headers={headers}
-        setHeaders={setHeaders}
-        apiBody={apiBody}
-        setApiBody={setApiBody}
-        onCreateAction={handleCreateAction}
-        isCreatingAction={isCreatingAction}
-      />
+      {step === 1 && (
+        <GeneralStep
+          baseAction={baseAction}
+          setBaseAction={setBaseAction}
+          onNext={handleNextStep}
+        />
+      )}
+
+      {step === 2 && (
+        <DataInputsStep
+          dataInputs={dataInputs}
+          setDataInputs={setDataInputs}
+          onNext={handleNextStep}
+          onBack={handleBack}
+          isClientAction={
+            baseAction.executionContext === ExecutionContext.CLIENT
+          }
+          onCreateAction={handleCreateAction}
+          isCreatingAction={isCreatingAction}
+        />
+      )}
+
+      {step === 3 &&
+        baseAction.executionContext === ExecutionContext.SERVER && (
+          <ExecutionStep
+            baseAction={baseAction}
+            dataInputs={dataInputs}
+            apiUrl={apiUrl}
+            setApiUrl={setApiUrl}
+            apiMethod={apiMethod}
+            setApiMethod={setApiMethod}
+            headers={headers}
+            setHeaders={setHeaders}
+            apiBody={apiBody}
+            setApiBody={setApiBody}
+            isEditorInteracted={isEditorInteracted}
+            setIsEditorInteracted={setIsEditorInteracted}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            onCreate={handleCreateAction}
+            onBack={handleBack}
+            isCreatingAction={isCreatingAction}
+            showSuccess={showSuccess}
+          />
+        )}
     </motion.div>
   );
 }
