@@ -166,14 +166,6 @@ export default function UnifiedActionForm({
     }
   }, [errors]);
 
-  // Clear data input validation errors when switching to GET method
-  useEffect(() => {
-    if (baseAction.executionContext === ExecutionContext.SERVER && apiMethod === 'GET') {
-      // For GET requests, always clear data input errors since they're optional
-      setErrors(prev => ({ ...prev, dataInputs: undefined }));
-    }
-  }, [apiMethod, baseAction.executionContext, setErrors]);
-
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
 
@@ -185,30 +177,14 @@ export default function UnifiedActionForm({
       newErrors.description = 'Description is required';
     }
 
-    // Validate data inputs
-    const isGetRequest = baseAction.executionContext === ExecutionContext.SERVER && apiMethod === 'GET';
-
-    if (isGetRequest) {
-      // GET requests: data inputs are completely optional
-      // Only validate if user has added data inputs and they have content
-      const filledInputs = dataInputs.filter(input => input.name.trim() || input.description.trim());
-      if (filledInputs.length > 0) {
-        // If some inputs are partially filled, all must be complete
-        const invalidInputs = filledInputs.some(input => !input.name.trim() || !input.description.trim());
-        if (invalidInputs) {
-          newErrors.dataInputs = 'All data inputs must have name and description';
-        }
-      }
+    // Validate data inputs - must have at least one
+    if (dataInputs.length === 0) {
+      newErrors.dataInputs = 'At least one data input is required';
     } else {
-      // Non-GET requests: require at least one data input
-      if (dataInputs.length === 0) {
-        newErrors.dataInputs = 'At least one data input is required';
-      } else {
-        // All data inputs must be properly filled
-        const invalidInputs = dataInputs.some(input => !input.name.trim() || !input.description.trim());
-        if (invalidInputs) {
-          newErrors.dataInputs = 'All data inputs must have name and description';
-        }
+      // Check that all data inputs have name and description
+      const invalidInputs = dataInputs.some(input => !input.name.trim() || !input.description.trim());
+      if (invalidInputs) {
+        newErrors.dataInputs = 'All data inputs must have name and description';
       }
     }
 
@@ -252,10 +228,6 @@ export default function UnifiedActionForm({
   const removeDataInput = (index: number) => {
     const newInputs = dataInputs.filter((_, i) => i !== index);
     setDataInputs(newInputs);
-    // Clear validation errors when removing data inputs for GET requests
-    if (baseAction.executionContext === ExecutionContext.SERVER && apiMethod === 'GET' && newInputs.length === 0) {
-      setErrors(prev => ({ ...prev, dataInputs: undefined }));
-    }
   };
 
   const updateDataInput = (index: number, field: keyof DataInput, value: string | boolean) => {
@@ -415,9 +387,6 @@ export default function UnifiedActionForm({
             </CardTitle>
             <p className="text-sm text-muted-foreground">
               Define what information the AI agent needs to provide when using this action.
-              {baseAction.executionContext === ExecutionContext.SERVER && apiMethod === 'GET' && (
-                <span className="text-blue-600 font-medium"> Data inputs are optional for GET requests.</span>
-              )}
             </p>
           </CardHeader>
           <CardContent className="space-y-4">

@@ -44,7 +44,9 @@ export const useActionForm = (isEditing = false) => {
     executionContext: ExecutionContext.SERVER,
     agentId: agentId as string,
   });
-  const [dataInputs, setDataInputs] = useState<DataInput[]>([]);
+  const [dataInputs, setDataInputs] = useState<DataInput[]>([
+    { name: '', type: 'Text', description: '', isArray: false },
+  ]);
   const [apiUrl, setApiUrl] = useState('');
   const [apiMethod, setApiMethod] = useState('GET');
   const [headers, setHeaders] = useState<Header[]>([{ key: '', value: '' }]);
