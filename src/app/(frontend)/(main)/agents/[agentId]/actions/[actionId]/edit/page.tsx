@@ -347,42 +347,50 @@ function ActionEditContent() {
       )}
 
       {step === 2 && (
-        <DataInputsStep
-          dataInputs={dataInputs}
-          setDataInputs={setDataInputs}
-          onNext={handleNextStep}
-          onBack={handleBack}
-          isClientAction={
-            baseAction.executionContext === ExecutionContext.CLIENT
-          }
-          isCreatingAction={isUpdatingAction}
-        />
-      )}
-
-      {step === 3 &&
-        baseAction.executionContext === ExecutionContext.SERVER && (
-          <ExecutionStep
-            baseAction={baseAction}
+        <div>
+          <DataInputsStep
             dataInputs={dataInputs}
-            apiUrl={apiUrl}
-            setApiUrl={setApiUrl}
-            apiMethod={apiMethod}
-            setApiMethod={setApiMethod}
-            headers={headers}
-            setHeaders={setHeaders}
-            apiBody={apiBody}
-            setApiBody={setApiBody}
-            isEditorInteracted={isEditorInteracted}
-            setIsEditorInteracted={setIsEditorInteracted}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            onCreate={handleUpdateAction}
+            setDataInputs={setDataInputs}
+            onNext={baseAction.executionContext === ExecutionContext.CLIENT ? handleNextStep : () => {
+              // For server actions, scroll to ExecutionStep below
+              const executionStep = document.querySelector('[data-execution-step]');
+              if (executionStep) {
+                executionStep.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
             onBack={handleBack}
+            isClientAction={
+              baseAction.executionContext === ExecutionContext.CLIENT
+            }
             isCreatingAction={isUpdatingAction}
-            showSuccess={showSuccess}
-            isEditing={true}
           />
-        )}
+          {baseAction.executionContext === ExecutionContext.SERVER && (
+            <div data-execution-step>
+              <ExecutionStep
+                baseAction={baseAction}
+                dataInputs={dataInputs}
+                apiUrl={apiUrl}
+                setApiUrl={setApiUrl}
+                apiMethod={apiMethod}
+                setApiMethod={setApiMethod}
+                headers={headers}
+                setHeaders={setHeaders}
+                apiBody={apiBody}
+                setApiBody={setApiBody}
+                isEditorInteracted={isEditorInteracted}
+                setIsEditorInteracted={setIsEditorInteracted}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                onCreate={handleUpdateAction}
+                onBack={handleBack}
+                isCreatingAction={isUpdatingAction}
+                showSuccess={showSuccess}
+                isEditing={true}
+              />
+            </div>
+          )}
+        </div>
+      )}
     </motion.div>
   );
 }
