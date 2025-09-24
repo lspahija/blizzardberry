@@ -130,42 +130,50 @@ function ActionFormContent() {
       )}
 
       {step === 2 && (
-        <DataInputsStep
-          dataInputs={dataInputs}
-          setDataInputs={setDataInputs}
-          onNext={handleNextStep}
-          onBack={handleBack}
-          isClientAction={
-            baseAction.executionContext === ExecutionContext.CLIENT
-          }
-          onCreateAction={handleCreateAction}
-          isCreatingAction={isCreatingAction}
-        />
-      )}
-
-      {step === 3 &&
-        baseAction.executionContext === ExecutionContext.SERVER && (
-          <ExecutionStep
-            baseAction={baseAction}
+        <div>
+          <DataInputsStep
             dataInputs={dataInputs}
-            apiUrl={apiUrl}
-            setApiUrl={setApiUrl}
-            apiMethod={apiMethod}
-            setApiMethod={setApiMethod}
-            headers={headers}
-            setHeaders={setHeaders}
-            apiBody={apiBody}
-            setApiBody={setApiBody}
-            isEditorInteracted={isEditorInteracted}
-            setIsEditorInteracted={setIsEditorInteracted}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            onCreate={handleCreateAction}
+            setDataInputs={setDataInputs}
+            onNext={baseAction.executionContext === ExecutionContext.CLIENT ? handleNextStep : () => {
+              // For server actions, scroll to ExecutionStep below
+              const executionStep = document.querySelector('[data-execution-step]');
+              if (executionStep) {
+                executionStep.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
             onBack={handleBack}
+            isClientAction={
+              baseAction.executionContext === ExecutionContext.CLIENT
+            }
+            onCreateAction={handleCreateAction}
             isCreatingAction={isCreatingAction}
-            showSuccess={showSuccess}
           />
-        )}
+          {baseAction.executionContext === ExecutionContext.SERVER && (
+            <div data-execution-step>
+              <ExecutionStep
+                baseAction={baseAction}
+                dataInputs={dataInputs}
+                apiUrl={apiUrl}
+                setApiUrl={setApiUrl}
+                apiMethod={apiMethod}
+                setApiMethod={setApiMethod}
+                headers={headers}
+                setHeaders={setHeaders}
+                apiBody={apiBody}
+                setApiBody={setApiBody}
+                isEditorInteracted={isEditorInteracted}
+                setIsEditorInteracted={setIsEditorInteracted}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                onCreate={handleCreateAction}
+                onBack={handleBack}
+                isCreatingAction={isCreatingAction}
+                showSuccess={showSuccess}
+              />
+            </div>
+          )}
+        </div>
+      )}
     </motion.div>
   );
 }
