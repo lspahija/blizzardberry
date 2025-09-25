@@ -78,7 +78,7 @@ export default function GeneralStep({
                 <Zap className="h-4 w-4 text-destructive" />
                 Action Name
               </Label>
-              <p className="text-xs md:text-sm text-muted-foreground mt-1 ml-6">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1 mb-3 ml-6">
                 Enter a descriptive name for this action. This will help the AI
                 agent know when to use it.
               </p>
@@ -109,7 +109,7 @@ export default function GeneralStep({
                 <Info className="h-4 w-4 text-destructive" />
                 Description
               </Label>
-              <p className="text-xs md:text-sm text-muted-foreground mt-1 ml-6">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1 mb-3 ml-6">
                 Explain when the AI Agent should use this action. Describe what
                 this action does. You can also provide example prompts from the
                 user that would trigger this action.
@@ -193,7 +193,7 @@ export default function GeneralStep({
                 </div>
               </RadioGroup>
             </div>
-            <div className="pt-6">
+            <div className="pt-4">
               <Button
                 type="button"
                 className="bg-destructive text-white border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand transition-transform duration-200 shadow-md text-base md:text-lg font-semibold"
