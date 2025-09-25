@@ -79,8 +79,8 @@ export default function GeneralStep({
                 Action Name
               </Label>
               <p className="text-xs md:text-sm text-muted-foreground mt-1 ml-6">
-                A descriptive name for this action. This will help the AI agent
-                know when to use it.
+                Enter a descriptive name for this action. This will help the AI
+                agent know when to use it.
               </p>
               <div className="relative">
                 <Input
@@ -110,10 +110,9 @@ export default function GeneralStep({
                 Description
               </Label>
               <p className="text-xs md:text-sm text-muted-foreground mt-1 ml-6">
-                Explain when the AI Agent should use this action. Include a
-                description of what this action does, the data it provides, and
-                any updates it makes. Include example queries that should
-                trigger this action.
+                Explain when the AI Agent should use this action. Describe what
+                this action does. You can also provide example prompts from the
+                user that would trigger this action.
               </p>
               <Textarea
                 id="description"
@@ -201,7 +200,7 @@ export default function GeneralStep({
                 onClick={handleNext}
               >
                 <Save className="w-4 h-4 mr-2" />
-                Save and Continue
+                Continue
               </Button>
             </div>
           </CardContent>
