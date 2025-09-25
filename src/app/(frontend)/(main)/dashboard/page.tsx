@@ -220,7 +220,7 @@ export default function Dashboard() {
           </div>
 
           {loadingAgents ? (
-            <div className="flex justify-center">
+            <div className="flex items-center justify-center">
               <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-foreground" />
             </div>
           ) : agents.length === 0 ? (
