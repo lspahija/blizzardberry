@@ -63,7 +63,7 @@ export default function GeneralStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-      <div className="relative mb-6 md:mb-12">
+      <div className="relative mb-2 md:mb-3">
         <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
         <Card
           className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8"

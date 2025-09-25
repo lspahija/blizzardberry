@@ -333,13 +333,13 @@ function ActionEditContent() {
 
   return (
     <motion.div
-      className="max-w-4xl mx-auto px-4 py-16"
+      className="max-w-4xl mx-auto px-4 py-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <motion.h1
-        className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-12 text-center"
+        className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-8 text-center"
         variants={itemVariants}
       >
         Edit Action
