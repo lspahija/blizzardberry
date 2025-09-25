@@ -81,7 +81,7 @@ export default function DataInputsStep({
               </p>
             </div>
           </CardHeader>
-          <CardContent className="space-y-2 md:space-y-4 pt-0 px-4 md:px-6 pb-4 md:pb-6">
+          <CardContent className="space-y-2 md:space-y-4 pt-0 px-4 md:px-6 pb-2 md:pb-3">
             <div className="-mt-4">
               {dataInputs.map((input, index) => (
                 <DataInputRow
@@ -108,7 +108,7 @@ export default function DataInputsStep({
               ))}
               <Button
                 variant="outline"
-                className="mt-4 bg-card text-foreground border border-border hover:bg-muted hover:border-border transition-transform duration-200 text-sm md:text-base font-normal px-3 md:px-4 py-1.5 md:py-2 flex items-center gap-2 w-full md:w-auto"
+                className="mt-10 bg-card text-foreground border border-border hover:bg-muted hover:border-border transition-transform duration-200 text-sm md:text-base font-normal px-3 md:px-4 py-1.5 md:py-2 flex items-center gap-2 w-full md:w-auto"
                 onClick={addDataInput}
               >
                 <PlusCircle className="h-4 w-4 mr-2" />

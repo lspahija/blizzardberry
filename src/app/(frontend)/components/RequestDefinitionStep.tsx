@@ -251,9 +251,9 @@ export default function RequestDefinitionStep({
                 </CardTitle>
               </div>
               <p className="text-sm text-gray-600 mt-2">
-                This is the API endpoint that should be called by the AI Agent
-                to complete the action. You can refer to any of the data inputs
-                defined above as variables.
+                This is the API endpoint that will be called by the AI Agent to
+                complete the action. You can reference any of the data inputs
+                defined above as variables with the brace syntax shown below.
               </p>
             </div>
           </CardHeader>
