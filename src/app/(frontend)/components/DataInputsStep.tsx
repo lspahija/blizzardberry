@@ -70,13 +70,14 @@ export default function DataInputsStep({
               <div className="flex items-center gap-2">
                 <List className="h-7 w-7 text-[#FE4A60]" />
                 <CardTitle className="text-2xl font-semibold text-gray-900">
-                  Data Inputs (Optional)
+                  Data Inputs
                 </CardTitle>
               </div>
               <p className="text-sm text-gray-600 mt-2">
-                Specify the information the AI Agent needs to perform the action.
-                The agent can find this data in the chat history, request it from
-                the user, or find it in the user config.
+                Specify the information the AI Agent needs to perform the
+                action. The agent will be able to find this data in the chat
+                history, request it from the user, or find it in the user
+                config.
               </p>
             </div>
           </CardHeader>
@@ -112,33 +113,6 @@ export default function DataInputsStep({
               >
                 <PlusCircle className="h-4 w-4 mr-2" />
                 Add Data Input
-              </Button>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Button
-                variant="outline"
-                className="bg-card text-foreground border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-200 text-base md:text-lg font-semibold w-full sm:w-auto"
-                onClick={onBack}
-                disabled={isCreatingAction}
-              >
-                Back
-              </Button>
-              <Button
-                className="bg-destructive text-white border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand transition-transform duration-200 shadow-md text-base md:text-lg font-semibold w-full sm:w-auto"
-                onClick={handleNextOrCreate}
-                disabled={isCreatingAction}
-              >
-                {isCreatingAction ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                    Creating...
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4 mr-2" />
-                    {isClientAction ? 'Create Action' : 'Save and Continue'}
-                  </>
-                )}
               </Button>
             </div>
           </CardContent>
