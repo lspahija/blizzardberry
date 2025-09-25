@@ -91,7 +91,7 @@ export default function DataInputRow({
           type="checkbox"
           checked={input.isArray}
           onChange={(e) => updateDataInput('isArray', e.target.checked)}
-          className="border-[2px] border-border w-4 h-4 md:w-5 md:h-5 mt-2"
+          className="border-[2px] border-border w-4 h-4 md:w-5 md:h-5 mt-2 rounded"
         />
       </div>
       <div>

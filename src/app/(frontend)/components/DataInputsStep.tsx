@@ -116,7 +116,7 @@ export default function DataInputsStep({
               ))}
               <Button
                 variant="outline"
-                className="mt-10 bg-card text-foreground border border-border hover:bg-muted hover:border-border transition-transform duration-200 text-sm md:text-base font-normal px-3 md:px-4 py-1.5 md:py-2 flex items-center gap-2 w-full md:w-auto"
+                className="mt-6 bg-card text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl text-sm md:text-base font-normal px-3 md:px-4 py-1.5 md:py-2 flex items-center gap-2 w-full md:w-auto"
                 onClick={addDataInput}
               >
                 <PlusCircle className="h-4 w-4 mr-2" />
@@ -126,7 +126,7 @@ export default function DataInputsStep({
 
             {/* Navigation buttons only for client action flow */}
             {isClientAction && (
-              <div className="flex space-x-4 mt-8">
+              <div className="flex space-x-4 mt-12">
                 <Button
                   variant="outline"
                   className="bg-card text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
