@@ -126,7 +126,7 @@ export default function DataInputsStep({
 
             {/* Navigation buttons only for client action flow */}
             {isClientAction && (
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 mt-8">
                 <Button
                   variant="outline"
                   className="bg-card text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
