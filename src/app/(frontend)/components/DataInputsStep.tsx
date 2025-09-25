@@ -65,23 +65,23 @@ export default function DataInputsStep({
           className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8"
           style={{ borderLeftColor: 'var(--color-destructive)' }}
         >
-          <CardHeader className="flex flex-col items-start p-4 md:p-6 pb-0 md:pb-0">
-            <div className="flex flex-row items-center space-x-2">
-              <List className="h-5 w-5 md:h-7 md:w-7 text-destructive" />
-              <CardTitle className="text-xl md:text-2xl font-semibold text-foreground">
-                Data Inputs (Optional)
-              </CardTitle>
+          <CardHeader>
+            <div>
+              <div className="flex items-center gap-2">
+                <List className="h-7 w-7 text-[#FE4A60]" />
+                <CardTitle className="text-2xl font-semibold text-gray-900">
+                  Data Inputs (Optional)
+                </CardTitle>
+              </div>
+              <p className="text-sm text-gray-600 mt-2">
+                Specify the information the AI Agent needs to perform the action.
+                The agent can find this data in the chat history, request it from
+                the user, or find it in the user config.
+              </p>
             </div>
-            <p className="text-xs md:text-sm text-muted-foreground mt-1">
-              Specify the information the AI Agent needs to perform the action.
-            </p>
-            <p className="text-xs md:text-sm text-muted-foreground">
-              The agent can find this data in the chat history, request it from
-              the user, or find it in the user config.
-            </p>
           </CardHeader>
-          <CardContent className="space-y-2 md:space-y-4 p-4 md:p-6">
-            <div className="mt-0">
+          <CardContent className="space-y-2 md:space-y-4 pt-0 px-4 md:px-6 pb-4 md:pb-6">
+            <div className="-mt-4">
               {dataInputs.map((input, index) => (
                 <DataInputRow
                   key={index}

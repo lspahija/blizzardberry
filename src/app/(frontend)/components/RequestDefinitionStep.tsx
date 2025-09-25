@@ -257,7 +257,7 @@ export default function RequestDefinitionStep({
               </p>
             </div>
           </CardHeader>
-          <CardContent className="space-y-8">
+          <CardContent className="space-y-8 pt-0 px-6 pb-6">
             {isCreatingAction && (
               <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg z-50 flex items-center justify-center">
                 <div className="text-center">
@@ -273,7 +273,7 @@ export default function RequestDefinitionStep({
             )}
 
             {dataInputs.filter((input) => input.name).length > 0 && (
-              <div className="mt-6">
+              <div className="-mt-4">
                 <Label className="text-gray-900 text-base font-medium flex items-center gap-2">
                   <List className="h-4 w-4 text-[#FE4A60]" />
                   Available Variables
@@ -302,7 +302,7 @@ export default function RequestDefinitionStep({
             )}
 
             {/* Method and URL row, left-aligned */}
-            <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-6 items-center">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-6 -mt-1 items-center">
               <div className="w-full md:w-[120px]">
                 <Label
                   htmlFor="apiMethod"
