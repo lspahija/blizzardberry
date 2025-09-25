@@ -76,9 +76,7 @@ export default function ClientActionImplementation({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-      <div
-        className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 border-blue-600 p-3 md:p-4 rounded-lg shadow-md"
-      >
+      <div className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 border-blue-600 p-3 md:p-4 rounded-lg shadow-md">
         <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-blue-600 mr-2 md:mr-3 mt-1 md:mt-0 flex-shrink-0" />
         <span className="text-foreground text-sm md:text-base">
           Your client action has been created successfully! Now you need to
@@ -86,7 +84,7 @@ export default function ClientActionImplementation({
         </span>
       </div>
 
-      <div className="relative mb-6 md:mb-12">
+      <div className="relative mb-4 md:mb-6">
         <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
         <Card
           className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8"
@@ -96,47 +94,12 @@ export default function ClientActionImplementation({
             <div className="flex flex-row items-center space-x-2">
               <Code className="h-5 w-5 md:h-7 md:w-7 text-destructive" />
               <CardTitle className="text-xl md:text-2xl font-semibold text-foreground">
-                Implementation Required
+                Code Snippet
               </CardTitle>
             </div>
-            <p className="text-xs md:text-sm text-muted-foreground mt-1">
-              Copy the code below and implement it in your application to make
-              your action work.
-            </p>
           </CardHeader>
-          <CardContent className="space-y-6 p-4 md:p-6">
-            {dataInputs.filter((input) => input.name).length > 0 && (
-              <div>
-                <Label className="text-gray-900 text-base font-medium flex items-center gap-2">
-                  <List className="h-4 w-4 text-[#FE4A60]" />
-                  Action Arguments
-                </Label>
-                <p className="text-sm text-gray-600 mt-1">
-                  Your function will receive these arguments from the AI agent:
-                </p>
-                <div className="mt-2">
-                  <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-2">
-                    {dataInputs
-                      .filter((input) => input.name)
-                      .map((input, index) => (
-                        <div
-                          key={index}
-                          className="bg-[#FFFDF8] px-3 py-2 border-[2px] border-gray-900 rounded-lg shadow-sm"
-                        >
-                          <div className="font-mono text-sm text-gray-900">
-                            {input.name}
-                          </div>
-                          <div className="text-xs text-gray-500 font-medium">
-                            {input.type}
-                            {input.isArray ? '[]' : ''}
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-            )}
 
+          <CardContent className="space-y-6 p-4 md:p-6">
             <div>
               <Label className="text-gray-900 text-base font-medium flex items-center gap-2">
                 <Settings className="h-4 w-4 text-[#FE4A60]" />
@@ -169,19 +132,50 @@ export default function ClientActionImplementation({
               </div>
             </div>
 
+            {dataInputs.filter((input) => input.name).length > 0 && (
+              <div>
+                <Label className="text-gray-900 text-base font-medium flex items-center gap-2">
+                  <List className="h-4 w-4 text-[#FE4A60]" />
+                  Action Arguments
+                </Label>
+                <p className="text-sm text-gray-600 mt-1">
+                  Your function will receive these arguments from the AI agent:
+                </p>
+                <div className="mt-2">
+                  <div className="inline-grid grid-cols-2 md:grid-cols-4 gap-2">
+                    {dataInputs
+                      .filter((input) => input.name)
+                      .map((input, index) => (
+                        <div
+                          key={index}
+                          className="bg-[#FFFDF8] px-3 py-2 border-[2px] border-gray-900 rounded-lg shadow-sm"
+                        >
+                          <div className="font-mono text-sm text-gray-900">
+                            {input.name}
+                          </div>
+                          <div className="text-xs text-gray-500 font-medium">
+                            {input.type}
+                            {input.isArray ? '[]' : ''}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="relative">
               <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
                 <FileText className="h-4 w-4 text-[#FE4A60]" />
                 Implementation Code
               </Label>
               <p className="text-sm text-gray-600 mb-4">
-                💡 <strong>Why agentUserConfig?</strong> It provides user
-                information to agents for personalized experiences.
+                The user parameter provides user information to agents for
+                personalized experiences.
               </p>
               <p className="text-sm text-gray-600 mb-4">
-                💡 <strong>Why return values?</strong> The AI agent uses your
-                return value to provide helpful responses to users and confirm
-                actions were executed.
+                The AI agent uses your return value to provide helpful responses
+                to users and to confirm actions were executed.
               </p>
               <div className="relative">
                 <SyntaxHighlighter
@@ -230,21 +224,21 @@ export default function ClientActionImplementation({
               <ul className="list-disc list-inside text-muted-foreground space-y-2 text-base">
                 <li>
                   Copy the code above and implement your function in your
-                  application
+                  application.
                 </li>
                 <li>
                   {selectedFramework === Framework.NEXT_JS ? (
-                    <>Add the code to your layout.tsx or page component</>
+                    <>Add the code to your layout.tsx or page component.</>
                   ) : (
                     <>
                       Add the code between the <code>&lt;body&gt;</code> tags of
-                      your website's HTML
+                      your website's HTML.
                     </>
                   )}
                 </li>
                 <li>
                   The code will be available to your agent as a client-side
-                  action
+                  action.
                 </li>
                 <li>
                   Need help? Visit our{' '}

@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from '@/app/(frontend)/components/ui/card';
 import { motion } from 'framer-motion';
-import { Save, List, Info, PlusCircle, Zap, Tag } from 'lucide-react';
+import { Save, List, Info, PlusCircle, Zap, Tag, ArrowLeft } from 'lucide-react';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import DataInputRow from '@/app/(frontend)/components/DataInputRow';
 
@@ -31,6 +31,7 @@ interface DataInputsStepProps {
   isClientAction?: boolean;
   onCreateAction?: () => void;
   isCreatingAction?: boolean;
+  isEditing?: boolean;
 }
 
 export default function DataInputsStep({
@@ -41,6 +42,7 @@ export default function DataInputsStep({
   isClientAction = false,
   onCreateAction,
   isCreatingAction = false,
+  isEditing = false,
 }: DataInputsStepProps) {
   const addDataInput = () => {
     setDataInputs([
@@ -115,6 +117,38 @@ export default function DataInputsStep({
                 Add Data Input
               </Button>
             </div>
+
+            {/* Navigation buttons only for client action flow */}
+            {isClientAction && (
+              <div className="flex space-x-4">
+                <Button
+                  variant="outline"
+                  className="bg-card text-foreground border-[3px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
+                  onClick={onBack}
+                  disabled={isCreatingAction}
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
+                </Button>
+                <Button
+                  className="bg-destructive text-white border-[3px] border-gray-900 hover:bg-[#ff6a7a] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
+                  onClick={onCreateAction}
+                  disabled={isCreatingAction}
+                >
+                  {isCreatingAction ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      {isEditing ? 'Updating...' : 'Creating...'}
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      {isEditing ? 'Update Action' : 'Create Action'}
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

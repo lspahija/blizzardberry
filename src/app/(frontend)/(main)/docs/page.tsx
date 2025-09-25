@@ -86,14 +86,14 @@ export default function DocsPage() {
 <script id="blizzardberry-actions" type="text/javascript">
   window.agentActions = {
     // Example: Submit a contact form
-    submitContactForm: async (agentUserConfig, params) => {
-      // Your custom action logic here
+    submitContactForm: async (user, args) => {
+      // Your custom action logic goes here
       return { status: 'success', message: 'Form submitted' };
     },
     
     // Example: Search products
-    searchProducts: async (agentUserConfig, params) => {
-      // Your custom action logic here
+    searchProducts: async (user, args) => {
+      // Your custom action logic goes here
       return { status: 'success', results: [] };
     }
   };
@@ -136,14 +136,14 @@ export default function Layout({ children }) {
           {\`
             window.agentActions = {
               // Example: Submit a contact form
-              submitContactForm: async (agentUserConfig, params) => {
-                // Your custom action logic here
+              submitContactForm: async (user, args) => {
+                // Your custom action logic goes here
                 return { status: 'success', message: 'Form submitted' };
               },
               
               // Example: Search products
-              searchProducts: async (agentUserConfig, params) => {
-                // Your custom action logic here
+              searchProducts: async (user, args) => {
+                // Your custom action logic goes here
                 return { status: 'success', results: [] };
               }
             };
@@ -489,8 +489,7 @@ export default function Layout({ children }) {
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground mb-4">
-                        💡 <strong>Why agentUserConfig?</strong> The
-                        agentUserConfig contains user information that are
+                        The user parameter contains user information that is
                         passed to the agent, allowing you to provide
                         personalized experiences.
                       </p>

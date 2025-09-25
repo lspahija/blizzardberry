@@ -92,15 +92,15 @@ export const getActionsScript = (
         .join(', ');
 
       if (framework === Framework.NEXT_JS) {
-        return `    ${functionNameCamelCase}: async (agentUserConfig, params) => {
-      // Your custom action logic here
-      // Access parameters from params object: params.${params.split(', ')[0] || 'exampleParam'}
+        return `    ${functionNameCamelCase}: async (user, args) => {
+      // Your custom action logic goes here
+      // Access arguments from args object: args.${params.split(', ')[0] || 'exampleArg'}
       return { status: 'success', results: [] };
   }`;
       } else {
-        return `    ${functionNameCamelCase}: async (agentUserConfig, params) => {
-      // Your custom action logic here
-      // Access parameters from params object: params.${params.split(', ')[0] || 'exampleParam'}
+        return `    ${functionNameCamelCase}: async (user, args) => {
+      // Your custom action logic goes here
+      // Access arguments from args object: args.${params.split(', ')[0] || 'exampleArg'}
       return { status: 'success', results: [] };
     }`;
       }
