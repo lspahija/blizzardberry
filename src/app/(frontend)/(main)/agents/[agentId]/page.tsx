@@ -506,12 +506,12 @@ function AgentDetails({
                 )}
               </div>
             </div>
-            
+
             {/* Separator */}
             <div className="flex justify-center mt-8 mb-6">
               <div className="w-5/6 h-px bg-border"></div>
             </div>
-            
+
             {/* Actions and Documents Sections */}
             <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Actions Section */}
@@ -519,7 +519,9 @@ function AgentDetails({
                 <div className="flex items-start sm:items-center justify-between mb-4 gap-2 flex-wrap">
                   <div className="flex items-center space-x-2">
                     <Zap className="h-5 w-5 text-destructive" />
-                    <h3 className="text-lg font-semibold text-foreground">Actions</h3>
+                    <h3 className="text-lg font-semibold text-foreground">
+                      Actions
+                    </h3>
                   </div>
                   <div className="flex gap-2 flex-wrap w-full sm:w-auto">
                     <Button
@@ -572,7 +574,9 @@ function AgentDetails({
                               {action.name}
                             </p>
                             <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
-                              <span className="font-semibold">Description:</span>{' '}
+                              <span className="font-semibold">
+                                Description:
+                              </span>{' '}
                               {action.description}
                             </p>
                             <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
@@ -581,23 +585,26 @@ function AgentDetails({
                             </p>
                             <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
                               <span className="font-semibold">Model:</span>{' '}
-                              {action.executionContext === ExecutionContext.SERVER ? (
+                              {action.executionContext ===
+                              ExecutionContext.SERVER ? (
                                 <>
                                   {(
                                     action as BackendAction
                                   ).executionModel.request.method.toUpperCase()}{' '}
                                   {
-                                    (action as BackendAction).executionModel.request
-                                      .url
+                                    (action as BackendAction).executionModel
+                                      .request.url
                                   }
                                 </>
                               ) : (
-                                (action as FrontendAction).executionModel.functionName
+                                (action as FrontendAction).executionModel
+                                  .functionName
                               )}
                             </p>
                             <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
                               <span className="font-semibold">Parameters:</span>{' '}
-                              {(action.executionModel.parameters || []).length > 0
+                              {(action.executionModel.parameters || []).length >
+                              0
                                 ? (action.executionModel.parameters || [])
                                     .map(
                                       (param) =>
@@ -612,7 +619,9 @@ function AgentDetails({
                               variant="outline"
                               size="icon"
                               className="rounded-full p-2 hover:bg-secondary/80 transition group-hover:scale-110"
-                              onClick={() => handleNavigateToEditAction(action.id)}
+                              onClick={() =>
+                                handleNavigateToEditAction(action.id)
+                              }
                               disabled={isNavigatingToEditAction === action.id}
                               title="Edit Action"
                             >
@@ -652,7 +661,9 @@ function AgentDetails({
                 <div className="flex items-start sm:items-center justify-between mb-4 gap-2 flex-wrap">
                   <div className="flex items-center space-x-2">
                     <FileText className="h-5 w-5 text-destructive" />
-                    <h3 className="text-lg font-semibold text-foreground">Documents</h3>
+                    <h3 className="text-lg font-semibold text-foreground">
+                      Documents
+                    </h3>
                   </div>
                   <Button
                     className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand/90 w-full sm:w-auto"
@@ -713,8 +724,11 @@ function AgentDetails({
                                   )
                                   .map(([key, value]) => (
                                     <li key={key} className="mb-1">
-                                      <span className="font-semibold">{key}:</span>{' '}
-                                      {typeof value === 'object' && value !== null ? (
+                                      <span className="font-semibold">
+                                        {key}:
+                                      </span>{' '}
+                                      {typeof value === 'object' &&
+                                      value !== null ? (
                                         <pre className="inline">
                                           {JSON.stringify(value, null, 2)}
                                         </pre>
@@ -823,13 +837,12 @@ function AgentDetails({
                         </div>
                       </div>
                       <p className="text-sm text-gray-600 mb-4">
-                        💡 <strong>Why agentUserConfig?</strong> It provides
-                        user information to agents for personalized experiences.
+                        The user parameter provides user information to agents
+                        for personalized experiences.
                       </p>
                       <p className="text-sm text-gray-600 mb-4">
-                        💡 <strong>Why return values?</strong> The AI agent uses
-                        your return value to provide helpful responses to users
-                        and confirm actions were executed.
+                        The AI agent uses your return value to provide helpful
+                        responses to users and to confirm actions were executed.
                       </p>
                       <div className="relative">
                         <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
@@ -1089,7 +1102,6 @@ function AgentDetails({
             </div>
           </div>
         )}
-
 
         <DeleteConfirmationDialog
           isOpen={isDeleteDialogOpen}

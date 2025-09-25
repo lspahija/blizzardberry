@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import DataInputsStep from '@/app/(frontend)/components/DataInputsStep';
 import GeneralStep from '@/app/(frontend)/components/GeneralStep';
-import ExecutionStep from '@/app/(frontend)/components/ExecutionStep';
+import RequestDefinitionStep from '@/app/(frontend)/components/RequestDefinitionStep.tsx';
 import ClientActionImplementation from '@/app/(frontend)/components/ClientActionImplementation';
 import { Loader2 } from 'lucide-react'; // Import a loading icon
 import { useRouter } from 'next/navigation';
@@ -86,13 +86,13 @@ function ActionFormContent() {
   ) {
     return (
       <motion.div
-        className="max-w-4xl mx-auto px-4 py-16"
+        className="max-w-4xl mx-auto px-4 py-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <motion.h1
-          className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-12 text-center"
+          className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-8 text-center"
           variants={itemVariants}
         >
           Action Created Successfully!
@@ -109,13 +109,13 @@ function ActionFormContent() {
 
   return (
     <motion.div
-      className="max-w-4xl mx-auto px-4 py-16"
+      className="max-w-4xl mx-auto px-4 py-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <motion.h1
-        className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-12 text-center"
+        className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-8 text-center"
         variants={itemVariants}
       >
         Create Custom Action
@@ -130,42 +130,53 @@ function ActionFormContent() {
       )}
 
       {step === 2 && (
-        <DataInputsStep
-          dataInputs={dataInputs}
-          setDataInputs={setDataInputs}
-          onNext={handleNextStep}
-          onBack={handleBack}
-          isClientAction={
-            baseAction.executionContext === ExecutionContext.CLIENT
-          }
-          onCreateAction={handleCreateAction}
-          isCreatingAction={isCreatingAction}
-        />
-      )}
-
-      {step === 3 &&
-        baseAction.executionContext === ExecutionContext.SERVER && (
-          <ExecutionStep
-            baseAction={baseAction}
+        <div>
+          <DataInputsStep
             dataInputs={dataInputs}
-            apiUrl={apiUrl}
-            setApiUrl={setApiUrl}
-            apiMethod={apiMethod}
-            setApiMethod={setApiMethod}
-            headers={headers}
-            setHeaders={setHeaders}
-            apiBody={apiBody}
-            setApiBody={setApiBody}
-            isEditorInteracted={isEditorInteracted}
-            setIsEditorInteracted={setIsEditorInteracted}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            onCreate={handleCreateAction}
+            setDataInputs={setDataInputs}
+            onNext={
+              baseAction.executionContext === ExecutionContext.CLIENT
+                ? handleNextStep
+                : () => {
+                    // For server actions, scroll to ExecutionStep below
+                    const executionStep = document.querySelector(
+                      '[data-execution-step]'
+                    );
+                    if (executionStep) {
+                      executionStep.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+            }
             onBack={handleBack}
+            isClientAction={
+              baseAction.executionContext === ExecutionContext.CLIENT
+            }
+            onCreateAction={handleCreateAction}
             isCreatingAction={isCreatingAction}
-            showSuccess={showSuccess}
           />
-        )}
+          {baseAction.executionContext === ExecutionContext.SERVER && (
+            <div data-execution-step>
+              <RequestDefinitionStep
+                dataInputs={dataInputs}
+                apiUrl={apiUrl}
+                setApiUrl={setApiUrl}
+                apiMethod={apiMethod}
+                setApiMethod={setApiMethod}
+                headers={headers}
+                setHeaders={setHeaders}
+                apiBody={apiBody}
+                setApiBody={setApiBody}
+                isEditorInteracted={isEditorInteracted}
+                setIsEditorInteracted={setIsEditorInteracted}
+                onCreate={handleCreateAction}
+                onBack={handleBack}
+                isCreatingAction={isCreatingAction}
+                showSuccess={showSuccess}
+              />
+            </div>
+          )}
+        </div>
+      )}
     </motion.div>
   );
 }

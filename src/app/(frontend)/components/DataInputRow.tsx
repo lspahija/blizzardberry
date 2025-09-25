@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
-import { Trash2 } from 'lucide-react';
+import { Trash2, List } from 'lucide-react';
 
 interface DataInput {
   name: string;
@@ -39,7 +39,7 @@ export default function DataInputRow({
   descriptionIcon,
 }: DataInputRowProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr_1.8fr_70px] gap-y-3 md:gap-y-2 gap-x-1 md:gap-x-2 mt-4 items-start md:items-center p-3 md:p-0 bg-card md:bg-transparent rounded-xl md:rounded-none border-[2px] md:border-0 border-border">
+    <div className="grid grid-cols-1 md:grid-cols-[150px_95px_50px_1fr_70px] gap-y-3 md:gap-y-2 gap-x-1 md:gap-x-8 mt-4 items-start md:items-center p-3 md:p-0 bg-card md:bg-transparent rounded-xl md:rounded-none border-[2px] md:border-0 border-border">
       <div>
         <Label
           htmlFor={`inputName${index}`}
@@ -57,45 +57,42 @@ export default function DataInputRow({
         />
       </div>
       <div>
-        <div className="flex items-end gap-2">
-          <div>
-            <Label
-              htmlFor={`inputType${index}`}
-              className="flex items-center gap-2 text-sm md:text-base text-foreground"
-            >
-              {typeIcon}
-              Type
-            </Label>
-            <Select
-              value={input.type}
-              onValueChange={(value) => updateDataInput('type', value)}
-            >
-              <SelectTrigger className="mt-2 border-[2px] border-border text-sm md:text-base text-foreground">
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Text">Text</SelectItem>
-                <SelectItem value="Number">Number</SelectItem>
-                <SelectItem value="Boolean">Boolean</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex flex-col items-center">
-            <Label
-              htmlFor={`inputArray${index}`}
-              className="text-xs md:text-sm whitespace-nowrap text-foreground mb-1"
-            >
-              Array
-            </Label>
-            <input
-              id={`inputArray${index}`}
-              type="checkbox"
-              checked={input.isArray}
-              onChange={(e) => updateDataInput('isArray', e.target.checked)}
-              className="border-[2px] border-border w-4 h-4 md:w-5 md:h-5 mb-2"
-            />
-          </div>
-        </div>
+        <Label
+          htmlFor={`inputType${index}`}
+          className="flex items-center gap-2 text-sm md:text-base text-foreground"
+        >
+          {typeIcon}
+          Type
+        </Label>
+        <Select
+          value={input.type}
+          onValueChange={(value) => updateDataInput('type', value)}
+        >
+          <SelectTrigger className="mt-2 border-[2px] border-border text-sm md:text-base text-foreground">
+            <SelectValue placeholder="Select type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Text">Text</SelectItem>
+            <SelectItem value="Number">Number</SelectItem>
+            <SelectItem value="Boolean">Boolean</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col items-center">
+        <Label
+          htmlFor={`inputArray${index}`}
+          className="flex items-center gap-1 text-sm md:text-base whitespace-nowrap text-foreground"
+        >
+          <List className="h-3 w-3 text-destructive" />
+          Array
+        </Label>
+        <input
+          id={`inputArray${index}`}
+          type="checkbox"
+          checked={input.isArray}
+          onChange={(e) => updateDataInput('isArray', e.target.checked)}
+          className="border-[2px] border-border w-4 h-4 md:w-5 md:h-5 mt-2"
+        />
       </div>
       <div>
         <Label

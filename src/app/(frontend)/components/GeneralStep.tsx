@@ -63,14 +63,7 @@ export default function GeneralStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-      <div className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 border-blue-600 p-3 md:p-4 rounded-lg shadow-md">
-        <Info className="h-5 w-5 md:h-6 md:w-6 text-blue-600 mr-2 md:mr-3 mt-1 md:mt-0 flex-shrink-0" />
-        <span className="text-foreground text-sm md:text-base">
-          Fill out the general information for your action. This helps the AI
-          agent understand when and how to use it.
-        </span>
-      </div>
-      <div className="relative mb-6 md:mb-12">
+      <div className="relative mb-2 md:mb-3">
         <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
         <Card
           className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8"
@@ -85,9 +78,9 @@ export default function GeneralStep({
                 <Zap className="h-4 w-4 text-destructive" />
                 Action Name
               </Label>
-              <p className="text-xs md:text-sm text-muted-foreground mt-1 ml-6">
-                A descriptive name for this action. This will help the AI agent
-                know when to use it.
+              <p className="text-xs md:text-sm text-muted-foreground mt-1 mb-3 ml-6">
+                Enter a descriptive name for this action. This will help the AI
+                agent know when to use it.
               </p>
               <div className="relative">
                 <Input
@@ -116,11 +109,10 @@ export default function GeneralStep({
                 <Info className="h-4 w-4 text-destructive" />
                 Description
               </Label>
-              <p className="text-xs md:text-sm text-muted-foreground mt-1 ml-6">
-                Explain when the AI Agent should use this action. Include a
-                description of what this action does, the data it provides, and
-                any updates it makes. Include example queries that should
-                trigger this action.
+              <p className="text-xs md:text-sm text-muted-foreground mt-1 mb-3 ml-6">
+                Explain when the AI Agent should use this action. Describe what
+                this action does. You can also provide example prompts from the
+                user that would trigger this action.
               </p>
               <Textarea
                 id="description"
@@ -201,14 +193,14 @@ export default function GeneralStep({
                 </div>
               </RadioGroup>
             </div>
-            <div className="pt-6">
+            <div className="pt-4">
               <Button
                 type="button"
                 className="bg-destructive text-white border-[3px] border-border hover:-translate-y-1 hover:-translate-x-1 hover:bg-brand transition-transform duration-200 shadow-md text-base md:text-lg font-semibold"
                 onClick={handleNext}
               >
                 <Save className="w-4 h-4 mr-2" />
-                Save and Continue
+                Continue
               </Button>
             </div>
           </CardContent>

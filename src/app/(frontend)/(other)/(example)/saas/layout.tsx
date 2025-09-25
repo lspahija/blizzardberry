@@ -61,11 +61,11 @@ export default function ExampleLayout({
       <Script id="blizzardberry-actions" strategy="afterInteractive">
         {`
   window.agentActions = {
-    logSomething: async (agentUserConfig, params) => {
-      // Your custom action logic here
-      // Access parameters from params object: params.message
-      console.log(params.message)
-      return { status: 'success', results: [params.message] };
+    logSomething: async (user, args) => {
+      // Your custom action logic goes here
+      // Access arguments from args object: args.message
+      console.log(args.message)
+      return { status: 'success', results: [args.message] };
   }
   };
   `}
