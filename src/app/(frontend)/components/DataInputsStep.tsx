@@ -75,9 +75,9 @@ export default function DataInputsStep({
               </div>
               <p className="text-sm text-gray-600 mt-2">
                 Specify the information the AI Agent needs to perform the
-                action. The agent will be able to find this data in the chat
-                history, request it from the user, or find it in the user
-                config.
+                action. The agent will be able to populate the values in
+                real-time by looking in the chat history, requesting them from
+                the user, or finding them in the user config.
               </p>
             </div>
           </CardHeader>
