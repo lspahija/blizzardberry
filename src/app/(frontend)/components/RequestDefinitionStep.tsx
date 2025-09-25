@@ -61,7 +61,7 @@ interface Header {
   value: string;
 }
 
-interface ExecutionStepProps {
+interface RequestDefinitionStepProps {
   baseAction: BaseAction;
   dataInputs: DataInput[];
   apiUrl: string;
@@ -114,8 +114,7 @@ const placeholderJSON = `{
   "qux": { "thud": "{{variable3}}" }
 }`;
 
-export default function ExecutionStep({
-  baseAction,
+export default function RequestDefinitionStep({
   dataInputs,
   apiUrl,
   setApiUrl,
@@ -127,14 +126,12 @@ export default function ExecutionStep({
   setApiBody,
   isEditorInteracted,
   setIsEditorInteracted,
-  activeTab,
-  setActiveTab,
   onCreate,
   onBack,
   isCreatingAction = false,
   showSuccess = false,
   isEditing = false,
-}: ExecutionStepProps) {
+}: RequestDefinitionStepProps) {
   const [bodyError, setBodyError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
 
@@ -239,15 +236,6 @@ export default function ExecutionStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-      <div
-        className="mb-12 flex items-center bg-muted border-l-4 border-blue-600 p-4 rounded-lg shadow-md"
-      >
-        <Info className="h-6 w-6 text-blue-600 mr-3" />
-        <span className="text-foreground text-base">
-          Configure the API endpoint that the AI Agent will call to retrieve or
-          update data.
-        </span>
-      </div>
       <div className="relative mb-12 ml-0">
         <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
         <Card
@@ -263,10 +251,9 @@ export default function ExecutionStep({
                 </CardTitle>
               </div>
               <p className="text-sm text-gray-600 mt-2">
-                The API endpoint that should be called by the AI Agent to
-                retrieve data or to send updates. You can include data inputs
-                (variables) collected from the user in the URL, headers, and
-                request body.
+                This is the API endpoint that should be called by the AI Agent
+                to complete the action. You can refer to any of the data inputs
+                defined above as variables.
               </p>
             </div>
           </CardHeader>

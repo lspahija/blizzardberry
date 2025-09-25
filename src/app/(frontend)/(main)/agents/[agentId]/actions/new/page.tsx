@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import DataInputsStep from '@/app/(frontend)/components/DataInputsStep';
 import GeneralStep from '@/app/(frontend)/components/GeneralStep';
-import ExecutionStep from '@/app/(frontend)/components/ExecutionStep';
+import RequestDefinitionStep from '@/app/(frontend)/components/RequestDefinitionStep.tsx';
 import ClientActionImplementation from '@/app/(frontend)/components/ClientActionImplementation';
 import { Loader2 } from 'lucide-react'; // Import a loading icon
 import { useRouter } from 'next/navigation';
@@ -134,13 +134,19 @@ function ActionFormContent() {
           <DataInputsStep
             dataInputs={dataInputs}
             setDataInputs={setDataInputs}
-            onNext={baseAction.executionContext === ExecutionContext.CLIENT ? handleNextStep : () => {
-              // For server actions, scroll to ExecutionStep below
-              const executionStep = document.querySelector('[data-execution-step]');
-              if (executionStep) {
-                executionStep.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
+            onNext={
+              baseAction.executionContext === ExecutionContext.CLIENT
+                ? handleNextStep
+                : () => {
+                    // For server actions, scroll to ExecutionStep below
+                    const executionStep = document.querySelector(
+                      '[data-execution-step]'
+                    );
+                    if (executionStep) {
+                      executionStep.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+            }
             onBack={handleBack}
             isClientAction={
               baseAction.executionContext === ExecutionContext.CLIENT
@@ -150,8 +156,7 @@ function ActionFormContent() {
           />
           {baseAction.executionContext === ExecutionContext.SERVER && (
             <div data-execution-step>
-              <ExecutionStep
-                baseAction={baseAction}
+              <RequestDefinitionStep
                 dataInputs={dataInputs}
                 apiUrl={apiUrl}
                 setApiUrl={setApiUrl}
@@ -163,8 +168,6 @@ function ActionFormContent() {
                 setApiBody={setApiBody}
                 isEditorInteracted={isEditorInteracted}
                 setIsEditorInteracted={setIsEditorInteracted}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
                 onCreate={handleCreateAction}
                 onBack={handleBack}
                 isCreatingAction={isCreatingAction}

@@ -59,15 +59,6 @@ export default function DataInputsStep({
 
   return (
     <motion.div variants={cardVariants} initial="hidden" whileInView="visible">
-      <div
-        className="mb-6 md:mb-12 flex items-start md:items-center bg-muted border-l-4 border-blue-600 p-3 md:p-4 rounded-lg shadow-md"
-      >
-        <Info className="h-5 w-5 md:h-6 md:w-6 text-blue-600 mr-2 md:mr-3 mt-1 md:mt-0 flex-shrink-0" />
-        <span className="text-foreground text-sm md:text-base">
-          Specify any data inputs your action needs. The AI agent can use these
-          to perform the action more effectively.
-        </span>
-      </div>
       <div className="relative mb-6 md:mb-12">
         <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
         <Card
@@ -85,8 +76,8 @@ export default function DataInputsStep({
               Specify the information the AI Agent needs to perform the action.
             </p>
             <p className="text-xs md:text-sm text-muted-foreground">
-              The agent can find this data in chat history, request it from the
-              user, or use user config if available.
+              The agent can find this data in the chat history, request it from
+              the user, or find it in the user config.
             </p>
           </CardHeader>
           <CardContent className="space-y-2 md:space-y-4 p-4 md:p-6">

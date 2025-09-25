@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import DataInputsStep from '@/app/(frontend)/components/DataInputsStep';
 import GeneralStep from '@/app/(frontend)/components/GeneralStep';
-import ExecutionStep from '@/app/(frontend)/components/ExecutionStep';
+import RequestDefinitionStep from '@/app/(frontend)/components/RequestDefinitionStep.tsx';
 import { Loader2 } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import {
@@ -358,13 +358,19 @@ function ActionEditContent() {
           <DataInputsStep
             dataInputs={dataInputs}
             setDataInputs={setDataInputs}
-            onNext={baseAction.executionContext === ExecutionContext.CLIENT ? handleNextStep : () => {
-              // For server actions, scroll to ExecutionStep below
-              const executionStep = document.querySelector('[data-execution-step]');
-              if (executionStep) {
-                executionStep.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
+            onNext={
+              baseAction.executionContext === ExecutionContext.CLIENT
+                ? handleNextStep
+                : () => {
+                    // For server actions, scroll to ExecutionStep below
+                    const executionStep = document.querySelector(
+                      '[data-execution-step]'
+                    );
+                    if (executionStep) {
+                      executionStep.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+            }
             onBack={handleBack}
             isClientAction={
               baseAction.executionContext === ExecutionContext.CLIENT
@@ -373,8 +379,7 @@ function ActionEditContent() {
           />
           {baseAction.executionContext === ExecutionContext.SERVER && (
             <div data-execution-step>
-              <ExecutionStep
-                baseAction={baseAction}
+              <RequestDefinitionStep
                 dataInputs={dataInputs}
                 apiUrl={apiUrl}
                 setApiUrl={setApiUrl}
@@ -386,8 +391,6 @@ function ActionEditContent() {
                 setApiBody={setApiBody}
                 isEditorInteracted={isEditorInteracted}
                 setIsEditorInteracted={setIsEditorInteracted}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
                 onCreate={handleUpdateAction}
                 onBack={handleBack}
                 isCreatingAction={isUpdatingAction}
