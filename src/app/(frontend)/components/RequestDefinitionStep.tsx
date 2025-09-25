@@ -220,6 +220,58 @@ export default function RequestDefinitionStep({
       return;
     }
 
+    // Enhanced validation: Check if all variables in API body have corresponding data inputs
+    if (apiBody.trim()) {
+      try {
+        // Extract all template variables from the API body (e.g., {{sku}}, {{from}}, {{to}})
+        const variableRegex = /\{\{(\w+)\}\}/g;
+        const bodyVariables: string[] = [];
+        let match;
+
+        while ((match = variableRegex.exec(apiBody)) !== null) {
+          const varName = match[1];
+          if (!bodyVariables.includes(varName)) {
+            bodyVariables.push(varName);
+          }
+        }
+
+        // Get all defined data input names
+        const dataInputNames = dataInputs
+          .filter(input => input.name.trim())
+          .map(input => input.name.trim());
+
+        // Find missing data inputs
+        const missingInputs = bodyVariables.filter(varName =>
+          !dataInputNames.includes(varName)
+        );
+
+        if (missingInputs.length > 0) {
+          setBodyError(
+            `Missing data inputs for variables: ${missingInputs.join(', ')}. ` +
+            `Please add these parameters in the Data Inputs section above.`
+          );
+          return;
+        }
+
+        // Check if there are empty required data inputs
+        const emptyRequiredInputs = dataInputs.filter(input =>
+          bodyVariables.includes(input.name) && !input.name.trim()
+        );
+
+        if (emptyRequiredInputs.length > 0) {
+          setBodyError(
+            `Some data inputs referenced in the API body are empty. ` +
+            `Please ensure all required parameters are properly defined.`
+          );
+          return;
+        }
+
+      } catch (error) {
+        // If JSON parsing fails, let it proceed (JSON validation happens elsewhere)
+        console.log('Body parsing error during validation:', error);
+      }
+    }
+
     onCreate();
   };
 
