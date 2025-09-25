@@ -8,7 +8,7 @@ import {
 } from '@/app/api/lib/model/action/baseAction';
 import { HttpRequest, Body } from '@/app/api/lib/model/action/backendAction';
 import { similaritySearch } from '../store/documentStore';
-import { toCamelCase } from '@/app/(frontend)/lib/actionUtils.ts';
+import { toCamelCase } from '@/app/(frontend)/lib/actionUtils';
 
 export function createSearchKnowledgeBaseTool(agentId: string): Tool {
   return tool({
@@ -84,11 +84,48 @@ export function createVisualizationTool(): Tool {
       const { data, chartType, title, xKey, yKey, options = {} } = input;
 
       try {
-        if (data.length === 0) {
+        if (!Array.isArray(data) || data.length === 0) {
           return {
             error: 'No data provided for visualization',
             message: 'Cannot create a chart with empty data.',
           };
+        }
+
+        // Basic shape validation: require array of non-null objects
+        const isTabular = data.every((row) => row && typeof row === 'object' && !Array.isArray(row));
+        if (!isTabular) {
+          return {
+            error: 'Invalid data format',
+            message: 'Visualization requires an array of objects (tabular data).',
+          };
+        }
+
+        // Require at least one numeric field across rows
+        const sample = data[0] ?? {} as Record<string, any>;
+        const numericFieldExists = Object.keys(sample).some((k) => {
+          const v = sample[k];
+          return typeof v === 'number' || (typeof v === 'string' && v.trim() !== '' && !isNaN(Number(v)));
+        });
+        if (!numericFieldExists) {
+          return {
+            error: 'No numeric fields',
+            message: 'Provide at least one numeric column to visualize.',
+          };
+        }
+
+        // Chart-type-specific sanity checks
+        if (chartType === 'pie') {
+          // Determine value field
+          const valueKey = Array.isArray(yKey) ? yKey[0] : yKey;
+          const values = data.map((row) => Number(valueKey ? row[valueKey] : Object.values(row).find((v) => typeof v === 'number' || (!isNaN(Number(v)) && String(v).trim() !== ''))));
+          const hasNegative = values.some((n) => !Number.isFinite(n) || n < 0);
+          const total = values.reduce((a, b) => (Number.isFinite(b) ? a + b : a), 0);
+          if (hasNegative || total <= 0 || data.length > 24) {
+            return {
+              error: 'Unsuitable data for pie chart',
+              message: 'Pie charts need non-negative values, a positive total, and a manageable number of categories (≤ 24).',
+            };
+          }
         }
 
         if (xKey || yKey) {
