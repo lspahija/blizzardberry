@@ -154,6 +154,11 @@ export default function RequestDefinitionStep({
     if (isCreatingAction) return;
     setApiMethod(method);
     setBodyError(null);
+
+    // Clear body when switching to GET or DELETE
+    if (method === 'GET' || method === 'DELETE') {
+      setApiBody('');
+    }
   };
 
   const handleUrlChange = (value: string) => {
@@ -215,13 +220,9 @@ export default function RequestDefinitionStep({
       setBodyError(`Body is required for ${apiMethod} requests`);
       return;
     }
-    if (apiMethod === 'GET' && apiBody.trim()) {
-      setBodyError('GET requests cannot have a body');
-      return;
-    }
 
     // Enhanced validation: Check if all variables in API body have corresponding data inputs
-    if (apiBody.trim()) {
+    if (apiMethod !== 'GET' && apiMethod !== 'DELETE' && apiBody.trim()) {
       try {
         // Extract all template variables from the API body (e.g., {{sku}}, {{from}}, {{to}})
         const variableRegex = /\{\{(\w+)\}\}/g;
@@ -448,72 +449,74 @@ export default function RequestDefinitionStep({
               </Button>
             </div>
 
-            <div className="mt-8">
-              <Label
-                htmlFor="apiBody"
-                className="text-gray-900 text-lg font-semibold flex items-center gap-2"
-              >
-                <Code className="h-4 w-4 text-[#FE4A60]" />
-                Body
-              </Label>
-              {bodyError && (
-                <div className="mt-4 p-4 bg-red-50 border-[2px] border-red-200 rounded-lg">
-                  <p className="text-red-500 text-sm">{bodyError}</p>
-                </div>
-              )}
-              <div
-                className="mt-2 border-[2px] border-border rounded-lg overflow-hidden"
-                style={{ backgroundColor: 'var(--color-muted)' }}
-              >
-                <div className="relative">
-                  {!apiBody?.trim() && (
-                    <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
-                      {placeholderJSON}
-                    </div>
-                  )}
-                  <Editor
-                    height="200px"
-                    defaultLanguage="json"
-                    value={apiBody}
-                    onChange={handleEditorChange}
-                    beforeMount={handleEditorWillMount}
-                    onMount={(editor) => {
-                      editor.updateOptions({
-                        lineNumbers: () => '',
-                        glyphMargin: false,
-                        lineDecorationsWidth: 0,
-                        lineNumbersMinChars: 0,
-                        suggest: {
-                          showWords: false,
-                          preview: true,
-                          showProperties: false,
+{apiMethod !== 'GET' && apiMethod !== 'DELETE' && (
+              <div className="mt-8">
+                <Label
+                  htmlFor="apiBody"
+                  className="text-gray-900 text-lg font-semibold flex items-center gap-2"
+                >
+                  <Code className="h-4 w-4 text-[#FE4A60]" />
+                  Body
+                </Label>
+                {bodyError && (
+                  <div className="mt-4 p-4 bg-red-50 border-[2px] border-red-200 rounded-lg">
+                    <p className="text-red-500 text-sm">{bodyError}</p>
+                  </div>
+                )}
+                <div
+                  className="mt-2 border-[2px] border-border rounded-lg overflow-hidden"
+                  style={{ backgroundColor: 'var(--color-muted)' }}
+                >
+                  <div className="relative">
+                    {!apiBody?.trim() && (
+                      <div className="absolute z-10 pointer-events-none text-gray-500 p-3 whitespace-pre-wrap">
+                        {placeholderJSON}
+                      </div>
+                    )}
+                    <Editor
+                      height="200px"
+                      defaultLanguage="json"
+                      value={apiBody}
+                      onChange={handleEditorChange}
+                      beforeMount={handleEditorWillMount}
+                      onMount={(editor) => {
+                        editor.updateOptions({
+                          lineNumbers: () => '',
+                          glyphMargin: false,
+                          lineDecorationsWidth: 0,
+                          lineNumbersMinChars: 0,
+                          suggest: {
+                            showWords: false,
+                            preview: true,
+                            showProperties: false,
+                          },
+                        });
+                        requestAnimationFrame(() => editor.layout());
+                      }}
+                      theme="customTheme"
+                      options={{
+                        fontSize: 14,
+                        minimap: { enabled: false },
+                        scrollBeyondLastLine: false,
+                        wordWrap: 'on',
+                        renderLineHighlight: 'none',
+                        scrollbar: {
+                          verticalScrollbarSize: 8,
+                          horizontalScrollbarSize: 8,
                         },
-                      });
-                      requestAnimationFrame(() => editor.layout());
-                    }}
-                    theme="customTheme"
-                    options={{
-                      fontSize: 14,
-                      minimap: { enabled: false },
-                      scrollBeyondLastLine: false,
-                      wordWrap: 'on',
-                      renderLineHighlight: 'none',
-                      scrollbar: {
-                        verticalScrollbarSize: 8,
-                        horizontalScrollbarSize: 8,
-                      },
-                      padding: { top: 12, bottom: 12, left: 12 } as any,
-                      folding: false,
-                      hideCursorInOverviewRuler: true,
-                      guides: { indentation: false },
-                      readOnly: isCreatingAction,
-                      fixedOverflowWidgets: true,
-                    }}
-                    className="bg-transparent"
-                  />
+                        padding: { top: 12, bottom: 12, left: 12 } as any,
+                        folding: false,
+                        hideCursorInOverviewRuler: true,
+                        guides: { indentation: false },
+                        readOnly: isCreatingAction,
+                        fixedOverflowWidgets: true,
+                      }}
+                      className="bg-transparent"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="flex space-x-4">
               <Button
