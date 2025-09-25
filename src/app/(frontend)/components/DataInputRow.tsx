@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
-import { Trash2 } from 'lucide-react';
+import { Trash2, List } from 'lucide-react';
 
 interface DataInput {
   name: string;
@@ -39,7 +39,7 @@ export default function DataInputRow({
   descriptionIcon,
 }: DataInputRowProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[200px_120px_60px_1fr_70px] gap-y-3 md:gap-y-2 gap-x-1 md:gap-x-3 mt-4 items-start md:items-center p-3 md:p-0 bg-card md:bg-transparent rounded-xl md:rounded-none border-[2px] md:border-0 border-border">
+    <div className="grid grid-cols-1 md:grid-cols-[150px_95px_50px_1fr_70px] gap-y-3 md:gap-y-2 gap-x-1 md:gap-x-8 mt-4 items-start md:items-center p-3 md:p-0 bg-card md:bg-transparent rounded-xl md:rounded-none border-[2px] md:border-0 border-border">
       <div>
         <Label
           htmlFor={`inputName${index}`}
@@ -81,8 +81,9 @@ export default function DataInputRow({
       <div className="flex flex-col items-center">
         <Label
           htmlFor={`inputArray${index}`}
-          className="text-xs md:text-sm whitespace-nowrap text-foreground mb-1"
+          className="flex items-center gap-1 text-sm md:text-base whitespace-nowrap text-foreground"
         >
+          <List className="h-3 w-3 text-destructive" />
           Array
         </Label>
         <input
