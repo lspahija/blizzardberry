@@ -30,6 +30,7 @@ interface DataInputsStepProps {
   onBack: () => void;
   isClientAction?: boolean;
   onCreateAction?: () => void;
+  onUpdateAction?: () => void;
   isCreatingAction?: boolean;
   isEditing?: boolean;
 }
@@ -41,6 +42,7 @@ export default function DataInputsStep({
   onBack,
   isClientAction = false,
   onCreateAction,
+  onUpdateAction,
   isCreatingAction = false,
   isEditing = false,
 }: DataInputsStepProps) {
@@ -52,8 +54,12 @@ export default function DataInputsStep({
   };
 
   const handleNextOrCreate = () => {
-    if (isClientAction && onCreateAction) {
-      onCreateAction();
+    if (isClientAction) {
+      if (isEditing && onUpdateAction) {
+        onUpdateAction();
+      } else if (!isEditing && onCreateAction) {
+        onCreateAction();
+      }
     } else {
       onNext();
     }
@@ -132,7 +138,7 @@ export default function DataInputsStep({
                 </Button>
                 <Button
                   className="bg-destructive text-white border-[3px] border-gray-900 hover:bg-[#ff6a7a] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform cursor-pointer rounded-xl flex items-center gap-2"
-                  onClick={onCreateAction}
+                  onClick={handleNextOrCreate}
                   disabled={isCreatingAction}
                 >
                   {isCreatingAction ? (

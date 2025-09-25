@@ -375,7 +375,9 @@ function ActionEditContent() {
             isClientAction={
               baseAction.executionContext === ExecutionContext.CLIENT
             }
+            onUpdateAction={handleUpdateAction}
             isCreatingAction={isUpdatingAction}
+            isEditing={true}
           />
           {baseAction.executionContext === ExecutionContext.SERVER && (
             <div data-execution-step>
