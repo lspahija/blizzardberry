@@ -82,3 +82,6 @@ Accept: application/json
 ###
 GET http://localhost:3000/api/hello
 
+###
+POST http://localhost:3000/api/echo
+
