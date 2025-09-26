@@ -45,7 +45,11 @@ import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
 import { usePrompts } from '@/app/(frontend)/hooks/usePrompts';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import { getRegisterMultipleToolsExample } from '@/app/(frontend)/lib/actionUtils';
-import { Framework, getAgentScript } from '@/app/(frontend)/lib/scriptUtils';
+import {
+  Framework,
+  getAgentScript,
+  getAgentConfigScript,
+} from '@/app/(frontend)/lib/scriptUtils';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
@@ -94,7 +98,6 @@ function AgentDetails({
   const [loadingAgent, setLoadingAgent] = useState(true);
   const [loadingActions, setLoadingActions] = useState(true);
   const [deletingActionId, setDeletingActionId] = useState<string | null>(null);
-  const [showClientActions, setShowClientActions] = useState(false);
   const [showAgentCode, setShowAgentCode] = useState(false);
   const [copied, setCopied] = useState(false);
   const { selectedFramework, setSelectedFramework } = useFramework();
@@ -294,7 +297,7 @@ function AgentDetails({
   };
 
   useEffect(() => {
-    if (showClientActions || showAgentCode) {
+    if (showAgentCode) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -302,7 +305,7 @@ function AgentDetails({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [showClientActions, showAgentCode]);
+  }, [showAgentCode]);
 
   if (loadingAgent) {
     return (
@@ -541,16 +544,6 @@ function AgentDetails({
                         </>
                       )}
                     </Button>
-                    {clientActions.length > 0 && (
-                      <Button
-                        className="bg-secondary text-secondary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform text-sm font-semibold px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-md hover:bg-secondary/90 w-full sm:w-auto"
-                        onClick={() => setShowClientActions(true)}
-                        title="Show code for client actions"
-                      >
-                        <Code className="h-4 w-4" />
-                        Client Code
-                      </Button>
-                    )}
                   </div>
                 </div>
                 <div className="bg-muted/30 rounded-lg p-4 border border-border">
@@ -766,191 +759,6 @@ function AgentDetails({
             </div>
           </CardContent>
         </Card>
-
-        {showClientActions && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-8">
-            <div
-              className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl shadow-2xl"
-              aria-hidden="true"
-            />
-            <div className="relative z-10 w-full max-w-lg sm:max-w-2xl md:max-w-4xl max-h-[90vh] rounded-2xl">
-              <div className="relative mb-8 md:mb-12">
-                <div className="absolute inset-0 bg-gray-900 rounded-3xl translate-x-1 translate-y-1"></div>
-                <Card
-                  className="relative bg-muted border-[3px] border-border rounded-3xl shadow-2xl border-l-8"
-                  style={{ borderLeftColor: 'var(--color-destructive)' }}
-                >
-                  <div className="max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-destructive/60 scrollbar-track-card/60 rounded-2xl pr-2">
-                    <CardHeader className="flex items-center justify-between relative">
-                      <div className="flex items-center space-x-2">
-                        <Code className="h-7 w-7 text-destructive" />
-                        <CardTitle className="text-lg sm:text-2xl font-semibold text-foreground">
-                          Client Actions Code
-                        </CardTitle>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label="Close"
-                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-3 rounded-full hover:bg-destructive/10 transition"
-                        onClick={() => setShowClientActions(false)}
-                      >
-                        <X className="h-5 w-5 sm:h-6 sm:w-6 text-foreground" />
-                      </Button>
-                    </CardHeader>
-                    <CardContent className="space-y-8 mt-8">
-                      <div>
-                        <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mt-4">
-                          <Code className="h-4 w-4 text-destructive" />
-                          Framework
-                        </Label>
-                        <p className="text-sm text-muted-foreground mt-2 ml-6">
-                          Select the framework you're using to implement the
-                          client actions.
-                        </p>
-                        <div className="mt-2 ml-6">
-                          <Select
-                            value={selectedFramework}
-                            onValueChange={(value) =>
-                              setSelectedFramework(value as Framework)
-                            }
-                          >
-                            <SelectTrigger className="w-[200px] border-[2px] border-border">
-                              <SelectValue placeholder="Select framework" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value={Framework.ANGULAR}>
-                                Angular
-                              </SelectItem>
-                              <SelectItem value={Framework.NEXT_JS}>
-                                Next.js
-                              </SelectItem>
-                              <SelectItem value={Framework.REACT}>
-                                React
-                              </SelectItem>
-                              <SelectItem value={Framework.VANILLA}>
-                                Vanilla JS
-                              </SelectItem>
-                              <SelectItem value={Framework.VUE}>Vue</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-600 mb-4">
-                        The user parameter provides user information to agents
-                        for personalized experiences.
-                      </p>
-                      <p className="text-sm text-gray-600 mb-4">
-                        The AI agent uses your return value to provide helpful
-                        responses to users and to confirm actions were executed.
-                      </p>
-                      <div className="relative">
-                        <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
-                          <Code className="h-4 w-4 text-destructive" />
-                          Implementation Code
-                        </Label>
-                        <SyntaxHighlighter
-                          language="html"
-                          style={vscDarkPlus}
-                          customStyle={{
-                            borderRadius: '8px',
-                            padding: '16px',
-                            border: '2px solid var(--color-border)',
-                            backgroundColor: 'var(--color-background-dark)',
-                          }}
-                        >
-                          {getRegisterMultipleToolsExample(
-                            clientActions.map((action) => ({
-                              functionName: action.name,
-                              dataInputs: (
-                                action.executionModel.parameters || []
-                              ).map((param) => ({
-                                name: param.name,
-                                type: param.type,
-                                description: param.description || '',
-                                isArray: param.isArray || false,
-                              })),
-                            })),
-                            selectedFramework
-                          )}
-                        </SyntaxHighlighter>
-                        <Button
-                          onClick={() => {
-                            navigator.clipboard.writeText(
-                              getRegisterMultipleToolsExample(
-                                clientActions.map((action) => ({
-                                  functionName: action.name,
-                                  dataInputs: (
-                                    action.executionModel.parameters || []
-                                  ).map((param) => ({
-                                    name: param.name,
-                                    type: param.type,
-                                    description: param.description || '',
-                                    isArray: param.isArray || false,
-                                  })),
-                                })),
-                                selectedFramework
-                              )
-                            );
-                            setCopied(true);
-                            setTimeout(() => setCopied(false), 2000);
-                          }}
-                          className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 hover:bg-secondary/90 px-2 py-1 sm:px-3 sm:py-1.5"
-                        >
-                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span className="hidden sm:inline text-xs sm:text-sm">
-                            {copied ? 'Copied!' : 'Copy Code'}
-                          </span>
-                          <span className="inline sm:hidden text-xs">
-                            {copied ? 'Copied!' : 'Copy'}
-                          </span>
-                        </Button>
-                      </div>
-                      <ul className="list-disc list-inside text-gray-600 space-y-2 mt-4 text-sm">
-                        <li>
-                          Implement your functions into your app like the
-                          example above
-                        </li>
-                        <li>
-                          {selectedFramework === Framework.NEXT_JS ? (
-                            <>
-                              Paste the code in your layout.tsx or page
-                              component
-                            </>
-                          ) : (
-                            <>
-                              Paste the code before the closing{' '}
-                              <code className="bg-muted px-1 rounded">
-                                &lt;/body&gt;
-                              </code>{' '}
-                              tag
-                            </>
-                          )}
-                        </li>
-                        <li>
-                          The code will be available to your agent as a
-                          client-side action
-                        </li>
-                        <li>
-                          Need help? Visit our{' '}
-                          <Link
-                            href="/docs"
-                            className="text-destructive hover:underline"
-                          >
-                            documentation{' '}
-                            <ExternalLink className="inline w-4 h-4" />
-                          </Link>
-                          .
-                        </li>
-                      </ul>
-                    </CardContent>
-                  </div>
-                </Card>
-              </div>
-            </div>
-          </div>
-        )}
-
         {showAgentCode && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-8">
             <div
@@ -1026,7 +834,7 @@ function AgentDetails({
                           Installation Code
                         </Label>
                         <SyntaxHighlighter
-                          language="html"
+                          language={selectedFramework === Framework.NEXT_JS ? 'jsx' : 'html'}
                           style={vscDarkPlus}
                           customStyle={{
                             borderRadius: '8px',
@@ -1035,14 +843,105 @@ function AgentDetails({
                             backgroundColor: 'var(--color-background-dark)',
                           }}
                         >
-                          {getAgentScript(selectedFramework, params.agentId)}
+                          {(() => {
+                            const agentScript = getAgentScript(
+                              selectedFramework,
+                              params.agentId
+                            );
+
+                            const defaultUserConfig = {
+                              user_id: 'user_123',
+                              account_number: 'ACC123456',
+                              user_metadata: {
+                                name: 'John Doe',
+                                email: 'user@example.com',
+                                company: '{{DYNAMIC_COMPANY_VALUE}}',
+                              },
+                            };
+
+                            const userConfigScript = getAgentConfigScript(
+                              selectedFramework,
+                              defaultUserConfig
+                            ).replace(
+                              '"{{DYNAMIC_COMPANY_VALUE}}"',
+                              'fetchDynamically()'
+                            );
+
+                            const actionsScript =
+                              clientActions.length > 0
+                                ? getRegisterMultipleToolsExample(
+                                    clientActions.map((action) => ({
+                                      functionName: action.name,
+                                      dataInputs: (
+                                        action.executionModel.parameters || []
+                                      ).map((param) => ({
+                                        name: param.name,
+                                        type: param.type,
+                                        description: param.description || '',
+                                        isArray: param.isArray || false,
+                                      })),
+                                    })),
+                                    selectedFramework
+                                  )
+                                : '';
+
+                            return [agentScript, userConfigScript, actionsScript]
+                              .filter(Boolean)
+                              .join('\n\n');
+                          })()}
                         </SyntaxHighlighter>
                         <Button
-                          onClick={() =>
-                            handleCopy(
-                              getAgentScript(selectedFramework, params.agentId)
-                            )
-                          }
+                          onClick={() => {
+                            const agentScript = getAgentScript(
+                              selectedFramework,
+                              params.agentId
+                            );
+                            
+                            const defaultUserConfig = {
+                              user_id: 'user_123',
+                              account_number: 'ACC123456',
+                              user_metadata: {
+                                name: 'John Doe',
+                                email: 'user@example.com',
+                                company: '{{DYNAMIC_COMPANY_VALUE}}',
+                              },
+                            };
+
+                            const userConfigScript = getAgentConfigScript(
+                              selectedFramework,
+                              defaultUserConfig
+                            ).replace(
+                              '"{{DYNAMIC_COMPANY_VALUE}}"',
+                              'fetchDynamically()'
+                            );
+
+                            const actionsScript =
+                              clientActions.length > 0
+                                ? getRegisterMultipleToolsExample(
+                                    clientActions.map((action) => ({
+                                      functionName: action.name,
+                                      dataInputs: (
+                                        action.executionModel.parameters || []
+                                      ).map((param) => ({
+                                        name: param.name,
+                                        type: param.type,
+                                        description: param.description || '',
+                                        isArray: param.isArray || false,
+                                      })),
+                                    })),
+                                    selectedFramework
+                                  )
+                                : '';
+
+                            const combined = [
+                              userConfigScript,
+                              actionsScript,
+                              agentScript,
+                            ]
+                              .filter(Boolean)
+                              .join('\n\n');
+                            handleCopy(combined);
+                          }}
                           className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 px-2 py-1 sm:px-3 sm:py-1.5"
                         >
                           <Copy className="w-3 h-3 sm:w-4 sm:h-4" />

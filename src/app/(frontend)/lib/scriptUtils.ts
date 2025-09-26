@@ -13,6 +13,16 @@ interface ScriptConfig {
   content?: string;
 }
 
+const indentContent = (code: string, spaces = 2) => {
+  if (!code) return '';
+  const indent = ' '.repeat(spaces);
+  return code
+    .trim()
+    .split('\n')
+    .map((line) => (line.length ? indent + line : line))
+    .join('\n');
+};
+
 export const getScriptTag = (framework: Framework, config: ScriptConfig) => {
   const { id, content } = config;
 
@@ -22,7 +32,7 @@ export const getScriptTag = (framework: Framework, config: ScriptConfig) => {
 ${
   content
     ? `  {\`
-${content}
+${indentContent(content, 4)}
   \`}`
     : ''
 }
@@ -33,7 +43,7 @@ ${content}
     case Framework.VANILLA:
     default:
       return `<script id="${id}" type="text/javascript">
-${content ? `  ${content}` : ''}
+${indentContent(content || '', 2)}
 </script>`;
   }
 };
