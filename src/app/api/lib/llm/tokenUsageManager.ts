@@ -15,7 +15,7 @@ interface OpenRouterModel {
 }
 
 // Fetch model prices from OpenRouter API
-async function fetchModelPrices(): Promise<
+export async function fetchModelPrices(): Promise<
   Record<AgentModel, { input: number; output: number }>
 > {
   const response = await fetch('https://openrouter.ai/api/v1/models', {
