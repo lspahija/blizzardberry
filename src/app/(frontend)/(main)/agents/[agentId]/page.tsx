@@ -45,11 +45,7 @@ import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
 import { usePrompts } from '@/app/(frontend)/hooks/usePrompts';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import { getRegisterMultipleToolsExample } from '@/app/(frontend)/lib/actionUtils';
-import {
-  Framework,
-  getAgentScript,
-  getAgentConfigScript,
-} from '@/app/(frontend)/lib/scriptUtils';
+import { Framework, getUnifiedEmbedScript } from '@/app/(frontend)/lib/scriptUtils';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
@@ -844,11 +840,6 @@ function AgentDetails({
                           }}
                         >
                           {(() => {
-                            const agentScript = getAgentScript(
-                              selectedFramework,
-                              params.agentId
-                            );
-
                             const defaultUserConfig = {
                               user_id: 'user_123',
                               account_number: 'ACC123456',
@@ -859,44 +850,31 @@ function AgentDetails({
                               },
                             };
 
-                            const userConfigScript = getAgentConfigScript(
+                            const unified = getUnifiedEmbedScript(
                               selectedFramework,
-                              defaultUserConfig
-                            ).replace(
+                              params.agentId,
+                              defaultUserConfig,
+                              clientActions.map((action) => ({
+                                functionName: action.name,
+                                dataInputs: (
+                                  action.executionModel.parameters || []
+                                ).map((param) => ({
+                                  name: param.name,
+                                  type: param.type,
+                                  description: param.description || '',
+                                  isArray: param.isArray || false,
+                                })),
+                              }))
+                            );
+
+                            return unified.replace(
                               '"{{DYNAMIC_COMPANY_VALUE}}"',
                               'fetchDynamically()'
                             );
-
-                            const actionsScript =
-                              clientActions.length > 0
-                                ? getRegisterMultipleToolsExample(
-                                    clientActions.map((action) => ({
-                                      functionName: action.name,
-                                      dataInputs: (
-                                        action.executionModel.parameters || []
-                                      ).map((param) => ({
-                                        name: param.name,
-                                        type: param.type,
-                                        description: param.description || '',
-                                        isArray: param.isArray || false,
-                                      })),
-                                    })),
-                                    selectedFramework
-                                  )
-                                : '';
-
-                            return [agentScript, userConfigScript, actionsScript]
-                              .filter(Boolean)
-                              .join('\n\n');
                           })()}
                         </SyntaxHighlighter>
                         <Button
                           onClick={() => {
-                            const agentScript = getAgentScript(
-                              selectedFramework,
-                              params.agentId
-                            );
-                            
                             const defaultUserConfig = {
                               user_id: 'user_123',
                               account_number: 'ACC123456',
@@ -907,40 +885,27 @@ function AgentDetails({
                               },
                             };
 
-                            const userConfigScript = getAgentConfigScript(
+                            const unified = getUnifiedEmbedScript(
                               selectedFramework,
-                              defaultUserConfig
+                              params.agentId,
+                              defaultUserConfig,
+                              clientActions.map((action) => ({
+                                functionName: action.name,
+                                dataInputs: (
+                                  action.executionModel.parameters || []
+                                ).map((param) => ({
+                                  name: param.name,
+                                  type: param.type,
+                                  description: param.description || '',
+                                  isArray: param.isArray || false,
+                                })),
+                              }))
                             ).replace(
                               '"{{DYNAMIC_COMPANY_VALUE}}"',
                               'fetchDynamically()'
                             );
 
-                            const actionsScript =
-                              clientActions.length > 0
-                                ? getRegisterMultipleToolsExample(
-                                    clientActions.map((action) => ({
-                                      functionName: action.name,
-                                      dataInputs: (
-                                        action.executionModel.parameters || []
-                                      ).map((param) => ({
-                                        name: param.name,
-                                        type: param.type,
-                                        description: param.description || '',
-                                        isArray: param.isArray || false,
-                                      })),
-                                    })),
-                                    selectedFramework
-                                  )
-                                : '';
-
-                            const combined = [
-                              userConfigScript,
-                              actionsScript,
-                              agentScript,
-                            ]
-                              .filter(Boolean)
-                              .join('\n\n');
-                            handleCopy(combined);
+                            handleCopy(unified);
                           }}
                           className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 px-2 py-1 sm:px-3 sm:py-1.5"
                         >
