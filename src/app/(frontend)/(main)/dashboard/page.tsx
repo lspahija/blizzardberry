@@ -211,7 +211,7 @@ export default function Dashboard() {
                 {agents.map((agent) => (
                   <Card
                     key={agent.id}
-                    className="border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl border-l-8 border-l-brand transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
+                    className="border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
                     onClick={() => handleNavigateToAgent(agent.id)}
                   >
                     <CardContent className="pt-2 pb-2">
