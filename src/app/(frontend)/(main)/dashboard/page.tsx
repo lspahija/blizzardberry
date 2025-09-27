@@ -217,19 +217,19 @@ export default function Dashboard() {
                     <CardContent className="pt-2 pb-2">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-start gap-3 min-w-0">
-                          <div className="h-9 w-9 rounded-md bg-brand/10 flex items-center justify-center flex-shrink-0">
+                          <div className="h-9 w-9 rounded-md bg-brand/10 flex items-center justify-center flex-shrink-0 -mt-1">
                             <Bot className="h-5 w-5 text-brand" />
                           </div>
                           <div className="min-w-0">
-                            <h3 className="text-lg sm:text-xl font-extrabold text-foreground leading-tight truncate group-hover:text-brand transition-colors">
+                            <h3 className="text-lg sm:text-xl font-extrabold text-foreground leading-tight truncate group-hover:text-brand transition-colors mb-0.5">
                               {agent.name}
                             </h3>
-                            <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs sm:text-sm text-muted-foreground">
+                            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-muted-foreground">
                               <span className="inline-flex items-center gap-1 min-w-0">
                                 <Globe className="h-4 w-4" />
                                 <span className="truncate">{agent.websiteDomain}</span>
                               </span>
-                              <span className="inline-flex items-center gap-1 min-w-0 mt-1">
+                              <span className="inline-flex items-center gap-1 min-w-0">
                                 <Settings className="h-4 w-4" />
                                 <span className="truncate">{agent.model}</span>
                               </span>
@@ -240,7 +240,7 @@ export default function Dashboard() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-start">
+                        <div className="flex items-start mt-1">
                           {navigatingToAgentId === agent.id ? (
                             <Loader2 className="h-4 w-4 animate-spin text-brand" />
                           ) : null}
