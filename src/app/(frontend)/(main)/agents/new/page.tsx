@@ -40,7 +40,8 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import { AgentModel, AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
-import { Framework, getAgentScript } from '@/app/(frontend)/lib/scriptUtils';
+import { Framework, getUnifiedEmbedScript } from '@/app/(frontend)/lib/scriptUtils';
+import { DEFAULT_AGENT_USER_CONFIG } from '@/app/(frontend)/lib/defaultUserConfig';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import posthog from 'posthog-js';
 
@@ -59,6 +60,8 @@ export default function NewAgentPage() {
   const [prompts, setPrompts] = useState<string[]>(['']);
   const { selectedFramework, setSelectedFramework } = useFramework();
   const { handleCreateAgent, creatingAgent } = useAgents();
+
+  const defaultUserConfig = DEFAULT_AGENT_USER_CONFIG;
 
   // Check for success state from URL parameters on component mount
   useEffect(() => {
@@ -98,7 +101,13 @@ export default function NewAgentPage() {
       agent_id: agentId,
       framework: selectedFramework,
     });
-    navigator.clipboard.writeText(getAgentScript(selectedFramework, agentId));
+    const unified = getUnifiedEmbedScript(
+      selectedFramework,
+      agentId,
+      defaultUserConfig,
+      []
+    );
+    navigator.clipboard.writeText(unified);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -297,7 +306,12 @@ export default function NewAgentPage() {
                           backgroundColor: 'var(--color-background-dark)',
                         }}
                       >
-                        {getAgentScript(selectedFramework, agentId)}
+                        {getUnifiedEmbedScript(
+                          selectedFramework,
+                          agentId,
+                          defaultUserConfig,
+                          []
+                        )}
                       </SyntaxHighlighter>
                       <Button
                         onClick={handleCopy}

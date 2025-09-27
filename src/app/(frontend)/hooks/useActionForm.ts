@@ -419,6 +419,21 @@ export const useActionForm = (isEditing = false) => {
     }
   };
 
+  async function handleFetchActions( agentId: string ) {
+    try {
+      const response = await fetch(`/api/agents/${agentId}/actions`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch actions');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(
+        `Error fetching actions for agent ${agentId}:`,
+        error
+      );
+    } 
+  }
+
   return {
     step,
     baseAction,
@@ -444,5 +459,6 @@ export const useActionForm = (isEditing = false) => {
     handleBack,
     handleCreateAction,
     handleDeleteAction,
+    handleFetchActions,
   };
 };

@@ -22,15 +22,13 @@ import {
   Settings,
   Zap,
 } from 'lucide-react';
-import { useState } from 'react';
-import { Framework } from '@/app/(frontend)/lib/scriptUtils';
+import { useEffect, useState } from 'react';
+import { Framework, getUnifiedEmbedScript } from '@/app/(frontend)/lib/scriptUtils';
+import { DEFAULT_AGENT_USER_CONFIG } from '@/app/(frontend)/lib/defaultUserConfig';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import Link from 'next/link';
-import {
-  Action,
-  ExecutionContext,
-} from '@/app/api/lib/model/action/baseAction';
-import { getRegisterToolsExample, toCamelCase } from '../lib/actionUtils';
+import { Action } from '@/app/api/lib/model/action/baseAction';
+import { toCamelCase } from '../lib/actionUtils';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import {
   Select,
@@ -39,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
+import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },
@@ -56,17 +55,53 @@ interface ClientActionImplementationProps {
   action: Action;
   dataInputs: DataInput[];
   onContinue: () => void;
+  agentId: string;
 }
 
 export default function ClientActionImplementation({
   action,
   dataInputs,
   onContinue,
+  agentId,
 }: ClientActionImplementationProps) {
   const { selectedFramework, setSelectedFramework } = useFramework();
   const [copied, setCopied] = useState(false);
+  const [clientActions, setClientActions] = useState<
+    { functionName: string; dataInputs: DataInput[] }[]
+  >([]);
+  const { handleFetchActions } = useActionForm();
 
   const generatedFunctionName = toCamelCase(action.name || 'customAction');
+
+  const defaultUserConfig = DEFAULT_AGENT_USER_CONFIG;
+
+  useEffect(() => {
+    async function fetchClientActions() {
+      try {
+        const data = await handleFetchActions(agentId);
+        const actions = (data.actions || [])
+          .filter((a: any) => a.executionContext === 'CLIENT')
+          .map((a: any) => ({
+            functionName: a.name,
+            dataInputs: (a.executionModel?.parameters || []).map((p: any) => ({
+              name: p.name,
+              type: p.type,
+              description: p.description || '',
+              isArray: p.isArray || false,
+            })),
+          }));
+
+        const createdFnName = generatedFunctionName;
+        if (!actions.some((x: any) => x.functionName === createdFnName)) {
+          actions.push({ functionName: createdFnName, dataInputs });
+        }
+        setClientActions(actions);
+      } catch {
+        setClientActions([{ functionName: generatedFunctionName, dataInputs }]);
+      }
+    }
+    fetchClientActions();
+  }, [agentId, generatedFunctionName, JSON.stringify(dataInputs)]);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -167,7 +202,7 @@ export default function ClientActionImplementation({
             <div className="relative">
               <Label className="text-gray-900 text-lg font-semibold flex items-center gap-2 mb-2">
                 <FileText className="h-4 w-4 text-[#FE4A60]" />
-                Implementation Code
+                Embed Code
               </Label>
               <p className="text-sm text-gray-600 mb-4">
                 The user parameter provides user information to agents for
@@ -179,7 +214,7 @@ export default function ClientActionImplementation({
               </p>
               <div className="relative">
                 <SyntaxHighlighter
-                  language="javascript"
+                  language={selectedFramework === Framework.NEXT_JS ? 'jsx' : 'html'}
                   style={vscDarkPlus}
                   customStyle={{
                     borderRadius: '8px',
@@ -188,19 +223,21 @@ export default function ClientActionImplementation({
                     backgroundColor: 'var(--color-background-dark)',
                   }}
                 >
-                  {getRegisterToolsExample(
-                    generatedFunctionName,
-                    dataInputs,
-                    selectedFramework
+                  {getUnifiedEmbedScript(
+                    selectedFramework,
+                    agentId,
+                    defaultUserConfig,
+                    clientActions
                   )}
                 </SyntaxHighlighter>
                 <Button
                   onClick={() =>
                     handleCopy(
-                      getRegisterToolsExample(
-                        generatedFunctionName,
-                        dataInputs,
-                        selectedFramework
+                      getUnifiedEmbedScript(
+                        selectedFramework,
+                        agentId,
+                        defaultUserConfig,
+                        clientActions
                       )
                     )
                   }

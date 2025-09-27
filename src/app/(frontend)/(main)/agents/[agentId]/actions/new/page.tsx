@@ -102,6 +102,7 @@ function ActionFormContent() {
           action={createdClientAction}
           dataInputs={dataInputs}
           onContinue={handleContinueToAgent}
+          agentId={agentId}
         />
       </motion.div>
     );

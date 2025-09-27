@@ -46,6 +46,7 @@ import { usePrompts } from '@/app/(frontend)/hooks/usePrompts';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import { getRegisterMultipleToolsExample } from '@/app/(frontend)/lib/actionUtils';
 import { Framework, getUnifiedEmbedScript } from '@/app/(frontend)/lib/scriptUtils';
+import { DEFAULT_AGENT_USER_CONFIG } from '@/app/(frontend)/lib/defaultUserConfig';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
@@ -107,7 +108,7 @@ function AgentDetails({
   const [isSaving, setIsSaving] = useState(false);
 
   const { handleUpdateAgent } = useAgents();
-  const { handleDeleteAction } = useActionForm();
+  const { handleDeleteAction, handleFetchActions } = useActionForm();
   const {
     documents,
     loadingDocuments,
@@ -196,11 +197,7 @@ function AgentDetails({
   useEffect(() => {
     async function fetchActions() {
       try {
-        const response = await fetch(`/api/agents/${params.agentId}/actions`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch actions');
-        }
-        const data = await response.json();
+        const data = await handleFetchActions(params.agentId);
         setActions(data.actions || []);
       } catch (error) {
         console.error(
@@ -840,16 +837,7 @@ function AgentDetails({
                           }}
                         >
                           {(() => {
-                            const defaultUserConfig = {
-                              user_id: 'user_123',
-                              account_number: 'ACC123456',
-                              user_metadata: {
-                                name: 'John Doe',
-                                email: 'user@example.com',
-                                company: '{{DYNAMIC_COMPANY_VALUE}}',
-                              },
-                            };
-
+                            const defaultUserConfig = DEFAULT_AGENT_USER_CONFIG;
                             const unified = getUnifiedEmbedScript(
                               selectedFramework,
                               params.agentId,
@@ -867,23 +855,12 @@ function AgentDetails({
                               }))
                             );
 
-                            return unified.replace(
-                              '"{{DYNAMIC_COMPANY_VALUE}}"',
-                              'fetchDynamically()'
-                            );
+                            return unified
                           })()}
                         </SyntaxHighlighter>
                         <Button
                           onClick={() => {
-                            const defaultUserConfig = {
-                              user_id: 'user_123',
-                              account_number: 'ACC123456',
-                              user_metadata: {
-                                name: 'John Doe',
-                                email: 'user@example.com',
-                                company: '{{DYNAMIC_COMPANY_VALUE}}',
-                              },
-                            };
+                            const defaultUserConfig = DEFAULT_AGENT_USER_CONFIG;
 
                             const unified = getUnifiedEmbedScript(
                               selectedFramework,
@@ -900,10 +877,7 @@ function AgentDetails({
                                   isArray: param.isArray || false,
                                 })),
                               }))
-                            ).replace(
-                              '"{{DYNAMIC_COMPANY_VALUE}}"',
-                              'fetchDynamically()'
-                            );
+                            )
 
                             handleCopy(unified);
                           }}
