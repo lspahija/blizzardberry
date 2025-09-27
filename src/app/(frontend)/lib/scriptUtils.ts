@@ -92,7 +92,6 @@ const getActionsAssignment = (
   }
 };
 
-// Unified embed snippet: registers user config, actions, and loads the agent in ONE tag
 export const getUnifiedEmbedScript = (
   framework: Framework,
   agentId: string,

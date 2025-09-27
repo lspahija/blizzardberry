@@ -62,7 +62,6 @@ export default function DocsPage() {
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  // Generate unified embed code dynamically so docs match product UI
   const exampleActions = [
     { functionName: 'submitContactForm', dataInputs: [] },
     { functionName: 'searchProducts', dataInputs: [] },
