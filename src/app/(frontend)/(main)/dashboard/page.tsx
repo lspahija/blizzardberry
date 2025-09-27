@@ -233,79 +233,62 @@ export default function Dashboard() {
                     key={agent.id}
                     className="border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl border-l-8 border-l-brand transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
                     onClick={() => handleNavigateToAgent(agent.id)}
-                  >                    
-                    <CardContent className="pt-4 pb-0">
-                      <div className="bg-muted/30 rounded-lg p-3 border border-border">
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3">
-                            <Bot className="h-4 w-4 text-brand flex-shrink-0" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs text-muted-foreground font-medium mb-1">Name</p>
-                              <p className="text-sm text-foreground font-semibold group-hover:text-brand transition-colors">
-                                {agent.name}
-                              </p>
-                            </div>
+                  >
+                    <CardContent className="pt-2 pb-2">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3 min-w-0">
+                          <div className="h-9 w-9 rounded-md bg-brand/10 flex items-center justify-center flex-shrink-0">
+                            <Bot className="h-5 w-5 text-brand" />
                           </div>
-                          
-                          <div className="flex items-center gap-3">
-                            <Globe className="h-4 w-4 text-brand flex-shrink-0" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs text-muted-foreground font-medium mb-1">Domain</p>
-                              <p className="text-sm text-foreground font-semibold">
-                                {agent.websiteDomain}
-                              </p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center gap-3">
-                            <Settings className="h-4 w-4 text-brand flex-shrink-0" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs text-muted-foreground font-medium mb-1">Model</p>
-                              <p className="text-sm text-foreground font-semibold">
-                                {agent.model}
-                              </p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center gap-3">
-                            <Clock className="h-4 w-4 text-brand flex-shrink-0" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs text-muted-foreground font-medium mb-1">Created</p>
-                              <p className="text-sm text-foreground font-semibold">
+                          <div className="min-w-0">
+                            <h3 className="text-lg sm:text-xl font-extrabold text-foreground leading-tight truncate group-hover:text-brand transition-colors">
+                              {agent.name}
+                            </h3>
+                            <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs sm:text-sm text-muted-foreground">
+                              <span className="inline-flex items-center gap-1 min-w-0">
+                                <Globe className="h-4 w-4" />
+                                <span className="truncate">{agent.websiteDomain}</span>
+                              </span>
+                              <span className="inline-flex items-center gap-1 min-w-0 mt-1">
+                                <Settings className="h-4 w-4" />
+                                <span className="truncate">{agent.model}</span>
+                              </span>
+                              <span className="inline-flex items-center gap-1">
+                                <Clock className="h-4 w-4" />
                                 {new Date(agent.createdAt).toLocaleDateString()}
-                              </p>
+                              </span>
                             </div>
                           </div>
                         </div>
+                        <div className="flex items-start">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleOpenDeleteDialog(agent.id);
+                            }}
+                            className="h-7 w-7 rounded-full hover:bg-destructive/20 hover:text-destructive transition-all duration-200"
+                            title="Delete Agent"
+                            disabled={deletingAgentId === agent.id}
+                          >
+                            {deletingAgentId === agent.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
                       </div>
-                      
-                      <div className="flex justify-between items-center pt-4 pb-1">
+                      <div className="mt-4 flex justify-between items-center pt-2">
                         <div className="text-xs text-muted-foreground group-hover:text-brand transition-colors">
                           Click to manage →
                         </div>
                         <div className="flex items-center">
                           {navigatingToAgentId === agent.id ? (
                             <Loader2 className="h-4 w-4 animate-spin text-brand" />
-                          ) : (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                handleOpenDeleteDialog(agent.id);
-                              }}
-                              className="h-6 w-6 rounded-full hover:bg-destructive/20 hover:text-destructive transition-all duration-200"
-                              title="Delete Agent"
-                              disabled={deletingAgentId === agent.id}
-                            >
-                              {deletingAgentId === agent.id ? (
-                                <Loader2 className="h-3 w-3 animate-spin" />
-                              ) : (
-                                <Trash2 className="h-3 w-3" />
-                              )}
-                            </Button>
-                          )}
+                          ) : null}
                         </div>
                       </div>
                     </CardContent>
@@ -327,3 +310,4 @@ export default function Dashboard() {
     </div>
   );
 }
+
