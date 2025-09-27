@@ -107,7 +107,7 @@ function AgentDetails({
   const [editPrompts, setEditPrompts] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
-  const { handleUpdateAgent } = useAgents();
+  const { handleUpdateAgent, handleDeleteAgent, deletingAgentId } = useAgents();
   const { handleDeleteAction, handleFetchActions } = useActionForm();
   const {
     documents,
@@ -124,6 +124,7 @@ function AgentDetails({
   } = usePrompts(params.agentId);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleteAgentDialogOpen, setIsDeleteAgentDialogOpen] = useState(false);
   const [actionToDelete, setActionToDelete] = useState<Action | null>(null);
   const [isDeleteDocumentDialogOpen, setIsDeleteDocumentDialogOpen] =
     useState(false);
@@ -373,6 +374,20 @@ function AgentDetails({
                   <Save className="h-4 w-4" />
                 )}
                 Save Changes
+              </Button>
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={() => setIsDeleteAgentDialogOpen(true)}
+                disabled={deletingAgentId === agent.id}
+                className="border-[2px] border-border rounded-full p-2 hover:bg-destructive/90 transition group-hover:scale-110"
+                title="Delete this agent"
+              >
+                {deletingAgentId === agent.id ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="h-4 w-4" />
+                )}
               </Button>
             </div>
           </CardHeader>
@@ -953,6 +968,21 @@ function AgentDetails({
           title="Delete Action"
           message={`Are you sure you want to delete the action "${actionToDelete?.name}"? This action cannot be undone.`}
           isLoading={!!deletingActionId}
+        />
+
+        <DeleteConfirmationDialog
+          isOpen={isDeleteAgentDialogOpen}
+          onOpenChange={setIsDeleteAgentDialogOpen}
+          onConfirm={async () => {
+            if (agent?.id) {
+              await handleDeleteAgent(agent.id);
+              setIsDeleteAgentDialogOpen(false);
+              router.push('/dashboard');
+            }
+          }}
+          title="Delete Agent"
+          message={`Are you sure you want to delete this agent? This action cannot be undone.`}
+          isLoading={!!deletingAgentId}
         />
 
         <DeleteConfirmationDialog

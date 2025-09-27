@@ -8,23 +8,16 @@ import {
   Card,
   CardContent,
 } from '@/app/(frontend)/components/ui/card';
-import { Loader2, PlusCircle, Trash2, Bot, Globe, Settings, Clock } from 'lucide-react';
+import { Loader2, PlusCircle, Bot, Globe, Settings, Clock } from 'lucide-react';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import posthog from 'posthog-js';
 import { toast } from 'sonner';
-import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
 import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const {
-    agents,
-    loadingAgents,
-    deletingAgentId,
-    fetchAgents,
-    handleDeleteAgent,
-  } = useAgents();
+  const { agents, loadingAgents, fetchAgents } = useAgents();
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackType, setFeedbackType] = useState('bug');
   const [feedbackEmail, setFeedbackEmail] = useState(
@@ -32,8 +25,6 @@ export default function Dashboard() {
   );
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [agentToDelete, setAgentToDelete] = useState<string | null>(null);
   const [isCreatingAgent, setIsCreatingAgent] = useState(false);
   const [isNavigatingToUserConfig, setIsNavigatingToUserConfig] =
     useState(false);
@@ -120,18 +111,7 @@ export default function Dashboard() {
     }
   };
 
-  const handleOpenDeleteDialog = (agentId: string) => {
-    setAgentToDelete(agentId);
-    setIsDeleteDialogOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (agentToDelete) {
-      await handleDeleteAgent(agentToDelete);
-      setIsDeleteDialogOpen(false);
-      setAgentToDelete(null);
-    }
-  };
+  
 
   const handleCreateAgent = async () => {
     setIsCreatingAgent(true);
@@ -261,36 +241,12 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div className="flex items-start">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              handleOpenDeleteDialog(agent.id);
-                            }}
-                            className="h-7 w-7 rounded-full hover:bg-destructive/20 hover:text-destructive transition-all duration-200"
-                            title="Delete Agent"
-                            disabled={deletingAgentId === agent.id}
-                          >
-                            {deletingAgentId === agent.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Trash2 className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="mt-4 flex justify-between items-center pt-2">
-                        <div className="text-xs text-muted-foreground group-hover:text-brand transition-colors">
-                          Click to manage →
-                        </div>
-                        <div className="flex items-center">
                           {navigatingToAgentId === agent.id ? (
                             <Loader2 className="h-4 w-4 animate-spin text-brand" />
                           ) : null}
                         </div>
                       </div>
+                      
                     </CardContent>
                   </Card>
                 ))}
@@ -298,14 +254,7 @@ export default function Dashboard() {
             </div>
           )}
         </div>
-        <DeleteConfirmationDialog
-          isOpen={isDeleteDialogOpen}
-          onOpenChange={setIsDeleteDialogOpen}
-          onConfirm={handleConfirmDelete}
-          title="Delete Agent"
-          message="Are you sure you want to delete this agent? This action cannot be undone."
-          isLoading={!!deletingAgentId}
-        />
+        
       </motion.div>
     </div>
   );
