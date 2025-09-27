@@ -35,6 +35,8 @@ import {
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useState } from 'react';
+import { Framework, getUnifiedEmbedScript } from '@/app/(frontend)/lib/scriptUtils';
+import { DEFAULT_AGENT_USER_CONFIG } from '@/app/(frontend)/lib/defaultUserConfig';
 
 export default function DocsPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
@@ -60,111 +62,31 @@ export default function DocsPage() {
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  const standardCode = `<!-- 1. Agent Configuration - Set up user context and metadata -->
-<script id="blizzardberry-config" type="text/javascript">
-  window.agentUserConfig = {
-    userId: "user_123",
-    userHash: "hash_456",
-    accountNumber: "1234567890",
-    userMetadata: {
-      name: "John Doe",
-      email: "john@example.com",
-      company: "Example Corp"
-    }
-  };
-</script>
+  // Generate unified embed code dynamically so docs match product UI
+  const exampleActions = [
+    { functionName: 'submitContactForm', dataInputs: [] },
+    { functionName: 'searchProducts', dataInputs: [] },
+  ];
 
-<!-- 2. Agent Script - Load the BlizzardBerry agent -->
-<script
-  id="blizzardberry-agent"
-  src="https://blizzardberry.com/agent/agent.js"
-  type="text/javascript"
-  data-agent-id="your-agent-id"
-></script>
-
-<!-- 3. Custom Client Actions - Define the client actions your agent can do -->
-<script id="blizzardberry-actions" type="text/javascript">
-  window.agentActions = {
-    // Example: Submit a contact form
-    submitContactForm: async (user, args) => {
-      // Your custom action logic goes here
-      return { status: 'success', message: 'Form submitted' };
-    },
-    
-    // Example: Search products
-    searchProducts: async (user, args) => {
-      // Your custom action logic goes here
-      return { status: 'success', results: [] };
-    }
-  };
-</script>`;
-
-  const nextJsCode = `import Script from 'next/script';
-
-export default function Layout({ children }) {
-  return (
-    <html>
-      <body>
-        {children}
-        
-        {/* 1. Agent Configuration - Set up user context and metadata */}
-        <Script id="blizzardberry-config" strategy="afterInteractive">
-          {\`
-            window.agentUserConfig = {
-              userId: "user_123",
-              userHash: "hash_456",
-              accountNumber: "1234567890",
-              userMetadata: {
-                name: "John Doe",
-                email: "john@example.com",
-                company: "Example Corp"
-              }
-            };
-          \`}
-        </Script>
-        
-        {/* 2. Agent Script - Load the BlizzardBerry agent */}
-        <Script
-          id="blizzardberry-agent"
-          src="https://blizzardberry.com/agent/agent.js"
-          strategy="afterInteractive"
-          data-agent-id="your-agent-id"
-        />
-        
-        {/* 3. Custom Client Actions - Define the client actions your agent can do */}
-        <Script id="blizzardberry-actions" strategy="afterInteractive">
-          {\`
-            window.agentActions = {
-              // Example: Submit a contact form
-              submitContactForm: async (user, args) => {
-                // Your custom action logic goes here
-                return { status: 'success', message: 'Form submitted' };
-              },
-              
-              // Example: Search products
-              searchProducts: async (user, args) => {
-                // Your custom action logic goes here
-                return { status: 'success', results: [] };
-              }
-            };
-          \`}
-        </Script>
-      </body>
-    </html>
-  );
-}`;
-
-  const getCodeForFramework = (framework: string) => {
+  const toFrameworkEnum = (framework: string) => {
     switch (framework) {
       case 'nextjs':
-        return nextJsCode;
-      case 'vanilla':
+        return Framework.NEXT_JS;
       case 'react':
+        return Framework.REACT;
       case 'vue':
+        return Framework.VUE;
       case 'angular':
+        return Framework.ANGULAR;
+      case 'vanilla':
       default:
-        return standardCode;
+        return Framework.VANILLA;
     }
+  };
+
+  const getCodeForFramework = (framework: string) => {
+    const fw = toFrameworkEnum(framework);
+    return getUnifiedEmbedScript(fw, 'your-agent-id', DEFAULT_AGENT_USER_CONFIG, exampleActions);
   };
 
   const getLanguageForFramework = (framework: string) => {
