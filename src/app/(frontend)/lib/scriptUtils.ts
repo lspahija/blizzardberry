@@ -105,6 +105,7 @@ export const getUnifiedEmbedScript = (
       isArray: boolean;
     }>;
   }>
+
 ) => {
   const configLine = `window.agentUserConfig = ${JSON.stringify(
     userConfig,
@@ -117,31 +118,31 @@ export const getUnifiedEmbedScript = (
       ? getActionsAssignment(framework, actions)
       : '';
 
-  const loader =
+  // Tag 1: external agent loader (with each attribute on its own line)
+  const loaderTag =
     framework === Framework.NEXT_JS
-      ? `(function(){
-  var s = document.createElement('script');
-  s.id = 'blizzardberry-agent';
-  s.src = '${process.env.NEXT_PUBLIC_URL}/agent/agent.js';
-  s.async = true;
-  s.setAttribute('data-agent-id', '${agentId}');
-  document.body.appendChild(s);
-})();`
-      : `(function(){
-  var s = document.createElement('script');
-  s.id = 'blizzardberry-agent';
-  s.src = '${process.env.NEXT_PUBLIC_URL}/agent/agent.js';
-  s.async = true;
-  s.setAttribute('data-agent-id', '${agentId}');
-  document.body.appendChild(s);
-})();`;
+      ? `<Script
+  id="blizzardberry-agent"
+  src="${process.env.NEXT_PUBLIC_URL}/agent/agent.js"
+  strategy="afterInteractive"
+  data-agent-id="${agentId}"
+/>`
+      : `<script
+  id="blizzardberry-agent"
+  src="${process.env.NEXT_PUBLIC_URL}/agent/agent.js"
+  type="text/javascript"
+  data-agent-id="${agentId}"
+></script>`;
 
-  const content = [configLine, actionsLine, loader]
+  // Tag 2: inline config + actions (pretty formatted via getScriptTag)
+  const inlineContent = [configLine, actionsLine]
     .filter(Boolean)
     .join('\n');
-
-  return getScriptTag(framework, {
-    id: 'blizzardberry-embed',
-    content,
+  const configActionsTag = getScriptTag(framework, {
+    id: 'blizzardberry-config-actions',
+    content: inlineContent,
   });
+
+  // Return loader first, then config/actions
+  return `${loaderTag}\n\n${configActionsTag}`;
 };
