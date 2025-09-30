@@ -150,12 +150,8 @@ function ActionEditContent() {
           }
 
           if (backendAction.executionModel.request.body) {
-            // If body is already a string, use it as-is. Otherwise stringify it.
-            const bodyValue = backendAction.executionModel.request.body;
             setApiBody(
-              typeof bodyValue === 'string'
-                ? bodyValue
-                : JSON.stringify(bodyValue, null, 2)
+              JSON.stringify(backendAction.executionModel.request.body, null, 2)
             );
           } else {
             setApiBody('');
@@ -225,10 +221,15 @@ function ActionEditContent() {
       });
 
       let requestBody: any | undefined;
-      // Don't validate JSON here since template variables may make it invalid
-      // Validation will happen after variable substitution on the backend
-      if (apiBody) {
-        requestBody = apiBody;
+      try {
+        if (apiBody) {
+          requestBody = JSON.parse(apiBody);
+        }
+      } catch (error) {
+        console.error('Invalid JSON in API body:', error);
+        toast.error('Invalid JSON in API body. Please check and try again.');
+        setIsUpdatingAction(false);
+        return;
       }
 
       const parameters: Parameter[] = dataInputs
