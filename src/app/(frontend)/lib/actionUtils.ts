@@ -1,4 +1,4 @@
-import { Framework, getActionsScript } from './scriptUtils';
+import { Framework, getUnifiedEmbedScript } from './scriptUtils';
 
 interface DataInput {
   name: string;
@@ -19,11 +19,8 @@ export const getRegisterToolsExample = (
   dataInputs: DataInput[],
   framework: Framework = Framework.VANILLA
 ) => {
-  return getActionsScript(framework, [
-    {
-      functionName,
-      dataInputs,
-    },
+  return getUnifiedEmbedScript(framework, '', {}, [
+    { functionName, dataInputs },
   ]);
 };
 
@@ -31,7 +28,7 @@ export const getRegisterMultipleToolsExample = (
   actions: { functionName: string; dataInputs: DataInput[] }[],
   framework: Framework = Framework.VANILLA
 ) => {
-  return getActionsScript(framework, actions);
+  return getUnifiedEmbedScript(framework, '', {}, actions);
 };
 
 export function toCamelCase(str: string): string {

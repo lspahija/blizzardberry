@@ -203,20 +203,6 @@ export default function Dashboard() {
                 </>
               )}
             </Button>
-            <Button
-              className="bg-secondary text-secondary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-secondary/90 w-full sm:w-auto"
-              onClick={handleNavigateToUserConfig}
-              disabled={isNavigatingToUserConfig}
-            >
-              {isNavigatingToUserConfig ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
-                  Loading...
-                </>
-              ) : (
-                'User Configuration'
-              )}
-            </Button>
           </div>
 
           {loadingAgents ? (
