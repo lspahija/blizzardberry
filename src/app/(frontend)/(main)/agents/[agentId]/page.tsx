@@ -107,6 +107,7 @@ function AgentDetails({
   const [editPrompts, setEditPrompts] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
+
   const { handleUpdateAgent, handleDeleteAgent, deletingAgentId } = useAgents();
   const { handleDeleteAction, handleFetchActions } = useActionForm();
   const {
