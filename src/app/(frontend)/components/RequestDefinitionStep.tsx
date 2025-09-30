@@ -178,24 +178,6 @@ export default function RequestDefinitionStep({
     // Disable JSON validation to allow template variables
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: false,
-      schemas: [],
-    });
-
-    // Disable default JSON suggestions to avoid duplicates
-    monaco.languages.json.jsonDefaults.setModeConfiguration({
-      completionItems: false,
-      hovers: false,
-      documentSymbols: false,
-      definitions: false,
-      references: false,
-      documentHighlights: false,
-      rename: false,
-      colors: false,
-      foldingRanges: false,
-      selectionRanges: false,
-      diagnostics: false,
-      documentFormattingEdits: false,
-      documentRangeFormattingEdits: false,
     });
 
     monaco.languages.registerCompletionItemProvider('json', {
@@ -212,8 +194,8 @@ export default function RequestDefinitionStep({
             ...getInputNames(dataInputs, false).map((name) => ({
               label: `{{${name}}}`,
               kind: monaco.languages.CompletionItemKind.Variable,
-              documentation: `Variable with template syntax - unquoted for substitution`,
-              insertText: `{{${name}}}`,
+              documentation: `Variable with template syntax`,
+              insertText: `"{{${name}}}"`,
               range,
             })),
           ],
