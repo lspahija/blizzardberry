@@ -314,22 +314,26 @@ function substituteRequestModel(
 
   let substitutedBody: Body | undefined;
   if (body) {
-    substitutedBody = {};
-    for (const [key, value] of Object.entries(body)) {
-      if (typeof value === 'string') {
-        substitutedBody[key] = substituteBodyValue(value, params);
-      } else if (Array.isArray(value)) {
-        substitutedBody[key] = value.map((item) =>
-          typeof item === 'string' ? substituteBodyValue(item, params) : item
-        );
-      } else {
-        substitutedBody[key] = value;
-      }
+    // Body is always a string with template variables
+    let substitutedString = typeof body === 'string' ? body : JSON.stringify(body);
+
+    // Only substitute unquoted variables like {{foo}}, not quoted ones like "{{foo}}"
+    for (const [key, value] of Object.entries(params)) {
+      const placeholder = `{{${key}}}`;
+      // Only match placeholders that are NOT inside quotes
+      const unquotedPattern = new RegExp(`(?<!")${placeholder}(?!")`, 'g');
+
+      // Replace with JSON representation of the value
+      substitutedString = substitutedString.replace(unquotedPattern, JSON.stringify(value));
     }
 
-    const filteredBody = filterPlaceholderValues(substitutedBody);
-    substitutedBody =
-      Object.keys(filteredBody).length > 0 ? filteredBody : undefined;
+    try {
+      // Try to parse the substituted string as JSON
+      substitutedBody = JSON.parse(substitutedString);
+    } catch (e) {
+      // If parsing fails, use the string as-is
+      substitutedBody = substitutedString;
+    }
   }
 
   return {

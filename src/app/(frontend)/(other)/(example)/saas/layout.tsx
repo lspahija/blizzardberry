@@ -58,16 +58,18 @@ export default function ExampleLayout({
         strategy="afterInteractive"
         data-agent-id="601ae097-4ebc-4f3c-89aa-f2118e595d62"
       />
-      <Script id="blizzardberry-actions" strategy="afterInteractive">
+
+      <Script id="blizzardberry-config-actions" strategy="afterInteractive">
         {`
-  window.agentActions = {
-    logSomething: async (user, args) => {
-      // Your custom action logic goes here
-      // Access arguments from args object: args.message
-      console.log(args.message)
-      return { status: 'success', results: [args.message] };
-  }
-  };
+    window.agentUserConfig = {
+      "user_id": "user_123",
+      "account_number": "ACC123456",
+      "user_metadata": {
+        "name": "John Doe",
+        "email": "user@example.com",
+        "company": "company name"
+      }
+    };
   `}
       </Script>
     </>
