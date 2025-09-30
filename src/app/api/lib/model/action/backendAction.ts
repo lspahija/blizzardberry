@@ -47,6 +47,6 @@ export interface Headers {
   [key: string]: string;
 }
 
-export interface Body {
+export type Body = string | {
   [key: string]: string | number | boolean | (string | number | boolean)[];
-}
+};

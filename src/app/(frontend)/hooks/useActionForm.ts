@@ -223,15 +223,10 @@ export const useActionForm = (isEditing = false) => {
       });
 
       let requestBody: Body | undefined;
-      try {
-        if (apiBody) {
-          requestBody = JSON.parse(apiBody);
-        }
-      } catch (error) {
-        console.error('Invalid JSON in API body:', error);
-        toast.error('Invalid JSON in API body. Please check and try again.');
-        setIsCreatingAction(false);
-        return;
+      // Don't validate JSON here since template variables may make it invalid
+      // Validation will happen after variable substitution on the backend
+      if (apiBody) {
+        requestBody = apiBody as Body;
       }
 
       const parameters: Parameter[] = dataInputs

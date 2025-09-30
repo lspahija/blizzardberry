@@ -175,6 +175,11 @@ export default function RequestDefinitionStep({
       colors: { 'editor.background': '#FFFFFF' },
     });
 
+    // Disable JSON validation to allow template variables
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      validate: false,
+    });
+
     monaco.languages.registerCompletionItemProvider('json', {
       provideCompletionItems: (model, position) => {
         const word = model.getWordUntilPosition(position);
