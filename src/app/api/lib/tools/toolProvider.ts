@@ -262,17 +262,6 @@ function substitutePlaceholders(
   return result;
 }
 
-function substituteBodyValue(input: string, params: Record<string, any>): any {
-  const placeholder = /^{{(.+)}}$/;
-  const match = input.match(placeholder);
-
-  if (match) {
-    const paramName = match[1];
-    return params[paramName];
-  }
-
-  return substitutePlaceholders(input, params);
-}
 
 function filterPlaceholderValues(
   params: Record<string, any>
@@ -296,46 +285,50 @@ function filterPlaceholderValues(
   return filteredParams;
 }
 
+function substituteHeaders(
+  headers: Record<string, string> | undefined,
+  params: Record<string, any>
+): Record<string, string> | undefined {
+  if (!headers) return undefined;
+
+  return Object.fromEntries(
+    Object.entries(headers).map(([key, value]) => [
+      key,
+      substitutePlaceholders(value, params),
+    ])
+  );
+}
+
+function substituteBody(
+  body: Body | undefined,
+  params: Record<string, any>
+): Body | undefined {
+  if (!body) return undefined;
+
+  let substitutedString = typeof body === 'string' ? body : JSON.stringify(body);
+
+  // Only substitute unquoted variables like {{foo}}, not quoted ones like "{{foo}}"
+  for (const [key, value] of Object.entries(params)) {
+    const placeholder = `{{${key}}}`;
+    const unquotedPattern = new RegExp(`(?<!")${placeholder}(?!")`, 'g');
+    substitutedString = substitutedString.replace(unquotedPattern, JSON.stringify(value));
+  }
+
+  try {
+    return JSON.parse(substitutedString);
+  } catch (e) {
+    return substitutedString;
+  }
+}
+
 function substituteRequestModel(
   request: HttpRequest,
   params: Record<string, any>
 ): HttpRequest {
-  const { url, method, headers, body } = request;
-
-  const substitutedUrl = substitutePlaceholders(url, params);
-  const substitutedHeaders = headers
-    ? Object.fromEntries(
-        Object.entries(headers).map(([key, value]) => [
-          key,
-          substitutePlaceholders(value, params),
-        ])
-      )
-    : undefined;
-
-  let substitutedBody: Body | undefined;
-  if (body) {
-    substitutedBody = {};
-    for (const [key, value] of Object.entries(body)) {
-      if (typeof value === 'string') {
-        substitutedBody[key] = substituteBodyValue(value, params);
-      } else if (Array.isArray(value)) {
-        substitutedBody[key] = value.map((item) =>
-          typeof item === 'string' ? substituteBodyValue(item, params) : item
-        );
-      } else {
-        substitutedBody[key] = value;
-      }
-    }
-
-    const filteredBody = filterPlaceholderValues(substitutedBody);
-    substitutedBody =
-      Object.keys(filteredBody).length > 0 ? filteredBody : undefined;
-  }
-
   return {
-    url: substitutedUrl,
-    method,
-    headers: substitutedHeaders,
-    body: substitutedBody,
+    url: substitutePlaceholders(request.url, params),
+    method: request.method,
+    headers: substituteHeaders(request.headers, params),
+    body: substituteBody(request.body, params),
   };
 }
