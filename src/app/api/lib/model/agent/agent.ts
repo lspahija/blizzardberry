@@ -13,6 +13,7 @@ export const AGENT_MODELS = {
   'openai/o4-mini-high': 'OpenAI o4-mini-high',
   'openai/o4-mini': 'OpenAI o4-mini',
   'anthropic/claude-opus-4': 'Claude Opus 4',
+  'anthropic/claude-sonnet-4.5': 'Claude Sonnet 4.5',
   'anthropic/claude-sonnet-4': 'Claude Sonnet 4',
   'anthropic/claude-3.7-sonnet': 'Claude 3.7 Sonnet',
   'x-ai/grok-4': 'Grok 4',
