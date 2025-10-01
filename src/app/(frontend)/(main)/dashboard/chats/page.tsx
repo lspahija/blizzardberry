@@ -34,7 +34,9 @@ import {
   User,
   Loader2,
   Filter,
+  Bot,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function ConversationsPage() {
   const { conversations, loading, error, deleteConversation } =
@@ -50,6 +52,15 @@ export default function ConversationsPage() {
   const [deleting, setDeleting] = useState(false);
   const [selectedAgentFilter, setSelectedAgentFilter] = useState<string>('all');
   const messagesRef = useRef<HTMLDivElement>(null);
+
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8 },
+    },
+  };
 
   const { messages: selectedConversationMessages, loading: loadingMessages } =
     useConversationMessages(selectedConversation);
@@ -134,66 +145,70 @@ export default function ConversationsPage() {
 
   if (loading || loadingAgents) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-lg">Loading conversations...</div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-brand" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-red-500">Error: {error}</div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-red-500 text-lg">Error: {error}</div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-2 sm:p-4 md:p-6 max-w-full w-full">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2">
-        <h1 className="text-2xl sm:text-3xl font-bold">Conversation History</h1>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Filter className="h-4 w-4 text-gray-500" />
-            <Select
-              value={selectedAgentFilter}
-              onValueChange={setSelectedAgentFilter}
-            >
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Filter by agent" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">
-                  All Agents ({conversations.length})
-                </SelectItem>
-                {agents.map((agent) => (
-                  <SelectItem key={agent.id} value={agent.id}>
-                    {agent.name} ({agentConversationCounts[agent.id]})
+    <motion.div
+      className="min-h-screen flex flex-col bg-background p-4 sm:p-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight leading-tight">
+            Conversation History
+          </h1>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Filter className="h-4 w-4 text-muted-foreground" />
+              <Select
+                value={selectedAgentFilter}
+                onValueChange={setSelectedAgentFilter}
+              >
+                <SelectTrigger className="w-full sm:w-56 border-[3px] border-border">
+                  <SelectValue placeholder="Filter by agent" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">
+                    All Agents ({conversations.length})
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                  {agents.map((agent) => (
+                    <SelectItem key={agent.id} value={agent.id}>
+                      {agent.name} ({agentConversationCounts[agent.id]})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Badge className="bg-brand/10 text-brand px-3 py-1 rounded-full text-sm font-medium w-full sm:w-auto text-center">
+              {filteredConversations.length}
+            </Badge>
           </div>
-          <Badge variant="secondary" className="w-full sm:w-auto text-center">
-            {filteredConversations.length} conversations
-          </Badge>
         </div>
-      </div>
 
       {filteredConversations.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center h-64">
-            <MessageSquare className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <Card className="border-[3px] border-border rounded-xl shadow-lg">
+          <CardContent className="flex flex-col items-center justify-center h-64 p-6">
+            <MessageSquare className="h-16 w-16 text-brand/50 mb-4" />
+            <h3 className="text-xl font-bold text-foreground mb-2">
               {selectedAgentFilter === 'all'
                 ? 'No conversations yet'
                 : 'No conversations for this agent'}
             </h3>
-            <p className="text-gray-500 text-center">
+            <p className="text-muted-foreground text-center max-w-md">
               {selectedAgentFilter === 'all'
                 ? 'When users interact with your agents, their conversations will appear here.'
                 : 'When users interact with this agent, their conversations will appear here.'}
@@ -201,42 +216,47 @@ export default function ConversationsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Conversation List */}
           <div className="space-y-4">
             {filteredConversations.map((conversation) => (
               <Card
                 key={conversation.id}
-                className={`cursor-pointer transition-all hover:shadow-md ${
+                className={`border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer ${
                   selectedConversation === conversation.id
-                    ? 'ring-2 ring-blue-500'
+                    ? 'ring-4 ring-brand/50 border-brand'
                     : ''
                 }`}
                 onClick={() => handleSelectConversation(conversation.id)}
               >
-                <CardContent className="p-4">
+                <CardContent className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <User className="h-4 w-4 text-gray-500" />
-                        <span className="font-medium text-sm">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="h-8 w-8 rounded-md bg-brand/10 flex items-center justify-center flex-shrink-0">
+                          <User className="h-4 w-4 text-brand" />
+                        </div>
+                        <span className="font-bold text-base text-foreground group-hover:text-brand transition-colors">
                           {getEndUserInfo(conversation.end_user_config)}
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
-                        <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3 ml-11">
+                        <div className="flex items-center gap-1.5">
                           <MessageSquare className="h-4 w-4" />
-                          <span>{conversation.message_count} messages</span>
+                          <span>{conversation.message_count}</span>
                         </div>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5">
                           <Calendar className="h-4 w-4" />
                           <span>{formatDate(conversation.created_at)}</span>
                         </div>
                       </div>
 
-                      <div className="text-xs text-blue-600 font-medium">
-                        Agent: {conversation.agent_name}
+                      <div className="flex items-center gap-2 ml-11">
+                        <Bot className="h-3.5 w-3.5 text-brand" />
+                        <span className="text-sm text-brand font-medium">
+                          {conversation.agent_name}
+                        </span>
                       </div>
                     </div>
 
@@ -247,7 +267,7 @@ export default function ConversationsPage() {
                         e.stopPropagation();
                         handleDeleteConversation(conversation.id);
                       }}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50 -mt-1"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -260,14 +280,17 @@ export default function ConversationsPage() {
           {/* Conversation Messages */}
           <div className="space-y-0 pt-0" ref={messagesRef}>
             {selectedConversation ? (
-              <Card className="h-[600px] flex flex-col mt-0">
-                <CardHeader className="border-b py-2">
-                  <CardTitle className="text-lg mt-0 mb-1">Messages</CardTitle>
+              <Card className="h-[600px] flex flex-col mt-0 border-[3px] border-border rounded-xl shadow-lg">
+                <CardHeader className="border-b border-border py-4 px-6">
+                  <CardTitle className="text-xl font-bold text-foreground mt-0 mb-0 flex items-center gap-2">
+                    <MessageSquare className="h-5 w-5 text-brand" />
+                    Messages
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 overflow-y-auto p-4">
+                <CardContent className="flex-1 overflow-y-auto p-6">
                   {loadingMessages ? (
                     <div className="flex items-center justify-center h-full">
-                      <Loader2 className="animate-spin h-8 w-8 text-gray-400" />
+                      <Loader2 className="animate-spin h-8 w-8 text-brand" />
                     </div>
                   ) : (
                     <div className="space-y-4">
@@ -281,19 +304,19 @@ export default function ConversationsPage() {
                           }`}
                         >
                           <div
-                            className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                            className={`max-w-[85%] rounded-xl px-4 py-3 border-[3px] shadow-sm ${
                               message.role === 'user'
-                                ? 'bg-blue-500 text-white'
-                                : 'bg-gray-100 text-gray-900'
+                                ? 'bg-brand text-primary-foreground border-brand'
+                                : 'bg-card text-foreground border-border'
                             }`}
                           >
-                            <div className="text-sm font-medium mb-1">
+                            <div className="text-sm font-bold mb-1.5 opacity-90">
                               {message.role === 'user' ? 'User' : 'Assistant'}
                             </div>
-                            <div className="text-sm whitespace-pre-wrap">
+                            <div className="text-sm whitespace-pre-wrap leading-relaxed">
                               {message.content}
                             </div>
-                            <div className="text-xs opacity-70 mt-1">
+                            <div className="text-xs opacity-60 mt-2">
                               {formatDate(message.created_at)}
                             </div>
                           </div>
@@ -304,13 +327,13 @@ export default function ConversationsPage() {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="h-[600px] flex items-center justify-center mt-0">
-                <CardContent className="text-center">
-                  <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <Card className="h-[600px] flex items-center justify-center mt-0 border-[3px] border-border rounded-xl shadow-lg">
+                <CardContent className="text-center p-6">
+                  <MessageSquare className="h-16 w-16 text-brand/50 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold text-foreground mb-2">
                     Select a conversation
                   </h3>
-                  <p className="text-gray-500">
+                  <p className="text-muted-foreground max-w-sm">
                     Choose a conversation from the list to view the messages.
                   </p>
                 </CardContent>
@@ -319,24 +342,27 @@ export default function ConversationsPage() {
           </div>
         </div>
       )}
-
+      </div>
       {/* Delete Confirmation Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
+        <DialogContent className="border-[3px] border-border">
           <DialogHeader>
-            <DialogTitle>Delete Conversation</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-foreground">
+              Delete Conversation
+            </DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            <p>
+            <p className="text-muted-foreground">
               Are you sure you want to delete this conversation? This action
               cannot be undone.
             </p>
           </div>
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-3">
             <Button
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
               disabled={deleting}
+              className="border-[3px] border-border font-semibold"
             >
               Cancel
             </Button>
@@ -344,6 +370,7 @@ export default function ConversationsPage() {
               variant="destructive"
               onClick={confirmDelete}
               disabled={deleting}
+              className="font-semibold"
             >
               {deleting ? (
                 <Loader2 className="animate-spin h-4 w-4 mr-2" />
@@ -353,6 +380,6 @@ export default function ConversationsPage() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </motion.div>
   );
 }
