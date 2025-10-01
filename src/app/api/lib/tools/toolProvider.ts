@@ -212,6 +212,8 @@ export async function getToolsFromActions(agentId: string) {
       action.executionModel.parameters || []
     );
 
+    console.log(`inputSchema: ${JSON.stringify(inputSchema)}`);
+
     const prefix =
       action.executionContext === ExecutionContext.SERVER
         ? 'ACTION_SERVER_'
@@ -219,6 +221,8 @@ export async function getToolsFromActions(agentId: string) {
 
     const normalizedName = action.name.replace(/\s+/g, '_');
     const actionName = `${prefix}${normalizedName}`;
+
+    console.log(`actionName: ${actionName}`);
 
     const executeFunction: (input: any) => Promise<any> =
       action.executionContext === ExecutionContext.SERVER
@@ -231,12 +235,16 @@ export async function getToolsFromActions(agentId: string) {
             };
           };
 
+    console.log(`executeFunction: ${JSON.stringify(executeFunction)}`);
+
     tools[actionName] = dynamicTool({
       description: action.description,
       inputSchema,
       execute: executeFunction,
     });
   }
+
+  console.log(`tools: ${JSON.stringify(tools)}`);
 
   return tools;
 }

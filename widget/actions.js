@@ -4,6 +4,8 @@ import { persistMessage } from './api';
 import { config } from './config';
 
 export async function executeAction(actionModel) {
+  console.log('executing action: ', actionModel);
+
   try {
     const actionResult = actionModel.toolName.startsWith('ACTION_CLIENT_')
       ? await executeClientAction(actionModel)
