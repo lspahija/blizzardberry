@@ -31,7 +31,7 @@ export async function executeAction(actionModel) {
 async function executeClientAction(actionModel) {
   const functionName = actionModel.functionName.replace('ACTION_CLIENT_', '');
   const action = config.actions[functionName];
-  return await action(config.userConfig, actionModel.params);
+  return await action(config.userConfig, actionModel.args);
 }
 
 async function executeServerAction(actionModel) {

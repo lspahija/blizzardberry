@@ -44,8 +44,10 @@ import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
 import { usePrompts } from '@/app/(frontend)/hooks/usePrompts';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
-import { getRegisterMultipleToolsExample } from '@/app/(frontend)/lib/actionUtils';
-import { Framework, getUnifiedEmbedScript } from '@/app/(frontend)/lib/scriptUtils';
+import {
+  Framework,
+  getUnifiedEmbedScript,
+} from '@/app/(frontend)/lib/scriptUtils';
 import { DEFAULT_AGENT_USER_CONFIG } from '@/app/(frontend)/lib/defaultUserConfig';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -106,7 +108,6 @@ function AgentDetails({
   );
   const [editPrompts, setEditPrompts] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
-
 
   const { handleUpdateAgent, handleDeleteAgent, deletingAgentId } = useAgents();
   const { handleDeleteAction, handleFetchActions } = useActionForm();
@@ -843,7 +844,11 @@ function AgentDetails({
                           Installation Code
                         </Label>
                         <SyntaxHighlighter
-                          language={selectedFramework === Framework.NEXT_JS ? 'jsx' : 'html'}
+                          language={
+                            selectedFramework === Framework.NEXT_JS
+                              ? 'jsx'
+                              : 'html'
+                          }
                           style={vscDarkPlus}
                           customStyle={{
                             borderRadius: '8px',
@@ -871,7 +876,7 @@ function AgentDetails({
                               }))
                             );
 
-                            return unified
+                            return unified;
                           })()}
                         </SyntaxHighlighter>
                         <Button
@@ -893,7 +898,7 @@ function AgentDetails({
                                   isArray: param.isArray || false,
                                 })),
                               }))
-                            )
+                            );
 
                             handleCopy(unified);
                           }}

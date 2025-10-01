@@ -1,4 +1,4 @@
-import { tool, Tool } from 'ai';
+import { dynamicTool, tool, Tool } from 'ai';
 import { z } from 'zod';
 import { getActions } from '@/app/api/lib/store/actionStore';
 import {
@@ -19,8 +19,7 @@ export function createSearchKnowledgeBaseTool(agentId: string): Tool {
         .string()
         .describe('The search query to find relevant information'),
     }),
-    execute: async (input, options) => {
-      const { query } = input;
+    execute: async ({ query }) => {
       try {
         const groupedResults = await similaritySearch(query, 5, agentId);
 
@@ -92,19 +91,25 @@ export function createVisualizationTool(): Tool {
         }
 
         // Basic shape validation: require array of non-null objects
-        const isTabular = data.every((row) => row && typeof row === 'object' && !Array.isArray(row));
+        const isTabular = data.every(
+          (row) => row && typeof row === 'object' && !Array.isArray(row)
+        );
         if (!isTabular) {
           return {
             error: 'Invalid data format',
-            message: 'Visualization requires an array of objects (tabular data).',
+            message:
+              'Visualization requires an array of objects (tabular data).',
           };
         }
 
         // Require at least one numeric field across rows
-        const sample = data[0] ?? {} as Record<string, any>;
+        const sample = data[0] ?? ({} as Record<string, any>);
         const numericFieldExists = Object.keys(sample).some((k) => {
           const v = sample[k];
-          return typeof v === 'number' || (typeof v === 'string' && v.trim() !== '' && !isNaN(Number(v)));
+          return (
+            typeof v === 'number' ||
+            (typeof v === 'string' && v.trim() !== '' && !isNaN(Number(v)))
+          );
         });
         if (!numericFieldExists) {
           return {
@@ -117,13 +122,27 @@ export function createVisualizationTool(): Tool {
         if (chartType === 'pie') {
           // Determine value field
           const valueKey = Array.isArray(yKey) ? yKey[0] : yKey;
-          const values = data.map((row) => Number(valueKey ? row[valueKey] : Object.values(row).find((v) => typeof v === 'number' || (!isNaN(Number(v)) && String(v).trim() !== ''))));
+          const values = data.map((row) =>
+            Number(
+              valueKey
+                ? row[valueKey]
+                : Object.values(row).find(
+                    (v) =>
+                      typeof v === 'number' ||
+                      (!isNaN(Number(v)) && String(v).trim() !== '')
+                  )
+            )
+          );
           const hasNegative = values.some((n) => !Number.isFinite(n) || n < 0);
-          const total = values.reduce((a, b) => (Number.isFinite(b) ? a + b : a), 0);
+          const total = values.reduce(
+            (a, b) => (Number.isFinite(b) ? a + b : a),
+            0
+          );
           if (hasNegative || total <= 0 || data.length > 24) {
             return {
               error: 'Unsuitable data for pie chart',
-              message: 'Pie charts need non-negative values, a positive total, and a manageable number of categories (≤ 24).',
+              message:
+                'Pie charts need non-negative values, a positive total, and a manageable number of categories (≤ 24).',
             };
           }
         }
@@ -189,7 +208,7 @@ export async function getToolsFromActions(agentId: string) {
   const tools: Record<string, Tool> = {};
 
   for (const action of actions) {
-    const parameterSchema = createParameterSchema(
+    const inputSchema = createInputSchema(
       action.executionModel.parameters || []
     );
 
@@ -198,24 +217,23 @@ export async function getToolsFromActions(agentId: string) {
         ? 'ACTION_SERVER_'
         : 'ACTION_CLIENT_';
 
-    const sanitizedName = action.name.replace(/\s+/g, '_');
-    const actionName = `${prefix}${sanitizedName}`;
+    const normalizedName = action.name.replace(/\s+/g, '_');
+    const actionName = `${prefix}${normalizedName}`;
 
-    const executeFunction: (params: any) => Promise<any> =
+    const executeFunction: (input: any) => Promise<any> =
       action.executionContext === ExecutionContext.SERVER
-        ? async (params) =>
-            substituteRequestModel(action.executionModel.request, params)
-        : async (params) => {
-            const filteredParams = filterPlaceholderValues(params);
+        ? async (input) =>
+            substituteRequestModel(action.executionModel.request, input)
+        : async (input) => {
             return {
               functionName: toCamelCase(action.executionModel.functionName),
-              params: filteredParams,
+              args: input,
             };
           };
 
-    tools[actionName] = tool({
+    tools[actionName] = dynamicTool({
       description: action.description,
-      inputSchema: parameterSchema,
+      inputSchema,
       execute: executeFunction,
     });
   }
@@ -223,7 +241,7 @@ export async function getToolsFromActions(agentId: string) {
   return tools;
 }
 
-function createParameterSchema(parameters: Parameter[]): z.ZodObject<any> {
+function createInputSchema(parameters: Parameter[]): z.ZodObject<any> {
   const schemaFields: Record<string, z.ZodTypeAny> = {};
 
   for (const param of parameters) {
@@ -251,10 +269,10 @@ function createParameterSchema(parameters: Parameter[]): z.ZodObject<any> {
 
 function substitutePlaceholders(
   input: string,
-  params: Record<string, any>
+  args: Record<string, any>
 ): string {
   let result = input;
-  for (const [key, value] of Object.entries(params)) {
+  for (const [key, value] of Object.entries(args)) {
     const placeholder = `{{${key}}}`;
     const replacement = Array.isArray(value) ? value.join(',') : String(value);
     result = result.replace(new RegExp(placeholder, 'g'), replacement);
@@ -262,56 +280,37 @@ function substitutePlaceholders(
   return result;
 }
 
-
-function filterPlaceholderValues(
-  params: Record<string, any>
-): Record<string, any> {
-  const filteredParams: Record<string, any> = {};
-  for (const [key, value] of Object.entries(params)) {
-    if (value === undefined) {
-      continue;
-    }
-
-    if (typeof value === 'string' && value.match(/^{{.*}}$/)) {
-      continue;
-    }
-
-    if (Array.isArray(value) && value.length === 0) {
-      continue;
-    }
-
-    filteredParams[key] = value;
-  }
-  return filteredParams;
-}
-
 function substituteHeaders(
   headers: Record<string, string> | undefined,
-  params: Record<string, any>
+  args: Record<string, any>
 ): Record<string, string> | undefined {
   if (!headers) return undefined;
 
   return Object.fromEntries(
     Object.entries(headers).map(([key, value]) => [
       key,
-      substitutePlaceholders(value, params),
+      substitutePlaceholders(value, args),
     ])
   );
 }
 
 function substituteBody(
   body: Body | undefined,
-  params: Record<string, any>
+  args: Record<string, any>
 ): Body | undefined {
   if (!body) return undefined;
 
-  let substitutedString = typeof body === 'string' ? body : JSON.stringify(body);
+  let substitutedString =
+    typeof body === 'string' ? body : JSON.stringify(body);
 
   // Only substitute unquoted variables like {{foo}}, not quoted ones like "{{foo}}"
-  for (const [key, value] of Object.entries(params)) {
+  for (const [key, value] of Object.entries(args)) {
     const placeholder = `{{${key}}}`;
     const unquotedPattern = new RegExp(`(?<!")${placeholder}(?!")`, 'g');
-    substitutedString = substitutedString.replace(unquotedPattern, JSON.stringify(value));
+    substitutedString = substitutedString.replace(
+      unquotedPattern,
+      JSON.stringify(value)
+    );
   }
 
   try {
@@ -323,12 +322,12 @@ function substituteBody(
 
 function substituteRequestModel(
   request: HttpRequest,
-  params: Record<string, any>
+  args: Record<string, any>
 ): HttpRequest {
   return {
-    url: substitutePlaceholders(request.url, params),
+    url: substitutePlaceholders(request.url, args),
     method: request.method,
-    headers: substituteHeaders(request.headers, params),
-    body: substituteBody(request.body, params),
+    headers: substituteHeaders(request.headers, args),
+    body: substituteBody(request.body, args),
   };
 }
