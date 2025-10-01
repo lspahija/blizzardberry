@@ -58,7 +58,7 @@ export async function POST(req: Request) {
     let toolResult = toolResults.length > 0 ? toolResults[0] : undefined;
     if (toolResults.length > 1) {
       console.warn(
-        `${agent.model} yielded ${toolResults.length} toolResults. Returning first one.`
+        `${agent.model} yielded ${toolResults.length} toolResults. Returning only first one because the LLM didn't follow system prompt instructions to only call a single tool.`
       );
       console.log(`Returned: ${JSON.stringify(toolResults[0])}`);
       console.log(`Discarded: ${JSON.stringify(toolResults.slice(1))}`);
