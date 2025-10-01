@@ -1,11 +1,7 @@
 import { convertToModelMessages, generateText, stepCountIs } from 'ai';
 import { getAgent } from '@/app/api/lib/store/agentStore';
 import { openrouter } from '@openrouter/ai-sdk-provider';
-import {
-  createSearchKnowledgeBaseTool,
-  createVisualizationTool,
-  getToolsFromActions,
-} from '@/app/api/lib/tools/toolProvider';
+import { getTools } from '@/app/api/lib/tools/toolProvider';
 import {
   createCreditHold,
   recordUsedTokens,
@@ -29,22 +25,15 @@ export async function POST(req: Request) {
       idempotencyKey
     );
 
-    const tools = {
-      ...(await getToolsFromActions(agentId)),
-      search_knowledge_base: createSearchKnowledgeBaseTool(agentId),
-      visualize_data: createVisualizationTool(),
-    };
-
     const result = await generateText({
       model: openrouter(agent.model),
       system: buildSystemMessage(userConfig),
       messages: convertToModelMessages(messages),
-      tools,
+      tools: await getTools(agentId),
       stopWhen: stepCountIs(5),
       maxOutputTokens: 1000,
     });
 
-    // Handle token usage
     if (result.usage) {
       await recordUsedTokens(
         agent.created_by,
@@ -56,16 +45,19 @@ export async function POST(req: Request) {
       );
     }
 
+    console.log(`text: ${result.text}`);
+
     const toolCalls =
       result.steps?.flatMap((step) => step.toolCalls || []) || [];
+    console.log(`toolCalls: ${JSON.stringify(toolCalls)}`);
+
     const toolResults =
       result.steps?.flatMap((step) => step.toolResults || []) || [];
+    console.log(`toolResults: ${JSON.stringify(toolResults)}`);
 
     return Response.json({
       text: result.text,
-      toolCalls: toolCalls,
       toolResults: toolResults,
-      usage: result.usage,
       conversationId: conversationId,
     });
   } catch (error) {

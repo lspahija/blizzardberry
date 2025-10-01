@@ -104,10 +104,10 @@ export async function processMessage(messageText, role) {
   updateConversationUI();
 
   try {
-    const { text, toolResults, error, message } = await callLLM();
+    const { text, toolResults, error } = await callLLM();
 
-    if (error || message) {
-      await handleError(error || message);
+    if (error) {
+      await handleError(error);
       return;
     }
 
@@ -135,15 +135,17 @@ export async function processMessage(messageText, role) {
       (toolResult) => toolResult.toolName === 'visualize_data'
     );
     const hasOtherTools = toolResults?.some(
-      (toolResult) => 
-        toolResult.toolName !== 'search_knowledge_base' && 
+      (toolResult) =>
+        toolResult.toolName !== 'search_knowledge_base' &&
         toolResult.toolName !== 'visualize_data'
     );
-    
 
     if (
       text &&
-      (!toolResults || toolResults.length === 0 || hasSearchTool || hasVisualizationTool) &&
+      (!toolResults ||
+        toolResults.length === 0 ||
+        hasSearchTool ||
+        hasVisualizationTool) &&
       !hasOtherTools
     ) {
       state.messages.push({
