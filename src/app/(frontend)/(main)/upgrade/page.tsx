@@ -351,11 +351,11 @@ export default function UpgradePage() {
               Loading pricing options...
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16 sm:mb-20 pt-6 justify-items-center max-w-7xl mx-auto">
+            <div className="flex flex-wrap gap-6 mb-16 sm:mb-20 pt-6 justify-center max-w-7xl mx-auto">
               {availableTiers.map(([key, tier], idx, arr) => (
                 <div
                   key={key}
-                  className={`relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full max-w-sm hover:-translate-y-1 hover:-translate-x-1 z-1 ${
+                  className={`relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full sm:w-80 hover:-translate-y-1 hover:-translate-x-1 z-1 ${
                     key === 'standard'
                       ? 'border-[3px] border-brand shadow-xl pt-8 sm:pt-10 md:pt-8'
                       : ''
@@ -529,7 +529,7 @@ export default function UpgradePage() {
 
               {/* Enterprise Card */}
               <div
-                className="relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full max-w-sm hover:-translate-y-1 hover:-translate-x-1"
+                className="relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full sm:w-80 hover:-translate-y-1 hover:-translate-x-1"
                 style={{ minHeight: 480, minWidth: '0' }}
               >
                 <div className="mb-6 sm:mb-8">
