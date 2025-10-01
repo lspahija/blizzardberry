@@ -17,7 +17,14 @@ function formatPrice(pricePerToken: number) {
 function formatModelPrices(rawPrices: Record<string, { input: number; output: number }>) {
   const formatted: Record<string, { input: string; output: string; rawInput: number; rawOutput: number }> = {};
 
-  for (const [model, prices] of Object.entries(rawPrices)) {
+  // Sort entries by combined cost (input + output) in descending order
+  const sortedEntries = Object.entries(rawPrices).sort(([, a], [, b]) => {
+    const costA = a.input + a.output;
+    const costB = b.input + b.output;
+    return costB - costA;
+  });
+
+  for (const [model, prices] of sortedEntries) {
     formatted[model] = {
       input: formatPrice(prices.input),
       output: formatPrice(prices.output),
