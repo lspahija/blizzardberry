@@ -48,7 +48,6 @@ ${indentContent(content || '', 2)}
   }
 };
 
-
 const getActionsAssignment = (
   framework: Framework,
   actions: Array<{
@@ -105,7 +104,6 @@ export const getUnifiedEmbedScript = (
       isArray: boolean;
     }>;
   }>
-
 ) => {
   const configLine = `window.agentUserConfig = ${JSON.stringify(
     userConfig,
@@ -135,9 +133,7 @@ export const getUnifiedEmbedScript = (
 ></script>`;
 
   // Tag 2: inline config + actions (pretty formatted via getScriptTag)
-  const inlineContent = [configLine, actionsLine]
-    .filter(Boolean)
-    .join('\n');
+  const inlineContent = [configLine, actionsLine].filter(Boolean).join('\n');
   const configActionsTag = getScriptTag(framework, {
     id: 'blizzardberry-config-actions',
     content: inlineContent,

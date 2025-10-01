@@ -82,7 +82,7 @@ export default function ClientActionImplementation({
         const actions = (data.actions || [])
           .filter((a: any) => a.executionContext === 'CLIENT')
           .map((a: any) => ({
-            functionName: a.name,
+            functionName: toCamelCase(a.name),
             dataInputs: (a.executionModel?.parameters || []).map((p: any) => ({
               name: p.name,
               type: p.type,

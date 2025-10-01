@@ -13,10 +13,9 @@ export const getInputNames = (dataInputs: DataInput[], withBraces = false) => {
 };
 
 export function toCamelCase(str: string): string {
-  return (
-    str
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9]+(.)/g, (_, chr) => chr.toUpperCase())
-      .replace(/^[^a-zA-Z]+/, '') || 'customAction'
-  );
+  return str
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    })
+    .replace(/\s+/g, '');
 }
