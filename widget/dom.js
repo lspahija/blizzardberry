@@ -129,7 +129,7 @@ export function collapseWidget() {
 function syncWidgetState() {
   const widget = document.getElementById('chatWidget');
   const isWidgetCurrentlyOpen = widget && !widget.classList.contains('hidden');
-  state.isWidgetOpen = isWidgetCurrentlyOpen;
+  state.widgetIsOpen = isWidgetCurrentlyOpen;
   return isWidgetCurrentlyOpen;
 }
 
@@ -532,8 +532,8 @@ export async function createWidgetDOM() {
 
     // No toggle button needed - widget stays as widget in all states
 
-    state.isWidgetReady = true;
-    state.isWidgetOpen = true; // Widget is open by default now
+    state.widgetIsReady = true;
+    state.widgetIsOpen = true; // Widget is open by default now
 
     // Widget is open by default, so clear any notifications and show chat UI
     state.unreadMessages = 0;
@@ -603,7 +603,7 @@ export function createLoadingWidget() {
 
   const checkWidgetReady = () => {
     const realWidget = getElementById('chatWidget');
-    if (realWidget && state.isWidgetReady) {
+    if (realWidget && state.widgetIsReady) {
       loadingWidget.remove();
       realWidget.classList.remove('hidden');
       updateConversationUI();
@@ -627,7 +627,7 @@ export function updateNotificationBadge() {
   // Sync widget state in real-time
   syncWidgetState();
 
-  if (state.unreadMessages > 0 && !state.isWidgetOpen) {
+  if (state.unreadMessages > 0 && !state.widgetIsOpen) {
     // Get the latest assistant message
     const assistantMessages = state.messages.filter(
       (msg) => msg.role === 'assistant'

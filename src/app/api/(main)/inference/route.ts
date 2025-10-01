@@ -45,7 +45,7 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log(`text: ${result.text}`);
+    console.log(`text generated:\n ${result.text}`);
 
     const toolCalls =
       result.steps?.flatMap((step) => step.toolCalls || []) || [];
@@ -55,9 +55,18 @@ export async function POST(req: Request) {
       result.steps?.flatMap((step) => step.toolResults || []) || [];
     console.log(`toolResults: ${JSON.stringify(toolResults)}`);
 
+    let toolResult = toolResults.length > 0 ? toolResults[0] : undefined;
+    if (toolResults.length > 1) {
+      console.warn(
+        `${agent.model} yielded ${toolResults.length} toolResults. Returning first one.`
+      );
+      console.log(`Returned: ${JSON.stringify(toolResults[0])}`);
+      console.log(`Discarded: ${JSON.stringify(toolResults.slice(1))}`);
+    }
+
     return Response.json({
       text: result.text,
-      toolResults: toolResults,
+      toolResult: toolResult,
       conversationId: conversationId,
     });
   } catch (error) {

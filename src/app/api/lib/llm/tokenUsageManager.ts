@@ -101,8 +101,6 @@ export async function recordUsedTokens(
     return;
   }
 
-  console.log('Token Usage:', JSON.stringify(tokenUsage, null, 2));
-
   await ensureCostsInitialized();
 
   await captureCredit(
@@ -119,7 +117,9 @@ export function mapTokenUsageToCreditUsage(
   model: AgentModel
 ): number {
   if (!DOLLAR_COSTS_PER_TOKEN) {
-    throw new Error('Model costs not initialized. Call ensureCostsInitialized() first.');
+    throw new Error(
+      'Model costs not initialized. Call ensureCostsInitialized() first.'
+    );
   }
 
   const costs = DOLLAR_COSTS_PER_TOKEN[model];

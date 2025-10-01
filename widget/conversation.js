@@ -18,7 +18,7 @@ import { addVisualizationToMessage } from './visualization';
 function syncWidgetState() {
   const widget = document.getElementById('chatWidget');
   const isWidgetCurrentlyOpen = widget && !widget.classList.contains('hidden');
-  state.isWidgetOpen = isWidgetCurrentlyOpen;
+  state.widgetIsOpen = isWidgetCurrentlyOpen;
   return isWidgetCurrentlyOpen;
 }
 
@@ -34,7 +34,7 @@ export async function handleError(error) {
 
   syncWidgetState();
 
-  if (!state.isWidgetOpen) {
+  if (!state.widgetIsOpen) {
     state.unreadMessages++;
     updateNotificationBadge();
   }
@@ -103,78 +103,43 @@ export async function processMessage(messageText, role) {
   updateConversationUI();
 
   try {
-    const { text, toolResults, error } = await callLLM();
+    const { text, toolResult, error } = await callLLM();
 
     if (error) {
       await handleError(error);
       return;
     }
 
-    const actionTools = toolResults?.filter((tool) =>
-      tool.toolName.startsWith('ACTION_')
-    );
+    if (toolResult?.toolName.startsWith('ACTION_')) {
+      const result = await executeAction({
+        ...toolResult.output,
+        toolName: toolResult.toolName,
+      });
 
-    if (actionTools?.length > 0) {
-      const actionResults = await Promise.all(
-        actionTools.map((tool) =>
-          executeAction({ ...tool.output, toolName: tool.toolName })
-        )
-      );
+      await processMessage(result, 'user');
+      state.isProcessing = false;
+      updateConversationUI();
+      return;
+    }
 
-      // TODO: shouldn't we only have strictly a single action here? what do we do when there are multiple actions?
-      // TODO: really the problem is earlier i.e. if toolResults is > 1
-      for (const result of actionResults) {
-        await processMessage(result, 'user');
+    state.messages.push({
+      id: generateId(),
+      role: 'assistant',
+      parts: [{ type: 'text', text }],
+    });
+    await persistMessage(state.messages[state.messages.length - 1]);
+
+    if (toolResult?.toolName === 'visualize_data') {
+      const output = toolResult.output;
+      if (output && output.type === 'visualization') {
+        await addVisualizationToMessage(output);
       }
     }
 
-    const hasSearchTool = toolResults?.some(
-      (toolResult) => toolResult.toolName === 'search_knowledge_base'
-    );
-    const hasVisualizationTool = toolResults?.some(
-      (toolResult) => toolResult.toolName === 'visualize_data'
-    );
-    const hasOtherTools = toolResults?.some(
-      (toolResult) =>
-        toolResult.toolName !== 'search_knowledge_base' &&
-        toolResult.toolName !== 'visualize_data'
-    );
-
-    // TODO: this logic is way too complex. clean this up
-    if (
-      text &&
-      (!toolResults ||
-        toolResults.length === 0 ||
-        hasSearchTool ||
-        hasVisualizationTool) &&
-      !hasOtherTools
-    ) {
-      state.messages.push({
-        id: generateId(),
-        role: 'assistant',
-        parts: [{ type: 'text', text }],
-      });
-      await persistMessage(state.messages[state.messages.length - 1]);
-
-      // TODO: complex
-      if (hasVisualizationTool && toolResults) {
-        for (const toolResult of toolResults) {
-          if (toolResult.toolName === 'visualize_data') {
-            const output = toolResult.output;
-            if (output && output.type === 'visualization') {
-              await addVisualizationToMessage(output);
-            }
-          }
-        }
-      }
-
-      // Check widget state in real-time to avoid race conditions
-      syncWidgetState();
-
-      if (!state.isWidgetOpen) {
-        state.unreadMessages++;
-        updateNotificationBadge();
-      }
+    syncWidgetState();
+    if (!state.widgetIsOpen) {
+      state.unreadMessages++;
+      updateNotificationBadge();
     }
 
     state.isProcessing = false;
