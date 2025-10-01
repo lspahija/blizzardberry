@@ -399,7 +399,7 @@ function AgentDetails({
                 <Bot className="h-4 w-4 text-destructive" />
                 Name:
               </Label>
-              <div className="ml-6">
+              <div className="ml-6 max-w-md">
                 <Input
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
@@ -414,7 +414,7 @@ function AgentDetails({
                 <Globe className="h-4 w-4 text-destructive" />
                 Domain:
               </Label>
-              <div className="ml-6">
+              <div className="ml-6 max-w-md">
                 <Input
                   value={editWebsiteDomain}
                   onChange={(e) => setEditWebsiteDomain(e.target.value)}
@@ -429,7 +429,7 @@ function AgentDetails({
                 <Settings className="h-4 w-4 text-destructive" />
                 Model:
               </Label>
-              <div className="ml-6">
+              <div className="ml-6 max-w-md">
                 <Select
                   value={editModel}
                   onValueChange={(value) => setEditModel(value as AgentModel)}
@@ -469,7 +469,7 @@ function AgentDetails({
                 Add a few example questions to help guide your users and
                 showcase your agent's capabilities.
               </p>
-              <div className="mt-4 ml-6 space-y-4">
+              <div className="mt-4 ml-6 space-y-4 max-w-2xl">
                 {editPrompts.map((prompt, index) => (
                   <div key={index} className="flex gap-2 items-center">
                     <div className="flex-1">
@@ -569,7 +569,7 @@ function AgentDetails({
                     {actions.map((action, idx) => (
                       <Card
                         key={action.id || action.name}
-                        className="border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
+                        className="border-[2px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
                         onClick={() => handleNavigateToEditAction(action.id)}
                       >
                         <CardContent className="pt-2 pb-2">
@@ -671,7 +671,7 @@ function AgentDetails({
                     {documents.map((doc, idx) => (
                       <Card
                         key={doc.id}
-                        className="border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
+                        className="border-[2px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
                       >
                         <CardContent className="pt-2 pb-2">
                           <div className="flex items-start justify-between gap-3">
