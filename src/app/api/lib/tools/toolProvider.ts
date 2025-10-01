@@ -223,7 +223,7 @@ export async function getToolsFromActions(agentId: string) {
     const executeFunction: (input: any) => Promise<any> =
       action.executionContext === ExecutionContext.SERVER
         ? async (input) =>
-            substituteRequestModel(action.executionModel.request, input)
+            injectArgsIntoRequest(action.executionModel.request, input)
         : async (input) => {
             return {
               functionName: toCamelCase(action.executionModel.functionName),
@@ -267,7 +267,7 @@ function createInputSchema(parameters: Parameter[]): z.ZodObject<any> {
   return z.object(schemaFields);
 }
 
-function substitutePlaceholders(
+function injectArgsIntoPlaceholders(
   input: string,
   args: Record<string, any>
 ): string {
@@ -280,7 +280,7 @@ function substitutePlaceholders(
   return result;
 }
 
-function substituteHeaders(
+function injectArgsIntoHeaders(
   headers: Record<string, string> | undefined,
   args: Record<string, any>
 ): Record<string, string> | undefined {
@@ -289,12 +289,12 @@ function substituteHeaders(
   return Object.fromEntries(
     Object.entries(headers).map(([key, value]) => [
       key,
-      substitutePlaceholders(value, args),
+      injectArgsIntoPlaceholders(value, args),
     ])
   );
 }
 
-function substituteBody(
+function injectArgsIntoBody(
   body: Body | undefined,
   args: Record<string, any>
 ): Body | undefined {
@@ -320,14 +320,14 @@ function substituteBody(
   }
 }
 
-function substituteRequestModel(
+function injectArgsIntoRequest(
   request: HttpRequest,
   args: Record<string, any>
 ): HttpRequest {
   return {
-    url: substitutePlaceholders(request.url, args),
+    url: injectArgsIntoPlaceholders(request.url, args),
     method: request.method,
-    headers: substituteHeaders(request.headers, args),
-    body: substituteBody(request.body, args),
+    headers: injectArgsIntoHeaders(request.headers, args),
+    body: injectArgsIntoBody(request.body, args),
   };
 }
