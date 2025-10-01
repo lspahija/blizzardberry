@@ -150,9 +150,14 @@ function ActionEditContent() {
           }
 
           if (backendAction.executionModel.request.body) {
-            setApiBody(
-              JSON.stringify(backendAction.executionModel.request.body, null, 2)
-            );
+            // If body is already a string (contains template variables), use it directly
+            // Otherwise, stringify it as JSON
+            const body = backendAction.executionModel.request.body;
+            if (typeof body === 'string') {
+              setApiBody(body);
+            } else {
+              setApiBody(JSON.stringify(body, null, 2));
+            }
           } else {
             setApiBody('');
           }
