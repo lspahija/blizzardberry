@@ -150,9 +150,14 @@ function ActionEditContent() {
           }
 
           if (backendAction.executionModel.request.body) {
-            setApiBody(
-              JSON.stringify(backendAction.executionModel.request.body, null, 2)
-            );
+            // If body is already a string (contains template variables), use it directly
+            // Otherwise, stringify it as JSON
+            const body = backendAction.executionModel.request.body;
+            if (typeof body === 'string') {
+              setApiBody(body);
+            } else {
+              setApiBody(JSON.stringify(body, null, 2));
+            }
           } else {
             setApiBody('');
           }
@@ -223,7 +228,11 @@ function ActionEditContent() {
       let requestBody: any | undefined;
       try {
         if (apiBody) {
-          requestBody = JSON.parse(apiBody);
+          // Replace template variables with placeholder values for validation
+          const bodyForValidation = apiBody.replace(/\{\{(\w+)\}\}/g, '"__TEMPLATE_VAR__"');
+          JSON.parse(bodyForValidation);
+          // Store the original body with template variables
+          requestBody = apiBody;
         }
       } catch (error) {
         console.error('Invalid JSON in API body:', error);

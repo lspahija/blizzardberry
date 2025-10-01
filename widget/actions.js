@@ -4,6 +4,8 @@ import { persistMessage } from './api';
 import { config } from './config';
 
 export async function executeAction(actionModel) {
+  console.log('executing action: ', actionModel);
+
   try {
     const actionResult = actionModel.toolName.startsWith('ACTION_CLIENT_')
       ? await executeClientAction(actionModel)
@@ -31,7 +33,7 @@ export async function executeAction(actionModel) {
 async function executeClientAction(actionModel) {
   const functionName = actionModel.functionName.replace('ACTION_CLIENT_', '');
   const action = config.actions[functionName];
-  return await action(config.userConfig, actionModel.params);
+  return await action(config.userConfig, actionModel.args);
 }
 
 async function executeServerAction(actionModel) {

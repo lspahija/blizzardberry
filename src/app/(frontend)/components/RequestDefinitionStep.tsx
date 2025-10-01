@@ -41,7 +41,7 @@ import {
   Settings,
   FileText,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import SuccessOverlay from '@/app/(frontend)/components/ui/success-overlay';
 
 const cardVariants = {
@@ -134,6 +134,7 @@ export default function RequestDefinitionStep({
 }: RequestDefinitionStepProps) {
   const [bodyError, setBodyError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
+  const completionProviderRegistered = useRef(false);
 
   const addHeader = () => {
     if (isCreatingAction) return;
@@ -175,28 +176,55 @@ export default function RequestDefinitionStep({
       colors: { 'editor.background': '#FFFFFF' },
     });
 
-    monaco.languages.registerCompletionItemProvider('json', {
-      provideCompletionItems: (model, position) => {
-        const word = model.getWordUntilPosition(position);
-        const range = {
-          startLineNumber: position.lineNumber,
-          endLineNumber: position.lineNumber,
-          startColumn: word.startColumn,
-          endColumn: word.endColumn,
-        };
-        return {
-          suggestions: [
-            ...getInputNames(dataInputs, false).map((name) => ({
-              label: `{{${name}}}`,
-              kind: monaco.languages.CompletionItemKind.Variable,
-              documentation: `Variable with template syntax`,
-              insertText: `"{{${name}}}"`,
-              range,
-            })),
-          ],
-        };
-      },
+    // Disable JSON validation to allow template variables
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      validate: false,
+      schemas: [],
     });
+
+    // Disable default JSON suggestions to avoid duplicates
+    monaco.languages.json.jsonDefaults.setModeConfiguration({
+      completionItems: false,
+      hovers: false,
+      documentSymbols: false,
+      definitions: false,
+      references: false,
+      documentHighlights: false,
+      rename: false,
+      colors: false,
+      foldingRanges: false,
+      selectionRanges: false,
+      diagnostics: false,
+      documentFormattingEdits: false,
+      documentRangeFormattingEdits: false,
+    });
+
+    // Only register completion provider once
+    if (!completionProviderRegistered.current) {
+      completionProviderRegistered.current = true;
+      monaco.languages.registerCompletionItemProvider('json', {
+        provideCompletionItems: (model, position) => {
+          const word = model.getWordUntilPosition(position);
+          const range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word.startColumn,
+            endColumn: word.endColumn,
+          };
+          return {
+            suggestions: [
+              ...getInputNames(dataInputs, false).map((name) => ({
+                label: `{{${name}}}`,
+                kind: monaco.languages.CompletionItemKind.Variable,
+                documentation: `Variable with template syntax - unquoted for substitution`,
+                insertText: `{{${name}}}`,
+                range,
+              })),
+            ],
+          };
+        },
+      });
+    }
   };
 
   const handleCreate = () => {
@@ -238,35 +266,34 @@ export default function RequestDefinitionStep({
 
         // Get all defined data input names
         const dataInputNames = dataInputs
-          .filter(input => input.name.trim())
-          .map(input => input.name.trim());
+          .filter((input) => input.name.trim())
+          .map((input) => input.name.trim());
 
         // Find missing data inputs
-        const missingInputs = bodyVariables.filter(varName =>
-          !dataInputNames.includes(varName)
+        const missingInputs = bodyVariables.filter(
+          (varName) => !dataInputNames.includes(varName)
         );
 
         if (missingInputs.length > 0) {
           setBodyError(
             `Missing data inputs for variables: ${missingInputs.join(', ')}. ` +
-            `Please add these parameters in the Data Inputs section above.`
+              `Please add these parameters in the Data Inputs section above.`
           );
           return;
         }
 
         // Check if there are empty required data inputs
-        const emptyRequiredInputs = dataInputs.filter(input =>
-          bodyVariables.includes(input.name) && !input.name.trim()
+        const emptyRequiredInputs = dataInputs.filter(
+          (input) => bodyVariables.includes(input.name) && !input.name.trim()
         );
 
         if (emptyRequiredInputs.length > 0) {
           setBodyError(
             `Some data inputs referenced in the API body are empty. ` +
-            `Please ensure all required parameters are properly defined.`
+              `Please ensure all required parameters are properly defined.`
           );
           return;
         }
-
       } catch (error) {
         // If JSON parsing fails, let it proceed (JSON validation happens elsewhere)
         console.log('Body parsing error during validation:', error);
@@ -449,7 +476,7 @@ export default function RequestDefinitionStep({
               </Button>
             </div>
 
-{apiMethod !== 'GET' && apiMethod !== 'DELETE' && (
+            {apiMethod !== 'GET' && apiMethod !== 'DELETE' && (
               <div className="mt-8">
                 <Label
                   htmlFor="apiBody"

@@ -3,9 +3,9 @@ export const state = {
   isProcessing: false,
   loggedThinkMessages: new Set(),
   conversationId: null,
-  isWidgetReady: false,
+  widgetIsReady: false,
   unreadMessages: 0,
-  isWidgetOpen: false,
+  widgetIsOpen: false,
 };
 
 export let suggestedPrompts = [];

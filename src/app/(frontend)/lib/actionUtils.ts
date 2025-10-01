@@ -1,5 +1,3 @@
-import { Framework, getUnifiedEmbedScript } from './scriptUtils';
-
 interface DataInput {
   name: string;
   type: string;
@@ -14,32 +12,10 @@ export const getInputNames = (dataInputs: DataInput[], withBraces = false) => {
   return withBraces ? names.map((name) => `{{${name}}}`) : names;
 };
 
-export const getRegisterToolsExample = (
-  functionName: string,
-  dataInputs: DataInput[],
-  framework: Framework = Framework.VANILLA
-) => {
-  return getUnifiedEmbedScript(framework, '', {}, [
-    { functionName, dataInputs },
-  ]);
-};
-
-export const getRegisterMultipleToolsExample = (
-  actions: { functionName: string; dataInputs: DataInput[] }[],
-  framework: Framework = Framework.VANILLA
-) => {
-  return getUnifiedEmbedScript(framework, '', {}, actions);
-};
-
 export function toCamelCase(str: string): string {
   return str
-    .replace(/[^a-zA-Z0-9\s]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/(?:^|\s)([a-zA-Z])/g, (match, p1, offset) =>
-      offset === 0 ? p1.toLowerCase() : p1.toUpperCase()
-    )
-    .replace(/\s+/g, '')
-    .replace(/^[^a-zA-Z]/, '')
-    .replace(/^$/, 'customAction');
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    })
+    .replace(/\s+/g, '');
 }

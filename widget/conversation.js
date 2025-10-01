@@ -18,12 +18,12 @@ import { addVisualizationToMessage } from './visualization';
 function syncWidgetState() {
   const widget = document.getElementById('chatWidget');
   const isWidgetCurrentlyOpen = widget && !widget.classList.contains('hidden');
-  state.isWidgetOpen = isWidgetCurrentlyOpen;
+  state.widgetIsOpen = isWidgetCurrentlyOpen;
   return isWidgetCurrentlyOpen;
 }
 
 export async function handleError(error) {
-  console.log('Error: Failed to get response. ' + error);
+  console.error('Failed to get response. ' + error);
   state.isProcessing = false;
   state.messages.push({
     id: generateId(),
@@ -32,10 +32,9 @@ export async function handleError(error) {
   });
   await persistMessage(state.messages[state.messages.length - 1]);
 
-  // Check widget state in real-time to avoid race conditions
   syncWidgetState();
 
-  if (!state.isWidgetOpen) {
+  if (!state.widgetIsOpen) {
     state.unreadMessages++;
     updateNotificationBadge();
   }
@@ -104,73 +103,43 @@ export async function processMessage(messageText, role) {
   updateConversationUI();
 
   try {
-    const { text, toolResults, error, message } = await callLLM();
+    const { text, toolResult, error } = await callLLM();
 
-    if (error || message) {
-      await handleError(error || message);
+    if (error) {
+      await handleError(error);
       return;
     }
 
-    if (toolResults?.length > 0) {
-      const actionResults = await Promise.all(
-        toolResults
-          .filter((toolResult) => toolResult.toolName.startsWith('ACTION_'))
-          .map((toolResult) =>
-            executeAction({
-              ...toolResult.output,
-              toolName: toolResult.toolName,
-            })
-          )
-      );
+    if (toolResult?.toolName.startsWith('ACTION_')) {
+      const result = await executeAction({
+        ...toolResult.output,
+        toolName: toolResult.toolName,
+      });
 
-      for (const result of actionResults) {
-        await processMessage(result, 'user');
+      await processMessage(result, 'user');
+      state.isProcessing = false;
+      updateConversationUI();
+      return;
+    }
+
+    state.messages.push({
+      id: generateId(),
+      role: 'assistant',
+      parts: [{ type: 'text', text }],
+    });
+    await persistMessage(state.messages[state.messages.length - 1]);
+
+    if (toolResult?.toolName === 'visualize_data') {
+      const output = toolResult.output;
+      if (output && output.type === 'visualization') {
+        await addVisualizationToMessage(output);
       }
     }
 
-    const hasSearchTool = toolResults?.some(
-      (toolResult) => toolResult.toolName === 'search_knowledge_base'
-    );
-    const hasVisualizationTool = toolResults?.some(
-      (toolResult) => toolResult.toolName === 'visualize_data'
-    );
-    const hasOtherTools = toolResults?.some(
-      (toolResult) => 
-        toolResult.toolName !== 'search_knowledge_base' && 
-        toolResult.toolName !== 'visualize_data'
-    );
-    
-
-    if (
-      text &&
-      (!toolResults || toolResults.length === 0 || hasSearchTool || hasVisualizationTool) &&
-      !hasOtherTools
-    ) {
-      state.messages.push({
-        id: generateId(),
-        role: 'assistant',
-        parts: [{ type: 'text', text }],
-      });
-      await persistMessage(state.messages[state.messages.length - 1]);
-
-      if (hasVisualizationTool && toolResults) {
-        for (const toolResult of toolResults) {
-          if (toolResult.toolName === 'visualize_data') {
-            const output = toolResult.output;
-            if (output && output.type === 'visualization') {
-              await addVisualizationToMessage(output);
-            }
-          }
-        }
-      }
-
-      // Check widget state in real-time to avoid race conditions
-      syncWidgetState();
-
-      if (!state.isWidgetOpen) {
-        state.unreadMessages++;
-        updateNotificationBadge();
-      }
+    syncWidgetState();
+    if (!state.widgetIsOpen) {
+      state.unreadMessages++;
+      updateNotificationBadge();
     }
 
     state.isProcessing = false;

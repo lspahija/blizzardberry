@@ -101,7 +101,6 @@ export async function callLLM() {
     text,
     toolResults,
     error,
-    message,
     conversationId: returnedConversationId,
   } = await response.json());
 

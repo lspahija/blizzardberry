@@ -72,7 +72,7 @@ export default function DataInputRow({
             <SelectValue placeholder="Select type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Text">Text</SelectItem>
+            <SelectItem value="String">Text</SelectItem>
             <SelectItem value="Number">Number</SelectItem>
             <SelectItem value="Boolean">Boolean</SelectItem>
           </SelectContent>
