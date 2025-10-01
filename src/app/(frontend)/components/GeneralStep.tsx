@@ -70,19 +70,19 @@ export default function GeneralStep({
           style={{ borderLeftColor: 'var(--color-destructive)' }}
         >
           <CardContent className="space-y-6 md:space-y-8 p-4 md:p-6">
-            <div>
-              <Label
-                htmlFor="actionName"
-                className="text-foreground text-base md:text-lg font-semibold flex items-center gap-2"
-              >
-                <Zap className="h-4 w-4 text-destructive" />
-                Action Name
-              </Label>
-              <p className="text-xs md:text-sm text-muted-foreground mt-1 mb-3 ml-6">
-                Enter a descriptive name for this action. This will help the AI
-                agent know when to use it.
-              </p>
-              <div className="relative">
+            <div className="flex gap-4">
+              <Zap className="h-5 w-5 text-destructive mt-1 flex-shrink-0" />
+              <div className="max-w-2xl flex-1">
+                <Label
+                  htmlFor="actionName"
+                  className="text-foreground text-base md:text-lg font-semibold"
+                >
+                  Action Name
+                </Label>
+                <p className="text-xs md:text-sm text-muted-foreground mt-1 mb-3">
+                  Enter a descriptive name for this action. This will help the
+                  AI agent know when to use it.
+                </p>
                 <Input
                   id="actionName"
                   value={baseAction.name}
@@ -91,45 +91,49 @@ export default function GeneralStep({
                     setBaseAction({ ...baseAction, name: e.target.value });
                   }}
                   placeholder="Update_Subscription"
-                  className={`mt-2 border-[2px] ${errors.name ? 'border-destructive' : 'border-border'} pl-10 text-sm md:text-base`}
+                  className={`mt-2 border-[2px] ${errors.name ? 'border-destructive' : 'border-border'} text-sm md:text-base`}
                 />
-                <Zap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                {errors.name && (
+                  <p className="text-destructive text-xs md:text-sm mt-1">
+                    {errors.name}
+                  </p>
+                )}
               </div>
-              {errors.name && (
-                <p className="text-destructive text-xs md:text-sm mt-1">
-                  {errors.name}
-                </p>
-              )}
             </div>
-            <div>
-              <Label
-                htmlFor="description"
-                className="text-foreground text-base md:text-lg font-semibold flex items-center gap-2"
-              >
-                <Info className="h-4 w-4 text-destructive" />
-                Description
-              </Label>
-              <p className="text-xs md:text-sm text-muted-foreground mt-1 mb-3 ml-6">
-                Explain when the AI Agent should use this action. Describe what
-                this action does. You can also provide example prompts from the
-                user that would trigger this action.
-              </p>
-              <Textarea
-                id="description"
-                value={baseAction.description}
-                onChange={(e) => {
-                  setErrors((prev) => ({ ...prev, description: undefined }));
-                  setBaseAction({ ...baseAction, description: e.target.value });
-                }}
-                placeholder="Describe when the AI agent should use this action..."
-                className={`mt-2 border-[2px] ${errors.description ? 'border-destructive' : 'border-border'} text-sm md:text-base`}
-                rows={5}
-              />
-              {errors.description && (
-                <p className="text-destructive text-xs md:text-sm mt-1">
-                  {errors.description}
+            <div className="flex gap-4">
+              <Info className="h-5 w-5 text-destructive mt-1 flex-shrink-0" />
+              <div className="max-w-2xl flex-1">
+                <Label
+                  htmlFor="description"
+                  className="text-foreground text-base md:text-lg font-semibold"
+                >
+                  Description
+                </Label>
+                <p className="text-xs md:text-sm text-muted-foreground mt-1 mb-3">
+                  Explain when the AI Agent should use this action. Describe
+                  what this action does. You can also provide example prompts
+                  from the user that would trigger this action.
                 </p>
-              )}
+                <Textarea
+                  id="description"
+                  value={baseAction.description}
+                  onChange={(e) => {
+                    setErrors((prev) => ({ ...prev, description: undefined }));
+                    setBaseAction({
+                      ...baseAction,
+                      description: e.target.value,
+                    });
+                  }}
+                  placeholder="Describe when the AI agent should use this action..."
+                  className={`mt-2 border-[2px] ${errors.description ? 'border-destructive' : 'border-border'} text-sm md:text-base`}
+                  rows={5}
+                />
+                {errors.description && (
+                  <p className="text-destructive text-xs md:text-sm mt-1">
+                    {errors.description}
+                  </p>
+                )}
+              </div>
             </div>
             <div>
               <Label className="text-foreground text-base md:text-lg font-semibold flex items-center gap-2">
