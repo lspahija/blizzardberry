@@ -301,7 +301,7 @@ export default function UpgradePage() {
   return (
     <>
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-brand/10 to-brand/5 border-b border-border">
+      <div className="bg-gradient-to-br from-brand/10 to-brand/5 border-b border-border -mt-12">
         <div
           className={`container mx-auto px-6 sm:px-8 md:px-2 lg:px-2 xl:px-8 py-12 sm:py-20 ${!isLoggedIn ? 'max-w-[1400px]' : 'max-w-7xl'}`}
         >
