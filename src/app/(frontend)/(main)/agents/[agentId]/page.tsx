@@ -556,107 +556,79 @@ function AgentDetails({
                     </Button>
                   </div>
                 </div>
-                <div className="bg-muted/30 rounded-lg p-4 border border-border">
-                  {loadingActions ? (
-                    <div className="flex items-center justify-center py-8">
-                      <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
-                    </div>
-                  ) : actions.length === 0 ? (
-                    <p className="text-foreground text-base flex items-center justify-center text-center py-8">
-                      No actions found. Create one to get started!
-                    </p>
-                  ) : (
-                    <ul className="space-y-4">
-                      {actions.map((action, idx) => (
-                        <li
-                          key={action.id || action.name}
-                          className="border-t pt-2 flex flex-row items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <p className="text-base sm:text-lg text-foreground font-semibold mb-1 truncate">
-                              {action.name}
-                            </p>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
-                              <span className="font-semibold">
-                                Description:
-                              </span>{' '}
-                              {action.description}
-                            </p>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
-                              <span className="font-semibold">Context:</span>{' '}
-                              {action.executionContext}
-                            </p>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
-                              <span className="font-semibold">Model:</span>{' '}
-                              {action.executionContext ===
-                              ExecutionContext.SERVER ? (
-                                <>
-                                  {(
-                                    action as BackendAction
-                                  ).executionModel.request.method.toUpperCase()}{' '}
-                                  {
-                                    (action as BackendAction).executionModel
-                                      .request.url
-                                  }
-                                </>
-                              ) : (
-                                (action as FrontendAction).executionModel
-                                  .functionName
-                              )}
-                            </p>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
-                              <span className="font-semibold">Parameters:</span>{' '}
-                              {(action.executionModel.parameters || []).length >
-                              0
-                                ? (action.executionModel.parameters || [])
-                                    .map(
-                                      (param) =>
-                                        `${param.name} (${param.type}${param.isArray ? '[]' : ''})`
-                                    )
-                                    .join(', ')
-                                : 'None'}
-                            </p>
-                          </div>
-                          <div className="flex gap-2 shrink-0">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="rounded-full p-2 hover:bg-secondary/80 transition group-hover:scale-110"
-                              onClick={() =>
-                                handleNavigateToEditAction(action.id)
-                              }
-                              disabled={isNavigatingToEditAction === action.id}
-                              title="Edit Action"
-                            >
+                {loadingActions ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+                  </div>
+                ) : actions.length === 0 ? (
+                  <p className="text-foreground text-base flex items-center justify-center text-center py-8">
+                    No actions found. Create one to get started!
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4">
+                    {actions.map((action, idx) => (
+                      <Card
+                        key={action.id || action.name}
+                        className="border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
+                        onClick={() => handleNavigateToEditAction(action.id)}
+                      >
+                        <CardContent className="pt-2 pb-2">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-3 min-w-0 flex-1">
+                              <div className="min-w-0 flex-1">
+                                <h3 className="text-lg sm:text-xl font-extrabold text-foreground leading-tight truncate group-hover:text-brand transition-colors mb-0.5">
+                                  {action.name}
+                                </h3>
+                                <p className="text-xs sm:text-sm text-muted-foreground mb-2">
+                                  {action.description}
+                                </p>
+                                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-muted-foreground">
+                                  <span className="inline-flex items-center gap-1">
+                                    <Info className="h-4 w-4" />
+                                    {action.executionContext}
+                                  </span>
+                                  <span className="inline-flex items-center gap-1 min-w-0">
+                                    <Code className="h-4 w-4" />
+                                    <span className="truncate">
+                                      {action.executionContext ===
+                                      ExecutionContext.SERVER
+                                        ? `${(action as BackendAction).executionModel.request.method.toUpperCase()} ${(action as BackendAction).executionModel.request.url}`
+                                        : (action as FrontendAction).executionModel.functionName}
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-start mt-1">
                               {isNavigatingToEditAction === action.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <Loader2 className="h-4 w-4 animate-spin text-brand" />
                               ) : (
-                                <Pencil className="h-4 w-4 transition-transform duration-200 group-hover:scale-125" />
+                                <Button
+                                  variant="destructive"
+                                  size="icon"
+                                  className="rounded-full p-2 hover:bg-destructive/80 transition"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActionToDelete(action);
+                                    setIsDeleteDialogOpen(true);
+                                  }}
+                                  disabled={deletingActionId === action.id}
+                                  title="Delete Action"
+                                >
+                                  {deletingActionId === action.id ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <Trash2 className="h-4 w-4" />
+                                  )}
+                                </Button>
                               )}
-                            </Button>
-                            <Button
-                              variant="destructive"
-                              size="icon"
-                              className="rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
-                              onClick={() => {
-                                setActionToDelete(action);
-                                setIsDeleteDialogOpen(true);
-                              }}
-                              disabled={deletingActionId === action.id}
-                              title="Delete Action"
-                            >
-                              {deletingActionId === action.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                              )}
-                            </Button>
+                            </div>
                           </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Documents Section */}
@@ -686,35 +658,33 @@ function AgentDetails({
                     )}
                   </Button>
                 </div>
-                <div className="bg-muted/30 rounded-lg p-4 border border-border">
-                  {loadingDocuments ? (
-                    <div className="flex items-center justify-center py-8">
-                      <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
-                    </div>
-                  ) : documents.length === 0 ? (
-                    <p className="text-foreground text-base flex items-center justify-center text-center py-8">
-                      No documents found. Add one to get started!
-                    </p>
-                  ) : (
-                    <ul className="space-y-4">
-                      {documents.map((doc, idx) => (
-                        <li
-                          key={doc.id}
-                          className="border-t pt-2 flex flex-row items-center transition hover:bg-muted hover:shadow-md rounded-lg group px-2 sm:px-4 py-2 gap-2"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <p className="text-base sm:text-lg text-foreground font-semibold mb-1">
-                              Document {idx + 1}
-                            </p>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
-                              <span className="font-semibold">Content:</span>{' '}
-                              {doc.content.length > 100
-                                ? `${doc.content.substring(0, 100)}...`
-                                : doc.content}
-                            </p>
-                            <div className="text-xs sm:text-sm text-muted-foreground mb-1 break-words break-all">
-                              <span className="font-semibold">Metadata:</span>
-                              <ul>
+                {loadingDocuments ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+                  </div>
+                ) : documents.length === 0 ? (
+                  <p className="text-foreground text-base flex items-center justify-center text-center py-8">
+                    No documents found. Add one to get started!
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4">
+                    {documents.map((doc, idx) => (
+                      <Card
+                        key={doc.id}
+                        className="border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
+                      >
+                        <CardContent className="pt-2 pb-2">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-3 min-w-0 flex-1">
+                              <div className="min-w-0 flex-1">
+                                <h3 className="text-lg sm:text-xl font-extrabold text-foreground leading-tight group-hover:text-brand transition-colors mb-0.5">
+                                  Document {idx + 1}
+                                </h3>
+                                <p className="text-xs sm:text-sm text-muted-foreground mb-2 line-clamp-2">
+                                  {doc.content.length > 150
+                                    ? `${doc.content.substring(0, 150)}...`
+                                    : doc.content}
+                                </p>
                                 {Object.entries(doc.metadata)
                                   .filter(
                                     ([key]) =>
@@ -724,47 +694,61 @@ function AgentDetails({
                                         'chunk_index',
                                         'parent_document_id',
                                       ].includes(key)
-                                  )
-                                  .map(([key, value]) => (
-                                    <li key={key} className="mb-1">
-                                      <span className="font-semibold">
-                                        {key}:
-                                      </span>{' '}
-                                      {typeof value === 'object' &&
-                                      value !== null ? (
-                                        <pre className="inline">
-                                          {JSON.stringify(value, null, 2)}
-                                        </pre>
-                                      ) : (
-                                        String(value)
-                                      )}
-                                    </li>
-                                  ))}
-                              </ul>
+                                  ).length > 0 && (
+                                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-muted-foreground">
+                                    {Object.entries(doc.metadata)
+                                      .filter(
+                                        ([key]) =>
+                                          ![
+                                            'loc',
+                                            'agent_id',
+                                            'chunk_index',
+                                            'parent_document_id',
+                                          ].includes(key)
+                                      )
+                                      .slice(0, 2)
+                                      .map(([key, value]) => (
+                                        <span
+                                          key={key}
+                                          className="inline-flex items-center gap-1 min-w-0"
+                                        >
+                                          <Info className="h-4 w-4" />
+                                          <span className="truncate">
+                                            {key}:{' '}
+                                            {typeof value === 'object' && value !== null
+                                              ? JSON.stringify(value)
+                                              : String(value)}
+                                          </span>
+                                        </span>
+                                      ))}
+                                  </div>
+                                )}
+                              </div>
                             </div>
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="rounded-full p-2 hover:bg-destructive/80 transition shrink-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDocumentToDelete(doc);
+                                setIsDeleteDocumentDialogOpen(true);
+                              }}
+                              disabled={deletingDocumentId === doc.id}
+                              title="Delete Document"
+                            >
+                              {deletingDocumentId === doc.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-4 w-4" />
+                              )}
+                            </Button>
                           </div>
-                          <Button
-                            variant="destructive"
-                            size="icon"
-                            className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110 shrink-0"
-                            onClick={() => {
-                              setDocumentToDelete(doc);
-                              setIsDeleteDocumentDialogOpen(true);
-                            }}
-                            disabled={deletingDocumentId === doc.id}
-                            title="Delete Document"
-                          >
-                            {deletingDocumentId === doc.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                            )}
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
