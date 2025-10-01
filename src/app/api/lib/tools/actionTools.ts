@@ -41,7 +41,7 @@ export async function getToolsFromActions(agentId: string) {
             };
           };
 
-    console.log(`executeFunction: ${JSON.stringify(executeFunction)}`);
+    console.log(`executeFunction: ${executeFunction.toString()}`);
 
     tools[actionName] = dynamicTool({
       description: action.description,
