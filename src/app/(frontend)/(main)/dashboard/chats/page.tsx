@@ -222,37 +222,32 @@ export default function ConversationsPage() {
             {filteredConversations.map((conversation) => (
               <Card
                 key={conversation.id}
-                className={`border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer ${
+                className={`border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer py-3 gap-0 ${
                   selectedConversation === conversation.id
                     ? 'ring-4 ring-brand/50 border-brand'
                     : ''
                 }`}
                 onClick={() => handleSelectConversation(conversation.id)}
               >
-                <CardContent className="p-5">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="h-8 w-8 rounded-md bg-brand/10 flex items-center justify-center flex-shrink-0">
-                          <User className="h-4 w-4 text-brand" />
-                        </div>
-                        <span className="font-bold text-base text-foreground group-hover:text-brand transition-colors">
-                          {getEndUserInfo(conversation.end_user_config)}
-                        </span>
+                <CardContent className="px-4 py-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <div className="font-bold text-base text-foreground group-hover:text-brand transition-colors">
+                        {getEndUserInfo(conversation.end_user_config)}
                       </div>
 
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3 ml-11">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1.5">
-                          <MessageSquare className="h-4 w-4" />
+                          <MessageSquare className="h-3.5 w-3.5" />
                           <span>{conversation.message_count}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <Calendar className="h-4 w-4" />
+                          <Calendar className="h-3.5 w-3.5" />
                           <span>{formatDate(conversation.created_at)}</span>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 ml-11">
+                      <div className="flex items-center gap-1.5">
                         <Bot className="h-3.5 w-3.5 text-brand" />
                         <span className="text-sm text-brand font-medium">
                           {conversation.agent_name}
@@ -262,14 +257,14 @@ export default function ConversationsPage() {
 
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="icon"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDeleteConversation(conversation.id);
                       }}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50 -mt-1"
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50 flex-shrink-0 [&_svg]:!size-5"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 />
                     </Button>
                   </div>
                 </CardContent>
