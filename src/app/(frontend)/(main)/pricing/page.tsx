@@ -379,7 +379,10 @@ export default function PricingPage() {
                       <div className="mb-2 flex items-end gap-2">
                         <div className="flex flex-row items-end gap-0.5">
                           <span className="text-3xl sm:text-4xl font-bold text-foreground">
-                            ${billingCycle === 'yearly' ? (tier.yearlyPrice / 12).toFixed(0) : tier.monthlyPrice}
+                            $
+                            {billingCycle === 'yearly'
+                              ? (tier.yearlyPrice / 12).toFixed(0)
+                              : tier.monthlyPrice}
                           </span>
                           <span className="text-sm sm:text-base text-muted-foreground mb-1 align-bottom mr-1">
                             /month
@@ -600,31 +603,43 @@ export default function PricingPage() {
 
           {/* Additional Credits Section */}
           {status !== 'loading' && (
-            <div className="bg-card p-6 sm:p-8 border-[3px] border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:-translate-x-1 relative z-1">
-              <div className="max-w-lg mx-auto">
+            <div className="bg-card p-8 sm:p-10 border-[3px] border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-lg transition-all duration-300 relative max-w-2xl mx-auto">
+              <div>
                 <h2
                   id="buy-credits"
-                  className="text-xl sm:text-2xl font-bold mb-3 text-foreground"
+                  className="text-2xl sm:text-3xl font-bold mb-3 text-foreground"
                 >
                   Need More Credits?
                 </h2>
-                <p className="text-sm sm:text-base mb-6 text-muted-foreground">
-                  Buy additional credits anytime. They never expire.
+                <p className="text-sm sm:text-base mb-8 text-muted-foreground max-w-xl mx-auto">
+                  Buy additional credits anytime. They never expire and are
+                  perfect for scaling your AI agents.
                 </p>
 
-                <div className="bg-background p-5 rounded-xl border border-border mb-6 text-center">
-                  <div className="text-xl sm:text-2xl font-semibold text-foreground">
-                    {pricing.oneTimePurchase.credits.toLocaleString()} credits for ${pricing.oneTimePurchase.price}
+                <div className="bg-muted/30 p-6 rounded-xl border-2 border-border mb-8">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl sm:text-5xl font-bold text-foreground">
+                        {pricing.oneTimePurchase.credits.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="text-lg text-muted-foreground">for</div>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl sm:text-5xl font-bold text-brand">
+                        ${pricing.oneTimePurchase.price}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-sm text-muted-foreground mt-1">
-                    One-time purchase
-                  </div>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-3">
+                    One-time purchase • Never expires
+                  </p>
                 </div>
 
-                <RetroButton 
-                  onClick={handleBuyCredits} 
+                <RetroButton
+                  onClick={handleBuyCredits}
                   disabled={isLoading}
-                  className="w-full py-3 sm:py-4 px-4 sm:px-6 font-semibold text-sm sm:text-base bg-brand text-primary-foreground hover:bg-brand/90"
+                  className="py-3 sm:py-4 px-8 sm:px-10 bg-brand text-primary-foreground font-semibold hover:bg-brand/90 text-sm sm:text-base"
+                  shadowColor="foreground"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-2">

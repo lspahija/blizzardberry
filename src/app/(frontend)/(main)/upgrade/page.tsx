@@ -624,50 +624,47 @@ export default function UpgradePage() {
 
           {/* Additional Credits Section */}
           {status !== 'loading' && (
-            <div className="bg-card p-6 sm:p-8 md:p-12 border-[3px] border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:-translate-x-1 relative z-1">
-              <div className="max-w-2xl mx-auto">
+            <div className="bg-card p-8 sm:p-10 border-[3px] border-border rounded-2xl text-center mb-12 sm:mb-16 shadow-lg transition-all duration-300 relative max-w-2xl mx-auto">
+              <div>
                 <h2
                   id="buy-credits"
-                  className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-foreground"
+                  className="text-2xl sm:text-3xl font-bold mb-3 text-foreground"
                 >
                   Need More Credits?
                 </h2>
-                <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-muted-foreground">
+                <p className="text-sm sm:text-base mb-8 text-muted-foreground max-w-xl mx-auto">
                   Buy additional credits anytime. They never expire and are
                   perfect for scaling your AI agents.
                 </p>
 
-                <div className="bg-background p-4 sm:p-6 rounded-xl border border-border mb-6 sm:mb-8 flex flex-col md:flex-row items-center justify-center gap-4">
-                  <div className="text-center md:text-left">
-                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground block">
-                      {pricing.oneTimePurchase.credits.toLocaleString()}
-                    </span>
-                    <span className="text-base sm:text-lg text-muted-foreground">
-                      credits
-                    </span>
+                <div className="bg-muted/30 p-6 rounded-xl border-2 border-border mb-8">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl sm:text-5xl font-bold text-foreground">
+                        {pricing.oneTimePurchase.credits.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="text-lg text-muted-foreground">for</div>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl sm:text-5xl font-bold text-brand">
+                        ${pricing.oneTimePurchase.price}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-xl sm:text-2xl text-muted-foreground">
-                    for
-                  </div>
-                  <div className="text-center md:text-left">
-                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground-muted block">
-                      ${pricing.oneTimePurchase.price}
-                    </span>
-                    <span className="text-base sm:text-lg text-muted-foreground">
-                      one-time
-                    </span>
-                  </div>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-3">
+                    One-time purchase • Never expires
+                  </p>
                 </div>
 
                 <RetroButton
-                  className={`py-3 sm:py-4 px-6 sm:px-8 bg-brand text-primary-foreground font-semibold hover:bg-brand/90 text-sm sm:text-base ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                  className={`py-3 sm:py-4 px-8 sm:px-10 bg-brand text-primary-foreground font-semibold hover:bg-brand/90 text-sm sm:text-base ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
                   onClick={handleBuyCredits}
                   disabled={isLoading}
                   shadowColor="foreground"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                       Processing...
                     </div>
                   ) : (
