@@ -23,7 +23,7 @@ function syncWidgetState() {
 }
 
 export async function handleError(error) {
-  console.log('Error: Failed to get response. ' + error);
+  console.error('Failed to get response. ' + error);
   state.isProcessing = false;
   state.messages.push({
     id: generateId(),
@@ -32,7 +32,6 @@ export async function handleError(error) {
   });
   await persistMessage(state.messages[state.messages.length - 1]);
 
-  // Check widget state in real-time to avoid race conditions
   syncWidgetState();
 
   if (!state.isWidgetOpen) {
@@ -111,18 +110,19 @@ export async function processMessage(messageText, role) {
       return;
     }
 
-    if (toolResults?.length > 0) {
+    const actionTools = toolResults?.filter((tool) =>
+      tool.toolName.startsWith('ACTION_')
+    );
+
+    if (actionTools?.length > 0) {
       const actionResults = await Promise.all(
-        toolResults
-          .filter((toolResult) => toolResult.toolName.startsWith('ACTION_'))
-          .map((toolResult) =>
-            executeAction({
-              ...toolResult.output,
-              toolName: toolResult.toolName,
-            })
-          )
+        actionTools.map((tool) =>
+          executeAction({ ...tool.output, toolName: tool.toolName })
+        )
       );
 
+      // TODO: shouldn't we only have strictly a single action here? what do we do when there are multiple actions?
+      // TODO: really the problem is earlier i.e. if toolResults is > 1
       for (const result of actionResults) {
         await processMessage(result, 'user');
       }
@@ -140,6 +140,7 @@ export async function processMessage(messageText, role) {
         toolResult.toolName !== 'visualize_data'
     );
 
+    // TODO: this logic is way too complex. clean this up
     if (
       text &&
       (!toolResults ||
@@ -155,6 +156,7 @@ export async function processMessage(messageText, role) {
       });
       await persistMessage(state.messages[state.messages.length - 1]);
 
+      // TODO: complex
       if (hasVisualizationTool && toolResults) {
         for (const toolResult of toolResults) {
           if (toolResult.toolName === 'visualize_data') {
