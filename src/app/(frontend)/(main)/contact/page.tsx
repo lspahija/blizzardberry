@@ -83,7 +83,7 @@ export default function ContactPage() {
     <>
       {/* Header Section with Gradient Background */}
       <motion.div
-        className="bg-gradient-to-br from-brand/10 to-brand/5 border-b border-border -mt-12"
+        className="bg-gradient-to-br from-brand/10 to-brand/5 border-b border-border"
         variants={containerVariants}
         initial="hidden"
         animate="visible"

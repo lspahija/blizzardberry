@@ -117,7 +117,7 @@ export function DashboardNavbar() {
 
   return (
     <>
-      <nav className="bg-card border-b-[3px] border-border px-4 sm:px-6 py-5 sticky top-0 z-40 mb-12 rounded-b-2xl shadow-md">
+      <nav className="bg-card border-b-[3px] border-border px-4 sm:px-6 py-5 sticky top-0 z-40 rounded-b-2xl shadow-md">
         <div className="max-w-5xl mx-auto w-full flex flex-row items-center justify-center">
           {/* Left: Logo/Title, flush left */}
           <div className="flex items-center flex-shrink-0 mr-8">
