@@ -41,7 +41,7 @@ import {
   Settings,
   FileText,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import SuccessOverlay from '@/app/(frontend)/components/ui/success-overlay';
 
 const cardVariants = {
@@ -134,6 +134,7 @@ export default function RequestDefinitionStep({
 }: RequestDefinitionStepProps) {
   const [bodyError, setBodyError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
+  const completionProviderRegistered = useRef(false);
 
   const addHeader = () => {
     if (isCreatingAction) return;
@@ -198,28 +199,32 @@ export default function RequestDefinitionStep({
       documentRangeFormattingEdits: false,
     });
 
-    monaco.languages.registerCompletionItemProvider('json', {
-      provideCompletionItems: (model, position) => {
-        const word = model.getWordUntilPosition(position);
-        const range = {
-          startLineNumber: position.lineNumber,
-          endLineNumber: position.lineNumber,
-          startColumn: word.startColumn,
-          endColumn: word.endColumn,
-        };
-        return {
-          suggestions: [
-            ...getInputNames(dataInputs, false).map((name) => ({
-              label: `{{${name}}}`,
-              kind: monaco.languages.CompletionItemKind.Variable,
-              documentation: `Variable with template syntax - unquoted for substitution`,
-              insertText: `{{${name}}}`,
-              range,
-            })),
-          ],
-        };
-      },
-    });
+    // Only register completion provider once
+    if (!completionProviderRegistered.current) {
+      completionProviderRegistered.current = true;
+      monaco.languages.registerCompletionItemProvider('json', {
+        provideCompletionItems: (model, position) => {
+          const word = model.getWordUntilPosition(position);
+          const range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word.startColumn,
+            endColumn: word.endColumn,
+          };
+          return {
+            suggestions: [
+              ...getInputNames(dataInputs, false).map((name) => ({
+                label: `{{${name}}}`,
+                kind: monaco.languages.CompletionItemKind.Variable,
+                documentation: `Variable with template syntax - unquoted for substitution`,
+                insertText: `{{${name}}}`,
+                range,
+              })),
+            ],
+          };
+        },
+      });
+    }
   };
 
   const handleCreate = () => {
