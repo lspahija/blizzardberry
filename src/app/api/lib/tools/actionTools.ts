@@ -1,4 +1,4 @@
-import { dynamicTool, Tool } from 'ai';
+import { tool, Tool } from 'ai';
 import { z } from 'zod';
 import { getActions } from '@/app/api/lib/store/actionStore';
 import {
@@ -6,7 +6,7 @@ import {
   Parameter,
   ParameterType,
 } from '@/app/api/lib/model/action/baseAction';
-import { HttpRequest, Body } from '@/app/api/lib/model/action/backendAction';
+import { Body, HttpRequest } from '@/app/api/lib/model/action/backendAction';
 import { toCamelCase } from '@/app/(frontend)/lib/actionUtils';
 
 export async function getToolsFromActions(agentId: string) {
@@ -18,17 +18,15 @@ export async function getToolsFromActions(agentId: string) {
       action.executionModel.parameters || []
     );
 
-    console.log(`inputSchema: ${JSON.stringify(inputSchema)}`);
-
     const prefix =
       action.executionContext === ExecutionContext.SERVER
         ? 'ACTION_SERVER_'
         : 'ACTION_CLIENT_';
 
     const normalizedName = action.name.replace(/\s+/g, '_');
-    const actionName = `${prefix}${normalizedName}`;
+    const nameWithPrefix = `${prefix}${normalizedName}`;
 
-    console.log(`actionName: ${actionName}`);
+    console.log(`actionName: ${nameWithPrefix}`);
 
     const executeFunction: (input: any) => Promise<any> =
       action.executionContext === ExecutionContext.SERVER
@@ -43,7 +41,7 @@ export async function getToolsFromActions(agentId: string) {
 
     console.log(`executeFunction: ${executeFunction.toString()}`);
 
-    tools[actionName] = dynamicTool({
+    tools[nameWithPrefix] = tool({
       description: action.description,
       inputSchema,
       execute: executeFunction,
@@ -55,27 +53,18 @@ export async function getToolsFromActions(agentId: string) {
   return tools;
 }
 
+const typeMap: Record<ParameterType, z.ZodTypeAny> = {
+  [ParameterType.String]: z.string(),
+  [ParameterType.Number]: z.number(),
+  [ParameterType.Boolean]: z.boolean(),
+};
+
 function createInputSchema(parameters: Parameter[]): z.ZodObject<any> {
   const schemaFields: Record<string, z.ZodTypeAny> = {};
 
   for (const param of parameters) {
-    let baseSchema: z.ZodTypeAny;
-    switch (param.type) {
-      case ParameterType.String:
-        baseSchema = z.string();
-        break;
-      case ParameterType.Number:
-        baseSchema = z.number();
-        break;
-      case ParameterType.Boolean:
-        baseSchema = z.boolean();
-        break;
-      default:
-        baseSchema = z.unknown();
-    }
-
-    const finalSchema = param.isArray ? z.array(baseSchema) : baseSchema;
-    schemaFields[param.name] = finalSchema.optional();
+    const baseSchema = typeMap[param.type] ?? z.unknown();
+    schemaFields[param.name] = param.isArray ? z.array(baseSchema) : baseSchema;
   }
 
   return z.object(schemaFields);
