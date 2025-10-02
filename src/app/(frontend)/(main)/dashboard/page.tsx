@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -11,23 +11,13 @@ import {
 import { Loader2, PlusCircle, Bot, Globe, Settings, Clock } from 'lucide-react';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import posthog from 'posthog-js';
-import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { agents, loadingAgents, fetchAgents } = useAgents();
-  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
-  const [feedbackType, setFeedbackType] = useState('bug');
-  const [feedbackEmail, setFeedbackEmail] = useState(
-    session?.user?.email || ''
-  );
-  const [feedbackMessage, setFeedbackMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreatingAgent, setIsCreatingAgent] = useState(false);
-  const [isNavigatingToUserConfig, setIsNavigatingToUserConfig] =
-    useState(false);
   const [navigatingToAgentId, setNavigatingToAgentId] = useState<string | null>(
     null
   );
@@ -60,59 +50,6 @@ export default function Dashboard() {
     }
   }, [status, fetchAgents]);
 
-  const handleSignOut = async () => {
-    posthog.capture('user_signed_out', {
-      user_email: session?.user?.email,
-    });
-    await signOut({ redirectTo: '/' });
-  };
-
-  const handleFeedbackSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!feedbackMessage.trim()) {
-      toast.error('Please enter a message before submitting.');
-      return;
-    }
-    if (!feedbackEmail.trim()) {
-      toast.error('Please enter an email address.');
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const response = await fetch('/api/notifications', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          type: feedbackType,
-          emailAddress: feedbackEmail,
-          message: feedbackMessage,
-        }),
-      });
-
-      if (response.ok) {
-        toast.success('Thank you for your feedback!');
-        setFeedbackEmail(session?.user?.email || '');
-        setFeedbackMessage('');
-        setIsFeedbackOpen(false);
-        posthog.capture('feedback_submitted', {
-          user_email: session?.user?.email,
-          feedback_type: feedbackType,
-        });
-      } else {
-        throw new Error('Failed to submit feedback');
-      }
-    } catch (error) {
-      toast.error('Failed to submit feedback. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  
-
   const handleCreateAgent = async () => {
     setIsCreatingAgent(true);
     posthog.capture('create_agent_clicked', {
@@ -120,15 +57,6 @@ export default function Dashboard() {
     });
 
     router.push('/agents/new');
-  };
-
-  const handleNavigateToUserConfig = async () => {
-    setIsNavigatingToUserConfig(true);
-    posthog.capture('user_config_clicked', {
-      user_email: session?.user?.email,
-    });
-
-    router.push('/user-config');
   };
 
   const handleNavigateToAgent = async (agentId: string) => {
