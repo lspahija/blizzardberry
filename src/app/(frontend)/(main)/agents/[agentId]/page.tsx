@@ -758,6 +758,7 @@ function AgentDetails({
             <div
               className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl shadow-2xl"
               aria-hidden="true"
+              onClick={() => setShowAgentCode(false)}
             />
             <div className="relative z-10 w-full max-w-lg sm:max-w-2xl md:max-w-4xl max-h-[90vh] rounded-2xl">
               <div className="relative mb-8 md:mb-12">
