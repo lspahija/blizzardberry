@@ -27,6 +27,8 @@ export const AGENT_MODELS = {
   'deepseek/deepseek-r1-0528': 'DeepSeek R1',
   'qwen/qwen3-30b-a3b': 'Qwen 3 30B A3B',
   'moonshotai/kimi-k2': 'Kimi K2',
+  'z-ai/glm-4.6': 'Z.AI GLM 4.6',
+  'z-ai/glm-4.5-air': 'Z.AI GLM 4.5 Air',
 } as const;
 
 export type AgentModel = keyof typeof AGENT_MODELS;
