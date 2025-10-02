@@ -157,54 +157,69 @@ export default function Dashboard() {
         initial="hidden"
         animate="visible"
       >
-        <div className="max-w-4xl mx-auto w-full">
-          <div className="flex justify-between items-center mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight leading-tight">
-              {session.user?.name
-                ? `Welcome, ${session.user.name}!`
-                : 'Welcome!'}
-            </h1>
-          </div>
-          <div className="mb-8 sm:mb-12 flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <Button
-              className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 w-full sm:w-auto"
-              onClick={handleCreateAgent}
-              disabled={isCreatingAgent}
-            >
-              {isCreatingAgent ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
-                  Creating...
-                </>
-              ) : (
-                <>
-                  <PlusCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  Create New Agent
-                </>
-              )}
-            </Button>
-          </div>
-
-          {loadingAgents ? (
-            <div className="flex items-center justify-center">
-              <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-foreground" />
-            </div>
-          ) : agents.length === 0 ? (
-            <p className="text-base sm:text-lg text-muted-foreground mb-4 flex items-center justify-center text-center">
-              <Bot className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-brand" />
-              No agents found. Create one to get started!
-            </p>
-          ) : (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
-                  <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                    Your Agents
-                  </h2>
-                  <span className="bg-brand/10 text-brand px-2 py-1 rounded-full text-sm font-medium">
-                    {agents.length}
-                  </span>
+        <div className="max-w-4xl mx-auto w-full text-center mt-8 sm:mt-12">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight leading-tight mb-20">
+            {session.user?.name
+              ? `Welcome, ${session.user.name}!`
+              : 'Welcome!'}
+          </h1>
+          <div>
+            {loadingAgents ? (
+              <div className="flex items-center justify-center">
+                <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-foreground" />
+              </div>
+            ) : agents.length === 0 ? (
+              <>
+                <p className="text-base sm:text-lg text-muted-foreground mb-8 flex items-center justify-center">
+                  <Bot className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-brand" />
+                  No agents found. Create one to get started!
+                </p>
+                <div className="flex justify-center">
+                  <Button
+                    className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 w-full sm:w-auto"
+                    onClick={handleCreateAgent}
+                    disabled={isCreatingAgent}
+                  >
+                    {isCreatingAgent ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <PlusCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                        Create New Agent
+                      </>
+                    )}
+                  </Button>
                 </div>
+              </>
+            ) : (
+            <div className="space-y-6">
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                  Your Agents
+                </h2>
+                <span className="bg-brand/10 text-brand px-2 py-1 rounded-full text-sm font-medium">
+                  {agents.length}
+                </span>
+                <Button
+                  className="bg-brand text-primary-foreground border-[3px] border-border transition-all duration-200 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 ml-6"
+                  onClick={handleCreateAgent}
+                  disabled={isCreatingAgent}
+                >
+                  {isCreatingAgent ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <PlusCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                      Create New Agent
+                    </>
+                  )}
+                </Button>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -252,9 +267,10 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
-          )}
+            )}
+          </div>
         </div>
-        
+
       </motion.div>
     </div>
   );

@@ -220,7 +220,7 @@ export default function NewAgentPage() {
   return (
     <div className="min-h-screen bg-background">
       <motion.div
-        className="max-w-4xl mx-auto px-4 pt-2 pb-16"
+        className="max-w-4xl mx-auto px-4 pt-8 pb-16"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
