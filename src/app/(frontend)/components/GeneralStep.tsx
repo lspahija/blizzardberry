@@ -148,7 +148,7 @@ export default function GeneralStep({
                 onValueChange={(value: ExecutionContext) =>
                   setBaseAction({ ...baseAction, executionContext: value })
                 }
-                className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 max-w-3xl mx-auto"
               >
                 <div className="relative">
                   <RadioGroupItem
