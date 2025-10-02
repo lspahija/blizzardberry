@@ -49,7 +49,7 @@ export default function DataInputsStep({
   const addDataInput = () => {
     setDataInputs([
       ...dataInputs,
-      { name: '', type: 'Text', description: '', isArray: false },
+      { name: '', type: 'String', description: '', isArray: false },
     ]);
   };
 
