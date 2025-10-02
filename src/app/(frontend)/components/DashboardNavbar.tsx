@@ -37,9 +37,9 @@ const navLinks = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/dashboard/chats', label: 'Chats' },
   { href: '/usage', label: 'Usage' },
+  { href: '/docs', label: 'Docs' },
   { href: '/upgrade', label: 'Upgrade' },
   { href: '/contact', label: 'Contact' },
-  { href: '/docs', label: 'Docs' },
   { type: 'button', label: 'Feedback', onClick: 'feedback' },
   { type: 'button', label: 'Sign Out', onClick: 'signout' },
 ];
@@ -170,7 +170,7 @@ export function DashboardNavbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-base font-semibold px-4 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors ${link.label === 'Docs' ? 'text-[#FE4A60]' : 'text-gray-900'}`}
+                  className="text-base font-semibold px-4 py-2 rounded-lg border-[2px] border-transparent hover:border-muted hover:bg-muted transition-colors text-gray-900"
                 >
                   {link.label}
                 </Link>
@@ -272,13 +272,10 @@ export function DashboardNavbar() {
               Send Us Your Feedback
             </DialogTitle>
           </DialogHeader>
-          <div className="bg-muted border-l-4 border-destructive rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3">
-            <Info className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
-            <span className="text-muted-foreground text-xs sm:text-sm">
-              We value your feedback! Please let us know about bugs, feature
-              requests, or anything else that can help us improve.
-            </span>
-          </div>
+          <p className="text-muted-foreground text-sm mb-6 text-center">
+            We value your feedback! Please let us know about bugs, feature
+            requests, or anything else that can help us improve.
+          </p>
           <form
             onSubmit={handleFeedbackSubmit}
             className="space-y-4 sm:space-y-6"
