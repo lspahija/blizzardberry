@@ -413,6 +413,20 @@ export default function NewAgentPage() {
                 </Card>
               </div>
             </motion.div>
+
+            <motion.div
+              className="text-center mt-8"
+              variants={itemVariants}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <Button
+                onClick={() => router.push('/dashboard')}
+                className="bg-brand text-primary-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 hover:bg-brand/90 transition-transform rounded-lg px-8 py-3 text-base font-semibold"
+              >
+                Back to Dashboard
+              </Button>
+            </motion.div>
           </>
         ) : (
           <>
