@@ -152,12 +152,12 @@ export default function Dashboard() {
   return (
     <div>
       <motion.div
-        className="min-h-screen flex flex-col bg-background p-4 sm:p-6"
+        className="min-h-screen flex flex-col items-center bg-background p-4 sm:p-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <div className="max-w-4xl mx-auto w-full text-center mt-8 sm:mt-12">
+        <div className="max-w-4xl w-full text-center mt-8 sm:mt-12">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight leading-tight mb-20">
             {session.user?.name
               ? `Welcome, ${session.user.name}!`
@@ -221,12 +221,12 @@ export default function Dashboard() {
                   )}
                 </Button>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+              <div className={`grid gap-6 ${agents.length === 1 ? 'grid-cols-1 max-w-md mx-auto' : 'grid-cols-1 md:grid-cols-2'}`}>
                 {agents.map((agent) => (
                   <Card
                     key={agent.id}
-                    className="border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
+                    className="border-[3px] border-border bg-card rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer text-left"
                     onClick={() => handleNavigateToAgent(agent.id)}
                   >
                     <CardContent className="pt-2 pb-2">
