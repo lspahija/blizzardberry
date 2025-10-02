@@ -455,27 +455,29 @@ export default function NewAgentPage() {
                         <Bot className="h-4 w-4 text-destructive" />
                         Name:
                       </Label>
-                      <Input
-                        id="name"
-                        value={name}
-                        onChange={(e) => {
-                          setName(e.target.value);
-                          if (errors.name) {
-                            setErrors((prev) => ({
-                              ...prev,
-                              name: undefined,
-                            }));
-                          }
-                        }}
-                        placeholder="Agent Name"
-                        className={`border-[2px] ml-6 ${errors.name ? 'border-red-500' : 'border-border'}`}
-                        disabled={creatingAgent}
-                      />
-                      {errors.name && (
-                        <p className="text-sm text-red-500 mt-1 ml-6">
-                          {errors.name}
-                        </p>
-                      )}
+                      <div className="ml-6 max-w-md">
+                        <Input
+                          id="name"
+                          value={name}
+                          onChange={(e) => {
+                            setName(e.target.value);
+                            if (errors.name) {
+                              setErrors((prev) => ({
+                                ...prev,
+                                name: undefined,
+                              }));
+                            }
+                          }}
+                          placeholder="Agent Name"
+                          className={`border-[2px] ${errors.name ? 'border-red-500' : 'border-border'}`}
+                          disabled={creatingAgent}
+                        />
+                        {errors.name && (
+                          <p className="text-sm text-red-500 mt-1">
+                            {errors.name}
+                          </p>
+                        )}
+                      </div>
                     </div>
 
                     <div>
@@ -483,27 +485,29 @@ export default function NewAgentPage() {
                         <Globe className="h-4 w-4 text-destructive" />
                         Domain:
                       </Label>
-                      <Input
-                        id="websiteDomain"
-                        value={websiteDomain}
-                        onChange={(e) => {
-                          setWebsiteDomain(e.target.value);
-                          if (errors.websiteDomain) {
-                            setErrors((prev) => ({
-                              ...prev,
-                              websiteDomain: undefined,
-                            }));
-                          }
-                        }}
-                        placeholder="example.com"
-                        className={`border-[2px] ml-6 ${errors.websiteDomain ? 'border-red-500' : 'border-border'}`}
-                        disabled={creatingAgent}
-                      />
-                      {errors.websiteDomain && (
-                        <p className="text-sm text-red-500 mt-1 ml-6">
-                          {errors.websiteDomain}
-                        </p>
-                      )}
+                      <div className="ml-6 max-w-md">
+                        <Input
+                          id="websiteDomain"
+                          value={websiteDomain}
+                          onChange={(e) => {
+                            setWebsiteDomain(e.target.value);
+                            if (errors.websiteDomain) {
+                              setErrors((prev) => ({
+                                ...prev,
+                                websiteDomain: undefined,
+                              }));
+                            }
+                          }}
+                          placeholder="example.com"
+                          className={`border-[2px] ${errors.websiteDomain ? 'border-red-500' : 'border-border'}`}
+                          disabled={creatingAgent}
+                        />
+                        {errors.websiteDomain && (
+                          <p className="text-sm text-red-500 mt-1">
+                            {errors.websiteDomain}
+                          </p>
+                        )}
+                      </div>
                     </div>
 
                     <div>
@@ -511,7 +515,7 @@ export default function NewAgentPage() {
                         <Settings className="h-4 w-4 text-destructive" />
                         Model:
                       </Label>
-                      <div className="ml-6">
+                      <div className="ml-6 max-w-md">
                         <Select
                           value={model}
                           onValueChange={(value) =>
@@ -544,7 +548,7 @@ export default function NewAgentPage() {
                         Add a few example questions to help guide your users and
                         showcase your agent's capabilities.
                       </p>
-                      <div className="mt-4 ml-6 space-y-4">
+                      <div className="mt-4 ml-6 space-y-4 max-w-2xl">
                         {prompts.map((prompt, index) => (
                           <div key={index} className="flex gap-2 items-center">
                             <div className="flex-1">
