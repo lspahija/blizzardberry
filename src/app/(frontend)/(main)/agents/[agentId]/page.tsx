@@ -576,7 +576,7 @@ function AgentDetails({
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex items-start gap-3 min-w-0 flex-1">
                               <div className="min-w-0 flex-1">
-                                <h3 className="text-lg sm:text-xl font-extrabold text-foreground leading-tight truncate group-hover:text-brand transition-colors mb-0.5">
+                                <h3 className="text-lg sm:text-xl font-semibold text-foreground leading-tight truncate group-hover:text-brand transition-colors mb-0.5">
                                   {action.name}
                                 </h3>
                                 <p className="text-xs sm:text-sm text-muted-foreground mb-2">
@@ -678,7 +678,7 @@ function AgentDetails({
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex items-start gap-3 min-w-0 flex-1">
                               <div className="min-w-0 flex-1">
-                                <h3 className="text-lg sm:text-xl font-extrabold text-foreground leading-tight group-hover:text-brand transition-colors mb-0.5">
+                                <h3 className="text-lg sm:text-xl font-semibold text-foreground leading-tight group-hover:text-brand transition-colors mb-0.5">
                                   Document {idx + 1}
                                 </h3>
                                 <p className="text-xs sm:text-sm text-muted-foreground mb-2 line-clamp-2">
