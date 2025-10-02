@@ -40,7 +40,10 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
 import { AgentModel, AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
-import { Framework, getUnifiedEmbedScript } from '@/app/(frontend)/lib/scriptUtils';
+import {
+  Framework,
+  getUnifiedEmbedScript,
+} from '@/app/(frontend)/lib/scriptUtils';
 import { DEFAULT_AGENT_USER_CONFIG } from '@/app/(frontend)/lib/defaultUserConfig';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import posthog from 'posthog-js';
@@ -68,7 +71,7 @@ export default function NewAgentPage() {
     const successAgentId = searchParams.get('success');
     const successName = searchParams.get('name');
     const successDomain = searchParams.get('domain');
-    
+
     if (successAgentId && successName && successDomain) {
       setAgentId(successAgentId);
       setName(successName);
@@ -194,14 +197,14 @@ export default function NewAgentPage() {
       });
 
       setAgentId(newAgentId);
-      
+
       // Update URL with success parameters to preserve state when navigating back
       const successUrl = new URL(window.location.href);
       successUrl.searchParams.set('success', newAgentId);
       successUrl.searchParams.set('name', name.trim());
       successUrl.searchParams.set('domain', websiteDomain.trim());
       router.replace(successUrl.pathname + successUrl.search);
-      
+
       // Scroll to top after successful agent creation
       setTimeout(() => {
         window.scrollTo(0, 0);
@@ -350,10 +353,7 @@ export default function NewAgentPage() {
                           )}
                         </li>
                         <li>Save and publish your website changes</li>
-                        <li>
-                          Your agent will appear on your website at{' '}
-                          <code>{websiteDomain}</code>
-                        </li>
+                        <li>Your agent will appear on your website</li>
                         <li>
                           Need help? Visit our{' '}
                           <Link
@@ -377,7 +377,9 @@ export default function NewAgentPage() {
                       </Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button
-                          onClick={() => router.push(`/agents/${agentId}/actions/new`)}
+                          onClick={() =>
+                            router.push(`/agents/${agentId}/actions/new`)
+                          }
                           className="flex items-start gap-3 p-4 bg-card hover:bg-muted/50 rounded-lg border-2 border-border hover:border-brand transition-all duration-200 cursor-pointer group"
                         >
                           <Zap className="h-5 w-5 text-brand mt-0.5 flex-shrink-0 group-hover:scale-105 transition-transform" />
@@ -392,7 +394,9 @@ export default function NewAgentPage() {
                           </div>
                         </button>
                         <button
-                          onClick={() => router.push(`/agents/${agentId}/documents/new`)}
+                          onClick={() =>
+                            router.push(`/agents/${agentId}/documents/new`)
+                          }
                           className="flex items-start gap-3 p-4 bg-card hover:bg-muted/50 rounded-lg border-2 border-border hover:border-brand transition-all duration-200 cursor-pointer group"
                         >
                           <FileText className="h-5 w-5 text-brand mt-0.5 flex-shrink-0 group-hover:scale-105 transition-transform" />
@@ -408,7 +412,6 @@ export default function NewAgentPage() {
                         </button>
                       </div>
                     </div>
-
                   </CardContent>
                 </Card>
               </div>
@@ -623,17 +626,17 @@ export default function NewAgentPage() {
                         onClick={onCreateAgent}
                         disabled={creatingAgent}
                       >
-                      {creatingAgent ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                          Creating Agent...
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle2 className="w-4 h-4 mr-2" />
-                          Create Agent
-                        </>
-                      )}
+                        {creatingAgent ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                            Creating Agent...
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="w-4 h-4 mr-2" />
+                            Create Agent
+                          </>
+                        )}
                       </Button>
                     </div>
                   </CardContent>

@@ -593,7 +593,8 @@ function AgentDetails({
                                       {action.executionContext ===
                                       ExecutionContext.SERVER
                                         ? `${(action as BackendAction).executionModel.request.method.toUpperCase()} ${(action as BackendAction).executionModel.request.url}`
-                                        : (action as FrontendAction).executionModel.functionName}
+                                        : (action as FrontendAction)
+                                            .executionModel.functionName}
                                     </span>
                                   </span>
                                 </div>
@@ -685,16 +686,15 @@ function AgentDetails({
                                     ? `${doc.content.substring(0, 150)}...`
                                     : doc.content}
                                 </p>
-                                {Object.entries(doc.metadata)
-                                  .filter(
-                                    ([key]) =>
-                                      ![
-                                        'loc',
-                                        'agent_id',
-                                        'chunk_index',
-                                        'parent_document_id',
-                                      ].includes(key)
-                                  ).length > 0 && (
+                                {Object.entries(doc.metadata).filter(
+                                  ([key]) =>
+                                    ![
+                                      'loc',
+                                      'agent_id',
+                                      'chunk_index',
+                                      'parent_document_id',
+                                    ].includes(key)
+                                ).length > 0 && (
                                   <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-muted-foreground">
                                     {Object.entries(doc.metadata)
                                       .filter(
@@ -715,7 +715,8 @@ function AgentDetails({
                                           <Info className="h-4 w-4" />
                                           <span className="truncate">
                                             {key}:{' '}
-                                            {typeof value === 'object' && value !== null
+                                            {typeof value === 'object' &&
+                                            value !== null
                                               ? JSON.stringify(value)
                                               : String(value)}
                                           </span>
@@ -772,7 +773,7 @@ function AgentDetails({
                       <div className="flex items-center space-x-2">
                         <Code className="h-7 w-7 text-destructive" />
                         <CardTitle className="text-lg sm:text-2xl font-semibold text-foreground">
-                          Agent Installation Code
+                          Agent Installation Snippet
                         </CardTitle>
                       </div>
                       <Button
@@ -788,14 +789,13 @@ function AgentDetails({
                     <CardContent className="space-y-8 mt-8">
                       <div>
                         <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
-                          <Code className="h-4 w-4 text-destructive" />
                           Framework
                         </Label>
-                        <p className="text-sm text-muted-foreground mt-2 ml-6">
+                        <p className="text-sm text-muted-foreground mt-2">
                           Select the framework you're using to implement the
                           agent.
                         </p>
-                        <div className="mt-2 ml-6">
+                        <div className="mt-2">
                           <Select
                             value={selectedFramework}
                             onValueChange={(value) =>
@@ -824,10 +824,6 @@ function AgentDetails({
                         </div>
                       </div>
                       <div className="relative">
-                        <Label className="text-foreground text-lg font-semibold flex items-center gap-2 mb-2">
-                          <Code className="h-4 w-4 text-destructive" />
-                          Installation Code
-                        </Label>
                         <SyntaxHighlighter
                           language={
                             selectedFramework === Framework.NEXT_JS
@@ -922,10 +918,7 @@ function AgentDetails({
                             )}
                           </li>
                           <li>Save and publish your website changes</li>
-                          <li>
-                            Your agent will appear on your website at{' '}
-                            <code>https://{agent.websiteDomain}</code>
-                          </li>
+                          <li>Your agent will appear on your website</li>
                           <li>
                             Need help? Visit our{' '}
                             <Link
