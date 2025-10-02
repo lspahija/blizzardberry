@@ -35,7 +35,10 @@ import {
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useState } from 'react';
-import { Framework, getUnifiedEmbedScript } from '@/app/(frontend)/lib/scriptUtils';
+import {
+  Framework,
+  getUnifiedEmbedScript,
+} from '@/app/(frontend)/lib/scriptUtils';
 import { DEFAULT_AGENT_USER_CONFIG } from '@/app/(frontend)/lib/defaultUserConfig';
 
 export default function DocsPage() {
@@ -85,7 +88,12 @@ export default function DocsPage() {
 
   const getCodeForFramework = (framework: string) => {
     const fw = toFrameworkEnum(framework);
-    return getUnifiedEmbedScript(fw, 'your-agent-id', DEFAULT_AGENT_USER_CONFIG, exampleActions);
+    return getUnifiedEmbedScript(
+      fw,
+      'your-agent-id',
+      DEFAULT_AGENT_USER_CONFIG,
+      exampleActions
+    );
   };
 
   const getLanguageForFramework = (framework: string) => {
@@ -437,7 +445,7 @@ export default function DocsPage() {
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground mb-4">
-                        💡 <strong>Why return values?</strong> The AI agent uses
+                        <strong>Why return values?</strong> The AI agent uses
                         your return value to provide helpful responses to users
                         and confirm actions were executed.
                       </p>

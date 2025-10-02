@@ -519,7 +519,7 @@ export async function createWidgetDOM() {
     // Only add default greeting if no conversation was hydrated
     if (!conversationHydrated) {
       state.messages.push({
-        id: generateId(config.agentId),
+        id: generateId(),
         role: 'assistant',
         parts: [
           {

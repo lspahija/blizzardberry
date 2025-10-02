@@ -1,6 +1,9 @@
+import { state } from './state';
+
 let counter = 0;
 
-export const generateId = (agentId) => `${agentId}-${Date.now()}-${counter++}`;
+export const generateId = () =>
+  `${state.conversationId}-${Date.now()}-${counter++}`;
 
 export function getElementById(id) {
   return document.getElementById(id);

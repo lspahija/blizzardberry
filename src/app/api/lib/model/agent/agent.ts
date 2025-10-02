@@ -16,6 +16,7 @@ export const AGENT_MODELS = {
   'anthropic/claude-sonnet-4.5': 'Claude Sonnet 4.5',
   'anthropic/claude-sonnet-4': 'Claude Sonnet 4',
   'anthropic/claude-3.7-sonnet': 'Claude 3.7 Sonnet',
+  'x-ai/grok-code-fast-1': 'Grok Code Fast 1',
   'x-ai/grok-4': 'Grok 4',
   'x-ai/grok-3': 'Grok 3',
   'x-ai/grok-3-mini': 'Grok 3 Mini',

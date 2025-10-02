@@ -17,7 +17,7 @@ export async function executeAction(actionModel) {
       parts: [
         {
           type: 'text',
-          text: `✅ ${actionModel.toolName.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action'} successfully executed.`,
+          text: `The action ${actionModel.toolName.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action'} was successfully executed.`,
         },
       ],
     });

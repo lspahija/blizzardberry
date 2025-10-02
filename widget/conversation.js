@@ -60,7 +60,7 @@ export async function hydrateConversation() {
     if (existingMessages && existingMessages.length > 0) {
       // Convert API message format to widget format
       state.messages = existingMessages.map((msg) => ({
-        id: generateId(state.conversationId),
+        id: generateId(),
         role: msg.role,
         parts: [{ type: 'text', text: msg.content }],
       }));
@@ -76,7 +76,7 @@ export async function hydrateConversation() {
 
     // Convert API message format to widget format
     state.messages = newConversation.messages.map((msg) => ({
-      id: generateId(state.conversationId),
+      id: generateId(),
       role: msg.role,
       parts: [{ type: 'text', text: msg.content }],
     }));
