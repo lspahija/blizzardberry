@@ -219,3 +219,6 @@ pnpm test
 
 ## UI Components
 This project uses [shadcn/ui](https://ui.shadcn.com/) components
+
+## Proxy
+Accompanying proxy repo can be found at https://github.com/lspahija/blizzardberry-proxy
