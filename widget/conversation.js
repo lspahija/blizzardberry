@@ -87,22 +87,22 @@ export async function hydrateConversation() {
 }
 
 export async function processMessage(messageText, role) {
-  state.messages.push({
-    id: generateId(),
-    role: role,
-    parts: [{ type: 'text', text: messageText }],
-  });
-  await persistMessage(state.messages[state.messages.length - 1]);
-  const promptBar = document.getElementById('chatWidgetPromptBar');
-  if (promptBar) promptBar.style.display = 'none';
-
-  const input = document.getElementById('chatWidgetInputField');
-  if (input) input.value = '';
-
-  state.isProcessing = true;
-  updateConversationUI();
-
   try {
+    state.messages.push({
+      id: generateId(),
+      role: role,
+      parts: [{ type: 'text', text: messageText }],
+    });
+    await persistMessage(state.messages[state.messages.length - 1]);
+    const promptBar = document.getElementById('chatWidgetPromptBar');
+    if (promptBar) promptBar.style.display = 'none';
+
+    const input = document.getElementById('chatWidgetInputField');
+    if (input) input.value = '';
+
+    state.isProcessing = true;
+    updateConversationUI();
+
     const { text, toolResult, error } = await callLLM();
 
     if (error) {
@@ -145,6 +145,6 @@ export async function processMessage(messageText, role) {
     state.isProcessing = false;
     updateConversationUI();
   } catch (error) {
-    await handleError('Error: Failed to get response. ' + error);
+    await handleError('Error processing message. ' + error);
   }
 }
