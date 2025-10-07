@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { getAuthUser } from '@/app/api/lib/auth/apiAuth';
 import { Agent, AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { createAgent, getAgents } from '@/app/api/lib/store/agentStore';
 import { createPrompt } from '@/app/api/lib/store/promptStore';
@@ -9,8 +9,8 @@ import { getActions } from '@/app/api/lib/store/actionStore';
 
 export async function POST(req: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getAuthUser(req);
+    if (!user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -23,10 +23,10 @@ export async function POST(req: Request) {
       );
     }
 
-    const validationResponse = await maxAgentsReached(session.user.id);
+    const validationResponse = await maxAgentsReached(user.id);
     if (validationResponse) return validationResponse;
 
-    const data = await createAgent(name, websiteDomain, session.user.id, model);
+    const data = await createAgent(name, websiteDomain, user.id, model);
 
     if (prompts && Array.isArray(prompts)) {
       for (const promptContent of prompts) {
@@ -46,14 +46,14 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET(_: Request) {
+export async function GET(req: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getAuthUser(req);
+    if (!user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const data = await getAgents(session.user.id);
+    const data = await getAgents(user.id);
 
     const agents: Agent[] = data.map((d) => ({
       id: d.id,

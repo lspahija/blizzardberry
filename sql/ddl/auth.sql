@@ -102,3 +102,52 @@ CREATE INDEX IF NOT EXISTS verification_tokens_expires_idx ON next_auth.verifica
 
 GRANT ALL ON TABLE next_auth.verification_tokens TO postgres;
 GRANT ALL ON TABLE next_auth.verification_tokens TO service_role;
+
+-- API Keys for programmatic access
+CREATE TABLE IF NOT EXISTS public.api_keys
+(
+    id            UUID                     NOT NULL DEFAULT gen_random_uuid(),
+    user_id       UUID                     NOT NULL,
+    key_hash      TEXT                     NOT NULL,
+    key_suffix    TEXT                     NOT NULL,
+    name          TEXT,
+    last_used_at  TIMESTAMP WITH TIME ZONE,
+    expires_at    TIMESTAMP WITH TIME ZONE,
+    created_at    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    CONSTRAINT api_keys_pkey PRIMARY KEY (id),
+    CONSTRAINT key_hash_unique UNIQUE (key_hash),
+    CONSTRAINT api_keys_user_id_fkey FOREIGN KEY (user_id)
+        REFERENCES next_auth.users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+);
+
+-- Index for user-based API key queries
+CREATE INDEX IF NOT EXISTS api_keys_user_id_idx ON public.api_keys (user_id);
+-- Index for fast authentication lookups
+CREATE INDEX IF NOT EXISTS api_keys_key_hash_idx ON public.api_keys (key_hash);
+-- Index for cleanup of expired keys
+CREATE INDEX IF NOT EXISTS api_keys_expires_at_idx ON public.api_keys (expires_at);
+
+GRANT ALL ON TABLE public.api_keys TO postgres;
+GRANT ALL ON TABLE public.api_keys TO service_role;
+
+-- Row Level Security for API keys
+ALTER TABLE public.api_keys ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own API keys" ON public.api_keys
+    FOR SELECT
+    USING (next_auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own API keys" ON public.api_keys
+    FOR INSERT
+    WITH CHECK (next_auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own API keys" ON public.api_keys
+    FOR DELETE
+    USING (next_auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own API keys" ON public.api_keys
+    FOR UPDATE
+    USING (next_auth.uid() = user_id);

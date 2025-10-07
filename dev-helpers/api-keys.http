@@ -1,0 +1,80 @@
+### Create API key (session auth required)
+# Response includes the full API key - save it!
+POST http://localhost:3000/api/api-keys
+Content-Type: application/json
+
+{
+  "name": "Development Key"
+}
+
+### Create API key with expiration
+POST http://localhost:3000/api/api-keys
+Content-Type: application/json
+
+{
+  "name": "Temporary Key",
+  "expiresAt": "2025-12-31T23:59:59Z"
+}
+
+### List all API keys (session auth required)
+GET http://localhost:3000/api/api-keys
+
+### Delete API key (session auth required)
+# Replace with your actual key ID
+DELETE http://localhost:3000/api/api-keys
+Content-Type: application/json
+
+{
+  "id": "your-key-id-here"
+}
+
+###############################################
+### Testing API Key Authentication
+###############################################
+
+### Test: Create agent using API key
+# Replace bb_live_xxx with your actual API key
+POST http://localhost:3000/api/agents
+Content-Type: application/json
+Authorization: Bearer bb_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+{
+  "name": "Test Agent via API Key",
+  "websiteDomain": "example.com",
+  "model": "anthropic/claude-sonnet-4.5",
+  "prompts": [
+    "You are a helpful assistant."
+  ]
+}
+
+### Test: List agents using API key
+GET http://localhost:3000/api/agents
+Authorization: Bearer bb_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+### Test: Get actions for an agent using API key
+# Replace {agentId} with your actual agent ID
+GET http://localhost:3000/api/agents/{agentId}/actions
+Authorization: Bearer bb_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+### Test: Create action using API key
+# Replace {agentId} with your actual agent ID
+POST http://localhost:3000/api/agents/{agentId}/actions
+Content-Type: application/json
+Authorization: Bearer bb_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+{
+  "name": "Test Action via API Key",
+  "description": "Action created via API key auth",
+  "executionContext": "SERVER",
+  "executionModel": {
+    "request": {
+      "url": "http://localhost:3000/api/test",
+      "method": "POST"
+    },
+    "parameters": []
+  }
+}
+
+### Test: Invalid API key (should return 401)
+GET http://localhost:3000/api/agents
+Authorization: Bearer bb_live_invalid_key_should_fail

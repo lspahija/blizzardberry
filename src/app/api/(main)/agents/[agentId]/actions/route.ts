@@ -1,24 +1,24 @@
 import { NextResponse } from 'next/server';
 import { Action } from '@/app/api/lib/model/action/baseAction';
-import { auth } from '@/lib/auth/auth';
+import { getAuthUser } from '@/app/api/lib/auth/apiAuth';
 import { agentAuth } from '@/app/api/lib/auth/agentAuth';
 import { createAction, getActions } from '@/app/api/lib/store/actionStore';
 import { getSubscription } from '@/app/api/lib/store/subscriptionStore';
 import { pricing } from '@/app/api/(main)/stripe/pricingModel';
 
 export async function GET(
-  _: Request,
+  req: Request,
   { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getAuthUser(req);
+    if (!user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { agentId } = await params;
 
-    const authResponse = await agentAuth(session.user.id, agentId);
+    const authResponse = await agentAuth(user.id, agentId);
     if (authResponse) return authResponse;
 
     const actions = await getActions(agentId);
@@ -38,17 +38,17 @@ export async function POST(
   { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getAuthUser(req);
+    if (!user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { agentId } = await params;
 
-    const authResponse = await agentAuth(session.user.id, agentId);
+    const authResponse = await agentAuth(user.id, agentId);
     if (authResponse) return authResponse;
 
-    const validationResponse = await maxActionReached(session.user.id, agentId);
+    const validationResponse = await maxActionReached(user.id, agentId);
     if (validationResponse) return validationResponse;
 
     const action: Action = await req.json();
