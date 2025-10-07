@@ -57,7 +57,7 @@ export function PricingCalculator() {
         Usage Calculator
       </div>
       <p className="text-sm text-muted-foreground mb-4">
-        See how many messages can be sent with each plan.
+        See how many conversations you can have with each plan.
       </p>
 
       <div className="space-y-4">
@@ -86,7 +86,7 @@ export function PricingCalculator() {
         {Object.keys(tierEstimates).length > 0 && (
           <div className="space-y-3 mt-4">
             <div className="text-sm font-medium text-foreground mb-2">
-              Estimated messages per plan:
+              Estimated conversations per plan:
             </div>
             {Object.entries(pricing.tiers).map(([tierKey, tier]) => (
               <div
@@ -107,7 +107,7 @@ export function PricingCalculator() {
               </div>
             ))}
             <div className="text-xs text-muted-foreground mt-4 text-center">
-              Based on average message size (30 input tokens, 120 output tokens)
+              Based on average conversation length of 10 messages
             </div>
           </div>
         )}
