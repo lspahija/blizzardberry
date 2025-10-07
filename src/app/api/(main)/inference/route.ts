@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     );
 
     const result = await generateText({
-      model: openrouter(agent.model),
+      model: openrouter(`${agent.model}:floor`),
       system: buildSystemMessage(userConfig),
       messages: convertToModelMessages(messages),
       tools: await getTools(agentId),
