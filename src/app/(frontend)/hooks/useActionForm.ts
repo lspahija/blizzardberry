@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import {
-  ExecutionContext,
+  Action,
   BaseAction,
+  ExecutionContext,
   Parameter,
   ParameterType,
 } from '@/app/api/lib/model/action/baseAction';
@@ -13,11 +14,13 @@ import {
   HttpMethod,
   HttpRequest,
 } from '@/app/api/lib/model/action/backendAction';
-import { FrontendModel } from '@/app/api/lib/model/action/frontendAction';
-import { Action } from '@/app/api/lib/model/action/baseAction';
+import {
+  FrontendAction,
+  FrontendModel,
+} from '@/app/api/lib/model/action/frontendAction';
 import { toast } from 'sonner';
-import { toCamelCase } from '../lib/actionUtils';
 import posthog from 'posthog-js';
+import { toCamelCase } from '@/app/(frontend)/lib/actionUtils.ts';
 
 interface DataInput {
   name: string;
@@ -123,16 +126,30 @@ export const useActionForm = (isEditing = false) => {
       const currentTypeParam = searchParams.get('type');
       const currentStepParam = searchParams.get('step');
       const currentStep = parseInt(currentStepParam || '1');
-      const expectedTypeParam = baseAction.executionContext === ExecutionContext.SERVER ? 'server' : 'client';
-      
+      const expectedTypeParam =
+        baseAction.executionContext === ExecutionContext.SERVER
+          ? 'server'
+          : 'client';
+
       // Only update URL if we're not on step 1 and the type parameter doesn't match
-      if (currentStep > 1 && currentTypeParam && currentTypeParam !== expectedTypeParam) {
+      if (
+        currentStep > 1 &&
+        currentTypeParam &&
+        currentTypeParam !== expectedTypeParam
+      ) {
         router.replace(
           `/agents/${agentId}/actions/new?type=${expectedTypeParam}&step=${currentStep}`
         );
       }
     }
-  }, [baseAction.executionContext, searchParams, router, agentId, showSuccess, isEditing]);
+  }, [
+    baseAction.executionContext,
+    searchParams,
+    router,
+    agentId,
+    showSuccess,
+    isEditing,
+  ]);
 
   const updateUrl = (newStep: number) => {
     // Don't update URL if we're showing success
@@ -226,7 +243,10 @@ export const useActionForm = (isEditing = false) => {
       try {
         if (apiBody) {
           // Replace template variables with placeholder values for validation
-          const bodyForValidation = apiBody.replace(/\{\{(\w+)\}\}/g, '"__TEMPLATE_VAR__"');
+          const bodyForValidation = apiBody.replace(
+            /\{\{(\w+)\}\}/g,
+            '"__TEMPLATE_VAR__"'
+          );
           JSON.parse(bodyForValidation);
           // Store the original body with template variables
           requestBody = apiBody;
@@ -276,7 +296,7 @@ export const useActionForm = (isEditing = false) => {
         }));
 
       const frontendModel: FrontendModel = {
-        functionName: toCamelCase(baseAction.name || 'customAction'),
+        functionName: toCamelCase(baseAction.name),
         parameters: frontendParameters,
       };
 
@@ -323,20 +343,8 @@ export const useActionForm = (isEditing = false) => {
 
       if (baseAction.executionContext === ExecutionContext.CLIENT) {
         const clientAction: Action = {
-          ...baseAction,
+          ...action,
           id: createdAction.actionId || null,
-          executionContext: ExecutionContext.CLIENT,
-          executionModel: {
-            functionName: toCamelCase(baseAction.name || 'customAction'),
-            parameters: dataInputs
-              .filter((input) => input.name)
-              .map((input) => ({
-                name: input.name,
-                description: input.description,
-                type: input.type.toLowerCase() as ParameterType,
-                isArray: input.isArray,
-              })),
-          },
         };
 
         setCreatedClientAction(clientAction);
@@ -423,7 +431,7 @@ export const useActionForm = (isEditing = false) => {
     }
   };
 
-  async function handleFetchActions( agentId: string ) {
+  async function handleFetchActions(agentId: string) {
     try {
       const response = await fetch(`/api/agents/${agentId}/actions`);
       if (!response.ok) {
@@ -431,11 +439,8 @@ export const useActionForm = (isEditing = false) => {
       }
       return await response.json();
     } catch (error) {
-      console.error(
-        `Error fetching actions for agent ${agentId}:`,
-        error
-      );
-    } 
+      console.error(`Error fetching actions for agent ${agentId}:`, error);
+    }
   }
 
   return {

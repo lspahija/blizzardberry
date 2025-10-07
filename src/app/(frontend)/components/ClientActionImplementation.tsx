@@ -11,24 +11,24 @@ import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
+  ArrowRight,
+  CheckCircle,
+  Code,
   Copy,
   ExternalLink,
-  Code,
-  Info,
-  List,
-  CheckCircle,
-  ArrowRight,
   FileText,
+  List,
   Settings,
-  Zap,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Framework, getUnifiedEmbedScript } from '@/app/(frontend)/lib/scriptUtils';
+import {
+  Framework,
+  getUnifiedEmbedScript,
+} from '@/app/(frontend)/lib/scriptUtils';
 import { DEFAULT_AGENT_USER_CONFIG } from '@/app/(frontend)/lib/defaultUserConfig';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import Link from 'next/link';
 import { Action } from '@/app/api/lib/model/action/baseAction';
-import { toCamelCase } from '../lib/actionUtils';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import {
   Select,
@@ -38,6 +38,7 @@ import {
   SelectValue,
 } from '@/app/(frontend)/components/ui/select';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
+import { FrontendModel } from '@/app/api/lib/model/action/frontendAction.ts';
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },
@@ -71,8 +72,6 @@ export default function ClientActionImplementation({
   >([]);
   const { handleFetchActions } = useActionForm();
 
-  const generatedFunctionName = toCamelCase(action.name || 'customAction');
-
   const defaultUserConfig = DEFAULT_AGENT_USER_CONFIG;
 
   useEffect(() => {
@@ -82,7 +81,7 @@ export default function ClientActionImplementation({
         const actions = (data.actions || [])
           .filter((a: any) => a.executionContext === 'CLIENT')
           .map((a: any) => ({
-            functionName: toCamelCase(a.name),
+            functionName: a.executionModel.functionName,
             dataInputs: (a.executionModel?.parameters || []).map((p: any) => ({
               name: p.name,
               type: p.type,
@@ -91,17 +90,22 @@ export default function ClientActionImplementation({
             })),
           }));
 
-        const createdFnName = generatedFunctionName;
-        if (!actions.some((x: any) => x.functionName === createdFnName)) {
-          actions.push({ functionName: createdFnName, dataInputs });
+        const functionName = (action.executionModel as FrontendModel)
+          .functionName;
+        if (!actions.some((x: any) => x.functionName === functionName)) {
+          actions.push({ functionName, dataInputs });
         }
         setClientActions(actions);
       } catch {
-        setClientActions([{ functionName: generatedFunctionName, dataInputs }]);
+        setClientActions([{ functionName, dataInputs }]);
       }
     }
     fetchClientActions();
-  }, [agentId, generatedFunctionName, JSON.stringify(dataInputs)]);
+  }, [
+    agentId,
+    (action.executionModel as FrontendModel).functionName,
+    JSON.stringify(dataInputs),
+  ]);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -214,7 +218,9 @@ export default function ClientActionImplementation({
               </p>
               <div className="relative">
                 <SyntaxHighlighter
-                  language={selectedFramework === Framework.NEXT_JS ? 'jsx' : 'html'}
+                  language={
+                    selectedFramework === Framework.NEXT_JS ? 'jsx' : 'html'
+                  }
                   style={vscDarkPlus}
                   customStyle={{
                     borderRadius: '8px',

@@ -1,5 +1,3 @@
-import { toCamelCase } from './actionUtils';
-
 export enum Framework {
   NEXT_JS = 'next.js',
   REACT = 'react',
@@ -62,20 +60,19 @@ const getActionsAssignment = (
 ) => {
   const functionsCode = actions
     .map(({ functionName, dataInputs }) => {
-      const functionNameCamelCase = toCamelCase(functionName);
       const params = dataInputs
         .filter((i) => i.name)
         .map((i) => i.name)
         .join(', ');
 
       if (framework === Framework.NEXT_JS) {
-        return `    ${functionNameCamelCase}: async (user, args) => {
+        return `    ${functionName}: async (user, args) => {
       // Your custom action logic goes here
       // Access arguments from args object: args.${params.split(', ')[0] || 'exampleArg'}
       return { status: 'success', results: [] };
   }`;
       } else {
-        return `    ${functionNameCamelCase}: async (user, args) => {
+        return `    ${functionName}: async (user, args) => {
       // Your custom action logic goes here
       // Access arguments from args object: args.${params.split(', ')[0] || 'exampleArg'}
       return { status: 'success', results: [] };

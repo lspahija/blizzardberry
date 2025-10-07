@@ -7,7 +7,6 @@ import {
   ParameterType,
 } from '@/app/api/lib/model/action/baseAction';
 import { Body, HttpRequest } from '@/app/api/lib/model/action/backendAction';
-import { toCamelCase } from '@/app/(frontend)/lib/actionUtils';
 
 export async function getToolsFromActions(agentId: string) {
   const actions = await getActions(agentId);
@@ -34,7 +33,7 @@ export async function getToolsFromActions(agentId: string) {
             injectArgsIntoRequest(action.executionModel.request, input)
         : async (input) => {
             return {
-              functionName: toCamelCase(action.executionModel.functionName),
+              functionName: action.executionModel.functionName,
               args: input,
             };
           };

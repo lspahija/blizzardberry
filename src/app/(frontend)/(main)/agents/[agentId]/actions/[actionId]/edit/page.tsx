@@ -7,7 +7,7 @@ import DataInputsStep from '@/app/(frontend)/components/DataInputsStep';
 import GeneralStep from '@/app/(frontend)/components/GeneralStep';
 import RequestDefinitionStep from '@/app/(frontend)/components/RequestDefinitionStep.tsx';
 import { Loader2 } from 'lucide-react';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import {
   Action,
   ExecutionContext,
@@ -24,6 +24,7 @@ import {
   FrontendModel,
 } from '@/app/api/lib/model/action/frontendAction';
 import { toast } from 'sonner';
+import { toCamelCase } from '@/app/(frontend)/lib/actionUtils.ts';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -229,7 +230,10 @@ function ActionEditContent() {
       try {
         if (apiBody) {
           // Replace template variables with placeholder values for validation
-          const bodyForValidation = apiBody.replace(/\{\{(\w+)\}\}/g, '"__TEMPLATE_VAR__"');
+          const bodyForValidation = apiBody.replace(
+            /\{\{(\w+)\}\}/g,
+            '"__TEMPLATE_VAR__"'
+          );
           JSON.parse(bodyForValidation);
           // Store the original body with template variables
           requestBody = apiBody;
@@ -279,7 +283,7 @@ function ActionEditContent() {
         }));
 
       const frontendModel: FrontendModel = {
-        functionName: baseAction.name,
+        functionName: toCamelCase(baseAction.name),
         parameters: frontendParameters,
       };
 

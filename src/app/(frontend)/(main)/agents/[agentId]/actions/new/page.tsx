@@ -27,11 +27,6 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
-
 function ActionFormContent() {
   const {
     step,
@@ -49,28 +44,17 @@ function ActionFormContent() {
     setApiBody,
     isEditorInteracted,
     setIsEditorInteracted,
-    activeTab,
-    setActiveTab,
     isCreatingAction,
     showSuccess,
     createdClientAction,
     handleNextStep,
     handleBack,
     handleCreateAction,
-    handleDeleteAction,
   } = useActionForm();
 
   const router = useRouter();
   const params = useParams();
   const agentId = params.agentId as string;
-
-  const handleSuccessClose = () => {
-    posthog.capture('action_creation_completed', {
-      agent_id: agentId,
-      action_type: baseAction.executionContext,
-    });
-    router.push(`/agents/${agentId}`);
-  };
 
   const handleContinueToAgent = () => {
     posthog.capture('action_creation_completed', {

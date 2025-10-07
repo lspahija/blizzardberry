@@ -39,7 +39,10 @@ import { Agent } from '@/app/api/lib/model/agent/agent';
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import { BackendAction } from '@/app/api/lib/model/action/backendAction';
-import { FrontendAction } from '@/app/api/lib/model/action/frontendAction';
+import {
+  FrontendAction,
+  FrontendModel,
+} from '@/app/api/lib/model/action/frontendAction';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
 import { usePrompts } from '@/app/(frontend)/hooks/usePrompts';
@@ -845,7 +848,9 @@ function AgentDetails({
                               params.agentId,
                               defaultUserConfig,
                               clientActions.map((action) => ({
-                                functionName: action.name,
+                                functionName: (
+                                  action.executionModel as FrontendModel
+                                ).functionName,
                                 dataInputs: (
                                   action.executionModel.parameters || []
                                 ).map((param) => ({
