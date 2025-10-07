@@ -100,10 +100,10 @@ export default function UsagePage() {
         {/* Pricing Calculator */}
         <div className="bg-card border-2 border-border rounded-xl p-6">
           <div className="text-xl font-bold text-foreground mb-4">
-            Usage Estimator
+            Usage Calculator
           </div>
           <p className="text-sm text-muted-foreground mb-4">
-            Estimate how many messages you can send with your current credits.
+            See how many conversations you can have with your current credits.
           </p>
 
           <div className="space-y-4">
@@ -132,13 +132,13 @@ export default function UsagePage() {
             {estimatedMessages !== null && (
               <div className="bg-gradient-to-br from-brand/10 to-brand/5 border-2 border-brand rounded-lg p-4 mt-4">
                 <div className="text-sm text-muted-foreground mb-1">
-                  Estimated number of messages
+                  Estimated conversations
                 </div>
                 <div className="text-3xl font-bold text-brand">
                   ~{estimatedMessages.toLocaleString()}
                 </div>
                 <div className="text-xs text-muted-foreground mt-2">
-                  Based on average message size
+                  Based on average conversation length of 10 messages
                 </div>
               </div>
             )}
