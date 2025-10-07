@@ -33,6 +33,7 @@ import {
   TooltipContent,
 } from '@/app/(frontend)/components/ui/tooltip';
 import { PricingFAQ } from '@/app/(frontend)/components/ui/pricing-faq';
+import { PricingCalculator } from '@/app/(frontend)/components/ui/pricing-calculator';
 import { RetroButton } from '@/app/(frontend)/components/ui/retro-button';
 
 const stripePromise = loadStripe(
@@ -674,6 +675,11 @@ export default function UpgradePage() {
               </div>
             </div>
           )}
+
+          {/* Pricing Calculator */}
+          <div className="mb-12 sm:mb-16 max-w-2xl mx-auto">
+            <PricingCalculator />
+          </div>
 
           {/* FAQ Section */}
           <PricingFAQ />

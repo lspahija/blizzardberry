@@ -34,6 +34,7 @@ import {
   TooltipContent,
 } from '@/app/(frontend)/components/ui/tooltip';
 import { PricingFAQ } from '@/app/(frontend)/components/ui/pricing-faq';
+import { PricingCalculator } from '@/app/(frontend)/components/ui/pricing-calculator';
 import posthog from 'posthog-js';
 
 const stripePromise = loadStripe(
@@ -653,6 +654,11 @@ export default function PricingPage() {
               </div>
             </div>
           )}
+
+          {/* Pricing Calculator */}
+          <div className="mb-12 sm:mb-16 max-w-2xl mx-auto">
+            <PricingCalculator />
+          </div>
 
           {/* FAQ Section */}
           <PricingFAQ />

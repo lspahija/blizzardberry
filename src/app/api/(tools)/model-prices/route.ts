@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { fetchModelPrices } from '@/app/api/lib/llm/tokenUsageManager';
+import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 
 function formatPrice(pricePerToken: number) {
   // Convert to price per 1M tokens for readability
@@ -14,15 +15,27 @@ function formatPrice(pricePerToken: number) {
   }
 }
 
-function formatModelPrices(rawPrices: Record<string, { input: number; output: number }>) {
+function formatModelPrices(rawPrices: Record<string, { input: number; output: number }>, sortBy: 'price' | 'order' = 'price') {
   const formatted: Record<string, { input: string; output: string; rawInput: number; rawOutput: number }> = {};
 
-  // Sort entries by combined cost (input + output) in descending order
-  const sortedEntries = Object.entries(rawPrices).sort(([, a], [, b]) => {
-    const costA = a.input + a.output;
-    const costB = b.input + b.output;
-    return costB - costA;
-  });
+  let sortedEntries: [string, { input: number; output: number }][];
+
+  if (sortBy === 'order') {
+    // Sort entries by the order defined in AGENT_MODELS
+    const modelOrder = Object.keys(AGENT_MODELS);
+    sortedEntries = Object.entries(rawPrices).sort(([a], [b]) => {
+      const indexA = modelOrder.indexOf(a);
+      const indexB = modelOrder.indexOf(b);
+      return indexA - indexB;
+    });
+  } else {
+    // Sort entries by combined cost (input + output) in descending order
+    sortedEntries = Object.entries(rawPrices).sort(([, a], [, b]) => {
+      const costA = a.input + a.output;
+      const costB = b.input + b.output;
+      return costB - costA;
+    });
+  }
 
   for (const [model, prices] of sortedEntries) {
     formatted[model] = {
@@ -36,10 +49,13 @@ function formatModelPrices(rawPrices: Record<string, { input: number; output: nu
   return formatted;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const sortBy = searchParams.get('sortBy') === 'order' ? 'order' : 'price';
+
     const modelPrices = await fetchModelPrices();
-    const formattedPrices = formatModelPrices(modelPrices);
+    const formattedPrices = formatModelPrices(modelPrices, sortBy);
     return NextResponse.json(formattedPrices, { status: 200 });
   } catch (error) {
     console.error('Error fetching model prices:', error);

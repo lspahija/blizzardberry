@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/app/(frontend)/components/ui/button';
-import { DOLLARS_TO_CREDITS, MARKUP_PERCENTAGE } from '@/app/api/lib/llm/constants';
+import { calculateEstimatedMessages } from '@/app/(frontend)/lib/usageCalculator.ts';
 
 interface ModelPrice {
   rawInput: number;
@@ -13,9 +13,14 @@ export default function UsagePage() {
   const [credits, setCredits] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [modelPrices, setModelPrices] = useState<Record<string, ModelPrice> | null>(null);
+  const [modelPrices, setModelPrices] = useState<Record<
+    string,
+    ModelPrice
+  > | null>(null);
   const [selectedModel, setSelectedModel] = useState<string>('');
-  const [estimatedMessages, setEstimatedMessages] = useState<number | null>(null);
+  const [estimatedMessages, setEstimatedMessages] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     fetch('/api/credits')
@@ -32,7 +37,7 @@ export default function UsagePage() {
         setLoading(false);
       });
 
-    fetch('/api/model-prices')
+    fetch('/api/model-prices?sortBy=order')
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch model prices');
         return res.json();
@@ -49,15 +54,10 @@ export default function UsagePage() {
 
   useEffect(() => {
     if (credits && selectedModel && modelPrices && modelPrices[selectedModel]) {
-      const model = modelPrices[selectedModel];
-      const avgInputTokens = 30;
-      const avgOutputTokens = 120;
-
-      const costPerMessage =
-        (avgInputTokens * model.rawInput * MARKUP_PERCENTAGE +
-         avgOutputTokens * model.rawOutput * MARKUP_PERCENTAGE) * DOLLARS_TO_CREDITS;
-
-      const messages = Math.floor(credits / costPerMessage);
+      const messages = calculateEstimatedMessages({
+        credits,
+        modelPrice: modelPrices[selectedModel],
+      });
       setEstimatedMessages(messages);
     }
   }, [credits, selectedModel, modelPrices]);
@@ -116,7 +116,7 @@ export default function UsagePage() {
                 onChange={(e) => setSelectedModel(e.target.value)}
                 className="w-64 pl-4 pr-10 py-2 bg-background border-2 border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-brand appearance-none bg-[length:20px] bg-[position:right_0.75rem_center] bg-no-repeat"
                 style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                 }}
                 disabled={!modelPrices}
               >
@@ -132,7 +132,7 @@ export default function UsagePage() {
             {estimatedMessages !== null && (
               <div className="bg-gradient-to-br from-brand/10 to-brand/5 border-2 border-brand rounded-lg p-4 mt-4">
                 <div className="text-sm text-muted-foreground mb-1">
-                  Estimated number   of messages
+                  Estimated number of messages
                 </div>
                 <div className="text-3xl font-bold text-brand">
                   ~{estimatedMessages.toLocaleString()}
