@@ -1,9 +1,7 @@
 import { captureCredit, holdCredit } from '@/app/api/lib/store/creditStore';
 import { LanguageModelUsage } from 'ai';
 import { AgentModel, AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
-
-// 1 credit = $0.01, so 1 dollar = 100 credits
-const DOLLARS_TO_CREDITS = 100;
+import { DOLLARS_TO_CREDITS, MARKUP_PERCENTAGE } from './constants';
 
 // Interface for OpenRouter API model response
 interface OpenRouterModel {
@@ -127,7 +125,6 @@ export function mapTokenUsageToCreditUsage(
     throw new Error(`No dollar cost defined for model: ${model}`);
   }
 
-  const MARKUP_PERCENTAGE = 2.5; // 150% markup
   const inputDollars =
     (tokenUsage.inputTokens || 0) * costs.input * MARKUP_PERCENTAGE;
   const outputDollars =
