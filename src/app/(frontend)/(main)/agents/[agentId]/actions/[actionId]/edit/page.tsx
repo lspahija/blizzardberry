@@ -114,7 +114,7 @@ function ActionEditContent() {
 
           if (parameters.length === 0) {
             setDataInputs([
-              { name: '', type: 'Text', description: '', isArray: false },
+              { name: '', type: 'String', description: '', isArray: false },
             ]);
           } else {
             setDataInputs(
@@ -167,7 +167,7 @@ function ActionEditContent() {
 
           if (parameters.length === 0) {
             setDataInputs([
-              { name: '', type: 'Text', description: '', isArray: false },
+              { name: '', type: 'String', description: '', isArray: false },
             ]);
           } else {
             setDataInputs(
