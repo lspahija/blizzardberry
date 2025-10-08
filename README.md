@@ -222,3 +222,8 @@ This project uses [shadcn/ui](https://ui.shadcn.com/) components
 
 ## Proxy
 Accompanying proxy repo can be found at https://github.com/lspahija/blizzardberry-proxy
+
+## Connect Claude Code to Notion via MCP
+1. Start Claude Code with `claude` in the root of this project
+2. execute `/mcp`
+3. follow steps to authenticate
