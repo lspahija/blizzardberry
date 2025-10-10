@@ -27,7 +27,7 @@ Visualize the data as a chart and return the SVG.`;
     }
     return { error: 'No SVG generated in response' };
   } catch (error) {
-    console.error('Error generating visualization with GPT-4o:', error);
+    console.error('Error generating visualization with LLM:', error);
     return {
       error:
         error instanceof Error
