@@ -32,7 +32,10 @@ export async function executeAction(actionModel) {
 
 async function executeClientAction(actionModel) {
   const functionName = actionModel.functionName.replace('ACTION_CLIENT_', '');
+  console.log('all actions: ', JSON.stringify(config.actions));
+  console.log('executing action function with name: ', functionName);
   const action = config.actions[functionName];
+  console.log('executing action function: ', JSON.stringify(action));
   return await action(config.userConfig, actionModel.args);
 }
 
