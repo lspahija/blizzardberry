@@ -1,4 +1,4 @@
-import { generateVisualizationWithGPT } from './src/app/api/lib/tools/gptVisualization';
+import { generateVisualizationWithLLM } from './src/app/api/lib/tools/llmVisualization';
 
 // Mock data - simple array of numbers
 const mockData1 = [10, 25, 15, 40, 30, 50];
@@ -19,10 +19,10 @@ const mockData3 = {
 };
 
 async function testVisualization() {
-  console.log('Testing SVG visualization with GPT-5...\n');
+  console.log('Testing SVG visualization with LLM...\n');
 
   console.log('Test: Simple array of numbers');
-  const result = await generateVisualizationWithGPT(mockData1, 'Show this as a bar chart');
+  const result = await generateVisualizationWithLLM(mockData1, 'Show this as a bar chart');
   console.log('Result:', result.error ? `Error: ${result.error}` : 'SVG generated successfully!');
   if (result.svg) {
     console.log('SVG length:', result.svg.length);

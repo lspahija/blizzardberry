@@ -1,7 +1,7 @@
 import { generateText } from 'ai';
 import { openrouter } from '@openrouter/ai-sdk-provider';
 
-export async function generateVisualizationWithGPT(
+export async function generateVisualizationWithLLM(
   data: any,
   description?: string
 ): Promise<{ svg?: string; error?: string }> {
@@ -18,10 +18,9 @@ Visualize the data as a chart and return the SVG.`;
 
   try {
     const result = await generateText({
-      model: openrouter('openai/gpt-5'),
+      model: openrouter('openai/gpt-5-mini'),
       prompt: prompt,
     });
-    console.log('GPT-5 response text length:', result.text.length);
     const svgMatch = result.text.match(/<svg[\s\S]*?<\/svg>/i);
     if (svgMatch) {
       return { svg: svgMatch[0] };

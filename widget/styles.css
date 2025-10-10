@@ -450,10 +450,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 8px;
 }
 
 .viz-modal-content--svg svg {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+.viz-modal-content--svg img {
     max-width: 100%;
     max-height: 100%;
     width: auto;

@@ -1,15 +1,15 @@
 import { tool, Tool } from 'ai';
 import { z } from 'zod';
-import { generateVisualizationWithGPT } from './gptVisualization';
+import { generateVisualizationWithLLM } from './llmVisualization';
 
 export function createVisualizationTool(): Tool {
   return tool({
     description:
-      'Generate data visualizations for ANY type of data. GPT-5 will analyze the data and create an appropriate SVG chart. Works with arrays, objects, nested structures - any data format!',
+      'Generate data visualizations for any type of data. The LLM will analyze the data and create an appropriate SVG chart. Works with arrays, objects, nested structures - any data format.',
     inputSchema: z.object({
       data: z
         .any()
-        .describe('ANY data to visualize - GPT-5 will figure it out'),
+        .describe('data to visualize'),
       description: z
         .string()
         .optional()
@@ -21,8 +21,7 @@ export function createVisualizationTool(): Tool {
       const { data, description } = input;
 
       try {
-        // Use GPT-5 to generate SVG visualization
-        const result = await generateVisualizationWithGPT(data, description);
+        const result = await generateVisualizationWithLLM(data, description);
 
         if (result.error || !result.svg) {
           return {
@@ -30,7 +29,6 @@ export function createVisualizationTool(): Tool {
             message: result.error || 'No SVG was generated',
           };
         }
-
         // Return the SVG
         return {
           type: 'visualization',

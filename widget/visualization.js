@@ -6,7 +6,7 @@ export async function addVisualizationToMessage(visualizationResult) {
     return;
   }
 
-  // Check if this is an SVG from GPT
+  // Check if this is an SVG from LLM
   if (visualizationResult.svg) {
     const containerId = `svg-viz-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const encodedSvg = encodeURIComponent(visualizationResult.svg);
