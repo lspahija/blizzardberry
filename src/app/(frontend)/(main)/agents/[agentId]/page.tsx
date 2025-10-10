@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -231,6 +231,24 @@ function AgentDetails({
   const clientActions = actions.filter(
     (action) => action.executionContext === ExecutionContext.CLIENT
   );
+
+  const embedScript = useMemo(() => {
+    const defaultUserConfig = DEFAULT_AGENT_USER_CONFIG;
+    return getUnifiedEmbedScript(
+      selectedFramework,
+      params.agentId,
+      defaultUserConfig,
+      clientActions.map((action) => ({
+        functionName: (action.executionModel as FrontendModel).functionName,
+        dataInputs: (action.executionModel.parameters || []).map((param) => ({
+          name: param.name,
+          type: param.type,
+          description: param.description || '',
+          isArray: param.isArray || false,
+        })),
+      }))
+    );
+  }, [selectedFramework, params.agentId, clientActions]);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -841,53 +859,10 @@ function AgentDetails({
                             backgroundColor: 'var(--color-background-dark)',
                           }}
                         >
-                          {(() => {
-                            const defaultUserConfig = DEFAULT_AGENT_USER_CONFIG;
-                            const unified = getUnifiedEmbedScript(
-                              selectedFramework,
-                              params.agentId,
-                              defaultUserConfig,
-                              clientActions.map((action) => ({
-                                functionName: (
-                                  action.executionModel as FrontendModel
-                                ).functionName,
-                                dataInputs: (
-                                  action.executionModel.parameters || []
-                                ).map((param) => ({
-                                  name: param.name,
-                                  type: param.type,
-                                  description: param.description || '',
-                                  isArray: param.isArray || false,
-                                })),
-                              }))
-                            );
-
-                            return unified;
-                          })()}
+                          {embedScript}
                         </SyntaxHighlighter>
                         <Button
-                          onClick={() => {
-                            const defaultUserConfig = DEFAULT_AGENT_USER_CONFIG;
-
-                            const unified = getUnifiedEmbedScript(
-                              selectedFramework,
-                              params.agentId,
-                              defaultUserConfig,
-                              clientActions.map((action) => ({
-                                functionName: action.name,
-                                dataInputs: (
-                                  action.executionModel.parameters || []
-                                ).map((param) => ({
-                                  name: param.name,
-                                  type: param.type,
-                                  description: param.description || '',
-                                  isArray: param.isArray || false,
-                                })),
-                              }))
-                            );
-
-                            handleCopy(unified);
-                          }}
+                          onClick={() => handleCopy(embedScript)}
                           className="absolute top-11 right-2 bg-secondary text-foreground border-[2px] border-border hover:-translate-y-0.5 hover:-translate-x-0.5 transition-transform rounded-xl flex items-center gap-2 px-2 py-1 sm:px-3 sm:py-1.5"
                         >
                           <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
