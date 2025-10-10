@@ -48,18 +48,55 @@ export async function addVisualizationToMessage(visualizationResult) {
     return;
   }
 
+  // Check if this is an SVG from GPT-5
+  if (visualizationResult.svg) {
+    const html = `
+      <div class="viz-svg-container" style="margin: 12px 0;">
+        ${visualizationResult.svg}
+      </div>
+    `;
+
+    const lastMessage = state.messages[state.messages.length - 1];
+    if (lastMessage && lastMessage.role === 'assistant') {
+      lastMessage.parts.push({ type: 'html', content: html });
+      await persistMessage(lastMessage);
+    }
+    return;
+  }
+
+  // Check if this is a base64 image from LLM code execution
+  if (visualizationResult.image) {
+    const html = `
+      <div class="viz-image-container" style="margin: 12px 0;">
+        <img
+          src="data:image/png;base64,${visualizationResult.image}"
+          alt="Data Visualization"
+          style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+        />
+      </div>
+    `;
+
+    const lastMessage = state.messages[state.messages.length - 1];
+    if (lastMessage && lastMessage.role === 'assistant') {
+      lastMessage.parts.push({ type: 'html', content: html });
+      await persistMessage(lastMessage);
+    }
+    return;
+  }
+
+  // Legacy Chart.js format
   const config = visualizationResult.config;
   if (!config || !config.data || !Array.isArray(config.data)) {
     return;
   }
 
   const html = generateChartHTML(config);
-  
+
   const lastMessage = state.messages[state.messages.length - 1];
   if (lastMessage && lastMessage.role === 'assistant') {
     lastMessage.parts.push({ type: 'html', content: html });
     await persistMessage(lastMessage);
-    
+
     setTimeout(() => {
       initializeCharts();
     }, 100);
