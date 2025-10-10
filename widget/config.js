@@ -27,7 +27,7 @@ function initializeConfig() {
   delete window.agentUserConfig;
   delete window.agentActions;
 
-  console.log('const actions: ', JSON.stringify(actions));
+  console.log('const actions: ', JSON.stringify(window.actions));
 
   return { baseUrl, agentId, userConfig, actions };
 }
