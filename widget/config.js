@@ -20,7 +20,7 @@ function initializeConfig() {
 
   console.log('BlizzardBerry Agent initialized:', { agentId, baseUrl });
 
-  console.log('window.actions: ', JSON.stringify(window.actions));
+  console.log('window.actions: ', JSON.stringify(window.agentActions));
 
   const userConfig = window.agentUserConfig;
   const actions = window.agentActions;
