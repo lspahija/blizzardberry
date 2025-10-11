@@ -106,8 +106,9 @@ function openSvgModal(svgContent) {
   document.body.dataset.prevOverflow = prevOverflow;
   document.body.style.overflow = 'hidden';
 
-  // Insert SVG
-  svgContainer.innerHTML = svgContent;
+  // Insert SVG (sanitize arithmetic expressions first)
+  const sanitizedSvg = sanitizeSvgExpressions(svgContent);
+  svgContainer.innerHTML = sanitizedSvg;
 
   const onKey = (ev) => {
     if (ev.key === 'Escape') {
@@ -211,4 +212,21 @@ function closeModal() {
   }
   const prevOverflow = document.body.dataset.prevOverflow || '';
   document.body.style.overflow = prevOverflow;
+}
+
+// Sanitize SVG by evaluating arithmetic expressions in attributes
+function sanitizeSvgExpressions(svgContent) {
+  // Match attribute values that contain arithmetic expressions like "60+10" or "100-20"
+  return svgContent.replace(/(\w+)="([^"]*[\+\-\*\/][^"]*)"/g, (match, attr, expr) => {
+    try {
+      // Only evaluate if it looks like a simple arithmetic expression
+      if (/^[\d\s\+\-\*\/\(\)\.]+$/.test(expr)) {
+        const result = eval(expr);
+        return `${attr}="${result}"`;
+      }
+    } catch (e) {
+      // If evaluation fails, return original
+    }
+    return match;
+  });
 }
