@@ -1,378 +1,127 @@
 import { state } from './state';
 import { persistMessage } from './api';
-import Chart from 'chart.js/auto';
-
-const DEFAULT_COLORS = [
-  '#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6',
-  '#06B6D4', '#84CC16', '#F97316', '#EC4899', '#6366F1'
-];
-
-window.initializeCharts = function() {
-  const chartElements = document.querySelectorAll('[id^="chart-init-"]');
-  
-  chartElements.forEach(element => {
-    const containerId = element.id.replace('chart-init-', '');
-    const config = JSON.parse(element.getAttribute('data-chart-config'));
-      const isCompact = element.getAttribute('data-compact-preview') === 'true';
-    if (isCompact) {
-      // Don't render a preview chart; only bind click to open modal
-      attachCardClickById(containerId, config);
-    } else {
-      initializeSingleChart(containerId, config);
-    }
-  });
-};
-
-function initializeSingleChart(containerId, config) {
-  function createChart() {
-    const ctx = document.getElementById(containerId);
-    if (!ctx) {
-      console.error('Canvas element not found:', containerId);
-      return;
-    }
-    
-    try {
-      const chart = new Chart(ctx, config);
-      console.log('Chart created successfully:', chart);
-      attachCardClickToOpenModal(ctx, config);
-    } catch (error) {
-      console.error('Error creating chart:', error);
-    }
-  }
-
-  createChart();
-}
 
 export async function addVisualizationToMessage(visualizationResult) {
   if (!visualizationResult || visualizationResult.type !== 'visualization') {
     return;
   }
 
-  const config = visualizationResult.config;
-  if (!config || !config.data || !Array.isArray(config.data)) {
+  // Check if this is an SVG from LLM
+  if (visualizationResult.svg) {
+    const containerId = `svg-viz-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    const encodedSvg = encodeURIComponent(visualizationResult.svg);
+
+    const html = `
+      <div class="viz-card viz-card--compact" data-svg-container="${containerId}" style="width: 100%; margin: 6px 0;">
+        <div class="viz-chip viz-chip--left">
+          <svg class="viz-chip-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/>
+          </svg>
+          <span class="viz-chip-text">View Chart</span>
+        </div>
+        <div data-svg-content="${encodedSvg}" style="display: none;"></div>
+      </div>
+    `;
+
+    const lastMessage = state.messages[state.messages.length - 1];
+    if (lastMessage && lastMessage.role === 'assistant') {
+      lastMessage.parts.push({ type: 'html', content: html });
+      await persistMessage(lastMessage);
+      setTimeout(() => {
+        attachSvgClickHandler(containerId);
+      }, 100);
+    }
     return;
   }
 
-  const html = generateChartHTML(config);
-  
-  const lastMessage = state.messages[state.messages.length - 1];
-  if (lastMessage && lastMessage.role === 'assistant') {
-    lastMessage.parts.push({ type: 'html', content: html });
-    await persistMessage(lastMessage);
-    
-    setTimeout(() => {
-      initializeCharts();
-    }, 100);
-  }
-}
+  // Check if this is a base64 image from LLM code execution
+  if (visualizationResult.image) {
+    const containerId = `img-viz-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    const encodedImage = encodeURIComponent(visualizationResult.image);
 
-function generateChartHTML(inputConfig) {
-  const { data, chartType } = inputConfig;
-  const options = inputConfig.options || {};
-  const width = options.width || 640;
-  const height = options.height || 220;
-  const previewHeight = Math.max(32, Math.min(height, options.previewHeight ?? 72));
-  const colors = options.colors || DEFAULT_COLORS;
-  const showLegend = options.showLegend !== false;
-  const showGrid = options.showGrid !== false;
-  const compactPreview = options.compactPreview !== false; // default: compact preview enabled
-
-  const containerId = `chart-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
-
-  const { effectiveXKey, effectiveYKeys } = inferKeys(
-    data,
-    chartType,
-    inputConfig.xKey,
-    inputConfig.yKey
-  );
-
-  const chartData = prepareChartData(
-    data,
-    effectiveXKey,
-    effectiveYKeys,
-    chartType,
-    colors
-  );
-
-  const chartConfig = getChartConfig(
-    chartType,
-    chartData,
-    colors,
-    showLegend,
-    showGrid
-  );
-
-  if (!chartConfig.options) chartConfig.options = {};
-  chartConfig.options.backgroundColor = '#ffffff';
-  if (!chartConfig.options.plugins) chartConfig.options.plugins = {};
-  // Add generous inner padding so the chart doesn't touch edges
-  const userPadding = options.layoutPadding;
-  chartConfig.options.layout = chartConfig.options.layout || {};
-  const basePadding = userPadding ?? { top: 48, right: 56, bottom: 48, left: 56 };
-  const normalizedPadding = typeof basePadding === 'number'
-    ? { top: basePadding, right: basePadding, bottom: basePadding, left: basePadding }
-    : { top: basePadding.top ?? 0, right: basePadding.right ?? 0, bottom: basePadding.bottom ?? 0, left: basePadding.left ?? 0 };
-  chartConfig.options.layout.padding = normalizedPadding;
-
-  if (compactPreview) {
-    const label = inputConfig.title ? escapeHtml(inputConfig.title) : 'Open chart';
-    return `
-      <div class="viz-card viz-card--compact" data-viz-container="${containerId}" style="width: 100%; margin: 6px 0;">
+    const html = `
+      <div class="viz-card viz-card--compact" data-img-container="${containerId}" style="width: 100%; margin: 6px 0;">
         <div class="viz-chip viz-chip--left">
           <svg class="viz-chip-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M7 17h3a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1v-5a1 1 0 1 1 2 0v3l4.586-4.586a1 1 0 0 1 1.414 1.414L7 17Zm10-10h-3a1 1 0 1 1 0-2h5a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0V8l-4.586 4.586a1 1 0 0 1-1.414-1.414L17 7Z"/>
+            <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/>
           </svg>
-          <span class="viz-chip-text">${label}</span>
+          <span class="viz-chip-text">View Chart</span>
         </div>
-        <div id="chart-init-${containerId}" data-compact-preview="true" data-chart-config='${JSON.stringify(chartConfig)}'></div>
+        <div data-img-content="${encodedImage}" style="display: none;"></div>
       </div>
     `;
-  }
 
-  return `
-      <div class="viz-card" data-viz-container="${containerId}" style="width: 100%; margin: 12px 0;">
-        ${inputConfig.title ? `<div class="viz-title">${escapeHtml(inputConfig.title)}</div>` : ''}
-        <div class="viz-expand-icon">⤢</div>
-        <div style="position: relative; height: ${previewHeight}px; width: 100%; overflow: hidden; filter: grayscale(0.9) contrast(0.9) brightness(0.9);">
-          <canvas id="${containerId}" width="${width}" height="${previewHeight}" style="position: absolute; inset: 0; width: 100% !important; height: 100% !important;"></canvas>
-          <div class="viz-dim-overlay">Click to expand</div>
-        </div>
-        <div id="chart-init-${containerId}" data-chart-config='${JSON.stringify(chartConfig)}'></div>
-      </div>
-    `;
-}
-
-function inferKeys(data, chartType, xKey, yKey) {
-  const sample = data[0] || {};
-  const keys = Object.keys(sample);
-  const isNumeric = (v) =>
-    (typeof v === 'number' && Number.isFinite(v)) ||
-    (typeof v === 'string' && v.trim() !== '' && !isNaN(Number(v)));
-
-  const numericKeys = keys.filter((k) => isNumeric(sample[k]));
-  const nonNumericKeys = keys.filter((k) => !isNumeric(sample[k]));
-
-  let resolvedX = xKey;
-  let resolvedYKeys = Array.isArray(yKey) ? yKey : yKey ? [yKey] : [];
-
-  if (!resolvedX) {
-    resolvedX = nonNumericKeys[0] || keys[0] || 'index';
-  }
-
-  if (resolvedYKeys.length === 0) {
-    if (chartType === 'pie') {
-      resolvedYKeys = [numericKeys[0] || keys[0]];
-    } else if (chartType === 'scatter') {
-      const candidates = numericKeys.filter((k) => k !== resolvedX);
-      resolvedYKeys = [candidates[0] || numericKeys[0] || keys[0]];
-    } else {
-      const candidates = numericKeys.filter((k) => k !== resolvedX);
-      resolvedYKeys = candidates.length ? candidates : [numericKeys[0] || keys[0]];
+    const lastMessage = state.messages[state.messages.length - 1];
+    if (lastMessage && lastMessage.role === 'assistant') {
+      lastMessage.parts.push({ type: 'html', content: html });
+      await persistMessage(lastMessage);
+      setTimeout(() => {
+        attachImageClickHandler(containerId);
+      }, 100);
     }
-  }
-
-  return { effectiveXKey: resolvedX, effectiveYKeys: resolvedYKeys };
-}
-
-function prepareChartData(data, xKey, yKeys, chartType, colors) {
-  if (chartType === 'pie' || chartType === 'doughnut') {
-    const pieKey = yKeys[0];
-    return {
-      labels: data.map((item) => item[xKey]),
-      datasets: [
-        {
-          data: data.map((item) => Number(item[pieKey] ?? 0)),
-          backgroundColor: colors.slice(0, data.length),
-          borderColor: colors.slice(0, data.length),
-          borderWidth: 1
-        }
-      ]
-    };
-  }
-
-  if (chartType === 'scatter') {
-    return {
-      datasets: yKeys.map((yk, i) => ({
-        label: yk,
-        data: data.map((item) => ({
-          x: Number(item[xKey] ?? item['x'] ?? 0),
-          y: Number(item[yk] ?? item['y'] ?? 0)
-        })),
-        borderColor: colors[i % colors.length],
-        backgroundColor: colors[i % colors.length]
-      }))
-    };
-  }
-
-  return {
-    labels: data.map((item) => item[xKey]),
-    datasets: yKeys.map((yk, i) => ({
-      label: yk,
-      data: data.map((item) => Number(item[yk] ?? 0)),
-      backgroundColor: chartType === 'bar' ? colors[i % colors.length] : 'transparent',
-      borderColor: colors[i % colors.length],
-      borderWidth: 2,
-      fill: chartType === 'area',
-      tension: chartType === 'line' || chartType === 'area' ? 0.4 : 0
-    }))
-  };
-}
-
-function getChartConfig(chartType, chartData, colors, showLegend, showGrid) {
-  const baseConfig = {
-    type: mapChartType(chartType),
-    data: chartData,
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: showLegend,
-          position: 'top'
-        },
-        tooltip: {
-          enabled: true,
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleColor: '#ffffff',
-          bodyColor: '#ffffff',
-          borderColor: '#e2e8f0',
-          borderWidth: 1
-        }
-      },
-      scales: chartType !== 'pie' && chartType !== 'doughnut' ? {
-        x: {
-          display: true,
-          grid: {
-            display: showGrid,
-            color: '#f3f4f6'
-          },
-          ticks: {
-            color: '#6b7280'
-          }
-        },
-        y: {
-          display: true,
-          grid: {
-            display: showGrid,
-            color: '#f3f4f6'
-          },
-          ticks: {
-            color: '#6b7280'
-          }
-        }
-      } : {}
-    }
-  };
-
-  if (chartType === 'scatter' && baseConfig.data.datasets.length) {
-    baseConfig.data.datasets[0].pointRadius = 6;
-    baseConfig.data.datasets[0].pointHoverRadius = 8;
-  }
-
-  return baseConfig;
-}
-
-function mapChartType(chartType) {
-  switch (chartType) {
-    case 'bar': return 'bar';
-    case 'line': return 'line';
-    case 'pie': return 'pie';
-    case 'area': return 'line';
-    case 'scatter': return 'scatter';
-    default: return 'bar';
+    return;
   }
 }
 
-// Modal helpers
-function getOrCreateModalShell() {
-  if (document.getElementById('vizModalBackdrop')) {
-    return '';
-  }
-  return `
-    <div id="vizModalBackdrop" class="viz-modal-backdrop">
-      <div class="viz-modal" role="dialog" aria-modal="true">
-        <button class="viz-modal-close-icon" id="vizModalCloseBtn" aria-label="Close">×</button>
-        <div class="viz-modal-content">
-          <canvas id="vizModalCanvas"></canvas>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function attachCardClickToOpenModal(canvasEl, chartConfig) {
-  const card = canvasEl.closest('.viz-card');
-  if (!card) return;
-  if (card.dataset.bound === '1') return;
-  card.dataset.bound = '1';
-
-  const handler = (e) => {
-    e.stopPropagation();
-    openVisualizationModal(card, chartConfig);
-  };
-  card.addEventListener('click', handler);
-}
-
-function attachCardClickById(containerId, chartConfig) {
-  const card = document.querySelector(`.viz-card[data-viz-container="${containerId}"]`);
+// SVG modal helpers
+function attachSvgClickHandler(containerId) {
+  const card = document.querySelector(`[data-svg-container="${containerId}"]`);
   if (!card || card.dataset.bound === '1') return;
   card.dataset.bound = '1';
+
   card.addEventListener('click', (e) => {
     e.stopPropagation();
-    openVisualizationModal(card, chartConfig);
+    const svgData = card.querySelector('[data-svg-content]');
+    if (svgData) {
+      const svg = decodeURIComponent(svgData.dataset.svgContent);
+      openSvgModal(svg);
+    }
   });
 }
 
-function openVisualizationModal(card, chartConfig) {
+function openSvgModal(svgContent) {
   let backdrop = document.getElementById('vizModalBackdrop');
   if (!backdrop) {
     const container = document.createElement('div');
-    container.innerHTML = getOrCreateModalShell();
+    container.innerHTML = `
+      <div id="vizModalBackdrop" class="viz-modal-backdrop">
+        <div class="viz-modal viz-modal--svg" role="dialog" aria-modal="true">
+          <button class="viz-modal-close-icon" id="vizModalCloseBtn" aria-label="Close">×</button>
+          <div class="viz-modal-content viz-modal-content--svg">
+            <div id="vizModalSvgContainer"></div>
+          </div>
+        </div>
+      </div>
+    `;
     const node = container.firstElementChild;
     if (node) document.body.appendChild(node);
     backdrop = document.getElementById('vizModalBackdrop');
-  } else if (backdrop.parentElement !== document.body) {
-    document.body.appendChild(backdrop);
   }
 
   const closeBtn = document.getElementById('vizModalCloseBtn');
-  const modalCanvas = document.getElementById('vizModalCanvas');
+  const svgContainer = document.getElementById('vizModalSvgContainer');
 
   backdrop.classList.add('visible');
   const prevOverflow = document.body.style.overflow;
   document.body.dataset.prevOverflow = prevOverflow;
   document.body.style.overflow = 'hidden';
 
-  if (modalCanvas.__chartInstance) {
-    try { modalCanvas.__chartInstance.destroy(); } catch (_) {}
-  }
-
-  const modalConfig = JSON.parse(JSON.stringify(chartConfig));
-  modalConfig.options = modalConfig.options || {};
-  modalConfig.options.maintainAspectRatio = false;
-  modalConfig.options.responsive = true;
-
-  setTimeout(() => {
-    try {
-      modalCanvas.__chartInstance = new Chart(modalCanvas.getContext('2d'), modalConfig);
-    } catch (err) {
-      console.error('Error creating modal chart', err);
-    }
-  }, 0);
+  // Insert SVG
+  svgContainer.innerHTML = svgContent;
 
   const onKey = (ev) => {
     if (ev.key === 'Escape') {
-      closeVisualizationModal();
+      closeModal();
     }
   };
 
   const onBackdropClick = (ev) => {
     if (ev.target === backdrop) {
-      closeVisualizationModal();
+      closeModal();
     }
   };
 
-  const onClose = () => closeVisualizationModal();
+  const onClose = () => closeModal();
 
   document.addEventListener('keydown', onKey);
   backdrop.addEventListener('click', onBackdropClick, { once: true });
@@ -383,7 +132,76 @@ function openVisualizationModal(card, chartConfig) {
   };
 }
 
-function closeVisualizationModal() {
+// Image modal helpers
+function attachImageClickHandler(containerId) {
+  const card = document.querySelector(`[data-img-container="${containerId}"]`);
+  if (!card || card.dataset.bound === '1') return;
+  card.dataset.bound = '1';
+
+  card.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const imgData = card.querySelector('[data-img-content]');
+    if (imgData) {
+      const imageBase64 = decodeURIComponent(imgData.dataset.imgContent);
+      openImageModal(imageBase64);
+    }
+  });
+}
+
+function openImageModal(imageBase64) {
+  let backdrop = document.getElementById('vizModalBackdrop');
+  if (!backdrop) {
+    const container = document.createElement('div');
+    container.innerHTML = `
+      <div id="vizModalBackdrop" class="viz-modal-backdrop">
+        <div class="viz-modal viz-modal--svg" role="dialog" aria-modal="true">
+          <button class="viz-modal-close-icon" id="vizModalCloseBtn" aria-label="Close">×</button>
+          <div class="viz-modal-content viz-modal-content--svg">
+            <div id="vizModalImageContainer"></div>
+          </div>
+        </div>
+      </div>
+    `;
+    const node = container.firstElementChild;
+    if (node) document.body.appendChild(node);
+    backdrop = document.getElementById('vizModalBackdrop');
+  }
+
+  const closeBtn = document.getElementById('vizModalCloseBtn');
+  const imageContainer = document.getElementById('vizModalImageContainer');
+
+  backdrop.classList.add('visible');
+  const prevOverflow = document.body.style.overflow;
+  document.body.dataset.prevOverflow = prevOverflow;
+  document.body.style.overflow = 'hidden';
+
+  // Insert image
+  imageContainer.innerHTML = `<img src="data:image/png;base64,${imageBase64}" alt="Data Visualization" style="max-width: 100%; max-height: 100%; width: auto; height: auto;" />`;
+
+  const onKey = (ev) => {
+    if (ev.key === 'Escape') {
+      closeModal();
+    }
+  };
+
+  const onBackdropClick = (ev) => {
+    if (ev.target === backdrop) {
+      closeModal();
+    }
+  };
+
+  const onClose = () => closeModal();
+
+  document.addEventListener('keydown', onKey);
+  backdrop.addEventListener('click', onBackdropClick, { once: true });
+  if (closeBtn) closeBtn.addEventListener('click', onClose, { once: true });
+
+  backdrop.__cleanup = () => {
+    document.removeEventListener('keydown', onKey);
+  };
+}
+
+function closeModal() {
   const backdrop = document.getElementById('vizModalBackdrop');
   if (!backdrop) return;
   backdrop.classList.remove('visible');
@@ -393,13 +211,4 @@ function closeVisualizationModal() {
   }
   const prevOverflow = document.body.dataset.prevOverflow || '';
   document.body.style.overflow = prevOverflow;
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
 }

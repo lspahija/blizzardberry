@@ -440,6 +440,33 @@
 .viz-modal-content { flex: 1; position: relative; padding: 56px 64px; }
 .viz-modal-content canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; background: #ffffff; }
 
+/* SVG modal variant - 75% of screen */
+.viz-modal--svg {
+    width: 75vw;
+    height: 75vh;
+}
+
+.viz-modal-content--svg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+
+.viz-modal-content--svg svg {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+.viz-modal-content--svg img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
 /* Responsive - on mobile use fullscreen */
 @media (max-width: 768px) {
     .viz-modal {
