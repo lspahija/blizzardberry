@@ -27,6 +27,8 @@ export function getStoredConversationId() {
   try {
     console.log('=== Session Storage Debug ===');
     console.log('Referrer detected:', document.referrer);
+    console.log('Current location:', location);
+
     console.log('Referrer hostname:', new URL(document.referrer).hostname);
     console.log('Current hostname:', location.hostname);
     console.log(
