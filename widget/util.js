@@ -25,6 +25,14 @@ export function convertBoldFormatting(text) {
 
 export function getStoredConversationId() {
   try {
+    console.log('=== Session Storage Debug ===');
+    console.log('Referrer detected:', document.referrer);
+    console.log('Referrer hostname:', new URL(document.referrer).hostname);
+    console.log('Current hostname:', location.hostname);
+    console.log(
+      'Hostnames match:',
+      new URL(document.referrer).hostname === location.hostname
+    );
     // Check if we're coming from a different domain and clear sessionStorage if so
     if (
       document.referrer &&
