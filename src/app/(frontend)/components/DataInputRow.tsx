@@ -3,6 +3,7 @@
 import { Button } from '@/app/(frontend)/components/ui/button';
 import { Input } from '@/app/(frontend)/components/ui/input';
 import { Label } from '@/app/(frontend)/components/ui/label';
+import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -102,7 +103,7 @@ export default function DataInputRow({
           {descriptionIcon}
           Description
         </Label>
-        <Input
+        <Textarea
           id={`inputDesc${index}`}
           value={input.description}
           onChange={(e) => updateDataInput('description', e.target.value)}

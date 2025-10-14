@@ -10,6 +10,7 @@ export const getActions = async (agentId: string): Promise<Action[]> => {
     SELECT id, name, description, execution_context, execution_model, agent_id
     FROM actions
     WHERE agent_id = ${agentId}
+    ORDER BY created_at DESC
   `;
 
   return actions.map((d: any) => ({
