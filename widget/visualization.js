@@ -1,5 +1,6 @@
 import { state } from './state';
 import { persistMessage } from './api';
+import { Parser } from 'expr-eval';
 
 export async function addVisualizationToMessage(visualizationResult) {
   if (!visualizationResult || visualizationResult.type !== 'visualization') {
@@ -216,12 +217,14 @@ function closeModal() {
 
 // Sanitize SVG by evaluating arithmetic expressions in attributes
 function sanitizeSvgExpressions(svgContent) {
+  const parser = new Parser();
+
   // Match attribute values that contain arithmetic expressions like "60+10" or "100-20"
   return svgContent.replace(/(\w+)="([^"]*[\+\-\*\/][^"]*)"/g, (match, attr, expr) => {
     try {
       // Only evaluate if it looks like a simple arithmetic expression
       if (/^[\d\s\+\-\*\/\(\)\.]+$/.test(expr)) {
-        const result = eval(expr);
+        const result = parser.evaluate(expr);
         return `${attr}="${result}"`;
       }
     } catch (e) {

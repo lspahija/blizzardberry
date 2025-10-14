@@ -18,7 +18,7 @@ Visualize the data as a chart and return the SVG.`;
 
   try {
     const result = await generateText({
-      model: openrouter('openai/gpt-5-mini'),
+      model: openrouter('openai/gpt-4o'),
       prompt: prompt,
     });
     const svgMatch = result.text.match(/<svg[\s\S]*?<\/svg>/i);

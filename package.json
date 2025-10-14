@@ -45,6 +45,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "cohere-ai": "^7.17.1",
+    "expr-eval": "^2.0.2",
     "framer-motion": "^12.17.0",
     "gsap": "^3.13.0",
     "javascript-obfuscator": "^4.1.1",
