@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import Script from 'next/script';
 
-export function BlizzardBerryAgent() {
+export function BlizzardBerryLoggedInAgent() {
   const { data: session, status } = useSession();
 
   // Only render scripts if user is authenticated

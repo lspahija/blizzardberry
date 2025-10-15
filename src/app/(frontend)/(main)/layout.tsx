@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { FrameworkProvider } from '@/app/(frontend)/contexts/useFramework';
 import { Suspense } from 'react';
-import { BlizzardBerryAgent } from '@/app/(frontend)/components/BlizzardBerryAgent';
+import { BlizzardBerryLoggedInAgent } from '@/app/(frontend)/components/BlizzardBerryLoggedInAgent.tsx';
 import { BlizzardBerryPublicAgent } from '@/app/(frontend)/components/BlizzardBerryPublicAgent';
 import { Navbar } from '@/app/(frontend)/components/Navbar';
 import Script from 'next/script';
@@ -21,7 +21,7 @@ export default function FrontendLayout({
       <FrameworkProvider>
         <Navbar />
         {children}
-        <BlizzardBerryAgent />
+        <BlizzardBerryLoggedInAgent />
         <BlizzardBerryPublicAgent />
         <Script src="/lib/user-action-tracker.js" />
       </FrameworkProvider>
