@@ -39,6 +39,10 @@ export async function createAgent(
   const [agent] = await sql`
     INSERT INTO agents (name, website_domain, created_by, model)
     VALUES (${name}, ${websiteDomain}, ${userId}, ${model})
+    ON CONFLICT (name, created_by)
+    DO UPDATE SET
+      website_domain = EXCLUDED.website_domain,
+      model = EXCLUDED.model
     RETURNING id
   `;
 
