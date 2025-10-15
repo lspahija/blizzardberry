@@ -226,9 +226,23 @@ export async function createWidgetDOM() {
     });
 
     // Add event listeners for the send button
-    widget
-      .querySelector('#chatWidgetSendButton')
-      ?.addEventListener('click', handleSubmit);
+    const sendButton = widget.querySelector('#chatWidgetSendButton');
+    if (sendButton) {
+      // Add click event for desktop
+      sendButton.addEventListener('click', handleSubmit);
+
+      // Add touch event for mobile devices
+      sendButton.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Prevent click delay on mobile
+        e.stopPropagation(); // Prevent widget touch handlers
+      }, { passive: false });
+
+      sendButton.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleSubmit();
+      }, { passive: false });
+    }
 
     // Add drag functionality
     let isDragging = false;
