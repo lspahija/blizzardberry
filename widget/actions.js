@@ -6,24 +6,28 @@ import { config } from './config';
 export async function executeAction(actionModel) {
   console.log('executing action: ', actionModel);
 
-  const actionResult = actionModel.toolName.startsWith('ACTION_CLIENT_')
-    ? await executeClientAction(actionModel)
-    : await executeServerAction(actionModel);
+  try {
+    const actionResult = actionModel.toolName.startsWith('ACTION_CLIENT_')
+      ? await executeClientAction(actionModel)
+      : await executeServerAction(actionModel);
 
-  state.messages.push({
-    id: generateId(),
-    role: 'assistant',
-    parts: [
-      {
-        type: 'text',
-        text: `The action ${actionModel.toolName.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action'} was successfully executed.`,
-      },
-    ],
-  });
+    state.messages.push({
+      id: generateId(),
+      role: 'assistant',
+      parts: [
+        {
+          type: 'text',
+          text: `The action ${actionModel.toolName.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action'} was successfully executed.`,
+        },
+      ],
+    });
 
-  await persistMessage(state.messages[state.messages.length - 1]);
+    await persistMessage(state.messages[state.messages.length - 1]);
 
-  return `ACTION_RESULT: ${JSON.stringify(actionResult)}`;
+    return `ACTION_RESULT: ${JSON.stringify(actionResult)}`;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function executeClientAction(actionModel) {
