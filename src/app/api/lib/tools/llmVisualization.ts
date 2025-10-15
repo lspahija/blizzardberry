@@ -36,7 +36,7 @@ Return ONLY the complete, valid SVG code.`;
 
   try {
     const result = await generateText({
-      model: openrouter('anthropic/claude-sonnet-4.5'),
+      model: openrouter('anthropic/claude-opus-4.1'),
       prompt: prompt,
     });
     const svgMatch = result.text.match(/<svg[\s\S]*?<\/svg>/i);
