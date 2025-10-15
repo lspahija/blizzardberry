@@ -8,7 +8,8 @@ CREATE TABLE agents
     website_domain TEXT NOT NULL,
     model          TEXT NOT NULL,
     created_by     UUID NOT NULL REFERENCES next_auth.users (id) ON DELETE CASCADE,
-    created_at     TIMESTAMP WITH TIME ZONE DEFAULT now()
+    created_at     TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    UNIQUE (name, created_by)
 );
 
 -- Essential indexes for agent queries
@@ -29,7 +30,8 @@ CREATE TABLE actions
     execution_context execution_context NOT NULL,
     execution_model   JSONB             NOT NULL,
     agent_id          UUID              NOT NULL REFERENCES agents (id) ON DELETE CASCADE,
-    created_at        TIMESTAMP WITH TIME ZONE DEFAULT now()
+    created_at        TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    UNIQUE (name, agent_id)
 );
 
 -- Essential indexes for action queries

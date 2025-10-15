@@ -56,6 +56,11 @@ export const createAction = async (
   await sql`
     INSERT INTO actions (name, description, execution_context, execution_model, agent_id)
     VALUES (${actionName}, ${description}, ${executionContext}, ${JSON.stringify(executionModel)}::jsonb, ${agentId})
+    ON CONFLICT (name, agent_id)
+    DO UPDATE SET
+      description = EXCLUDED.description,
+      execution_context = EXCLUDED.execution_context,
+      execution_model = EXCLUDED.execution_model
   `;
 };
 
