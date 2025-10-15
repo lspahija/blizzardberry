@@ -17,7 +17,7 @@ export function BlizzardBerryPublicAgent() {
         id="blizzardberry-public-agent"
         src="/agent/agent.js"
         strategy="afterInteractive"
-        data-agent-id="f452cd58-23aa-4a6c-87d0-e68fb7384c73"
+        data-agent-id="7cd03c64-5822-4dd9-8c22-35686c207410"
       />
       <Script id="BlizzardBerry-public-actions" strategy="afterInteractive">
         {`
