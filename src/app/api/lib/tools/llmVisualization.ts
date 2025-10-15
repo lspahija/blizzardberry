@@ -43,6 +43,7 @@ Return ONLY the complete, valid SVG code.`;
     if (svgMatch) {
       return { svg: svgMatch[0] };
     }
+    console.error('No SVG generated in response', result.text);
     return { error: 'No SVG generated in response' };
   } catch (error) {
     console.error('Error generating visualization with LLM:', error);

@@ -76,6 +76,8 @@ function attachSvgClickHandler(containerId) {
     if (svgData) {
       const svg = decodeURIComponent(svgData.dataset.svgContent);
       openSvgModal(svg);
+    } else {
+      console.error('No SVG data found in card!');
     }
   });
 }

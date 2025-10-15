@@ -12,6 +12,7 @@ export const AGENT_MODELS = {
   'openai/gpt-4.1-nano': 'OpenAI GPT 4.1 Nano',
   'openai/o4-mini-high': 'OpenAI o4-mini-high',
   'openai/o4-mini': 'OpenAI o4-mini',
+  'anthropic/claude-opus-4.1': 'Claude Opus 4.1',
   'anthropic/claude-opus-4': 'Claude Opus 4',
   'anthropic/claude-sonnet-4.5': 'Claude Sonnet 4.5',
   'anthropic/claude-sonnet-4': 'Claude Sonnet 4',

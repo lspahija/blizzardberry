@@ -33,7 +33,7 @@ export function createVisualizationTool(): Tool {
         return {
           type: 'visualization',
           svg: result.svg,
-          message: 'Generated visualization with GPT-5',
+          message: 'Generated visualization with an LLM',
         };
       } catch (error) {
         console.error('Error creating visualization:', error);
