@@ -145,6 +145,10 @@ export async function processMessage(messageText, role) {
     state.isProcessing = false;
     updateConversationUI();
   } catch (error) {
+    if (error.name === 'AbortError' && error instanceof DOMException) {
+      console.log('Request aborted due to navigation—ignoring.');
+      return;
+    }
     await handleError('Error processing message. ' + error);
   }
 }
