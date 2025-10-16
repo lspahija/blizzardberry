@@ -11,13 +11,18 @@ export async function executeAction(actionModel) {
       ? await executeClientAction(actionModel)
       : await executeServerAction(actionModel);
 
+    const actionName = actionModel.toolName.replace(
+      /^ACTION_(CLIENT_|SERVER_)/,
+      ''
+    );
+
     state.messages.push({
       id: generateId(),
       role: 'assistant',
       parts: [
         {
           type: 'text',
-          text: `The action ${actionModel.toolName.replace(/^ACTION_(CLIENT_|SERVER_)/, '') || actionModel.action || 'Action'} was successfully executed.`,
+          text: `The action ${actionName} was successfully executed.`,
         },
       ],
     });
