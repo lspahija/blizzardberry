@@ -6,10 +6,9 @@ import { config } from './config';
 export async function executeAction(actionModel) {
   console.log('executing action: ', actionModel);
 
-  try {
-    const actionResult = actionModel.toolName.startsWith('ACTION_CLIENT_')
-      ? await executeClientAction(actionModel)
-      : await executeServerAction(actionModel);
+  const actionResult = actionModel.toolName.startsWith('ACTION_CLIENT_')
+    ? await executeClientAction(actionModel)
+    : await executeServerAction(actionModel);
 
     const actionName = actionModel.toolName.replace(
       /^ACTION_(CLIENT_|SERVER_)/,
@@ -27,12 +26,9 @@ export async function executeAction(actionModel) {
       ],
     });
 
-    await persistMessage(state.messages[state.messages.length - 1]);
+  await persistMessage(state.messages[state.messages.length - 1]);
 
-    return `ACTION_RESULT: ${JSON.stringify(actionResult)}`;
-  } catch (error) {
-    throw error;
-  }
+  return `ACTION_RESULT: ${JSON.stringify(actionResult)}`;
 }
 
 async function executeClientAction(actionModel) {
