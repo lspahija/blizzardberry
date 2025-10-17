@@ -10,7 +10,7 @@ export default function ProxyPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:1337/api/encode', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BLIZZARDBERRY_MIRROR_BASE_URL}/api/encode`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
