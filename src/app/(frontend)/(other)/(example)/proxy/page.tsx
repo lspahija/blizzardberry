@@ -27,24 +27,27 @@ export default function ProxyPage() {
 
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <form onSubmit={handleSubmit} style={{ padding: '20px', display: 'flex', gap: '10px' }}>
-        <input
-          type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="Enter URL"
-          style={{ flex: 1, padding: '10px', fontSize: '16px' }}
-        />
-        <button type="submit" style={{ padding: '10px 20px', fontSize: '16px' }}>
-          Load
-        </button>
-      </form>
-      {encodedUrl && (
+      {!encodedUrl ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px', width: '80%', maxWidth: '600px' }}>
+            <input
+              type="text"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="Enter URL"
+              style={{ flex: 1, padding: '10px', fontSize: '16px' }}
+            />
+            <button type="submit" style={{ padding: '10px 20px', fontSize: '16px' }}>
+              Load
+            </button>
+          </form>
+        </div>
+      ) : (
         <iframe
           src={encodedUrl}
           style={{
             width: '100%',
-            height: 'calc(100vh - 70px)',
+            height: '100vh',
             border: 'none',
           }}
         />
