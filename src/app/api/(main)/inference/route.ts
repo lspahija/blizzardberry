@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       model: openrouter(`${agent.model}:floor`),
       system: buildSystemMessage(userConfig),
       messages: convertToModelMessages(messages),
-      tools: await getTools(agentId),
+      tools: await getTools(agentId, conversationId),
       stopWhen: stepCountIs(5),
       maxOutputTokens: 1000,
     });

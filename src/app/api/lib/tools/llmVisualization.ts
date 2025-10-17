@@ -1,8 +1,20 @@
 import { generateText } from 'ai';
 import { openrouter } from '@openrouter/ai-sdk-provider';
+import {
+  createCreditHold,
+  recordUsedTokens,
+} from '@/app/api/lib/llm/tokenUsageManager';
+
+let counter = 0;
+function generateId(conversationId?: string): string {
+  const base = conversationId || 'no-conv';
+  return `${base}-${Date.now()}-${counter++}`;
+}
 
 export async function generateVisualizationWithLLM(
   data: any,
+  userId?: string,
+  conversationId?: string,
   description?: string
 ): Promise<{ svg?: string; error?: string }> {
   const prompt = `Create a professional data visualization for this data:
@@ -35,10 +47,35 @@ Double-check that the final output has NO rendering bugs, misalignments, or visu
 Return ONLY the complete, valid SVG code.`;
 
   try {
+    let holdIds: number[] = [];
+
+    if (userId) {
+      const toolCallId = generateId(conversationId);
+      holdIds = await createCreditHold(
+        userId,
+        100, // Higher limit for Claude Opus 4.1 which is more expensive
+        'visualization-generation',
+        toolCallId
+      );
+    }
+
     const result = await generateText({
       model: openrouter('anthropic/claude-opus-4.1'),
       prompt: prompt,
     });
+
+    if (userId && result.usage && holdIds.length > 0) {
+      const toolCallId = generateId(conversationId);
+      await recordUsedTokens(
+        userId,
+        holdIds,
+        result.usage,
+        'anthropic/claude-opus-4.1',
+        'visualization-generation',
+        toolCallId
+      );
+    }
+
     const svgMatch = result.text.match(/<svg[\s\S]*?<\/svg>/i);
     if (svgMatch) {
       return { svg: svgMatch[0] };
