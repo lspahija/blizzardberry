@@ -10,7 +10,7 @@ export default function ProxyPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:8080/api/encode', {
+      const response = await fetch('http://localhost:1337/api/encode', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
