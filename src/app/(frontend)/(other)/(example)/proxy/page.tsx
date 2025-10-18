@@ -9,13 +9,16 @@ export default function ProxyPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Add https:// if no protocol is specified
+    const normalizedUrl = url.match(/^https?:\/\//) ? url : `https://${url}`;
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BLIZZARDBERRY_MIRROR_BASE_URL}/api/encode`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url: normalizedUrl }),
       });
 
       const data = await response.json();
