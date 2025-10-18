@@ -1,8 +1,12 @@
 import { tool, Tool } from 'ai';
 import { z } from 'zod';
 import { generateVisualizationWithLLM } from './llmVisualization';
+import { getAgent } from '@/app/api/lib/store/agentStore';
 
-export function createVisualizationTool(): Tool {
+export function createVisualizationTool(
+  agentId: string,
+  conversationId?: string
+): Tool {
   return tool({
     description:
       'Generate data visualizations for any type of data. The LLM will analyze the data and create an appropriate SVG chart. Works with arrays, objects, nested structures - any data format.',
@@ -21,7 +25,15 @@ export function createVisualizationTool(): Tool {
       const { data, description } = input;
 
       try {
-        const result = await generateVisualizationWithLLM(data, description);
+        const agent = await getAgent(agentId);
+        const userId = agent?.created_by;
+
+        const result = await generateVisualizationWithLLM(
+          data,
+          userId,
+          conversationId,
+          description
+        );
 
         if (result.error || !result.svg) {
           return {
