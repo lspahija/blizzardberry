@@ -101,10 +101,6 @@ export async function callLLM() {
     const errorBody = await response.text().catch(() => 'Unable to read response body');
     console.error('Failed to fetch AI response:', {
       status: response.status,
-      statusText: response.statusText,
-      url,
-      method: 'POST',
-      requestBody: body,
       headers: Object.fromEntries(response.headers.entries()),
       body: errorBody,
     });
