@@ -81,6 +81,7 @@ export async function createNewConversation() {
 }
 
 export async function callLLM() {
+  const url = `${config.baseUrl}/api/inference`;
   const body = {
     messages: state.messages,
     userConfig: config.userConfig,
@@ -90,13 +91,25 @@ export async function callLLM() {
   if (state.conversationId) {
     body.conversationId = state.conversationId;
   }
-  const response = await fetch(`${config.baseUrl}/api/inference`, {
+  const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
 
-  if (!response.ok) throw new Error('Failed to fetch AI response');
+  if (!response.ok) {
+    const errorBody = await response.text().catch(() => 'Unable to read response body');
+    console.error('Failed to fetch AI response:', {
+      status: response.status,
+      statusText: response.statusText,
+      url,
+      method: 'POST',
+      requestBody: body,
+      headers: Object.fromEntries(response.headers.entries()),
+      body: errorBody,
+    });
+    throw new Error('Failed to fetch AI response');
+  }
   const res = ({
     text,
     toolResults,
