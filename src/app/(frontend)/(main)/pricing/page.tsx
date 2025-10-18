@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { pricing } from '@/app/api/(main)/stripe/pricingModel';
+import { pricing, getPurchasableTiers } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
 import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
@@ -326,7 +326,7 @@ export default function PricingPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 [@media(min-width:1400px)]:grid-cols-5 gap-6 mb-16 sm:mb-20 pt-2 sm:pt-6">
-              {Object.entries(pricing.tiers)
+              {Object.entries(getPurchasableTiers())
                 .filter(([key]) => !isLoggedIn || key !== 'free')
                 .map(([key, tier], idx, arr) => (
                   <div
@@ -501,7 +501,7 @@ export default function PricingPage() {
               {/* Enterprise Card */}
               <div
                 className={`relative bg-card p-8 border-[3px] border-border rounded-2xl transition-all duration-300 hover:shadow-xl flex flex-col items-stretch w-full max-w-sm lg:max-w-none mx-auto lg:mx-0 2xl:min-w-[360px] 2xl:max-w-[440px] hover:-translate-y-1 hover:-translate-x-1 ${
-                  Object.entries(pricing.tiers).filter(
+                  Object.entries(getPurchasableTiers()).filter(
                     ([key]) => !isLoggedIn || key !== 'free'
                   ).length === 5
                     ? 'lg:col-start-3'

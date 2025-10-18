@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { pricing } from '@/app/api/(main)/stripe/pricingModel';
+import { pricing, getPurchasableTiers } from '@/app/api/(main)/stripe/pricingModel';
 import { toast } from 'sonner';
 import { AGENT_MODELS } from '@/app/api/lib/model/agent/agent';
 import { useStripeSubscription } from '@/app/(frontend)/hooks/useStripeSubscription';
@@ -250,7 +250,7 @@ export default function UpgradePage() {
     }
 
     if (!userSubscription || !userSubscription.tier) {
-      return Object.entries(pricing.tiers).filter(
+      return Object.entries(getPurchasableTiers()).filter(
         ([key]) => key !== 'enterprise' && key !== 'free'
       );
     }
@@ -258,7 +258,7 @@ export default function UpgradePage() {
     const currentTierIndex = tierOrder.indexOf(
       userSubscription.tier.toLowerCase()
     );
-    return Object.entries(pricing.tiers).filter(([key]) => {
+    return Object.entries(getPurchasableTiers()).filter(([key]) => {
       const tierIndex = tierOrder.indexOf(key);
       return (
         tierIndex > currentTierIndex && key !== 'enterprise' && key !== 'free'

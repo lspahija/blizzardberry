@@ -63,6 +63,16 @@ export const pricing: Pricing = {
       agents: 3,
       actionsPerAgent: 24,
     },
+    admin: {
+      name: 'Admin',
+      monthlyPriceId: null,
+      yearlyPriceId: null,
+      monthlyPrice: 0,
+      yearlyPrice: 0,
+      credits: 1000000,
+      agents: 100,
+      actionsPerAgent: 100,
+    },
   },
   oneTimePurchase: {
     name: '1,000 Credits',
@@ -71,3 +81,13 @@ export const pricing: Pricing = {
     credits: 1000,
   },
 };
+
+// Hidden tiers that should not be shown to users or purchasable
+const HIDDEN_TIERS = ['admin'];
+
+// Helper function to get only purchasable/visible tiers
+export function getPurchasableTiers(): Record<string, Tier> {
+  return Object.fromEntries(
+    Object.entries(pricing.tiers).filter(([key]) => !HIDDEN_TIERS.includes(key))
+  );
+}

@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { pricing } from '@/app/api/(main)/stripe/pricingModel';
+import { pricing, getPurchasableTiers } from '@/app/api/(main)/stripe/pricingModel';
 import {
   getSubscription,
   upsertSubscription,
@@ -94,15 +94,19 @@ export async function POST(req: Request) {
   }
 
   const { tier, billingCycle } = (await req.json()) as RequestBody;
-  const tierDetails = pricing.tiers[tier];
+
+  const purchasableTiers = getPurchasableTiers();
+  const tierDetails = purchasableTiers[tier];
+
+  // Prevent subscription to non-purchasable tiers (like admin) or invalid tiers
+  if (!tierDetails) {
+    return NextResponse.json({ error: 'Invalid tier' }, { status: 400 });
+  }
+
   const priceId =
     billingCycle === 'monthly'
       ? tierDetails.monthlyPriceId
       : tierDetails.yearlyPriceId;
-
-  if (!tierDetails) {
-    return NextResponse.json({ error: 'Invalid tier' }, { status: 400 });
-  }
 
   const userId = session.user.id;
   const subscription = await getSubscription(userId);

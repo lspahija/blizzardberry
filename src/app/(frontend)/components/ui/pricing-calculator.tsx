@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { calculateEstimatedMessages } from '@/app/(frontend)/lib/usageCalculator';
-import { pricing } from '@/app/api/(main)/stripe/pricingModel';
+import { getPurchasableTiers } from '@/app/api/(main)/stripe/pricingModel';
 
 interface ModelPrice {
   rawInput: number;
@@ -39,7 +39,7 @@ export function PricingCalculator() {
     if (selectedModel && modelPrices && modelPrices[selectedModel]) {
       const estimates: Record<string, number> = {};
 
-      Object.entries(pricing.tiers).forEach(([tierKey, tier]) => {
+      Object.entries(getPurchasableTiers()).forEach(([tierKey, tier]) => {
         const messages = calculateEstimatedMessages({
           credits: tier.credits,
           modelPrice: modelPrices[selectedModel],
@@ -88,7 +88,7 @@ export function PricingCalculator() {
             <div className="text-sm font-medium text-foreground mb-2">
               Estimated conversations per plan:
             </div>
-            {Object.entries(pricing.tiers).map(([tierKey, tier]) => (
+            {Object.entries(getPurchasableTiers()).map(([tierKey, tier]) => (
               <div
                 key={tierKey}
                 className="flex items-center justify-between p-3 bg-muted/40 rounded-lg"
