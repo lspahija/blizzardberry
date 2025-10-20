@@ -52,7 +52,7 @@ export default function DataInputRow({
         <Input
           id={`inputName${index}`}
           value={input.name}
-          onChange={(e) => updateDataInput('name', e.target.value)}
+          onChange={(e) => updateDataInput('name', e.target.value.trim())}
           placeholder="city"
           className="mt-2 border-[2px] border-border text-sm md:text-base text-foreground"
         />
@@ -106,7 +106,7 @@ export default function DataInputRow({
         <Textarea
           id={`inputDesc${index}`}
           value={input.description}
-          onChange={(e) => updateDataInput('description', e.target.value)}
+          onChange={(e) => updateDataInput('description', e.target.value.trim())}
           placeholder="The city to get weather for, e.g. Los Angeles"
           className="mt-2 border-[2px] border-border text-sm md:text-base text-foreground"
         />

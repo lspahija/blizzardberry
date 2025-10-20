@@ -120,7 +120,7 @@ function ActionEditContent() {
           } else {
             setDataInputs(
               parameters.map((param) => ({
-                name: param.name,
+                name: param.name.trim(),
                 type: param.type.charAt(0).toUpperCase() + param.type.slice(1),
                 description: param.description || '',
                 isArray: param.isArray || false,
@@ -173,7 +173,7 @@ function ActionEditContent() {
           } else {
             setDataInputs(
               parameters.map((param) => ({
-                name: param.name,
+                name: param.name.trim(),
                 type: param.type.charAt(0).toUpperCase() + param.type.slice(1),
                 description: param.description || '',
                 isArray: param.isArray || false,

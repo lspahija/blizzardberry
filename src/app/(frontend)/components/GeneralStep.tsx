@@ -88,7 +88,7 @@ export default function GeneralStep({
                   value={baseAction.name}
                   onChange={(e) => {
                     setErrors((prev) => ({ ...prev, name: undefined }));
-                    setBaseAction({ ...baseAction, name: e.target.value });
+                    setBaseAction({ ...baseAction, name: e.target.value.trim() });
                   }}
                   placeholder="Update_Subscription"
                   className={`mt-2 border-[2px] ${errors.name ? 'border-destructive' : 'border-border'} text-sm md:text-base`}
@@ -121,7 +121,7 @@ export default function GeneralStep({
                     setErrors((prev) => ({ ...prev, description: undefined }));
                     setBaseAction({
                       ...baseAction,
-                      description: e.target.value,
+                      description: e.target.value.trim(),
                     });
                   }}
                   placeholder="Describe when the AI agent should use this action..."

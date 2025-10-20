@@ -45,8 +45,8 @@ export default function HeaderInput({
         <SuggestInput
           id={`headerKey${index}`}
           value={header.key}
-          onChange={(e) => updateHeader('key', e.target.value)}
-          onSelect={(val) => updateHeader('key', val)}
+          onChange={(e) => updateHeader('key', e.target.value.trim())}
+          onSelect={(val) => updateHeader('key', val.trim())}
           suggestions={commonHeaderKeys}
           placeholder="Authorization"
           inputClassName="border-[2px] border-border text-foreground"
@@ -65,8 +65,8 @@ export default function HeaderInput({
         <SuggestInput
           id={`headerValue${index}`}
           value={header.value}
-          onChange={(e) => updateHeader('value', e.target.value)}
-          onSelect={(val) => updateHeader('value', val)}
+          onChange={(e) => updateHeader('value', e.target.value.trim())}
+          onSelect={(val) => updateHeader('value', val.trim())}
           suggestions={commonHeaderValues.concat(suggestions)}
           placeholder="Bearer {{token}}"
           inputClassName="border-[2px] border-border text-foreground"

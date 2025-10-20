@@ -165,7 +165,7 @@ export default function RequestDefinitionStep({
   const handleUrlChange = (value: string) => {
     if (isCreatingAction) return;
     setUrlError(null);
-    setApiUrl(value);
+    setApiUrl(value.trim());
   };
 
   const handleEditorWillMount = (monaco) => {
