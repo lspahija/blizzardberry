@@ -25,8 +25,6 @@ export async function getToolsFromActions(agentId: string) {
     const normalizedName = action.name.replace(/\s+/g, '_');
     const nameWithPrefix = `${prefix}${normalizedName}`;
 
-    console.log(`actionName: ${nameWithPrefix}`);
-
     const executeFunction: (input: any) => Promise<any> =
       action.executionContext === ExecutionContext.SERVER
         ? async (input) =>
@@ -38,16 +36,12 @@ export async function getToolsFromActions(agentId: string) {
             };
           };
 
-    console.log(`executeFunction: ${executeFunction.toString()}`);
-
     tools[nameWithPrefix] = tool({
       description: action.description,
       inputSchema,
       execute: executeFunction,
     });
   }
-
-  console.log(`tools: ${JSON.stringify(tools)}`);
 
   return tools;
 }
