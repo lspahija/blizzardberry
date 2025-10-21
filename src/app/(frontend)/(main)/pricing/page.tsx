@@ -656,7 +656,7 @@ export default function PricingPage() {
           )}
 
           {/* Pricing Calculator */}
-          <div className="mb-12 sm:mb-16 max-w-2xl mx-auto">
+          <div id="calculator" className="mb-12 sm:mb-16 max-w-2xl mx-auto">
             <PricingCalculator />
           </div>
 
