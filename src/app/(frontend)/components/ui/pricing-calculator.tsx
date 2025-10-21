@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { getPurchasableTiers } from '@/app/api/(main)/stripe/pricingModel';
-import { DOLLARS_TO_CREDITS, MARKUP_PERCENTAGE } from '@/app/api/lib/llm/constants';
+import {
+  DOLLARS_TO_CREDITS,
+  MARKUP_PERCENTAGE,
+} from '@/app/api/lib/llm/constants';
 import { calculateEstimatedMessages } from '@/app/(frontend)/lib/usageCalculator';
 
 interface ModelPrice {
@@ -10,10 +13,15 @@ interface ModelPrice {
   rawOutput: number;
 }
 
-type CalculatorTab = 'conversations-per-tier' | 'credits-per-message' | 'credits-per-conversation';
+type CalculatorTab =
+  | 'conversations-per-tier'
+  | 'credits-per-message'
+  | 'credits-per-conversation';
 
 export function PricingCalculator() {
-  const [activeTab, setActiveTab] = useState<CalculatorTab>('conversations-per-tier');
+  const [activeTab, setActiveTab] = useState<CalculatorTab>(
+    'conversations-per-tier'
+  );
   const [modelPrices, setModelPrices] = useState<Record<
     string,
     ModelPrice
@@ -64,7 +72,8 @@ export function PricingCalculator() {
 
     const creditsPerMessage =
       (avgInputTokens * modelPrice.rawInput * MARKUP_PERCENTAGE +
-       avgOutputTokens * modelPrice.rawOutput * MARKUP_PERCENTAGE) * DOLLARS_TO_CREDITS;
+        avgOutputTokens * modelPrice.rawOutput * MARKUP_PERCENTAGE) *
+      DOLLARS_TO_CREDITS;
 
     return creditsPerMessage;
   };
@@ -78,14 +87,16 @@ export function PricingCalculator() {
     const modelPrice = modelPrices[selectedModel];
 
     // Sum of 1 + 2 + 3 + ... + N = N * (N + 1) / 2 (for context growth)
-    const cumulativeMultiplier = (avgMessagesPerConversation * (avgMessagesPerConversation + 1)) / 2;
+    const cumulativeMultiplier =
+      (avgMessagesPerConversation * (avgMessagesPerConversation + 1)) / 2;
 
     const totalInputTokens = avgInputTokens * cumulativeMultiplier;
     const totalOutputTokens = avgOutputTokens * avgMessagesPerConversation;
 
     const creditsPerConversation =
       (totalInputTokens * modelPrice.rawInput * MARKUP_PERCENTAGE +
-       totalOutputTokens * modelPrice.rawOutput * MARKUP_PERCENTAGE) * DOLLARS_TO_CREDITS;
+        totalOutputTokens * modelPrice.rawOutput * MARKUP_PERCENTAGE) *
+      DOLLARS_TO_CREDITS;
 
     return creditsPerConversation;
   };
@@ -165,24 +176,26 @@ export function PricingCalculator() {
                 <div className="text-sm font-medium text-foreground mb-2">
                   Estimated conversations per plan:
                 </div>
-                {Object.entries(getPurchasableTiers()).map(([tierKey, tier]) => (
-                  <div
-                    key={tierKey}
-                    className="flex items-center justify-between p-3 bg-muted/40 rounded-lg"
-                  >
-                    <div>
-                      <div className="text-sm font-semibold text-foreground">
-                        {tier.name}
+                {Object.entries(getPurchasableTiers()).map(
+                  ([tierKey, tier]) => (
+                    <div
+                      key={tierKey}
+                      className="flex items-center justify-between p-3 bg-muted/40 rounded-lg"
+                    >
+                      <div>
+                        <div className="text-sm font-semibold text-foreground">
+                          {tier.name}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {tier.credits.toLocaleString()} credits
+                        </div>
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        {tier.credits.toLocaleString()} credits
+                      <div className="text-xl font-bold text-brand">
+                        ~{tierEstimates[tierKey]?.toLocaleString() || 0}
                       </div>
                     </div>
-                    <div className="text-xl font-bold text-brand">
-                      ~{tierEstimates[tierKey]?.toLocaleString() || 0}
-                    </div>
-                  </div>
-                ))}
+                  )
+                )}
                 <div className="text-xs text-muted-foreground mt-4 text-center">
                   Based on 10 messages per conversation
                 </div>
@@ -243,7 +256,8 @@ export function PricingCalculator() {
       {activeTab === 'credits-per-conversation' && (
         <>
           <p className="text-sm text-muted-foreground mb-4">
-            Credits needed for a full conversation. A conversation is approximately 10 messages.
+            Credits needed for a full conversation. A conversation is defined as
+            being 10 messages.
           </p>
 
           <div className="space-y-4">
