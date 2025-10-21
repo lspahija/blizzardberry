@@ -108,10 +108,10 @@ export function PricingCalculator() {
       </div>
 
       {/* Tabs */}
-      <div className="flex mb-6 border-b-2 border-border">
+      <div className="flex mb-6 border-b-2 border-border overflow-x-auto">
         <button
           onClick={() => setActiveTab('conversations-per-tier')}
-          className={`flex-1 px-4 py-2 font-medium text-sm transition-all duration-200 border-b-2 -mb-[2px] ${
+          className={`flex-1 px-2 sm:px-4 py-2 font-medium text-xs sm:text-sm transition-all duration-200 border-b-2 -mb-[2px] whitespace-nowrap ${
             activeTab === 'conversations-per-tier'
               ? 'text-brand border-brand'
               : 'text-muted-foreground border-transparent hover:text-foreground'
@@ -121,7 +121,7 @@ export function PricingCalculator() {
         </button>
         <button
           onClick={() => setActiveTab('credits-per-message')}
-          className={`flex-1 px-4 py-2 font-medium text-sm transition-all duration-200 border-b-2 -mb-[2px] ${
+          className={`flex-1 px-2 sm:px-4 py-2 font-medium text-xs sm:text-sm transition-all duration-200 border-b-2 -mb-[2px] whitespace-nowrap ${
             activeTab === 'credits-per-message'
               ? 'text-brand border-brand'
               : 'text-muted-foreground border-transparent hover:text-foreground'
@@ -131,7 +131,7 @@ export function PricingCalculator() {
         </button>
         <button
           onClick={() => setActiveTab('credits-per-conversation')}
-          className={`flex-1 px-4 py-2 font-medium text-sm transition-all duration-200 border-b-2 -mb-[2px] ${
+          className={`flex-1 px-2 sm:px-4 py-2 font-medium text-xs sm:text-sm transition-all duration-200 border-b-2 -mb-[2px] whitespace-nowrap ${
             activeTab === 'credits-per-conversation'
               ? 'text-brand border-brand'
               : 'text-muted-foreground border-transparent hover:text-foreground'
