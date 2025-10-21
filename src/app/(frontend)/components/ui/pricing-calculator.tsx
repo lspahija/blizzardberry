@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getPurchasableTiers, pricing } from '@/app/api/(main)/stripe/pricingModel';
+import { getPurchasableTiers } from '@/app/api/(main)/stripe/pricingModel';
 import { DOLLARS_TO_CREDITS, MARKUP_PERCENTAGE } from '@/app/api/lib/llm/constants';
 import { calculateEstimatedMessages } from '@/app/(frontend)/lib/usageCalculator';
 
@@ -10,15 +10,18 @@ interface ModelPrice {
   rawOutput: number;
 }
 
-type CalculatorTab = 'per-message' | 'per-conversation';
+type CalculatorTab = 'conversations-per-tier' | 'credits-per-message' | 'credits-per-conversation';
 
 export function PricingCalculator() {
-  const [activeTab, setActiveTab] = useState<CalculatorTab>('per-message');
+  const [activeTab, setActiveTab] = useState<CalculatorTab>('conversations-per-tier');
   const [modelPrices, setModelPrices] = useState<Record<
     string,
     ModelPrice
   > | null>(null);
   const [selectedModel, setSelectedModel] = useState<string>('');
+  const [tierEstimates, setTierEstimates] = useState<Record<string, number>>(
+    {}
+  );
 
   useEffect(() => {
     fetch('/api/model-prices?sortBy=order')
@@ -36,9 +39,24 @@ export function PricingCalculator() {
       });
   }, []);
 
+  useEffect(() => {
+    if (selectedModel && modelPrices && modelPrices[selectedModel]) {
+      const estimates: Record<string, number> = {};
 
-  const calculateCostPerMessage = (price: number, credits: number) => {
-    if (!selectedModel || !modelPrices || !modelPrices[selectedModel] || credits === 0) return 0;
+      Object.entries(getPurchasableTiers()).forEach(([tierKey, tier]) => {
+        const messages = calculateEstimatedMessages({
+          credits: tier.credits,
+          modelPrice: modelPrices[selectedModel],
+        });
+        estimates[tierKey] = messages;
+      });
+
+      setTierEstimates(estimates);
+    }
+  }, [selectedModel, modelPrices]);
+
+  const calculateCreditsPerMessage = () => {
+    if (!selectedModel || !modelPrices || !modelPrices[selectedModel]) return 0;
 
     const avgInputTokens = 30;
     const avgOutputTokens = 120;
@@ -48,23 +66,28 @@ export function PricingCalculator() {
       (avgInputTokens * modelPrice.rawInput * MARKUP_PERCENTAGE +
        avgOutputTokens * modelPrice.rawOutput * MARKUP_PERCENTAGE) * DOLLARS_TO_CREDITS;
 
-    const costPerCredit = price / credits;
-
-    return creditsPerMessage * costPerCredit;
+    return creditsPerMessage;
   };
 
-  const calculateCostPerConversation = (price: number, credits: number) => {
-    if (!selectedModel || !modelPrices || !modelPrices[selectedModel] || credits === 0) return 0;
-    
+  const calculateCreditsPerConversation = () => {
+    if (!selectedModel || !modelPrices || !modelPrices[selectedModel]) return 0;
+
+    const avgInputTokens = 30;
+    const avgOutputTokens = 120;
+    const avgMessagesPerConversation = 10; // 5 exchanges
     const modelPrice = modelPrices[selectedModel];
-    const conversationsPerCredits = calculateEstimatedMessages({
-      credits: credits,
-      modelPrice: modelPrice,
-    });
 
-    if (conversationsPerCredits === 0) return 0;
+    // Sum of 1 + 2 + 3 + ... + N = N * (N + 1) / 2 (for context growth)
+    const cumulativeMultiplier = (avgMessagesPerConversation * (avgMessagesPerConversation + 1)) / 2;
 
-    return price / conversationsPerCredits;
+    const totalInputTokens = avgInputTokens * cumulativeMultiplier;
+    const totalOutputTokens = avgOutputTokens * avgMessagesPerConversation;
+
+    const creditsPerConversation =
+      (totalInputTokens * modelPrice.rawInput * MARKUP_PERCENTAGE +
+       totalOutputTokens * modelPrice.rawOutput * MARKUP_PERCENTAGE) * DOLLARS_TO_CREDITS;
+
+    return creditsPerConversation;
   };
 
   return (
@@ -76,32 +99,42 @@ export function PricingCalculator() {
       {/* Tabs */}
       <div className="flex mb-6 border-b-2 border-border">
         <button
-          onClick={() => setActiveTab('per-message')}
+          onClick={() => setActiveTab('conversations-per-tier')}
           className={`flex-1 px-4 py-2 font-medium text-sm transition-all duration-200 border-b-2 -mb-[2px] ${
-            activeTab === 'per-message'
+            activeTab === 'conversations-per-tier'
               ? 'text-brand border-brand'
               : 'text-muted-foreground border-transparent hover:text-foreground'
           }`}
         >
-          USD/Message
+          Conversations/Tier
         </button>
         <button
-          onClick={() => setActiveTab('per-conversation')}
+          onClick={() => setActiveTab('credits-per-message')}
           className={`flex-1 px-4 py-2 font-medium text-sm transition-all duration-200 border-b-2 -mb-[2px] ${
-            activeTab === 'per-conversation'
+            activeTab === 'credits-per-message'
               ? 'text-brand border-brand'
               : 'text-muted-foreground border-transparent hover:text-foreground'
           }`}
         >
-          USD/Conversation
+          Credits/Message
+        </button>
+        <button
+          onClick={() => setActiveTab('credits-per-conversation')}
+          className={`flex-1 px-4 py-2 font-medium text-sm transition-all duration-200 border-b-2 -mb-[2px] ${
+            activeTab === 'credits-per-conversation'
+              ? 'text-brand border-brand'
+              : 'text-muted-foreground border-transparent hover:text-foreground'
+          }`}
+        >
+          Credits/Conversation
         </button>
       </div>
 
-      {/* USD/Message Tab */}
-      {activeTab === 'per-message' && (
+      {/* Conversations/Tier Tab */}
+      {activeTab === 'conversations-per-tier' && (
         <>
           <p className="text-sm text-muted-foreground mb-4">
-            Cost for the first message exchange (your message + AI response). Later messages cost more as conversation history grows.
+            See how many conversations you can have with each plan.
           </p>
 
           <div className="space-y-4">
@@ -127,97 +160,31 @@ export function PricingCalculator() {
               </select>
             </div>
 
-            {selectedModel && modelPrices && (
+            {Object.keys(tierEstimates).length > 0 && (
               <div className="space-y-3 mt-4">
                 <div className="text-sm font-medium text-foreground mb-2">
-                  Monthly Billing:
+                  Estimated conversations per plan:
                 </div>
-                {Object.entries(getPurchasableTiers())
-                  .filter(([key]) => key !== 'enterprise')
-                  .map(([tierKey, tier]) => {
-                    const costPerMessage = calculateCostPerMessage(tier.monthlyPrice, tier.credits);
-                    return (
-                      <div
-                        key={`${tierKey}-monthly-msg`}
-                        className="flex items-center justify-between p-3 bg-muted/40 rounded-lg"
-                      >
-                        <div>
-                          <div className="text-sm font-semibold text-foreground">
-                            {tier.name}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            ${tier.monthlyPrice}/mo
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-xl font-bold text-brand">
-                            ${costPerMessage.toFixed(4)}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            first exchange
-                          </div>
-                        </div>
+                {Object.entries(getPurchasableTiers()).map(([tierKey, tier]) => (
+                  <div
+                    key={tierKey}
+                    className="flex items-center justify-between p-3 bg-muted/40 rounded-lg"
+                  >
+                    <div>
+                      <div className="text-sm font-semibold text-foreground">
+                        {tier.name}
                       </div>
-                    );
-                  })}
-
-                <div className="text-sm font-medium text-foreground mb-2 mt-6">
-                  Yearly Billing (20% savings):
-                </div>
-                {Object.entries(getPurchasableTiers())
-                  .filter(([key]) => key !== 'enterprise')
-                  .map(([tierKey, tier]) => {
-                    const monthlyPrice = tier.yearlyPrice / 12;
-                    const costPerMessage = calculateCostPerMessage(monthlyPrice, tier.credits);
-                    return (
-                      <div
-                        key={`${tierKey}-yearly-msg`}
-                        className="flex items-center justify-between p-3 bg-muted/40 rounded-lg"
-                      >
-                        <div>
-                          <div className="text-sm font-semibold text-foreground">
-                            {tier.name}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            ${tier.yearlyPrice}/yr
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-xl font-bold text-brand">
-                            ${costPerMessage.toFixed(4)}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            first exchange
-                          </div>
-                        </div>
+                      <div className="text-xs text-muted-foreground">
+                        {tier.credits.toLocaleString()} credits
                       </div>
-                    );
-                  })}
-
-                <div className="text-sm font-medium text-foreground mb-2 mt-6">
-                  One-Time Purchase:
-                </div>
-                <div className="flex items-center justify-between p-3 bg-muted/40 rounded-lg">
-                  <div>
-                    <div className="text-sm font-semibold text-foreground">
-                      Credit Pack
                     </div>
-                    <div className="text-xs text-muted-foreground">
-                      ${pricing.oneTimePurchase.price}
-                    </div>
-                  </div>
-                  <div className="text-right">
                     <div className="text-xl font-bold text-brand">
-                      ${calculateCostPerMessage(pricing.oneTimePurchase.price, pricing.oneTimePurchase.credits).toFixed(4)}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      first exchange
+                      ~{tierEstimates[tierKey]?.toLocaleString() || 0}
                     </div>
                   </div>
-                </div>
-
+                ))}
                 <div className="text-xs text-muted-foreground mt-4 text-center">
-                  Based on ~30 input tokens and ~120 output tokens for the first exchange
+                  Based on 10 messages
                 </div>
               </div>
             )}
@@ -225,11 +192,11 @@ export function PricingCalculator() {
         </>
       )}
 
-      {/* USD/Conversation Tab */}
-      {activeTab === 'per-conversation' && (
+      {/* Credits/Message Tab */}
+      {activeTab === 'credits-per-message' && (
         <>
           <p className="text-sm text-muted-foreground mb-4">
-            Average cost per full conversation (5 message exchanges / 10 total messages). Context grows with each message.
+            Credits needed for one message.
           </p>
 
           <div className="space-y-4">
@@ -256,96 +223,62 @@ export function PricingCalculator() {
             </div>
 
             {selectedModel && modelPrices && (
-              <div className="space-y-3 mt-4">
-                <div className="text-sm font-medium text-foreground mb-2">
-                  Monthly Billing:
+              <div className="bg-gradient-to-br from-brand/10 to-brand/5 border-2 border-brand rounded-lg p-6 mt-4">
+                <div className="text-sm text-muted-foreground mb-2">
+                  Credits per message
                 </div>
-                {Object.entries(getPurchasableTiers())
-                  .filter(([key]) => key !== 'enterprise')
-                  .map(([tierKey, tier]) => {
-                    const costPerConversation = calculateCostPerConversation(tier.monthlyPrice, tier.credits);
-                    return (
-                      <div
-                        key={`${tierKey}-monthly-conv`}
-                        className="flex items-center justify-between p-3 bg-muted/40 rounded-lg"
-                      >
-                        <div>
-                          <div className="text-sm font-semibold text-foreground">
-                            {tier.name}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            ${tier.monthlyPrice}/mo
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-xl font-bold text-brand">
-                            ${costPerConversation.toFixed(4)}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            per conversation
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div className="text-4xl font-bold text-brand">
+                  {calculateCreditsPerMessage().toFixed(2)}
+                </div>
+                <div className="text-xs text-muted-foreground mt-3">
+                  Based on ~30 input tokens and ~120 output tokens
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      )}
 
-                <div className="text-sm font-medium text-foreground mb-2 mt-6">
-                  Yearly Billing (20% savings):
-                </div>
-                {Object.entries(getPurchasableTiers())
-                  .filter(([key]) => key !== 'enterprise')
-                  .map(([tierKey, tier]) => {
-                    const monthlyPrice = tier.yearlyPrice / 12;
-                    const costPerConversation = calculateCostPerConversation(monthlyPrice, tier.credits);
-                    return (
-                      <div
-                        key={`${tierKey}-yearly-conv`}
-                        className="flex items-center justify-between p-3 bg-muted/40 rounded-lg"
-                      >
-                        <div>
-                          <div className="text-sm font-semibold text-foreground">
-                            {tier.name}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            ${tier.yearlyPrice}/yr
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-xl font-bold text-brand">
-                            ${costPerConversation.toFixed(4)}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            per conversation
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+      {/* Credits/Conversation Tab */}
+      {activeTab === 'credits-per-conversation' && (
+        <>
+          <p className="text-sm text-muted-foreground mb-4">
+            Credits needed for a full conversation. A conversation is approximately 10 messages.
+          </p>
 
-                <div className="text-sm font-medium text-foreground mb-2 mt-6">
-                  One-Time Purchase:
-                </div>
-                <div className="flex items-center justify-between p-3 bg-muted/40 rounded-lg">
-                  <div>
-                    <div className="text-sm font-semibold text-foreground">
-                      Credit Pack
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      ${pricing.oneTimePurchase.price}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xl font-bold text-brand">
-                      ${calculateCostPerConversation(pricing.oneTimePurchase.price, pricing.oneTimePurchase.credits).toFixed(4)}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      per conversation
-                    </div>
-                  </div>
-                </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Select Model
+              </label>
+              <select
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
+                className="w-64 pl-4 pr-10 py-2 bg-background border-2 border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-brand appearance-none bg-[length:20px] bg-[position:right_0.75rem_center] bg-no-repeat"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                }}
+                disabled={!modelPrices}
+              >
+                {modelPrices &&
+                  Object.keys(modelPrices).map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
+              </select>
+            </div>
 
-                <div className="text-xs text-muted-foreground mt-4 text-center">
-                  Based on 5 message exchanges (10 total messages: 5 user + 5 AI)
+            {selectedModel && modelPrices && (
+              <div className="bg-gradient-to-br from-brand/10 to-brand/5 border-2 border-brand rounded-lg p-6 mt-4">
+                <div className="text-sm text-muted-foreground mb-2">
+                  Credits per conversation
+                </div>
+                <div className="text-4xl font-bold text-brand">
+                  {calculateCreditsPerConversation().toFixed(2)}
+                </div>
+                <div className="text-xs text-muted-foreground mt-3">
+                  Based on 10 messages
                 </div>
               </div>
             )}
