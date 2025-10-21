@@ -184,7 +184,7 @@ export function PricingCalculator() {
                   </div>
                 ))}
                 <div className="text-xs text-muted-foreground mt-4 text-center">
-                  Based on 10 messages
+                  Based on 10 messages per conversation
                 </div>
               </div>
             )}
@@ -278,7 +278,7 @@ export function PricingCalculator() {
                   {calculateCreditsPerConversation().toFixed(2)}
                 </div>
                 <div className="text-xs text-muted-foreground mt-3">
-                  Based on 10 messages
+                  Based on 10 messages per conversation
                 </div>
               </div>
             )}
