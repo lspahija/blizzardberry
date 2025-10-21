@@ -82,6 +82,17 @@ export default function PricingPage() {
       newUrl.searchParams.delete('action');
       window.history.replaceState({}, '', newUrl.toString());
     }
+
+    // Handle anchor scrolling on initial load
+    const hash = window.location.hash;
+    if (hash) {
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
   }, [searchParams, isLoggedIn]);
 
   const handleSubscribe = async (tier: string) => {
