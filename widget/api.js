@@ -2,9 +2,19 @@ import { generateId, setStoredConversationId } from './util';
 import { state, setSuggestedPrompts } from './state';
 import { config } from './config';
 
+// Global AbortController for handling navigation-induced fetch cancellations
+const abortController = new AbortController();
+
+// Setup beforeunload listener to abort pending requests on navigation
+window.addEventListener('beforeunload', () => {
+  abortController.abort();
+});
+
 export async function fetchAgentDetails() {
   try {
-    const res = await fetch(`${config.baseUrl}/api/agents/${config.agentId}`);
+    const res = await fetch(`${config.baseUrl}/api/agents/${config.agentId}`, {
+      signal: abortController.signal,
+    });
     if (!res.ok) return null;
     const data = await res.json();
     return data.agent;
@@ -17,7 +27,10 @@ export async function fetchAgentDetails() {
 export async function fetchSuggestedPrompts() {
   try {
     const res = await fetch(
-      `${config.baseUrl}/api/agents/${config.agentId}/prompts`
+      `${config.baseUrl}/api/agents/${config.agentId}/prompts`,
+      {
+        signal: abortController.signal,
+      }
     );
     if (!res.ok) return;
     const data = await res.json();
@@ -40,6 +53,7 @@ export async function persistMessage(message) {
         role: message.role,
         content: message.parts[0].text,
       }),
+      signal: abortController.signal,
     }
   );
 }
@@ -47,7 +61,10 @@ export async function persistMessage(message) {
 export async function fetchConversationMessages(conversationId) {
   try {
     const response = await fetch(
-      `${config.baseUrl}/api/conversations/${conversationId}/messages`
+      `${config.baseUrl}/api/conversations/${conversationId}/messages`,
+      {
+        signal: abortController.signal,
+      }
     );
     if (!response.ok) return null;
     const data = await response.json();
@@ -67,6 +84,7 @@ export async function createNewConversation() {
         agentId: config.agentId,
         endUserConfig: config.userConfig || {},
       }),
+      signal: abortController.signal,
     });
     if (!response.ok) return null;
     const data = await response.json();
@@ -95,6 +113,7 @@ export async function callLLM() {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
+    signal: abortController.signal,
   });
 
   if (!response.ok) {
