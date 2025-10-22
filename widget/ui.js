@@ -2,42 +2,31 @@ import { state } from './state';
 import { convertBoldFormatting, getElementById } from './util';
 import { shouldFilterMessage } from './constants';
 
-function stripMarkdownImages(input) {
-  if (!input) return input;
-  let output = String(input);
-  // Remove standard markdown images (http/https and data URIs)
-  output = output.replace(/!\[[^\]]*\]\((?:data:[^\)]+|https?:\/\/[^\)]+)\)/gi, '');
-  // Remove any bare data:image URIs that might not be wrapped in markdown
-  output = output.replace(/data:image\/[a-zA-Z]+;base64,[A-Za-z0-9+/=\s]+/gi, '');
-  // Remove attachment-style placeholders like (attachment://file.png)
-  output = output.replace(/\(attachment:\/\/[^\)]+\)/gi, '');
-  output = output.replace(/^.*attachment:\/\/.*$/gmi, '');
-  // Remove leftover alt tags if parenthesis missing
-  output = output.replace(/!\[[^\]]*\]/g, '');
-  // Remove lines that are only images
-  output = output.replace(/^\s*!\[[\s\S]*?\]\([\s\S]*?\)\s*$/gm, '');
-  // Compress whitespace
-  output = output.replace(/\n{3,}/g, '\n\n').replace(/[\t ]{2,}/g, ' ');
-  return output.trim();
+function cleanText(text) {
+  if (!text) return '';
+
+  return String(text)
+    .replace(/<think>[\s\S]*?<\/think>\n\n?/g, '')
+    .replace(/!\[[^\]]*\]\((?:data:[^\)]+|https?:\/\/[^\)]+)\)/gi, '')
+    .replace(/data:image\/[a-zA-Z]+;base64,[A-Za-z0-9+/=\s]+/gi, '')
+    .replace(/\(attachment:\/\/[^\)]+\)/gi, '')
+    .replace(/^.*attachment:\/\/.*$/gim, '')
+    .replace(/!\[[^\]]*\]/g, '')
+    .replace(/^\s*!\[[\s\S]*?\]\([\s\S]*?\)\s*$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/[\t ]{2,}/g, ' ')
+    .trim();
 }
 
-export function renderMessagePart(part, messageId) {
+function extractTextContent(part) {
+  const thinkMatch = part.text.match(/<think>([\s\S]*?)<\/think>\n\n([\s\S]*)/);
+  return thinkMatch ? thinkMatch[2].trim() : part.text;
+}
+
+export function renderMessagePart(part) {
   if (part.type === 'text') {
-    const thinkMatch = part.text.match(
-      /<think>([\s\S]*?)<\/think>\n\n([\s\S]*)/
-    );
-    if (thinkMatch) {
-      if (!state.loggedThinkMessages.has(messageId)) {
-        state.loggedThinkMessages.add(messageId);
-      }
-      const clean = stripMarkdownImages(thinkMatch[2].trim());
-      return `<div class="text-part">${convertBoldFormatting(clean)}</div>`;
-    }
-    const clean = stripMarkdownImages(part.text);
-    return `<div class="text-part">${convertBoldFormatting(clean)}</div>`;
-  }
-  if (part.type === 'tool-invocation') {
-    return '';
+    const text = extractTextContent(part);
+    return `<div class="text-part">${convertBoldFormatting(cleanText(text))}</div>`;
   }
   if (part.type === 'html') {
     return part.content || '';
@@ -45,23 +34,35 @@ export function renderMessagePart(part, messageId) {
   return '';
 }
 
+function renderMessage(message) {
+  const roleClass =
+    message.role === 'user' ? 'user-message' : 'assistant-message';
+  const content = message.parts.map((part) => renderMessagePart(part)).join('');
+  return `<div class="message ${roleClass}">${content}</div>`;
+}
+
+function getLatestMessageText(messages) {
+  if (messages.length === 0) return '';
+
+  const latest = messages[messages.length - 1];
+  const text = latest.parts
+    .filter((part) => part.type === 'text')
+    .map((part) => part.text)
+    .join('')
+    .trim();
+
+  return cleanText(text);
+}
+
 export function updateConversationUI() {
   const chatBody = getElementById('messages-container');
   const latestMessageEl = getElementById('latest-message');
 
-  const filteredMessages = state.messages.filter(
-    (message) => !shouldFilterMessage(message.parts[0].text)
+  const visibleMessages = state.messages.filter(
+    (message) => !shouldFilterMessage(message.parts[0]?.text)
   );
 
-  let html = filteredMessages
-    .map(
-      (message) => `
-        <div class="message ${message.role === 'user' ? 'user-message' : 'assistant-message'}">
-          ${message.parts.map((part) => renderMessagePart(part, message.id)).join('')}
-        </div>
-      `
-    )
-    .join('');
+  let html = visibleMessages.map(renderMessage).join('');
 
   if (state.isProcessing) {
     html += `
@@ -76,27 +77,9 @@ export function updateConversationUI() {
     chatBody.scrollTop = chatBody.scrollHeight;
   }
 
-  // Update collapsed view with latest assistant message
   if (latestMessageEl) {
-    const assistantMessages = filteredMessages.filter(
-      (msg) => msg.role === 'assistant'
+    latestMessageEl.innerHTML = convertBoldFormatting(
+      getLatestMessageText(visibleMessages)
     );
-    if (assistantMessages.length > 0) {
-      const latestAssistantMessage =
-        assistantMessages[assistantMessages.length - 1];
-      const messageText = latestAssistantMessage.parts
-        .map((part) => (part.type === 'text' ? part.text : ''))
-        .join('')
-        .trim();
-
-      // Remove any <think> tags for display in collapsed view
-      const cleanText = stripMarkdownImages(
-        messageText
-          .replace(/<think>[\s\S]*?<\/think>\n\n?/g, '')
-          .trim()
-      );
-      // Get agent name for fallback
-      latestMessageEl.innerHTML = convertBoldFormatting(cleanText);
-    }
   }
 }
