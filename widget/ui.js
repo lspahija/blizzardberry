@@ -1,5 +1,6 @@
 import { state } from './state';
 import { convertBoldFormatting, getElementById } from './util';
+import { shouldFilterMessage } from './constants';
 
 function stripMarkdownImages(input) {
   if (!input) return input;
@@ -49,7 +50,7 @@ export function updateConversationUI() {
   const latestMessageEl = getElementById('latest-message');
 
   const filteredMessages = state.messages.filter(
-    (message) => !message.parts[0].text.startsWith('ACTION_RESULT:')
+    (message) => !shouldFilterMessage(message.parts[0].text)
   );
 
   let html = filteredMessages
