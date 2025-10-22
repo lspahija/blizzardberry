@@ -93,7 +93,7 @@ export async function processMessage(messageText, role) {
       role: role,
       parts: [{ type: 'text', text: messageText }],
     });
-    await persistMessage(state.messages[state.messages.length - 1]);
+
     const promptBar = document.getElementById('chatWidgetPromptBar');
     if (promptBar) promptBar.style.display = 'none';
 
@@ -102,6 +102,9 @@ export async function processMessage(messageText, role) {
 
     state.isProcessing = true;
     updateConversationUI();
+
+    // Persist message after UI update for instant feedback
+    await persistMessage(state.messages[state.messages.length - 1]);
 
     const { text, toolResult, error } = await callLLM();
 
