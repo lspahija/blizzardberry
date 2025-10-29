@@ -64,6 +64,24 @@ export async function hydrateConversation() {
         role: msg.role,
         parts: [{ type: 'text', text: msg.content }],
       }));
+
+      // If latest message has role "user", add "successfully navigated to <current page>" message with role "assistant"
+      const latestMessage = state.messages[state.messages.length - 1];
+      if (latestMessage.role === 'user') {
+        const navigationMessage = {
+          id: generateId(),
+          role: 'assistant',
+          parts: [
+            {
+              type: 'text',
+              text: `Successfully navigated to ${window.location.href}`,
+            },
+          ],
+        };
+        state.messages.push(navigationMessage);
+        await persistMessage(navigationMessage);
+      }
+
       return true; // Indicates conversation was hydrated
     }
   }
@@ -148,6 +166,10 @@ export async function processMessage(messageText, role) {
     state.isProcessing = false;
     updateConversationUI();
   } catch (error) {
+    if (error.name === 'AbortError' && error instanceof DOMException) {
+      console.log('Request aborted due to navigation—ignoring.');
+      return;
+    }
     await handleError('Error processing message. ' + error);
   }
 }
