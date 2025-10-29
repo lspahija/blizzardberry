@@ -68,13 +68,14 @@ export async function hydrateConversation() {
       // If latest message has role "user", add "successfully navigated to <current page>" message with role "assistant"
       const latestMessage = state.messages[state.messages.length - 1];
       if (latestMessage.role === 'user') {
+        const pageTitle = document.title || 'this page';
         const navigationMessage = {
           id: generateId(),
           role: 'assistant',
           parts: [
             {
               type: 'text',
-              text: `Successfully navigated to ${window.location.href}`,
+              text: `Successfully navigated to ${pageTitle}`,
             },
           ],
         };
