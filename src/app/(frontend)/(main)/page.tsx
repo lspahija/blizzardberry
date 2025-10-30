@@ -83,7 +83,7 @@ export default function LandingPage() {
 
   const handleHeroCtaClick = () => {
     posthog.capture('homepage_hero_cta_clicked', {
-      cta_text: 'Get Started Now',
+      cta_text: 'Try The Demo',
       section: 'hero',
     });
   };
@@ -197,9 +197,9 @@ export default function LandingPage() {
                     asChild
                     onClick={handleHeroCtaClick}
                   >
-                    <Link href="/login">
+                    <Link href="https://demo.blizzardberry.com/">
                       <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                      Get Started Now
+                      Try The Demo
                     </Link>
                   </Button>
                 </div>
