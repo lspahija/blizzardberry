@@ -25,6 +25,7 @@ import { useMemo, useState, useEffect, useRef } from 'react';
 import posthog from 'posthog-js';
 import HeroVideo from '@/app/(frontend)/components/HeroVideo';
 import { useVideoIntersection } from '@/app/(frontend)/hooks/useVideoIntersection';
+import ProxyDemo from '@/app/(frontend)/components/ProxyDemo';
 
 export default function LandingPage() {
   const [selectedVideo, setSelectedVideo] = useState('order-cancellation');
@@ -245,6 +246,11 @@ export default function LandingPage() {
                 <HeroVideo videoSrc="/new-demo-video.mp4" />
               </div>
             </div>
+          </div>
+
+          {/* Proxy Demo Section */}
+          <div className="mt-16 sm:mt-20 pb-8">
+            <ProxyDemo />
           </div>
         </div>
       </motion.div>
