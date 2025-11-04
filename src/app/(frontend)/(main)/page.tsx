@@ -247,13 +247,21 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-
-          {/* Proxy Demo Section */}
-          <div className="mt-16 sm:mt-20 pb-8">
-            <ProxyDemo />
-          </div>
         </div>
       </motion.div>
+
+      {/* Proxy Demo Section */}
+      <motion.section
+        className="py-12 sm:py-16 bg-background"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1, margin: '-10px' }}
+      >
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <ProxyDemo />
+        </div>
+      </motion.section>
 
       <motion.section
         className="py-12 sm:py-16 bg-muted/30"

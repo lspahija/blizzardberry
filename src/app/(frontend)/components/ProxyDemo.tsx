@@ -6,7 +6,9 @@ import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight, X } from 'lucide-react';
 
 export default function ProxyDemo() {
-  const [step, setStep] = useState<'url' | 'email' | 'loading' | 'iframe'>('url');
+  const [step, setStep] = useState<'url' | 'email' | 'loading' | 'iframe'>(
+    'url'
+  );
   const [url, setUrl] = useState('');
   const [email, setEmail] = useState('');
   const [encodedUrl, setEncodedUrl] = useState('');
@@ -30,6 +32,19 @@ export default function ProxyDemo() {
     const normalizedUrl = url.match(/^https?:\/\//) ? url : `https://${url}`;
 
     try {
+      // Save the lead to database
+      await fetch('/api/demo-leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          websiteUrl: normalizedUrl,
+        }),
+      });
+
+      // Get the proxy URL
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BLIZZARDBERRY_MIRROR_BASE_URL}/api/encode`,
         {
@@ -91,17 +106,17 @@ export default function ProxyDemo() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-3xl mx-auto">
       <motion.div
-        className="bg-gradient-to-br from-brand/5 to-background border-[3px] border-border rounded-2xl p-8 shadow-xl"
+        className="bg-gradient-to-br from-brand/5 to-background border-[3px] border-border rounded-2xl p-6 sm:p-8 shadow-xl"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-brand/10 rounded-full mb-4">
-            <Sparkles className="w-8 h-8 text-brand" />
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand/10 rounded-full mb-4">
+            <Sparkles className="w-7 h-7 text-brand" />
           </div>
           <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
             Try It On Your Website
@@ -115,34 +130,25 @@ export default function ProxyDemo() {
         {step === 'url' && (
           <motion.form
             onSubmit={handleUrlSubmit}
-            className="space-y-4"
+            className="flex flex-col sm:flex-row gap-3"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div>
-              <label
-                htmlFor="website-url"
-                className="block text-sm font-medium text-foreground mb-2"
-              >
-                Your Website URL
-              </label>
-              <input
-                id="website-url"
-                type="text"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="example.com"
-                className="w-full px-4 py-3 bg-background border-2 border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand transition-colors"
-                required
-              />
-            </div>
-            <div className="relative group">
-              <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+            <input
+              id="website-url"
+              type="text"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="Enter your website URL"
+              className="flex-1 px-4 py-2.5 bg-background border-2 border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand transition-colors text-sm sm:text-base"
+              required
+            />
+            <div className="relative group w-full sm:w-auto">
+              <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5 pointer-events-none"></div>
               <Button
                 type="submit"
-                size="lg"
-                className="relative w-full bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90"
+                className="relative w-full sm:w-auto bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 px-6 py-2.5 h-auto"
               >
                 Continue
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -155,52 +161,41 @@ export default function ProxyDemo() {
         {step === 'email' && (
           <motion.form
             onSubmit={handleEmailSubmit}
-            className="space-y-4"
+            className="space-y-3"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-foreground mb-2"
-              >
-                Your Email
-              </label>
+            <div className="flex flex-col sm:flex-row gap-3">
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full px-4 py-3 bg-background border-2 border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand transition-colors"
+                placeholder="Enter your email"
+                className="flex-1 px-4 py-2.5 bg-background border-2 border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand transition-colors text-sm sm:text-base"
                 required
               />
-              <p className="mt-2 text-sm text-muted-foreground">
-                We'll show you a demo of your site with our AI agent installed
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                onClick={handleBack}
-                variant="outline"
-                size="lg"
-                className="flex-1 border-2 border-border"
-              >
-                Back
-              </Button>
-              <div className="relative group flex-1">
-                <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></div>
+              <div className="flex gap-2">
                 <Button
-                  type="submit"
-                  size="lg"
-                  disabled={isSubmitting}
-                  className="relative w-full bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90"
+                  type="button"
+                  onClick={handleBack}
+                  variant="outline"
+                  className="border-2 border-border px-4 py-2.5"
                 >
-                  {isSubmitting ? 'Loading...' : 'See Demo'}
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  Back
                 </Button>
+                <div className="relative group">
+                  <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5 pointer-events-none"></div>
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 px-6 py-2.5 h-auto"
+                  >
+                    {isSubmitting ? 'Loading...' : 'See Demo'}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </motion.form>
@@ -209,17 +204,15 @@ export default function ProxyDemo() {
         {/* Loading State */}
         {step === 'loading' && (
           <motion.div
-            className="text-center py-8"
+            className="text-center py-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-brand/10 rounded-full mb-4 animate-pulse">
-              <Sparkles className="w-8 h-8 text-brand" />
+            <div className="inline-flex items-center gap-2 text-brand">
+              <Sparkles className="w-5 h-5 animate-pulse" />
+              <p className="text-base font-medium">Preparing your demo...</p>
             </div>
-            <p className="text-lg text-muted-foreground">
-              Preparing your demo...
-            </p>
           </motion.div>
         )}
       </motion.div>
