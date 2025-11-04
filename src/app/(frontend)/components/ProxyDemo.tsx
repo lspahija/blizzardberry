@@ -82,9 +82,6 @@ export default function ProxyDemo() {
       >
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand/10 rounded-full mb-4">
-            <Sparkles className="w-7 h-7 text-brand" />
-          </div>
           <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
             Try It On Your Website
           </h3>
@@ -140,24 +137,27 @@ export default function ProxyDemo() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-2.5 bg-background border-2 border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand transition-colors text-sm sm:text-base"
+                className="flex-1 px-4 py-3 bg-background border-2 border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand transition-colors text-sm sm:text-base"
                 required
               />
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  onClick={handleBack}
-                  variant="outline"
-                  className="border-2 border-border px-4 py-2.5"
-                >
-                  Back
-                </Button>
-                <div className="relative group">
+              <div className="flex gap-3 sm:gap-2">
+                <div className="relative group flex-1 sm:flex-none">
+                  <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5 pointer-events-none"></div>
+                  <Button
+                    type="button"
+                    onClick={handleBack}
+                    variant="outline"
+                    className="relative w-full bg-background text-foreground border-[3px] border-border hover:bg-background/90 px-6 py-3 h-auto rounded-lg"
+                  >
+                    Back
+                  </Button>
+                </div>
+                <div className="relative group flex-1 sm:flex-none">
                   <div className="absolute inset-0 rounded-lg bg-black/80 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5 pointer-events-none"></div>
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="relative bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 px-6 py-2.5 h-auto"
+                    className="relative w-full bg-brand text-primary-foreground border-[3px] border-border hover:bg-brand/90 px-6 py-3 h-auto rounded-lg"
                   >
                     {isSubmitting ? 'Loading...' : 'See Demo'}
                     <ArrowRight className="ml-2 h-4 w-4" />
