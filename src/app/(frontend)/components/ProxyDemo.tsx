@@ -3,15 +3,12 @@
 import { useState } from 'react';
 import { Button } from '@/app/(frontend)/components/ui/button';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight, X } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 
 export default function ProxyDemo() {
-  const [step, setStep] = useState<'url' | 'email' | 'loading' | 'iframe'>(
-    'url'
-  );
+  const [step, setStep] = useState<'url' | 'email' | 'loading'>('url');
   const [url, setUrl] = useState('');
   const [email, setEmail] = useState('');
-  const [encodedUrl, setEncodedUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleUrlSubmit = (e: React.FormEvent) => {
@@ -57,8 +54,9 @@ export default function ProxyDemo() {
       );
 
       const data = await response.json();
-      setEncodedUrl(data.proxyUrl);
-      setStep('iframe');
+
+      // Redirect to the proxy page with the encoded URL
+      window.location.href = `/proxy?url=${encodeURIComponent(data.proxyUrl)}`;
     } catch (error) {
       console.error('Failed to encode URL:', error);
       setIsSubmitting(false);
@@ -73,37 +71,6 @@ export default function ProxyDemo() {
     }
   };
 
-  const handleClose = () => {
-    setStep('url');
-    setUrl('');
-    setEmail('');
-    setEncodedUrl('');
-    setIsSubmitting(false);
-  };
-
-  // Show fullscreen iframe when demo is loaded
-  if (step === 'iframe' && encodedUrl) {
-    return (
-      <div className="fixed inset-0 z-50 bg-background">
-        <div className="absolute top-4 right-4 z-50">
-          <Button
-            onClick={handleClose}
-            variant="outline"
-            size="lg"
-            className="bg-background border-2 border-border shadow-lg"
-          >
-            <X className="mr-2 h-4 w-4" />
-            Close Demo
-          </Button>
-        </div>
-        <iframe
-          src={encodedUrl}
-          className="w-full h-full border-none"
-          title="Website Demo"
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="w-full max-w-3xl mx-auto">

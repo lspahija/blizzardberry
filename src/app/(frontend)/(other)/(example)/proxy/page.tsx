@@ -1,10 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { X } from 'lucide-react';
 
 export default function ProxyPage() {
   const [url, setUrl] = useState('');
   const [encodedUrl, setEncodedUrl] = useState('');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check if URL is provided in query params
+    const urlParam = searchParams.get('url');
+    if (urlParam) {
+      setEncodedUrl(decodeURIComponent(urlParam));
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,8 +40,12 @@ export default function ProxyPage() {
     }
   };
 
+  const handleClose = () => {
+    router.push('/');
+  };
+
   return (
-    <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       {!encodedUrl ? (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
           <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px', width: '80%', maxWidth: '600px' }}>
@@ -46,14 +62,39 @@ export default function ProxyPage() {
           </form>
         </div>
       ) : (
-        <iframe
-          src={encodedUrl}
-          style={{
-            width: '100%',
-            height: '100vh',
-            border: 'none',
-          }}
-        />
+        <>
+          <button
+            onClick={handleClose}
+            style={{
+              position: 'fixed',
+              top: '16px',
+              right: '16px',
+              zIndex: 9999,
+              padding: '12px 20px',
+              backgroundColor: 'white',
+              border: '2px solid #e5e7eb',
+              borderRadius: '8px',
+              fontSize: '16px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <X size={16} />
+            Close Demo
+          </button>
+          <iframe
+            src={encodedUrl}
+            style={{
+              width: '100%',
+              height: '100vh',
+              border: 'none',
+            }}
+          />
+        </>
       )}
     </div>
   );
