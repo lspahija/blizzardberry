@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 
-export default function ProxyPage() {
+function ProxyPageContent() {
   const [url, setUrl] = useState('');
   const [encodedUrl, setEncodedUrl] = useState('');
   const searchParams = useSearchParams();
@@ -97,5 +97,26 @@ export default function ProxyPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function ProxyPage() {
+  return (
+    <Suspense fallback={
+      <div style={{
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f9fafb'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: '16px', color: '#6b7280' }}>Loading...</p>
+        </div>
+      </div>
+    }>
+      <ProxyPageContent />
+    </Suspense>
   );
 }
