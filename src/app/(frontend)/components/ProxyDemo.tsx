@@ -75,7 +75,7 @@ export default function ProxyDemo() {
   return (
     <div className="w-full max-w-3xl mx-auto">
       <motion.div
-        className="bg-gradient-to-br from-brand/5 to-background border-[3px] border-border rounded-2xl p-6 sm:p-8 shadow-xl"
+        className="bg-card border-[3px] border-border rounded-2xl p-6 sm:p-8 shadow-xl"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}

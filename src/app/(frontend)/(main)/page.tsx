@@ -252,7 +252,7 @@ export default function LandingPage() {
 
       {/* Proxy Demo Section */}
       <motion.section
-        className="py-12 sm:py-12 bg-background"
+        className="pt-16 sm:pt-20 pb-8 sm:pb-10 bg-background"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -264,7 +264,7 @@ export default function LandingPage() {
       </motion.section>
 
       <motion.section
-        className="pt-12 sm:pt-12 pb-12 sm:pb-16 bg-muted/30"
+        className="pt-8 sm:pt-10 pb-12 sm:pb-16 bg-muted/30"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
