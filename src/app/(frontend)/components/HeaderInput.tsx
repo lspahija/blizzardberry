@@ -65,8 +65,8 @@ export default function HeaderInput({
         <SuggestInput
           id={`headerValue${index}`}
           value={header.value}
-          onChange={(e) => updateHeader('value', e.target.value.trim())}
-          onSelect={(val) => updateHeader('value', val.trim())}
+          onChange={(e) => updateHeader('value', e.target.value)}
+          onSelect={(val) => updateHeader('value', val)}
           suggestions={commonHeaderValues.concat(suggestions)}
           placeholder="Bearer {{token}}"
           inputClassName="border-[2px] border-border text-foreground"
