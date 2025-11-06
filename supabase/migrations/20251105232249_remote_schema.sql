@@ -1,4 +1,6 @@
 
+
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -308,6 +310,22 @@ CREATE TABLE IF NOT EXISTS "public"."agents" (
 ALTER TABLE "public"."agents" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."api_keys" (
+    "id" "uuid" DEFAULT "extensions"."uuid_generate_v4"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "key_hash" "text" NOT NULL,
+    "key_suffix" "text" NOT NULL,
+    "name" "text",
+    "last_used_at" timestamp with time zone,
+    "expires_at" timestamp with time zone,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."api_keys" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."conversations" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "agent_id" "uuid" NOT NULL,
@@ -376,6 +394,17 @@ ALTER SEQUENCE "public"."credit_holds_id_seq" OWNER TO "postgres";
 
 ALTER SEQUENCE "public"."credit_holds_id_seq" OWNED BY "public"."credit_holds"."id";
 
+
+
+CREATE TABLE IF NOT EXISTS "public"."demo_leads" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "email" "text" NOT NULL,
+    "website_url" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL
+);
+
+
+ALTER TABLE "public"."demo_leads" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."documents" (
@@ -526,12 +555,32 @@ ALTER TABLE ONLY "next_auth"."verification_tokens"
 
 
 ALTER TABLE ONLY "public"."actions"
+    ADD CONSTRAINT "actions_name_agent_id_key" UNIQUE ("name", "agent_id");
+
+
+
+ALTER TABLE ONLY "public"."actions"
     ADD CONSTRAINT "actions_pkey" PRIMARY KEY ("id");
 
 
 
 ALTER TABLE ONLY "public"."agents"
+    ADD CONSTRAINT "agents_name_created_by_key" UNIQUE ("name", "created_by");
+
+
+
+ALTER TABLE ONLY "public"."agents"
     ADD CONSTRAINT "agents_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."api_keys"
+    ADD CONSTRAINT "api_keys_key_hash_key" UNIQUE ("key_hash");
+
+
+
+ALTER TABLE ONLY "public"."api_keys"
+    ADD CONSTRAINT "api_keys_pkey" PRIMARY KEY ("id");
 
 
 
@@ -547,6 +596,11 @@ ALTER TABLE ONLY "public"."credit_batches"
 
 ALTER TABLE ONLY "public"."credit_holds"
     ADD CONSTRAINT "credit_holds_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."demo_leads"
+    ADD CONSTRAINT "demo_leads_pkey" PRIMARY KEY ("id");
 
 
 
@@ -669,6 +723,14 @@ CREATE INDEX "credit_holds_user_id_state_idx" ON "public"."credit_holds" USING "
 
 
 
+CREATE INDEX "demo_leads_created_at_idx" ON "public"."demo_leads" USING "btree" ("created_at" DESC);
+
+
+
+CREATE INDEX "demo_leads_email_idx" ON "public"."demo_leads" USING "btree" ("email");
+
+
+
 CREATE INDEX "documents_agent_id_idx" ON "public"."documents" USING "btree" ("agent_id");
 
 
@@ -702,6 +764,14 @@ CREATE INDEX "domain_events_type_created_at_idx" ON "public"."domain_events" USI
 
 
 CREATE INDEX "domain_events_user_id_created_at_idx" ON "public"."domain_events" USING "btree" ("user_id", "created_at");
+
+
+
+CREATE INDEX "idx_api_keys_key_hash" ON "public"."api_keys" USING "btree" ("key_hash");
+
+
+
+CREATE INDEX "idx_api_keys_user_id" ON "public"."api_keys" USING "btree" ("user_id");
 
 
 
@@ -757,6 +827,11 @@ ALTER TABLE ONLY "public"."agents"
 
 
 
+ALTER TABLE ONLY "public"."api_keys"
+    ADD CONSTRAINT "api_keys_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "next_auth"."users"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."conversations"
     ADD CONSTRAINT "chats_agent_id_fkey" FOREIGN KEY ("agent_id") REFERENCES "public"."agents"("id") ON DELETE CASCADE;
 
@@ -785,6 +860,32 @@ ALTER TABLE ONLY "public"."messages"
 ALTER TABLE ONLY "public"."prompts"
     ADD CONSTRAINT "prompts_agent_id_fkey" FOREIGN KEY ("agent_id") REFERENCES "public"."agents"("id") ON DELETE CASCADE;
 
+
+
+CREATE POLICY "Allow public inserts" ON "public"."demo_leads" FOR INSERT WITH CHECK (true);
+
+
+
+CREATE POLICY "Users can delete their own API keys" ON "public"."api_keys" FOR DELETE USING (("auth"."uid"() = "user_id"));
+
+
+
+CREATE POLICY "Users can insert their own API keys" ON "public"."api_keys" FOR INSERT WITH CHECK (("auth"."uid"() = "user_id"));
+
+
+
+CREATE POLICY "Users can update their own API keys" ON "public"."api_keys" FOR UPDATE USING (("auth"."uid"() = "user_id"));
+
+
+
+CREATE POLICY "Users can view their own API keys" ON "public"."api_keys" FOR SELECT USING (("auth"."uid"() = "user_id"));
+
+
+
+ALTER TABLE "public"."api_keys" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."demo_leads" ENABLE ROW LEVEL SECURITY;
 
 
 
@@ -1066,6 +1167,9 @@ GRANT ALL ON FUNCTION "public"."vector"("public"."vector", integer, boolean) TO 
 GRANT ALL ON FUNCTION "public"."vector"("public"."vector", integer, boolean) TO "anon";
 GRANT ALL ON FUNCTION "public"."vector"("public"."vector", integer, boolean) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."vector"("public"."vector", integer, boolean) TO "service_role";
+
+
+
 
 
 
@@ -1806,6 +1910,9 @@ GRANT ALL ON FUNCTION "public"."sum"("public"."vector") TO "service_role";
 
 
 
+
+
+
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "next_auth"."accounts" TO "service_role";
 
 
@@ -1822,27 +1929,33 @@ GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "next_aut
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."actions" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."actions" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."actions" TO "service_role";
+GRANT ALL ON TABLE "public"."actions" TO "anon";
+GRANT ALL ON TABLE "public"."actions" TO "authenticated";
+GRANT ALL ON TABLE "public"."actions" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."agents" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."agents" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."agents" TO "service_role";
+GRANT ALL ON TABLE "public"."agents" TO "anon";
+GRANT ALL ON TABLE "public"."agents" TO "authenticated";
+GRANT ALL ON TABLE "public"."agents" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."conversations" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."conversations" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."conversations" TO "service_role";
+GRANT ALL ON TABLE "public"."api_keys" TO "anon";
+GRANT ALL ON TABLE "public"."api_keys" TO "authenticated";
+GRANT ALL ON TABLE "public"."api_keys" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."credit_batches" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."credit_batches" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."credit_batches" TO "service_role";
+GRANT ALL ON TABLE "public"."conversations" TO "anon";
+GRANT ALL ON TABLE "public"."conversations" TO "authenticated";
+GRANT ALL ON TABLE "public"."conversations" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."credit_batches" TO "anon";
+GRANT ALL ON TABLE "public"."credit_batches" TO "authenticated";
+GRANT ALL ON TABLE "public"."credit_batches" TO "service_role";
 
 
 
@@ -1852,9 +1965,9 @@ GRANT ALL ON SEQUENCE "public"."credit_batches_id_seq" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."credit_holds" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."credit_holds" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."credit_holds" TO "service_role";
+GRANT ALL ON TABLE "public"."credit_holds" TO "anon";
+GRANT ALL ON TABLE "public"."credit_holds" TO "authenticated";
+GRANT ALL ON TABLE "public"."credit_holds" TO "service_role";
 
 
 
@@ -1864,15 +1977,21 @@ GRANT ALL ON SEQUENCE "public"."credit_holds_id_seq" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."documents" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."documents" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."documents" TO "service_role";
+GRANT ALL ON TABLE "public"."demo_leads" TO "anon";
+GRANT ALL ON TABLE "public"."demo_leads" TO "authenticated";
+GRANT ALL ON TABLE "public"."demo_leads" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."domain_events" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."domain_events" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."domain_events" TO "service_role";
+GRANT ALL ON TABLE "public"."documents" TO "anon";
+GRANT ALL ON TABLE "public"."documents" TO "authenticated";
+GRANT ALL ON TABLE "public"."documents" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."domain_events" TO "anon";
+GRANT ALL ON TABLE "public"."domain_events" TO "authenticated";
+GRANT ALL ON TABLE "public"."domain_events" TO "service_role";
 
 
 
@@ -1882,27 +2001,27 @@ GRANT ALL ON SEQUENCE "public"."domain_events_id_seq" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."messages" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."messages" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."messages" TO "service_role";
+GRANT ALL ON TABLE "public"."messages" TO "anon";
+GRANT ALL ON TABLE "public"."messages" TO "authenticated";
+GRANT ALL ON TABLE "public"."messages" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."prompts" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."prompts" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."prompts" TO "service_role";
+GRANT ALL ON TABLE "public"."prompts" TO "anon";
+GRANT ALL ON TABLE "public"."prompts" TO "authenticated";
+GRANT ALL ON TABLE "public"."prompts" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."subscriptions" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."subscriptions" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."subscriptions" TO "service_role";
+GRANT ALL ON TABLE "public"."subscriptions" TO "anon";
+GRANT ALL ON TABLE "public"."subscriptions" TO "authenticated";
+GRANT ALL ON TABLE "public"."subscriptions" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."user_credit_summary" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."user_credit_summary" TO "authenticated";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."user_credit_summary" TO "service_role";
+GRANT ALL ON TABLE "public"."user_credit_summary" TO "anon";
+GRANT ALL ON TABLE "public"."user_credit_summary" TO "authenticated";
+GRANT ALL ON TABLE "public"."user_credit_summary" TO "service_role";
 
 
 
@@ -1932,10 +2051,10 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUN
 
 
 
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLES TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLES TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLES TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLES TO "service_role";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "postgres";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
 
 
 
@@ -1966,4 +2085,9 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT SELECT,INS
 
 
 
-RESET ALL;
+
+
+--
+-- Dumped schema changes for auth and storage
+--
+
