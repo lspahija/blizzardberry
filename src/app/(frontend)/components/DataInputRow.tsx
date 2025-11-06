@@ -106,7 +106,7 @@ export default function DataInputRow({
         <Textarea
           id={`inputDesc${index}`}
           value={input.description}
-          onChange={(e) => updateDataInput('description', e.target.value.trim())}
+          onChange={(e) => updateDataInput('description', e.target.value)}
           placeholder="The city to get weather for, e.g. Los Angeles"
           className="mt-2 border-[2px] border-border text-sm md:text-base text-foreground"
         />
