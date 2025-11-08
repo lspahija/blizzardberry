@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 
 interface CreateAgentParams {
   name: string;
-  websiteDomain: string;
+  websiteDomain?: string;
   model: string;
   prompts?: string[];
 }

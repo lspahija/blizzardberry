@@ -32,13 +32,13 @@ export async function getAgents(userId: string) {
 
 export async function createAgent(
   name: string,
-  websiteDomain: string,
+  websiteDomain: string | undefined,
   userId: string,
   model: string
 ) {
   const [agent] = await sql`
     INSERT INTO agents (name, website_domain, created_by, model)
-    VALUES (${name}, ${websiteDomain}, ${userId}, ${model})
+    VALUES (${name}, ${websiteDomain || null}, ${userId}, ${model})
     ON CONFLICT (name, created_by)
     DO UPDATE SET
       website_domain = EXCLUDED.website_domain,

@@ -23,7 +23,6 @@ import {
   Info,
   Code,
   Save,
-  Globe,
   Settings,
   Clock,
 } from 'lucide-react';
@@ -99,7 +98,6 @@ function AgentDetails({
   const { selectedFramework, setSelectedFramework } = useFramework();
 
   const [editName, setEditName] = useState('');
-  const [editWebsiteDomain, setEditWebsiteDomain] = useState('');
   const [editModel, setEditModel] = useState<AgentModel>(
     'google/gemini-2.0-flash-001'
   );
@@ -150,7 +148,6 @@ function AgentDetails({
         setAgent(data.agent || null);
         // Initialize edit state
         setEditName(data.agent?.name || '');
-        setEditWebsiteDomain(data.agent?.websiteDomain || '');
         setEditModel(
           (data.agent?.model as AgentModel) || 'google/gemini-2.0-flash-001'
         );
@@ -228,7 +225,6 @@ function AgentDetails({
       setIsSaving(true);
       const updatePayload: any = {
         name: editName,
-        websiteDomain: editWebsiteDomain,
         model: editModel,
       };
 
@@ -245,7 +241,6 @@ function AgentDetails({
         setAgent({
           ...agent,
           name: editName,
-          websiteDomain: editWebsiteDomain,
           model: editModel,
         });
       }
@@ -371,21 +366,6 @@ function AgentDetails({
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   placeholder="Agent Name"
-                  className="border-[2px] border-border"
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold mb-2">
-                <Globe className="h-4 w-4 text-destructive" />
-                Domain:
-              </Label>
-              <div className="ml-6 max-w-md">
-                <Input
-                  value={editWebsiteDomain}
-                  onChange={(e) => setEditWebsiteDomain(e.target.value)}
-                  placeholder="example.com"
                   className="border-[2px] border-border"
                 />
               </div>

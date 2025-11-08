@@ -37,7 +37,7 @@ export type AgentModel = keyof typeof AGENT_MODELS;
 export interface Agent {
   id: string;
   name: string;
-  websiteDomain: string;
+  websiteDomain?: string;
   model: AgentModel;
   createdBy: string;
   createdAt: string;

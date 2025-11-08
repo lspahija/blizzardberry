@@ -24,7 +24,6 @@ import {
   Copy,
   ExternalLink,
   Bot,
-  Globe,
   Settings,
   Code,
   Info,
@@ -48,13 +47,11 @@ export default function NewAgentPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [name, setName] = useState('');
-  const [websiteDomain, setWebsiteDomain] = useState('');
   const [model, setModel] = useState<AgentModel>('google/gemini-2.0-flash-001');
   const [agentId, setAgentId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [errors, setErrors] = useState<{
     name?: string;
-    websiteDomain?: string;
   }>({});
   const { selectedFramework, setSelectedFramework } = useFramework();
   const { handleCreateAgent, creatingAgent } = useAgents();
@@ -65,12 +62,10 @@ export default function NewAgentPage() {
   useEffect(() => {
     const successAgentId = searchParams.get('success');
     const successName = searchParams.get('name');
-    const successDomain = searchParams.get('domain');
 
-    if (successAgentId && successName && successDomain) {
+    if (successAgentId && successName) {
       setAgentId(successAgentId);
       setName(successName);
-      setWebsiteDomain(successDomain);
     }
   }, [searchParams]);
 
@@ -113,14 +108,10 @@ export default function NewAgentPage() {
   const onCreateAgent = async () => {
     setErrors({});
 
-    const newErrors: { name?: string; websiteDomain?: string } = {};
+    const newErrors: { name?: string } = {};
 
     if (!name.trim()) {
       newErrors.name = 'Agent name is required';
-    }
-
-    if (!websiteDomain.trim()) {
-      newErrors.websiteDomain = 'Website domain is required';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -128,28 +119,24 @@ export default function NewAgentPage() {
       posthog.capture('agent_creation_validation_failed', {
         missing_fields: Object.keys(newErrors),
         name_provided: !!name.trim(),
-        domain_provided: !!websiteDomain.trim(),
       });
       return;
     }
 
     posthog.capture('agent_creation_started', {
       name: name.trim(),
-      website_domain: websiteDomain.trim(),
       model,
     });
 
     try {
       const { agentId: newAgentId } = await handleCreateAgent({
         name,
-        websiteDomain,
         model,
       });
 
       posthog.capture('agent_creation_success', {
         agent_id: newAgentId,
         name: name.trim(),
-        website_domain: websiteDomain.trim(),
         model,
       });
 
@@ -159,7 +146,6 @@ export default function NewAgentPage() {
       const successUrl = new URL(window.location.href);
       successUrl.searchParams.set('success', newAgentId);
       successUrl.searchParams.set('name', name.trim());
-      successUrl.searchParams.set('domain', websiteDomain.trim());
       router.replace(successUrl.pathname + successUrl.search);
 
       // Scroll to top after successful agent creation
@@ -169,7 +155,6 @@ export default function NewAgentPage() {
     } catch (error) {
       posthog.capture('agent_creation_failed', {
         name: name.trim(),
-        website_domain: websiteDomain.trim(),
         model,
         error: (error as Error).message,
       });
@@ -208,7 +193,7 @@ export default function NewAgentPage() {
                 <div className="absolute inset-0 bg-border rounded-lg translate-x-1 translate-y-1"></div>
                 <Card className="relative bg-card border-[3px] border-border rounded-lg shadow-xl border-l-8 border-l-brand">
                   <CardHeader className="flex items-center space-x-2">
-                    <Globe className="h-7 w-7 text-brand" />
+                    <Code className="h-7 w-7 text-brand" />
                     <CardTitle className="text-2xl font-semibold text-foreground">
                       Installation Code
                     </CardTitle>
@@ -449,36 +434,6 @@ export default function NewAgentPage() {
                         {errors.name && (
                           <p className="text-sm text-red-500 mt-1">
                             {errors.name}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label className="text-foreground flex items-center gap-2 text-sm font-semibold mb-2">
-                        <Globe className="h-4 w-4 text-destructive" />
-                        Domain:
-                      </Label>
-                      <div className="ml-6 max-w-md">
-                        <Input
-                          id="websiteDomain"
-                          value={websiteDomain}
-                          onChange={(e) => {
-                            setWebsiteDomain(e.target.value);
-                            if (errors.websiteDomain) {
-                              setErrors((prev) => ({
-                                ...prev,
-                                websiteDomain: undefined,
-                              }));
-                            }
-                          }}
-                          placeholder="example.com"
-                          className={`border-[2px] ${errors.websiteDomain ? 'border-red-500' : 'border-border'}`}
-                          disabled={creatingAgent}
-                        />
-                        {errors.websiteDomain && (
-                          <p className="text-sm text-red-500 mt-1">
-                            {errors.websiteDomain}
                           </p>
                         )}
                       </div>

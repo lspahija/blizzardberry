@@ -62,7 +62,7 @@ export async function PUT(
     const body = await request.json();
     const { name, websiteDomain, model, prompts } = body;
 
-    if (!name || !websiteDomain || !model) {
+    if (!name || !model) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -71,7 +71,7 @@ export async function PUT(
 
     await updateAgent(agentId, {
       name,
-      website_domain: websiteDomain,
+      website_domain: websiteDomain || null,
       model,
     });
 
@@ -113,7 +113,7 @@ export async function PATCH(
     }
 
     if (websiteDomain !== undefined) {
-      updateData.website_domain = websiteDomain;
+      updateData.website_domain = websiteDomain || null;
     }
 
     if (model !== undefined) {
