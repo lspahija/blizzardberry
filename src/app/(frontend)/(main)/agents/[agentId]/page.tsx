@@ -22,13 +22,9 @@ import {
   Zap,
   Info,
   Code,
-  Edit,
   Save,
   Globe,
   Settings,
-  MessageSquare,
-  Plus,
-  Pencil,
   Clock,
 } from 'lucide-react';
 import {
@@ -45,7 +41,6 @@ import {
 } from '@/app/api/lib/model/action/frontendAction';
 import { useActionForm } from '@/app/(frontend)/hooks/useActionForm';
 import { useDocuments } from '@/app/(frontend)/hooks/useDocuments';
-import { usePrompts } from '@/app/(frontend)/hooks/usePrompts';
 import { useFramework } from '@/app/(frontend)/contexts/useFramework';
 import {
   Framework,
@@ -63,7 +58,6 @@ import {
 } from '@/app/(frontend)/components/ui/select';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { Input } from '@/app/(frontend)/components/ui/input';
-import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { Suspense } from 'react';
 import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
@@ -109,7 +103,6 @@ function AgentDetails({
   const [editModel, setEditModel] = useState<AgentModel>(
     'google/gemini-2.0-flash-001'
   );
-  const [editPrompts, setEditPrompts] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
   const { handleUpdateAgent, handleDeleteAgent, deletingAgentId } = useAgents();
@@ -120,13 +113,6 @@ function AgentDetails({
     deletingDocumentId,
     handleDeleteDocument,
   } = useDocuments();
-  const {
-    prompts,
-    loadingPrompts,
-    deletingPromptId,
-    handleDeletePrompt,
-    fetchPrompts,
-  } = usePrompts(params.agentId);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleteAgentDialogOpen, setIsDeleteAgentDialogOpen] = useState(false);
@@ -135,11 +121,6 @@ function AgentDetails({
     useState(false);
   const [documentToDelete, setDocumentToDelete] = useState<
     (typeof documents)[0] | null
-  >(null);
-  const [isDeletePromptDialogOpen, setIsDeletePromptDialogOpen] =
-    useState(false);
-  const [promptToDelete, setPromptToDelete] = useState<
-    (typeof prompts)[0] | null
   >(null);
   const [isNavigatingToNewAction, setIsNavigatingToNewAction] = useState(false);
   const [isNavigatingToNewDocument, setIsNavigatingToNewDocument] =
@@ -181,22 +162,6 @@ function AgentDetails({
     }
 
     fetchAgent();
-  }, [params.agentId]);
-
-  useEffect(() => {
-    async function fetchPrompts() {
-      try {
-        const response = await fetch(`/api/agents/${params.agentId}/prompts`);
-        if (!response.ok) return;
-        const data = await response.json();
-        let promptContents = data.prompts?.map((p: any) => p.content) || [];
-        if (promptContents.length === 0) promptContents = [''];
-        setEditPrompts(promptContents);
-      } catch (e) {
-        setEditPrompts(['']);
-      }
-    }
-    fetchPrompts();
   }, [params.agentId]);
 
   // Fetch actions for the agent
@@ -261,13 +226,11 @@ function AgentDetails({
 
     try {
       setIsSaving(true);
-      const filteredPrompts = editPrompts.filter((p) => p.trim());
       const updatePayload: any = {
         name: editName,
         websiteDomain: editWebsiteDomain,
         model: editModel,
       };
-      updatePayload.prompts = filteredPrompts;
 
       await handleUpdateAgent(agent.id, updatePayload);
 
@@ -287,8 +250,6 @@ function AgentDetails({
         });
       }
 
-      await fetchPrompts();
-
       toast.success('Agent updated successfully!');
     } catch (error) {
       console.error('Error updating agent:', error);
@@ -296,21 +257,6 @@ function AgentDetails({
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const addPrompt = () => {
-    if (editPrompts.length < 4) setEditPrompts([...editPrompts, '']);
-  };
-
-  const removePrompt = (index: number) => {
-    if (editPrompts.length > 1)
-      setEditPrompts(editPrompts.filter((_, i) => i !== index));
-  };
-
-  const updatePrompt = (index: number, value: string) => {
-    const newPrompts = [...editPrompts];
-    newPrompts[index] = value;
-    setEditPrompts(newPrompts);
   };
 
   useEffect(() => {
@@ -479,66 +425,6 @@ function AgentDetails({
               <p className="text-muted-foreground text-sm sm:text-base ml-6">
                 {new Date(agent.createdAt).toLocaleString()}
               </p>
-            </div>
-
-            <div>
-              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
-                <MessageSquare className="h-4 w-4 text-brand" />
-                Example Prompts (Optional)
-              </Label>
-              <p className="text-sm text-muted-foreground mt-1 ml-6">
-                Add a few example questions to help guide your users and
-                showcase your agent's capabilities.
-              </p>
-              <div className="mt-4 ml-6 space-y-4 max-w-2xl">
-                {editPrompts.map((prompt, index) => (
-                  <div key={index} className="flex gap-2 items-center">
-                    <div className="flex-1">
-                      <Textarea
-                        value={prompt}
-                        onChange={(e) => updatePrompt(index, e.target.value)}
-                        placeholder="Show me your pricing"
-                        className="border-[2px] border-border resize-none"
-                        rows={3}
-                      />
-                    </div>
-                    {(editPrompts.length > 1 ||
-                      (index === 0 && prompt.trim())) && (
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        onClick={() => {
-                          if (index === 0 && editPrompts.length === 1) {
-                            updatePrompt(0, '');
-                          } else {
-                            removePrompt(index);
-                          }
-                        }}
-                        className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
-                        tabIndex={-1}
-                      >
-                        <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                      </Button>
-                    )}
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={addPrompt}
-                  className="border-[2px] border-border hover:bg-secondary"
-                  disabled={editPrompts.length >= 4}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Another Prompt
-                </Button>
-                {editPrompts.length >= 4 && (
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Maximum 4 prompts allowed.
-                  </p>
-                )}
-              </div>
             </div>
 
             {/* Separator */}
@@ -961,20 +847,6 @@ function AgentDetails({
           title="Delete Document"
           message={`Are you sure you want to delete Document ${documentToDelete ? documents.findIndex((d) => d.id === documentToDelete.id) + 1 : ''}? This action cannot be undone.`}
           isLoading={!!deletingDocumentId}
-        />
-
-        <DeleteConfirmationDialog
-          isOpen={isDeletePromptDialogOpen}
-          onOpenChange={setIsDeletePromptDialogOpen}
-          onConfirm={async () => {
-            if (promptToDelete?.id) {
-              await handleDeletePrompt(promptToDelete.id);
-              setPromptToDelete(null);
-            }
-          }}
-          title="Delete Prompt"
-          message={`Are you sure you want to delete this prompt? This action cannot be undone.`}
-          isLoading={!!deletingPromptId}
         />
       </div>
     </motion.div>

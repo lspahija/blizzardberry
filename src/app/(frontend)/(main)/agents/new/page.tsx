@@ -9,7 +9,6 @@ import {
 } from '@/app/(frontend)/components/ui/card';
 import { Input } from '@/app/(frontend)/components/ui/input';
 import { Label } from '@/app/(frontend)/components/ui/label';
-import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -29,9 +28,6 @@ import {
   Settings,
   Code,
   Info,
-  Plus,
-  Trash2,
-  MessageSquare,
   Zap,
   FileText,
 } from 'lucide-react';
@@ -60,7 +56,6 @@ export default function NewAgentPage() {
     name?: string;
     websiteDomain?: string;
   }>({});
-  const [prompts, setPrompts] = useState<string[]>(['']);
   const { selectedFramework, setSelectedFramework } = useFramework();
   const { handleCreateAgent, creatingAgent } = useAgents();
 
@@ -115,41 +110,6 @@ export default function NewAgentPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleContinue = () => {
-    posthog.capture('agent_configuration_started', {
-      agent_id: agentId,
-    });
-    router.push(`/agents/${agentId}`);
-  };
-
-  const handleCreateNewAgent = () => {
-    // Clear URL parameters and reset form state
-    router.replace('/agents/new');
-    setAgentId(null);
-    setName('');
-    setWebsiteDomain('');
-    setModel('google/gemini-2.0-flash-001');
-    setPrompts(['']);
-    setErrors({});
-    setCopied(false);
-  };
-
-  const addPrompt = () => {
-    setPrompts([...prompts, '']);
-  };
-
-  const removePrompt = (index: number) => {
-    if (prompts.length > 1) {
-      setPrompts(prompts.filter((_, i) => i !== index));
-    }
-  };
-
-  const updatePrompt = (index: number, value: string) => {
-    const newPrompts = [...prompts];
-    newPrompts[index] = value;
-    setPrompts(newPrompts);
-  };
-
   const onCreateAgent = async () => {
     setErrors({});
 
@@ -177,7 +137,6 @@ export default function NewAgentPage() {
       name: name.trim(),
       website_domain: websiteDomain.trim(),
       model,
-      prompt_count: prompts.filter((p) => p.trim()).length,
     });
 
     try {
@@ -185,7 +144,6 @@ export default function NewAgentPage() {
         name,
         websiteDomain,
         model,
-        prompts: prompts.filter((p) => p.trim()),
       });
 
       posthog.capture('agent_creation_success', {
@@ -193,7 +151,6 @@ export default function NewAgentPage() {
         name: name.trim(),
         website_domain: websiteDomain.trim(),
         model,
-        prompt_count: prompts.filter((p) => p.trim()).length,
       });
 
       setAgentId(newAgentId);
@@ -553,70 +510,6 @@ export default function NewAgentPage() {
                             )}
                           </SelectContent>
                         </Select>
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label className="text-foreground flex items-center gap-2 text-sm font-semibold">
-                        <MessageSquare className="h-4 w-4 text-brand" />
-                        Example Prompts (Optional)
-                      </Label>
-                      <p className="text-sm text-muted-foreground mt-1 ml-6">
-                        Add a few example questions to help guide your users and
-                        showcase your agent's capabilities.
-                      </p>
-                      <div className="mt-4 ml-6 space-y-4 max-w-2xl">
-                        {prompts.map((prompt, index) => (
-                          <div key={index} className="flex gap-2 items-center">
-                            <div className="flex-1">
-                              <Textarea
-                                value={prompt}
-                                onChange={(e) =>
-                                  updatePrompt(index, e.target.value)
-                                }
-                                placeholder="Enter a prompt for your agent..."
-                                className="border-[2px] border-border resize-none"
-                                rows={3}
-                                disabled={creatingAgent}
-                              />
-                            </div>
-                            {(prompts.length > 1 ||
-                              (index === 0 && prompt.trim())) && (
-                              <Button
-                                type="button"
-                                variant="destructive"
-                                size="icon"
-                                onClick={() => {
-                                  if (index === 0 && prompts.length === 1) {
-                                    updatePrompt(0, '');
-                                  } else {
-                                    removePrompt(index);
-                                  }
-                                }}
-                                className="ml-auto rounded-full p-2 hover:bg-destructive/80 transition group-hover:scale-110"
-                                disabled={creatingAgent}
-                                tabIndex={-1}
-                              >
-                                <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-12" />
-                              </Button>
-                            )}
-                          </div>
-                        ))}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={addPrompt}
-                          className="border-[2px] border-border hover:bg-secondary"
-                          disabled={creatingAgent || prompts.length >= 4}
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Another Prompt
-                        </Button>
-                        {prompts.length >= 4 && (
-                          <p className="text-sm text-muted-foreground mt-2">
-                            Maximum 4 prompts allowed.
-                          </p>
-                        )}
                       </div>
                     </div>
 
