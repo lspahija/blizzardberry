@@ -14,7 +14,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { name, websiteDomain, model, prompts } = await req.json();
+    const { name, websiteDomain, model, systemMessage, prompts } =
+      await req.json();
 
     if (!(model in AGENT_MODELS)) {
       return NextResponse.json(
@@ -26,7 +27,13 @@ export async function POST(req: Request) {
     const validationResponse = await maxAgentsReached(user.id);
     if (validationResponse) return validationResponse;
 
-    const data = await createAgent(name, websiteDomain, user.id, model);
+    const data = await createAgent(
+      name,
+      websiteDomain,
+      user.id,
+      model,
+      systemMessage
+    );
 
     if (prompts && Array.isArray(prompts)) {
       for (const promptContent of prompts) {
@@ -60,6 +67,7 @@ export async function GET(req: Request) {
       name: d.name,
       websiteDomain: d.website_domain,
       model: d.model,
+      systemMessage: d.system_message,
       createdBy: d.created_by,
       createdAt: d.created_at,
     }));

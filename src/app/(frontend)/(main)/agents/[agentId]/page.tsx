@@ -57,6 +57,7 @@ import {
 } from '@/app/(frontend)/components/ui/select';
 import { Label } from '@/app/(frontend)/components/ui/label';
 import { Input } from '@/app/(frontend)/components/ui/input';
+import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import { Suspense } from 'react';
 import { DeleteConfirmationDialog } from '@/app/(frontend)/components/ui/delete-confirmation-dialog';
 import { useAgents } from '@/app/(frontend)/hooks/useAgents';
@@ -101,6 +102,7 @@ function AgentDetails({
   const [editModel, setEditModel] = useState<AgentModel>(
     'google/gemini-2.0-flash-001'
   );
+  const [editSystemMessage, setEditSystemMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
   const { handleUpdateAgent, handleDeleteAgent, deletingAgentId } = useAgents();
@@ -151,6 +153,7 @@ function AgentDetails({
         setEditModel(
           (data.agent?.model as AgentModel) || 'google/gemini-2.0-flash-001'
         );
+        setEditSystemMessage(data.agent?.systemMessage || '');
       } catch (error) {
         console.error('Error fetching agent:', error);
       } finally {
@@ -226,6 +229,7 @@ function AgentDetails({
       const updatePayload: any = {
         name: editName,
         model: editModel,
+        systemMessage: editSystemMessage.trim() || undefined,
       };
 
       await handleUpdateAgent(agent.id, updatePayload);
@@ -394,6 +398,25 @@ function AgentDetails({
                     )}
                   </SelectContent>
                 </Select>
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold mb-2">
+                <FileText className="h-4 w-4 text-destructive" />
+                Custom Instructions (Optional):
+              </Label>
+              <p className="text-sm text-muted-foreground mt-1 ml-6 mb-3">
+                Add custom instructions to define your agent's behavior, personality, or specific guidelines. This will be used as the system message for your agent.
+              </p>
+              <div className="ml-6 max-w-2xl">
+                <Textarea
+                  value={editSystemMessage}
+                  onChange={(e) => setEditSystemMessage(e.target.value)}
+                  placeholder="You are a helpful assistant that specializes in..."
+                  className="border-[2px] border-border resize-none"
+                  rows={5}
+                />
               </div>
             </div>
 

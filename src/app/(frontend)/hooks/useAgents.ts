@@ -8,6 +8,7 @@ interface CreateAgentParams {
   name: string;
   websiteDomain?: string;
   model: string;
+  systemMessage?: string;
   prompts?: string[];
 }
 
@@ -69,7 +70,7 @@ export function useAgents() {
   );
 
   const handleCreateAgent = useCallback(
-    async ({ name, websiteDomain, model, prompts }: CreateAgentParams) => {
+    async ({ name, websiteDomain, model, systemMessage, prompts }: CreateAgentParams) => {
       setCreatingAgent(true);
       try {
         const response = await fetch('/api/agents', {
@@ -77,7 +78,7 @@ export function useAgents() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ name, websiteDomain, model, prompts }),
+          body: JSON.stringify({ name, websiteDomain, model, systemMessage, prompts }),
         });
 
         if (!response.ok) {
@@ -113,7 +114,7 @@ export function useAgents() {
   const handleUpdateAgent = useCallback(
     async (
       agentId: string,
-      { name, websiteDomain, model, prompts }: UpdateAgentParams
+      { name, websiteDomain, model, systemMessage, prompts }: UpdateAgentParams
     ) => {
       setUpdatingAgent(true);
       try {
@@ -122,7 +123,7 @@ export function useAgents() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ name, websiteDomain, model, prompts }),
+          body: JSON.stringify({ name, websiteDomain, model, systemMessage, prompts }),
         });
 
         if (!response.ok) {

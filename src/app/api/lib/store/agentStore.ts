@@ -2,7 +2,7 @@ import sql from '@/app/api/lib/store/db';
 
 export async function getAgent(agentId: string) {
   const [agent] = await sql`
-    SELECT id, name, created_by, model
+    SELECT id, name, created_by, model, system_message
     FROM agents
     WHERE id = ${agentId}
     LIMIT 1
@@ -13,7 +13,7 @@ export async function getAgent(agentId: string) {
 
 export async function getAgentByUserId(agentId: string) {
   const [agent] = await sql`
-    SELECT id, name, website_domain, model, created_by, created_at
+    SELECT id, name, website_domain, model, system_message, created_by, created_at
     FROM agents
     WHERE id = ${agentId}
     LIMIT 1
@@ -24,7 +24,7 @@ export async function getAgentByUserId(agentId: string) {
 
 export async function getAgents(userId: string) {
   return sql`
-    SELECT id, name, website_domain, model, created_by, created_at
+    SELECT id, name, website_domain, model, system_message, created_by, created_at
     FROM agents
     WHERE created_by = ${userId}
   `;
@@ -34,15 +34,17 @@ export async function createAgent(
   name: string,
   websiteDomain: string | undefined,
   userId: string,
-  model: string
+  model: string,
+  systemMessage?: string
 ) {
   const [agent] = await sql`
-    INSERT INTO agents (name, website_domain, created_by, model)
-    VALUES (${name}, ${websiteDomain || null}, ${userId}, ${model})
+    INSERT INTO agents (name, website_domain, created_by, model, system_message)
+    VALUES (${name}, ${websiteDomain || null}, ${userId}, ${model}, ${systemMessage || null})
     ON CONFLICT (name, created_by)
     DO UPDATE SET
       website_domain = EXCLUDED.website_domain,
-      model = EXCLUDED.model
+      model = EXCLUDED.model,
+      system_message = EXCLUDED.system_message
     RETURNING id
   `;
 
@@ -62,6 +64,7 @@ export async function updateAgent(
     name: string;
     website_domain: string;
     model: string;
+    system_message: string;
   }>
 ) {
   const updateData: any = {};
@@ -69,6 +72,8 @@ export async function updateAgent(
   if (data.website_domain !== undefined)
     updateData.website_domain = data.website_domain;
   if (data.model !== undefined) updateData.model = data.model;
+  if (data.system_message !== undefined)
+    updateData.system_message = data.system_message;
 
   if (Object.keys(updateData).length === 0) {
     return null;

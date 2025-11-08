@@ -39,6 +39,7 @@ export interface Agent {
   name: string;
   websiteDomain?: string;
   model: AgentModel;
+  systemMessage?: string;
   createdBy: string;
   createdAt: string;
 }

@@ -31,6 +31,7 @@ export async function GET(
       name: data.name,
       websiteDomain: data.website_domain,
       model: data.model,
+      systemMessage: data.system_message,
       createdBy: data.created_by,
       createdAt: data.created_at,
     };
@@ -60,7 +61,7 @@ export async function PUT(
     if (authResponse) return authResponse;
 
     const body = await request.json();
-    const { name, websiteDomain, model, prompts } = body;
+    const { name, websiteDomain, model, systemMessage, prompts } = body;
 
     if (!name || !model) {
       return NextResponse.json(
@@ -73,6 +74,7 @@ export async function PUT(
       name,
       website_domain: websiteDomain || null,
       model,
+      system_message: systemMessage || null,
     });
 
     if (Array.isArray(prompts)) {
@@ -104,7 +106,7 @@ export async function PATCH(
     if (authResponse) return authResponse;
 
     const body = await request.json();
-    const { name, websiteDomain, model, prompts } = body;
+    const { name, websiteDomain, model, systemMessage, prompts } = body;
 
     const updateData: any = {};
 
@@ -118,6 +120,10 @@ export async function PATCH(
 
     if (model !== undefined) {
       updateData.model = model;
+    }
+
+    if (systemMessage !== undefined) {
+      updateData.system_message = systemMessage || null;
     }
 
     if (Object.keys(updateData).length > 0) {

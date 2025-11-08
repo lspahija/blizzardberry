@@ -9,6 +9,7 @@ import {
 } from '@/app/(frontend)/components/ui/card';
 import { Input } from '@/app/(frontend)/components/ui/input';
 import { Label } from '@/app/(frontend)/components/ui/label';
+import { Textarea } from '@/app/(frontend)/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -48,6 +49,7 @@ export default function NewAgentPage() {
   const searchParams = useSearchParams();
   const [name, setName] = useState('');
   const [model, setModel] = useState<AgentModel>('google/gemini-2.0-flash-001');
+  const [systemMessage, setSystemMessage] = useState('');
   const [agentId, setAgentId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [errors, setErrors] = useState<{
@@ -132,6 +134,7 @@ export default function NewAgentPage() {
       const { agentId: newAgentId } = await handleCreateAgent({
         name,
         model,
+        systemMessage: systemMessage.trim() || undefined,
       });
 
       posthog.capture('agent_creation_success', {
@@ -465,6 +468,26 @@ export default function NewAgentPage() {
                             )}
                           </SelectContent>
                         </Select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-foreground flex items-center gap-2 text-sm font-semibold mb-2">
+                        <FileText className="h-4 w-4 text-destructive" />
+                        Custom Instructions (Optional):
+                      </Label>
+                      <p className="text-sm text-muted-foreground mt-1 ml-6 mb-3">
+                        Add custom instructions to define your agent's behavior, personality, or specific guidelines. This will be used as the system message for your agent.
+                      </p>
+                      <div className="ml-6 max-w-2xl">
+                        <Textarea
+                          value={systemMessage}
+                          onChange={(e) => setSystemMessage(e.target.value)}
+                          placeholder="You are a helpful assistant that specializes in..."
+                          className="border-[2px] border-border resize-none"
+                          rows={5}
+                          disabled={creatingAgent}
+                        />
                       </div>
                     </div>
 

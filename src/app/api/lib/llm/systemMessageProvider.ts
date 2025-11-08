@@ -42,11 +42,19 @@ You are the in-app assistant. Your job is to let users control this web app thro
 • If the user asks “Who are you?” or “What can you do?”, reply that you are the web app’s natural-language assistant, that you have the ability to search the web app's knowledge base, and include the capability list described above.
 `;
 
-export function buildSystemMessage(userConfig: any) {
-  let message = BASE_SYSTEM_MESSAGE;
+export function buildSystemMessage(userConfig: any, agentSystemMessage?: string) {
+  let message = '';
 
-  if (userConfig)
+  // Add custom agent instructions if provided
+  if (agentSystemMessage) {
+    message += `${agentSystemMessage}\n\n`;
+  }
+
+  message += BASE_SYSTEM_MESSAGE;
+
+  if (userConfig) {
     message += `\n\nThis is the user's metadata. Use this information to pre-fill data in actions when appropriate:\n${JSON.stringify(userConfig, null, 2)}`;
+  }
 
   return message;
 }
