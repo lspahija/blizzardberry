@@ -7,10 +7,13 @@ import DataInputsStep from '@/app/(frontend)/components/DataInputsStep';
 import GeneralStep from '@/app/(frontend)/components/GeneralStep';
 import RequestDefinitionStep from '@/app/(frontend)/components/RequestDefinitionStep.tsx';
 import ClientActionImplementation from '@/app/(frontend)/components/ClientActionImplementation';
+import IntegrationSelectionStep from '@/app/(frontend)/components/IntegrationSelectionStep';
+import CalendlyConfigStep from '@/app/(frontend)/components/CalendlyConfigStep';
 import { Loader2 } from 'lucide-react'; // Import a loading icon
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import { ExecutionContext } from '@/app/api/lib/model/action/baseAction';
+import { createCalendlyActions } from '@/app/(frontend)/lib/calendlyIntegration';
 import posthog from 'posthog-js';
 
 const containerVariants = {
@@ -47,9 +50,12 @@ function ActionFormContent() {
     isCreatingAction,
     showSuccess,
     createdClientAction,
+    integrationMode,
+    setIntegrationMode,
     handleNextStep,
     handleBack,
     handleCreateAction,
+    handleCreateMultipleActions,
   } = useActionForm();
 
   const router = useRouter();
@@ -62,6 +68,24 @@ function ActionFormContent() {
       action_type: baseAction.executionContext,
     });
     router.push(`/agents/${agentId}`);
+  };
+
+  const handleSelectCustomAction = () => {
+    setIntegrationMode(null);
+    handleNextStep();
+  };
+
+  const handleSelectIntegration = (integration: string) => {
+    setIntegrationMode(integration);
+  };
+
+  const handleCreateCalendlyActions = async (apiToken: string) => {
+    const actions = createCalendlyActions(apiToken, agentId);
+    await handleCreateMultipleActions(actions);
+  };
+
+  const handleBackFromIntegration = () => {
+    setIntegrationMode(null);
   };
 
   if (
@@ -103,10 +127,30 @@ function ActionFormContent() {
         className="text-4xl sm:text-5xl font-bold tracking-tighter text-foreground mb-8 text-center"
         variants={itemVariants}
       >
-        Create Custom Action
+        {integrationMode === 'calendly'
+          ? 'Calendly Integration'
+          : 'Create Custom Action'}
       </motion.h1>
 
-      {step === 1 && (
+      {/* Integration Selection (Step 1) */}
+      {step === 1 && !integrationMode && (
+        <IntegrationSelectionStep
+          onSelectCustom={handleSelectCustomAction}
+          onSelectIntegration={handleSelectIntegration}
+        />
+      )}
+
+      {/* Calendly Configuration */}
+      {integrationMode === 'calendly' && (
+        <CalendlyConfigStep
+          onBack={handleBackFromIntegration}
+          onCreate={handleCreateCalendlyActions}
+          isCreating={isCreatingAction}
+        />
+      )}
+
+      {/* Custom Action Flow */}
+      {!integrationMode && step === 2 && (
         <GeneralStep
           baseAction={baseAction}
           setBaseAction={setBaseAction}
@@ -114,7 +158,7 @@ function ActionFormContent() {
         />
       )}
 
-      {step === 2 && (
+      {!integrationMode && step === 3 && (
         <div>
           <DataInputsStep
             dataInputs={dataInputs}

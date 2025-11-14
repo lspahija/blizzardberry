@@ -61,6 +61,7 @@ export const useActionForm = (isEditing = false) => {
   const [createdClientAction, setCreatedClientAction] = useState<Action | null>(
     null
   );
+  const [integrationMode, setIntegrationMode] = useState<string | null>(null);
 
   useEffect(() => {
     console.log('createdClientAction state changed:', createdClientAction);
@@ -443,6 +444,67 @@ export const useActionForm = (isEditing = false) => {
     }
   }
 
+  const handleCreateMultipleActions = async (actions: Action[]) => {
+    setIsCreatingAction(true);
+
+    try {
+      const createPromises = actions.map((action) =>
+        fetch(`/api/agents/${agentId}/actions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(action),
+        })
+      );
+
+      const responses = await Promise.all(createPromises);
+
+      const failedResponses = responses.filter((r) => !r.ok);
+      if (failedResponses.length > 0) {
+        const firstError = await failedResponses[0].json();
+        if (
+          failedResponses[0].status === 403 &&
+          firstError.error === 'Action limit reached for this subscription tier'
+        ) {
+          toast.error(
+            'You have reached the maximum number of actions allowed for your subscription tier. Please upgrade your plan to create more actions.'
+          );
+          throw new Error('Action limit reached');
+        }
+        throw new Error('Failed to create one or more actions');
+      }
+
+      posthog.capture('integration_actions_created', {
+        agent_id: agentId,
+        integration: integrationMode,
+        actions_count: actions.length,
+      });
+
+      setShowSuccess(true);
+      window.history.replaceState(null, '', `/agents/${agentId}/actions/new`);
+
+      setTimeout(() => {
+        router.replace(`/agents/${agentId}`);
+      }, 1500);
+    } catch (error) {
+      console.error('Error creating integration actions:', error);
+
+      posthog.capture('integration_actions_failed', {
+        agent_id: agentId,
+        integration: integrationMode,
+        error: (error as Error).message,
+      });
+
+      if ((error as Error).message !== 'Action limit reached') {
+        toast.error('Failed to create actions. Please try again.');
+      }
+      throw error;
+    } finally {
+      setIsCreatingAction(false);
+    }
+  };
+
   return {
     step,
     baseAction,
@@ -464,10 +526,14 @@ export const useActionForm = (isEditing = false) => {
     isCreatingAction,
     showSuccess,
     createdClientAction,
+    integrationMode,
+    setIntegrationMode,
     handleNextStep,
     handleBack,
     handleCreateAction,
     handleDeleteAction,
     handleFetchActions,
+    handleCreateMultipleActions,
+    handleUpdateAction,
   };
 };
