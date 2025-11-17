@@ -9,9 +9,6 @@ import {
 import { buildSystemMessage } from '@/app/api/lib/llm/systemMessageProvider';
 
 export async function POST(req: Request) {
-  const startTime = Date.now();
-  console.log(`[${new Date().toISOString()}] Request received`);
-
   const { messages, userConfig, agentId, idempotencyKey, conversationId } =
     await req.json();
 
@@ -28,11 +25,6 @@ export async function POST(req: Request) {
       idempotencyKey
     );
 
-    const beforeGenerateTime = Date.now();
-    console.log(
-      `[${new Date().toISOString()}] Calling generateText (setup took ${beforeGenerateTime - startTime}ms)`
-    );
-
     const result = await generateText({
       model: openrouter(`${agent.model}:floor`),
       system: buildSystemMessage(userConfig, agent.system_message),
@@ -41,11 +33,6 @@ export async function POST(req: Request) {
       stopWhen: stepCountIs(5),
       maxOutputTokens: 1000,
     });
-
-    const afterGenerateTime = Date.now();
-    console.log(
-      `[${new Date().toISOString()}] generateText completed (took ${afterGenerateTime - beforeGenerateTime}ms)`
-    );
 
     if (result.usage) {
       await recordUsedTokens(
@@ -58,32 +45,27 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log(`text generated:\n ${result.text}`);
-
     const toolCalls =
       result.steps?.flatMap((step) => step.toolCalls || []) || [];
-    console.log(`toolCalls: ${JSON.stringify(toolCalls)}`);
 
     const toolResults =
       result.steps?.flatMap((step) => step.toolResults || []) || [];
-    console.log(`toolResults: ${JSON.stringify(toolResults)}`);
 
+    // Prioritize book_calendly_meeting tool result if it exists, otherwise use first
     let toolResult = toolResults.length > 0 ? toolResults[0] : undefined;
     if (toolResults.length > 1) {
-      console.warn(
-        `${agent.model} yielded ${toolResults.length} toolResults. Returning only first one because the LLM didn't follow system prompt instructions to only call a single tool.`
+      // Check if book_calendly_meeting tool result exists - prioritize it
+      const calendlyBookingResult = toolResults.find(
+        (tr) => tr.toolName === 'book_calendly_meeting'
       );
-      console.log(`Returned: ${JSON.stringify(toolResults[0])}`);
-      console.log(`Discarded: ${JSON.stringify(toolResults.slice(1))}`);
+      if (calendlyBookingResult) {
+        toolResult = calendlyBookingResult;
+      } else {
+        console.warn(
+          `${agent.model} yielded ${toolResults.length} toolResults. Returning only first one because the LLM didn't follow system prompt instructions to only call a single tool.`
+        );
+      }
     }
-
-    const beforeReturnTime = Date.now();
-    console.log(
-      `[${new Date().toISOString()}] Returning response (post-processing took ${beforeReturnTime - afterGenerateTime}ms)`
-    );
-    console.log(
-      `[${new Date().toISOString()}] Total request duration: ${beforeReturnTime - startTime}ms | Breakdown: setup=${beforeGenerateTime - startTime}ms, generateText=${afterGenerateTime - beforeGenerateTime}ms, post-processing=${beforeReturnTime - afterGenerateTime}ms`
-    );
 
     return Response.json({
       text: result.text,

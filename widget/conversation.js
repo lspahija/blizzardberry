@@ -14,6 +14,7 @@ import { executeAction } from './actions';
 import { updateConversationUI } from './ui';
 import { updateNotificationBadge } from './dom';
 import { addVisualizationToMessage } from './visualization';
+import { addCalendlyEmbedToMessage } from './calendly';
 
 function syncWidgetState() {
   const widget = document.getElementById('chatWidget');
@@ -155,6 +156,13 @@ export async function processMessage(messageText, role) {
       const output = toolResult.output;
       if (output && output.type === 'visualization') {
         await addVisualizationToMessage(output);
+      }
+    }
+
+    if (toolResult?.toolName === 'book_calendly_meeting') {
+      const output = toolResult.output;
+      if (output && output.type === 'calendly_embed') {
+        await addCalendlyEmbedToMessage(output);
       }
     }
 

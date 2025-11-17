@@ -18,8 +18,6 @@ function initializeConfig() {
 
   const agentId = extractAgentId();
 
-  console.log('BlizzardBerry Agent initialized:', { agentId, baseUrl });
-
   const userConfig = window.agentUserConfig;
   const actions = window.agentActions;
   delete window.agentUserConfig;

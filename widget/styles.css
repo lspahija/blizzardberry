@@ -709,6 +709,56 @@
         font-size: 11px;
         margin-right: 6px;
     }
+
+/* Calendly Inline Widget Styles */
+#calendly-inline-container {
+    animation: calendlySlideIn 0.3s ease-out;
+}
+
+@keyframes calendlySlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) translateX(-50%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) translateX(-50%);
+    }
+}
+
+#calendly-inline-container:not(.calendly-mobile) {
+    animation: calendlySlideInDesktop 0.3s ease-out;
+}
+
+@keyframes calendlySlideInDesktop {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Mobile-specific Calendly widget adjustments */
+@media (max-width: 768px) {
+    #calendly-inline-container {
+        /* Ensure it's above chat widget on mobile */
+        z-index: 1001 !important;
+    }
+    
+    #calendly-inline-container .calendly-inline-widget {
+        min-height: 400px;
+    }
+    
+    /* Ensure Calendly iframe is responsive */
+    #calendly-inline-container iframe {
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
+
 /* Loading Widget Styles */
 .chat-widget-loading {
     width: 380px;

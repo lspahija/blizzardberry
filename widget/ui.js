@@ -59,7 +59,7 @@ export function updateConversationUI() {
   const latestMessageEl = getElementById('latest-message');
 
   const visibleMessages = state.messages.filter(
-    (message) => !shouldFilterMessage(message.parts[0]?.text)
+    (message) => !message.hidden && !shouldFilterMessage(message.parts[0]?.text)
   );
 
   let html = visibleMessages.map(renderMessage).join('');

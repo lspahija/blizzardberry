@@ -36,7 +36,6 @@ export function getStoredConversationId() {
       return null;
     }
     const conversationId = sessionStorage.getItem('conversationId');
-    console.log('Conversation ID: ', conversationId);
     return conversationId;
   } catch (e) {
     console.error('Error accessing sessionStorage:', e);

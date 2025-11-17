@@ -2,7 +2,7 @@ import sql from '@/app/api/lib/store/db';
 
 export async function getAgent(agentId: string) {
   const [agent] = await sql`
-    SELECT id, name, created_by, model, system_message
+    SELECT id, name, created_by, model, system_message, calendly_config
     FROM agents
     WHERE id = ${agentId}
     LIMIT 1
@@ -13,7 +13,7 @@ export async function getAgent(agentId: string) {
 
 export async function getAgentByUserId(agentId: string) {
   const [agent] = await sql`
-    SELECT id, name, website_domain, model, system_message, created_by, created_at
+    SELECT id, name, website_domain, model, system_message, created_by, created_at, calendly_config
     FROM agents
     WHERE id = ${agentId}
     LIMIT 1
@@ -24,7 +24,7 @@ export async function getAgentByUserId(agentId: string) {
 
 export async function getAgents(userId: string) {
   return sql`
-    SELECT id, name, website_domain, model, system_message, created_by, created_at
+    SELECT id, name, website_domain, model, system_message, created_by, created_at, calendly_config
     FROM agents
     WHERE created_by = ${userId}
   `;
@@ -65,6 +65,7 @@ export async function updateAgent(
     website_domain: string;
     model: string;
     system_message: string;
+    calendly_config: any; // JSONB type for Calendly configuration
   }>
 ) {
   const updateData: any = {};
@@ -74,6 +75,8 @@ export async function updateAgent(
   if (data.model !== undefined) updateData.model = data.model;
   if (data.system_message !== undefined)
     updateData.system_message = data.system_message;
+  if (data.calendly_config !== undefined)
+    updateData.calendly_config = sql.json(data.calendly_config);
 
   if (Object.keys(updateData).length === 0) {
     return null;
