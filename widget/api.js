@@ -127,7 +127,7 @@ export async function callLLM() {
   }
   const res = ({
     text,
-    toolResult,
+    toolResults,
     error,
     conversationId: returnedConversationId,
   } = await response.json());
