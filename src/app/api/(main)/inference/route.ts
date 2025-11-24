@@ -64,17 +64,22 @@ export async function POST(req: Request) {
       result.steps?.flatMap((step) => step.toolCalls || []) || [];
     console.log(`toolCalls: ${JSON.stringify(toolCalls)}`);
 
-    const toolResults =
+    let toolResults =
       result.steps?.flatMap((step) => step.toolResults || []) || [];
     console.log(`toolResults: ${JSON.stringify(toolResults)}`);
 
-    let toolResult = toolResults.length > 0 ? toolResults[0] : undefined;
+    // Prioritize book_calendly_meeting tool result if it exists - put it first in the array
     if (toolResults.length > 1) {
-      console.warn(
-        `${agent.model} yielded ${toolResults.length} toolResults. Returning only first one because the LLM didn't follow system prompt instructions to only call a single tool.`
+      const calendlyBookingResult = toolResults.find(
+        (tr) => tr.toolName === 'book_calendly_meeting'
       );
-      console.log(`Returned: ${JSON.stringify(toolResults[0])}`);
-      console.log(`Discarded: ${JSON.stringify(toolResults.slice(1))}`);
+      if (calendlyBookingResult) {
+        // Remove Calendly booking from its current position and put it first
+        const filteredResults = toolResults.filter(
+          (tr) => tr.toolName !== 'book_calendly_meeting'
+        );
+        toolResults = [calendlyBookingResult, ...filteredResults];
+      }
     }
 
     const beforeReturnTime = Date.now();
@@ -87,7 +92,7 @@ export async function POST(req: Request) {
 
     return Response.json({
       text: result.text,
-      toolResult: toolResult,
+      toolResults: toolResults,
       conversationId: conversationId,
     });
   } catch (error) {
