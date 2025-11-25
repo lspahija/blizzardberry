@@ -6,6 +6,9 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (pathname === '/') {
+    if (process.env.NEXT_PUBLIC_APP_MODE === 'self-hosted') {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
+    }
     if (session?.user?.id) {
       return NextResponse.redirect(new URL('/dashboard', req.url));
     }
