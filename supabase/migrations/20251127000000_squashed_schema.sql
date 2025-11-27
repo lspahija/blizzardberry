@@ -13,6 +13,13 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
+CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
+
+
+
+
+
+
 CREATE SCHEMA IF NOT EXISTS "next_auth";
 
 
@@ -300,14 +307,24 @@ ALTER TABLE "public"."actions" OWNER TO "postgres";
 CREATE TABLE IF NOT EXISTS "public"."agents" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" "text" NOT NULL,
-    "website_domain" "text" NOT NULL,
+    "website_domain" "text",
     "model" "text" NOT NULL,
     "created_by" "uuid" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"()
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "system_message" "text",
+    "calendly_config" "jsonb"
 );
 
 
 ALTER TABLE "public"."agents" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."agents"."system_message" IS 'Custom instructions/system message for the agent behavior';
+
+
+
+COMMENT ON COLUMN "public"."agents"."calendly_config" IS 'Calendly integration settings per agent. Stores: enabled (bool), access_token (string), user_uri (string), default_event_type_uri (string). Example: {"enabled": true, "access_token": "token_here", "user_uri": "https://api.calendly.com/users/ABC123", "default_event_type_uri": "https://api.calendly.com/event_types/XYZ789"}';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."api_keys" (
@@ -893,6 +910,9 @@ ALTER TABLE "public"."demo_leads" ENABLE ROW LEVEL SECURITY;
 ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
+
+
+
 GRANT USAGE ON SCHEMA "next_auth" TO "service_role";
 
 
@@ -1167,6 +1187,12 @@ GRANT ALL ON FUNCTION "public"."vector"("public"."vector", integer, boolean) TO 
 GRANT ALL ON FUNCTION "public"."vector"("public"."vector", integer, boolean) TO "anon";
 GRANT ALL ON FUNCTION "public"."vector"("public"."vector", integer, boolean) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."vector"("public"."vector", integer, boolean) TO "service_role";
+
+
+
+
+
+
 
 
 
@@ -2085,9 +2111,4 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 
 
 
-
-
---
--- Dumped schema changes for auth and storage
---
 
