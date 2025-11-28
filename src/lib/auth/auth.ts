@@ -38,6 +38,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         `;
 
         if (existingUser) {
+          // Ensure admin user has subscription and credits
+          const subscription = await getSubscription(existingUser.id);
+          if (!subscription) {
+            await upsertSubscription(existingUser.id, 'admin_sub', 'admin_item', 'admin', new Date('2099-12-31'));
+            await addCredit(existingUser.id, 1000000, `${existingUser.id}_admin_init`, null);
+          }
           return existingUser;
         }
 
