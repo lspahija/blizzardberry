@@ -139,3 +139,113 @@ export async function callLLM() {
 
   return res;
 }
+
+/**
+ * Get action inference based on DOM state using Claude AI
+ * @param {Object} domState - DOM state captured from the page
+ * @param {string} prompt - User prompt/instruction
+ * @returns {Promise<Object>} Action to execute
+ */
+export async function getActionInference(domState, prompt) {
+  const url = `${config.baseUrl}/api/action-inference`;
+  const body = {
+    domState,
+    prompt,
+    conversationId: state.conversationId,
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: abortController.signal,
+    });
+
+    if (!response.ok) {
+      const errorBody = await response
+        .text()
+        .catch(() => 'Unable to read response body');
+      console.error('Failed to get action inference:', {
+        status: response.status,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: errorBody,
+      });
+      throw new Error('Failed to get action inference');
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error calling action inference:', error);
+    throw error;
+  }
+}
+
+/**
+ * Run a complete Skyvern task
+ * @param {string} url - URL to navigate to
+ * @param {string} prompt - Task prompt/instruction
+ * @param {Object} options - Additional options
+ * @returns {Promise<Object>} Task result
+ */
+export async function runSkyvernTask(url, prompt, options = {}) {
+  const apiUrl = `${config.baseUrl}/api/skyvern/task`;
+  const body = {
+    url,
+    prompt,
+    ...options,
+  };
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: abortController.signal,
+    });
+
+    if (!response.ok) {
+      const errorBody = await response
+        .text()
+        .catch(() => 'Unable to read response body');
+      console.error('Failed to run Skyvern task:', {
+        status: response.status,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: errorBody,
+      });
+      throw new Error('Failed to run Skyvern task');
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error running Skyvern task:', error);
+    throw error;
+  }
+}
+
+/**
+ * Check status of a Skyvern task
+ * @param {string} taskId - Task ID to check
+ * @returns {Promise<Object>} Task status
+ */
+export async function getSkyvernTaskStatus(taskId) {
+  const apiUrl = `${config.baseUrl}/api/skyvern/task?taskId=${taskId}`;
+
+  try {
+    const response = await fetch(apiUrl, {
+      signal: abortController.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get task status');
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error getting Skyvern task status:', error);
+    throw error;
+  }
+}
