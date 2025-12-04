@@ -42,12 +42,4 @@ export interface Agent {
   systemMessage?: string;
   createdBy: string;
   createdAt: string;
-  calendlyConfig?: {
-    enabled?: boolean;
-    access_token?: string;
-    user_uri?: string;
-    user_name?: string;
-    user_email?: string;
-    default_event_type_uri?: string;
-  };
 }

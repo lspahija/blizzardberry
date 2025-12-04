@@ -14,7 +14,6 @@ import { executeAction } from './actions';
 import { updateConversationUI } from './ui';
 import { updateNotificationBadge } from './dom';
 import { addVisualizationToMessage } from './visualization';
-import { addCalendlyEmbedToMessage } from './calendly';
 
 function syncWidgetState() {
   const widget = document.getElementById('chatWidget');
@@ -126,61 +125,37 @@ export async function processMessage(messageText, role) {
     // Persist message after UI update for instant feedback
     await persistMessage(state.messages[state.messages.length - 1]);
 
-    const { text, toolResults, error } = await callLLM();
+    const { text, toolResult, error } = await callLLM();
 
     if (error) {
       await handleError(error);
       return;
     }
 
-    // Handle tool results - process each one
-    if (toolResults && toolResults.length > 0) {
-      // Check for ACTION_ tools first - these need special handling
-      const actionTool = toolResults.find((tr) => tr.toolName?.startsWith('ACTION_'));
-      if (actionTool) {
-        const result = await executeAction({
-          ...actionTool.output,
-          toolName: actionTool.toolName,
-        });
-
-        await processMessage(result, 'user');
-        state.isProcessing = false;
-        updateConversationUI();
-        return;
-      }
-
-      // For non-ACTION tools, add assistant message first
-      state.messages.push({
-        id: generateId(),
-        role: 'assistant',
-        parts: [{ type: 'text', text }],
+    if (toolResult?.toolName.startsWith('ACTION_')) {
+      const result = await executeAction({
+        ...toolResult.output,
+        toolName: toolResult.toolName,
       });
-      await persistMessage(state.messages[state.messages.length - 1]);
 
-      // Process all tool results
-      for (const toolResult of toolResults) {
-        if (toolResult?.toolName === 'visualize_data') {
-          const output = toolResult.output;
-          if (output && output.type === 'visualization') {
-            await addVisualizationToMessage(output);
-          }
-        }
+      await processMessage(result, 'user');
+      state.isProcessing = false;
+      updateConversationUI();
+      return;
+    }
 
-        if (toolResult?.toolName === 'book_calendly_meeting') {
-          const output = toolResult.output;
-          if (output && output.type === 'calendly_embed') {
-            await addCalendlyEmbedToMessage(output);
-          }
-        }
+    state.messages.push({
+      id: generateId(),
+      role: 'assistant',
+      parts: [{ type: 'text', text }],
+    });
+    await persistMessage(state.messages[state.messages.length - 1]);
+
+    if (toolResult?.toolName === 'visualize_data') {
+      const output = toolResult.output;
+      if (output && output.type === 'visualization') {
+        await addVisualizationToMessage(output);
       }
-    } else {
-      // No tool results, just add the text message
-      state.messages.push({
-        id: generateId(),
-        role: 'assistant',
-        parts: [{ type: 'text', text }],
-      });
-      await persistMessage(state.messages[state.messages.length - 1]);
     }
 
     syncWidgetState();

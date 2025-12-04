@@ -34,7 +34,6 @@ export async function GET(
       systemMessage: data.system_message,
       createdBy: data.created_by,
       createdAt: data.created_at,
-      calendlyConfig: data.calendly_config || undefined,
     };
 
     return NextResponse.json({ agent }, { status: 200 });
@@ -107,7 +106,7 @@ export async function PATCH(
     if (authResponse) return authResponse;
 
     const body = await request.json();
-    const { name, websiteDomain, model, systemMessage, prompts, calendlyConfig } = body;
+    const { name, websiteDomain, model, systemMessage, prompts } = body;
 
     const updateData: any = {};
 
@@ -125,10 +124,6 @@ export async function PATCH(
 
     if (systemMessage !== undefined) {
       updateData.system_message = systemMessage || null;
-    }
-
-    if (calendlyConfig !== undefined) {
-      updateData.calendly_config = calendlyConfig;
     }
 
     if (Object.keys(updateData).length > 0) {

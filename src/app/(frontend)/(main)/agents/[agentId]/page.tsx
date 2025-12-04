@@ -25,7 +25,6 @@ import {
   Save,
   Settings,
   Clock,
-  Calendar,
 } from 'lucide-react';
 import {
   Action,
@@ -33,7 +32,7 @@ import {
 } from '@/app/api/lib/model/action/baseAction';
 import { Agent } from '@/app/api/lib/model/agent/agent';
 import { use } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { BackendAction } from '@/app/api/lib/model/action/backendAction';
 import {
   FrontendAction,
@@ -105,13 +104,6 @@ function AgentDetails({
   );
   const [editSystemMessage, setEditSystemMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  
-  // Calendly integration state
-  const [calendlyToken, setCalendlyToken] = useState('');
-  const [calendlyConnected, setCalendlyConnected] = useState(false);
-  const [calendlyUserName, setCalendlyUserName] = useState<string | null>(null);
-  const [calendlySaving, setCalendlySaving] = useState(false);
-  const searchParams = useSearchParams();
 
   const { handleUpdateAgent, handleDeleteAgent, deletingAgentId } = useAgents();
   const { handleDeleteAction, handleFetchActions } = useActionForm();
@@ -162,15 +154,6 @@ function AgentDetails({
           (data.agent?.model as AgentModel) || 'google/gemini-2.0-flash-001'
         );
         setEditSystemMessage(data.agent?.systemMessage || '');
-        
-        // Initialize Calendly state from agent config
-        const calendlyConfig = data.agent?.calendlyConfig;
-        if (calendlyConfig) {
-          setCalendlyConnected(!!calendlyConfig.access_token);
-          setCalendlyUserName(calendlyConfig.user_name || null);
-          // Don't pre-fill token for security
-          setCalendlyToken('');
-        }
       } catch (error) {
         console.error('Error fetching agent:', error);
       } finally {
@@ -199,7 +182,6 @@ function AgentDetails({
 
     fetchActions();
   }, [params.agentId]);
-
 
   const handleDeleteActionWithLoading = async (actionId: string) => {
     setDeletingActionId(actionId);
@@ -237,75 +219,6 @@ function AgentDetails({
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  // Handle Calendly token save
-  const handleCalendlySave = async () => {
-    if (!agent || !calendlyToken.trim()) {
-      toast.error('Please enter a Calendly Personal Access Token');
-      return;
-    }
-
-    setCalendlySaving(true);
-    try {
-      const response = await fetch(`/api/agents/${params.agentId}/calendly/token`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: calendlyToken }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to save Calendly token');
-      }
-
-      toast.success('Calendly connected successfully!');
-      setCalendlyToken(''); // Clear input for security
-      setCalendlyConnected(true);
-      setCalendlyUserName(data.userInfo?.name || null);
-      
-      // Refresh agent data
-      const agentResponse = await fetch(`/api/agents/${params.agentId}`);
-      const agentData = await agentResponse.json();
-      setAgent(agentData.agent);
-    } catch (error: any) {
-      console.error('Error saving Calendly token:', error);
-      toast.error(error.message || 'Failed to save Calendly token');
-    } finally {
-      setCalendlySaving(false);
-    }
-  };
-
-  // Handle Calendly disconnect
-  const handleCalendlyDisconnect = async () => {
-    if (!agent) return;
-
-    setCalendlySaving(true);
-    try {
-      const response = await fetch(`/api/agents/${params.agentId}/calendly/token`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to disconnect Calendly');
-      }
-
-      toast.success('Calendly disconnected successfully');
-      setCalendlyToken('');
-      setCalendlyConnected(false);
-      setCalendlyUserName(null);
-      
-      // Refresh agent data
-      const agentResponse = await fetch(`/api/agents/${params.agentId}`);
-      const agentData = await agentResponse.json();
-      setAgent(agentData.agent);
-    } catch (error: any) {
-      console.error('Error disconnecting Calendly:', error);
-      toast.error(error.message || 'Failed to disconnect Calendly');
-    } finally {
-      setCalendlySaving(false);
-    }
   };
 
   const saveChanges = async () => {
@@ -504,85 +417,6 @@ function AgentDetails({
                   className="border-[2px] border-border resize-none"
                   rows={5}
                 />
-              </div>
-            </div>
-
-            {/* Calendly Integration Section */}
-            <div>
-              <Label className="text-foreground flex items-center gap-2 text-sm font-semibold mb-2">
-                <Calendar className="h-4 w-4 text-destructive" />
-                Calendly Integration:
-              </Label>
-              <p className="text-sm text-muted-foreground mt-1 ml-6 mb-3">
-                Connect your Calendly account to allow your agent to check availability and book meetings. 
-                <a 
-                  href="https://calendly.com/integrations/api_webhooks" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-brand hover:underline ml-1"
-                >
-                  Get your Personal Access Token here
-                </a>
-              </p>
-              <div className="ml-6 space-y-3">
-                {calendlyConnected ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm">
-                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                      <span className="text-muted-foreground">
-                        Connected{calendlyUserName ? ` as ${calendlyUserName}` : ''}
-                      </span>
-                    </div>
-                    <Button
-                      onClick={handleCalendlyDisconnect}
-                      variant="outline"
-                      size="sm"
-                      disabled={calendlySaving}
-                      className="w-full sm:w-auto"
-                    >
-                      {calendlySaving ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Disconnecting...
-                        </>
-                      ) : (
-                        'Disconnect'
-                      )}
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <div className="space-y-1">
-                      <Label htmlFor="calendly-token" className="text-sm text-foreground">
-                        Personal Access Token
-                      </Label>
-                      <Input
-                        id="calendly-token"
-                        type="password"
-                        placeholder="Enter your Calendly Personal Access Token"
-                        value={calendlyToken}
-                        onChange={(e) => setCalendlyToken(e.target.value)}
-                        className="w-full"
-                        disabled={calendlySaving}
-                      />
-                    </div>
-                    <Button
-                      onClick={handleCalendlySave}
-                      className="bg-brand text-primary-foreground hover:bg-brand/90"
-                      size="sm"
-                      disabled={calendlySaving || !calendlyToken.trim()}
-                    >
-                      {calendlySaving ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Connecting...
-                        </>
-                      ) : (
-                        'Connect Calendly'
-                      )}
-                    </Button>
-                  </div>
-                )}
               </div>
             </div>
 

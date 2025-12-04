@@ -20,9 +20,7 @@ export function BlizzardBerryLoggedInAgent() {
             user_metadata: {
               name: "${session.user.name}",
               email: "${session.user.email}",
-            },
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            timezone_offset: new Date().getTimezoneOffset()
+            }
           };
         `}
       </Script>

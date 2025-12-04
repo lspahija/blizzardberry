@@ -70,7 +70,6 @@ export async function GET(req: Request) {
       systemMessage: d.system_message,
       createdBy: d.created_by,
       createdAt: d.created_at,
-      calendlyConfig: d.calendly_config || undefined,
     }));
 
     return NextResponse.json({ agents }, { status: 200 });
