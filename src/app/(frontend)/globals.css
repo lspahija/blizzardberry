@@ -258,25 +258,46 @@
   }
   
   /* Dark mode adjustments */
-  .dark .slider-smooth,
+  .dark .slider-smooth {
+    background: #374151;
+  }
+
+  .dark .slider-smooth::-webkit-slider-track {
+    background: #374151;
+  }
+
+  .dark .slider-smooth::-webkit-slider-thumb {
+    background: var(--color-brand-dark);
+    border-color: #1f2937;
+  }
+
+  .dark .slider-smooth::-moz-range-track {
+    background: #374151;
+  }
+
+  .dark .slider-smooth::-moz-range-thumb {
+    background: var(--color-brand-dark);
+    border-color: #1f2937;
+  }
+
   @media (prefers-color-scheme: dark) {
     .slider-smooth {
       background: #374151;
     }
-    
+
     .slider-smooth::-webkit-slider-track {
       background: #374151;
     }
-    
+
     .slider-smooth::-webkit-slider-thumb {
       background: var(--color-brand-dark);
       border-color: #1f2937;
     }
-    
+
     .slider-smooth::-moz-range-track {
       background: #374151;
     }
-    
+
     .slider-smooth::-moz-range-thumb {
       background: var(--color-brand-dark);
       border-color: #1f2937;
