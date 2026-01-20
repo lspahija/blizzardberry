@@ -239,12 +239,16 @@ export async function capturePageState() {
 
 **File**: `src/app/api/(main)/agent-step/route.ts`
 
-**What to build**:
+**What to build** (using OpenRouter via existing setup):
+
 ```typescript
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { generateText } from 'ai';
 
-const client = new Anthropic();
+// Use existing OpenRouter setup - model can be configured per agent
+const DEFAULT_VISION_MODEL = 'anthropic/claude-sonnet-4';
+// Alternatives: 'openai/gpt-4o', 'google/gemini-2.0-flash', 'google/gemini-2.5-pro'
 
 const SYSTEM_PROMPT = `You are an AI agent that can see and interact with web pages.
 
@@ -274,22 +278,21 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { pageState, userGoal, conversationId, agentId } = body;
 
+    // TODO: Get model from agent config, fallback to default
+    const model = DEFAULT_VISION_MODEL;
+
     // Format element list
     const elementList = pageState.elements
       .map((el: any) => `[${el.index}] <${el.tag}> "${el.text}"`)
       .join('\n');
 
-    // Build message content
+    // Build message content (Vercel AI SDK format)
     const content: any[] = [];
 
     if (pageState.screenshot) {
       content.push({
         type: 'image',
-        source: {
-          type: 'base64',
-          media_type: 'image/png',
-          data: pageState.screenshot,
-        },
+        image: `data:image/png;base64,${pageState.screenshot}`,
       });
     }
 
@@ -303,18 +306,17 @@ ${elementList}
 User goal: ${userGoal}`,
     });
 
-    // Call Claude
-    const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content }],
+    // Call LLM via OpenRouter
+    const openrouter = createOpenRouter({
+      apiKey: process.env.OPENROUTER_API_KEY,
     });
 
-    // Parse response
-    const text = response.content[0].type === 'text'
-      ? response.content[0].text
-      : '';
+    const { text } = await generateText({
+      model: openrouter(model),
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content }],
+      maxTokens: 1024,
+    });
 
     // Extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -341,10 +343,18 @@ User goal: ${userGoal}`,
 
 **Verification**:
 - [ ] Endpoint accepts POST with pageState and userGoal
-- [ ] Calls Claude with screenshot and elements
+- [ ] Calls vision model via OpenRouter
 - [ ] Returns parsed action
 
-**Dependencies**: `npm install @anthropic-ai/sdk`
+**Model Options** (all support vision via OpenRouter):
+| Model | Cost | Speed | Quality |
+|-------|------|-------|---------|
+| `anthropic/claude-sonnet-4` | Medium | Medium | Best |
+| `openai/gpt-4o` | Medium | Fast | Great |
+| `google/gemini-2.0-flash` | Low | Fast | Good |
+| `google/gemini-2.5-pro` | Medium | Medium | Great |
+
+**Dependencies**: Already using `@openrouter/ai-sdk-provider` and `ai` (Vercel AI SDK)
 
 ---
 
@@ -724,11 +734,32 @@ src/app/api/
 ```json
 {
   "dependencies": {
-    "modern-screenshot": "^4.x",
-    "@anthropic-ai/sdk": "^0.x"
+    "modern-screenshot": "^4.x"
   }
 }
 ```
+
+**Note**: OpenRouter and Vercel AI SDK are already in the project. No additional LLM dependencies needed.
+
+### Model Configuration (Future)
+
+The vision model can be made configurable per-agent:
+
+```typescript
+// In agent config (database or settings)
+interface AgentConfig {
+  // ...existing fields
+  visionModel?: string;  // e.g., 'openai/gpt-4o', 'google/gemini-2.0-flash'
+}
+
+// Default fallback
+const DEFAULT_VISION_MODEL = 'anthropic/claude-sonnet-4';
+```
+
+This allows:
+- Site owners to choose cost vs quality tradeoff
+- A/B testing different models
+- Using cheaper models for simple tasks
 
 ---
 
@@ -768,13 +799,13 @@ src/app/api/
 ## Getting Started
 
 ```bash
-# 1. Install dependencies
+# 1. Install dependencies (modern-screenshot for widget, OpenRouter already in project)
 cd blizzardberry
-npm install modern-screenshot @anthropic-ai/sdk
+npm install modern-screenshot
 
-# 2. Create the files (Step 1.1 - 1.6)
+# 2. Create the files (Step 1.1 - 1.8)
 
-# 3. Set ANTHROPIC_API_KEY in environment
+# 3. Verify OPENROUTER_API_KEY is set in environment
 
 # 4. Start the dev server
 npm run dev
