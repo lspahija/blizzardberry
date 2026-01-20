@@ -894,6 +894,287 @@ These are fundamental constraints that cannot be fully solved. The goal is to su
 
 ---
 
+## Prompting Techniques & Inference Optimizations
+
+Analysis of techniques used by magnitude, browser-use, and skyvern to improve accuracy, speed, and cost efficiency.
+
+### 1. Structured Output Format
+
+**Browser-Use approach** (most comprehensive):
+
+```json
+{
+  "thinking": "Step-by-step reasoning applying the reasoning rules...",
+  "evaluation_previous_goal": "Clicked submit button, form was submitted. Verdict: Success",
+  "memory": "Visited 2 of 5 pages. Found price $39.99 on Amazon.",
+  "next_goal": "Click the 'Add to Cart' button to proceed.",
+  "action": [{"click": {"index": 15}}]
+}
+```
+
+**Why it works**:
+- `thinking` forces explicit reasoning (like chain-of-thought)
+- `evaluation_previous_goal` creates feedback loop for error recovery
+- `memory` provides short-term context for multi-step tasks
+- Separation of concerns improves accuracy
+
+**Recommendation for Blizzardberry**: Adopt this structure.
+
+### 2. DOM Change Markers
+
+**Browser-Use**: Marks new elements with `*`:
+
+```
+[33]<button>Submit</button>
+*[34]<div class="success-message">Order confirmed!</div>
+```
+
+**Why it works**: LLM immediately sees what changed after an action, reducing confusion about state.
+
+**Recommendation**: Track DOM changes between steps, mark new elements.
+
+### 3. Reasoning Rules (Browser-Use)
+
+Browser-Use includes explicit reasoning instructions:
+
+```
+<reasoning_rules>
+- Analyze the most recent "Next Goal" and "Action Result" in <agent_history>
+- Explicitly judge success/failure/uncertainty of the last action
+- Never assume an action succeeded just because it appears executed
+- Always verify using screenshot as the primary ground truth
+- If any todo.md items are finished, mark them as complete
+- Analyze whether you are stuck (repeating same actions without progress)
+</reasoning_rules>
+```
+
+**Why it works**: Prevents common failure modes like assuming success, not checking results, getting stuck in loops.
+
+**Recommendation**: Include similar rules in system prompt.
+
+### 4. Memory Masking (Magnitude)
+
+Magnitude's observation masking system for token efficiency:
+
+```typescript
+// Configuration per observation type
+Observation.fromConnector(id, screenshot, {
+  type: 'screenshot',
+  limit: 2,      // Keep only last 2 screenshots
+  dedupe: true   // Skip if identical to previous
+})
+```
+
+**How it works**:
+1. Group observations by type (screenshot, action, result)
+2. Apply deduplication (remove consecutive identical observations)
+3. Apply limits (keep only last N of each type)
+4. Freeze mask for prompt caching (preserve cached observations)
+
+**Why it works**: Reduces tokens without losing critical context. Old screenshots rarely matter if you have recent ones.
+
+**Recommendation**: Implement similar masking for conversation history.
+
+### 5. Prompt Caching (Magnitude/Claude)
+
+Magnitude uses Claude's prompt caching:
+
+```typescript
+{{ _.role("system", cache_control={"type": "ephemeral"}) }}
+<instructions>
+{{ instructions }}
+</instructions>
+```
+
+**How it works**:
+- Mark stable content (system prompt, instructions) as cacheable
+- Claude reuses cached tokens across requests
+- 90% cost reduction on cached tokens
+
+**Implementation for Blizzardberry**:
+
+```typescript
+const response = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  system: [
+    {
+      type: 'text',
+      text: SYSTEM_PROMPT,
+      cache_control: { type: 'ephemeral' }  // Cache this
+    }
+  ],
+  messages: [...],
+});
+```
+
+### 6. Multi-Model Routing (Magnitude)
+
+Different models for different tasks:
+
+| Task | Model | Why |
+|------|-------|-----|
+| Action planning | Claude Sonnet | Best reasoning |
+| Data extraction | Gemini Pro | Good at structured output, cheaper |
+| Memory queries | Gemini Pro | Fast, cheaper |
+
+**Recommendation**: Consider Haiku for simple tasks, Sonnet for complex reasoning.
+
+### 7. Confidence Scores (Skyvern)
+
+Each action includes confidence:
+
+```json
+{
+  "action_type": "CLICK",
+  "id": "element_15",
+  "confidence_float": 0.85,
+  "reasoning": "Button labeled 'Submit' matches user intent"
+}
+```
+
+**Why it works**:
+- Low confidence → ask user for confirmation
+- Track confidence over time → detect when agent is struggling
+- Multiple low-confidence actions → suggest alternative approach
+
+**Recommendation**: Include confidence in response, use threshold for confirmation.
+
+### 8. Action Chaining (Browser-Use)
+
+Allow multiple actions per step when logical:
+
+```
+<efficiency_guidelines>
+Recommended Action Combinations:
+- input + click → Fill form field and submit in one step
+- input + input → Fill multiple form fields
+- click + click → Navigate through multi-step flows
+
+Do NOT chain actions that change browser state multiple times:
+- click + navigate (won't see if click succeeded)
+- input + scroll (won't verify input)
+</efficiency_guidelines>
+```
+
+**Why it works**: Reduces round-trips while maintaining observability.
+
+**Recommendation**: Allow 1-3 actions per step with constraints.
+
+### 9. Example-Based Prompting (Browser-Use)
+
+Include good/bad examples in prompt:
+
+```
+<evaluation_examples>
+Positive:
+"Successfully navigated to product page and found target. Verdict: Success"
+
+Negative:
+"Failed to input text into search bar as I cannot see it. Verdict: Failure"
+</evaluation_examples>
+```
+
+**Why it works**: LLMs learn from examples better than abstract instructions.
+
+**Recommendation**: Include 2-3 examples of each output field.
+
+### 10. Click Context Analysis (Skyvern)
+
+Distinguish between deterministic and user-dependent clicks:
+
+```json
+{
+  "click_context": {
+    "thought": "This is a gender selection radio button, choice depends on user",
+    "single_option_click": false
+  }
+}
+```
+
+**Why it works**: Prevents agent from making arbitrary choices on user-dependent fields.
+
+**Recommendation**: Include for sensitive selections (gender, preferences, etc.).
+
+---
+
+## Recommended Prompt Structure for Blizzardberry
+
+Based on competitor analysis:
+
+```typescript
+const VISION_AGENT_SYSTEM_PROMPT = `
+You are an AI agent that can see and interact with web pages.
+
+<input_format>
+You receive:
+1. A screenshot with numbered markers [1], [2], [3] on interactive elements
+2. An element list: [index] <tag> "text" at (x, y)
+3. Previous actions and their outcomes
+4. The user's goal
+</input_format>
+
+<reasoning_rules>
+1. LOOK at the screenshot first - it shows the actual page state
+2. Verify the outcome of your previous action before planning the next
+3. If an action failed, try a different approach
+4. If stuck (same action 3+ times), report to user
+5. Never assume an action succeeded - verify visually
+</reasoning_rules>
+
+<action_rules>
+- You may execute 1-3 actions per step
+- Safe combinations: input + click, click + click (same context)
+- Never combine: actions that navigate away, scroll + other actions
+- If confidence < 0.7, ask for user confirmation
+</action_rules>
+
+<output_format>
+{
+  "thinking": "Describe what you see, evaluate previous action, plan next step",
+  "evaluation": "Previous action result: Success/Failure/Uncertain",
+  "memory": "Key facts to remember for next steps",
+  "actions": [
+    {
+      "type": "click",
+      "target": {"index": 3},
+      "confidence": 0.9,
+      "reasoning": "Button labeled 'Submit' matches goal"
+    }
+  ],
+  "done": false
+}
+</output_format>
+
+<examples>
+Good thinking: "I can see a login form. The previous click on 'Sign In' opened this modal. I should enter the email in field [2]."
+Bad thinking: "Clicking submit." (no context, no verification)
+
+Good evaluation: "Entered email successfully - I can see it displayed in the input field. Verdict: Success"
+Bad evaluation: "Action completed." (no verification)
+</examples>
+`;
+```
+
+---
+
+## Cost/Performance Tradeoffs
+
+| Optimization | Accuracy Impact | Cost Impact | Latency Impact |
+|--------------|-----------------|-------------|----------------|
+| Prompt caching | None | -90% on cached | -20% (cache hits) |
+| Memory masking | Slight decrease | -30-50% | Faster |
+| Multi-model routing | Task-dependent | -40% (use Haiku) | Varies |
+| Action chaining | Slight decrease | -50% (fewer steps) | Faster |
+| Confidence filtering | Increase (human help) | +10% (retries) | Slower |
+
+**Recommended priority**:
+1. Prompt caching (free accuracy, huge cost savings)
+2. Structured output with reasoning (improved accuracy)
+3. Memory masking (cost reduction with minimal accuracy loss)
+4. Confidence thresholds (safety net)
+
+---
+
 ## Appendix: References & Code Examples
 
 ### Set-of-Mark Prompting (Our Approach)
